@@ -8,6 +8,7 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 
 - `74HC/` - behavioral Verilog models for 74HC-family logic chips plus per-chip pinout files named `74hcxx-pin.md`.
 - `Memory/` - behavioral Verilog models and pinout files for EEPROM, flash EEPROM, and SRAM parts.
+- `python/` - reusable Python pin-level behavior models, net wiring, tri-state conflict checks, and propagation-delay simulation.
 - `source/` - manufacturer datasheet PDFs used as local evidence for pinout documentation; see `source/README.md` for the retained evidence list.
 
 ## Verification Rule
@@ -36,14 +37,19 @@ vvp /tmp/tb_74hc_smoke.vvp
 
 iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp Components/Memory/*.v Components/Memory/tests/tb_memory_smoke.v
 vvp /tmp/tb_memory_smoke.vvp
+
+cd Components/python
+python3 -m tests.test_chips
 ```
 
 Expected pass markers:
 
 - `74HC SMOKE TEST PASSED`
 - `MEMORY SMOKE TEST PASSED`
+- `Components Python chip tests passed`
 
 ## Subfolder Docs
 
 - `74HC/README.md` - full 74HC model list, scan notes, and 74xx source coverage.
 - `Memory/README.md` - memory model list and datasheet sources.
+- `python/README.md` - Python chip-library coverage and usage.
