@@ -142,7 +142,10 @@ class Chip:
     def update(self) -> None:
         pass
 
-    def clock_edge(self) -> None:
+    def clock_edge_for_pin(self, pin: int | str | None = None) -> str:
+        return "rising"
+
+    def clock_edge(self, pin: int | str | None = None) -> None:
         pass
 
 

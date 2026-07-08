@@ -89,13 +89,13 @@ class ClockChannel:
         if width_ns <= 0:
             raise StimulusError("width_ns must be positive")
         idle = 0 if active else 1
-        self.value = 1 if active else 0
-        self._drive(self.value)
-        self._clock_targets()
+        if self.value != idle:
+            self.value = idle
+            self._drive(self.value)
+        self._transition(1 if active else 0)
         self.controller.board.settle()
         self.controller.advance(width_ns)
-        self.value = idle
-        self._drive(self.value)
+        self._transition(idle)
         self.controller.board.settle()
 
     def _due(self, end_ns: int) -> bool:
@@ -105,23 +105,34 @@ class ClockChannel:
         if self.next_edge_ns is None or self.period_ns is None or self.high_ns is None:
             return
         self.controller.board.time_ns = max(self.controller.board.time_ns, self.next_edge_ns)
-        self.value = 0 if self.value else 1
-        self._drive(self.value)
-        if self.value == 1:
-            self._clock_targets()
+        self._transition(0 if self.value else 1)
         self.controller.board.settle()
         self.next_edge_ns = self.controller.board.time_ns + (self.high_ns if self.value else self.period_ns - self.high_ns)
+
+    def _transition(self, new_value: int) -> None:
+        old_value = self.value
+        self.value = 1 if new_value else 0
+        self._drive(self.value)
+        if old_value == 0 and self.value == 1:
+            self._clock_targets("rising")
+        elif old_value == 1 and self.value == 0:
+            self._clock_targets("falling")
 
     def _drive(self, value: int) -> None:
         for target in self.targets:
             target.chip.set_input(target.pin, 1 if value else 0)
 
-    def _clock_targets(self) -> None:
+    def _clock_targets(self, edge: str) -> None:
         seen = set()
         for target in self.targets:
-            ident = id(target.chip)
+            ident = (id(target.chip), target.pin)
             if ident not in seen:
-                target.chip.clock_edge()
+                trigger_edge = target.chip.clock_edge_for_pin(target.pin)
+                if trigger_edge in (edge, "both"):
+                    try:
+                        target.chip.clock_edge(target.pin)
+                    except TypeError:
+                        target.chip.clock_edge()
                 seen.add(ident)
 
 

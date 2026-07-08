@@ -66,7 +66,9 @@ assert u1.pin_number("1Y") == 3
 ```
 
 For simple one-chip tests, call `update()` then `commit()` after changing
-inputs. Sequential chips expose `clock_edge()` for the modeled clock action.
+inputs. Sequential chips expose `clock_edge(pin=None)` for the modeled clock
+action. Pass the physical clock pin when the part has more than one clock input
+or when the simulator should respect a datasheet-defined clock edge.
 
 ```python
 from chiplib import create_chip
@@ -76,7 +78,7 @@ reg.set_input("/OE", 0)
 for i, pin in enumerate([2, 3, 4, 5, 6, 7, 8, 9]):
     reg.set_input(pin, (0x5A >> i) & 1)
 
-reg.clock_edge()
+reg.clock_edge("CLK")
 reg.commit()
 ```
 
@@ -120,7 +122,8 @@ assert gate.read("1A") == 1
 ```
 
 `Board.clock_edge()` calls `clock_edge()` on every chip, then settles scheduled
-outputs.
+outputs. For UI and pin-level simulation, prefer explicit stimulus clock
+channels so the backend can apply each part's real rising or falling edge.
 
 For future UI work, `Board` is the natural service boundary. A frontend should
 send operations such as "create chip", "connect net", "drive pin", "clock",
@@ -298,8 +301,11 @@ stim.set_inputs(0xA5, width=8)
 ```
 
 Clock channels can be one-shot triggered or run as numeric-frequency clocks.
-The clock timing and chip propagation delays are simulator numbers; use them to
-calculate and inspect behavior, not as a substitute for physical timing closure.
+They honor each target chip's clock edge. For example, 74HC574 responds to the
+rising edge of `CLK`, while 74HC73 and 74HC112 respond to the falling edge of
+`CP`. The clock timing and chip propagation delays are simulator numbers; use
+them to calculate and inspect behavior, not as a substitute for physical timing
+closure.
 
 ```python
 clk = stim.bind_clock(0, reg, "CLK")
@@ -359,17 +365,21 @@ Keep Python and Verilog compatible:
 3. Disabled tri-state outputs and non-driving bidirectional pins must output
    `Z`.
 4. Bidirectional parts must release the side that is not currently driving.
-5. Sequential parts must implement `clock_edge()` and model asynchronous
-   clear/preset behavior in `update()` where the real part has it.
-6. Memory parts must use the real DIP address/data/control mapping and expose
+5. Sequential parts must implement `clock_edge(pin=None)` and
+   `clock_edge_for_pin(pin)` when the datasheet clock edge is not the default
+   rising edge. Multi-clock packages must use the physical pin argument so only
+   the section or register tied to that pin changes.
+6. Sequential parts must model asynchronous clear/load/preset controls in
+   `update()` where the datasheet says those controls are asynchronous.
+7. Memory parts must use the real DIP address/data/control mapping and expose
    `data` for preload/inspection.
-7. Assign realistic `Delay` metadata. It is a simulation default, not a timing
+8. Assign realistic `Delay` metadata. It is a simulation default, not a timing
    closure guarantee.
-8. Add or update tests in `tests/test_chips.py` for pin aliases, logic behavior,
+9. Add or update tests in `tests/test_chips.py` for pin aliases, logic behavior,
    tri-state behavior, memory read/write behavior, bus conflicts, and catalog
    instantiation as applicable.
-9. For parts present in both Python and Verilog, compare observable behavior:
+10. For parts present in both Python and Verilog, compare observable behavior:
    same controls, same output polarity, same tri-state rules, and same reset or
    clock behavior. Verilog vector ports may differ, but behavior must not.
-10. If a pinout is provisional, mark it clearly and block physical-wiring use
+11. If a pinout is provisional, mark it clearly and block physical-wiring use
     until the pinout Markdown is manufacturer-verified.

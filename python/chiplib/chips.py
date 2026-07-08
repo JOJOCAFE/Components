@@ -194,7 +194,7 @@ class HC574(Chip):
         super().__init__(name, pins_from(pins), Delay(20))
         self._reg = [0] * 8
 
-    def clock_edge(self) -> None:
+    def clock_edge(self, pin: int | str | None = None) -> None:
         self._reg = [bit(self.read(2 + i)) for i in range(8)]
         self.update()
 
@@ -215,7 +215,7 @@ class HC161(Chip):
         super().__init__(name, pins_from(pins), Delay(22))
         self._count = 0
 
-    def clock_edge(self) -> None:
+    def clock_edge(self, pin: int | str | None = None) -> None:
         if not bit(self.read(1)):
             self._count = 0
         elif not bit(self.read(9)):
@@ -243,7 +243,7 @@ class HC164(Chip):
         self._sr = [0] * 8
         self._q_pins = [3, 4, 5, 6, 10, 11, 12, 13]
 
-    def clock_edge(self) -> None:
+    def clock_edge(self, pin: int | str | None = None) -> None:
         if not bit(self.read(9)):
             self._sr = [0] * 8
         else:
@@ -268,19 +268,26 @@ class HC74(Chip):
         super().__init__(name, pins_from(pins), Delay(20))
         self._q = [0, 0]
 
-    def clock_edge(self) -> None:
-        if not bit(self.read(1)):
-            self._q[0] = 0
-        elif not bit(self.read(4)):
-            self._q[0] = 1
-        else:
-            self._q[0] = bit(self.read(2))
-        if not bit(self.read(13)):
-            self._q[1] = 0
-        elif not bit(self.read(10)):
-            self._q[1] = 1
-        else:
-            self._q[1] = bit(self.read(12))
+    def clock_edge(self, pin: int | str | None = None) -> None:
+        blocks = [0, 1]
+        if pin is not None:
+            number = self.pin_number(pin)
+            blocks = [0] if number == 3 else ([1] if number == 11 else [])
+        for block in blocks:
+            if block == 0:
+                if not bit(self.read(1)):
+                    self._q[0] = 0
+                elif not bit(self.read(4)):
+                    self._q[0] = 1
+                else:
+                    self._q[0] = bit(self.read(2))
+            else:
+                if not bit(self.read(13)):
+                    self._q[1] = 0
+                elif not bit(self.read(10)):
+                    self._q[1] = 1
+                else:
+                    self._q[1] = bit(self.read(12))
         self.update()
 
     def update(self) -> None:

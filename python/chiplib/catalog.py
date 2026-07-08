@@ -103,6 +103,14 @@ class CatalogChip(Chip):
         if self.has(name):
             self.output(name, value)
 
+    def clock_edge_for_pin(self, pin: int | str | None = None) -> str:
+        if pin is None:
+            return "rising"
+        name = self.pin(pin).name
+        if self.part in ("74HC73", "74HC112") and name.endswith("CP"):
+            return "falling"
+        return "rising"
+
     def names(self, pattern: str) -> list[str]:
         rx = re.compile(pattern)
         return sorted((n for n in self.pin_names if rx.match(n)), key=_natural_key)
@@ -248,6 +256,7 @@ class CatalogChip(Chip):
         elif p in ("74HC73", "74HC112"):
             self._update_jk_outputs()
         elif p == "74HC165":
+            if not self.r("/SH/LD"): self._state = self._read_names(["A", "B", "C", "D", "E", "F", "G", "H"])
             self.o("QH", (self._state >> 7) & 1); self.o("/QH", 1 - ((self._state >> 7) & 1))
         elif p == "74HC166":
             if not self.r("/CLR"): self._state = 0
@@ -260,9 +269,13 @@ class CatalogChip(Chip):
             self.o("A_eq_B", 1 if f == 0xF else 0); self.o("Cn+4", 1 if a + b + self.r("Cn") > 0xF else 0)
             self.o("P", 0); self.o("G", 0)
         elif p == "74HC193":
+            if self.r("CLR"): self._state = 0
+            elif not self.r("/LOAD"): self._state = self._read_names(["A", "B", "C", "D"])
             self._write_names(["QA", "QB", "QC", "QD"], self._state)
             self.o("/CO", 0 if self._state == 0xF else 1); self.o("/BO", 0 if self._state == 0 else 1)
         elif p == "74HC593":
+            if not self.r("CCLR"): self._state = 0
+            elif not self.r("CLOAD"): self._state = self._state2
             out_en = self.r("G") or not self.r("/G")
             for i, name in enumerate(["A/QA", "B/QB", "C/QC", "D/QD", "E/QE", "F/QF", "G/QG", "H/QH"]):
                 self.o(name, (self._state >> i) & 1 if out_en else Z)
@@ -295,8 +308,9 @@ class CatalogChip(Chip):
         elif p in ("AT28C256", "62256", "AS6C62256", "CY7C199", "SST39SF010A"):
             self._update_memory()
 
-    def clock_edge(self) -> None:
+    def clock_edge(self, pin: int | str | None = None) -> None:
         p = self.part
+        pin_name = self.pin(pin).name if pin is not None else None
         if p in ("74HC160", "74HC162", "74HC163"):
             if not self.r("MR"): self._state = 0
             elif not self.r("PE"): self._state = self._read_names(["D0", "D1", "D2", "D3"])
@@ -311,7 +325,7 @@ class CatalogChip(Chip):
         elif p == "74HC377":
             if not self.r("E"): self._state = self._read_names([f"D{i}" for i in range(8)])
         elif p in ("74HC73", "74HC112"):
-            self._clock_jk()
+            self._clock_jk(pin_name)
         elif p == "74HC165":
             if not self.r("/SH/LD"): self._state = self._read_names(["A", "B", "C", "D", "E", "F", "G", "H"])
             elif not self.r("CLK INH"): self._state = ((self._state << 1) & 0xFF) | self.r("SER")
@@ -322,22 +336,32 @@ class CatalogChip(Chip):
         elif p == "74HC193":
             if self.r("CLR"): self._state = 0
             elif not self.r("/LOAD"): self._state = self._read_names(["A", "B", "C", "D"])
-            elif self.r("UP") and not self.r("DOWN"): self._state = (self._state + 1) & 0xF
-            elif self.r("DOWN") and not self.r("UP"): self._state = (self._state - 1) & 0xF
+            elif pin_name == "UP" and self.r("DOWN"): self._state = (self._state + 1) & 0xF
+            elif pin_name == "DOWN" and self.r("UP"): self._state = (self._state - 1) & 0xF
+            elif pin_name is None:
+                if self.r("UP") and not self.r("DOWN"): self._state = (self._state + 1) & 0xF
+                elif self.r("DOWN") and not self.r("UP"): self._state = (self._state - 1) & 0xF
         elif p == "74HC593":
-            if not self.r("CCLR"): self._state = 0
-            elif not self.r("CLOAD"): self._state = self._read_names(["A/QA", "B/QB", "C/QC", "D/QD", "E/QE", "F/QF", "G/QG", "H/QH"])
-            elif self.r("CCKEN") or not self.r("/CCKEN"): self._state = (self._state + 1) & 0xFF
+            if pin_name == "RCK" and not self.r("RCKEN"):
+                self._state2 = self._read_names(["A/QA", "B/QB", "C/QC", "D/QD", "E/QE", "F/QF", "G/QG", "H/QH"])
+            elif pin_name in ("CCK", None):
+                if not self.r("CCLR"): self._state = 0
+                elif not self.r("CLOAD"): self._state = self._state2
+                elif self.r("CCKEN") or not self.r("/CCKEN"): self._state = (self._state + 1) & 0xFF
         elif p == "74HC595":
-            if not self.r("/SRCLR"): self._state = 0
-            else: self._state = ((self._state << 1) & 0xFF) | self.r("SER")
-            self._state2 = self._state
+            if pin_name in ("SRCLK", None):
+                if not self.r("/SRCLR"): self._state = 0
+                else: self._state = ((self._state << 1) & 0xFF) | self.r("SER")
+            if pin_name in ("RCLK", None):
+                self._state2 = self._state
         elif p == "74HC922":
             self._scan_col = (self._scan_col + 1) & 3
         self.update()
 
-    def _clock_jk(self) -> None:
+    def _clock_jk(self, pin_name: str | None = None) -> None:
         blocks = [1, 2]
+        if pin_name is not None:
+            blocks = [int(pin_name[0])] if pin_name[:1] in ("1", "2") else []
         for b in blocks:
             clear = f"{b}R" if self.has(f"{b}R") else f"{b}RD"
             preset = f"{b}SD"

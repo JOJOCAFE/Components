@@ -141,6 +141,15 @@ module tb_74hc_smoke;
   wire [1:0] ff_q_bar;
   ttl_74hc74 u74(.Preset_bar(ff_preset_bar), .Clear_bar(ff_clear_bar), .D(ff_d), .Clk(ff_clk), .Q(ff_q), .Q_bar(ff_q_bar));
 
+  reg [1:0] jk112_preset_bar;
+  reg [1:0] jk112_clear_bar;
+  reg [1:0] jk112_j;
+  reg [1:0] jk112_k;
+  reg [1:0] jk112_clk;
+  wire [1:0] jk112_q;
+  wire [1:0] jk112_q_bar;
+  ttl_74hc112 u112(.Preset_bar(jk112_preset_bar), .Clear_bar(jk112_clear_bar), .J(jk112_j), .K(jk112_k), .Clk(jk112_clk), .Q(jk112_q), .Q_bar(jk112_q_bar));
+
   reg buf_oe1_bar;
   reg buf_oe2_bar;
   reg [7:0] buf_a;
@@ -373,6 +382,22 @@ module tb_74hc_smoke;
     ff_preset_bar = 2'b10;
     #1;
     check(ff_q[0] == 1'b1, "74HC74 asynchronous preset");
+
+    jk112_clk = 2'b00;
+    jk112_preset_bar = 2'b11;
+    jk112_clear_bar = 2'b00;
+    jk112_j = 2'b01;
+    jk112_k = 2'b00;
+    #1;
+    check(jk112_q == 2'b00 && jk112_q_bar == 2'b11, "74HC112 asynchronous clear");
+    jk112_clear_bar = 2'b11;
+    #1 jk112_clk[0] = 1'b1; #1;
+    check(jk112_q[0] == 1'b0, "74HC112 ignores rising clock edge");
+    jk112_clk[0] = 1'b0; #1;
+    check(jk112_q[0] == 1'b1, "74HC112 negative-edge clock");
+    jk112_preset_bar[1] = 1'b0;
+    #1;
+    check(jk112_q[1] == 1'b1 && jk112_q_bar[1] == 1'b0, "74HC112 asynchronous preset");
 
     buf_oe1_bar = 1'b0;
     buf_oe2_bar = 1'b0;

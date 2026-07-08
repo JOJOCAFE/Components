@@ -308,6 +308,54 @@ def test_stimulus_inputs_and_clocks():
     assert stimulus.snapshot()["clocks"][1]["period_ns"] == 100
 
 
+def test_datasheet_clock_edges_and_independent_clock_pins():
+    board = Board()
+    stimulus = StimulusController(board)
+
+    jk = board.add_chip("JK", create_chip("74HC73", "JK"))
+    jk.set_input("1R", 1)
+    jk.set_input("1J", 1)
+    jk.set_input("1K", 1)
+    board.settle()
+    assert jk.read("1Q") == 0
+
+    jk_clk = stimulus.bind_clock(0, jk, "1CP", initial=0)
+    jk_clk.configure(period_ns=100, duty=0.5).start(start_high=False)
+    stimulus.run_for(50)
+    assert jk.read("1Q") == 0
+    stimulus.run_for(50)
+    assert jk.read("1Q") == 1
+
+    dff = board.add_chip("DFF", create_chip("74HC74", "DFF"))
+    set_pins(dff, ["/CLR1", "/PR1", "/CLR2", "/PR2"], [1, 1, 1, 1])
+    dff.set_input("D1", 1)
+    dff.set_input("D2", 0)
+    dff.update()
+    dff.commit()
+
+    clk1 = stimulus.bind_clock(1, dff, "CLK1", initial=0)
+    clk1.trigger(width_ns=10)
+    assert dff.read("Q1") == 1
+    assert dff.read("Q2") == 0
+
+    dff.set_input("D2", 1)
+    clk2 = stimulus.bind_clock(2, dff, "CLK2", initial=0)
+    clk2.trigger(width_ns=10)
+    assert dff.read("Q2") == 1
+
+    sr = board.add_chip("SR", create_chip("74HC595", "SR"))
+    sr.set_input("/SRCLR", 1)
+    sr.set_input("/OE", 0)
+    sr.set_input("SER", 1)
+    srclk = stimulus.bind_clock(3, sr, "SRCLK", initial=0)
+    rclk = stimulus.bind_clock(4, sr, "RCLK", initial=0)
+    board.settle()
+    srclk.trigger(width_ns=10)
+    assert sr.read("QA") == 0
+    rclk.trigger(width_ns=10)
+    assert sr.read("QA") == 1
+
+
 def test_all_component_parts_instantiate():
     root = Path(__file__).resolve().parents[2]
     parts = sorted(p.stem.upper() for p in (root / "74HC").glob("74hc*.v"))
@@ -382,6 +430,7 @@ def run_all():
     test_memory_image_loader()
     test_board_delay_and_bus_conflict()
     test_stimulus_inputs_and_clocks()
+    test_datasheet_clock_edges_and_independent_clock_pins()
     test_all_component_parts_instantiate()
     test_catalog_behavior_smoke()
 
