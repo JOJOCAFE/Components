@@ -13,6 +13,7 @@ from .core import (
 )
 from .chips import CHIP_FACTORIES, create_chip
 from .loader import ImageLoadError, load_image, load_memory, parse_hex_text, parse_ihex
+from .stimulus import ClockChannel, InputChannel, StimulusController, StimulusError
 
 __all__ = [
     "Board",
@@ -31,4 +32,8 @@ __all__ = [
     "load_memory",
     "parse_hex_text",
     "parse_ihex",
+    "ClockChannel",
+    "InputChannel",
+    "StimulusController",
+    "StimulusError",
 ]

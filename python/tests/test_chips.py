@@ -3,7 +3,16 @@
 from pathlib import Path
 import tempfile
 
-from chiplib import Board, BusConflictError, ImageLoadError, Z, create_chip, load_image, load_memory
+from chiplib import (
+    Board,
+    BusConflictError,
+    ImageLoadError,
+    StimulusController,
+    Z,
+    create_chip,
+    load_image,
+    load_memory,
+)
 
 MEMORY_ADDR_PINS = {
     0: 10,
@@ -262,6 +271,43 @@ def test_board_delay_and_bus_conflict():
         raise AssertionError("expected bus conflict")
 
 
+def test_stimulus_inputs_and_clocks():
+    board = Board()
+    nand = board.add_chip("U1", create_chip("74HC00", "U1"))
+    reg = board.add_chip("U2", create_chip("74HC574", "U2"))
+    stimulus = StimulusController(board)
+
+    assert len(stimulus.inputs) == 32
+    assert len(stimulus.clocks) == 8
+
+    stimulus.bind_input(0, nand, "1A", initial=1)
+    stimulus.bind_input(1, nand, "1B", initial=1)
+    board.settle()
+    assert nand.read("1Y") == 0
+
+    stimulus.input(1).set(0)
+    board.settle()
+    assert nand.read("1Y") == 1
+
+    for i, pin in enumerate([2, 3, 4, 5, 6, 7, 8, 9]):
+        stimulus.bind_input(i, reg, pin)
+    stimulus.set_inputs(0xA5, width=8)
+    reg.set_input("/OE", 0)
+
+    clk0 = stimulus.bind_clock(0, reg, "CLK")
+    clk0.trigger(width_ns=50)
+    assert get_byte(reg, [19, 18, 17, 16, 15, 14, 13, 12]) == 0xA5
+
+    inv = board.add_chip("U3", create_chip("74HC04", "U3"))
+    clk1 = stimulus.bind_clock(1, inv, "1A")
+    clk1.configure(period_ns=100, duty=0.5).start()
+    start = board.time_ns
+    stimulus.run_for(250)
+    assert board.time_ns >= start + 250
+    assert clk1.next_edge_ns is not None
+    assert stimulus.snapshot()["clocks"][1]["period_ns"] == 100
+
+
 def test_all_component_parts_instantiate():
     root = Path(__file__).resolve().parents[2]
     parts = sorted(p.stem.upper() for p in (root / "74HC").glob("74hc*.v"))
@@ -335,6 +381,7 @@ def run_all():
     test_memory()
     test_memory_image_loader()
     test_board_delay_and_bus_conflict()
+    test_stimulus_inputs_and_clocks()
     test_all_component_parts_instantiate()
     test_catalog_behavior_smoke()
 

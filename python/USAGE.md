@@ -259,6 +259,64 @@ This loader is intentionally backend-level. Future web/Python UIs should call it
 through their simulator service before `Board.settle()` or `Board.clock_edge()`
 runs the circuit.
 
+## External Inputs And Clocks
+
+Use `StimulusController` to create the first input state for a board and to
+drive clocks during simulation. By default it provides:
+
+- 32 external input channels: `IN0..IN31`
+- 8 clock channels: `CLK0..CLK7`
+
+Input channels can bind to any chip pin by number or name. This is useful for
+reset lines, DIP switches, bus source values, or UI-controlled pins.
+
+```python
+from chiplib import Board, StimulusController, create_chip
+
+board = Board()
+u1 = board.add_chip("U1", create_chip("74HC00", "U1"))
+stim = StimulusController(board)
+
+stim.bind_input(0, u1, "1A", initial=1)
+stim.bind_input(1, u1, "1B", initial=1)
+board.settle()
+assert u1.read("1Y") == 0
+
+stim.input(1).set(0)
+board.settle()
+assert u1.read("1Y") == 1
+```
+
+Use `set_inputs()` to write many channels from an integer or iterable:
+
+```python
+reg = board.add_chip("U2", create_chip("74HC574", "U2"))
+for i, pin in enumerate([2, 3, 4, 5, 6, 7, 8, 9]):
+    stim.bind_input(i, reg, pin)
+
+stim.set_inputs(0xA5, width=8)
+```
+
+Clock channels can be one-shot triggered or run as numeric-frequency clocks.
+The clock timing and chip propagation delays are simulator numbers; use them to
+calculate and inspect behavior, not as a substitute for physical timing closure.
+
+```python
+clk = stim.bind_clock(0, reg, "CLK")
+
+# One pulse, useful for manual/single-step UI buttons.
+clk.trigger(width_ns=100)
+
+# Periodic clock, useful for slow human-visible runs or automated stepping.
+clk.configure(frequency_hz=2.0, duty=0.5).start()
+stim.run_for(2_000_000_000)  # 2 seconds of simulated time
+clk.stop(level=0)
+```
+
+For a future UI, `stim.snapshot()` returns serializable input/clock state with
+channel numbers, values, timing, and target pins. A web frontend can call this
+through an API wrapper; a Python frontend can import the controller directly.
+
 ## Coverage And Caveats
 
 `create_chip(part, name)` currently instantiates every Verilog component in
