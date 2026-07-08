@@ -15,10 +15,9 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 
 Pinout files are for physical wiring, so they must be verified from a manufacturer datasheet, not memory or generic web summaries. For DIP builds, the cited source must explicitly support a DIP, PDIP, P-DIP, or equivalent through-hole plastic package for that part.
 
-If a part has a Verilog model but no verified DIP/PDIP source, leave its pinout file as a blocked placeholder instead of guessing. Current blocked 74HC pinout placeholders:
-
-- `74HC/74hc150-pin.md`
-- `74HC/74hc260-pin.md`
+If a part has no verified DIP/PDIP source, do not keep a physical pinout file or
+catalog model for it. Add the part only after manufacturer-backed package and
+pin evidence is available.
 
 ## System Cross-Check Rule
 
@@ -45,9 +44,9 @@ Verilog modules may expose HDL-friendly vector ports instead of individual DIP
 pins, but their logic, direction controls, high-Z behavior, and write/read
 semantics must stay compatible with the Python model.
 
-Current exception: `74HC150` and `74HC260` have provisional Python functional
-models so the full catalog can instantiate, but their physical pinout files
-remain blocked until a manufacturer-verified HC-family DIP source is added.
+Parts without manufacturer-verified DIP evidence, such as the previously
+provisional `74HC150` and `74HC260`, are intentionally absent from the active
+catalog.
 
 ## Naming
 

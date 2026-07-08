@@ -28,18 +28,6 @@ def _parse_pinout(folder: str, part: str) -> dict[int, str]:
     return pins
 
 
-FALLBACK_PINOUTS = {
-    "74HC150": {
-        1: "D7", 2: "D6", 3: "D5", 4: "D4", 5: "D3", 6: "D2", 7: "D1", 8: "D0",
-        9: "Y", 10: "/E", 11: "S3", 12: "GND", 13: "S2", 14: "S1", 15: "S0",
-        16: "D15", 17: "D14", 18: "D13", 19: "D12", 20: "D11", 21: "D10", 22: "D9", 23: "D8", 24: "VCC",
-    },
-    "74HC260": {
-        1: "1A", 2: "1B", 3: "1C", 4: "1D", 5: "1E", 6: "1Y", 7: "GND",
-        8: "2Y", 9: "2A", 10: "2B", 11: "2C", 12: "2D", 13: "2E", 14: "VCC",
-    },
-}
-
 OUTPUT_PATTERNS = (
     r"^/?\d*Y\d*$", r"^Y\d+$", r"^\d*Q(_bar|_BAR|')?$", r"^/?QH$", r"^QH'$",
     r"^QA$", r"^QB$", r"^QC$", r"^QD$", r"^QE$", r"^QF$", r"^QG$", r"^QH$",
@@ -87,6 +75,7 @@ class CatalogChip(Chip):
         self._state2 = 0
         self._state_by_block: dict[int, int] = {}
         self._scan_col = 0
+        self._prev_we = 1
         self.data = bytearray(1 << (17 if part == "SST39SF010A" else 15))
 
     def has(self, name: str) -> bool:
@@ -138,9 +127,9 @@ class CatalogChip(Chip):
             for i in range(1, 7):
                 if p == "74HC07": self.o(f"{i}Y", self.r(f"{i}A"))
                 else: self.o(f"{i}Y", 1 - self.r(f"{i}A"))
-        elif p in ("74HC10", "74HC11", "74HC20", "74HC27", "74HC260"):
-            width = {"74HC10": 3, "74HC11": 3, "74HC20": 4, "74HC27": 3, "74HC260": 5}[p]
-            blocks = 2 if p in ("74HC20", "74HC260") else 3
+        elif p in ("74HC10", "74HC11", "74HC20", "74HC27"):
+            width = {"74HC10": 3, "74HC11": 3, "74HC20": 4, "74HC27": 3}[p]
+            blocks = 2 if p == "74HC20" else 3
             op = "and" if p == "74HC11" else ("nand" if p in ("74HC10", "74HC20") else "nor")
             for i in range(1, blocks + 1):
                 vals = [self.r(f"{i}{chr(ord('A') + j)}") for j in range(width)]
@@ -211,9 +200,6 @@ class CatalogChip(Chip):
                 else: self.o("Y", 0); self.o("/Y", 1)
             else:
                 self.o("Y", val); self.o("/Y", 1 - val)
-        elif p == "74HC150":
-            sel = self.r("S0") | (self.r("S1") << 1) | (self.r("S2") << 2) | (self.r("S3") << 3)
-            self.o("Y", 1 - (0 if self.r("/E") else self.r(f"D{sel}")))
         elif p in ("74HC153", "74HC352"):
             sel = self.r("A") | (self.r("B") << 1)
             invert = p == "74HC352"
@@ -397,9 +383,15 @@ class CatalogChip(Chip):
             dq_names = [f"I/O{i}" for i in range(8)]
         addr = self._read_names(addr_names) % len(self.data)
         selected = not self.r("/CE")
-        if selected and not self.r("/WE"):
+        we = self.r("/WE")
+        oe = self.r("/OE")
+        if self.part == "SST39SF010A":
+            if selected and oe and self._prev_we and not we:
+                self.data[addr] = self._read_names(dq_names)
+        elif selected and not we:
             self.data[addr] = self._read_names(dq_names)
-        read_enabled = selected and self.r("/WE") and not self.r("/OE")
+        self._prev_we = we
+        read_enabled = selected and we and not oe
         if read_enabled: self._write_names(dq_names, self.data[addr])
         else:
             for n in dq_names: self.o(n, Z)
@@ -430,9 +422,9 @@ def _alu_logic(a: int, b: int, s: int) -> int:
 
 CATALOG_PARTS = {
     "74HC02", "74HC07", "74HC08", "74HC10", "74HC11", "74HC112", "74HC138", "74HC139",
-    "74HC14", "74HC147", "74HC148", "74HC150", "74HC151", "74HC153", "74HC154", "74HC155",
+    "74HC14", "74HC147", "74HC148", "74HC151", "74HC153", "74HC154", "74HC155",
     "74HC158", "74HC160", "74HC162", "74HC163", "74HC165", "74HC166", "74HC181", "74HC193",
-    "74HC20", "74HC238", "74HC240", "74HC244", "74HC251", "74HC257", "74HC260", "74HC266",
+    "74HC20", "74HC238", "74HC240", "74HC244", "74HC251", "74HC257", "74HC266",
     "74HC27", "74HC273", "74HC30", "74HC352", "74HC374", "74HC377", "74HC4078", "74HC42",
     "74HC593", "74HC595", "74HC73", "74HC85", "74HC922",
 }

@@ -224,6 +224,10 @@ assert rom.read("I/O0") == Z
 For RAM-style writes, drive address and data pins, assert `/CE=0` and `/WE=0`,
 then deassert `/WE` and read back with `/OE=0`.
 
+`SST39SF010A` flash is modeled differently from SRAM-style writes: the
+simplified simulator write occurs on the falling edge of `/WE` while `/CE=0`
+and `/OE=1`, matching the shared Verilog model.
+
 ## Loading .bin Or .hex Before Simulation
 
 Use `load_memory()` as the first stage before running a simulator. It copies a
@@ -332,10 +336,8 @@ through an API wrapper; a Python frontend can import the controller directly.
 - catalog models cover the remaining 74HC and memory parts from pinout docs
 - `AS6C62256`, `CY7C199`, and `SST39SF010A` are memory catalog models
 
-`74HC150` and `74HC260` are functional/provisional. Their catalog entries use
-fallback pinouts because the corresponding pinout Markdown files are still
-placeholders without manufacturer-verified HC-family DIP sources. Do not use
-those two for physical wiring until their `74HC/*-pin.md` files are verified.
+Parts without manufacturer-verified HC-family DIP sources are intentionally
+absent from the active Python catalog.
 
 ## Verification Commands
 

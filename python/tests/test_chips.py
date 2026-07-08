@@ -409,12 +409,26 @@ def test_catalog_behavior_smoke():
     assert reg.read("1Q") == 0
 
     flash = create_chip("SST39SF010A", "U")
-    set_pins(flash, ["/CE", "/OE", "/WE"], [0, 1, 0])
+    set_pins(flash, ["/CE", "/OE", "/WE"], [0, 1, 1])
+    eval_chip(flash)
     set_byte(flash, [f"DQ{i}" for i in range(8)], 0xA7)
+    flash.set_input("/WE", 0)
+    eval_chip(flash)
+
+    set_byte(flash, [f"DQ{i}" for i in range(8)], 0x5C)
     eval_chip(flash)
     set_pins(flash, ["/OE", "/WE"], [0, 1])
     eval_chip(flash)
     assert get_byte(flash, [f"DQ{i}" for i in range(8)]) == 0xA7
+
+    set_pins(flash, ["/OE", "/WE"], [1, 1])
+    eval_chip(flash)
+    set_byte(flash, [f"DQ{i}" for i in range(8)], 0x5C)
+    flash.set_input("/WE", 0)
+    eval_chip(flash)
+    set_pins(flash, ["/OE", "/WE"], [0, 1])
+    eval_chip(flash)
+    assert get_byte(flash, [f"DQ{i}" for i in range(8)]) == 0x5C
 
 
 def run_all():

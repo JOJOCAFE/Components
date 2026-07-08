@@ -51,15 +51,13 @@ The Python package can instantiate every current Verilog component in
 
 Coverage includes:
 
-- all 59 current `74HC/*.v` parts
+- all 57 current `74HC/*.v` parts
 - all 5 current `Memory/*.v` parts
 - the RV8GR-V2 starter set as hand-written models
 - the remaining Components parts as catalog models loaded from the pinout docs
 
-Two catalog entries, `74HC150` and `74HC260`, are functional/provisional because
-their pinout Markdown files are still blocked placeholders without a
-manufacturer-verified HC-family DIP source. Do not use those two for physical
-wiring until their `74HC/*-pin.md` files are verified.
+Parts without manufacturer-verified HC-family DIP evidence are intentionally
+absent from the Python catalog.
 
 ## Timing
 
@@ -80,6 +78,8 @@ on manufacturer, VCC, temperature, and load.
 - `AT28C256` and `62256` use the real 28-pin DIP address/data/control pin map.
 - `AS6C62256`, `CY7C199`, and `SST39SF010A` are available as memory catalog
   models.
+- `SST39SF010A` uses a simplified flash write model aligned with Verilog:
+  write occurs on the falling edge of `/WE` while `/CE=0` and `/OE=1`.
 
 ## Verify
 

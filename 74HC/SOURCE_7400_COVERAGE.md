@@ -12,7 +12,7 @@ These future-use models were added because the upstream source-7400 library had 
 | `74112.v` | `74hc112.v` | Added from JOJOCAFE upstream source-7400 |
 | `74147.v` | `74hc147.v` | Added from JOJOCAFE upstream source-7400 |
 | `74148.v` | `74hc148.v` | Added from JOJOCAFE upstream source-7400 |
-| `74150.v` | `74hc150.v` | Added from JOJOCAFE upstream source-7400 |
+| `74150.v` | - | Skipped: no manufacturer-verified 74HC150 DIP source |
 | `74154.v` | `74hc154.v` | Added from JOJOCAFE upstream source-7400 |
 | `74155.v` | `74hc155.v` | Added from JOJOCAFE upstream source-7400 |
 | `74158.v` | `74hc158.v` | Added from JOJOCAFE upstream source-7400 |
@@ -22,7 +22,7 @@ These future-use models were added because the upstream source-7400 library had 
 | `74181.v` | `74hc181.v` | Added from JOJOCAFE upstream source-7400 |
 | `7420.v` | `74hc20.v` | Added from JOJOCAFE upstream source-7400 |
 | `74238.v` | `74hc238.v` | Added from JOJOCAFE upstream source-7400 |
-| `74260.v` | `74hc260.v` | Added from JOJOCAFE upstream source-7400 |
+| `74260.v` | - | Skipped: no manufacturer-verified 74HC260 DIP source |
 | `74266.v` | `74hc266.v` | Added from JOJOCAFE upstream source-7400 |
 | `7427.v` | `74hc27.v` | Added from JOJOCAFE upstream source-7400 |
 | `74352.v` | `74hc352.v` | Added from JOJOCAFE upstream source-7400 |
