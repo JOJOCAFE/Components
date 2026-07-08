@@ -277,7 +277,7 @@ def test_stimulus_inputs_and_clocks():
     reg = board.add_chip("U2", create_chip("74HC574", "U2"))
     stimulus = StimulusController(board)
 
-    assert len(stimulus.inputs) == 32
+    assert len(stimulus.inputs) == 64
     assert len(stimulus.clocks) == 8
 
     stimulus.bind_input(0, nand, "1A", initial=1)

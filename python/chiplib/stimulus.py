@@ -137,9 +137,9 @@ class ClockChannel:
 
 
 class StimulusController:
-    """32 external inputs and 8 clocks for first-state and runtime stimulus."""
+    """64 external inputs and 8 clocks for first-state and runtime stimulus."""
 
-    def __init__(self, board: Board, *, input_count: int = 32, clock_count: int = 8):
+    def __init__(self, board: Board, *, input_count: int = 64, clock_count: int = 8):
         if input_count <= 0 or clock_count <= 0:
             raise StimulusError("input_count and clock_count must be positive")
         self.board = board

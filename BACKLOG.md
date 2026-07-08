@@ -8,6 +8,16 @@ Future work for the shared component library.
   screen, wire pins/nets, and run either the Python simulator or Verilog
   simulation backend.
 
+## Backend Probe And Test Logic
+
+- Add reusable probe channels for simulator tests and future UI inspection.
+- Probes should attach to chip pins or named nets, sample logic values over
+  simulated time, and expose serializable state for web or Python frontends.
+- Add assertion/test helpers that can check expected `0`, `1`, `Z`, `X`,
+  rising/falling transitions, pulse counts, and timing windows against the
+  Python simulator.
+- Keep probe logic backend-only and independent from the future visual editor.
+
 Notes:
 
 - This is intentionally deferred.

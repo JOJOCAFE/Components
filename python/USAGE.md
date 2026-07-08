@@ -267,7 +267,7 @@ runs the circuit.
 Use `StimulusController` to create the first input state for a board and to
 drive clocks during simulation. By default it provides:
 
-- 32 external input channels: `IN0..IN31`
+- 64 external input channels: `IN0..IN63`
 - 8 clock channels: `CLK0..CLK7`
 
 Input channels can bind to any chip pin by number or name. This is useful for
