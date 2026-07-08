@@ -16,3 +16,9 @@ Notes:
   compatibility.
 - The UI should consume the backend library instead of duplicating chip
   behavior.
+- The backend must stay frontend-agnostic. It should be usable from a JavaScript
+  web UI through an API/service wrapper, or directly from a Python-native UI,
+  without changing chip behavior code.
+- Future UI work should treat the backend as a simulator service: create chips,
+  expose pin metadata, connect nets, step/settle clocks, probe pins/nets, and
+  return serializable state for drawing.

@@ -9,6 +9,11 @@ The Python models are the physical reference for implemented chips. Verilog may
 keep HDL-friendly vector ports, but overlapping behavior must stay compatible
 with the real-pin Python model.
 
+The library is also the backend contract for future visual tools. It must stay
+frontend-agnostic: a JavaScript/web UI can call it through an API wrapper, and a
+Python UI can import it directly, but chip behavior, pin metadata, net
+resolution, timing, and memory behavior should live here rather than in the UI.
+
 ## Import Path
 
 Run examples from `Components/python`, or add that folder to `PYTHONPATH`:
@@ -116,6 +121,11 @@ assert gate.read("1A") == 1
 
 `Board.clock_edge()` calls `clock_edge()` on every chip, then settles scheduled
 outputs.
+
+For future UI work, `Board` is the natural service boundary. A frontend should
+send operations such as "create chip", "connect net", "drive pin", "clock",
+"settle", and "probe"; the backend should return serializable chip, pin, net,
+logic-value, and timing state for drawing.
 
 ## Z, X, And Bus Conflicts
 
