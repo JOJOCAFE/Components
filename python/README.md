@@ -88,3 +88,9 @@ Run from this folder:
 ```bash
 python3 -B -m tests.test_chips
 ```
+
+## Future Use Guide
+
+See `USAGE.md` for the practical API guide: imports, chip creation, pin access,
+board/net wiring, tri-state behavior, propagation delays, memory usage,
+verification commands, and rules for keeping Python and Verilog compatible.
