@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from .core import Chip, Delay, Z, bit, pins_from
+from .catalog import CATALOG_PARTS, MEMORY_CATALOG_PARTS, create_catalog_chip
 
 
 class HC04(Chip):
@@ -411,10 +412,16 @@ CHIP_FACTORIES = {
     "28C256": AT28C256,
     "62256": SRAM62256,
 }
+for _part in sorted(CATALOG_PARTS):
+    CHIP_FACTORIES[_part] = lambda name, part=_part: create_catalog_chip(part, name)
+for _part in sorted(MEMORY_CATALOG_PARTS):
+    CHIP_FACTORIES[_part] = lambda name, part=_part: create_catalog_chip(part, name)
 
 
 def create_chip(part: str, name: str) -> Chip:
     key = part.upper().replace("-", "")
+    if key in CATALOG_PARTS or key in MEMORY_CATALOG_PARTS:
+        return create_catalog_chip(key, name)
     aliases = {
         "74HC00": "74HC00",
         "74HC04": "74HC04",

@@ -45,6 +45,10 @@ Verilog modules may expose HDL-friendly vector ports instead of individual DIP
 pins, but their logic, direction controls, high-Z behavior, and write/read
 semantics must stay compatible with the Python model.
 
+Current exception: `74HC150` and `74HC260` have provisional Python functional
+models so the full catalog can instantiate, but their physical pinout files
+remain blocked until a manufacturer-verified HC-family DIP source is added.
+
 ## Naming
 
 - Chip model files use lowercase part names, for example `74HC/74hc245.v`.

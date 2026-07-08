@@ -1,5 +1,7 @@
 """Assertion-based smoke tests for the reusable chip library."""
 
+from pathlib import Path
+
 from chiplib import Board, BusConflictError, Z, create_chip
 
 MEMORY_ADDR_PINS = {
@@ -223,6 +225,67 @@ def test_board_delay_and_bus_conflict():
         raise AssertionError("expected bus conflict")
 
 
+def test_all_component_parts_instantiate():
+    root = Path(__file__).resolve().parents[2]
+    parts = sorted(p.stem.upper() for p in (root / "74HC").glob("74hc*.v"))
+    parts += sorted(p.stem.upper() for p in (root / "Memory").glob("*.v"))
+    assert parts, "no Components parts found"
+    for part in parts:
+        chip = create_chip(part, "U")
+        assert chip.pins, part
+        assert chip.delay.rise_ns > 0, part
+        assert all(pin.spec.name for pin in chip.pins.values()), part
+
+
+def test_catalog_behavior_smoke():
+    root = Path(__file__).resolve().parents[2]
+    parts = sorted(p.stem.upper() for p in (root / "74HC").glob("74hc*.v"))
+    parts += sorted(p.stem.upper() for p in (root / "Memory").glob("*.v"))
+    for part in parts:
+        chip = create_chip(part, "U")
+        chip.update()
+        chip.commit()
+        chip.clock_edge()
+        chip.commit()
+
+    nor = create_chip("74HC02", "U")
+    set_pins(nor, ["1A", "1B"], [0, 0])
+    eval_chip(nor)
+    assert nor.read("1Y") == 1
+    nor.set_input("1A", 1)
+    eval_chip(nor)
+    assert nor.read("1Y") == 0
+
+    dec = create_chip("74HC138", "U")
+    set_pins(dec, ["G1", "/G2A", "/G2B", "A", "B", "C"], [1, 0, 0, 1, 1, 0])
+    eval_chip(dec)
+    assert dec.read("/Y3") == 0
+    assert dec.read("/Y2") == 1
+
+    tri = create_chip("74HC244", "U")
+    set_pins(tri, ["/1OE", "/2OE", "1A1", "2A1"], [0, 1, 1, 1])
+    eval_chip(tri)
+    assert tri.read("1Y1") == 1
+    assert tri.read("2Y1") == Z
+
+    reg = create_chip("74HC273", "U")
+    set_pins(reg, ["/CLR", "1D", "2D"], [1, 1, 0])
+    reg.clock_edge()
+    reg.commit()
+    assert reg.read("1Q") == 1
+    reg.set_input("/CLR", 0)
+    eval_chip(reg)
+    assert reg.read("1Q") == 0
+
+    flash = create_chip("SST39SF010A", "U")
+    set_pins(flash, ["/CE", "/OE", "/WE"], [0, 1, 0])
+    set_byte(flash, [f"DQ{i}" for i in range(8)], 0xA7)
+    eval_chip(flash)
+    set_pins(flash, ["/OE", "/WE"], [0, 1])
+    eval_chip(flash)
+    assert get_byte(flash, [f"DQ{i}" for i in range(8)]) == 0xA7
+
+
 def run_all():
     test_hc00()
     test_hc04()
@@ -234,6 +297,8 @@ def run_all():
     test_hc574_hc161_hc164_hc74()
     test_memory()
     test_board_delay_and_bus_conflict()
+    test_all_component_parts_instantiate()
+    test_catalog_behavior_smoke()
 
 
 if __name__ == "__main__":
