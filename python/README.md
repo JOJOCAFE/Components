@@ -16,6 +16,19 @@ board.settle()
 assert u1.read("1Y") == 1
 ```
 
+## Role In Verification
+
+Use this Python library as the preferred behavioral cross-check for TTL CPU
+systems such as RV8/RV8GR. It is closer to physical debugging than the Verilog
+component files because projects can connect chips by real pin number or pin
+name, observe shared nets, catch bus conflicts, and include propagation-delay
+metadata in system timing checks.
+
+The Verilog component files remain useful for HDL-level comparison and
+FPGA-oriented tests. For normal system behavior checks, run the Python simulator
+first and use Verilog only when the question is specifically about HDL
+equivalence or an independent second implementation.
+
 ## Current Coverage
 
 RV8GR-V2 starter set:
@@ -47,5 +60,5 @@ on manufacturer, VCC, temperature, and load.
 Run from this folder:
 
 ```bash
-python3 -m tests.test_chips
+python3 -B -m tests.test_chips
 ```

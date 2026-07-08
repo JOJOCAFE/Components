@@ -20,6 +20,18 @@ If a part has a Verilog model but no verified DIP/PDIP source, leave its pinout 
 - `74HC/74hc150-pin.md`
 - `74HC/74hc260-pin.md`
 
+## System Cross-Check Rule
+
+Use `python/` as the first-line behavioral cross-check for TTL CPU systems. The
+Python models are pin-number/pin-name addressable, support net wiring and
+tri-state conflict checks, and carry propagation-delay metadata for timing
+analysis.
+
+Use the Verilog files when a project needs HDL-level comparison, FPGA-oriented
+tests, or a second independent implementation. Do not prefer Verilog over the
+Python simulator for RV8/RV8GR system behavior checks unless the task is
+specifically about Verilog or RTL equivalence.
+
 ## Naming
 
 - Chip model files use lowercase part names, for example `74HC/74hc245.v`.
@@ -32,21 +44,21 @@ If a part has a Verilog model but no verified DIP/PDIP source, leave its pinout 
 Run from `/home/jo/kiro`:
 
 ```sh
+cd Components/python
+python3 -B -m tests.test_chips
+
 iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp Components/74HC/*.v Components/74HC/tests/tb_74hc_smoke.v
 vvp /tmp/tb_74hc_smoke.vvp
 
 iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp Components/Memory/*.v Components/Memory/tests/tb_memory_smoke.v
 vvp /tmp/tb_memory_smoke.vvp
-
-cd Components/python
-python3 -m tests.test_chips
 ```
 
 Expected pass markers:
 
+- `Components Python chip tests passed`
 - `74HC SMOKE TEST PASSED`
 - `MEMORY SMOKE TEST PASSED`
-- `Components Python chip tests passed`
 
 ## Subfolder Docs
 
