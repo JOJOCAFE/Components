@@ -82,3 +82,4 @@ Expected pass markers:
 - `74HC/README.md` - full 74HC model list, scan notes, and 74xx source coverage.
 - `Memory/README.md` - memory model list and datasheet sources.
 - `python/README.md` - Python chip-library coverage and usage.
+- `BACKLOG.md` - deferred future work, including the visual chip-block UI idea.
