@@ -26,7 +26,7 @@ PYTHONPATH=/home/jo/kiro/Components/python python3 your_test.py
 ```
 
 ```python
-from chiplib import Board, BusConflictError, X, Z, create_chip
+from chiplib import Board, BusConflictError, X, Z, create_chip, load_image, load_memory
 ```
 
 ## Create A Chip
@@ -220,6 +220,44 @@ assert rom.read("I/O0") == Z
 
 For RAM-style writes, drive address and data pins, assert `/CE=0` and `/WE=0`,
 then deassert `/WE` and read back with `/OE=0`.
+
+## Loading .bin Or .hex Before Simulation
+
+Use `load_memory()` as the first stage before running a simulator. It copies a
+program/data image into a ROM, RAM, EEPROM, or flash chip model that exposes a
+`.data` bytearray.
+
+Supported file forms:
+
+- `.bin`: raw bytes copied exactly
+- Intel HEX: records beginning with `:`, including extended segment/linear
+  address records
+- simple text hex: bytes such as `30 42 01 02` or `0x30, 0x42`
+
+```python
+from chiplib import create_chip, load_image, load_memory
+
+rom = create_chip("AT28C256", "ROM")
+ram = create_chip("62256", "RAM")
+
+# Load a program at address 0 before building/running the CPU board.
+load_memory(rom, "program.bin")
+
+# Load data into RAM at an offset and pre-clear the rest to 0x00.
+load_memory(ram, "data.hex", offset=0x1000, clear=0x00)
+
+# Read an image without copying it yet.
+payload = load_image("program.hex")
+assert len(payload) <= len(rom.data)
+```
+
+`load_memory()` returns the number of bytes copied. It raises
+`ImageLoadError` if the file cannot be parsed, the offset is invalid, the image
+does not fit in the target memory, or the target chip has no `.data` bytearray.
+
+This loader is intentionally backend-level. Future web/Python UIs should call it
+through their simulator service before `Board.settle()` or `Board.clock_edge()`
+runs the circuit.
 
 ## Coverage And Caveats
 

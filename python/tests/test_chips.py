@@ -1,8 +1,9 @@
 """Assertion-based smoke tests for the reusable chip library."""
 
 from pathlib import Path
+import tempfile
 
-from chiplib import Board, BusConflictError, Z, create_chip
+from chiplib import Board, BusConflictError, ImageLoadError, Z, create_chip, load_image, load_memory
 
 MEMORY_ADDR_PINS = {
     0: 10,
@@ -204,6 +205,42 @@ def test_memory():
     assert get_byte(ram, MEMORY_DQ_PINS) == 0xC3
 
 
+def test_memory_image_loader():
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        bin_path = tmp_path / "program.bin"
+        bin_path.write_bytes(bytes([0x30, 0x42, 0x01, 0x02]))
+        assert load_image(bin_path) == bytes([0x30, 0x42, 0x01, 0x02])
+
+        hex_path = tmp_path / "program.hex"
+        hex_path.write_text("30 42 01 02  # LI 42, HLT\n")
+        assert load_image(hex_path) == bytes([0x30, 0x42, 0x01, 0x02])
+
+        ihex_path = tmp_path / "program_ihex.hex"
+        ihex_path.write_text(":040010003042010277\n:00000001FF\n")
+        ihex = load_image(ihex_path)
+        assert ihex[0x10:0x14] == bytes([0x30, 0x42, 0x01, 0x02])
+
+        rom = create_chip("AT28C256", "ROM")
+        copied = load_memory(rom, bin_path, offset=0x20, clear=0xFF)
+        assert copied == 4
+        assert rom.data[0x1F] == 0xFF
+        assert rom.data[0x20:0x24] == bytes([0x30, 0x42, 0x01, 0x02])
+
+        ram = create_chip("62256", "RAM")
+        load_memory(ram, hex_path)
+        assert ram.data[:4] == bytes([0x30, 0x42, 0x01, 0x02])
+
+        too_large = tmp_path / "too_large.bin"
+        too_large.write_bytes(bytes(len(ram.data) + 1))
+        try:
+            load_memory(ram, too_large)
+        except ImageLoadError:
+            pass
+        else:
+            raise AssertionError("expected ImageLoadError for oversized image")
+
+
 def test_board_delay_and_bus_conflict():
     board = Board()
     inv = board.add_chip("U1", create_chip("74HC04", "U1"))
@@ -296,6 +333,7 @@ def run_all():
     test_hc541_and_hc245_tristate()
     test_hc574_hc161_hc164_hc74()
     test_memory()
+    test_memory_image_loader()
     test_board_delay_and_bus_conflict()
     test_all_component_parts_instantiate()
     test_catalog_behavior_smoke()

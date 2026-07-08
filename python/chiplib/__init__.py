@@ -12,6 +12,7 @@ from .core import (
     Z,
 )
 from .chips import CHIP_FACTORIES, create_chip
+from .loader import ImageLoadError, load_image, load_memory, parse_hex_text, parse_ihex
 
 __all__ = [
     "Board",
@@ -25,4 +26,9 @@ __all__ = [
     "X",
     "Z",
     "create_chip",
+    "ImageLoadError",
+    "load_image",
+    "load_memory",
+    "parse_hex_text",
+    "parse_ihex",
 ]
