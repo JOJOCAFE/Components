@@ -2,6 +2,25 @@
 
 from chiplib import Board, BusConflictError, Z, create_chip
 
+MEMORY_ADDR_PINS = {
+    0: 10,
+    1: 9,
+    2: 8,
+    3: 7,
+    4: 6,
+    5: 5,
+    6: 4,
+    7: 3,
+    8: 25,
+    9: 24,
+    10: 21,
+    11: 23,
+    12: 2,
+    13: 26,
+    14: 1,
+}
+MEMORY_DQ_PINS = [11, 12, 13, 15, 16, 17, 18, 19]
+
 
 def set_pins(chip, pins, values):
     for pin, value in zip(pins, values):
@@ -20,6 +39,11 @@ def get_byte(chip, pins):
 def eval_chip(chip):
     chip.update()
     chip.commit()
+
+
+def set_memory_addr(chip, value):
+    for bit_index, pin in MEMORY_ADDR_PINS.items():
+        chip.set_input(pin, (value >> bit_index) & 1)
 
 
 def test_hc00():
@@ -123,12 +147,18 @@ def test_hc574_hc161_hc164_hc74():
     ctr.clock_edge()
     ctr.commit()
     assert get_byte(ctr, [14, 13, 12, 11]) == 1
+    ctr.set_input(1, 0)
+    eval_chip(ctr)
+    assert get_byte(ctr, [14, 13, 12, 11]) == 0
 
     sr = create_chip("74HC164", "U")
     set_pins(sr, [9, 1, 2], [1, 1, 1])
     sr.clock_edge()
     sr.commit()
     assert sr.read(3) == 1
+    sr.set_input(9, 0)
+    eval_chip(sr)
+    assert get_byte(sr, [3, 4, 5, 6, 10, 11, 12, 13]) == 0
 
     ff = create_chip("74HC74", "U")
     set_pins(ff, [1, 4, 2], [1, 1, 1])
@@ -141,19 +171,35 @@ def test_hc574_hc161_hc164_hc74():
 def test_memory():
     rom = create_chip("AT28C256", "ROM")
     rom.data[0x1234] = 0xAB
-    set_byte(rom, list(range(1, 16)), 0x1234)
-    set_pins(rom, [24, 25], [0, 0])
+    assert rom.pin_number("A0") == 10
+    assert rom.pin_number("I/O7") == 19
+    assert rom.pin_number("/WE") == 27
+    set_memory_addr(rom, 0x1234)
+    set_pins(rom, [20, 22, 27], [0, 0, 1])
     eval_chip(rom)
-    assert get_byte(rom, list(range(16, 24))) == 0xAB
+    assert get_byte(rom, MEMORY_DQ_PINS) == 0xAB
+    set_memory_addr(rom, 0x1235)
+    set_byte(rom, MEMORY_DQ_PINS, 0x56)
+    set_pins(rom, [20, 22, 27], [0, 1, 0])
+    eval_chip(rom)
+    set_pins(rom, [22, 27], [0, 1])
+    eval_chip(rom)
+    assert get_byte(rom, MEMORY_DQ_PINS) == 0x56
+    rom.set_input(20, 1)
+    eval_chip(rom)
+    assert rom.read(11) == Z
 
     ram = create_chip("62256", "RAM")
-    set_byte(ram, list(range(1, 16)), 0x2345)
-    set_byte(ram, list(range(16, 24)), 0xC3)
-    set_pins(ram, [24, 25, 26], [0, 1, 0])
+    assert ram.pin_number("A14") == 1
+    assert ram.pin_number("I/O0") == 11
+    assert ram.pin_number("/CE") == 20
+    set_memory_addr(ram, 0x2345)
+    set_byte(ram, MEMORY_DQ_PINS, 0xC3)
+    set_pins(ram, [20, 22, 27], [0, 1, 0])
     eval_chip(ram)
-    set_pins(ram, [25, 26], [0, 1])
+    set_pins(ram, [22, 27], [0, 1])
     eval_chip(ram)
-    assert get_byte(ram, list(range(16, 24))) == 0xC3
+    assert get_byte(ram, MEMORY_DQ_PINS) == 0xC3
 
 
 def test_board_delay_and_bus_conflict():

@@ -13,6 +13,11 @@ Included devices:
 
 Each device has a matching DIP pinout file named `<part>-pin.md`.
 
+The Python memory models in `../python/` use the real 28-pin DIP pin numbers.
+The Verilog memory models keep HDL-friendly vector ports, but their read,
+write, output-enable, and high-Z behavior must match the Python models for
+overlapping parts.
+
 Manufacturer datasheet sources used for pinouts:
 
 - Microchip AT28C256: https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf

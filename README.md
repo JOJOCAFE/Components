@@ -32,6 +32,19 @@ tests, or a second independent implementation. Do not prefer Verilog over the
 Python simulator for RV8/RV8GR system behavior checks unless the task is
 specifically about Verilog or RTL equivalence.
 
+## Python/Verilog Compatibility Rule
+
+The Python models are the physical behavior contract. For every chip implemented
+in Python, the model must use the real DIP pin numbers and names from the
+manufacturer-backed pinout file and must model the real control behavior:
+active-low enables, tri-state outputs, bidirectional pins, asynchronous clears,
+and memory read/write controls.
+
+The Verilog models must match that Python behavior for every overlapping part.
+Verilog modules may expose HDL-friendly vector ports instead of individual DIP
+pins, but their logic, direction controls, high-Z behavior, and write/read
+semantics must stay compatible with the Python model.
+
 ## Naming
 
 - Chip model files use lowercase part names, for example `74HC/74hc245.v`.

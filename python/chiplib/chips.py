@@ -224,6 +224,8 @@ class HC161(Chip):
         self.update()
 
     def update(self) -> None:
+        if not bit(self.read(1)):
+            self._count = 0
         write_pins(self, [14, 13, 12, 11], self._count)
         self.output(15, 1 if self._count == 0xF and bit(self.read(10)) else 0)
 
@@ -248,6 +250,8 @@ class HC164(Chip):
         self.update()
 
     def update(self) -> None:
+        if not bit(self.read(9)):
+            self._sr = [0] * 8
         for i, pin in enumerate(self._q_pins):
             self.output(pin, self._sr[i])
 
@@ -297,57 +301,83 @@ class AT28C256(Chip):
     part = "AT28C256"
 
     def __init__(self, name: str):
-        pins = {}
-        for i in range(15):
-            pins[i + 1] = (f"A{i}", "in")
-        for i in range(8):
-            pins[i + 16] = (f"D{i}", "out")
-        pins[24] = ("/CE", "in")
-        pins[25] = ("/OE", "in")
-        pins[26] = ("/WE", "in")
-        pins[27] = ("GND", "power")
-        pins[28] = ("VCC", "power")
+        pins = memory_28_pin_defs("bidir")
         super().__init__(name, pins_from(pins), Delay(70))
         self.data = bytearray(32768)
 
     def update(self) -> None:
-        enabled = not bit(self.read(24)) and not bit(self.read(25))
-        if not enabled:
-            for i in range(8):
-                self.output(16 + i, Z)
+        selected = not bit(self.read("/CE"))
+        if selected and bit(self.read("/OE")) and not bit(self.read("/WE")):
+            self.data[memory_address(self)] = byte_from_pins(self, MEMORY_DQ_PINS)
+        read_enabled = selected and not bit(self.read("/OE")) and bit(self.read("/WE"))
+        if not read_enabled:
+            for pin in MEMORY_DQ_PINS:
+                self.output(pin, Z)
             return
-        value = self.data[byte_from_pins(self, list(range(1, 16)))]
-        write_pins(self, list(range(16, 24)), value)
+        write_pins(self, MEMORY_DQ_PINS, self.data[memory_address(self)])
 
 
 class SRAM62256(Chip):
     part = "62256"
 
     def __init__(self, name: str):
-        pins = {}
-        for i in range(15):
-            pins[i + 1] = (f"A{i}", "in")
-        for i in range(8):
-            pins[i + 16] = (f"D{i}", "bidir")
-        pins[24] = ("/CE", "in")
-        pins[25] = ("/OE", "in")
-        pins[26] = ("/WE", "in")
-        pins[27] = ("GND", "power")
-        pins[28] = ("VCC", "power")
+        pins = memory_28_pin_defs("bidir")
         super().__init__(name, pins_from(pins), Delay(70))
         self.data = bytearray(32768)
 
     def update(self) -> None:
-        selected = not bit(self.read(24))
-        addr = byte_from_pins(self, list(range(1, 16)))
-        if selected and not bit(self.read(26)):
-            self.data[addr] = byte_from_pins(self, list(range(16, 24)))
-        read_enabled = selected and bit(self.read(26)) and not bit(self.read(25))
+        selected = not bit(self.read("/CE"))
+        addr = memory_address(self)
+        if selected and not bit(self.read("/WE")):
+            self.data[addr] = byte_from_pins(self, MEMORY_DQ_PINS)
+        read_enabled = selected and bit(self.read("/WE")) and not bit(self.read("/OE"))
         if read_enabled:
-            write_pins(self, list(range(16, 24)), self.data[addr])
+            write_pins(self, MEMORY_DQ_PINS, self.data[addr])
         else:
-            for i in range(8):
-                self.output(16 + i, Z)
+            for pin in MEMORY_DQ_PINS:
+                self.output(pin, Z)
+
+
+MEMORY_ADDR_PINS = {
+    0: 10,
+    1: 9,
+    2: 8,
+    3: 7,
+    4: 6,
+    5: 5,
+    6: 4,
+    7: 3,
+    8: 25,
+    9: 24,
+    10: 21,
+    11: 23,
+    12: 2,
+    13: 26,
+    14: 1,
+}
+MEMORY_DQ_PINS = [11, 12, 13, 15, 16, 17, 18, 19]
+
+
+def memory_28_pin_defs(data_direction: str) -> dict[int, tuple[str, str]]:
+    pins = {
+        14: ("GND", "power"),
+        20: ("/CE", "in"),
+        22: ("/OE", "in"),
+        27: ("/WE", "in"),
+        28: ("VCC", "power"),
+    }
+    for bit_index, pin in MEMORY_ADDR_PINS.items():
+        pins[pin] = (f"A{bit_index}", "in")
+    for bit_index, pin in enumerate(MEMORY_DQ_PINS):
+        pins[pin] = (f"I/O{bit_index}", data_direction)
+    return pins
+
+
+def memory_address(chip: Chip) -> int:
+    value = 0
+    for bit_index, pin in MEMORY_ADDR_PINS.items():
+        value |= bit(chip.read(pin)) << bit_index
+    return value
 
 
 def byte_from_pins(chip: Chip, pins: list[int]) -> int:

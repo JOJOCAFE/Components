@@ -29,6 +29,21 @@ FPGA-oriented tests. For normal system behavior checks, run the Python simulator
 first and use Verilog only when the question is specifically about HDL
 equivalence or an independent second implementation.
 
+## Compatibility Contract
+
+Python is the physical source of truth for chips that it implements:
+
+- pin numbers and names must match the manufacturer-backed DIP pinout file
+- active-low controls must use the same polarity as the datasheet
+- disabled tri-state outputs must drive `Z`
+- bidirectional pins must release the non-driving side
+- sequential chips must model asynchronous clear/preset behavior where present
+- memory parts must use the real 28-pin DIP address/data/control mapping
+
+Verilog must match the Python behavior for overlapping parts. Verilog modules
+may keep vector ports such as `A[7:0]`, `DQ[7:0]`, and `Q[7:0]` for HDL use, but
+the behavior must remain compatible with the Python real-pin model.
+
 ## Current Coverage
 
 RV8GR-V2 starter set:
@@ -54,6 +69,7 @@ on manufacturer, VCC, temperature, and load.
 - Conflicting active drivers raise `BusConflictError`.
 - `74HC245` follows the real datasheet direction convention: `DIR=1` means
   A-to-B, `DIR=0` means B-to-A.
+- `AT28C256` and `62256` use the real 28-pin DIP address/data/control pin map.
 
 ## Verify
 
