@@ -51,7 +51,18 @@
   },
   "verilog": {
     "module": "ttl_74hc574",
-    "file": "verilog/74xx/74hc574.v"
+    "file": "verilog/74xx/74hc574.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {"name": "OE_bar", "pins": [1], "direction": "input"},
+        {"name": "Clk", "pins": [11], "direction": "input"},
+        {"name": "D", "pins": [2, 3, 4, 5, 6, 7, 8, 9], "direction": "input"},
+        {"name": "Q", "pins": [19, 18, 17, 16, 15, 14, 13, 12], "direction": "output"}
+      ],
+      "output_pins": [12, 13, 14, 15, 16, 17, 18, 19],
+      "sample_delay_ns": {"U5": 40, "U6": 40}
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

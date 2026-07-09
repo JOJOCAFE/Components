@@ -3,6 +3,7 @@
 import json
 
 from chiplib.db import audit_db, component_catalog, component_detail, component_ids, component_summary, db_root, db_status_report, legacy_catalog_parts, load_all_components, load_component
+from chiplib.db import _pinout_mismatches
 
 
 ALLOWED_STATUS = {
@@ -223,7 +224,6 @@ def test_db_audit_reports_partial_legacy_coverage_without_hard_errors():
     assert "LED" not in audit["coverage"]["db_parts"]
     assert SEED_PARTS.issubset(set(audit["coverage"]["legacy_model_parts"]))
     assert "74HC147" not in audit["coverage"]["legacy_parts_missing_db"]
-    assert any(item["code"] == "chip_status_parts_missing_db" for item in audit["warnings"])
     assert audit["chip_status"]["format"] == "db.status"
     assert audit["chip_status"]["ok"] is True
 
@@ -251,7 +251,23 @@ def test_db_status_report_checks_chip_status_snapshot():
     assert SEED_PARTS.issubset(set(report["chip_status"]["verified"]))
     assert SEED_PARTS.issubset(set(report["chip_status"]["modeled"]))
     assert tested_seed_parts.issubset(set(report["chip_status"]["tested"]))
-    assert any(item["code"] == "chip_status_parts_missing_db" for item in report["warnings"])
+    assert {"74HC150", "74HC260"}.issubset(set(report["chip_status"]["missing_datasheet"]))
+    assert "74HC150" not in report["chip_status"]["tested"]
+    assert "74HC260" not in report["chip_status"]["tested"]
+    assert not any(item["code"] == "chip_status_parts_missing_db" and item.get("category") == "missing_datasheet" for item in report["warnings"])
+
+
+def test_embedded_pinout_matches_grouped_db_manifest_pins():
+    assert _pinout_mismatches(load_component("74HC00")) == []
+    assert _pinout_mismatches(load_component("74HC147")) == []
+
+    broken = load_component("74HC00")
+    broken["pins"][0]["name"] = "BROKEN"
+    issues = _pinout_mismatches(broken)
+    assert issues == [{
+        "code": "pinout_name_mismatch",
+        "message": "pin 1 embedded pinout='1A' DB='BROKEN'",
+    }]
 
 
 def run_all():
@@ -263,6 +279,7 @@ def run_all():
     test_db_audit_reports_partial_legacy_coverage_without_hard_errors()
     test_db_legacy_coverage_lists_models_and_pinouts()
     test_db_status_report_checks_chip_status_snapshot()
+    test_embedded_pinout_matches_grouped_db_manifest_pins()
 
 
 if __name__ == "__main__":

@@ -391,12 +391,15 @@ def _db_verilog_mapping(part: str) -> JsonMap | None:
     def db_ports(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
         return _ports_from_db_export(ref, net_for_pin, port_specs)
 
-    return {
+    mapping = {
         "module": module,
         "ports": db_ports,
         "output_pins": [int(pin) for pin in export.get("output_pins", [])],
         "delay_ns": deepcopy(export.get("delay_ns", 1)),
     }
+    if "sample_delay_ns" in export:
+        mapping["sample_delay_ns"] = deepcopy(export["sample_delay_ns"])
+    return mapping
 
 
 def _db_manifest_path(root: Path, part: str) -> Path:

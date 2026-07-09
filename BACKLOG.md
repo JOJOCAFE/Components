@@ -106,7 +106,15 @@ Future work for the shared component library.
   teaching circuits.
 - ✅ Add stronger Python-vs-Verilog equivalence tests for selected chips and
   circuits, especially memories, counters, tri-state bus parts, and ALU-like
-  chips. Initial coverage checks `74HC00`, `74HC161`, and `74HC245`.
+  chips. Coverage now includes `74HC00`, `74HC161`, bidirectional/high-Z
+  `74HC245`, high-Z `74HC541`, latch/hold/high-Z `74HC574`, and SRAM
+  write/read/high-Z `62256`.
+- ✅ Tighten chip status checks so missing-datasheet exclusions such as
+  `74HC150` and `74HC260` cannot also appear as verified, modeled, tested, or
+  active legacy/DB parts.
+- ✅ Add embedded pinout-comment vs DB-manifest pin consistency checks so
+  physical pin labels cannot silently drift between Verilog comments and DB
+  metadata.
 
 ## Deferred UI Work
 

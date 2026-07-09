@@ -133,7 +133,17 @@
   },
   "verilog": {
     "module": "ttl_74hc541",
-    "file": "verilog/74xx/74hc541.v"
+    "file": "verilog/74xx/74hc541.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {"name": "OE1_bar", "pins": [1], "direction": "input"},
+        {"name": "OE2_bar", "pins": [19], "direction": "input"},
+        {"name": "A", "pins": [2, 3, 4, 5, 6, 7, 8, 9], "direction": "input"},
+        {"name": "Y", "pins": [18, 17, 16, 15, 14, 13, 12, 11], "direction": "output"}
+      ],
+      "output_pins": [11, 12, 13, 14, 15, 16, 17, 18]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

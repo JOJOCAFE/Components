@@ -41,6 +41,9 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 - `DB_MIGRATION_PLAN.md` - phased plan for making `db/` the chip identity
   layer while legacy model files with embedded pinout comments remain active
   during migration.
+- `AGENTS.md` - local JOJOCAFE team ownership map for Components work.
+- `TEAM_SKILLS.md` - individual and shared skills for DB, Python, Verilog,
+  simulation, verification, and student-facing documentation.
 
 ## Verification Rule
 
@@ -178,3 +181,5 @@ cd ..
 - `DB_MIGRATION_PLAN.md` - DB migration plan for moving chip facts under
   per-chip ownership without breaking existing tools.
 - `BACKLOG.md` - deferred future work, including the visual chip-block UI idea.
+- `AGENTS.md` - compact team directory and ownership map for this repo.
+- `TEAM_SKILLS.md` - detailed team skill map and Components quality gates.

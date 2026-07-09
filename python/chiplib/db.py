@@ -159,6 +159,15 @@ def audit_db() -> JsonMap:
         if _requires_power_pin(manifest) and not any(isinstance(pin, dict) and pin.get("direction") == "power" for pin in pins if isinstance(pins, list)):
             errors.append(_issue("missing_power_pin", part, location, "manifest has no power pins"))
 
+        pinout_mismatches = _pinout_mismatches(manifest)
+        for mismatch in pinout_mismatches:
+            errors.append(_issue(
+                mismatch["code"],
+                part,
+                location,
+                mismatch["message"],
+            ))
+
         seen_numbers: set[int] = set()
         for pin in pins if isinstance(pins, list) else []:
             if not isinstance(pin, dict):
@@ -277,6 +286,24 @@ def db_status_report() -> JsonMap:
         ("tested", "tested"),
         ("missing_datasheet", "missing_datasheet"),
     )
+    legacy = legacy_catalog_parts()
+    active_parts = {str(item.get("part", "")).upper() for item in chip_status_components}
+    excluded_parts = set(chip_status["missing_datasheet"])
+    for part in sorted(excluded_parts & (set(chip_status["verified"]) | set(chip_status["modeled"]) | set(chip_status["tested"]))):
+        errors.append(_issue(
+            "chip_status_exclusion_conflict",
+            part,
+            str(CHIP_STATUS_PATH.relative_to(ROOT)),
+            f"{part} is marked missing-datasheet but also appears in an active status section",
+        ))
+    for part in sorted(excluded_parts & (active_parts | set(legacy["verilog_models"]) | set(legacy["pinouts"]))):
+        errors.append(_issue(
+            "chip_status_excluded_part_active",
+            part,
+            str(CHIP_STATUS_PATH.relative_to(ROOT)),
+            f"{part} is marked missing-datasheet but still appears in active DB or legacy files",
+        ))
+
     for generated_key, status_key in checks:
         generated_parts = set(generated[generated_key])
         status_parts = set(chip_status[status_key])
@@ -287,6 +314,8 @@ def db_status_report() -> JsonMap:
                 str(CHIP_STATUS_PATH.relative_to(ROOT)),
                 f"DB marks {part} as {generated_key}, but CHIP_STATUS.md does not list it in {status_key}",
             ))
+        if status_key == "missing_datasheet":
+            continue
         missing_db_parts = sorted(status_parts - generated_parts)
         if missing_db_parts:
             warnings.append({
@@ -323,7 +352,7 @@ def parse_chip_status() -> JsonMap:
     return {
         "verified": _section_parts(text, "Verified", "Modeled"),
         "modeled": _section_parts(text, "Modeled", "Tested"),
-        "tested": _section_parts(text, "Tested", "Remaining Export Gap"),
+        "tested": _section_parts(text, "Tested", "Export Notes"),
         "missing_datasheet": _section_parts(text, "Missing Datasheet", None),
     }
 
@@ -497,6 +526,61 @@ def _referenced_paths(manifest: JsonMap) -> list[str]:
     return sorted(set(paths))
 
 
+def _pinout_mismatches(manifest: JsonMap) -> list[JsonMap]:
+    verilog = manifest.get("verilog", {})
+    if not isinstance(verilog, dict) or not isinstance(verilog.get("file"), str):
+        return []
+    model_path = ROOT / str(verilog["file"])
+    if not model_path.exists():
+        return []
+    pinout = _embedded_pinout_pins(model_path)
+    if not pinout:
+        return []
+    manifest_pins = {
+        int(pin["number"]): str(pin["name"])
+        for pin in manifest.get("pins", [])
+        if isinstance(pin, dict) and isinstance(pin.get("number"), int) and isinstance(pin.get("name"), str)
+    }
+    mismatches: list[JsonMap] = []
+    for number in sorted(set(pinout) | set(manifest_pins)):
+        pinout_name = pinout.get(number)
+        manifest_name = manifest_pins.get(number)
+        if pinout_name is None:
+            mismatches.append({
+                "code": "pinout_extra_manifest_pin",
+                "message": f"pin {number} exists in DB as {manifest_name!r} but not embedded pinout",
+            })
+        elif manifest_name is None:
+            mismatches.append({
+                "code": "pinout_missing_manifest_pin",
+                "message": f"pin {number} exists in embedded pinout as {pinout_name!r} but not DB",
+            })
+        elif pinout_name != manifest_name:
+            mismatches.append({
+                "code": "pinout_name_mismatch",
+                "message": f"pin {number} embedded pinout={pinout_name!r} DB={manifest_name!r}",
+            })
+    return mismatches
+
+
+def _embedded_pinout_pins(path: Path) -> dict[int, str]:
+    pins: dict[int, str] = {}
+    inside = False
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.strip() == "// Embedded pinout documentation.":
+            inside = True
+            continue
+        if not inside:
+            continue
+        if not line.startswith("//"):
+            break
+        text = line[2:].strip()
+        match = re.match(r"\|\s*(\d+)\s*\|\s*([^|]+?)\s*\|", text)
+        if match:
+            pins[int(match.group(1))] = match.group(2).strip()
+    return pins
+
+
 def _legacy_74hc_models() -> list[str]:
     return [path.stem.upper() for path in (ROOT / "verilog" / "74xx").glob("*.v")]
 
@@ -579,7 +663,7 @@ def _looks_like_part_id(value: str) -> bool:
 def _issue(code: str, part: str, location: str, message: str) -> JsonMap:
     return {
         "code": code,
-        "severity": "error" if code.startswith(("missing_", "pin_count", "duplicate", "invalid", "verilog_module", "export_status")) else "warning",
+        "severity": "error" if code.startswith(("missing_", "pin_count", "duplicate", "invalid", "verilog_module", "export_status", "pinout_", "chip_status_exclusion", "chip_status_excluded")) else "warning",
         "part": part,
         "location": location,
         "message": message,

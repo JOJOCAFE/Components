@@ -91,3 +91,6 @@ manufacturer-verified HC-family DIP evidence was not available:
 
 - `74HC150`
 - `74HC260`
+
+These are exclusion records only; they are not active DB, catalog, model, or
+tested parts.

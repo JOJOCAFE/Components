@@ -128,6 +128,10 @@ Required checks:
 - ✅ DB parts vs `verilog/74xx/*.v` and `verilog/Memory/*.v`.
 - ✅ DB parts vs embedded 74xx pinout comments and Memory embedded pinout comments.
 - ✅ DB part status vs `CHIP_STATUS.md`.
+- ✅ Missing-datasheet exclusions cannot also appear in verified, modeled,
+  tested, DB, or active legacy model/pinout coverage.
+- ✅ Embedded Verilog pinout comments match DB manifest pin names and numbers
+  for referenced model files.
 - ✅ DB legacy paths exist.
 - ✅ Pin count equals package pin count.
 - ✅ Power pins are present.
@@ -204,6 +208,8 @@ Current proof point:
 
 - ✅ `74HC00`, `74HC04`, `74HC161`, `74HC245`, and `74HC147` have DB-owned
   Verilog export metadata.
+- ✅ `74HC541` and `74HC574` also have DB-owned Verilog export metadata,
+  including `74HC574` sample delay metadata.
 - ✅ `Design.to_verilog()` uses DB metadata when present and falls back to the
   legacy mapping table for the rest.
 - ✅ `74HC147` has an explicit DB-owned `/I0` export contract and keeps the

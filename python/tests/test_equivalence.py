@@ -163,11 +163,170 @@ endmodule
         return
     assert result_int(output, "XCV") == expected_b
 
+    chip = create_chip("74HC245", "U")
+    set_byte(chip, [18, 17, 16, 15, 14, 13, 12, 11], 0x96)
+    chip.set_input(1, 0)
+    chip.set_input(19, 0)
+    eval_chip(chip)
+    expected_a = get_byte(chip, [2, 3, 4, 5, 6, 7, 8, 9])
+    chip.set_input(19, 1)
+    eval_chip(chip)
+    assert chip.read(2) == Z
+    assert chip.read(18) == Z
+
+    output = run_verilog(
+        "verilog/74xx/74hc245.v",
+        """
+`timescale 1ns/1ps
+module tb;
+  reg oe_bar = 0;
+  reg dir = 0;
+  reg [7:0] b_drv = 8'h96;
+  reg drive_b = 1;
+  wire [7:0] a;
+  wire [7:0] b;
+  assign b = drive_b ? b_drv : 8'hzz;
+  ttl_74hc245 dut(.OE_bar(oe_bar), .DIR(dir), .A(a), .B(b));
+  initial begin
+    #1; $display("RESULT XCVB %h", a);
+    oe_bar = 1; drive_b = 0;
+    #1; if (a !== 8'hzz || b !== 8'hzz) begin $display("FAIL high-z"); $finish(1); end
+    $finish;
+  end
+endmodule
+""",
+    )
+    if output is None:
+        return
+    assert result_int(output, "XCVB") == expected_a
+
+
+def test_74hc541_python_matches_verilog_enable_and_high_z():
+    chip = create_chip("74HC541", "U")
+    set_byte(chip, [2, 3, 4, 5, 6, 7, 8, 9], 0x96)
+    chip.set_input(1, 0)
+    chip.set_input(19, 0)
+    eval_chip(chip)
+    expected_y = get_byte(chip, [18, 17, 16, 15, 14, 13, 12, 11])
+    chip.set_input(1, 1)
+    eval_chip(chip)
+    assert chip.read(18) == Z
+
+    output = run_verilog(
+        "verilog/74xx/74hc541.v",
+        """
+`timescale 1ns/1ps
+module tb;
+  reg oe1_bar = 0;
+  reg oe2_bar = 0;
+  reg [7:0] a = 8'h96;
+  wire [7:0] y;
+  ttl_74hc541 dut(.OE1_bar(oe1_bar), .OE2_bar(oe2_bar), .A(a), .Y(y));
+  initial begin
+    #1; $display("RESULT BUF %h", y);
+    oe1_bar = 1;
+    #1; if (y !== 8'hzz) begin $display("FAIL high-z"); $finish(1); end
+    $finish;
+  end
+endmodule
+""",
+    )
+    if output is None:
+        return
+    assert result_int(output, "BUF") == expected_y
+
+
+def test_74hc574_python_matches_verilog_latch_hold_and_high_z():
+    chip = create_chip("74HC574", "U")
+    chip.set_input(1, 0)
+    set_byte(chip, [2, 3, 4, 5, 6, 7, 8, 9], 0xA5)
+    chip.clock_edge()
+    chip.commit()
+    expected_q = get_byte(chip, [19, 18, 17, 16, 15, 14, 13, 12])
+    set_byte(chip, [2, 3, 4, 5, 6, 7, 8, 9], 0x3C)
+    eval_chip(chip)
+    assert get_byte(chip, [19, 18, 17, 16, 15, 14, 13, 12]) == expected_q
+    chip.set_input(1, 1)
+    eval_chip(chip)
+    assert chip.read(19) == Z
+
+    output = run_verilog(
+        "verilog/74xx/74hc574.v",
+        """
+`timescale 1ns/1ps
+module tb;
+  reg oe_bar = 0;
+  reg clk = 0;
+  reg [7:0] d = 8'ha5;
+  wire [7:0] q;
+  ttl_74hc574 dut(.OE_bar(oe_bar), .Clk(clk), .D(d), .Q(q));
+  initial begin
+    #1; clk = 1; #1; clk = 0;
+    #1; $display("RESULT REG %h", q);
+    d = 8'h3c; #1; if (q !== 8'ha5) begin $display("FAIL hold"); $finish(1); end
+    oe_bar = 1; #1; if (q !== 8'hzz) begin $display("FAIL high-z"); $finish(1); end
+    $finish;
+  end
+endmodule
+""",
+    )
+    if output is None:
+        return
+    assert result_int(output, "REG") == expected_q
+
+
+def test_62256_python_matches_verilog_write_read_and_high_z():
+    chip = create_chip("62256", "U")
+    for pin in [10, 9, 8, 7, 6, 5, 4, 3, 25, 24, 21, 23, 2, 26, 1]:
+        chip.set_input(pin, 0)
+    set_byte(chip, [11, 12, 13, 15, 16, 17, 18, 19], 0x5A)
+    chip.set_input(20, 0)
+    chip.set_input(22, 1)
+    chip.set_input(27, 0)
+    eval_chip(chip)
+    chip.set_input(27, 1)
+    chip.set_input(22, 0)
+    eval_chip(chip)
+    expected_dq = get_byte(chip, [11, 12, 13, 15, 16, 17, 18, 19])
+    chip.set_input(20, 1)
+    eval_chip(chip)
+    assert chip.read(11) == Z
+
+    output = run_verilog(
+        "verilog/Memory/62256.v",
+        """
+`timescale 1ns/1ps
+module tb;
+  reg [14:0] a = 15'h0000;
+  reg [7:0] dq_drv = 8'h5a;
+  reg drive_dq = 1;
+  wire [7:0] dq;
+  reg ce_bar = 0;
+  reg oe_bar = 1;
+  reg we_bar = 0;
+  assign dq = drive_dq ? dq_drv : 8'hzz;
+  mem_62256 dut(.A(a), .DQ(dq), .CE_bar(ce_bar), .OE_bar(oe_bar), .WE_bar(we_bar));
+  initial begin
+    #1; we_bar = 1; drive_dq = 0; oe_bar = 0;
+    #1; $display("RESULT SRAM %h", dq);
+    ce_bar = 1; #1; if (dq !== 8'hzz) begin $display("FAIL high-z"); $finish(1); end
+    $finish;
+  end
+endmodule
+""",
+    )
+    if output is None:
+        return
+    assert result_int(output, "SRAM") == expected_dq
+
 
 def run_all():
     test_74hc00_python_matches_verilog_vectors()
     test_74hc161_python_matches_verilog_count_sequence()
     test_74hc245_python_matches_verilog_a_to_b_and_high_z()
+    test_74hc541_python_matches_verilog_enable_and_high_z()
+    test_74hc574_python_matches_verilog_latch_hold_and_high_z()
+    test_62256_python_matches_verilog_write_read_and_high_z()
 
 
 if __name__ == "__main__":

@@ -101,7 +101,7 @@ def test_db_verilog_export_metadata_matches_legacy_mappings():
     design = Design.from_dict(netlist_schematic())
 
     exported = design.to_verilog()
-    for part in ["74HC00", "74HC04", "74HC161", "74HC245"]:
+    for part in ["74HC00", "74HC04", "74HC161", "74HC245", "74HC541", "74HC574"]:
         db_mapping = _verilog_mapping(part)
         legacy_mapping = VERILOG_MAPPINGS[part]
 
@@ -110,6 +110,7 @@ def test_db_verilog_export_metadata_matches_legacy_mappings():
         assert db_mapping["module"] == legacy_mapping["module"]
         assert db_mapping["output_pins"] == legacy_mapping["output_pins"]
         assert db_mapping["delay_ns"] == legacy_mapping.get("delay_ns", 1)
+        assert db_mapping.get("sample_delay_ns") == legacy_mapping.get("sample_delay_ns")
         assert db_mapping["ports"]("U1", {}) == legacy_mapping["ports"]("U1", {})
     assert exported["ok"] is True
     assert "ttl_74hc00 #(.DELAY_RISE(1), .DELAY_FALL(1)) U1 (.A({" in exported["verilog"]
