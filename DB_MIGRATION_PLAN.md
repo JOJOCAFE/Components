@@ -131,11 +131,11 @@ db/<part>/chip.json
   verilog:
     module
     file
-  export:
-    kind
-    ports
-    output_pins
-    parameters
+    export:
+      kind
+      ports
+      output_pins
+      parameters
 ```
 
 Rules:
@@ -151,11 +151,12 @@ Exit criteria:
 
 Current proof point:
 
-- ✅ `74HC00` has DB-owned Verilog export metadata.
-- ✅ `Design.to_verilog()` uses DB metadata for `74HC00` and falls back to the
+- ✅ `74HC00`, `74HC04`, `74HC161`, `74HC245`, and `74HC147` have DB-owned
+  Verilog export metadata.
+- ✅ `Design.to_verilog()` uses DB metadata when present and falls back to the
   legacy mapping table for the rest.
-- ✅ `74HC147` has DB-owned blocked export status explaining that the current
-  Verilog module cannot represent the source-supported `/I0` input.
+- ✅ `74HC147` has an explicit DB-owned `/I0` export contract and keeps the
+  unbonded low output bit as an internal open placeholder.
 
 ### Phase 5: DB-Backed Pinout Files
 

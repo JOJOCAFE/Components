@@ -1,0 +1,542 @@
+# Components Service Contract
+
+This document defines the stable CLI/API contract for future Components
+services. It is a service-facing layer over the existing backend direction:
+schematic JSON is normalized into the Python `Design` model, and every CLI,
+API, UI, exporter, or future external engine works from that normalized state.
+
+The service layer is pluggable. Simulation engines, exporters, and UI/API
+wrappers may be replaced or added later, but the main Components program keeps
+the canonical chip DB and schematic JSON rules. Services must not create a
+second chip database or parse schematic files with private behavior rules.
+
+## Contract Version
+
+Every machine-readable request and response carries a contract version:
+
+```json
+{
+  "contract": "components.service.v1"
+}
+```
+
+Versioning rules:
+
+- `components.service.v1` is the first JSON service contract.
+- Additive response fields are allowed in the same major version.
+- Removing fields, changing field meanings, or changing command semantics
+  requires a new major contract such as `components.service.v2`.
+- Clients should ignore unknown fields and must check `ok` before using result
+  payloads.
+- Services should echo the requested contract version when they can honor it.
+
+## Shared Request Shape
+
+CLI commands and API calls use the same logical request shape. A CLI adapter may
+construct this object from arguments and files before calling the service.
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "validate",
+  "request_id": "optional-client-id",
+  "input": {
+    "schematic": {},
+    "design": null,
+    "netlist": null
+  },
+  "options": {},
+  "context": {
+    "cwd": ".",
+    "project": null
+  }
+}
+```
+
+Fields:
+
+- `command`: one of the commands in this document.
+- `request_id`: optional client value echoed in the response.
+- `input.schematic`: readable schematic JSON from `SCHEMATIC_JSON_SPEC.md`.
+- `input.design`: canonical normalized design JSON, when the caller already
+  has it.
+- `input.netlist`: normalized netlist JSON, for exporter or external-engine
+  boundaries.
+- `options`: command-specific options.
+- `context`: optional adapter context for path resolution and user display.
+
+Input precedence:
+
+1. Use `input.design` when supplied because it is already canonical.
+2. Otherwise normalize `input.schematic` through `Design`.
+3. Use `input.netlist` only for commands that explicitly accept the normalized
+   netlist boundary.
+
+CLI file arguments are paths to these same JSON payloads. For example:
+
+```sh
+python3 -m chiplib.cli validate rv8gr_lab01.json --json
+python3 -m chiplib.cli run rv8gr_lab01.json --json
+```
+
+## Shared Success Response
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "validate",
+  "request_id": "optional-client-id",
+  "ok": true,
+  "result": {},
+  "warnings": [],
+  "metadata": {
+    "engine": "python",
+    "components_version": null,
+    "elapsed_ms": 0
+  }
+}
+```
+
+Rules:
+
+- `ok` is the first compatibility gate.
+- `result` is command-specific.
+- `warnings` are non-fatal issues that should be visible to CLI/API/UI clients.
+- `metadata.engine` identifies the service implementation, not a different
+  behavior contract.
+
+## Shared Error Response
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "run",
+  "request_id": "optional-client-id",
+  "ok": false,
+  "error": {
+    "code": "validation.failed",
+    "message": "Design validation failed.",
+    "severity": "error",
+    "location": {
+      "path": "$.chips.U1.part",
+      "file": "rv8gr_lab01.json",
+      "line": null,
+      "column": null,
+      "ref": "U1"
+    },
+    "suggested_fix": "Use a part present in the Components DB.",
+    "details": {}
+  },
+  "warnings": [],
+  "metadata": {
+    "engine": "python",
+    "components_version": null,
+    "elapsed_ms": 0
+  }
+}
+```
+
+Error fields:
+
+- `code`: stable machine-readable code such as `parse.invalid_json`,
+  `validation.failed`, `db.missing_part`, `simulation.bus_conflict`,
+  `export.unsupported_part`, or `internal.error`.
+- `message`: short human-readable summary.
+- `severity`: `error` or `fatal`; warnings belong in `warnings`.
+- `location`: best available JSON path, source file position, net, chip, pin,
+  or reference name.
+- `suggested_fix`: practical fix when the service can infer one.
+- `details`: structured command-specific facts.
+
+## Commands
+
+### validate
+
+Purpose: parse and normalize schematic JSON, check chip DB references, verify
+connection shape, and report warnings/errors without running simulation.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli validate design.json --json
+```
+
+Request:
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "validate",
+  "input": {
+    "schematic": {}
+  },
+  "options": {
+    "strict": false
+  }
+}
+```
+
+Result:
+
+```json
+{
+  "valid": true,
+  "design_id": "rv8gr_lab01",
+  "summary": {
+    "chips": 3,
+    "buses": 2,
+    "nets": 14,
+    "probes": 5
+  },
+  "errors": [],
+  "warnings": []
+}
+```
+
+### snapshot
+
+Purpose: return the canonical normalized design and current board-facing state
+for UI/debug display.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli snapshot design.json --json
+```
+
+Request:
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "snapshot",
+  "input": {
+    "schematic": {}
+  },
+  "options": {
+    "include_design": true,
+    "include_board": true
+  }
+}
+```
+
+Result:
+
+```json
+{
+  "design": {},
+  "board": {
+    "time_ns": 0,
+    "chips": {},
+    "nets": {},
+    "buses": {},
+    "rails": {},
+    "sources": {},
+    "pulls": {}
+  },
+  "displays": {}
+}
+```
+
+### run
+
+Purpose: build the simulator board, apply input sets, clock/run steps, evaluate
+expectations, and return serializable simulation state.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli run design.json --json
+```
+
+Request:
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "run",
+  "input": {
+    "schematic": {}
+  },
+  "options": {
+    "steps": [
+      { "op": "apply", "input_set": "power_on" },
+      { "op": "settle" },
+      { "op": "clock", "name": "main", "cycles": 1 },
+      { "op": "probe", "set": "front_panel" }
+    ],
+    "max_time_ns": 1000000
+  }
+}
+```
+
+Result:
+
+```json
+{
+  "time_ns": 1000,
+  "steps": [],
+  "snapshot": {},
+  "probes": {},
+  "displays": {},
+  "expectations": {
+    "passed": [],
+    "failed": []
+  },
+  "timing": {
+    "events": 0,
+    "max_time_ns": 1000000
+  }
+}
+```
+
+### probe
+
+Purpose: sample named probe sets from a design after optional run steps.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli probe design.json --set front_panel --json
+```
+
+Request:
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "probe",
+  "input": {
+    "schematic": {}
+  },
+  "options": {
+    "set": "front_panel",
+    "steps": [
+      { "op": "settle" }
+    ],
+    "include_history": true
+  }
+}
+```
+
+Result:
+
+```json
+{
+  "set": "front_panel",
+  "time_ns": 0,
+  "samples": [
+    {
+      "name": "CLK",
+      "target": "CLK",
+      "value": 0,
+      "history": []
+    }
+  ]
+}
+```
+
+### export-netlist
+
+Purpose: export the normalized bridge netlist used by CLI, UI, HDL generation,
+and future external engines.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli export-netlist design.json -o design.net.json
+```
+
+Request:
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "export-netlist",
+  "input": {
+    "schematic": {}
+  },
+  "options": {
+    "format": "chiplib.netlist"
+  }
+}
+```
+
+Result:
+
+```json
+{
+  "format": "chiplib.netlist",
+  "version": 1,
+  "netlist": {},
+  "unsupported": [],
+  "warnings": []
+}
+```
+
+### export-verilog
+
+Purpose: lower the normalized netlist/design to structural Verilog only for
+parts with explicit export metadata. The service reports unsupported parts
+instead of guessing from names.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli export-verilog design.json -o design.verilog.json
+python3 -m chiplib.cli export-verilog design.json --text -o design.v
+```
+
+Request:
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "export-verilog",
+  "input": {
+    "schematic": {}
+  },
+  "options": {
+    "text": false,
+    "include_testbench": false,
+    "module_name": "rv8gr_lab01"
+  }
+}
+```
+
+Result:
+
+```json
+{
+  "module": "rv8gr_lab01",
+  "verilog": "module rv8gr_lab01; endmodule\n",
+  "testbench": null,
+  "unsupported": [],
+  "warnings": [],
+  "required_files": []
+}
+```
+
+### db --audit
+
+Purpose: audit the canonical Components DB against schema, referenced files,
+legacy coverage, export metadata, and visible missing-property reports.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli db --audit --json
+```
+
+Request:
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "db --audit",
+  "input": {},
+  "options": {
+    "strict": true
+  }
+}
+```
+
+Result:
+
+```json
+{
+  "valid": true,
+  "parts_checked": 62,
+  "checks": [
+    {
+      "name": "schema",
+      "ok": true,
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "missing": [],
+  "coverage": {
+    "db_parts": 62,
+    "legacy_models": 62,
+    "legacy_pinouts": 62
+  }
+}
+```
+
+### db --status
+
+Purpose: report DB-backed chip status for humans, automation, and future UI/API
+metadata panels.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli db --status --json
+```
+
+Request:
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "db --status",
+  "input": {},
+  "options": {
+    "part": null,
+    "include_missing": true
+  }
+}
+```
+
+Result:
+
+```json
+{
+  "parts": [
+    {
+      "part": "74HC00",
+      "status": "active",
+      "package": "DIP14",
+      "pinout": "verified",
+      "behavior": "available",
+      "verilog": "available",
+      "export": "available",
+      "missing_properties": []
+    }
+  ],
+  "summary": {
+    "active": 1,
+    "blocked": 0,
+    "missing_properties": 0
+  }
+}
+```
+
+## Pluggable Service Rules
+
+- The canonical chip identity DB is `db/` and is read through Components DB
+  APIs.
+- The canonical student-facing schematic format is `SCHEMATIC_JSON_SPEC.md`.
+- A plugin may implement simulation, netlist export, Verilog export, or API
+  transport, but it must consume canonical `Design` or normalized netlist JSON.
+- A plugin must return the response shapes in this document.
+- A plugin must report unsupported parts, missing DB metadata, and unsupported
+  export features as structured errors or `unsupported` entries.
+- A plugin must not silently infer pin mappings or chip behavior from names
+  when canonical DB or design metadata is missing.
+
+## CLI Output Modes
+
+CLI commands should support two audiences:
+
+- Default mode may print concise readable summaries for humans.
+- `--json` must print the service response object without extra text.
+
+Nonzero exit rules:
+
+- Return exit code `0` when `ok` is true and the command-specific result is
+  successful.
+- Return a nonzero exit code when `ok` is false.
+- `db --audit` should also return nonzero when hard audit failures exist, even
+  if the JSON response includes partial check results.

@@ -51,7 +51,16 @@
   },
   "verilog": {
     "module": "ttl_74hc245",
-    "file": "verilog/74HC/74hc245.v"
+    "file": "verilog/74HC/74hc245.v",
+    "export": {
+      "ports": [
+        {"name": "OE_bar", "pins": [19], "direction": "input"},
+        {"name": "DIR", "pins": [1], "direction": "input"},
+        {"name": "A", "pins": [2, 3, 4, 5, 6, 7, 8, 9], "direction": "output"},
+        {"name": "B", "pins": [18, 17, 16, 15, 14, 13, 12, 11], "direction": "output"}
+      ],
+      "output_pins": [2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

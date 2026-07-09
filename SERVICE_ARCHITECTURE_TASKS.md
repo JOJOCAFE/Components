@@ -37,14 +37,16 @@ outputs.
    - `cli`: command-line adapter over the same APIs.
    - `api`: future HTTP/RPC/service wrapper.
 
-2. ⬜ Write the service contract document.
+2. ✅ Write the service contract document.
+   - See `SERVICE_CONTRACT.md`.
    - Inputs: schematic JSON, normalized design JSON, normalized netlist JSON.
    - Outputs: validation report, snapshot, simulation result, probe result,
      netlist export, Verilog export, equivalence report.
    - Error shape: stable machine-readable code, message, severity, location,
      and suggested fix.
 
-3. ⬜ Freeze the normalized netlist schema as the first plugin boundary.
+3. ✅ Freeze the normalized netlist schema as the first plugin boundary.
+   - See `schemas/normalized-netlist.schema.json`.
    - Every exporter or external engine must read this schema.
    - No exporter should parse student schematic JSON directly unless it goes
      through `Design`.

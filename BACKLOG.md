@@ -32,8 +32,9 @@ Future work for the shared component library.
 - ✅ Expand Verilog export mappings for specialized parts and memory bridges:
   `74HC148`, `74HC181`, `74HC593`, `74HC922`, `AS6C62256`, `CY7C199`, and
   `SST39SF010A`.
-- ⬜ Review and repair the `74HC147` pinout/model export contract before
-  enabling structural Verilog export for that part.
+- ✅ Review and repair the `74HC147` pinout/model export contract; structural
+  Verilog export now exposes `/I0` and preserves the unbonded low output bit
+  with an internal open placeholder.
 - ✅ Add GitHub Actions for Python tests and Verilog smoke tests, plus README
   badges for both workflows.
 - ✅ Split chip status into verified, modeled, tested, and missing-datasheet
@@ -61,12 +62,15 @@ Future work for the shared component library.
   categories against `CHIP_STATUS.md`.
 - ✅ Prove DB-backed Verilog export metadata with `74HC00` while preserving
   existing structural Verilog output.
-- ✅ Review `74HC147` export gap and keep structural export blocked because the
-  verified pinout includes `/I0` but the current Verilog module has no matching
-  input port.
+- ✅ Review `74HC147` export gap and repair the model/export contract so the
+  verified `/I0` input is represented in structural Verilog.
+- ✅ Add `SERVICE_CONTRACT.md` for stable CLI/API service contracts before the
+  repo grows too large.
+- ✅ Freeze the normalized netlist schema in
+  `schemas/normalized-netlist.schema.json` as the first plugin boundary.
 - ⬜ Follow `SERVICE_ARCHITECTURE_TASKS.md` to split chip behavior, simulation,
-  exporters, CLI, and future API/UI adapters behind stable internal service
-  contracts before the repo grows too large.
+  exporters, CLI, and future API/UI adapters behind the stable internal service
+  contracts.
 - ⬜ Finish production-ready CLI commands around the existing `Design` backend:
   `validate`, `snapshot`, `run`, `probe`, `export-json`, `export-netlist`, and
   `export-verilog`.
@@ -80,8 +84,8 @@ Future work for the shared component library.
 - ⬜ Define the frontend snapshot contract for UI/API clients, including chip
   layout, pin states, net values, bus values, warnings/errors, probe history,
   and display state.
-- ⬜ Repair the `74HC147` Verilog model/export contract if the model is updated
-  to expose all source-supported inputs, including `/I0`.
+- ✅ Repair the `74HC147` Verilog model/export contract so the model exposes
+  all source-supported inputs, including `/I0`.
 - ⬜ Add example JSON circuits as runnable demos and regressions: NAND gate,
   counter, bus transceiver, ROM/RAM read, tiny CPU slice, and other small
   teaching circuits.

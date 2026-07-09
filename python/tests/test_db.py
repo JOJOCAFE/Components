@@ -58,10 +58,32 @@ def test_db_seed_entries_are_loadable():
     assert transceiver["package"]["pins"] == 20
     assert transceiver["pins"][1]["direction"] == "bidirectional"
     assert transceiver["pins"][18]["active_low"] is True
+    assert transceiver["verilog"]["export"]["ports"] == [
+        {"name": "OE_bar", "pins": [19], "direction": "input"},
+        {"name": "DIR", "pins": [1], "direction": "input"},
+        {"name": "A", "pins": [2, 3, 4, 5, 6, 7, 8, 9], "direction": "output"},
+        {"name": "B", "pins": [18, 17, 16, 15, 14, 13, 12, 11], "direction": "output"},
+    ]
 
     counter = load_component("74HC161")
     assert counter["pins"][0]["name"] == "/CLR"
     assert counter["pins"][14] == {"number": 15, "name": "RCO", "direction": "output"}
+    assert counter["verilog"]["export"]["ports"] == [
+        {"name": "Clear_bar", "pins": [1], "direction": "input"},
+        {"name": "Load_bar", "pins": [9], "direction": "input"},
+        {"name": "ENT", "pins": [10], "direction": "input"},
+        {"name": "ENP", "pins": [7], "direction": "input"},
+        {"name": "D", "pins": [3, 4, 5, 6], "direction": "input"},
+        {"name": "Clk", "pins": [2], "direction": "input"},
+        {"name": "RCO", "pins": [15], "direction": "output"},
+        {"name": "Q", "pins": [14, 13, 12, 11], "direction": "output"},
+    ]
+
+    inverter = load_component("74HC04")
+    assert inverter["verilog"]["export"]["ports"] == [
+        {"name": "A", "pins": [1, 3, 5, 9, 11, 13], "direction": "input"},
+        {"name": "Y", "pins": [2, 4, 6, 8, 10, 12], "direction": "output"},
+    ]
 
     eeprom = load_component("AT28C256")
     assert eeprom["family"] == "Memory"
@@ -83,9 +105,8 @@ def test_db_seed_entries_are_loadable():
     assert decoder["pins"][14]["active_low"] is True
 
     encoder = load_component("74HC147")
-    assert encoder["status"]["verilog_export"] == "blocked"
-    assert encoder["export"]["status"] == "blocked"
-    assert "I0" in encoder["export"]["reason"]
+    assert encoder["status"]["verilog_export"] == "tested"
+    assert encoder["verilog"]["export"]["ports"][0] == {"name": "I0_bar", "pins": [9], "direction": "input"}
     assert encoder["pins"][8] == {"number": 9, "name": "/I0", "direction": "input", "active_low": True}
     assert encoder["pins"][14] == {"number": 15, "name": "NC", "direction": "nc"}
 

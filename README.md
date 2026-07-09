@@ -15,10 +15,14 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
   status, pins, sources, behavior/export references, and visible missing
   properties.
 - `python/` - reusable Python pin-level behavior models, net wiring, tri-state conflict checks, and propagation-delay simulation.
+- `schemas/` - machine-readable schemas for exported interchange artifacts,
+  including the normalized netlist contract.
 - `source/` - manufacturer datasheet PDFs used as local evidence for pinout documentation; see `source/README.md` for the retained evidence list.
 - `SCHEMATIC_JSON_SPEC.md` - readable JSON schematic script contract for
   digital simulation, CPU labs, netlist export, Verilog/testbench generation,
   and future UI display.
+- `SERVICE_CONTRACT.md` - CLI/API service contract for validation, snapshots,
+  simulation runs, probes, exporters, and DB audit/status responses.
 - `PYTHON_BACKEND_ARCHITECTURE.md` - backend-first architecture where JSON,
   UI blocks, CLI commands, Python scripts, netlists, and Verilog all talk
   through one Python design model.
@@ -139,6 +143,10 @@ cd ..
   for the active chip library.
 - `SCHEMATIC_JSON_SPEC.md` - complete JSON schematic-script shape for digital
   and CPU simulation projects.
+- `schemas/normalized-netlist.schema.json` - JSON Schema for
+  `Design.to_netlist()` exports consumed by CLI, UI, and HDL tooling.
+- `SERVICE_CONTRACT.md` - shared CLI/API request, response, error, versioning,
+  and pluggable-service rules.
 - `PYTHON_BACKEND_ARCHITECTURE.md` - Python command/API model for the future
   block UI, CLI tool, Python script use, netlist exporter, and Verilog/testbench
   exporter.

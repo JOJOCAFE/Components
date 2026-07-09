@@ -13,8 +13,8 @@
     "pinout": "verified",
     "python_behavior": "modeled",
     "verilog_model": "modeled",
-    "verilog_export": "blocked",
-    "tests": "modeled"
+    "verilog_export": "tested",
+    "tests": "tested"
   },
   "pins": [
     {"number": 1, "name": "/I4", "direction": "input", "active_low": true},
@@ -47,15 +47,19 @@
   },
   "verilog": {
     "module": "ttl_74hc147",
-    "file": "verilog/74HC/74hc147.v"
+    "file": "verilog/74HC/74hc147.v",
+    "export": {
+      "ports": [
+        {"name": "I0_bar", "pins": [9], "direction": "input"},
+        {"name": "A_bar", "pins": [11, 12, 13, 1, 2, 3, 4, 5, 10], "direction": "input"},
+        {"name": "Y_bar", "pins": [0, 7, 6, 14], "direction": "output", "note": "Pin 0 is an internal open placeholder for Y_bar[0], which is unbonded by the repository TI pin table."}
+      ],
+      "output_pins": [0, 6, 7, 14]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",
     "part": "74HC147"
-  },
-  "export": {
-    "status": "blocked",
-    "reason": "Physical pinout includes active-low I0 on pin 9, but ttl_74hc147 exposes only a 9-bit A_bar input bus for I1-I9 and has no port for I0; structural export would otherwise drop a source-supported input."
   },
   "sources": [
     {

@@ -97,19 +97,20 @@ def test_design_to_verilog_exports_known_gate_instances_and_testbench():
     assert "module tb_netlist_small();" in exported["testbench"]
 
 
-def test_74hc00_verilog_export_uses_db_metadata_without_changing_output():
+def test_db_verilog_export_metadata_matches_legacy_mappings():
     design = Design.from_dict(netlist_schematic())
 
     exported = design.to_verilog()
-    db_mapping = _verilog_mapping("74HC00")
-    legacy_mapping = VERILOG_MAPPINGS["74HC00"]
+    for part in ["74HC00", "74HC04", "74HC161", "74HC245"]:
+        db_mapping = _verilog_mapping(part)
+        legacy_mapping = VERILOG_MAPPINGS[part]
 
-    assert db_mapping is not None
-    assert db_mapping is not legacy_mapping
-    assert db_mapping["module"] == legacy_mapping["module"]
-    assert db_mapping["output_pins"] == legacy_mapping["output_pins"]
-    assert db_mapping["delay_ns"] == legacy_mapping["delay_ns"]
-    assert db_mapping["ports"]("U1", {}) == legacy_mapping["ports"]("U1", {})
+        assert db_mapping is not None
+        assert db_mapping is not legacy_mapping
+        assert db_mapping["module"] == legacy_mapping["module"]
+        assert db_mapping["output_pins"] == legacy_mapping["output_pins"]
+        assert db_mapping["delay_ns"] == legacy_mapping.get("delay_ns", 1)
+        assert db_mapping["ports"]("U1", {}) == legacy_mapping["ports"]("U1", {})
     assert exported["ok"] is True
     assert "ttl_74hc00 #(.DELAY_RISE(1), .DELAY_FALL(1)) U1 (.A({" in exported["verilog"]
 
@@ -117,12 +118,56 @@ def test_74hc00_verilog_export_uses_db_metadata_without_changing_output():
 def test_design_to_verilog_reports_unsupported_parts():
     design = Design.from_dict({
         "name": "unsupported",
-        "chips": {"U1": {"part": "74HC147"}},
+        "chips": {"U1": {"part": "28C256"}},
     })
 
     exported = design.to_verilog()
     assert exported["ok"] is False
-    assert exported["unsupported"] == [{"ref": "U1", "part": "74HC147", "reason": "no Verilog port mapping"}]
+    assert exported["unsupported"] == [{"ref": "U1", "part": "28C256", "reason": "no Verilog port mapping"}]
+
+
+def test_design_to_verilog_exports_74hc147_i0_pin_contract():
+    design = Design.from_dict({
+        "name": "encoder-147",
+        "chips": {"U1": {"part": "74HC147"}},
+        "connect": [
+            "I0 -> U1:9",
+            "I1 -> U1:11",
+            "I9 -> U1:10",
+            "Y1 -> U1:7",
+            "Y2 -> U1:6",
+            "Y3 -> U1:14",
+        ],
+    })
+
+    exported = design.to_verilog()
+    verilog = exported["verilog"]
+
+    assert exported["ok"] is True
+    assert exported["unsupported"] == []
+    assert "ttl_74hc147" in verilog
+    assert ".I0_bar(n_I0)" in verilog
+    assert ".A_bar({n_I9, 1'bz, 1'bz, 1'bz, 1'bz, 1'bz, 1'bz, 1'bz, n_I1})" in verilog
+    assert ".Y_bar({n_Y3, n_Y2, n_Y1, open_U1_0})" in verilog
+
+    iverilog = shutil.which("iverilog")
+    if iverilog is None:
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        top = Path(tmp) / "encoder_147.v"
+        top.write_text(verilog + "\n" + exported["testbench"], encoding="utf-8")
+        root = Path(__file__).resolve().parents[2]
+        cmd = [
+            iverilog,
+            "-g2012",
+            "-Wall",
+            "-o",
+            str(Path(tmp) / "encoder_147.vvp"),
+            str(root / "verilog" / "74HC" / "74hc147.v"),
+            str(top),
+        ]
+        compiled = subprocess.run(cmd, text=True, capture_output=True, check=False)
+        assert compiled.returncode == 0, compiled.stderr
 
 
 def test_design_to_verilog_exports_expanded_common_74hc_mappings():
@@ -438,8 +483,9 @@ def run_all():
     test_design_to_netlist_exports_chips_nets_buses_metadata_and_validation()
     test_design_from_netlist_round_trips_canonical_design_json()
     test_design_to_verilog_exports_known_gate_instances_and_testbench()
-    test_74hc00_verilog_export_uses_db_metadata_without_changing_output()
+    test_db_verilog_export_metadata_matches_legacy_mappings()
     test_design_to_verilog_reports_unsupported_parts()
+    test_design_to_verilog_exports_74hc147_i0_pin_contract()
     test_design_to_verilog_exports_expanded_common_74hc_mappings()
     test_design_to_verilog_exports_mux_shift_and_counter_74hc_mappings()
     test_design_to_verilog_exports_decoder_counter_and_gate_74hc_mappings()

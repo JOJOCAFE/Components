@@ -47,7 +47,20 @@
   },
   "verilog": {
     "module": "ttl_74hc161",
-    "file": "verilog/74HC/74hc161.v"
+    "file": "verilog/74HC/74hc161.v",
+    "export": {
+      "ports": [
+        {"name": "Clear_bar", "pins": [1], "direction": "input"},
+        {"name": "Load_bar", "pins": [9], "direction": "input"},
+        {"name": "ENT", "pins": [10], "direction": "input"},
+        {"name": "ENP", "pins": [7], "direction": "input"},
+        {"name": "D", "pins": [3, 4, 5, 6], "direction": "input"},
+        {"name": "Clk", "pins": [2], "direction": "input"},
+        {"name": "RCO", "pins": [15], "direction": "output"},
+        {"name": "Q", "pins": [14, 13, 12, 11], "direction": "output"}
+      ],
+      "output_pins": [11, 12, 13, 14, 15]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

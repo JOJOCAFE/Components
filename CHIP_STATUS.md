@@ -69,19 +69,19 @@ Structural netlist-export compile tests currently cover every mapped part below:
 `74HC00`, `74HC02`, `74HC04`, `74HC07`, `74HC08`, `74HC10`, `74HC11`,
 `74HC14`, `74HC20`, `74HC21`, `74HC27`, `74HC30`, `74HC32`, `74HC42`,
 `74HC73`, `74HC74`, `74HC85`, `74HC86`, `74HC112`, `74HC138`, `74HC139`,
-`74HC148`, `74HC151`, `74HC153`, `74HC154`, `74HC155`, `74HC157`, `74HC158`,
-`74HC160`, `74HC161`, `74HC162`, `74HC163`, `74HC164`, `74HC165`, `74HC166`,
+`74HC147`, `74HC148`, `74HC151`, `74HC153`, `74HC154`, `74HC155`, `74HC157`,
+`74HC158`, `74HC160`, `74HC161`, `74HC162`, `74HC163`, `74HC164`, `74HC165`, `74HC166`,
 `74HC181`, `74HC193`, `74HC238`, `74HC240`, `74HC244`, `74HC245`, `74HC251`,
 `74HC257`, `74HC266`, `74HC273`, `74HC283`, `74HC352`, `74HC374`, `74HC377`,
 `74HC4078`, `74HC541`, `74HC574`, `74HC593`, `74HC595`, `74HC688`,
 `74HC922`, `62256`, `AS6C62256`, `AT28C256`, `CY7C199`, and `SST39SF010A`.
 
-## Remaining Export Gap
+## Export Notes
 
-`74HC147` is verified and modeled, but it is not yet enabled for structural
-`Design.to_verilog()` export. The current pinout/model contract needs review
-because the pinout file does not expose a complete 4-output mapping that can be
-lowered to the existing Verilog module without guessing.
+`74HC147` structural export is enabled with an explicit `/I0` input port. The
+repository TI pin table has only `/Y1`, `/Y2`, and `/Y3` bonded outputs, so the
+lowest `Y_bar` vector bit is exported as an internal open placeholder instead
+of being mapped to a physical package pin.
 
 ## Missing Datasheet
 

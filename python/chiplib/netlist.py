@@ -373,9 +373,6 @@ def _verilog_mapping(part: str) -> JsonMap | None:
 
 
 def _db_verilog_mapping(part: str) -> JsonMap | None:
-    if part != "74HC00":
-        return None
-
     manifest_path = Path(__file__).resolve().parents[2] / "db" / part / "chip.json"
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -533,6 +530,19 @@ def _hc148(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str,
         ("EO_bar", _pin(ref, 15, net_for_pin, fallback=_open_wire(ref, 15))),
         ("GS_bar", _pin(ref, 14, net_for_pin, fallback=_open_wire(ref, 14))),
         ("Y_bar", _vec(ref, [9, 7, 6], net_for_pin, output=True)),
+    ]
+
+
+def _hc147(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("I0_bar", _pin(ref, 9, net_for_pin)),
+        ("A_bar", _vec(ref, [11, 12, 13, 1, 2, 3, 4, 5, 10], net_for_pin)),
+        ("Y_bar", "{" + ", ".join([
+            _pin(ref, 14, net_for_pin, fallback=_open_wire(ref, 14)),
+            _pin(ref, 6, net_for_pin, fallback=_open_wire(ref, 6)),
+            _pin(ref, 7, net_for_pin, fallback=_open_wire(ref, 7)),
+            _open_wire(ref, 0),
+        ]) + "}"),
     ]
 
 
@@ -949,6 +959,7 @@ VERILOG_MAPPINGS = {
     "74HC30": {"module": "ttl_74hc30", "ports": _hc30, "output_pins": [8]},
     "74HC138": {"module": "ttl_74hc138", "ports": _hc138, "output_pins": [7, 9, 10, 11, 12, 13, 14, 15]},
     "74HC139": {"module": "ttl_74hc139", "ports": _hc139, "output_pins": [4, 5, 6, 7, 9, 10, 11, 12]},
+    "74HC147": {"module": "ttl_74hc147", "ports": _hc147, "output_pins": [0, 6, 7, 14]},
     "74HC148": {"module": "ttl_74hc148", "ports": _hc148, "output_pins": [6, 7, 9, 14, 15]},
     "74HC154": {"module": "ttl_74hc154", "ports": _hc154, "output_pins": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17]},
     "74HC155": {"module": "ttl_74hc155", "ports": _hc155, "output_pins": [4, 5, 6, 7, 9, 10, 11, 12]},
