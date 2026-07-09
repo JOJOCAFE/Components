@@ -21,8 +21,12 @@ Future work for the shared component library.
 - ✅ Implement normalized netlist export/import from `Design`.
 - ✅ Implement first-pass Verilog/testbench export from `Design` using explicit
   pin-number-to-port maps for supported 74HC parts.
-- ⬜ Expand Verilog export mappings beyond the initial simple gate whitelist,
-  especially counters, registers, tri-state bus parts, and memory chips.
+- ✅ Expand Verilog export mappings beyond the initial simple gate whitelist
+  for the first common batch: `74HC02`, `74HC08`, `74HC10`, `74HC14`,
+  `74HC20`, `74HC30`, `74HC138`, `74HC139`, `74HC244`, `74HC273`,
+  `74HC374`, and `74HC377`.
+- ⬜ Continue full-catalog Verilog export mappings for remaining muxes,
+  decoders, counters, transceivers, ALU/control parts, and memory chips.
 - ⬜ Implement block-UI model import/export against the same normalized design
   model, not a separate UI-only representation.
 

@@ -99,12 +99,63 @@ def test_design_to_verilog_exports_known_gate_instances_and_testbench():
 def test_design_to_verilog_reports_unsupported_parts():
     design = Design.from_dict({
         "name": "unsupported",
-        "chips": {"U1": {"part": "74HC14"}},
+        "chips": {"U1": {"part": "74HC151"}},
     })
 
     exported = design.to_verilog()
     assert exported["ok"] is False
-    assert exported["unsupported"] == [{"ref": "U1", "part": "74HC14", "reason": "no Verilog port mapping"}]
+    assert exported["unsupported"] == [{"ref": "U1", "part": "74HC151", "reason": "no Verilog port mapping"}]
+
+
+def test_design_to_verilog_exports_expanded_common_74hc_mappings():
+    parts = [
+        "74HC02",
+        "74HC08",
+        "74HC10",
+        "74HC14",
+        "74HC20",
+        "74HC30",
+        "74HC138",
+        "74HC139",
+        "74HC244",
+        "74HC273",
+        "74HC374",
+        "74HC377",
+    ]
+    design = Design.from_dict({
+        "name": "expanded-common-mappings",
+        "chips": {
+            f"U{index + 1}": {"part": part}
+            for index, part in enumerate(parts)
+        },
+    })
+
+    exported = design.to_verilog()
+    verilog = exported["verilog"]
+
+    assert exported["ok"] is True
+    assert exported["unsupported"] == []
+    for part in parts:
+        assert f"ttl_{part.lower()}" in verilog
+
+    iverilog = shutil.which("iverilog")
+    if iverilog is None:
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        top = Path(tmp) / "expanded_common_mappings.v"
+        top.write_text(verilog + "\n" + exported["testbench"], encoding="utf-8")
+        root = Path(__file__).resolve().parents[2]
+        cmd = [
+            iverilog,
+            "-g2012",
+            "-Wall",
+            "-o",
+            str(Path(tmp) / "expanded_common_mappings.vvp"),
+            *[str(root / "74HC" / f"{part.lower()}.v") for part in parts],
+            str(top),
+        ]
+        compiled = subprocess.run(cmd, text=True, capture_output=True, check=False)
+        assert compiled.returncode == 0, compiled.stderr
 
 
 def test_design_from_kicad_netlist_imports_chip_values_and_connection_rules():
@@ -214,6 +265,7 @@ def run_all():
     test_design_from_netlist_round_trips_canonical_design_json()
     test_design_to_verilog_exports_known_gate_instances_and_testbench()
     test_design_to_verilog_reports_unsupported_parts()
+    test_design_to_verilog_exports_expanded_common_74hc_mappings()
     test_design_from_kicad_netlist_imports_chip_values_and_connection_rules()
     test_rv8gr_v2_kicad_netlist_smoke_when_available()
 

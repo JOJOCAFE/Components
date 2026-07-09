@@ -90,7 +90,8 @@ def test_cli_validate_snapshot_run_probe_and_export_json():
         assert verilog.returncode == 0, verilog.stderr
         verilog_data = json.loads(verilog.stdout)
         assert verilog_data["ok"] is True
-        assert "ttl_74hc00 U1" in verilog_data["verilog"]
+        assert "ttl_74hc00" in verilog_data["verilog"]
+        assert " U1 (" in verilog_data["verilog"]
 
         verilog_text_out = Path(tmp) / "small.v"
         export_verilog_text = subprocess.run(

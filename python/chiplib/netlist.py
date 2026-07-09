@@ -371,10 +371,61 @@ def _quad_2_input(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tup
     ]
 
 
+def _quad_2_input_02(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("A", _vec(ref, [2, 5, 8, 11], net_for_pin)),
+        ("B", _vec(ref, [3, 6, 9, 12], net_for_pin)),
+        ("Y", _vec(ref, [1, 4, 10, 13], net_for_pin, output=True)),
+    ]
+
+
 def _hex_inverter(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
     return [
         ("A", _vec(ref, [1, 3, 5, 9, 11, 13], net_for_pin)),
         ("Y", _vec(ref, [2, 4, 6, 8, 10, 12], net_for_pin, output=True)),
+    ]
+
+
+def _hc10(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("A_2D", _vec(ref, [1, 2, 13, 3, 4, 5, 9, 10, 11], net_for_pin)),
+        ("Y", _vec(ref, [12, 6, 8], net_for_pin, output=True)),
+    ]
+
+
+def _hc20(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("A_2D", _vec(ref, [1, 2, 4, 5, 9, 10, 12, 13], net_for_pin)),
+        ("Y", _vec(ref, [6, 8], net_for_pin, output=True)),
+    ]
+
+
+def _hc30(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("A", _vec(ref, [1, 2, 3, 4, 5, 6, 11, 12], net_for_pin)),
+        ("Y", _pin(ref, 8, net_for_pin, fallback=_open_wire(ref, 8))),
+    ]
+
+
+def _hc138(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("A", _pin(ref, 1, net_for_pin)),
+        ("B", _pin(ref, 2, net_for_pin)),
+        ("C", _pin(ref, 3, net_for_pin)),
+        ("G1", _pin(ref, 6, net_for_pin)),
+        ("G2A_bar", _pin(ref, 4, net_for_pin)),
+        ("G2B_bar", _pin(ref, 5, net_for_pin)),
+        ("Y_bar", _vec(ref, [15, 14, 13, 12, 11, 10, 9, 7], net_for_pin, output=True)),
+    ]
+
+
+def _hc139(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("Enable_bar", _vec(ref, [1, 15], net_for_pin)),
+        ("A", _vec(ref, [2, 14], net_for_pin)),
+        ("B", _vec(ref, [3, 13], net_for_pin)),
+        ("Y1_bar", _vec(ref, [4, 5, 6, 7], net_for_pin, output=True)),
+        ("Y2_bar", _vec(ref, [12, 11, 10, 9], net_for_pin, output=True)),
     ]
 
 
@@ -430,6 +481,15 @@ def _hc245(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str,
     ]
 
 
+def _hc244(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("OE1_bar", _pin(ref, 1, net_for_pin)),
+        ("OE2_bar", _pin(ref, 19, net_for_pin)),
+        ("A", _vec(ref, [2, 4, 6, 8, 11, 13, 15, 17], net_for_pin)),
+        ("Y", _vec(ref, [18, 16, 14, 12, 9, 7, 5, 3], net_for_pin, output=True)),
+    ]
+
+
 def _hc283(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
     return [
         ("A", _vec(ref, [5, 3, 14, 12], net_for_pin)),
@@ -446,6 +506,33 @@ def _hc541(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str,
         ("OE2_bar", _pin(ref, 19, net_for_pin)),
         ("A", _vec(ref, [2, 3, 4, 5, 6, 7, 8, 9], net_for_pin)),
         ("Y", _vec(ref, [18, 17, 16, 15, 14, 13, 12, 11], net_for_pin, output=True)),
+    ]
+
+
+def _hc273(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("Clear_bar", _pin(ref, 1, net_for_pin)),
+        ("Clk", _pin(ref, 11, net_for_pin)),
+        ("D", _vec(ref, [3, 4, 7, 8, 13, 14, 17, 18], net_for_pin)),
+        ("Q", _vec(ref, [2, 5, 6, 9, 12, 15, 16, 19], net_for_pin, output=True)),
+    ]
+
+
+def _hc374(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("OE_bar", _pin(ref, 1, net_for_pin)),
+        ("Clk", _pin(ref, 11, net_for_pin)),
+        ("D", _vec(ref, [3, 4, 7, 8, 13, 14, 17, 18], net_for_pin)),
+        ("Q", _vec(ref, [2, 5, 6, 9, 12, 15, 16, 19], net_for_pin, output=True)),
+    ]
+
+
+def _hc377(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("Enable_bar", _pin(ref, 1, net_for_pin)),
+        ("D", _vec(ref, [3, 4, 7, 8, 13, 14, 17, 18], net_for_pin)),
+        ("Clk", _pin(ref, 11, net_for_pin)),
+        ("Q", _vec(ref, [2, 5, 6, 9, 12, 15, 16, 19], net_for_pin, output=True)),
     ]
 
 
@@ -490,15 +577,27 @@ def _memory_28(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[
 
 VERILOG_MAPPINGS = {
     "74HC00": {"module": "ttl_74hc00", "ports": _quad_2_input, "output_pins": [3, 6, 8, 11], "delay_ns": {"U26": 8, "*": 1}},
+    "74HC02": {"module": "ttl_74hc02", "ports": _quad_2_input_02, "output_pins": [1, 4, 10, 13]},
     "74HC32": {"module": "ttl_74hc32", "ports": _quad_2_input, "output_pins": [3, 6, 8, 11]},
     "74HC86": {"module": "ttl_74hc86", "ports": _quad_2_input, "output_pins": [3, 6, 8, 11]},
+    "74HC08": {"module": "ttl_74hc08", "ports": _quad_2_input, "output_pins": [3, 6, 8, 11]},
     "74HC04": {"module": "ttl_74hc04", "ports": _hex_inverter, "output_pins": [2, 4, 6, 8, 10, 12]},
+    "74HC14": {"module": "ttl_74hc14", "ports": _hex_inverter, "output_pins": [2, 4, 6, 8, 10, 12]},
+    "74HC10": {"module": "ttl_74hc10", "ports": _hc10, "output_pins": [6, 8, 12]},
+    "74HC20": {"module": "ttl_74hc20", "ports": _hc20, "output_pins": [6, 8]},
+    "74HC30": {"module": "ttl_74hc30", "ports": _hc30, "output_pins": [8]},
+    "74HC138": {"module": "ttl_74hc138", "ports": _hc138, "output_pins": [7, 9, 10, 11, 12, 13, 14, 15]},
+    "74HC139": {"module": "ttl_74hc139", "ports": _hc139, "output_pins": [4, 5, 6, 7, 9, 10, 11, 12]},
     "74HC157": {"module": "ttl_74hc157", "ports": _hc157, "output_pins": [4, 7, 9, 12]},
     "74HC161": {"module": "ttl_74hc161", "ports": _hc161, "output_pins": [11, 12, 13, 14, 15]},
     "74HC164": {"module": "ttl_74hc164", "ports": _hc164, "output_pins": [3, 4, 5, 6, 10, 11, 12, 13], "delay_ns": 4},
     "74HC21": {"module": "ttl_74hc21", "ports": _hc21, "output_pins": [6, 8]},
+    "74HC244": {"module": "ttl_74hc244", "ports": _hc244, "output_pins": [3, 5, 7, 9, 12, 14, 16, 18]},
     "74HC245": {"module": "ttl_74hc245", "ports": _hc245, "output_pins": [2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18]},
+    "74HC273": {"module": "ttl_74hc273", "ports": _hc273, "output_pins": [2, 5, 6, 9, 12, 15, 16, 19]},
     "74HC283": {"module": "ttl_74hc283", "ports": _hc283, "output_pins": [1, 4, 9, 10, 13]},
+    "74HC374": {"module": "ttl_74hc374", "ports": _hc374, "output_pins": [2, 5, 6, 9, 12, 15, 16, 19]},
+    "74HC377": {"module": "ttl_74hc377", "ports": _hc377, "output_pins": [2, 5, 6, 9, 12, 15, 16, 19]},
     "74HC541": {"module": "ttl_74hc541", "ports": _hc541, "output_pins": [11, 12, 13, 14, 15, 16, 17, 18]},
     "74HC574": {
         "module": "ttl_74hc574",
