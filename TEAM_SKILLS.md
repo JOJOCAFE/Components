@@ -39,6 +39,17 @@ simulation services, and student-facing documentation.
   `edge_criteria`; clocked chips prove active-edge behavior and no-edge hold,
   tri-state/bus chips prove high-Z and bus-fight/no-conflict behavior, and
   memory chips prove write protection plus read/write control windows.
+- Circuit-library proof discipline: RV8GR-derived circuits in `Lib/Circuits/`
+  must include machine-readable wiring, proof vectors, Python tests, and
+  student docs. Clocked circuits must prove reset, active-edge advance,
+  no-edge hold, load/count priority when relevant, and recovery from invalid or
+  lower states. Bus circuits must prove one active driver per phase, high-Z
+  release, and no ROM/RAM/IBUS/DBUS contention.
+- Clock-profile discipline: every reusable RV8GR circuit proof should keep the
+  push-switch profile, random debounced push profile up to 500 ms for 100
+  ticks, and 50 kHz, 1 MHz, 2 MHz, and 5 MHz functional profiles. The 5 MHz
+  result is functional simulation until hardware signal-integrity and timing
+  margin evidence are added.
 
 ## Active Specialist Agents
 
@@ -92,6 +103,20 @@ Current seed-batch milestone:
   coverage for `74HC574`, and write-cycle/read-after-write/protection coverage
   for `AT28C256`.
 
+Current RV8GR circuit-library milestone:
+
+- `RV8GR_RingCounter` is the seed circuit proof for U8 `74HC164` plus U24
+  `74HC04` feedback. It proves reset, T0/T1/T2 sequence, no-edge hold,
+  lower-state recovery, component-model execution, push-switch operation,
+  random debounced pushes, and 50 kHz through 5 MHz functional profiles.
+- `RV8GR_PC16` is the seed counter-chain proof for U1-U4 `74HC161`. It proves
+  async reset, rising-edge count, no-edge hold, `PC_INC`, `/PC_LD`, RCO carry,
+  load priority, component-model execution, push-switch operation, random
+  debounced pushes, and 50 kHz through 5 MHz functional profiles.
+- Next circuits must follow the same quality level: `RV8GR_AddressMux16`,
+  `RV8GR_BusOwnership`, `RV8GR_InstructionLatch`, `RV8GR_StorePath`,
+  `RV8GR_DataPageMemory`, and `RV8GR_IRQLatch`.
+
 ## Pim - Coordinator
 
 Core skills:
@@ -112,6 +137,9 @@ Components focus:
 - Make sure completed work ends with tests, task docs, and a push when asked.
 - Preserve the active specialist assignments in this file and route new work
   through `COMPONENT_GENERATION_BACKLOG.md`.
+- For RV8GR circuit work, route the build order from `BACKLOG.md`, keep
+  `Lib/Circuits/README.md`, circuit READMEs, tests, and pushed commits aligned,
+  and make sure timing, synchronous edge, and bus-race concerns stay visible.
 
 ## Bank - Architect
 
@@ -134,6 +162,10 @@ Components focus:
   Python/DB path is proven.
 - Owns the long-term architecture of the definition/simulation/schematic/
   verification/generation layer split.
+- Owns the boundary between DB component packages and reusable circuit-library
+  packages so circuits prove behavior without becoming hidden chip-model forks.
+- Defines RV8GR circuit decomposition order and confirms address, bus, memory,
+  and control subcircuits are reusable outside the full CPU context.
 
 ## Fern - Verifier
 
@@ -157,6 +189,12 @@ Components focus:
   checks.
 - Requires every active IC truth-table test to state edge criteria explicitly:
   rising, falling, level/no-edge, or control-window behavior.
+- Owns RV8GR circuit proof completeness: edge-trigger checks, no-edge hold,
+  random push-switch clocks, functional frequency profiles, bus-driver
+  exclusivity, memory write/read windows, and failure cases for unsafe control
+  combinations.
+- Reviews every `Lib/Circuits/` proof before it is treated as evidence for the
+  full RV8GR timing, synchronous, or bus-race concerns.
 
 ## Mint - RTL Coder
 
@@ -178,6 +216,11 @@ Components focus:
 - Adds focused benches when a chip becomes export-supported.
 - Helps ensure Verilog wrappers can be generated from `definition/definition.json`
   without losing readable HDL.
+- Owns clocked-circuit proof benches for RV8GR subcircuits, especially
+  ring-counter, instruction-latch, program-counter, and any later Verilog
+  wrappers for circuit-level export.
+- Keeps circuit timing assumptions explicit: functional simulator profiles are
+  not the same as propagation-delay or hardware margin proof.
 
 ## Ohm - HW Coder
 
@@ -198,6 +241,11 @@ Components focus:
 - Helps Noon convert physical facts into beginner-safe labels.
 - Owns package evidence, electrical placeholders, and extracted timing values
   inside `definition/definition.json`.
+- Owns breadboard realism for RV8GR circuits: DIP pin references, power and
+  decoupling notes, active-low labels, bus-fight/current-risk debug clues, and
+  physical warnings for push-switch clocking and MHz clock wiring.
+- Checks that extracted RV8GR circuits still match the real chip packages and
+  wiring paths used by the CPU, not just the simplified simulator nets.
 
 ## Bam - SW Coder
 
@@ -221,6 +269,11 @@ Components focus:
 - Keeps frontend-facing responses serializable and stable.
 - Owns loader compatibility for legacy `chip.json` while active IC packages are
   definition-backed.
+- Owns `Lib/Circuits/` Python execution paths, reusable test helpers, generated
+  clock profiles, random push-switch tests, and component-model integration for
+  RV8GR circuit proofs.
+- Keeps circuit proof data serializable so later CLI/API/UI tools can load and
+  explain the same circuit behavior without duplicating simulation logic.
 
 ## Noon - Docs Writer
 
@@ -243,12 +296,20 @@ Components focus:
   display.
 - Owns generated documentation and interactive demo wording from
   `definition/definition.json`.
+- Owns RV8GR circuit READMEs and lab wording: explain the circuit purpose,
+  signals, expected tick-by-tick behavior, and what each proof means for
+  students without overselling functional simulation as hardware timing proof.
+- Keeps debug-plan and lab notes connected to student-facing circuit examples,
+  especially for clock push switches, memory boundaries, and bus ownership.
 
 ## Natural Pairings
 
 - Bank + Ohm: architecture and physical truth.
 - Mint + Fern: HDL speed and verification rigor.
 - Bam + Noon: usable tools and student understanding.
+- Bank + Bam: reusable circuit boundary and executable circuit model.
+- Fern + Ohm: bus-race, timing-risk, and physical debug evidence.
+- Mint + Bam: circuit-level proof benches shared by Python and future HDL.
 - Pim + everyone: routing, task order, and delivery discipline.
 
 ## Current Quality Gates
@@ -268,6 +329,7 @@ python3 -B -m tests.test_generated_split_records
 python3 -B -m tests.test_contracts
 python3 -B -m tests.test_simulation_service
 python3 -B -m tests.test_equivalence
+python3 -B -m tests.test_lib_circuits
 python3 -m py_compile chiplib/*.py tests/*.py
 python3 -m chiplib.cli db --audit
 python3 -m chiplib.cli db --status

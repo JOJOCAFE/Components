@@ -140,6 +140,59 @@ Priority order before visual UI:
    screen, wire pins/nets, and run either the Python simulator or Verilog
    simulation backend.
 
+## RV8GR Circuit Library Proof Plan
+
+Goal: break RV8GR subcircuits out into `Lib/Circuits/` as reusable standalone
+circuits with machine-readable wiring, proof vectors, student docs, and Python
+tests backed by DB component models.
+
+Done:
+
+- ✅ `RV8GR_RingCounter`: U8 `74HC164` plus U24 `74HC04` feedback. Tests cover
+  reset, T0/T1/T2 sequence, no-edge hold, lower-state recovery, component-model
+  execution, push-switch, random debounced push, 50 kHz, 1 MHz, 2 MHz, and 5 MHz
+  functional profiles.
+- ✅ `RV8GR_PC16`: U1-U4 `74HC161` program counter. Tests cover async reset,
+  rising-edge count, no-edge hold, `PC_INC`, `/PC_LD`, RCO carry chain,
+  load-priority-over-count, component-model execution, push-switch, random
+  debounced push, 50 kHz, 1 MHz, 2 MHz, and 5 MHz functional profiles.
+
+Next team tasks:
+
+1. **Bank + Bam: `RV8GR_AddressMux16`**
+   - Build from U15-U20/U29/U30 `74HC157`.
+   - Prove `/ADDR_MODE=1` selects PC for fetch and `/ADDR_MODE=0` selects
+     `{DP,IRL}` for data access.
+   - Include the lab warning that real RV8GR uses `ADDR_REQ=SRC OR STR`, not
+     raw `T2`.
+2. **Fern + Mint: `RV8GR_BusOwnership`**
+   - Prove the phase table from `06_debug_plan.md`: T0/T1 use U7
+     DBUS-to-IBUS, T2 immediate uses U34, T2 store uses U14 plus U7 write
+     direction.
+   - This is the main bus-race/bus-fight proof.
+3. **Mint + Fern: `RV8GR_InstructionLatch`**
+   - Build from U5/U6 `74HC574`.
+   - Prove U5 captures only on T0, U6 captures only on T1, and both hold
+     through T2.
+4. **Ohm + Fern: `RV8GR_StorePath`**
+   - Prove `STR=1` at T2 makes U7 enabled, `WR_DIR=1`, ROM `/OE=HIGH`, and RAM
+     `/WE=LOW` only when selected.
+   - Include current-draw/bus-fight notes for physical debug.
+5. **Bam + Ohm + Fern: `RV8GR_DataPageMemory`**
+   - Prove SETDP, RAM write/readback, ROM read via DP, `$7FFF/$8000` boundary,
+     and ROM/RAM chip-select exclusivity.
+6. **Mint + Fern: Clock profiles**
+   - Keep push-switch, random debounced push up to 500 ms for 100 ticks,
+     50 kHz, 1 MHz, 2 MHz, and 5 MHz profiles on every circuit.
+   - Mark 5 MHz as functional simulation until timing-margin and hardware
+     signal-integrity proof exist.
+7. **Noon + Fern: `RV8GR_IRQLatch`**
+   - Prove `/IRQ` low-then-release latches IRQ_FF, reset clears it, and v1.0
+     does not force PC or auto-vector.
+
+Pim coordinates this plan and keeps `Lib/Circuits/README.md`, `BACKLOG.md`,
+tests, and pushed commits aligned.
+
 ## Component Generation Pipeline
 
 - ✅ Define the direction that one canonical component definition file can
