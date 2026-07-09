@@ -1494,6 +1494,7 @@ def _simple_verilog_truth_bench(definition: JsonMap, package: JsonMap, truth: Js
 
 def _simple_scalar_vector_logic_bench(definition: JsonMap, package: JsonMap, truth: JsonMap, bench_module: str) -> JsonMap:
     supported_logic = {
+        "quad_2_input_and_gate",
         "quad_2_input_nand",
         "quad_2_input_or",
         "quad_2_input_xor",

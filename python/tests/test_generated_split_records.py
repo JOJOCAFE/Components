@@ -73,11 +73,10 @@ RV8GR_REQUIRED_PACKAGE_FILES = (
     "tests/bus_fight.json",
     "tests/propagation.json",
 )
-GENERATED_SIMPLE_GATE_BENCH_PARTS = ("74HC00", "74HC04", "74HC32", "74HC86")
+GENERATED_SIMPLE_GATE_BENCH_PARTS = ("74HC00", "74HC04", "74HC08", "74HC32", "74HC86")
 EXPECTED_BASIC_FUNCTION_PLACEHOLDERS = {
     "74HC02",
     "74HC07",
-    "74HC08",
     "74HC10",
     "74HC11",
     "74HC112",
@@ -150,6 +149,10 @@ def load_batch2_record(part: str, test_type: str):
 
 def load_targeted_record(part: str, test_type: str):
     return json.loads((TARGETED_TRUTH_TEST_ROOTS[part] / f"{test_type}.json").read_text(encoding="utf-8"))
+
+
+def load_active_record(part: str, test_type: str):
+    return json.loads((active_ic_test_roots()[part] / f"{test_type}.json").read_text(encoding="utf-8"))
 
 
 def active_ic_test_roots() -> dict[str, Path]:
@@ -545,7 +548,7 @@ def test_split_records_generate_verilog_testbench_metadata():
 
 def test_generated_simple_gate_verilog_testbench_metadata():
     for part in GENERATED_SIMPLE_GATE_BENCH_PARTS:
-        truth = load_batch2_record(part, "truth_table")
+        truth = load_active_record(part, "truth_table")
         artifact = generate_component_artifacts(part)["artifacts"]["verilog_testbench"]
         emitted = artifact["emitted"]
         assert emitted["supported"] is True

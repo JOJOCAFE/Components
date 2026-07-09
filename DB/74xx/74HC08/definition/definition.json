@@ -125,7 +125,10 @@
       "propagation"
     ],
     "required_vectors": [
-      "basic_function"
+      "and_00",
+      "and_01",
+      "and_10",
+      "and_11"
     ]
   },
   "datasheet": {
