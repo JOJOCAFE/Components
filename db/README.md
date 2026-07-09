@@ -1,35 +1,33 @@
 # Components DB
 
-Per-chip component database for the shared Components library.
+Component database for the shared Components library.
 
-This is the long-term chip-centered structure:
+The current migration-safe structure supports both the original flat chip
+folders and grouped component folders:
 
 ```text
 db/
   74HC00/
-    chip.json
-  74HC04/
-    chip.json
+    chip.json              # legacy flat path, still active
   62256/
-    chip.json
-  74HC161/
-    chip.json
-  74HC245/
-    chip.json
-  AT28C256/
-    chip.json
-  74HC74/
-    chip.json
-  74HC574/
-    chip.json
-  74HC138/
-    chip.json
-  SST39SF010A/
-    chip.json
+    chip.json              # legacy flat path, still active
+  virtual/
+    InputSource/
+      component.json
+    Probe/
+      component.json
+  passive/
+    LED/
+      component.json
+    Resistor/
+      component.json
+  discrete/
+    NPN/
+      component.json
 ```
 
-Each chip owns one manifest. The manifest may reference existing legacy files
-while the repo migrates gradually:
+Each component owns one manifest. IC manifests may reference existing legacy
+files while the repo migrates gradually:
 
 - pinout evidence docs
 - Verilog model
@@ -38,11 +36,19 @@ while the repo migrates gradually:
 - tests
 - datasheet/source evidence
 
-The manifest shape is defined by `chip.schema.json`.
+The manifest shape is defined by `chip.schema.json`. The schema now includes
+`group`, `kind`, `role`, and `passive` pin direction so the DB can represent:
+
+- `74xx`: 74xx/74HC logic ICs
+- `memory`: SRAM, EEPROM, and flash ICs
+- `virtual`: simulation-only inputs, clocks, rails, pulls, and probes
+- `passive`: LED, resistor, capacitor
+- `discrete`: NPN and PNP transistors
 
 Missing properties are allowed, but they must be visible through manifest
-status and loader reports. A chip folder is valid as long as `chip.json` is
-readable and identifies the part.
+status and loader reports. A flat chip folder is valid when `chip.json` is
+readable and identifies the part. A grouped component folder is valid when
+`component.json` is readable and identifies the part.
 
 The old layout remains active during migration:
 
@@ -50,9 +56,9 @@ The old layout remains active during migration:
 - `verilog/Memory/`
 - `python/chiplib/`
 
-The DB is the new chip identity layer. Simulators, exporters, CLI tools, and
-future UI/API code should eventually ask the DB what properties a chip has
-instead of scattering chip facts across unrelated files.
+The DB is the new component identity layer. Simulators, exporters, CLI tools,
+and future UI/API code should eventually ask the DB what properties a component
+has instead of scattering component facts across unrelated files.
 
 The first seed set intentionally covers simple gates, a sequential counter, a
 bidirectional bus transceiver, SRAM, and EEPROM:
@@ -72,7 +78,24 @@ The next useful set adds flip-flop, register, decoder, and flash coverage:
 - `SST39SF010A`
 
 The DB now has one manifest for every active legacy Verilog model and pinout
-entry: 62 DB parts for 62 legacy model parts.
+entry: 62 DB IC parts for 62 legacy model parts. It also has grouped seed
+manifests for virtual, passive, and discrete schematic components.
+
+Grouped seed manifests currently cover:
+
+- `InputSource`
+- `ClockSource`
+- `Probe`
+- `BusProbe`
+- `VCC`
+- `GND`
+- `Pullup`
+- `Pulldown`
+- `LED`
+- `Resistor`
+- `Capacitor`
+- `NPN`
+- `PNP`
 
 Audit the DB against the active legacy catalog:
 

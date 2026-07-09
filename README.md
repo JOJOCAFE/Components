@@ -11,9 +11,9 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 
 - `verilog/74HC/` - behavioral Verilog models for 74HC-family logic chips plus per-chip pinout files named `74hcxx-pin.md`.
 - `verilog/Memory/` - behavioral Verilog models and pinout files for EEPROM, flash EEPROM, and SRAM parts.
-- `db/` - chip-centered DB manifests and schema where each component owns
-  status, pins, sources, behavior/export references, and visible missing
-  properties.
+- `db/` - component DB manifests and schema where chips, virtual tools,
+  passives, and discrete parts own status, pins, sources, behavior/export
+  references, and visible missing properties.
 - `examples/` - service-ready schematic JSON fixtures for CLI/API contracts
   and regression tests.
 - `python/` - reusable Python pin-level behavior models, net wiring, tri-state conflict checks, and propagation-delay simulation.

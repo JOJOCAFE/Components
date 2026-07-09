@@ -1,0 +1,8 @@
+{
+  "schema": "db.group",
+  "version": 1,
+  "id": "memory",
+  "title": "Memory ICs",
+  "migration_status": "flat_manifests_active",
+  "manifest_note": "Existing memory IC manifests remain in db/<part>/chip.json until grouped IC migration is tested."
+}

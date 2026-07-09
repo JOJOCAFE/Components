@@ -68,6 +68,9 @@ Future work for the shared component library.
   repo grows too large.
 - ✅ Freeze the normalized netlist schema in
   `schemas/normalized-netlist.schema.json` as the first plugin boundary.
+- ✅ Add grouped DB seed manifests for virtual tools, passive parts, and
+  discrete transistors while keeping existing IC manifests in their current
+  flat paths during migration.
 - ⬜ Follow `SERVICE_ARCHITECTURE_TASKS.md` to split chip behavior, simulation,
   CLI, and future API/UI adapters behind the stable internal service
   contracts. Verilog export now has an initial internal service boundary.

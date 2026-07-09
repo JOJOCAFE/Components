@@ -14,7 +14,7 @@ ALLOWED_STATUS = {
     "unknown",
     "not_applicable",
 }
-ALLOWED_DIRECTIONS = {"input", "output", "bidirectional", "power", "nc", "unknown"}
+ALLOWED_DIRECTIONS = {"input", "output", "bidirectional", "passive", "power", "nc", "unknown"}
 SEED_PARTS = {
     "62256",
     "74HC00",
@@ -27,11 +27,27 @@ SEED_PARTS = {
     "AT28C256",
     "SST39SF010A",
 }
+GROUPED_PARTS = {
+    "InputSource",
+    "ClockSource",
+    "Probe",
+    "BusProbe",
+    "VCC",
+    "GND",
+    "Pullup",
+    "Pulldown",
+    "LED",
+    "Resistor",
+    "Capacitor",
+    "NPN",
+    "PNP",
+}
 
 
 def test_db_seed_entries_are_loadable():
     assert db_root().name == "db"
     assert SEED_PARTS.issubset(set(component_ids()))
+    assert GROUPED_PARTS.issubset(set(component_ids()))
     assert "74HC147" in component_ids()
 
     hc00 = load_component("74HC00")
@@ -116,6 +132,22 @@ def test_db_seed_entries_are_loadable():
     assert flash["pins"][0]["direction"] == "nc"
     assert flash["verilog"]["module"] == "mem_sst39sf010a"
 
+    source = load_component("InputSource")
+    assert source["group"] == "virtual"
+    assert source["kind"] == "virtual"
+    assert source["role"] == "stimulus"
+    assert source["pins"] == [{"number": 1, "name": "OUT", "direction": "output"}]
+    assert source["simulation"]["service"] == "sim.input_source"
+
+    led = load_component("LED")
+    assert led["group"] == "passive"
+    assert led["pins"][0]["direction"] == "passive"
+    assert led["ui"]["symbol"] == "led"
+
+    npn = load_component("NPN")
+    assert npn["group"] == "discrete"
+    assert [pin["name"] for pin in npn["pins"]] == ["C", "B", "E"]
+
 
 def test_db_summary_reports_status_and_gaps():
     summary = component_summary()
@@ -123,6 +155,7 @@ def test_db_summary_reports_status_and_gaps():
     assert summary["count"] >= 3
     parts = [item["part"] for item in summary["components"]]
     assert SEED_PARTS.issubset(set(parts))
+    assert GROUPED_PARTS.issubset(set(parts))
     assert all(item["missing_properties"] == [] for item in summary["components"])
     assert all(item["missing_files"] == [] for item in summary["components"])
 
@@ -130,6 +163,7 @@ def test_db_summary_reports_status_and_gaps():
 def test_db_manifests_match_schema_contract():
     schema = json.loads((db_root() / "chip.schema.json").read_text(encoding="utf-8"))
     assert schema["properties"]["schema"]["const"] == "db.chip"
+    assert "passive" in schema["properties"]["pins"]["items"]["properties"]["direction"]["enum"]
 
     for manifest in load_all_components():
         for key in schema["required"]:
@@ -154,6 +188,7 @@ def test_db_audit_reports_partial_legacy_coverage_without_hard_errors():
     assert audit["errors"] == []
     assert SEED_PARTS.issubset(set(audit["coverage"]["db_parts"]))
     assert "74HC147" in audit["coverage"]["db_parts"]
+    assert "LED" not in audit["coverage"]["db_parts"]
     assert SEED_PARTS.issubset(set(audit["coverage"]["legacy_model_parts"]))
     assert "74HC147" not in audit["coverage"]["legacy_parts_missing_db"]
     assert any(item["code"] == "chip_status_parts_missing_db" for item in audit["warnings"])
@@ -167,8 +202,9 @@ def test_db_legacy_coverage_lists_models_and_pinouts():
     assert "74HC00" in legacy["pinouts"]
     assert "AT28C256" in legacy["verilog_models"]
     assert "SST39SF010A" in legacy["pinouts"]
-    assert set(component_ids()).issubset(set(legacy["verilog_models"]))
-    assert set(component_ids()).issubset(set(legacy["pinouts"]))
+    legacy_backed = set(component_ids()) - GROUPED_PARTS
+    assert legacy_backed.issubset(set(legacy["verilog_models"]))
+    assert legacy_backed.issubset(set(legacy["pinouts"]))
 
 
 def test_db_status_report_checks_chip_status_snapshot():

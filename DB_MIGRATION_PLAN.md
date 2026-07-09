@@ -8,11 +8,38 @@ loaders and tests prove the replacement path is equivalent.
 
 ## Target Shape
 
-Each chip has one DB folder:
+The DB is becoming a grouped component catalog. Existing flat chip folders stay
+active during migration, while new component classes can already live in group
+folders:
 
 ```text
 db/
-  74HC245/
+  74xx/
+    74HC245/
+      chip.json
+  memory/
+    AT28C256/
+      chip.json
+  virtual/
+    InputSource/
+      component.json
+    Probe/
+      component.json
+  passive/
+    LED/
+      component.json
+    Resistor/
+      component.json
+  discrete/
+    NPN/
+      component.json
+```
+
+Future IC folders may own implementation files directly:
+
+```text
+db/
+  74xx/74HC245/
     chip.json
     pinout.md          # later, after migration
     model.v            # later, after migration
@@ -20,9 +47,10 @@ db/
     tests.json         # optional later
 ```
 
-The first stable artifact is `chip.json`. It owns the chip's identity,
-verified status, package, pins, source evidence, and references to active
-legacy files.
+The first stable artifact is the manifest: `chip.json` for ICs and
+`component.json` for grouped virtual/passive/discrete components. It owns the
+component identity, group, kind, role, package/pins, source evidence, status,
+and references to active legacy files when any exist.
 
 ## Current Transitional Shape
 
@@ -39,6 +67,13 @@ python/chiplib/netlist.py
 ```
 
 This keeps the current implementation working while the DB becomes complete.
+New grouped component manifests may live under:
+
+```text
+db/virtual/<component>/component.json
+db/passive/<component>/component.json
+db/discrete/<component>/component.json
+```
 
 ## Migration Rules
 
@@ -54,6 +89,12 @@ This keeps the current implementation working while the DB becomes complete.
    project smoke test still pass.
 7. Keep manufacturer-backed DIP/PDIP evidence mandatory for physical pinout
    status.
+8. Grouped virtual/passive/discrete manifests are allowed before behavior is
+   executable, but they must declare `group`, `kind`, `role`, `pins`, `status`,
+   and their intended `simulation.service`.
+9. Do not move existing flat IC DB folders into `db/74xx/` or `db/memory/`
+   until the grouped lookup path has contract tests and no downstream code
+   assumes `db/<part>/chip.json`.
 
 ## Phases
 
@@ -118,6 +159,10 @@ Exit criteria:
 
 - ✅ `CHIP_STATUS.md` can be checked from DB data with
   `python3 -m chiplib.cli db --status`.
+- ✅ DB loader can read both flat IC manifests and grouped
+  `component.json` manifests.
+- ✅ Seed grouped manifests exist for virtual, passive, and discrete schematic
+  components.
 - UI/API-facing chip metadata comes from DB manifests.
 
 ### Phase 4: DB-Backed Export Metadata
@@ -213,14 +258,17 @@ Exit criteria:
 
 ## Recommended Next Tasks
 
-1. Finish DB-backed UI/API metadata accessors so frontends can read chip
-   status, pins, package, evidence, and export capability without scanning
-   `verilog/74HC/`, `verilog/Memory/`, or `python/chiplib/catalog.py`.
+1. Finish DB-backed UI/API metadata accessors so frontends can read component
+   group, kind, role, status, pins, package, evidence, UI hints, simulation
+   service, and export capability without scanning implementation folders.
 2. Continue Phase 4 by moving more safe `Design.to_verilog()` pin-to-port
    mappings into `db/<part>/chip.json` export metadata.
 3. Add a generated/check mode for `CHIP_STATUS.md` so documentation drift is
    caught in tests or CI instead of only through manual review.
-4. Start Phase 5 with one low-risk pinout migration proof, keeping a legacy
+4. Add virtual/passive/discrete behavior adapters so schematic JSON can
+   instantiate DB-backed InputSource, Probe, LED, Resistor, Capacitor, and
+   transistor components.
+5. Start Phase 5 with one low-risk pinout migration proof, keeping a legacy
    compatibility path until tests prove DB pinout loading is stable.
-5. Defer DB-owned model moves until service interfaces and contract tests are
+6. Defer DB-owned model moves until service interfaces and contract tests are
    in place.

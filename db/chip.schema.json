@@ -26,6 +26,20 @@
       "type": "string",
       "minLength": 1
     },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "group": {
+      "enum": ["74xx", "memory", "virtual", "passive", "discrete"]
+    },
+    "kind": {
+      "enum": ["physical", "virtual"]
+    },
+    "role": {
+      "type": "string",
+      "minLength": 1
+    },
     "title": {
       "type": "string"
     },
@@ -85,7 +99,7 @@
             "minLength": 1
           },
           "direction": {
-            "enum": ["input", "output", "bidirectional", "power", "nc", "unknown"]
+            "enum": ["input", "output", "bidirectional", "passive", "power", "nc", "unknown"]
           },
           "active_low": {
             "type": "boolean"

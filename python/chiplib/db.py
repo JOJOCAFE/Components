@@ -25,19 +25,16 @@ REQUIRED_STATUS_KEYS = (
     "tests",
 )
 
+GROUPED_MANIFEST_NAMES = ("chip.json", "component.json")
+CHIP_STATUS_GROUPS = {"74xx", "memory"}
+
 
 def db_root() -> Path:
     return DB_ROOT
 
 
 def component_ids() -> list[str]:
-    if not DB_ROOT.exists():
-        return []
-    return sorted(
-        path.name
-        for path in DB_ROOT.iterdir()
-        if path.is_dir() and (path / "chip.json").exists()
-    )
+    return sorted(_manifest_paths())
 
 
 def load_component(part: str) -> JsonMap:
@@ -50,6 +47,7 @@ def load_component(part: str) -> JsonMap:
         raise ValueError(f"component DB manifest must be an object: {path}")
     manifest = deepcopy(data)
     manifest.setdefault("part", path.parent.name)
+    manifest.setdefault("id", manifest["part"])
     manifest["db_path"] = str(path.relative_to(ROOT))
     manifest["missing_properties"] = missing_properties(manifest)
     manifest["missing_files"] = missing_files(manifest)
@@ -70,6 +68,10 @@ def component_summary() -> JsonMap:
         "components": [
             {
                 "part": item.get("part"),
+                "id": item.get("id", item.get("part")),
+                "group": item.get("group", ""),
+                "kind": item.get("kind", ""),
+                "role": item.get("role", ""),
                 "title": item.get("title", ""),
                 "family": item.get("family", ""),
                 "status": deepcopy(item.get("status", {})),
@@ -83,7 +85,9 @@ def component_summary() -> JsonMap:
 
 def audit_db() -> JsonMap:
     components = load_all_components()
-    db_parts = {str(item.get("part", "")).upper() for item in components}
+    legacy_components = [item for item in components if _has_legacy_catalog_contract(item)]
+    db_parts = {str(item.get("part", "")).upper() for item in legacy_components}
+    all_db_parts = {str(item.get("part", "")).upper() for item in components}
     legacy = legacy_catalog_parts()
     legacy_parts = set(legacy["verilog_models"])
     errors: list[JsonMap] = []
@@ -108,7 +112,7 @@ def audit_db() -> JsonMap:
                     location,
                     f"package pins={expected_pins} but manifest has {len(pins)} pins",
                 ))
-        if not any(isinstance(pin, dict) and pin.get("direction") == "power" for pin in pins if isinstance(pins, list)):
+        if _requires_power_pin(manifest) and not any(isinstance(pin, dict) and pin.get("direction") == "power" for pin in pins if isinstance(pins, list)):
             errors.append(_issue("missing_power_pin", part, location, "manifest has no power pins"))
 
         seen_numbers: set[int] = set()
@@ -141,15 +145,15 @@ def audit_db() -> JsonMap:
         status = manifest.get("status", {})
         export_status = status.get("verilog_export") if isinstance(status, dict) else None
         has_export_mapping = part.upper() in VERILOG_MAPPINGS
-        if export_status == "tested" and not has_export_mapping:
+        if _has_legacy_catalog_contract(manifest) and export_status == "tested" and not has_export_mapping:
             errors.append(_issue("export_status_without_mapping", part, location, "status says verilog_export=tested but no mapping exists"))
-        if has_export_mapping and export_status in (None, "", "missing", "unknown"):
+        if _has_legacy_catalog_contract(manifest) and has_export_mapping and export_status in (None, "", "missing", "unknown"):
             warnings.append(_issue("export_mapping_without_status", part, location, "Verilog mapping exists but export status is not set"))
 
-        if part.upper() not in legacy_parts:
+        if _has_legacy_catalog_contract(manifest) and part.upper() not in legacy_parts:
             warnings.append(_issue("db_part_missing_legacy_model", part, location, "DB part has no legacy Verilog model file"))
         pinout_parts = set(legacy["pinouts"])
-        if part.upper() not in pinout_parts:
+        if _has_legacy_catalog_contract(manifest) and part.upper() not in pinout_parts:
             warnings.append(_issue("db_part_missing_legacy_pinout", part, location, "DB part has no legacy pinout file"))
 
     missing_db = sorted(legacy_parts - db_parts)
@@ -177,7 +181,8 @@ def audit_db() -> JsonMap:
         "version": 1,
         "ok": not errors,
         "root": str(DB_ROOT.relative_to(ROOT)),
-        "db_count": len(db_parts),
+        "db_count": len(all_db_parts),
+        "legacy_contract_count": len(db_parts),
         "legacy_model_count": len(legacy_parts),
         "legacy_pinout_count": len(legacy["pinouts"]),
         "coverage": {
@@ -195,25 +200,26 @@ def audit_db() -> JsonMap:
 
 def db_status_report() -> JsonMap:
     components = load_all_components()
+    chip_status_components = [item for item in components if _reports_to_chip_status(item)]
     generated = {
         "verified": sorted(
             str(item.get("part", "")).upper()
-            for item in components
+            for item in chip_status_components
             if _status(item, "pinout") == "verified" and _status(item, "datasheet") == "verified"
         ),
         "modeled": sorted(
             str(item.get("part", "")).upper()
-            for item in components
+            for item in chip_status_components
             if _status(item, "python_behavior") == "modeled" or _status(item, "verilog_model") == "modeled"
         ),
         "tested": sorted(
             str(item.get("part", "")).upper()
-            for item in components
+            for item in chip_status_components
             if _status(item, "verilog_export") == "tested"
         ),
         "missing_datasheet": sorted(
             str(item.get("part", "")).upper()
-            for item in components
+            for item in chip_status_components
             if _status(item, "datasheet") in ("missing", "unknown")
         ),
     }
@@ -300,7 +306,29 @@ def missing_files(manifest: JsonMap) -> list[str]:
 
 def _manifest_path(part: str) -> Path:
     clean = str(part).strip()
-    return DB_ROOT / clean / "chip.json"
+    flat = DB_ROOT / clean / "chip.json"
+    if flat.exists():
+        return flat
+    matches = [
+        path
+        for path in _manifest_paths().values()
+        if path.parent.name == clean
+    ]
+    if matches:
+        return sorted(matches)[0]
+    return flat
+
+
+def _manifest_paths() -> dict[str, Path]:
+    if not DB_ROOT.exists():
+        return {}
+    result: dict[str, Path] = {}
+    for name in GROUPED_MANIFEST_NAMES:
+        for path in DB_ROOT.glob(f"*/{name}"):
+            result[path.parent.name] = path
+        for path in DB_ROOT.glob(f"*/*/{name}"):
+            result[path.parent.name] = path
+    return result
 
 
 def _referenced_paths(manifest: JsonMap) -> list[str]:
@@ -343,6 +371,27 @@ def _status(manifest: JsonMap, key: str) -> str:
     if isinstance(status, dict):
         return str(status.get(key, ""))
     return ""
+
+
+def _has_legacy_catalog_contract(manifest: JsonMap) -> bool:
+    group = str(manifest.get("group", "")).lower()
+    return group in ("", "74xx", "memory")
+
+
+def _reports_to_chip_status(manifest: JsonMap) -> bool:
+    group = str(manifest.get("group", "")).lower()
+    return group == "" or group in CHIP_STATUS_GROUPS
+
+
+def _requires_power_pin(manifest: JsonMap) -> bool:
+    group = str(manifest.get("group", "")).lower()
+    role = str(manifest.get("role", "")).lower()
+    kind = str(manifest.get("kind", "")).lower()
+    if group in ("virtual", "passive", "discrete"):
+        return False
+    if kind == "virtual" or role in ("stimulus", "probe", "rail", "passive", "discrete"):
+        return False
+    return True
 
 
 def _section_parts(text: str, heading: str, next_heading: str | None) -> list[str]:
