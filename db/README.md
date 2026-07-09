@@ -18,6 +18,14 @@ db/
     chip.json
   AT28C256/
     chip.json
+  74HC74/
+    chip.json
+  74HC574/
+    chip.json
+  74HC138/
+    chip.json
+  SST39SF010A/
+    chip.json
 ```
 
 Each chip owns one manifest. The manifest may reference existing legacy files
@@ -55,3 +63,10 @@ bidirectional bus transceiver, SRAM, and EEPROM:
 - `74HC245`
 - `62256`
 - `AT28C256`
+
+The next useful set adds flip-flop, register, decoder, and flash coverage:
+
+- `74HC74`
+- `74HC574`
+- `74HC138`
+- `SST39SF010A`

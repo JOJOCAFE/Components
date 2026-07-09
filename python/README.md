@@ -95,9 +95,10 @@ absent from the Python catalog.
 owns a `chip.json` manifest with status, pins, source evidence, behavior
 references, Verilog references, tests, and visible missing-property reports.
 
-The initial DB seed covers `74HC00`, `74HC04`, `74HC161`, `74HC245`, `62256`,
-and `AT28C256`. Existing legacy files remain the active model implementations
-during migration.
+The DB seed covers representative gates, sequential parts, bus parts, decoders,
+SRAM, EEPROM, and flash: `74HC00`, `74HC04`, `74HC74`, `74HC138`, `74HC161`,
+`74HC245`, `74HC574`, `62256`, `AT28C256`, and `SST39SF010A`. Existing legacy
+files remain the active model implementations during migration.
 
 CLI/API access:
 

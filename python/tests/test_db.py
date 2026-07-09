@@ -15,7 +15,18 @@ ALLOWED_STATUS = {
     "not_applicable",
 }
 ALLOWED_DIRECTIONS = {"input", "output", "bidirectional", "power", "nc", "unknown"}
-SEED_PARTS = {"62256", "74HC00", "74HC04", "74HC161", "74HC245", "AT28C256"}
+SEED_PARTS = {
+    "62256",
+    "74HC00",
+    "74HC04",
+    "74HC74",
+    "74HC138",
+    "74HC161",
+    "74HC245",
+    "74HC574",
+    "AT28C256",
+    "SST39SF010A",
+}
 
 
 def test_db_seed_entries_are_loadable():
@@ -47,6 +58,27 @@ def test_db_seed_entries_are_loadable():
     eeprom = load_component("AT28C256")
     assert eeprom["family"] == "Memory"
     assert eeprom["verilog"]["module"] == "mem_at28c256"
+
+    dff = load_component("74HC74")
+    assert dff["package"]["pins"] == 14
+    assert dff["pins"][0]["name"] == "/1CLR"
+    assert dff["pins"][5]["active_low"] is True
+
+    register = load_component("74HC574")
+    assert register["verilog"]["module"] == "ttl_74hc574"
+    assert register["pins"][0]["active_low"] is True
+    assert register["pins"][11] == {"number": 12, "name": "8Q", "direction": "output"}
+
+    decoder = load_component("74HC138")
+    assert decoder["verilog"]["module"] == "ttl_74hc138"
+    assert decoder["pins"][3]["name"] == "/G2A"
+    assert decoder["pins"][14]["active_low"] is True
+
+    flash = load_component("SST39SF010A")
+    assert flash["family"] == "Memory"
+    assert flash["package"]["pins"] == 32
+    assert flash["pins"][0]["direction"] == "nc"
+    assert flash["verilog"]["module"] == "mem_sst39sf010a"
 
 
 def test_db_summary_reports_status_and_gaps():
