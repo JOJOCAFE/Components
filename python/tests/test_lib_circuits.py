@@ -18,9 +18,14 @@ INSTRUCTION_LATCH = ROOT / "Lib" / "Circuits" / "RV8GR_InstructionLatch"
 STORE_PATH = ROOT / "Lib" / "Circuits" / "RV8GR_StorePath"
 DATA_PAGE_MEMORY = ROOT / "Lib" / "Circuits" / "RV8GR_DataPageMemory"
 IRQ_LATCH = ROOT / "Lib" / "Circuits" / "RV8GR_IRQLatch"
+ROM_DBUS_READ = ROOT / "Lib" / "Circuits" / "RV8GR_RomDbusRead"
+PAGE_DATA_REGISTERS = ROOT / "Lib" / "Circuits" / "RV8GR_PageDataRegisters"
+BRANCH_JUMP_CONTROL = ROOT / "Lib" / "Circuits" / "RV8GR_BranchJumpControl"
 RANDOM_PUSH_SEED = 0x8C16
 BYTE_D_PINS = [2, 3, 4, 5, 6, 7, 8, 9]
 BYTE_Q_PINS = [19, 18, 17, 16, 15, 14, 13, 12]
+U7_A_PINS = [2, 3, 4, 5, 6, 7, 8, 9]
+U7_B_PINS = [18, 17, 16, 15, 14, 13, 12, 11]
 MEMORY_ADDR_PINS = {0: 10, 1: 9, 2: 8, 3: 7, 4: 6, 5: 5, 6: 4, 7: 3, 8: 25, 9: 24, 10: 21, 11: 23, 12: 2, 13: 26, 14: 1}
 MEMORY_DQ_PINS = [11, 12, 13, 15, 16, 17, 18, 19]
 
@@ -160,6 +165,75 @@ def irq_latch_step(ie: int, irq_ff: int, event: str, rst: int = 1) -> tuple[int,
     else:
         raise AssertionError(event)
     return ie, irq_ff, "unchanged"
+
+
+def rom_image_bytes(proof: dict) -> dict[int, int]:
+    return {int(address, 16): int(value, 16) for address, value in proof["rom_image"].items()}
+
+
+def rom_dbus_read(address: int, rom_data: dict[int, int], *, wr_dir: int, buf_oe_n: int, force_rom_oe_n: int | None = None) -> dict:
+    a15 = (address >> 15) & 1
+    rom_ce_n = a15
+    rom_oe_n = wr_dir if force_rom_oe_n is None else force_rom_oe_n
+    rom_we_n = 1
+    u7_direction = "DISABLED"
+    if buf_oe_n == 0:
+        u7_direction = "IBUS_TO_DBUS" if wr_dir else "DBUS_TO_IBUS"
+    rom_drives_dbus = rom_ce_n == 0 and rom_oe_n == 0 and rom_we_n == 1
+    u7_writes_dbus = buf_oe_n == 0 and wr_dir == 1
+    ibus = rom_data.get(address & 0x7FFF) if rom_drives_dbus and u7_direction == "DBUS_TO_IBUS" else None
+    return {
+        "rom_ce_n": rom_ce_n,
+        "rom_oe_n": rom_oe_n,
+        "rom_we_n": rom_we_n,
+        "u7_direction": u7_direction,
+        "ibus": ibus,
+        "conflict": bool(rom_drives_dbus and u7_writes_dbus),
+    }
+
+
+def pg_cond_n(mux_sel: int, ac_wr: int) -> int:
+    ac_wr_n = 1 - int(bool(ac_wr))
+    return 1 - int(bool(mux_sel and ac_wr_n))
+
+
+def pg_clk_for_event(event: str, pg_cond_n_value: int) -> int:
+    if event == "T2_START":
+        t2_n = 0
+    elif event == "T2_END":
+        t2_n = 1
+    else:
+        raise AssertionError(event)
+    return int(bool(t2_n or pg_cond_n_value))
+
+
+def page_register_step(start_pg: int, ibus: int, event: str, mux_sel: int, ac_wr: int) -> dict:
+    cond_n = pg_cond_n(mux_sel, ac_wr)
+    clk = pg_clk_for_event(event, cond_n)
+    latch = event == "T2_END" and cond_n == 0
+    return {
+        "pg_cond_n": cond_n,
+        "pg_clk": clk,
+        "latch": latch,
+        "pg": ibus & 0xFF if latch else start_pg & 0xFF,
+    }
+
+
+def jump_target(pg: int, irl: int) -> int:
+    return ((pg & 0xFF) << 8) | (irl & 0xFF)
+
+
+def branch_jump_control(phase: str, jmp: int, br: int, z_flag: int, alu_sub: int) -> dict[str, int]:
+    z_match = int(bool(z_flag ^ alu_sub))
+    br_taken = int(bool(br and z_match))
+    pc_load_cond = int(bool(jmp or br_taken))
+    pc_ld_n = 0 if phase == "T2" and pc_load_cond else 1
+    return {
+        "z_match": z_match,
+        "br_taken": br_taken,
+        "pc_load_cond": pc_load_cond,
+        "pc_ld_n": pc_ld_n,
+    }
 
 
 def required_clock_profile_names() -> set[str]:
@@ -1014,6 +1088,198 @@ def test_rv8gr_irq_latch_random_release_profile_latches_and_stays_sticky():
         ie = 1
 
 
+def test_rv8gr_rom_dbus_read_package_shape():
+    circuit = load_json(ROM_DBUS_READ / "circuit.json")
+    proof = load_json(ROM_DBUS_READ / "tests" / "rom_dbus_read.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_rom_dbus_read"
+    assert proof["circuit"] == circuit["id"]
+    assert (ROM_DBUS_READ / "README.md").exists()
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips == {"ROM1": "AT28C256", "U7": "74HC245"}
+    for part in set(chips.values()):
+        assert list((ROOT / "DB").glob(f"*/*{part}/definition/definition.json")), part
+    assert "DBUS_TO_IBUS" in circuit["behavior"]["u7_read"]
+
+
+def test_rv8gr_rom_dbus_read_vectors_execute():
+    proof = load_json(ROM_DBUS_READ / "tests" / "rom_dbus_read.json")
+    rom_data = rom_image_bytes(proof)
+
+    for vector in proof["vectors"]:
+        result = rom_dbus_read(int(vector["address"], 16), rom_data, wr_dir=vector["wr_dir"], buf_oe_n=vector["buf_oe_n"])
+        assert result["rom_ce_n"] == vector["expect_rom_ce_n"], vector
+        assert result["rom_oe_n"] == vector["expect_rom_oe_n"], vector
+        assert result["u7_direction"] == vector["expect_u7_direction"], vector
+        expect_ibus = None if vector["expect_ibus"] is None else int(vector["expect_ibus"], 16)
+        assert result["ibus"] == expect_ibus, vector
+        assert result["conflict"] == vector["expect_conflict"], vector
+
+    for vector in proof["bus_safety"]:
+        result = rom_dbus_read(
+            int(vector["address"], 16),
+            rom_data,
+            wr_dir=vector["wr_dir"],
+            buf_oe_n=vector["buf_oe_n"],
+            force_rom_oe_n=vector["force_rom_oe_n"],
+        )
+        assert result["conflict"] == vector["expect_conflict"], vector
+
+
+def test_rv8gr_rom_dbus_read_executes_with_component_models():
+    proof = load_json(ROM_DBUS_READ / "tests" / "rom_dbus_read.json")
+    rom_data = rom_image_bytes(proof)
+
+    for address, value in rom_data.items():
+        rom = create_chip("AT28C256", "ROM1")
+        u7 = create_chip("74HC245", "U7")
+        rom.data[address & 0x7FFF] = value
+        set_memory_addr(rom, address & 0x7FFF)
+        rom.set_input(20, (address >> 15) & 1)
+        rom.set_input(22, 0)
+        rom.set_input(27, 1)
+        rom.update()
+        rom.commit()
+
+        set_byte(u7, U7_B_PINS, read_byte(rom, MEMORY_DQ_PINS))
+        u7.set_input(1, 0)
+        u7.set_input(19, 0)
+        u7.update()
+        u7.commit()
+        assert read_byte(u7, U7_A_PINS) == value, hex(address)
+
+
+def test_rv8gr_page_data_registers_package_shape():
+    circuit = load_json(PAGE_DATA_REGISTERS / "circuit.json")
+    proof = load_json(PAGE_DATA_REGISTERS / "tests" / "page_data_registers.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_page_data_registers"
+    assert proof["circuit"] == circuit["id"]
+    assert (PAGE_DATA_REGISTERS / "README.md").exists()
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips == {"U23": "74HC574", "U25": "74HC32", "U27": "74HC00", "U32": "74HC574", "U33": "74HC21"}
+    for part in set(chips.values()):
+        assert list((ROOT / "DB").glob(f"*/*{part}/definition/definition.json")), part
+    assert "PG_CLK rising edge" in circuit["timing"]["trigger_edges"][0]
+
+
+def test_rv8gr_page_register_setpg_edge_vectors_execute():
+    proof = load_json(PAGE_DATA_REGISTERS / "tests" / "page_data_registers.json")
+
+    for vector in proof["setpg_vectors"]:
+        result = page_register_step(
+            int(vector["start_pg"], 16),
+            int(vector["ibus"], 16),
+            vector["event"],
+            vector["mux_sel"],
+            vector["ac_wr"],
+        )
+        assert result["pg_cond_n"] == vector["expect_pg_cond_n"], vector
+        assert result["pg_clk"] == vector["expect_pg_clk"], vector
+        assert result["latch"] == vector["expect_latch"], vector
+        assert result["pg"] == int(vector["expect_pg"], 16), vector
+
+
+def test_rv8gr_page_register_setpg_executes_with_component_model():
+    proof = load_json(PAGE_DATA_REGISTERS / "tests" / "page_data_registers.json")
+    for vector in proof["setpg_vectors"]:
+        u23 = create_chip("74HC574", "U23")
+        latch_byte(u23, int(vector["start_pg"], 16))
+        set_byte(u23, BYTE_D_PINS, int(vector["ibus"], 16))
+        if vector["expect_latch"]:
+            u23.clock_edge(11)
+        else:
+            u23.update()
+        u23.commit()
+        assert read_byte(u23, BYTE_Q_PINS) == int(vector["expect_pg"], 16), vector
+
+
+def test_rv8gr_page_data_register_jump_targets_and_separation():
+    proof = load_json(PAGE_DATA_REGISTERS / "tests" / "page_data_registers.json")
+
+    for vector in proof["jump_targets"]:
+        assert jump_target(int(vector["pg"], 16), int(vector["irl"], 16)) == int(vector["expect_pc_load"], 16), vector
+
+    for vector in proof["separation_vectors"]:
+        pg_latch = page_register_step(0, 0x5A, "T2_END", vector["mux_sel"], 0 if vector["ac_wr_n"] else 1)["latch"]
+        dp_load = dp_load_signal(vector["phase"], vector["xor_mode"], vector["addr_mode_n"], vector["ac_wr_n"])
+        assert pg_latch == vector["expect_pg_latch"], vector
+        assert dp_load == vector["expect_dp_load"], vector
+
+
+def test_rv8gr_branch_jump_control_package_shape():
+    circuit = load_json(BRANCH_JUMP_CONTROL / "circuit.json")
+    proof = load_json(BRANCH_JUMP_CONTROL / "tests" / "branch_jump_control.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_branch_jump_control"
+    assert proof["circuit"] == circuit["id"]
+    assert (BRANCH_JUMP_CONTROL / "README.md").exists()
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips == {"U28": "74HC86", "U27": "74HC00", "U26": "74HC00"}
+    for part in set(chips.values()):
+        assert list((ROOT / "DB").glob(f"*/*{part}/definition/definition.json")), part
+    assert circuit["behavior"]["pc_load_cond"] == "PC_LOAD_COND=JMP OR BR_TAKEN."
+
+
+def test_rv8gr_branch_jump_vectors_execute():
+    proof = load_json(BRANCH_JUMP_CONTROL / "tests" / "branch_jump_control.json")
+
+    for vector in proof["vectors"]:
+        result = branch_jump_control(vector["phase"], vector["jmp"], vector["br"], vector["z_flag"], vector["alu_sub"])
+        assert result["z_match"] == vector["expect_z_match"], vector
+        assert result["br_taken"] == vector["expect_br_taken"], vector
+        assert result["pc_load_cond"] == vector["expect_pc_load_cond"], vector
+        assert result["pc_ld_n"] == vector["expect_pc_ld_n"], vector
+
+
+def test_rv8gr_branch_jump_opcode_sweep_matches_verilog_bench_equation():
+    target = jump_target(0x12, 0x5A)
+    assert target == 0x125A
+    for opcode in range(256):
+        for z_flag in (0, 1):
+            result = branch_jump_control("T2", opcode & 1, (opcode >> 1) & 1, z_flag, (opcode >> 7) & 1)
+            expect_pc_load = int(bool((opcode & 1) or (((opcode >> 1) & 1) and (z_flag ^ ((opcode >> 7) & 1)))))
+            assert result["pc_load_cond"] == expect_pc_load, (opcode, z_flag)
+            next_pc = target if result["pc_ld_n"] == 0 else 0x0011
+            if opcode == 0x01:
+                assert next_pc == target
+
+
+def test_rv8gr_new_control_clock_profiles_exist_and_are_functional():
+    for tests_path in [
+        PAGE_DATA_REGISTERS / "tests" / "page_data_registers.json",
+        BRANCH_JUMP_CONTROL / "tests" / "branch_jump_control.json",
+    ]:
+        profiles = load_json(tests_path)["clock_profiles"]
+        names = {profile["name"] for profile in profiles}
+        assert required_clock_profile_names() <= names, tests_path
+        random_profile = next(profile for profile in profiles if profile["name"] == "push_switch_random_100")
+        assert random_profile["seed"] == RANDOM_PUSH_SEED
+        intervals = random_push_intervals_ms(random_profile)
+        assert len(intervals) == 100
+        assert all(0 <= interval <= 500 for interval in intervals)
+        assert len(set(intervals)) > 1
+        assert "Functional simulation only" in next(profile for profile in profiles if profile["name"] == "5_mhz")["note"]
+
+    pg = 0
+    pg_profile = next(item for item in load_json(PAGE_DATA_REGISTERS / "tests" / "page_data_registers.json")["clock_profiles"] if item["name"] == "push_switch_random_100")
+    for expected, _interval in enumerate(random_push_intervals_ms(pg_profile), start=1):
+        pg = page_register_step(pg, expected, "T2_END", 1, 0)["pg"]
+        assert pg == (expected & 0xFF)
+
+    branch_profile = next(item for item in load_json(BRANCH_JUMP_CONTROL / "tests" / "branch_jump_control.json")["clock_profiles"] if item["name"] == "push_switch_random_100")
+    for index, _interval in enumerate(random_push_intervals_ms(branch_profile)):
+        z_flag = index & 1
+        result = branch_jump_control("T2", 0, 1, z_flag, 0)
+        assert result["pc_ld_n"] == (0 if z_flag else 1)
+
+
 def test_all_started_circuit_packages_have_tests():
     for circuit_path in sorted((ROOT / "Lib" / "Circuits").glob("RV8GR_*/circuit.json")):
         circuit = load_json(circuit_path)
@@ -1065,6 +1331,17 @@ def run_all():
     test_rv8gr_irq_latch_vectors_execute()
     test_rv8gr_irq_latch_vectors_execute_with_component_model()
     test_rv8gr_irq_latch_random_release_profile_latches_and_stays_sticky()
+    test_rv8gr_rom_dbus_read_package_shape()
+    test_rv8gr_rom_dbus_read_vectors_execute()
+    test_rv8gr_rom_dbus_read_executes_with_component_models()
+    test_rv8gr_page_data_registers_package_shape()
+    test_rv8gr_page_register_setpg_edge_vectors_execute()
+    test_rv8gr_page_register_setpg_executes_with_component_model()
+    test_rv8gr_page_data_register_jump_targets_and_separation()
+    test_rv8gr_branch_jump_control_package_shape()
+    test_rv8gr_branch_jump_vectors_execute()
+    test_rv8gr_branch_jump_opcode_sweep_matches_verilog_bench_equation()
+    test_rv8gr_new_control_clock_profiles_exist_and_are_functional()
     test_all_started_circuit_packages_have_tests()
 
 

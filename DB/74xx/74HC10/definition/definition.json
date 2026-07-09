@@ -3,10 +3,10 @@
   "version": 1,
   "part": "74HC10",
   "metadata": {
-    "title": "triple 3-input NAND gate",
+    "title": "Triple 3-input NAND gate",
     "family": "74HC",
     "group": "74xx",
-    "role": "logic"
+    "role": "nand_gate"
   },
   "package": {
     "kind": "DIP",
@@ -89,10 +89,19 @@
   ],
   "logic": {
     "type": "triple_3_input_nand_gate",
-    "description": "triple 3-input NAND gate"
+    "description": "Triple 3-input NAND gate"
   },
   "timing": {
-    "delay_ns": 15
+    "delay_ns": 15,
+    "datasheet": {
+      "source": "TI SN74HC10 datasheet, switching characteristics over recommended operating free-air temperature range, CL = 50 pF",
+      "path": "A_B_or_C_to_Y",
+      "vcc_v": 4.5,
+      "typical_ns": 10,
+      "max_ns_25c": 19,
+      "max_ns_minus40_to_85c": 24,
+      "load_pf": 50
+    }
   },
   "generation": {
     "targets": [
@@ -134,14 +143,16 @@
     "part": "74HC10",
     "sources": [
       {
-        "label": "Legacy pinout datasheet source",
+        "label": "Texas Instruments SN74HC10",
         "file": "Source/74HC10_TI_27881_SN74HC10N_DIPVERIFY.pdf",
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ],
-        "package_evidence": "datasheet-required"
+        "package_evidence": "N, 14-pin PDIP"
       }
     ]
   },
@@ -150,11 +161,11 @@
       "schema": "db.component.definition",
       "version": 1,
       "part": "74HC10",
-      "title": "triple 3-input NAND gate",
+      "title": "Triple 3-input NAND gate",
       "family": "74HC",
       "group": "74xx",
       "kind": "ic",
-      "role": "logic"
+      "role": "nand_gate"
     },
     "package": {
       "schema": "db.component.package",
@@ -273,7 +284,7 @@
       "part": "74HC10",
       "logic": {
         "type": "triple_3_input_nand_gate",
-        "description": "triple 3-input NAND gate"
+        "description": "Triple 3-input NAND gate"
       }
     },
     "timing": {
@@ -282,15 +293,31 @@
       "part": "74HC10",
       "delay": {
         "model_delay_ns": 15,
-        "status": "model-derived"
+        "status": "datasheet-backed",
+        "datasheet_typical_ns": {
+          "4.5": 10
+        },
+        "datasheet_max_ns_25c": {
+          "4.5": 19
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "4.5": 24
+        },
+        "conditions": {
+          "load_pf": 50,
+          "path": "A_B_or_C_to_Y"
+        }
       },
       "evidence": {
-        "label": "Legacy pinout datasheet source",
+        "label": "Texas Instruments SN74HC10",
         "file": "Source/74HC10_TI_27881_SN74HC10N_DIPVERIFY.pdf",
+        "package_evidence": "N, 14-pin PDIP",
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     },
@@ -298,24 +325,80 @@
       "schema": "db.component.electrical",
       "version": 1,
       "part": "74HC10",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
+      "recommended_operating": {
+        "vcc_v": {
+          "min": 2,
+          "nom": 5,
+          "max": 6
+        },
+        "input_voltage_v": {
+          "min": 0,
+          "max": "VCC"
+        },
+        "output_voltage_v": {
+          "min": 0,
+          "max": "VCC"
+        },
+        "vih_min_v": {
+          "2.0": 1.5,
+          "4.5": 3.15,
+          "6.0": 4.2
+        },
+        "vil_max_v": {
+          "2.0": 0.5,
+          "4.5": 1.35,
+          "6.0": 1.8
+        },
+        "input_transition_max_ns": {
+          "2.0": 1000,
+          "4.5": 500,
+          "6.0": 400
+        },
+        "ta_c": {
+          "min": -40,
+          "max": 85
         }
       },
-      "current": {
-        "status": "datasheet-required"
+      "static_characteristics": {
+        "voh_min_v": {
+          "ioh_-20ua": {
+            "2.0": 1.9,
+            "4.5": 4.4,
+            "6.0": 5.9
+          },
+          "ioh_-4ma_4.5v": 3.84,
+          "ioh_-5.2ma_6v": 5.34
+        },
+        "vol_max_v": {
+          "iol_20ua": {
+            "2.0": 0.1,
+            "4.5": 0.1,
+            "6.0": 0.1
+          },
+          "iol_4ma_4.5v": 0.33,
+          "iol_5.2ma_6v": 0.33
+        },
+        "icc_max_ua": {
+          "6.0": 20
+        },
+        "ci_max_pf": {
+          "2.0_to_6.0": 10
+        }
       },
       "loading": {
-        "status": "datasheet-required"
+        "switching_test_load_pf": 50,
+        "application_capacitive_load_limit_pf": 50
       },
       "evidence": {
-        "label": "Legacy pinout datasheet source",
+        "label": "Texas Instruments SN74HC10",
         "file": "Source/74HC10_TI_27881_SN74HC10N_DIPVERIFY.pdf",
+        "package_evidence": "N, 14-pin PDIP",
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     }

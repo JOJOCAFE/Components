@@ -7,6 +7,18 @@
     {
       "name": "model_propagation",
       "expect_delay_ns": 15
+    },
+    {
+      "name": "datasheet_a_b_or_c_to_y_4v5",
+      "path": "A_B_or_C_to_Y",
+      "expect_delay_ns": 19,
+      "datasheet_typical_ns": 10,
+      "datasheet_max_ns": 19,
+      "conditions": {
+        "vcc_v": 4.5,
+        "load_pf": 50,
+        "temperature_c": 25
+      }
     }
   ]
 }

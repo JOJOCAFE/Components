@@ -1,0 +1,82 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_page_data_registers",
+  "title": "RV8GR page and data page register timing",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/labs/lab11_page_register.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/labs/lab12_ram_datapage.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/07_risk_analysis.md",
+      "/home/jo/kiro/RV8/RV8GR/sim/soft_debug.py",
+      "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_setdp.v",
+      "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_opcode_sweep.v"
+    ]
+  },
+  "purpose": "Prove U23 page-register edge timing beside the existing U32 data-page path so SETPG, SETDP, and jump targets stay understandable and testable.",
+  "chips": [
+    {"ref": "U23", "part": "74HC574", "role": "Page register for PC high byte during jump"},
+    {"ref": "U25", "part": "74HC32", "role": "OR gate that forms PG_CLK from /T2 and /PG_cond"},
+    {"ref": "U27", "part": "74HC00", "role": "Creates /PG_cond from MUX_SEL and /AC_WR"},
+    {"ref": "U32", "part": "74HC574", "role": "Data page register used by load/store data addresses"},
+    {"ref": "U33", "part": "74HC21", "role": "Creates DP_Load for SETDP"}
+  ],
+  "ports": [
+    {"name": "T2", "direction": "input"},
+    {"name": "/T2", "direction": "internal", "active_low": true},
+    {"name": "MUX_SEL", "direction": "input"},
+    {"name": "XOR_MODE", "direction": "input"},
+    {"name": "AC_WR", "direction": "input"},
+    {"name": "/AC_WR", "direction": "internal", "active_low": true},
+    {"name": "/ADDR_MODE", "direction": "input", "active_low": true},
+    {"name": "/PG_cond", "direction": "internal", "active_low": true},
+    {"name": "PG_CLK", "direction": "internal"},
+    {"name": "DP_Load", "direction": "internal"},
+    {"name": "IBUS0..IBUS7", "direction": "input"},
+    {"name": "PG0..PG7", "direction": "output"},
+    {"name": "DP0..DP7", "direction": "output"},
+    {"name": "IRL0..IRL7", "direction": "input"},
+    {"name": "PC_LOAD0..PC_LOAD15", "direction": "output"}
+  ],
+  "wiring": [
+    {"net": "IBUS0..IBUS7", "connections": ["U23.2..9", "U32.2..9"]},
+    {"net": "PG_CLK", "connections": ["U25.11", "U23.11"]},
+    {"net": "DP_Load", "connections": ["U33.6", "U32.11"]},
+    {"net": "PG0..PG3", "connections": ["U23.19", "U23.18", "U23.17", "U23.16", "U3.3..6"]},
+    {"net": "PG4..PG7", "connections": ["U23.15", "U23.14", "U23.13", "U23.12", "U4.3..6"]},
+    {"net": "IRL0..IRL7", "connections": ["U1.3..6", "U2.3..6"]},
+    {"net": "PC_LOAD0..PC_LOAD15", "connections": ["IRL0..IRL7", "PG0..PG7"]}
+  ],
+  "behavior": {
+    "pg_cond": "/PG_cond=NAND(MUX_SEL,/AC_WR).",
+    "pg_clk": "PG_CLK=/T2 OR /PG_cond. During SETPG T2 it goes LOW, then the return HIGH at T2 end is the 74HC574 capture edge.",
+    "setpg": "SETPG is MUX_SEL=1 and AC_WR=0; U23 captures IBUS on the PG_CLK rising edge.",
+    "setdp": "DP_Load=T2 AND XOR_MODE AND /ADDR_MODE AND /AC_WR; U32 captures IBUS on DP_Load rising.",
+    "jump_target": "PC load target is {PG,IRL}; SETPG $10 followed by J $00 targets $1000.",
+    "separation": "Normal SETPG and SETDP are separated by XOR_MODE and /ADDR_MODE. Risk vectors still record invalid overlap behavior."
+  },
+  "timing": {
+    "clocking": "edge_triggered",
+    "trigger_edges": [
+      "U23 captures on PG_CLK rising edge",
+      "U32 captures on DP_Load rising edge"
+    ],
+    "unsafe_states": [
+      "Treating PG_CLK LOW level as the latch event",
+      "PG_CLK stuck LOW after SETPG",
+      "SETPG and SETDP overlap on an invalid opcode/control mix"
+    ]
+  },
+  "verification": {
+    "tests": ["tests/page_data_registers.json"],
+    "guarantees": [
+      "U23 holds while PG_CLK is LOW at T2 start",
+      "U23 captures only on the PG_CLK rising edge at T2 end",
+      "Non-SETPG controls hold PG",
+      "Jump target combines PG high byte with IRL low byte",
+      "Clock profiles cover manual push, random 100 pushes, 50 kHz, 1 MHz, 2 MHz, and 5 MHz functional simulation"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

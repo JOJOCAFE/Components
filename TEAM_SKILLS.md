@@ -129,13 +129,24 @@ Current RV8GR circuit-library milestone:
 - `RV8GR_IRQLatch` proves reset clear, EI rising-edge IE set, `/IRQ` release
   latching, sticky IRQ_FF, DI inert behavior, no PC change, no v1.0 vector,
   and live `74HC74` component-model execution.
+- `RV8GR_RomDbusRead` proves ROM bytes crossing DBUS to IBUS through live
+  `AT28C256` and `74HC245` models, A15 ROM disable, U7 disable, write-direction
+  ROM output disable, and forced ROM-vs-U7 DBUS contention detection.
+- `RV8GR_PageDataRegisters` proves U23 positive-edge SETPG capture,
+  T2-start hold while `PG_CLK` is LOW, `{PG,IRL}` jump targets, SETPG/SETDP
+  separation, invalid overlap visibility, live `74HC574` execution, and clock
+  profiles.
+- `RV8GR_BranchJumpControl` proves `/PC_LD` phase gating, JMP, BEQ, BNE,
+  no-load hold cases, JMP+BR overlap, and the Verilog opcode-sweep equation
+  for all 256 opcodes with both Z states.
 - Extra clock-profile tests now cover `RV8GR_InstructionLatch`,
-  `RV8GR_DataPageMemory`, and `RV8GR_IRQLatch` with push-switch, random
-  debounced push up to 500 ms for 100 ticks, 50 kHz, 1 MHz, 2 MHz, and 5 MHz
-  functional profiles.
-- Next circuits must follow the same quality level: `RV8GR_RomDbusRead`,
-  `RV8GR_AluAccumulator`, `RV8GR_PageDataRegisters`, and
-  `RV8GR_BranchJumpControl`.
+  `RV8GR_DataPageMemory`, `RV8GR_IRQLatch`, `RV8GR_PageDataRegisters`, and
+  `RV8GR_BranchJumpControl` with push-switch, random debounced push up to
+  500 ms for 100 ticks, 50 kHz, 1 MHz, 2 MHz, and 5 MHz functional profiles.
+- Virtual helper policy: use virtual clock sources, phase probes, bus monitors,
+  or contention detectors when they make tests clearer, but do not replace real
+  chip behavior with virtual behavior when the DB has a real model.
+- Next circuit must follow the same quality level: `RV8GR_AluAccumulator`.
 
 ## Pim - Coordinator
 

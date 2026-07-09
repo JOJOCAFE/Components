@@ -1,0 +1,76 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_branch_jump_control",
+  "title": "RV8GR branch and jump PC load control",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/labs/lab10_branch_jump.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/00_design_isa.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/build_plan/02_student_worksheet.md",
+      "/home/jo/kiro/RV8/RV8GR/sim/soft_debug.py",
+      "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_cpu.v",
+      "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_opcode_sweep.v"
+    ]
+  },
+  "purpose": "Prove the RV8GR control gate path that lowers /PC_LD only during T2 when an unconditional jump or a taken branch is active.",
+  "chips": [
+    {"ref": "U28", "part": "74HC86", "role": "Z_match = Z_flag XOR ALU_SUB"},
+    {"ref": "U27", "part": "74HC00", "role": "Branch taken and PC_LOAD_COND NAND path"},
+    {"ref": "U26", "part": "74HC00", "role": "Creates /PC_LD=NAND(T2,PC_LOAD_COND)"}
+  ],
+  "ports": [
+    {"name": "T0", "direction": "input"},
+    {"name": "T1", "direction": "input"},
+    {"name": "T2", "direction": "input"},
+    {"name": "JMP", "direction": "input"},
+    {"name": "BR", "direction": "input"},
+    {"name": "ALU_SUB", "direction": "input"},
+    {"name": "Z_flag", "direction": "input"},
+    {"name": "Z_match", "direction": "internal"},
+    {"name": "/BR_TAKEN", "direction": "internal", "active_low": true},
+    {"name": "PC_LOAD_COND", "direction": "internal"},
+    {"name": "/PC_LD", "direction": "output", "active_low": true}
+  ],
+  "wiring": [
+    {"net": "Z_flag", "connections": ["U28.1"]},
+    {"net": "ALU_SUB", "connections": ["U28.2"]},
+    {"net": "Z_match", "connections": ["U28.3", "U27.2"]},
+    {"net": "BR", "connections": ["U27.1"]},
+    {"net": "/BR_TAKEN", "connections": ["U27.3", "U27.5"]},
+    {"net": "JMP", "connections": ["U27.4"]},
+    {"net": "PC_LOAD_COND", "connections": ["U27.6", "U26.13"]},
+    {"net": "T2", "connections": ["U26.12"]},
+    {"net": "/PC_LD", "connections": ["U26.11", "U1.9", "U2.9", "U3.9", "U4.9"]}
+  ],
+  "behavior": {
+    "z_match": "Z_match=Z_flag XOR ALU_SUB. BEQ uses ALU_SUB=0; BNE uses ALU_SUB=1.",
+    "branch_taken": "BR_TAKEN=BR AND Z_match. /BR_TAKEN is LOW when the branch is taken.",
+    "pc_load_cond": "PC_LOAD_COND=JMP OR BR_TAKEN.",
+    "pc_load": "/PC_LD=NAND(T2,PC_LOAD_COND), so the PC loads only during T2 when the condition is true.",
+    "overlap": "JMP=1 dominates as an unconditional jump; BR may also be 1 without creating a second PC load path."
+  },
+  "timing": {
+    "clocking": "phase_gated_combinational_control",
+    "load_window": "/PC_LD may go LOW only during T2.",
+    "unsafe_states": [
+      "/PC_LD LOW during T0 or T1",
+      "BEQ loads when Z=0",
+      "BNE loads when Z=1",
+      "Branch/JMP controls create more than one PC load edge"
+    ]
+  },
+  "verification": {
+    "tests": ["tests/branch_jump_control.json"],
+    "guarantees": [
+      "T0/T1 never assert /PC_LD even when JMP or branch condition is true",
+      "JMP asserts /PC_LD during T2",
+      "BEQ takes only when Z=1",
+      "BNE takes only when Z=0",
+      "No branch/no jump holds /PC_LD HIGH",
+      "Clock profiles cover manual push, random 100 pushes, 50 kHz, 1 MHz, 2 MHz, and 5 MHz functional simulation"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

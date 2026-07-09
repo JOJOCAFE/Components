@@ -183,25 +183,38 @@ Done:
   `/IRQ` release rising edge latching IRQ_FF, DI being inert, 100-tick sticky
   behavior, no PC change, no v1.0 vector/ack/auto-clear path, and live
   `74HC74` component-model execution.
+- ✅ `RV8GR_RomDbusRead`: ROM plus U7 `74HC245` read proof. Tests cover lab
+  ROM bytes crossing DBUS to IBUS through live `AT28C256` and `74HC245`
+  models, A15 ROM disable, U7 disable, `WR_DIR` disabling ROM output during
+  write direction, and forced ROM-vs-U7 DBUS contention detection.
+- ✅ `RV8GR_PageDataRegisters`: U23/U32 page-register proof. Tests cover
+  `PG_CLK` low-level hold, positive-edge SETPG capture at T2 end, non-SETPG
+  hold cases, `{PG,IRL}` jump targets `$1000`, `$AA55`, and `$FFFF`,
+  SETPG-vs-SETDP separation, invalid overlap visibility, live `74HC574`
+  execution, and clock profiles.
+- ✅ `RV8GR_BranchJumpControl`: U28/U27/U26 branch/jump control proof. Tests
+  cover T0/T1 no-load, T2 jump load, BEQ/BNE taken and not-taken cases,
+  no-op hold, JMP+BR overlap, Verilog opcode-sweep equation for all 256
+  opcodes and Z states, target `$125A`, and clock profiles.
 - ✅ Extra clock-profile tests for edge-sensitive circuits: `RV8GR_InstructionLatch`,
-  `RV8GR_DataPageMemory`, and `RV8GR_IRQLatch` now declare and execute
+  `RV8GR_DataPageMemory`, `RV8GR_IRQLatch`, `RV8GR_PageDataRegisters`, and
+  `RV8GR_BranchJumpControl` now declare and execute
   push-switch, random 100 pushes up to 500 ms, 50 kHz, 1 MHz, 2 MHz, and 5 MHz
   functional profiles. 5 MHz remains functional simulation only.
 
 Next team tasks:
 
-1. **Bam + Fern: `RV8GR_RomDbusRead`**
-   - Split the ROM/U7 fetch path out from the broader bus ownership proof and
-     run it against memory bytes.
-2. **Mint + Fern: `RV8GR_AluAccumulator`**
+1. **Mint + Fern: `RV8GR_AluAccumulator`**
    - Prove ALU input muxes, AC latch edge, Z flag path, and immediate vs memory
      source timing.
-3. **Mint + Fern: `RV8GR_PageDataRegisters`**
-   - Split U23 page-register behavior from U32 DataPageMemory and prove
-     `PG_CLK` edge behavior.
-4. **Bank + Fern: `RV8GR_BranchJumpControl`**
-   - Prove `/PC_LD`, branch condition, and no unintended PC load.
-5. **Ohm + Fern: hardware timing-margin proof**
+2. **Fern + Bam: virtual test helpers**
+   - Add virtual clock, phase probe, bus monitor, and contention detector
+     components only where they make timing/bus tests clearer than ad hoc
+     Python helpers.
+3. **Bank + Fern: opcode-sweep circuit proof**
+   - Lift more `tb_rv8gr_opcode_sweep.v` expectations into reusable circuit
+     package tests, especially reserved or illegal control mixes.
+4. **Ohm + Fern: hardware timing-margin proof**
    - Keep 5 MHz marked functional simulation until physical timing and
      signal-integrity evidence exist.
 
