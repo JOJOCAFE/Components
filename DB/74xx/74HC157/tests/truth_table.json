@@ -4,8 +4,40 @@
   "part": "74HC157",
   "applicable": true,
   "vectors": [
-    {"name": "select_a", "inputs": {"A/B": 0, "/G": 0}, "expect": {"Y": "A"}},
-    {"name": "select_b", "inputs": {"A/B": 1, "/G": 0}, "expect": {"Y": "B"}},
-    {"name": "disabled_low", "inputs": {"/G": 1}, "expect": {"Y": 0}}
-  ]
+    {
+      "name": "select_a",
+      "inputs": {
+        "A/B": 0,
+        "/G": 0
+      },
+      "expect": {
+        "Y": "A"
+      }
+    },
+    {
+      "name": "select_b",
+      "inputs": {
+        "A/B": 1,
+        "/G": 0
+      },
+      "expect": {
+        "Y": "B"
+      }
+    },
+    {
+      "name": "disabled_low",
+      "inputs": {
+        "/G": 1
+      },
+      "expect": {
+        "Y": 0
+      }
+    }
+  ],
+  "edge_criteria": {
+    "clocking": "level_sensitive",
+    "trigger_edge": "none",
+    "non_trigger_edge": "not_applicable",
+    "notes": "Combinational or level-controlled part; outputs are checked after input/control level changes and propagation delay."
+  }
 }

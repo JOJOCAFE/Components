@@ -245,6 +245,39 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC541",
+      "module": "ttl_74hc541",
+      "bench_module": "tb_generated_74hc541",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC541/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc541"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "enabled_outputs_match_a",
+            "enabled_outputs_match_reverse_pattern",
+            "oe1_high_releases_outputs",
+            "oe2_high_releases_outputs",
+            "both_disabled_releases_outputs"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -342,7 +375,9 @@
       "version": 1,
       "part": "74HC541",
       "title": "Octal Buffer/Line Driver",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "Octal Buffer/Line Driver.",
+      "overview": "74HC541 is a 20-pin DIP part for buffer.",
       "sections": [
         "overview",
         "pins",
@@ -351,9 +386,56 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 12 ns before trusting the output."
+      ],
       "pin_count": 20,
+      "pin_summary": {
+        "input": {
+          "count": 10,
+          "names": [
+            "/OE1",
+            "A1",
+            "A2",
+            "A3",
+            "A4",
+            "A5",
+            "A6",
+            "A7",
+            "A8",
+            "/OE2"
+          ],
+          "note": "Input pins: /OE1, A1, A2, A3, A4, A5, and 4 more."
+        },
+        "output": {
+          "count": 8,
+          "names": [
+            "Y8",
+            "Y7",
+            "Y6",
+            "Y5",
+            "Y4",
+            "Y3",
+            "Y2",
+            "Y1"
+          ],
+          "note": "Output pins: Y8, Y7, Y6, Y5, Y4, Y3, and 2 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 12 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -395,6 +477,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC541",
+      "title": "Try 74HC541 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "/OE1",
         "A1",
@@ -407,6 +491,68 @@
         "A8",
         "/OE2"
       ],
+      "control_labels": [
+        {
+          "pin": "/OE1",
+          "label": "/OE1 - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/OE1 controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "A1",
+          "label": "A1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A2",
+          "label": "A2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A3",
+          "label": "A3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A3 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A4",
+          "label": "A4 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A4 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A5",
+          "label": "A5 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A5 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A6",
+          "label": "A6 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A6 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A7",
+          "label": "A7 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A7 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A8",
+          "label": "A8 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A8 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/OE2",
+          "label": "/OE2 - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/OE2 controls input. This is active low, so 0 turns the control on."
+        }
+      ],
       "probes": [
         "Y8",
         "Y7",
@@ -417,10 +563,62 @@
         "Y2",
         "Y1"
       ],
+      "probe_labels": [
+        {
+          "name": "Y8",
+          "label": "Y8",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y7",
+          "label": "Y7",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y6",
+          "label": "Y6",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y5",
+          "label": "Y5",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y4",
+          "label": "Y4",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y3",
+          "label": "Y3",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y2",
+          "label": "Y2",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y1",
+          "label": "Y1",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change /OE1?",
+        "Which truth-table row matches the value on Y8?"
       ]
     }
   }

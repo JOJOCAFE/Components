@@ -5,8 +5,70 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "zero_plus_zero",
+      "inputs": {
+        "A": "0x0",
+        "B": "0x0",
+        "Cin": 0
+      },
+      "expect": {
+        "S": "0x0",
+        "Cout": 0
+      }
+    },
+    {
+      "name": "three_plus_five",
+      "inputs": {
+        "A": "0x3",
+        "B": "0x5",
+        "Cin": 0
+      },
+      "expect": {
+        "S": "0x8",
+        "Cout": 0
+      }
+    },
+    {
+      "name": "carry_in",
+      "inputs": {
+        "A": "0x3",
+        "B": "0x5",
+        "Cin": 1
+      },
+      "expect": {
+        "S": "0x9",
+        "Cout": 0
+      }
+    },
+    {
+      "name": "carry_out",
+      "inputs": {
+        "A": "0xF",
+        "B": "0x1",
+        "Cin": 0
+      },
+      "expect": {
+        "S": "0x0",
+        "Cout": 1
+      }
+    },
+    {
+      "name": "carry_out_with_cin",
+      "inputs": {
+        "A": "0xF",
+        "B": "0x0",
+        "Cin": 1
+      },
+      "expect": {
+        "S": "0x0",
+        "Cout": 1
+      }
     }
-  ]
+  ],
+  "edge_criteria": {
+    "clocking": "level_sensitive",
+    "trigger_edge": "none",
+    "non_trigger_edge": "not_applicable",
+    "notes": "Combinational or level-controlled part; outputs are checked after input/control level changes and propagation delay."
+  }
 }

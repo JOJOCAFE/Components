@@ -215,6 +215,39 @@
         "delay_ns": 4
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC164",
+      "module": "ttl_74hc164",
+      "bench_module": "tb_generated_74hc164",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC164/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc164"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "clear_forces_all_low",
+            "shift_in_one_when_a_and_b_high",
+            "shift_in_zero_when_a_low",
+            "shift_second_one",
+            "clear_after_shift"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -288,7 +321,9 @@
       "version": 1,
       "part": "74HC164",
       "title": "8-Bit Serial-In Parallel-Out Shift Register",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "8-Bit Serial-In Parallel-Out Shift Register.",
+      "overview": "74HC164 is a 14-pin DIP part for shift register.",
       "sections": [
         "overview",
         "pins",
@@ -297,9 +332,50 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 20 ns before trusting the output."
+      ],
       "pin_count": 14,
+      "pin_summary": {
+        "input": {
+          "count": 4,
+          "names": [
+            "A",
+            "B",
+            "CLK",
+            "/CLR"
+          ],
+          "note": "Input pins: A, B, CLK, /CLR."
+        },
+        "output": {
+          "count": 8,
+          "names": [
+            "QA",
+            "QB",
+            "QC",
+            "QD",
+            "QE",
+            "QF",
+            "QG",
+            "QH"
+          ],
+          "note": "Output pins: QA, QB, QC, QD, QE, QF, and 2 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 20 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -330,11 +406,39 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC164",
+      "title": "Try 74HC164 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "A",
         "B",
         "CLK",
         "/CLR"
+      ],
+      "control_labels": [
+        {
+          "pin": "A",
+          "label": "A - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B",
+          "label": "B - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "CLK",
+          "label": "CLK - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "CLK controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/CLR",
+          "label": "/CLR - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/CLR controls input. This is active low, so 0 turns the control on."
+        }
       ],
       "probes": [
         "QA",
@@ -346,10 +450,62 @@
         "QG",
         "QH"
       ],
+      "probe_labels": [
+        {
+          "name": "QA",
+          "label": "QA",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "QB",
+          "label": "QB",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "QC",
+          "label": "QC",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "QD",
+          "label": "QD",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "QE",
+          "label": "QE",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "QF",
+          "label": "QF",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "QG",
+          "label": "QG",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "QH",
+          "label": "QH",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change A?",
+        "Which truth-table row matches the value on QA?"
       ]
     }
   }

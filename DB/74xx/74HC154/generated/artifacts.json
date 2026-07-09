@@ -275,6 +275,35 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC154",
+      "module": "ttl_74hc154",
+      "bench_module": "tb_generated_74hc154",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC154/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc154"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -372,7 +401,9 @@
       "version": 1,
       "part": "74HC154",
       "title": "4-to-16 line decoder/demultiplexer",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "4-to-16 line decoder/demultiplexer.",
+      "overview": "74HC154 is a 24-pin DIP part for decoder.",
       "sections": [
         "overview",
         "pins",
@@ -381,9 +412,60 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 15 ns before trusting the output."
+      ],
       "pin_count": 24,
+      "pin_summary": {
+        "input": {
+          "count": 6,
+          "names": [
+            "E0",
+            "E1",
+            "A3",
+            "A2",
+            "A1",
+            "A0"
+          ],
+          "note": "Input pins: E0, E1, A3, A2, A1, A0."
+        },
+        "output": {
+          "count": 16,
+          "names": [
+            "Y0",
+            "Y1",
+            "Y2",
+            "Y3",
+            "Y4",
+            "Y5",
+            "Y6",
+            "Y7",
+            "Y8",
+            "Y9",
+            "Y10",
+            "Y11",
+            "Y12",
+            "Y13",
+            "Y14",
+            "Y15"
+          ],
+          "note": "Output pins: Y0, Y1, Y2, Y3, Y4, Y5, and 10 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -414,6 +496,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC154",
+      "title": "Try 74HC154 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "E0",
         "E1",
@@ -421,6 +505,44 @@
         "A2",
         "A1",
         "A0"
+      ],
+      "control_labels": [
+        {
+          "pin": "E0",
+          "label": "E0 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "E0 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "E1",
+          "label": "E1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "E1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A3",
+          "label": "A3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A3 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A2",
+          "label": "A2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A1",
+          "label": "A1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A0",
+          "label": "A0 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A0 controls input. Use 1 to turn this control on."
+        }
       ],
       "probes": [
         "Y0",
@@ -432,10 +554,62 @@
         "Y6",
         "Y7"
       ],
+      "probe_labels": [
+        {
+          "name": "Y0",
+          "label": "Y0",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y1",
+          "label": "Y1",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y2",
+          "label": "Y2",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y3",
+          "label": "Y3",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y4",
+          "label": "Y4",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y5",
+          "label": "Y5",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y6",
+          "label": "Y6",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y7",
+          "label": "Y7",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change E0?",
+        "Which truth-table row matches the value on Y0?"
       ]
     }
   }

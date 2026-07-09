@@ -4,8 +4,85 @@
   "part": "74HC245",
   "applicable": true,
   "vectors": [
-    {"name": "a_to_b", "inputs": {"DIR": 1, "/OE": 0, "A": "0x5A"}, "expect": {"B": "0x5A", "A": "Z"}},
-    {"name": "b_to_a", "inputs": {"DIR": 0, "/OE": 0, "B": "0xA6"}, "expect": {"A": "0xA6", "B": "Z"}},
-    {"name": "disabled", "inputs": {"/OE": 1}, "expect": {"A": "Z", "B": "Z"}}
-  ]
+    {
+      "name": "dir_high_a_to_b",
+      "inputs": {
+        "DIR": 1,
+        "/OE": 0,
+        "A": "0x5A"
+      },
+      "expect": {
+        "B": "0x5A",
+        "A": "Z"
+      }
+    },
+    {
+      "name": "dir_high_a_to_b_reverse_pattern",
+      "inputs": {
+        "DIR": 1,
+        "/OE": 0,
+        "A": "0xC3"
+      },
+      "expect": {
+        "B": "0xC3",
+        "A": "Z"
+      }
+    },
+    {
+      "name": "dir_low_b_to_a",
+      "inputs": {
+        "DIR": 0,
+        "/OE": 0,
+        "B": "0xA6"
+      },
+      "expect": {
+        "A": "0xA6",
+        "B": "Z"
+      }
+    },
+    {
+      "name": "dir_low_b_to_a_reverse_pattern",
+      "inputs": {
+        "DIR": 0,
+        "/OE": 0,
+        "B": "0x3C"
+      },
+      "expect": {
+        "A": "0x3C",
+        "B": "Z"
+      }
+    },
+    {
+      "name": "disabled_oe_high_releases_a_and_b",
+      "inputs": {
+        "DIR": 1,
+        "/OE": 1,
+        "A": "0xFF",
+        "B": "0x00"
+      },
+      "expect": {
+        "A": "Z",
+        "B": "Z"
+      }
+    },
+    {
+      "name": "disabled_oe_high_reverse_releases_a_and_b",
+      "inputs": {
+        "DIR": 0,
+        "/OE": 1,
+        "A": "0x00",
+        "B": "0xFF"
+      },
+      "expect": {
+        "A": "Z",
+        "B": "Z"
+      }
+    }
+  ],
+  "edge_criteria": {
+    "clocking": "level_sensitive",
+    "trigger_edge": "none",
+    "non_trigger_edge": "not_applicable",
+    "notes": "Combinational or level-controlled part; outputs are checked after input/control level changes and propagation delay."
+  }
 }

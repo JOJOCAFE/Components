@@ -5,8 +5,50 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "xor_00",
+      "inputs": {
+        "A": 0,
+        "B": 0
+      },
+      "expect": {
+        "Y": 0
+      }
+    },
+    {
+      "name": "xor_01",
+      "inputs": {
+        "A": 0,
+        "B": 1
+      },
+      "expect": {
+        "Y": 1
+      }
+    },
+    {
+      "name": "xor_10",
+      "inputs": {
+        "A": 1,
+        "B": 0
+      },
+      "expect": {
+        "Y": 1
+      }
+    },
+    {
+      "name": "xor_11",
+      "inputs": {
+        "A": 1,
+        "B": 1
+      },
+      "expect": {
+        "Y": 0
+      }
     }
-  ]
+  ],
+  "edge_criteria": {
+    "clocking": "level_sensitive",
+    "trigger_edge": "none",
+    "non_trigger_edge": "not_applicable",
+    "notes": "Combinational or level-controlled part; outputs are checked after input/control level changes and propagation delay."
+  }
 }

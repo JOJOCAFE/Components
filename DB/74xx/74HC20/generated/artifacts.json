@@ -187,6 +187,35 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC20",
+      "module": "ttl_74hc20",
+      "bench_module": "tb_generated_74hc20",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC20/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc20"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -268,7 +297,9 @@
       "version": 1,
       "part": "74HC20",
       "title": "dual 4-input NAND gate",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "dual 4-input NAND gate.",
+      "overview": "74HC20 is a 14-pin DIP part for logic.",
       "sections": [
         "overview",
         "pins",
@@ -277,9 +308,48 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 15 ns before trusting the output."
+      ],
       "pin_count": 14,
+      "pin_summary": {
+        "input": {
+          "count": 8,
+          "names": [
+            "1A",
+            "1B",
+            "1C",
+            "1D",
+            "2A",
+            "2B",
+            "2C",
+            "2D"
+          ],
+          "note": "Input pins: 1A, 1B, 1C, 1D, 2A, 2B, and 2 more."
+        },
+        "output": {
+          "count": 2,
+          "names": [
+            "1Y",
+            "2Y"
+          ],
+          "note": "Output pins: 1Y, 2Y."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -310,6 +380,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC20",
+      "title": "Try 74HC20 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "1A",
         "1B",
@@ -320,14 +392,86 @@
         "2C",
         "2D"
       ],
+      "control_labels": [
+        {
+          "pin": "1A",
+          "label": "1A - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1A controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "1B",
+          "label": "1B - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1B controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "1C",
+          "label": "1C - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1C controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "1D",
+          "label": "1D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1D controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2A",
+          "label": "2A - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2A controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2B",
+          "label": "2B - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2B controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2C",
+          "label": "2C - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2C controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2D",
+          "label": "2D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2D controls input. Use 1 to turn this control on."
+        }
+      ],
       "probes": [
         "1Y",
         "2Y"
+      ],
+      "probe_labels": [
+        {
+          "name": "1Y",
+          "label": "1Y",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "2Y",
+          "label": "2Y",
+          "hint": "Read this output after the settle step."
+        }
       ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change 1A?",
+        "Which truth-table row matches the value on 1Y?"
       ]
     }
   }

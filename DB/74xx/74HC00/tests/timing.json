@@ -4,9 +4,15 @@
   "part": "74HC00",
   "applicable": true,
   "checks": [
+    {"name": "model_delay", "expect_delay_ns": 12},
     {
-      "name": "model_delay",
-      "expect_delay_ns": 12
+      "name": "datasheet_tpd_a_or_b_to_y_4v5",
+      "source": "TI SN74HC00 datasheet, section 6.7 Switching Characteristics - Commercial (74xx), CL = 50 pF",
+      "path": "A_or_B_to_Y",
+      "vcc_v": 4.5,
+      "typical_ns": 9,
+      "max_ns_25c": 18,
+      "max_ns_minus40_to_85c": 23
     }
   ]
 }

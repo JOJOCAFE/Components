@@ -5,8 +5,94 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "write_3c",
+      "inputs": {
+        "A": "0x10123",
+        "/CE": 0,
+        "/WE": 0,
+        "/OE": 1,
+        "DQ": "0x3C"
+      },
+      "expect": {
+        "write": true
+      }
+    },
+    {
+      "name": "read_3c",
+      "inputs": {
+        "A": "0x10123",
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "0x3C"
+      }
+    },
+    {
+      "name": "write_a5",
+      "inputs": {
+        "A": "0x0002A",
+        "/CE": 0,
+        "/WE": 0,
+        "/OE": 1,
+        "DQ": "0xA5"
+      },
+      "expect": {
+        "write": true
+      }
+    },
+    {
+      "name": "read_a5",
+      "inputs": {
+        "A": "0x0002A",
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "0xA5"
+      }
+    },
+    {
+      "name": "chip_disabled_high_z",
+      "inputs": {
+        "/CE": 1,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "Z"
+      }
+    },
+    {
+      "name": "output_disabled_high_z",
+      "inputs": {
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 1
+      },
+      "expect": {
+        "DQ": "Z"
+      }
+    },
+    {
+      "name": "write_mode_high_z",
+      "inputs": {
+        "/CE": 0,
+        "/WE": 0,
+        "/OE": 1,
+        "DQ": "0xC6"
+      },
+      "expect": {
+        "DQ": "Z"
+      }
     }
-  ]
+  ],
+  "edge_criteria": {
+    "clocking": "control_edge_or_level_sensitive",
+    "trigger_edge": "WE_control",
+    "non_trigger_edge": "CE_or_OE_disabled_outputs_high_z_and_no_unexpected_write",
+    "notes": "Memory truth tests must state write/read control transitions or level windows and high-Z behavior."
+  }
 }

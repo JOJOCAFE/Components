@@ -286,6 +286,39 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC157",
+      "module": "ttl_74hc157",
+      "bench_module": "tb_generated_74hc157",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC157/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc157"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "select_a",
+            "select_b",
+            "disabled_low"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": true,
+        "language": "verilog",
+        "kind": "simple_truth_table",
+        "text": "`timescale 1ns/1ps\n\nmodule tb_generated_74hc157;\n  integer failures = 0;\n  reg Enable_bar;\n  reg Select;\n  reg [3:0] A;\n  reg [3:0] B;\n  wire [3:0] Y;\n\n  ttl_74hc157 dut(.Enable_bar(Enable_bar), .Select(Select), .A(A), .B(B), .Y(Y));\n\n  task check;\n    input condition;\n    input [255:0] message;\n    begin\n      if (!condition) begin\n        $display(\"FAIL: %0s\", message);\n        failures = failures + 1;\n      end\n    end\n  endtask\n\n  initial begin\n    A = 4'ha;\n    B = 4'h5;\n    Enable_bar = 1'b0;\n    Select = 1'b0;\n    #1;\n    check(Y === A, \"select_a\");\n    Enable_bar = 1'b0;\n    Select = 1'b1;\n    #1;\n    check(Y === B, \"select_b\");\n    Enable_bar = 1'b1;\n    #1;\n    check(Y === 4'h0, \"disabled_low\");\n    if (failures == 0) begin\n      $display(\"tb_generated_74hc157 PASSED\");\n      $finish;\n    end\n    $display(\"tb_generated_74hc157 FAILED: %0d failures\", failures);\n    $fatal(1);\n  end\nendmodule\n"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -413,7 +446,9 @@
       "version": 1,
       "part": "74HC157",
       "title": "Quad 2-Line to 1-Line Multiplexer",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "Quad 2-Line to 1-Line Multiplexer.",
+      "overview": "74HC157 is a 16-pin DIP part for multiplexer.",
       "sections": [
         "overview",
         "pins",
@@ -422,7 +457,49 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 18 ns before trusting the output.",
+        "Check the control pins first: A/B, /G.",
+        "Treat these as grouped signals in the UI: A, B, Y."
+      ],
       "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 10,
+          "names": [
+            "A/B",
+            "1A",
+            "1B",
+            "2A",
+            "2B",
+            "3B",
+            "3A",
+            "4B",
+            "4A",
+            "/G"
+          ],
+          "note": "Input pins: A/B, 1A, 1B, 2A, 2B, 3B, and 4 more."
+        },
+        "output": {
+          "count": 4,
+          "names": [
+            "1Y",
+            "2Y",
+            "3Y",
+            "4Y"
+          ],
+          "note": "Output pins: 1Y, 2Y, 3Y, 4Y."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {
         "A": {
           "width": 4,
@@ -452,6 +529,41 @@
           ]
         }
       },
+      "bus_explanations": [
+        {
+          "name": "A",
+          "width": 4,
+          "pins_lsb_first": [
+            2,
+            5,
+            11,
+            14
+          ],
+          "explanation": "A is a 4-bit signal group. Bit 0 is pin 2 and the highest bit is pin 14."
+        },
+        {
+          "name": "B",
+          "width": 4,
+          "pins_lsb_first": [
+            3,
+            6,
+            10,
+            13
+          ],
+          "explanation": "B is a 4-bit signal group. Bit 0 is pin 3 and the highest bit is pin 13."
+        },
+        {
+          "name": "Y",
+          "width": 4,
+          "pins_lsb_first": [
+            4,
+            7,
+            9,
+            12
+          ],
+          "explanation": "Y is a 4-bit signal group. Bit 0 is pin 4 and the highest bit is pin 12."
+        }
+      ],
       "controls": [
         {
           "pin": "A/B",
@@ -463,7 +575,22 @@
           "function": "enable",
           "active_low": true
         }
-      ]
+      ],
+      "control_explanations": [
+        {
+          "pin": "A/B",
+          "label": "A/B - select",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A/B controls select. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/G",
+          "label": "/G - enable",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/G controls enable. This is active low, so 0 turns the control on."
+        }
+      ],
+      "timing_note": "After an input changes, wait about 18 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -496,6 +623,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC157",
+      "title": "Try 74HC157 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "A/B",
         "1A",
@@ -508,15 +637,104 @@
         "4A",
         "/G"
       ],
+      "control_labels": [
+        {
+          "pin": "A/B",
+          "label": "A/B - select",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A/B controls select. Use 1 to turn this control on."
+        },
+        {
+          "pin": "1A",
+          "label": "1A - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1A controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "1B",
+          "label": "1B - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1B controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2A",
+          "label": "2A - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2A controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2B",
+          "label": "2B - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2B controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "3B",
+          "label": "3B - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "3B controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "3A",
+          "label": "3A - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "3A controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "4B",
+          "label": "4B - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "4B controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "4A",
+          "label": "4A - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "4A controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/G",
+          "label": "/G - enable",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/G controls enable. This is active low, so 0 turns the control on."
+        }
+      ],
       "probes": [
         "A",
         "B",
         "Y"
       ],
+      "probe_labels": [
+        {
+          "name": "A",
+          "label": "A bus",
+          "hint": "Read all 4 bits together."
+        },
+        {
+          "name": "B",
+          "label": "B bus",
+          "hint": "Read all 4 bits together."
+        },
+        {
+          "name": "Y",
+          "label": "Y bus",
+          "hint": "Read all 4 bits together."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change A/B?",
+        "Which truth-table row matches the value on A?"
       ]
     }
   }

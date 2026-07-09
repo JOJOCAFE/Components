@@ -5,8 +5,54 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "equal_outputs_low",
+      "inputs": {
+        "/OE": 0,
+        "P": "0x5A",
+        "Q": "0x5A"
+      },
+      "expect": {
+        "/P=Q": 0
+      }
+    },
+    {
+      "name": "not_equal_outputs_high",
+      "inputs": {
+        "/OE": 0,
+        "P": "0x5A",
+        "Q": "0xA5"
+      },
+      "expect": {
+        "/P=Q": 1
+      }
+    },
+    {
+      "name": "single_bit_difference_outputs_high",
+      "inputs": {
+        "/OE": 0,
+        "P": "0x10",
+        "Q": "0x00"
+      },
+      "expect": {
+        "/P=Q": 1
+      }
+    },
+    {
+      "name": "oe_high_forces_high",
+      "inputs": {
+        "/OE": 1,
+        "P": "0x5A",
+        "Q": "0x5A"
+      },
+      "expect": {
+        "/P=Q": 1
+      }
     }
-  ]
+  ],
+  "edge_criteria": {
+    "clocking": "level_sensitive",
+    "trigger_edge": "none",
+    "non_trigger_edge": "not_applicable",
+    "notes": "Combinational or level-controlled part; outputs are checked after input/control level changes and propagation delay."
+  }
 }

@@ -5,8 +5,76 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "clear_forces_q_low",
+      "inputs": {
+        "/CLR": 0,
+        "/PR": 1,
+        "D": 1
+      },
+      "clock": false,
+      "expect": {
+        "Q": 0,
+        "/Q": 1
+      }
+    },
+    {
+      "name": "preset_forces_q_high",
+      "inputs": {
+        "/CLR": 1,
+        "/PR": 0,
+        "D": 0
+      },
+      "clock": false,
+      "expect": {
+        "Q": 1,
+        "/Q": 0
+      }
+    },
+    {
+      "name": "clock_captures_d_low",
+      "inputs": {
+        "/CLR": 1,
+        "/PR": 1,
+        "D": 0
+      },
+      "clock": true,
+      "expect": {
+        "Q": 0,
+        "/Q": 1
+      }
+    },
+    {
+      "name": "clock_captures_d_high",
+      "inputs": {
+        "/CLR": 1,
+        "/PR": 1,
+        "D": 1
+      },
+      "clock": true,
+      "expect": {
+        "Q": 1,
+        "/Q": 0
+      }
+    },
+    {
+      "name": "second_flip_flop_clock_captures_d",
+      "section": 2,
+      "inputs": {
+        "/CLR": 1,
+        "/PR": 1,
+        "D": 1
+      },
+      "clock": true,
+      "expect": {
+        "Q": 1,
+        "/Q": 0
+      }
     }
-  ]
+  ],
+  "edge_criteria": {
+    "clocking": "edge_sensitive",
+    "trigger_edge": "rising",
+    "non_trigger_edge": "falling_or_no_rising_edge_holds_state",
+    "notes": "Truth tests must prove state changes only on the triggering rising edge and holds without that edge."
+  }
 }

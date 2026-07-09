@@ -5,8 +5,65 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "enabled_outputs_match_a",
+      "inputs": {
+        "/OE1": 0,
+        "/OE2": 0,
+        "A": "0xA5"
+      },
+      "expect": {
+        "Y": "0xA5"
+      }
+    },
+    {
+      "name": "enabled_outputs_match_reverse_pattern",
+      "inputs": {
+        "/OE1": 0,
+        "/OE2": 0,
+        "A": "0x3C"
+      },
+      "expect": {
+        "Y": "0x3C"
+      }
+    },
+    {
+      "name": "oe1_high_releases_outputs",
+      "inputs": {
+        "/OE1": 1,
+        "/OE2": 0,
+        "A": "0xFF"
+      },
+      "expect": {
+        "Y": "Z"
+      }
+    },
+    {
+      "name": "oe2_high_releases_outputs",
+      "inputs": {
+        "/OE1": 0,
+        "/OE2": 1,
+        "A": "0x00"
+      },
+      "expect": {
+        "Y": "Z"
+      }
+    },
+    {
+      "name": "both_disabled_releases_outputs",
+      "inputs": {
+        "/OE1": 1,
+        "/OE2": 1,
+        "A": "0x5A"
+      },
+      "expect": {
+        "Y": "Z"
+      }
     }
-  ]
+  ],
+  "edge_criteria": {
+    "clocking": "level_sensitive",
+    "trigger_edge": "none",
+    "non_trigger_edge": "not_applicable",
+    "notes": "Combinational or level-controlled part; outputs are checked after input/control level changes and propagation delay."
+  }
 }

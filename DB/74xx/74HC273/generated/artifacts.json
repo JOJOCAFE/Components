@@ -244,6 +244,35 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC273",
+      "module": "ttl_74hc273",
+      "bench_module": "tb_generated_74hc273",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC273/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc273"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -341,7 +370,9 @@
       "version": 1,
       "part": "74HC273",
       "title": "Octal D-Type Flip-Flop With Clear",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "Octal D-Type Flip-Flop With Clear.",
+      "overview": "74HC273 is a 20-pin DIP part for register.",
       "sections": [
         "overview",
         "pins",
@@ -350,9 +381,56 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 15 ns before trusting the output."
+      ],
       "pin_count": 20,
+      "pin_summary": {
+        "input": {
+          "count": 10,
+          "names": [
+            "/CLR",
+            "1D",
+            "2D",
+            "3D",
+            "4D",
+            "CLK",
+            "5D",
+            "6D",
+            "7D",
+            "8D"
+          ],
+          "note": "Input pins: /CLR, 1D, 2D, 3D, 4D, CLK, and 4 more."
+        },
+        "output": {
+          "count": 8,
+          "names": [
+            "1Q",
+            "2Q",
+            "3Q",
+            "4Q",
+            "5Q",
+            "6Q",
+            "7Q",
+            "8Q"
+          ],
+          "note": "Output pins: 1Q, 2Q, 3Q, 4Q, 5Q, 6Q, and 2 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -383,6 +461,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC273",
+      "title": "Try 74HC273 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "/CLR",
         "1D",
@@ -395,6 +475,68 @@
         "7D",
         "8D"
       ],
+      "control_labels": [
+        {
+          "pin": "/CLR",
+          "label": "/CLR - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/CLR controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "1D",
+          "label": "1D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1D controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2D",
+          "label": "2D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2D controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "3D",
+          "label": "3D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "3D controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "4D",
+          "label": "4D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "4D controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "CLK",
+          "label": "CLK - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "CLK controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "5D",
+          "label": "5D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "5D controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "6D",
+          "label": "6D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "6D controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "7D",
+          "label": "7D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "7D controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "8D",
+          "label": "8D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "8D controls input. Use 1 to turn this control on."
+        }
+      ],
       "probes": [
         "1Q",
         "2Q",
@@ -405,10 +547,62 @@
         "7Q",
         "8Q"
       ],
+      "probe_labels": [
+        {
+          "name": "1Q",
+          "label": "1Q",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "2Q",
+          "label": "2Q",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "3Q",
+          "label": "3Q",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "4Q",
+          "label": "4Q",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "5Q",
+          "label": "5Q",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "6Q",
+          "label": "6Q",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "7Q",
+          "label": "7Q",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "8Q",
+          "label": "8Q",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change /CLR?",
+        "Which truth-table row matches the value on 1Q?"
       ]
     }
   }

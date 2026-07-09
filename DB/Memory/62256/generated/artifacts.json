@@ -301,6 +301,45 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "62256",
+      "module": "mem_62256",
+      "bench_module": "tb_generated_62256",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/Memory/62256/simulation/model.v"
+        ],
+        "top": "tb_generated_62256"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "write_5a_read_5a",
+            "read_5a",
+            "write_c3_read_c3",
+            "read_c3",
+            "chip_disabled_high_z",
+            "output_disabled_high_z",
+            "write_mode_high_z",
+            "ce_high_prevents_write",
+            "ce_high_read_keeps_previous_data",
+            "we_high_prevents_write",
+            "we_high_read_keeps_previous_data"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "bidirectional or tri-state pins need a sequenced bench"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -430,7 +469,9 @@
       "version": 1,
       "part": "62256",
       "title": "32K x 8 static RAM",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "32K x 8 static RAM.",
+      "overview": "62256 is a 28-pin DIP part for sram.",
       "sections": [
         "overview",
         "pins",
@@ -439,9 +480,64 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 70 ns before trusting the output."
+      ],
       "pin_count": 28,
+      "pin_summary": {
+        "input": {
+          "count": 18,
+          "names": [
+            "A14",
+            "A12",
+            "A7",
+            "A6",
+            "A5",
+            "A4",
+            "A3",
+            "A2",
+            "A1",
+            "A0",
+            "/CE",
+            "A10",
+            "/OE",
+            "A11",
+            "A9",
+            "A8",
+            "A13",
+            "/WE"
+          ],
+          "note": "Input pins: A14, A12, A7, A6, A5, A4, and 12 more."
+        },
+        "bidirectional": {
+          "count": 8,
+          "names": [
+            "I/O0",
+            "I/O1",
+            "I/O2",
+            "I/O3",
+            "I/O4",
+            "I/O5",
+            "I/O6",
+            "I/O7"
+          ],
+          "note": "Bidirectional pins: I/O0, I/O1, I/O2, I/O3, I/O4, I/O5, and 2 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 70 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -483,6 +579,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "62256",
+      "title": "Try 62256 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "A14",
         "A12",
@@ -503,6 +601,116 @@
         "A13",
         "/WE"
       ],
+      "control_labels": [
+        {
+          "pin": "A14",
+          "label": "A14 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A14 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A12",
+          "label": "A12 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A12 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A7",
+          "label": "A7 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A7 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A6",
+          "label": "A6 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A6 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A5",
+          "label": "A5 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A5 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A4",
+          "label": "A4 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A4 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A3",
+          "label": "A3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A3 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A2",
+          "label": "A2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A1",
+          "label": "A1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A0",
+          "label": "A0 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A0 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/CE",
+          "label": "/CE - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/CE controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "A10",
+          "label": "A10 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A10 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/OE",
+          "label": "/OE - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/OE controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "A11",
+          "label": "A11 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A11 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A9",
+          "label": "A9 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A9 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A8",
+          "label": "A8 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A8 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A13",
+          "label": "A13 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A13 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/WE",
+          "label": "/WE - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/WE controls input. This is active low, so 0 turns the control on."
+        }
+      ],
       "probes": [
         "I/O0",
         "I/O1",
@@ -513,10 +721,62 @@
         "I/O6",
         "I/O7"
       ],
+      "probe_labels": [
+        {
+          "name": "I/O0",
+          "label": "I/O0",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "I/O1",
+          "label": "I/O1",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "I/O2",
+          "label": "I/O2",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "I/O3",
+          "label": "I/O3",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "I/O4",
+          "label": "I/O4",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "I/O5",
+          "label": "I/O5",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "I/O6",
+          "label": "I/O6",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "I/O7",
+          "label": "I/O7",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change A14?",
+        "Which truth-table row matches the value on I/O0?"
       ]
     }
   }

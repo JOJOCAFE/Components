@@ -4,8 +4,75 @@
   "part": "74HC574",
   "applicable": true,
   "vectors": [
-    {"name": "rising_edge_latch", "intent": "rising CLK captures D into Q"},
-    {"name": "hold_after_d_change", "intent": "Q holds after D changes without a clock edge"},
-    {"name": "disabled_high_z", "inputs": {"/OE": 1}, "expect": {"Q": "Z"}}
-  ]
+    {
+      "name": "rising_edge_latch_a5",
+      "inputs": {
+        "/OE": 0,
+        "D": "0xA5"
+      },
+      "clock": true,
+      "expect": {
+        "Q": "0xA5"
+      }
+    },
+    {
+      "name": "hold_after_d_change",
+      "inputs": {
+        "/OE": 0,
+        "D": "0x00"
+      },
+      "clock": false,
+      "expect": {
+        "Q": "0xA5"
+      }
+    },
+    {
+      "name": "rising_edge_latch_3c",
+      "inputs": {
+        "/OE": 0,
+        "D": "0x3C"
+      },
+      "clock": true,
+      "expect": {
+        "Q": "0x3C"
+      }
+    },
+    {
+      "name": "disabled_high_z",
+      "inputs": {
+        "/OE": 1
+      },
+      "clock": false,
+      "expect": {
+        "Q": "Z"
+      }
+    },
+    {
+      "name": "clock_while_outputs_disabled_captures_5a",
+      "inputs": {
+        "/OE": 1,
+        "D": "0x5A"
+      },
+      "clock": true,
+      "expect": {
+        "Q": "Z"
+      }
+    },
+    {
+      "name": "reenabled_outputs_last_latched_value",
+      "inputs": {
+        "/OE": 0
+      },
+      "clock": false,
+      "expect": {
+        "Q": "0x5A"
+      }
+    }
+  ],
+  "edge_criteria": {
+    "clocking": "edge_sensitive",
+    "trigger_edge": "rising",
+    "non_trigger_edge": "falling_or_no_rising_edge_holds_state",
+    "notes": "Truth tests must prove state changes only on the triggering rising edge and holds without that edge."
+  }
 }

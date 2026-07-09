@@ -323,6 +323,41 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "SST39SF010A",
+      "module": "mem_sst39sf010a",
+      "bench_module": "tb_generated_sst39sf010a",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/Memory/SST39SF010A/simulation/model.v"
+        ],
+        "top": "tb_generated_sst39sf010a"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "write_3c",
+            "read_3c",
+            "write_a5",
+            "read_a5",
+            "chip_disabled_high_z",
+            "output_disabled_high_z",
+            "write_mode_high_z"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "bidirectional or tri-state pins need a sequenced bench"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -464,7 +499,9 @@
       "version": 1,
       "part": "SST39SF010A",
       "title": "128K x 8 flash EEPROM",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "128K x 8 flash EEPROM.",
+      "overview": "SST39SF010A is a 32-pin DIP part for flash.",
       "sections": [
         "overview",
         "pins",
@@ -473,9 +510,66 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 70 ns before trusting the output."
+      ],
       "pin_count": 32,
+      "pin_summary": {
+        "input": {
+          "count": 20,
+          "names": [
+            "A16",
+            "A15",
+            "A12",
+            "A7",
+            "A6",
+            "A5",
+            "A4",
+            "A3",
+            "A2",
+            "A1",
+            "A0",
+            "/CE",
+            "A10",
+            "/OE",
+            "A11",
+            "A9",
+            "A8",
+            "A13",
+            "A14",
+            "/WE"
+          ],
+          "note": "Input pins: A16, A15, A12, A7, A6, A5, and 14 more."
+        },
+        "bidirectional": {
+          "count": 8,
+          "names": [
+            "DQ0",
+            "DQ1",
+            "DQ2",
+            "DQ3",
+            "DQ4",
+            "DQ5",
+            "DQ6",
+            "DQ7"
+          ],
+          "note": "Bidirectional pins: DQ0, DQ1, DQ2, DQ3, DQ4, DQ5, and 2 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "VSS",
+            "VDD"
+          ],
+          "note": "Power pins: VSS, VDD."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 70 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -517,6 +611,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "SST39SF010A",
+      "title": "Try SST39SF010A in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "A16",
         "A15",
@@ -539,6 +635,128 @@
         "A14",
         "/WE"
       ],
+      "control_labels": [
+        {
+          "pin": "A16",
+          "label": "A16 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A16 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A15",
+          "label": "A15 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A15 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A12",
+          "label": "A12 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A12 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A7",
+          "label": "A7 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A7 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A6",
+          "label": "A6 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A6 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A5",
+          "label": "A5 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A5 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A4",
+          "label": "A4 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A4 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A3",
+          "label": "A3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A3 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A2",
+          "label": "A2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A1",
+          "label": "A1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A0",
+          "label": "A0 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A0 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/CE",
+          "label": "/CE - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/CE controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "A10",
+          "label": "A10 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A10 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/OE",
+          "label": "/OE - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/OE controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "A11",
+          "label": "A11 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A11 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A9",
+          "label": "A9 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A9 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A8",
+          "label": "A8 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A8 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A13",
+          "label": "A13 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A13 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A14",
+          "label": "A14 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A14 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/WE",
+          "label": "/WE - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/WE controls input. This is active low, so 0 turns the control on."
+        }
+      ],
       "probes": [
         "DQ0",
         "DQ1",
@@ -549,10 +767,62 @@
         "DQ6",
         "DQ7"
       ],
+      "probe_labels": [
+        {
+          "name": "DQ0",
+          "label": "DQ0",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "DQ1",
+          "label": "DQ1",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "DQ2",
+          "label": "DQ2",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "DQ3",
+          "label": "DQ3",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "DQ4",
+          "label": "DQ4",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "DQ5",
+          "label": "DQ5",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "DQ6",
+          "label": "DQ6",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "DQ7",
+          "label": "DQ7",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change A16?",
+        "Which truth-table row matches the value on DQ0?"
       ]
     }
   }

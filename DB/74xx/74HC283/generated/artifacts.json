@@ -222,6 +222,39 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC283",
+      "module": "ttl_74hc283",
+      "bench_module": "tb_generated_74hc283",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC283/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc283"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "zero_plus_zero",
+            "three_plus_five",
+            "carry_in",
+            "carry_out",
+            "carry_out_with_cin"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -309,7 +342,9 @@
       "version": 1,
       "part": "74HC283",
       "title": "4-Bit Binary Full Adder",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "4-Bit Binary Full Adder.",
+      "overview": "74HC283 is a 16-pin DIP part for adder.",
       "sections": [
         "overview",
         "pins",
@@ -318,9 +353,52 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 35 ns before trusting the output."
+      ],
       "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 9,
+          "names": [
+            "B2",
+            "A2",
+            "A1",
+            "B1",
+            "C0",
+            "B4",
+            "A4",
+            "A3",
+            "B3"
+          ],
+          "note": "Input pins: B2, A2, A1, B1, C0, B4, and 3 more."
+        },
+        "output": {
+          "count": 5,
+          "names": [
+            "S2",
+            "S1",
+            "C4",
+            "S4",
+            "S3"
+          ],
+          "note": "Output pins: S2, S1, C4, S4, S3."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 35 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -351,6 +429,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC283",
+      "title": "Try 74HC283 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "B2",
         "A2",
@@ -362,6 +442,62 @@
         "A3",
         "B3"
       ],
+      "control_labels": [
+        {
+          "pin": "B2",
+          "label": "B2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A2",
+          "label": "A2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A1",
+          "label": "A1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B1",
+          "label": "B1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "C0",
+          "label": "C0 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "C0 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B4",
+          "label": "B4 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B4 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A4",
+          "label": "A4 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A4 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A3",
+          "label": "A3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A3 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B3",
+          "label": "B3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B3 controls input. Use 1 to turn this control on."
+        }
+      ],
       "probes": [
         "S2",
         "S1",
@@ -369,10 +505,47 @@
         "S4",
         "S3"
       ],
+      "probe_labels": [
+        {
+          "name": "S2",
+          "label": "S2",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "S1",
+          "label": "S1",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "C4",
+          "label": "C4",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "S4",
+          "label": "S4",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "S3",
+          "label": "S3",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change B2?",
+        "Which truth-table row matches the value on S2?"
       ]
     }
   }

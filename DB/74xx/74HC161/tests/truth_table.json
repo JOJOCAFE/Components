@@ -4,10 +4,152 @@
   "part": "74HC161",
   "applicable": true,
   "vectors": [
-    {"name": "async_clear", "intent": "active-low clear forces Q to 0"},
-    {"name": "parallel_load", "intent": "active-low load copies D to Q on clock"},
-    {"name": "count", "intent": "ENP and ENT high advance the counter"},
-    {"name": "disabled_count", "intent": "disabled enables hold Q"},
-    {"name": "terminal_count", "intent": "RCO reflects terminal count and ENT"}
-  ]
+    {
+      "name": "async_clear",
+      "inputs": {
+        "/CLR": 0,
+        "/LD": 1,
+        "ENP": 1,
+        "ENT": 1,
+        "D": "0xF"
+      },
+      "clock": false,
+      "expect": {
+        "Q": "0x0",
+        "RCO": 0
+      }
+    },
+    {
+      "name": "clear_priority_over_load_and_count",
+      "inputs": {
+        "/CLR": 0,
+        "/LD": 0,
+        "ENP": 1,
+        "ENT": 1,
+        "D": "0xA"
+      },
+      "clock": true,
+      "expect": {
+        "Q": "0x0",
+        "RCO": 0
+      }
+    },
+    {
+      "name": "parallel_load",
+      "inputs": {
+        "/CLR": 1,
+        "/LD": 0,
+        "ENP": 1,
+        "ENT": 1,
+        "D": "0xC"
+      },
+      "clock": true,
+      "expect": {
+        "Q": "0xC",
+        "RCO": 0
+      }
+    },
+    {
+      "name": "count_enabled",
+      "inputs": {
+        "/CLR": 1,
+        "/LD": 1,
+        "ENP": 1,
+        "ENT": 1
+      },
+      "clock": true,
+      "expect": {
+        "Q": "0xD",
+        "RCO": 0
+      }
+    },
+    {
+      "name": "hold_when_enp_low",
+      "inputs": {
+        "/CLR": 1,
+        "/LD": 1,
+        "ENP": 0,
+        "ENT": 1
+      },
+      "clock": true,
+      "expect": {
+        "Q": "0xD",
+        "RCO": 0
+      }
+    },
+    {
+      "name": "hold_when_ent_low",
+      "inputs": {
+        "/CLR": 1,
+        "/LD": 1,
+        "ENP": 1,
+        "ENT": 0
+      },
+      "clock": true,
+      "expect": {
+        "Q": "0xD",
+        "RCO": 0
+      }
+    },
+    {
+      "name": "no_rising_edge_holds_even_when_enabled",
+      "inputs": {
+        "/CLR": 1,
+        "/LD": 1,
+        "ENP": 1,
+        "ENT": 1
+      },
+      "clock": false,
+      "expect": {
+        "Q": "0xD",
+        "RCO": 0
+      }
+    },
+    {
+      "name": "count_resumes_on_next_rising_edge",
+      "inputs": {
+        "/CLR": 1,
+        "/LD": 1,
+        "ENP": 1,
+        "ENT": 1
+      },
+      "clock": true,
+      "expect": {
+        "Q": "0xE",
+        "RCO": 0
+      }
+    },
+    {
+      "name": "terminal_count_rco_high",
+      "inputs": {
+        "/CLR": 1,
+        "/LD": 0,
+        "ENP": 1,
+        "ENT": 1,
+        "D": "0xF"
+      },
+      "clock": true,
+      "expect": {
+        "Q": "0xF",
+        "RCO": 1
+      }
+    },
+    {
+      "name": "terminal_count_rco_low_when_ent_low",
+      "inputs": {
+        "ENT": 0
+      },
+      "clock": false,
+      "expect": {
+        "Q": "0xF",
+        "RCO": 0
+      }
+    }
+  ],
+  "edge_criteria": {
+    "clocking": "edge_sensitive",
+    "trigger_edge": "rising",
+    "non_trigger_edge": "falling_or_no_rising_edge_holds_state",
+    "notes": "Truth tests must prove state changes only on the triggering rising edge and holds without that edge."
+  }
 }

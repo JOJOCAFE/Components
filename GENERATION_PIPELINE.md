@@ -49,11 +49,32 @@ Each seed `definition.json` must declare:
 - `json`: normalized component JSON/API detail
 - `python_simulator`: Python behavior model or adapter
 - `verilog_wrapper`: Verilog module/export wrapper
+- `verilog_testbench`: Verilog testbench metadata or generated bench text
 - `kicad_symbol`: KiCad symbol generation
 - `svg_pinout`: SVG pinout drawing
 - `documentation`: Markdown/student docs
 - `unit_test`: Python/Verilog test generation
 - `interactive_demo`: block UI or simulator demo
+
+Generated documentation stays machine-readable, but it should also include
+student-facing prose fields derived from the same `definition.json` facts:
+`overview`, `key_points`, `pin_summary`, `bus_explanations`,
+`control_explanations`, and `timing_note`. Generated interactive demos keep
+their structured `controls`, `probes`, and `default_steps`, and add readable
+`title`, `intro`, labels, guided steps, and short student questions for UI use.
+
+## Edge Criteria Rule
+
+Every `tests/truth_table.json` record must declare `edge_criteria`.
+
+- Clocked chips must state the triggering edge, such as `rising` or `falling`,
+  and include or point to checks that prove the non-trigger edge holds state.
+- Level-sensitive and combinational chips must explicitly state
+  `trigger_edge: none`.
+- Memory parts must state their write/read control edge or level window and
+  include disabled/high-Z checks.
+- New chips cannot rely on `basic_function` placeholders when they are used by
+  RV8GR or another system-level package.
 
 ## First Seed Parts
 

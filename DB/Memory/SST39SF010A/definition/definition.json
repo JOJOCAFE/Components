@@ -192,6 +192,7 @@
       "json",
       "python_simulator",
       "verilog_wrapper",
+      "verilog_testbench",
       "kicad_symbol",
       "svg_pinout",
       "documentation",

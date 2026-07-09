@@ -296,6 +296,44 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC161",
+      "module": "ttl_74hc161",
+      "bench_module": "tb_generated_74hc161",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC161/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc161"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "async_clear",
+            "clear_priority_over_load_and_count",
+            "parallel_load",
+            "count_enabled",
+            "hold_when_enp_low",
+            "hold_when_ent_low",
+            "no_rising_edge_holds_even_when_enabled",
+            "count_resumes_on_next_rising_edge",
+            "terminal_count_rco_high",
+            "terminal_count_rco_low_when_ent_low"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -409,7 +447,9 @@
       "version": 1,
       "part": "74HC161",
       "title": "4-bit binary counter with parallel load and asynchronous clear",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "4-bit binary counter with parallel load and asynchronous clear.",
+      "overview": "74HC161 is a 16-pin DIP part for counter.",
       "sections": [
         "overview",
         "pins",
@@ -418,7 +458,48 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 22 ns before trusting the output.",
+        "Treat these as grouped signals in the UI: D, Q."
+      ],
       "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 9,
+          "names": [
+            "/CLR",
+            "CLK",
+            "A",
+            "B",
+            "C",
+            "D",
+            "ENP",
+            "/LOAD",
+            "ENT"
+          ],
+          "note": "Input pins: /CLR, CLK, A, B, C, D, and 3 more."
+        },
+        "output": {
+          "count": 5,
+          "names": [
+            "QD",
+            "QC",
+            "QB",
+            "QA",
+            "RCO"
+          ],
+          "note": "Output pins: QD, QC, QB, QA, RCO."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {
         "D": {
           "width": 4,
@@ -439,7 +520,33 @@
           ]
         }
       },
-      "controls": []
+      "bus_explanations": [
+        {
+          "name": "D",
+          "width": 4,
+          "pins_lsb_first": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "explanation": "D is a 4-bit signal group. Bit 0 is pin 3 and the highest bit is pin 6."
+        },
+        {
+          "name": "Q",
+          "width": 4,
+          "pins_lsb_first": [
+            14,
+            13,
+            12,
+            11
+          ],
+          "explanation": "Q is a 4-bit signal group. Bit 0 is pin 14 and the highest bit is pin 11."
+        }
+      ],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 22 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -474,6 +581,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC161",
+      "title": "Try 74HC161 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "/CLR",
         "CLK",
@@ -485,14 +594,92 @@
         "/LOAD",
         "ENT"
       ],
+      "control_labels": [
+        {
+          "pin": "/CLR",
+          "label": "/CLR - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/CLR controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "CLK",
+          "label": "CLK - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "CLK controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A",
+          "label": "A - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B",
+          "label": "B - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "C",
+          "label": "C - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "C controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "D",
+          "label": "D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "D controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "ENP",
+          "label": "ENP - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "ENP controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/LOAD",
+          "label": "/LOAD - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/LOAD controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "ENT",
+          "label": "ENT - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "ENT controls input. Use 1 to turn this control on."
+        }
+      ],
       "probes": [
         "D",
         "Q"
+      ],
+      "probe_labels": [
+        {
+          "name": "D",
+          "label": "D bus",
+          "hint": "Read all 4 bits together."
+        },
+        {
+          "name": "Q",
+          "label": "Q bus",
+          "hint": "Read all 4 bits together."
+        }
       ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change /CLR?",
+        "Which truth-table row matches the value on D?"
       ]
     }
   }

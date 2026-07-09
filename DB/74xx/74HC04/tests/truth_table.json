@@ -5,8 +5,28 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "invert_0",
+      "inputs": {
+        "A": 0
+      },
+      "expect": {
+        "Y": 1
+      }
+    },
+    {
+      "name": "invert_1",
+      "inputs": {
+        "A": 1
+      },
+      "expect": {
+        "Y": 0
+      }
     }
-  ]
+  ],
+  "edge_criteria": {
+    "clocking": "level_sensitive",
+    "trigger_edge": "none",
+    "non_trigger_edge": "not_applicable",
+    "notes": "Combinational or level-controlled part; outputs are checked after input/control level changes and propagation delay."
+  }
 }

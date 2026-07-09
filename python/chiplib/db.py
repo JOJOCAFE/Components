@@ -247,6 +247,7 @@ def generate_component_artifacts(part: str) -> JsonMap:
     power = _digital_power_rails(pins)
     symbol = _dip_symbol_from_definition(definition)
     tests = _generated_test_plan(definition, package)
+    verilog_testbench = _generated_verilog_testbench(definition, package)
     docs = _documentation_data(definition, buses)
     demo = _interactive_demo_data(definition, buses)
     verilog = {
@@ -284,6 +285,7 @@ def generate_component_artifacts(part: str) -> JsonMap:
                 **deepcopy(definition.get("generation", {}).get("python", {})),
             },
             "verilog_wrapper": verilog,
+            "verilog_testbench": verilog_testbench,
             "kicad_symbol": symbol,
             "svg_pinout": symbol,
             "documentation": docs,
@@ -376,7 +378,17 @@ def validate_digital_definition(definition: JsonMap) -> JsonMap:
                     errors.append(_issue("digital_definition_layer_part_mismatch", part, path, f"definition_layers.{key}.part must match {part}"))
     generation = definition.get("generation", {})
     targets = generation.get("targets", []) if isinstance(generation, dict) else []
-    required_targets = {"json", "python_simulator", "verilog_wrapper", "kicad_symbol", "svg_pinout", "documentation", "unit_test", "interactive_demo"}
+    required_targets = {
+        "json",
+        "python_simulator",
+        "verilog_wrapper",
+        "verilog_testbench",
+        "kicad_symbol",
+        "svg_pinout",
+        "documentation",
+        "unit_test",
+        "interactive_demo",
+    }
     if not isinstance(targets, list) or not required_targets.issubset(set(str(item) for item in targets)):
         errors.append(_issue("digital_generation_targets_missing", part, path, f"generation.targets must include {sorted(required_targets)}"))
     if not isinstance(generation, dict):
@@ -1159,22 +1171,185 @@ def _generated_test_plan(definition: JsonMap, package: JsonMap) -> JsonMap:
     }
 
 
+def _generated_verilog_testbench(definition: JsonMap, package: JsonMap) -> JsonMap:
+    part = str(definition.get("part", ""))
+    split_tests = package.get("layers", {}).get("tests", {})
+    truth = split_tests.get("truth_table") if isinstance(split_tests, dict) else None
+    verilog = definition.get("generation", {}).get("verilog", {})
+    module = str(verilog.get("module", ""))
+    model_file = str(verilog.get("file", ""))
+    bench_module = f"tb_generated_{part.lower()}"
+    vector_names = [
+        str(vector.get("name"))
+        for vector in truth.get("vectors", [])
+        if isinstance(truth, dict) and isinstance(vector, dict) and vector.get("name")
+    ] if isinstance(truth, dict) else []
+    emitted = _simple_verilog_truth_bench(definition, package, truth, bench_module)
+    return {
+        "schema": "db.component.generated.verilog_testbench",
+        "version": 1,
+        "part": part,
+        "module": module,
+        "bench_module": bench_module,
+        "compile": {
+            "tool": "iverilog",
+            "standard": "g2012",
+            "sources": [model_file] if model_file else [],
+            "top": bench_module,
+        },
+        "split_records": {
+            "truth_table": {
+                "source": "tests/truth_table.json",
+                "present": isinstance(truth, dict),
+                "applicable": bool(truth.get("applicable")) if isinstance(truth, dict) else False,
+                "vectors": vector_names,
+            },
+        },
+        "emitted": emitted,
+    }
+
+
+def _simple_verilog_truth_bench(definition: JsonMap, package: JsonMap, truth: JsonMap | None, bench_module: str) -> JsonMap:
+    if not isinstance(truth, dict) or truth.get("applicable") is not True:
+        return {"supported": False, "reason": "truth_table split record is not applicable"}
+    if _has_tristate(definition.get("pins", [])):
+        return {"supported": False, "reason": "bidirectional or tri-state pins need a sequenced bench"}
+    logic = definition.get("logic", {})
+    if not isinstance(logic, dict) or logic.get("type") != "quad_2_to_1_mux":
+        return {"supported": False, "reason": "simple emitted bench currently supports quad_2_to_1_mux only"}
+
+    verilog = package.get("manifest", {}).get("verilog", {})
+    export = verilog.get("export", {}) if isinstance(verilog, dict) else {}
+    ports = export.get("ports", []) if isinstance(export, dict) else []
+    port_by_pin = _verilog_ports_by_pin_name(ports, definition.get("pins", []))
+    select_pin = str(logic.get("select", {}).get("pin", ""))
+    enable_pin = str(logic.get("enable", {}).get("pin", ""))
+    select_port = port_by_pin.get(select_pin)
+    enable_port = port_by_pin.get(enable_pin)
+    module = str(verilog.get("module", ""))
+    width = int(logic.get("width", 1))
+    if not module or not select_port or not enable_port or width < 1:
+        return {"supported": False, "reason": "verilog port metadata is incomplete"}
+
+    vectors = [vector for vector in truth.get("vectors", []) if isinstance(vector, dict)]
+    a_value = "4'ha" if width == 4 else f"{width}'h0"
+    b_value = "4'h5" if width == 4 else f"{width}'h1"
+    lines = [
+        "`timescale 1ns/1ps",
+        "",
+        f"module {bench_module};",
+        "  integer failures = 0;",
+        f"  reg {enable_port};",
+        f"  reg {select_port};",
+        f"  reg [{width - 1}:0] A;",
+        f"  reg [{width - 1}:0] B;",
+        f"  wire [{width - 1}:0] Y;",
+        "",
+        f"  {module} dut(.{enable_port}({enable_port}), .{select_port}({select_port}), .A(A), .B(B), .Y(Y));",
+        "",
+        "  task check;",
+        "    input condition;",
+        "    input [255:0] message;",
+        "    begin",
+        "      if (!condition) begin",
+        "        $display(\"FAIL: %0s\", message);",
+        "        failures = failures + 1;",
+        "      end",
+        "    end",
+        "  endtask",
+        "",
+        "  initial begin",
+        f"    A = {a_value};",
+        f"    B = {b_value};",
+    ]
+    for vector in vectors:
+        name = str(vector.get("name", "vector"))
+        inputs = vector.get("inputs", {}) if isinstance(vector.get("inputs"), dict) else {}
+        expect = vector.get("expect", {}) if isinstance(vector.get("expect"), dict) else {}
+        if enable_pin in inputs:
+            lines.append(f"    {enable_port} = 1'b{int(inputs[enable_pin])};")
+        if select_pin in inputs:
+            lines.append(f"    {select_port} = 1'b{int(inputs[select_pin])};")
+        lines.append("    #1;")
+        expected_y = expect.get("Y")
+        if expected_y in {"A", "B"}:
+            lines.append(f"    check(Y === {expected_y}, \"{name}\");")
+        elif isinstance(expected_y, int):
+            lines.append(f"    check(Y === {width}'h{expected_y:x}, \"{name}\");")
+        else:
+            return {"supported": False, "reason": f"unsupported expected value in vector {name}"}
+    lines.extend([
+        "    if (failures == 0) begin",
+        f"      $display(\"{bench_module} PASSED\");",
+        "      $finish;",
+        "    end",
+        f"    $display(\"{bench_module} FAILED: %0d failures\", failures);",
+        "    $fatal(1);",
+        "  end",
+        "endmodule",
+        "",
+    ])
+    return {
+        "supported": True,
+        "language": "verilog",
+        "kind": "simple_truth_table",
+        "text": "\n".join(lines),
+    }
+
+
+def _has_tristate(pins: Any) -> bool:
+    return any(
+        isinstance(pin, dict) and pin.get("direction") == "bidirectional"
+        for pin in pins if isinstance(pins, list)
+    )
+
+
+def _verilog_ports_by_pin_name(ports: Any, pins: Any) -> dict[str, str]:
+    pin_names = {
+        pin.get("number"): str(pin.get("name"))
+        for pin in pins if isinstance(pins, list) and isinstance(pin, dict) and isinstance(pin.get("number"), int)
+    }
+    result: dict[str, str] = {}
+    for port in ports if isinstance(ports, list) else []:
+        if not isinstance(port, dict) or not isinstance(port.get("name"), str):
+            continue
+        pins = port.get("pins", [])
+        for pin in pins if isinstance(pins, list) else []:
+            name = pin_names.get(pin)
+            if name:
+                result[name] = str(port["name"])
+    return result
+
+
 def _documentation_data(definition: JsonMap, buses: JsonMap) -> JsonMap:
     controls = [
         {"pin": pin.get("name"), "function": pin.get("function", "control"), "active_low": pin.get("active_low", False)}
         for pin in definition.get("pins", [])
         if isinstance(pin, dict) and pin.get("function")
     ]
+    title = definition.get("metadata", {}).get("title", definition.get("part", "Component"))
+    pin_count = definition.get("package", {}).get("pins")
+    package_kind = definition.get("package", {}).get("kind", "package")
+    role = _student_phrase(definition.get("metadata", {}).get("role", "logic component"))
+    bus_explanations = _bus_explanations(buses)
+    control_explanations = [_control_explanation(control) for control in controls]
     return {
         "schema": "db.component.generated.documentation",
         "version": 1,
         "part": definition.get("part", ""),
-        "title": definition.get("metadata", {}).get("title", definition.get("part", "")),
-        "summary": f"{definition.get('metadata', {}).get('title', definition.get('part', 'Component'))}.",
+        "title": title,
+        "audience": "students ages 10-15, still useful for older learners",
+        "summary": f"{title}.",
+        "overview": f"{definition.get('part', 'This part')} is a {pin_count}-pin {package_kind} part for {role}.",
         "sections": ["overview", "pins", "controls", "truth_table", "timing", "try_it"],
-        "pin_count": definition.get("package", {}).get("pins"),
+        "key_points": _documentation_key_points(definition, controls, buses),
+        "pin_count": pin_count,
+        "pin_summary": _pin_summary(definition),
         "buses": buses,
+        "bus_explanations": bus_explanations,
         "controls": controls,
+        "control_explanations": control_explanations,
+        "timing_note": _timing_note(definition),
     }
 
 
@@ -1190,14 +1365,124 @@ def _interactive_demo_data(definition: JsonMap, buses: JsonMap) -> JsonMap:
         for pin in pins
         if isinstance(pin, dict) and pin.get("direction") in {"output", "bidirectional"} and pin.get("name")
     ][:8]
+    controls_for_docs = [
+        {"pin": pin.get("name"), "function": pin.get("function", "input"), "active_low": pin.get("active_low", False)}
+        for pin in pins
+        if isinstance(pin, dict) and pin.get("direction") == "input" and pin.get("name")
+    ]
     return {
         "schema": "db.component.generated.interactive_demo",
         "version": 1,
         "part": definition.get("part", ""),
+        "title": f"Try {definition.get('part', 'this part')} in the simulator",
+        "intro": "Change the inputs, let the model settle, then read the probes.",
         "controls": controls,
+        "control_labels": [_control_explanation(control) for control in controls_for_docs],
         "probes": probes,
+        "probe_labels": [_probe_label(probe, buses) for probe in probes],
         "default_steps": ["apply controls", "settle", "probe"],
+        "guided_steps": [
+            "Set each control to the value you want to test.",
+            "Run one settle step so the simulated signals can update.",
+            "Read the probes and compare them with the truth table.",
+        ],
+        "student_questions": _student_demo_questions(definition, controls, probes),
     }
+
+
+def _student_phrase(value: object) -> str:
+    text = str(value or "").replace("_", " ").strip()
+    return text or "logic component"
+
+
+def _pin_summary(definition: JsonMap) -> JsonMap:
+    pins = list(definition.get("pins", [])) if isinstance(definition.get("pins"), list) else []
+    summary: JsonMap = {}
+    for direction in ("input", "output", "bidirectional", "power"):
+        names = [
+            str(pin.get("name"))
+            for pin in pins
+            if isinstance(pin, dict) and pin.get("direction") == direction and pin.get("name")
+        ]
+        if names:
+            summary[direction] = {
+                "count": len(names),
+                "names": names,
+                "note": _pin_summary_note(direction, names),
+            }
+    return summary
+
+
+def _pin_summary_note(direction: str, names: list[str]) -> str:
+    label = _student_phrase(direction)
+    preview = ", ".join(names[:6])
+    if len(names) > 6:
+        preview = f"{preview}, and {len(names) - 6} more"
+    return f"{label.title()} pins: {preview}."
+
+
+def _bus_explanations(buses: JsonMap) -> list[JsonMap]:
+    explanations: list[JsonMap] = []
+    for name in sorted(buses):
+        bus = buses[name]
+        pins = bus.get("pins_lsb_first", []) if isinstance(bus, dict) else []
+        width = bus.get("width", len(pins)) if isinstance(bus, dict) else len(pins)
+        article = "an" if str(width)[:1] == "8" else "a"
+        explanation = f"{name} is {article} {width}-bit signal group."
+        if pins:
+            explanation = f"{explanation} Bit 0 is pin {pins[0]} and the highest bit is pin {pins[-1]}."
+        explanations.append({"name": name, "width": width, "pins_lsb_first": pins, "explanation": explanation})
+    return explanations
+
+
+def _control_explanation(control: JsonMap) -> JsonMap:
+    pin = str(control.get("pin") or control.get("name") or "")
+    function = _student_phrase(control.get("function", "control"))
+    active_low = bool(control.get("active_low", False) or pin.startswith("/"))
+    active_text = "This is active low, so 0 turns the control on." if active_low else "Use 1 to turn this control on."
+    return {
+        "pin": pin,
+        "label": f"{pin} - {function}" if pin else function,
+        "hint": active_text,
+        "explanation": f"{pin} controls {function}. {active_text}" if pin else active_text,
+    }
+
+
+def _timing_note(definition: JsonMap) -> str:
+    delay = definition.get("timing", {}).get("delay_ns")
+    if isinstance(delay, (int, float)):
+        return f"After an input changes, wait about {delay:g} ns before trusting the output."
+    return "After changing an input, let the simulator settle before reading the output."
+
+
+def _documentation_key_points(definition: JsonMap, controls: list[JsonMap], buses: JsonMap) -> list[str]:
+    points = [
+        "Connect power before testing signal pins.",
+        _timing_note(definition),
+    ]
+    if controls:
+        names = ", ".join(str(control.get("pin")) for control in controls if control.get("pin"))
+        points.append(f"Check the control pins first: {names}.")
+    if buses:
+        names = ", ".join(sorted(str(name) for name in buses))
+        points.append(f"Treat these as grouped signals in the UI: {names}.")
+    return points
+
+
+def _probe_label(probe: str, buses: JsonMap) -> JsonMap:
+    if probe in buses and isinstance(buses[probe], dict):
+        width = buses[probe].get("width", "?")
+        return {"name": probe, "label": f"{probe} bus", "hint": f"Read all {width} bits together."}
+    return {"name": probe, "label": probe, "hint": "Read this output after the settle step."}
+
+
+def _student_demo_questions(definition: JsonMap, controls: list[str], probes: list[str]) -> list[str]:
+    questions = ["What changes on the probes when you flip one input?"]
+    if controls:
+        questions.append(f"What happens when you change {controls[0]}?")
+    if probes:
+        questions.append(f"Which truth-table row matches the value on {probes[0]}?")
+    return questions
 
 
 def _digital_manifest_mismatches(definition: JsonMap, part: str, path: str) -> list[JsonMap]:

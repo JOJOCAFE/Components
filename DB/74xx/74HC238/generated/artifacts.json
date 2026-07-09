@@ -225,6 +225,35 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC238",
+      "module": "ttl_74hc238",
+      "bench_module": "tb_generated_74hc238",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC238/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc238"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -306,7 +335,9 @@
       "version": 1,
       "part": "74HC238",
       "title": "3-to-8 line decoder/demultiplexer, active-high outputs",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "3-to-8 line decoder/demultiplexer, active-high outputs.",
+      "overview": "74HC238 is a 16-pin DIP part for decoder.",
       "sections": [
         "overview",
         "pins",
@@ -315,9 +346,52 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 15 ns before trusting the output."
+      ],
       "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 6,
+          "names": [
+            "A0",
+            "A1",
+            "A2",
+            "E1",
+            "E2",
+            "E3"
+          ],
+          "note": "Input pins: A0, A1, A2, E1, E2, E3."
+        },
+        "output": {
+          "count": 8,
+          "names": [
+            "Y7",
+            "Y6",
+            "Y5",
+            "Y4",
+            "Y3",
+            "Y2",
+            "Y1",
+            "Y0"
+          ],
+          "note": "Output pins: Y7, Y6, Y5, Y4, Y3, Y2, and 2 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -348,6 +422,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC238",
+      "title": "Try 74HC238 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "A0",
         "A1",
@@ -355,6 +431,44 @@
         "E1",
         "E2",
         "E3"
+      ],
+      "control_labels": [
+        {
+          "pin": "A0",
+          "label": "A0 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A0 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A1",
+          "label": "A1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A2",
+          "label": "A2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "E1",
+          "label": "E1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "E1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "E2",
+          "label": "E2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "E2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "E3",
+          "label": "E3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "E3 controls input. Use 1 to turn this control on."
+        }
       ],
       "probes": [
         "Y7",
@@ -366,10 +480,62 @@
         "Y1",
         "Y0"
       ],
+      "probe_labels": [
+        {
+          "name": "Y7",
+          "label": "Y7",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y6",
+          "label": "Y6",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y5",
+          "label": "Y5",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y4",
+          "label": "Y4",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y3",
+          "label": "Y3",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y2",
+          "label": "Y2",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y1",
+          "label": "Y1",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Y0",
+          "label": "Y0",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change A0?",
+        "Which truth-table row matches the value on Y7?"
       ]
     }
   }

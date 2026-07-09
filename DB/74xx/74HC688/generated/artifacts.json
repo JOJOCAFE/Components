@@ -237,6 +237,38 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC688",
+      "module": "ttl_74hc688",
+      "bench_module": "tb_generated_74hc688",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC688/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc688"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "equal_outputs_low",
+            "not_equal_outputs_high",
+            "single_bit_difference_outputs_high",
+            "oe_high_forces_high"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -348,7 +380,9 @@
       "version": 1,
       "part": "74HC688",
       "title": "8-Bit Identity Comparator",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "8-Bit Identity Comparator.",
+      "overview": "74HC688 is a 20-pin DIP part for comparator.",
       "sections": [
         "overview",
         "pins",
@@ -357,9 +391,56 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 30 ns before trusting the output."
+      ],
       "pin_count": 20,
+      "pin_summary": {
+        "input": {
+          "count": 17,
+          "names": [
+            "/E",
+            "A0",
+            "B0",
+            "A1",
+            "B1",
+            "A2",
+            "B2",
+            "A3",
+            "B3",
+            "B7",
+            "A7",
+            "B6",
+            "A6",
+            "B5",
+            "A5",
+            "B4",
+            "A4"
+          ],
+          "note": "Input pins: /E, A0, B0, A1, B1, A2, and 11 more."
+        },
+        "output": {
+          "count": 1,
+          "names": [
+            "Y"
+          ],
+          "note": "Output pins: Y."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 30 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -390,6 +471,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC688",
+      "title": "Try 74HC688 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "/E",
         "A0",
@@ -409,13 +492,134 @@
         "B4",
         "A4"
       ],
+      "control_labels": [
+        {
+          "pin": "/E",
+          "label": "/E - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/E controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "A0",
+          "label": "A0 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A0 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B0",
+          "label": "B0 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B0 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A1",
+          "label": "A1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B1",
+          "label": "B1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A2",
+          "label": "A2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B2",
+          "label": "B2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A3",
+          "label": "A3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A3 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B3",
+          "label": "B3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B3 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B7",
+          "label": "B7 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B7 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A7",
+          "label": "A7 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A7 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B6",
+          "label": "B6 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B6 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A6",
+          "label": "A6 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A6 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B5",
+          "label": "B5 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B5 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A5",
+          "label": "A5 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A5 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B4",
+          "label": "B4 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B4 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A4",
+          "label": "A4 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A4 controls input. Use 1 to turn this control on."
+        }
+      ],
       "probes": [
         "Y"
+      ],
+      "probe_labels": [
+        {
+          "name": "Y",
+          "label": "Y",
+          "hint": "Read this output after the settle step."
+        }
       ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change /E?",
+        "Which truth-table row matches the value on Y?"
       ]
     }
   }

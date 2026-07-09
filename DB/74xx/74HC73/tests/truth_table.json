@@ -8,5 +8,11 @@
       "name": "basic_function",
       "description": "Covered by Python model and Verilog smoke tests"
     }
-  ]
+  ],
+  "edge_criteria": {
+    "clocking": "edge_sensitive",
+    "trigger_edge": "falling",
+    "non_trigger_edge": "rising_or_no_falling_edge_holds_state",
+    "notes": "Truth tests must prove state changes only on the triggering falling edge; datasheet-backed vectors should refine this part."
+  }
 }

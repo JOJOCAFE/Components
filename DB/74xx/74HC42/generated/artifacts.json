@@ -209,6 +209,35 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC42",
+      "module": "ttl_74hc42",
+      "bench_module": "tb_generated_74hc42",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC42/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc42"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -286,7 +315,9 @@
       "version": 1,
       "part": "74HC42",
       "title": "BCD to decimal decoder, 1-of-10",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "BCD to decimal decoder, 1-of-10.",
+      "overview": "74HC42 is a 16-pin DIP part for decoder.",
       "sections": [
         "overview",
         "pins",
@@ -295,9 +326,52 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 15 ns before trusting the output."
+      ],
       "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 4,
+          "names": [
+            "3A",
+            "2A",
+            "1A",
+            "0A"
+          ],
+          "note": "Input pins: 3A, 2A, 1A, 0A."
+        },
+        "output": {
+          "count": 10,
+          "names": [
+            "0Y",
+            "1Y",
+            "2Y",
+            "3Y",
+            "4Y",
+            "5Y",
+            "6Y",
+            "7Y",
+            "8Y",
+            "9Y"
+          ],
+          "note": "Output pins: 0Y, 1Y, 2Y, 3Y, 4Y, 5Y, and 4 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -328,11 +402,39 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC42",
+      "title": "Try 74HC42 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "3A",
         "2A",
         "1A",
         "0A"
+      ],
+      "control_labels": [
+        {
+          "pin": "3A",
+          "label": "3A - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "3A controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2A",
+          "label": "2A - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2A controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "1A",
+          "label": "1A - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1A controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "0A",
+          "label": "0A - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "0A controls input. Use 1 to turn this control on."
+        }
       ],
       "probes": [
         "0Y",
@@ -344,10 +446,62 @@
         "6Y",
         "7Y"
       ],
+      "probe_labels": [
+        {
+          "name": "0Y",
+          "label": "0Y",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "1Y",
+          "label": "1Y",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "2Y",
+          "label": "2Y",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "3Y",
+          "label": "3Y",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "4Y",
+          "label": "4Y",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "5Y",
+          "label": "5Y",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "6Y",
+          "label": "6Y",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "7Y",
+          "label": "7Y",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change 3A?",
+        "Which truth-table row matches the value on 0Y?"
       ]
     }
   }

@@ -303,6 +303,35 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC181",
+      "module": "ttl_74hc181",
+      "bench_module": "tb_generated_74hc181",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC181/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc181"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -416,7 +445,9 @@
       "version": 1,
       "part": "74HC181",
       "title": "4-bit arithmetic logic unit",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "4-bit arithmetic logic unit.",
+      "overview": "74HC181 is a 24-pin DIP part for logic.",
       "sections": [
         "overview",
         "pins",
@@ -425,9 +456,60 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 15 ns before trusting the output."
+      ],
       "pin_count": 24,
+      "pin_summary": {
+        "input": {
+          "count": 14,
+          "names": [
+            "B0",
+            "A0",
+            "S3",
+            "S2",
+            "S1",
+            "S0",
+            "Cn",
+            "M",
+            "B3",
+            "A3",
+            "B2",
+            "A2",
+            "B1",
+            "A1"
+          ],
+          "note": "Input pins: B0, A0, S3, S2, S1, S0, and 8 more."
+        },
+        "output": {
+          "count": 8,
+          "names": [
+            "F0",
+            "F1",
+            "F2",
+            "F3",
+            "A_eq_B",
+            "P",
+            "Cn+4",
+            "G"
+          ],
+          "note": "Output pins: F0, F1, F2, F3, A_eq_B, P, and 2 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -458,6 +540,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC181",
+      "title": "Try 74HC181 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "B0",
         "A0",
@@ -474,6 +558,92 @@
         "B1",
         "A1"
       ],
+      "control_labels": [
+        {
+          "pin": "B0",
+          "label": "B0 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B0 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A0",
+          "label": "A0 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A0 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "S3",
+          "label": "S3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "S3 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "S2",
+          "label": "S2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "S2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "S1",
+          "label": "S1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "S1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "S0",
+          "label": "S0 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "S0 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "Cn",
+          "label": "Cn - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "Cn controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "M",
+          "label": "M - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "M controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B3",
+          "label": "B3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B3 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A3",
+          "label": "A3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A3 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B2",
+          "label": "B2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A2",
+          "label": "A2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B1",
+          "label": "B1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "A1",
+          "label": "A1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A1 controls input. Use 1 to turn this control on."
+        }
+      ],
       "probes": [
         "F0",
         "F1",
@@ -484,10 +654,62 @@
         "Cn+4",
         "G"
       ],
+      "probe_labels": [
+        {
+          "name": "F0",
+          "label": "F0",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "F1",
+          "label": "F1",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "F2",
+          "label": "F2",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "F3",
+          "label": "F3",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "A_eq_B",
+          "label": "A_eq_B",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "P",
+          "label": "P",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "Cn+4",
+          "label": "Cn+4",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "G",
+          "label": "G",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change B0?",
+        "Which truth-table row matches the value on F0?"
       ]
     }
   }

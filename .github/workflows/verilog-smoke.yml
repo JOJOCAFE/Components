@@ -25,3 +25,8 @@ jobs:
         run: |
           iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp Verilog/Memory/*.v Verilog/Memory/tests/tb_memory_smoke.v
           vvp /tmp/tb_memory_smoke.vvp
+
+      - name: Compile package-local Verilog models
+        run: |
+          find DB/74xx DB/Memory -path '*/simulation/model.v' -print0 \
+            | xargs -0 iverilog -g2012 -Wall -o /tmp/db_package_models.vvp

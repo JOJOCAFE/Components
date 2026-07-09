@@ -15,6 +15,12 @@
       "when": "DIR=0 and /OE=0",
       "drive": {"B": "0x00", "A_external": "0xFF"},
       "expect": {"board_error": "bus_conflict"}
+    },
+    {
+      "name": "oe_high_prevents_conflict_with_external_drivers",
+      "when": "/OE=1",
+      "drive": {"A_external": "0x00", "B_external": "0xFF"},
+      "expect": {"board_error": "none", "A": "Z", "B": "Z"}
     }
   ]
 }

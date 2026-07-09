@@ -193,6 +193,35 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC4078",
+      "module": "ttl_74hc4078",
+      "bench_module": "tb_generated_74hc4078",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC4078/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc4078"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -274,7 +303,9 @@
       "version": 1,
       "part": "74HC4078",
       "title": "8-Input NOR/OR Gate",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "8-Input NOR/OR Gate.",
+      "overview": "74HC4078 is a 14-pin DIP part for logic.",
       "sections": [
         "overview",
         "pins",
@@ -283,9 +314,48 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 15 ns before trusting the output."
+      ],
       "pin_count": 14,
+      "pin_summary": {
+        "input": {
+          "count": 8,
+          "names": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "note": "Input pins: A, B, C, D, E, F, and 2 more."
+        },
+        "output": {
+          "count": 2,
+          "names": [
+            "Y",
+            "X"
+          ],
+          "note": "Output pins: Y, X."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -316,6 +386,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC4078",
+      "title": "Try 74HC4078 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "A",
         "B",
@@ -326,14 +398,86 @@
         "G",
         "H"
       ],
+      "control_labels": [
+        {
+          "pin": "A",
+          "label": "A - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "A controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "B",
+          "label": "B - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "B controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "C",
+          "label": "C - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "C controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "D",
+          "label": "D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "D controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "E",
+          "label": "E - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "E controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "F",
+          "label": "F - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "F controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "G",
+          "label": "G - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "G controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "H",
+          "label": "H - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "H controls input. Use 1 to turn this control on."
+        }
+      ],
       "probes": [
         "Y",
         "X"
+      ],
+      "probe_labels": [
+        {
+          "name": "Y",
+          "label": "Y",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "X",
+          "label": "X",
+          "hint": "Read this output after the settle step."
+        }
       ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change A?",
+        "Which truth-table row matches the value on Y?"
       ]
     }
   }

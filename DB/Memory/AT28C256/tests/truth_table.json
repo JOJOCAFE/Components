@@ -4,8 +4,146 @@
   "part": "AT28C256",
   "applicable": true,
   "vectors": [
-    {"name": "write_read", "intent": "write DQ at address, then read back the same byte"},
-    {"name": "disabled_high_z", "inputs": {"/CE": 1}, "expect": {"DQ": "Z"}},
-    {"name": "oe_high_high_z", "inputs": {"/OE": 1}, "expect": {"DQ": "Z"}}
-  ]
+    {
+      "name": "write_c6",
+      "inputs": {
+        "A": "0x002A",
+        "/CE": 0,
+        "/WE": 0,
+        "/OE": 1,
+        "DQ": "0xC6"
+      },
+      "expect": {
+        "write": true
+      }
+    },
+    {
+      "name": "read_c6",
+      "inputs": {
+        "A": "0x002A",
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "0xC6"
+      }
+    },
+    {
+      "name": "write_3c",
+      "inputs": {
+        "A": "0x0123",
+        "/CE": 0,
+        "/WE": 0,
+        "/OE": 1,
+        "DQ": "0x3C"
+      },
+      "expect": {
+        "write": true
+      }
+    },
+    {
+      "name": "read_3c",
+      "inputs": {
+        "A": "0x0123",
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "0x3C"
+      }
+    },
+    {
+      "name": "chip_disabled_high_z",
+      "inputs": {
+        "/CE": 1,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "Z"
+      }
+    },
+    {
+      "name": "output_disabled_high_z",
+      "inputs": {
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 1
+      },
+      "expect": {
+        "DQ": "Z"
+      }
+    },
+    {
+      "name": "write_mode_high_z",
+      "inputs": {
+        "A": "0x3456",
+        "/CE": 0,
+        "/WE": 0,
+        "/OE": 1,
+        "DQ": "0xAA"
+      },
+      "expect": {
+        "DQ": "Z"
+      }
+    },
+    {
+      "name": "ce_high_prevents_write",
+      "inputs": {
+        "A": "0x002A",
+        "/CE": 1,
+        "/WE": 0,
+        "/OE": 1,
+        "DQ": "0x00"
+      },
+      "expect": {
+        "no_write": true
+      }
+    },
+    {
+      "name": "ce_high_read_keeps_previous_data",
+      "inputs": {
+        "A": "0x002A",
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "0xC6"
+      }
+    },
+    {
+      "name": "we_high_prevents_write",
+      "inputs": {
+        "A": "0x0123",
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 1,
+        "DQ": "0x00"
+      },
+      "expect": {
+        "no_write": true
+      }
+    },
+    {
+      "name": "we_high_read_keeps_previous_data",
+      "inputs": {
+        "A": "0x0123",
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "0x3C"
+      }
+    }
+  ],
+  "edge_criteria": {
+    "clocking": "control_edge_or_level_sensitive",
+    "trigger_edge": "WE_control",
+    "non_trigger_edge": "CE_or_OE_disabled_outputs_high_z_and_no_unexpected_write",
+    "notes": "Memory truth tests must state write/read control transitions or level windows and high-Z behavior."
+  }
 }

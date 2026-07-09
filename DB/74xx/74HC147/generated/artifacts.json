@@ -223,6 +223,35 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC147",
+      "module": "ttl_74hc147",
+      "bench_module": "tb_generated_74hc147",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC147/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc147"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -312,7 +341,9 @@
       "version": 1,
       "part": "74HC147",
       "title": "10-line to 4-line priority encoder with active-low inputs and outputs",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "10-line to 4-line priority encoder with active-low inputs and outputs.",
+      "overview": "74HC147 is a 16-pin DIP part for logic.",
       "sections": [
         "overview",
         "pins",
@@ -321,9 +352,51 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 15 ns before trusting the output."
+      ],
       "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 10,
+          "names": [
+            "/I4",
+            "/I5",
+            "/I6",
+            "/I7",
+            "/I8",
+            "/I0",
+            "/I9",
+            "/I1",
+            "/I2",
+            "/I3"
+          ],
+          "note": "Input pins: /I4, /I5, /I6, /I7, /I8, /I0, and 4 more."
+        },
+        "output": {
+          "count": 3,
+          "names": [
+            "/Y2",
+            "/Y1",
+            "/Y3"
+          ],
+          "note": "Output pins: /Y2, /Y1, /Y3."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -354,6 +427,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC147",
+      "title": "Try 74HC147 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "/I4",
         "/I5",
@@ -366,15 +441,104 @@
         "/I2",
         "/I3"
       ],
+      "control_labels": [
+        {
+          "pin": "/I4",
+          "label": "/I4 - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/I4 controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "/I5",
+          "label": "/I5 - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/I5 controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "/I6",
+          "label": "/I6 - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/I6 controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "/I7",
+          "label": "/I7 - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/I7 controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "/I8",
+          "label": "/I8 - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/I8 controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "/I0",
+          "label": "/I0 - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/I0 controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "/I9",
+          "label": "/I9 - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/I9 controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "/I1",
+          "label": "/I1 - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/I1 controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "/I2",
+          "label": "/I2 - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/I2 controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "/I3",
+          "label": "/I3 - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/I3 controls input. This is active low, so 0 turns the control on."
+        }
+      ],
       "probes": [
         "/Y2",
         "/Y1",
         "/Y3"
       ],
+      "probe_labels": [
+        {
+          "name": "/Y2",
+          "label": "/Y2",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "/Y1",
+          "label": "/Y1",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "/Y3",
+          "label": "/Y3",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change /I4?",
+        "Which truth-table row matches the value on /Y2?"
       ]
     }
   }

@@ -237,7 +237,14 @@ def test_seed_split_records_execute_against_python_models():
     assert get_byte(mux, [4, 7, 9, 12]) == 0
 
     hc161 = json.loads((ROOT / "DB/74xx/74HC161/tests/truth_table.json").read_text(encoding="utf-8"))
-    assert {item["name"] for item in hc161["vectors"]} >= {"async_clear", "parallel_load", "count", "terminal_count"}
+    assert {item["name"] for item in hc161["vectors"]} >= {
+        "async_clear",
+        "parallel_load",
+        "count_enabled",
+        "hold_when_enp_low",
+        "terminal_count_rco_high",
+        "terminal_count_rco_low_when_ent_low",
+    }
     ctr = create_chip("74HC161", "U")
     set_byte(ctr, [3, 4, 5, 6], 0xC)
     set_pins(ctr, [1, 9, 7, 10], [1, 0, 1, 1])
@@ -253,7 +260,12 @@ def test_seed_split_records_execute_against_python_models():
     assert get_byte(ctr, [14, 13, 12, 11]) == 0
 
     hc245 = json.loads((ROOT / "DB/74xx/74HC245/tests/truth_table.json").read_text(encoding="utf-8"))
-    assert {item["name"] for item in hc245["vectors"]} == {"a_to_b", "b_to_a", "disabled"}
+    assert {item["name"] for item in hc245["vectors"]} >= {
+        "dir_high_a_to_b",
+        "dir_low_b_to_a",
+        "disabled_oe_high_releases_a_and_b",
+        "disabled_oe_high_reverse_releases_a_and_b",
+    }
     trans = create_chip("74HC245", "U")
     set_byte(trans, [2, 3, 4, 5, 6, 7, 8, 9], 0x5A)
     set_pins(trans, [1, 19], [1, 0])
@@ -264,7 +276,14 @@ def test_seed_split_records_execute_against_python_models():
     assert trans.read(18) == Z
 
     hc574 = json.loads((ROOT / "DB/74xx/74HC574/tests/truth_table.json").read_text(encoding="utf-8"))
-    assert {item["name"] for item in hc574["vectors"]} == {"rising_edge_latch", "hold_after_d_change", "disabled_high_z"}
+    assert {item["name"] for item in hc574["vectors"]} == {
+        "rising_edge_latch_a5",
+        "hold_after_d_change",
+        "rising_edge_latch_3c",
+        "disabled_high_z",
+        "clock_while_outputs_disabled_captures_5a",
+        "reenabled_outputs_last_latched_value",
+    }
     reg = create_chip("74HC574", "U")
     reg.set_input(1, 0)
     set_byte(reg, [2, 3, 4, 5, 6, 7, 8, 9], 0xA5)
@@ -279,7 +298,19 @@ def test_seed_split_records_execute_against_python_models():
     assert reg.read(19) == Z
 
     at28 = json.loads((ROOT / "DB/Memory/AT28C256/tests/truth_table.json").read_text(encoding="utf-8"))
-    assert {item["name"] for item in at28["vectors"]} == {"write_read", "disabled_high_z", "oe_high_high_z"}
+    assert {item["name"] for item in at28["vectors"]} == {
+        "write_c6",
+        "read_c6",
+        "write_3c",
+        "read_3c",
+        "chip_disabled_high_z",
+        "output_disabled_high_z",
+        "write_mode_high_z",
+        "ce_high_prevents_write",
+        "ce_high_read_keeps_previous_data",
+        "we_high_prevents_write",
+        "we_high_read_keeps_previous_data",
+    }
     rom = create_chip("AT28C256", "ROM")
     set_memory_addr(rom, 0x002A)
     set_byte(rom, MEMORY_DQ_PINS, 0xC6)

@@ -5,8 +5,145 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "write_5a_read_5a",
+      "inputs": {
+        "A": "0x0123",
+        "/CE": 0,
+        "/WE": 0,
+        "/OE": 1,
+        "DQ": "0x5A"
+      },
+      "expect": {
+        "write": true
+      }
+    },
+    {
+      "name": "read_5a",
+      "inputs": {
+        "A": "0x0123",
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "0x5A"
+      }
+    },
+    {
+      "name": "write_c3_read_c3",
+      "inputs": {
+        "A": "0x2345",
+        "/CE": 0,
+        "/WE": 0,
+        "/OE": 1,
+        "DQ": "0xC3"
+      },
+      "expect": {
+        "write": true
+      }
+    },
+    {
+      "name": "read_c3",
+      "inputs": {
+        "A": "0x2345",
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "0xC3"
+      }
+    },
+    {
+      "name": "chip_disabled_high_z",
+      "inputs": {
+        "/CE": 1,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "Z"
+      }
+    },
+    {
+      "name": "output_disabled_high_z",
+      "inputs": {
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 1
+      },
+      "expect": {
+        "DQ": "Z"
+      }
+    },
+    {
+      "name": "write_mode_high_z",
+      "inputs": {
+        "A": "0x3456",
+        "/CE": 0,
+        "/WE": 0,
+        "/OE": 1,
+        "DQ": "0x96"
+      },
+      "expect": {
+        "DQ": "Z"
+      }
+    },
+    {
+      "name": "ce_high_prevents_write",
+      "inputs": {
+        "A": "0x0123",
+        "/CE": 1,
+        "/WE": 0,
+        "/OE": 1,
+        "DQ": "0x00"
+      },
+      "expect": {
+        "no_write": true
+      }
+    },
+    {
+      "name": "ce_high_read_keeps_previous_data",
+      "inputs": {
+        "A": "0x0123",
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "0x5A"
+      }
+    },
+    {
+      "name": "we_high_prevents_write",
+      "inputs": {
+        "A": "0x2345",
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 1,
+        "DQ": "0x00"
+      },
+      "expect": {
+        "no_write": true
+      }
+    },
+    {
+      "name": "we_high_read_keeps_previous_data",
+      "inputs": {
+        "A": "0x2345",
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "0xC3"
+      }
     }
-  ]
+  ],
+  "edge_criteria": {
+    "clocking": "control_edge_or_level_sensitive",
+    "trigger_edge": "WE_control",
+    "non_trigger_edge": "CE_or_OE_disabled_outputs_high_z_and_no_unexpected_write",
+    "notes": "Memory truth tests must state write/read control transitions or level windows and high-Z behavior."
+  }
 }

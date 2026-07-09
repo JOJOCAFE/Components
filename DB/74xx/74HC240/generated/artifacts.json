@@ -245,6 +245,35 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC240",
+      "module": "ttl_74hc240",
+      "bench_module": "tb_generated_74hc240",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC240/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc240"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -342,7 +371,9 @@
       "version": 1,
       "part": "74HC240",
       "title": "Octal Inverting Buffer/Line Driver",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "Octal Inverting Buffer/Line Driver.",
+      "overview": "74HC240 is a 20-pin DIP part for buffer.",
       "sections": [
         "overview",
         "pins",
@@ -351,9 +382,56 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 15 ns before trusting the output."
+      ],
       "pin_count": 20,
+      "pin_summary": {
+        "input": {
+          "count": 10,
+          "names": [
+            "/1OE",
+            "1A1",
+            "1A2",
+            "1A3",
+            "1A4",
+            "2A1",
+            "2A2",
+            "2A3",
+            "2A4",
+            "/2OE"
+          ],
+          "note": "Input pins: /1OE, 1A1, 1A2, 1A3, 1A4, 2A1, and 4 more."
+        },
+        "output": {
+          "count": 8,
+          "names": [
+            "2Y4",
+            "2Y3",
+            "2Y2",
+            "2Y1",
+            "1Y4",
+            "1Y3",
+            "1Y2",
+            "1Y1"
+          ],
+          "note": "Output pins: 2Y4, 2Y3, 2Y2, 2Y1, 1Y4, 1Y3, and 2 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -384,6 +462,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC240",
+      "title": "Try 74HC240 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "/1OE",
         "1A1",
@@ -396,6 +476,68 @@
         "2A4",
         "/2OE"
       ],
+      "control_labels": [
+        {
+          "pin": "/1OE",
+          "label": "/1OE - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/1OE controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "1A1",
+          "label": "1A1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1A1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "1A2",
+          "label": "1A2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1A2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "1A3",
+          "label": "1A3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1A3 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "1A4",
+          "label": "1A4 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1A4 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2A1",
+          "label": "2A1 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2A1 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2A2",
+          "label": "2A2 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2A2 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2A3",
+          "label": "2A3 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2A3 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2A4",
+          "label": "2A4 - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2A4 controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/2OE",
+          "label": "/2OE - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/2OE controls input. This is active low, so 0 turns the control on."
+        }
+      ],
       "probes": [
         "2Y4",
         "2Y3",
@@ -406,10 +548,62 @@
         "1Y2",
         "1Y1"
       ],
+      "probe_labels": [
+        {
+          "name": "2Y4",
+          "label": "2Y4",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "2Y3",
+          "label": "2Y3",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "2Y2",
+          "label": "2Y2",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "2Y1",
+          "label": "2Y1",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "1Y4",
+          "label": "1Y4",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "1Y3",
+          "label": "1Y3",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "1Y2",
+          "label": "1Y2",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "1Y1",
+          "label": "1Y1",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change /1OE?",
+        "Which truth-table row matches the value on 2Y4?"
       ]
     }
   }

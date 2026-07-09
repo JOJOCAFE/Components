@@ -57,6 +57,7 @@ GENERATION_TARGETS = {
     "json",
     "python_simulator",
     "verilog_wrapper",
+    "verilog_testbench",
     "kicad_symbol",
     "svg_pinout",
     "documentation",
@@ -395,9 +396,20 @@ def test_generation_seed_definitions_are_one_file_sources():
 def test_74hc245_split_tests_and_evidence_are_loaded():
     package = load_digital_package("74HC245")
     tests = package["layers"]["tests"]
-    assert {item["name"] for item in tests["truth_table"]["vectors"]} == {"a_to_b", "b_to_a", "disabled"}
+    assert {item["name"] for item in tests["truth_table"]["vectors"]} == {
+        "dir_high_a_to_b",
+        "dir_high_a_to_b_reverse_pattern",
+        "dir_low_b_to_a",
+        "dir_low_b_to_a_reverse_pattern",
+        "disabled_oe_high_releases_a_and_b",
+        "disabled_oe_high_reverse_releases_a_and_b",
+    }
     assert {item["name"] for item in tests["tri_state"]["checks"]} >= {"disabled_releases_a", "disabled_releases_b"}
-    assert {item["name"] for item in tests["bus_fight"]["checks"]} == {"external_b_driver_conflicts_with_a_to_b", "external_a_driver_conflicts_with_b_to_a"}
+    assert {item["name"] for item in tests["bus_fight"]["checks"]} == {
+        "external_b_driver_conflicts_with_a_to_b",
+        "external_a_driver_conflicts_with_b_to_a",
+        "oe_high_prevents_conflict_with_external_drivers",
+    }
     assert {item["control"] for item in tests["timing"]["checks"]} == {"DIR", "/OE"}
     assert {item["expect_delay_ns"] for item in tests["propagation"]["checks"]} == {12}
 
@@ -434,7 +446,19 @@ def test_component_generation_artifacts_cover_declared_targets():
     assert hc245["artifacts"]["verilog_wrapper"]["module"] == "ttl_74hc245"
     assert hc245["artifacts"]["svg_pinout"]["shape"] == "dip"
     assert hc245["artifacts"]["documentation"]["sections"] == ["overview", "pins", "controls", "truth_table", "timing", "try_it"]
+    assert hc245["artifacts"]["documentation"]["overview"] == "74HC245 is a 20-pin DIP part for bus transceiver."
+    assert "Connect power before testing signal pins." in hc245["artifacts"]["documentation"]["key_points"]
+    assert hc245["artifacts"]["documentation"]["control_explanations"][1]["hint"] == "This is active low, so 0 turns the control on."
+    assert hc245["artifacts"]["documentation"]["bus_explanations"][0]["explanation"] == "A is an 8-bit signal group. Bit 0 is pin 2 and the highest bit is pin 9."
+    assert hc245["artifacts"]["documentation"]["timing_note"] == "After an input changes, wait about 12 ns before trusting the output."
     assert hc245["artifacts"]["interactive_demo"]["probes"] == ["A", "B"]
+    assert hc245["artifacts"]["interactive_demo"]["title"] == "Try 74HC245 in the simulator"
+    assert hc245["artifacts"]["interactive_demo"]["guided_steps"] == [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table.",
+    ]
+    assert hc245["artifacts"]["interactive_demo"]["probe_labels"][0]["hint"] == "Read all 8 bits together."
 
 
 def test_generated_artifact_files_exist_for_seed_batch():

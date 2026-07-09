@@ -215,6 +215,35 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC73",
+      "module": "ttl_74hc73",
+      "bench_module": "tb_generated_74hc73",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC73/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc73"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -296,7 +325,9 @@
       "version": 1,
       "part": "74HC73",
       "title": "dual JK flip-flop with reset, negative-edge trigger",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "dual JK flip-flop with reset, negative-edge trigger.",
+      "overview": "74HC73 is a 14-pin DIP part for register.",
       "sections": [
         "overview",
         "pins",
@@ -305,9 +336,50 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 15 ns before trusting the output."
+      ],
       "pin_count": 14,
+      "pin_summary": {
+        "input": {
+          "count": 8,
+          "names": [
+            "1CP",
+            "1R",
+            "1K",
+            "2CP",
+            "2R",
+            "2J",
+            "2K",
+            "1J"
+          ],
+          "note": "Input pins: 1CP, 1R, 1K, 2CP, 2R, 2J, and 2 more."
+        },
+        "output": {
+          "count": 4,
+          "names": [
+            "2Q_bar",
+            "2Q",
+            "1Q_bar",
+            "1Q"
+          ],
+          "note": "Output pins: 2Q_bar, 2Q, 1Q_bar, 1Q."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "VCC",
+            "GND"
+          ],
+          "note": "Power pins: VCC, GND."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -338,6 +410,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC73",
+      "title": "Try 74HC73 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "1CP",
         "1R",
@@ -348,16 +422,98 @@
         "2K",
         "1J"
       ],
+      "control_labels": [
+        {
+          "pin": "1CP",
+          "label": "1CP - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1CP controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "1R",
+          "label": "1R - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1R controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "1K",
+          "label": "1K - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1K controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2CP",
+          "label": "2CP - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2CP controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2R",
+          "label": "2R - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2R controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2J",
+          "label": "2J - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2J controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2K",
+          "label": "2K - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2K controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "1J",
+          "label": "1J - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1J controls input. Use 1 to turn this control on."
+        }
+      ],
       "probes": [
         "2Q_bar",
         "2Q",
         "1Q_bar",
         "1Q"
       ],
+      "probe_labels": [
+        {
+          "name": "2Q_bar",
+          "label": "2Q_bar",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "2Q",
+          "label": "2Q",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "1Q_bar",
+          "label": "1Q_bar",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "1Q",
+          "label": "1Q",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change 1CP?",
+        "Which truth-table row matches the value on 2Q_bar?"
       ]
     }
   }

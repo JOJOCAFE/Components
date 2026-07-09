@@ -340,6 +340,40 @@
         ]
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC245",
+      "module": "ttl_74hc245",
+      "bench_module": "tb_generated_74hc245",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC245/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc245"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "dir_high_a_to_b",
+            "dir_high_a_to_b_reverse_pattern",
+            "dir_low_b_to_a",
+            "dir_low_b_to_a_reverse_pattern",
+            "disabled_oe_high_releases_a_and_b",
+            "disabled_oe_high_reverse_releases_a_and_b"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "bidirectional or tri-state pins need a sequenced bench"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -463,7 +497,9 @@
       "version": 1,
       "part": "74HC245",
       "title": "Octal bus transceiver with 3-state outputs",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "Octal bus transceiver with 3-state outputs.",
+      "overview": "74HC245 is a 20-pin DIP part for bus transceiver.",
       "sections": [
         "overview",
         "pins",
@@ -472,7 +508,53 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 12 ns before trusting the output.",
+        "Check the control pins first: DIR, /OE.",
+        "Treat these as grouped signals in the UI: A, B."
+      ],
       "pin_count": 20,
+      "pin_summary": {
+        "input": {
+          "count": 2,
+          "names": [
+            "DIR",
+            "/OE"
+          ],
+          "note": "Input pins: DIR, /OE."
+        },
+        "bidirectional": {
+          "count": 16,
+          "names": [
+            "A1",
+            "A2",
+            "A3",
+            "A4",
+            "A5",
+            "A6",
+            "A7",
+            "A8",
+            "B8",
+            "B7",
+            "B6",
+            "B5",
+            "B4",
+            "B3",
+            "B2",
+            "B1"
+          ],
+          "note": "Bidirectional pins: A1, A2, A3, A4, A5, A6, and 10 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {
         "A": {
           "width": 8,
@@ -501,6 +583,38 @@
           ]
         }
       },
+      "bus_explanations": [
+        {
+          "name": "A",
+          "width": 8,
+          "pins_lsb_first": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "explanation": "A is an 8-bit signal group. Bit 0 is pin 2 and the highest bit is pin 9."
+        },
+        {
+          "name": "B",
+          "width": 8,
+          "pins_lsb_first": [
+            18,
+            17,
+            16,
+            15,
+            14,
+            13,
+            12,
+            11
+          ],
+          "explanation": "B is an 8-bit signal group. Bit 0 is pin 18 and the highest bit is pin 11."
+        }
+      ],
       "controls": [
         {
           "pin": "DIR",
@@ -512,7 +626,22 @@
           "function": "enable",
           "active_low": true
         }
-      ]
+      ],
+      "control_explanations": [
+        {
+          "pin": "DIR",
+          "label": "DIR - direction control",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "DIR controls direction control. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/OE",
+          "label": "/OE - enable",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/OE controls enable. This is active low, so 0 turns the control on."
+        }
+      ],
+      "timing_note": "After an input changes, wait about 12 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -556,18 +685,56 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC245",
+      "title": "Try 74HC245 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "DIR",
         "/OE"
+      ],
+      "control_labels": [
+        {
+          "pin": "DIR",
+          "label": "DIR - direction control",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "DIR controls direction control. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/OE",
+          "label": "/OE - enable",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/OE controls enable. This is active low, so 0 turns the control on."
+        }
       ],
       "probes": [
         "A",
         "B"
       ],
+      "probe_labels": [
+        {
+          "name": "A",
+          "label": "A bus",
+          "hint": "Read all 8 bits together."
+        },
+        {
+          "name": "B",
+          "label": "B bus",
+          "hint": "Read all 8 bits together."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change DIR?",
+        "Which truth-table row matches the value on A?"
       ]
     }
   }

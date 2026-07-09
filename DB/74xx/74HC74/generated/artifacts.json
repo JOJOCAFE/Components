@@ -224,6 +224,39 @@
         }
       }
     },
+    "verilog_testbench": {
+      "schema": "db.component.generated.verilog_testbench",
+      "version": 1,
+      "part": "74HC74",
+      "module": "ttl_74hc74",
+      "bench_module": "tb_generated_74hc74",
+      "compile": {
+        "tool": "iverilog",
+        "standard": "g2012",
+        "sources": [
+          "DB/74xx/74HC74/simulation/model.v"
+        ],
+        "top": "tb_generated_74hc74"
+      },
+      "split_records": {
+        "truth_table": {
+          "source": "tests/truth_table.json",
+          "present": true,
+          "applicable": true,
+          "vectors": [
+            "clear_forces_q_low",
+            "preset_forces_q_high",
+            "clock_captures_d_low",
+            "clock_captures_d_high",
+            "second_flip_flop_clock_captures_d"
+          ]
+        }
+      },
+      "emitted": {
+        "supported": false,
+        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
+      }
+    },
     "kicad_symbol": {
       "schema": "db.component.symbol.dip",
       "version": 1,
@@ -305,7 +338,9 @@
       "version": 1,
       "part": "74HC74",
       "title": "Dual D-type flip-flop with asynchronous preset and clear",
+      "audience": "students ages 10-15, still useful for older learners",
       "summary": "Dual D-type flip-flop with asynchronous preset and clear.",
+      "overview": "74HC74 is a 14-pin DIP part for flip flop.",
       "sections": [
         "overview",
         "pins",
@@ -314,9 +349,50 @@
         "timing",
         "try_it"
       ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 20 ns before trusting the output."
+      ],
       "pin_count": 14,
+      "pin_summary": {
+        "input": {
+          "count": 8,
+          "names": [
+            "/1CLR",
+            "1D",
+            "1CLK",
+            "/1PRE",
+            "/2PRE",
+            "2CLK",
+            "2D",
+            "/2CLR"
+          ],
+          "note": "Input pins: /1CLR, 1D, 1CLK, /1PRE, /2PRE, 2CLK, and 2 more."
+        },
+        "output": {
+          "count": 4,
+          "names": [
+            "1Q",
+            "/1Q",
+            "/2Q",
+            "2Q"
+          ],
+          "note": "Output pins: 1Q, /1Q, /2Q, 2Q."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
       "buses": {},
-      "controls": []
+      "bus_explanations": [],
+      "controls": [],
+      "control_explanations": [],
+      "timing_note": "After an input changes, wait about 20 ns before trusting the output."
     },
     "unit_test": {
       "schema": "db.component.generated.tests",
@@ -347,6 +423,8 @@
       "schema": "db.component.generated.interactive_demo",
       "version": 1,
       "part": "74HC74",
+      "title": "Try 74HC74 in the simulator",
+      "intro": "Change the inputs, let the model settle, then read the probes.",
       "controls": [
         "/1CLR",
         "1D",
@@ -357,16 +435,98 @@
         "2D",
         "/2CLR"
       ],
+      "control_labels": [
+        {
+          "pin": "/1CLR",
+          "label": "/1CLR - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/1CLR controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "1D",
+          "label": "1D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1D controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "1CLK",
+          "label": "1CLK - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "1CLK controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/1PRE",
+          "label": "/1PRE - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/1PRE controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "/2PRE",
+          "label": "/2PRE - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/2PRE controls input. This is active low, so 0 turns the control on."
+        },
+        {
+          "pin": "2CLK",
+          "label": "2CLK - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2CLK controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "2D",
+          "label": "2D - input",
+          "hint": "Use 1 to turn this control on.",
+          "explanation": "2D controls input. Use 1 to turn this control on."
+        },
+        {
+          "pin": "/2CLR",
+          "label": "/2CLR - input",
+          "hint": "This is active low, so 0 turns the control on.",
+          "explanation": "/2CLR controls input. This is active low, so 0 turns the control on."
+        }
+      ],
       "probes": [
         "1Q",
         "/1Q",
         "/2Q",
         "2Q"
       ],
+      "probe_labels": [
+        {
+          "name": "1Q",
+          "label": "1Q",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "/1Q",
+          "label": "/1Q",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "/2Q",
+          "label": "/2Q",
+          "hint": "Read this output after the settle step."
+        },
+        {
+          "name": "2Q",
+          "label": "2Q",
+          "hint": "Read this output after the settle step."
+        }
+      ],
       "default_steps": [
         "apply controls",
         "settle",
         "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change /1CLR?",
+        "Which truth-table row matches the value on 1Q?"
       ]
     }
   }
