@@ -336,6 +336,58 @@ Result:
 }
 ```
 
+### export-block-ui / import-block-ui
+
+Purpose: convert between readable schematic JSON and the drawable block-UI
+shape without creating a separate behavior model. Both directions pass through
+the normalized Python `Design` contract and preserve probes, inputs, tests, DB
+part references, and UI-owned layout metadata.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli export-block-ui design.json -o design.block.json
+python3 -m chiplib.cli import-block-ui design.block.json -o design.json
+```
+
+Requests:
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "export-block-ui",
+  "input": {
+    "schematic": {}
+  }
+}
+```
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "import-block-ui",
+  "input": {
+    "block_ui": {
+      "format": "components.block_ui",
+      "version": 1
+    }
+  }
+}
+```
+
+Result:
+
+```json
+{
+  "format": "components.block_ui",
+  "version": 1,
+  "design": {},
+  "blocks": [],
+  "wires": [],
+  "layout": {}
+}
+```
+
 ### export-netlist
 
 Purpose: export the normalized bridge netlist used by CLI, UI, HDL generation,
@@ -670,6 +722,8 @@ Stateful frontend-edit commands operate on the loaded in-memory design:
 - `run`
 - `probe`
 - `export-json`
+- `export-block-ui`
+- `import-block-ui`
 - `export-netlist`
 - `export-verilog`
 

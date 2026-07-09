@@ -77,6 +77,32 @@ def test_cli_validate_snapshot_run_probe_and_export_json():
         assert export.returncode == 0, export.stderr
         assert json.loads(out.read_text(encoding="utf-8"))["name"] == "cli-small"
 
+        block_out = Path(tmp) / "small.block.json"
+        export_block = subprocess.run(
+            [sys.executable, "-B", "-m", "chiplib.cli", "export-block-ui", str(path), "-o", str(block_out)],
+            cwd=Path(__file__).resolve().parents[1],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert export_block.returncode == 0, export_block.stderr
+        block_ui = json.loads(block_out.read_text(encoding="utf-8"))
+        assert block_ui["format"] == "components.block_ui"
+        assert block_ui["blocks"][0]["id"] == "U1"
+
+        import_out = Path(tmp) / "from_block.json"
+        import_block = subprocess.run(
+            [sys.executable, "-B", "-m", "chiplib.cli", "import-block-ui", str(block_out), "-o", str(import_out)],
+            cwd=Path(__file__).resolve().parents[1],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert import_block.returncode == 0, import_block.stderr
+        imported = json.loads(import_out.read_text(encoding="utf-8"))
+        assert imported["chips"]["U1"]["part"] == "74HC00"
+        assert imported["connect"] == small_cli_schematic()["connect"]
+
         netlist_out = Path(tmp) / "small.net.json"
         export_netlist = subprocess.run(
             [sys.executable, "-B", "-m", "chiplib.cli", "export-netlist", str(path), "-o", str(netlist_out)],
@@ -225,6 +251,14 @@ class FakeDesignService:
         self.calls.append(("export_json", json_file))
         return {"command": "export-json"}
 
+    def export_block_ui(self, json_file: str):
+        self.calls.append(("export_block_ui", json_file))
+        return {"format": "components.block_ui"}
+
+    def import_block_ui(self, json_file: str):
+        self.calls.append(("import_block_ui", json_file))
+        return {"command": "import-block-ui"}
+
     def export_netlist(self, json_file: str):
         self.calls.append(("export_netlist", json_file))
         return {"format": "chiplib.netlist"}
@@ -248,6 +282,9 @@ def test_cli_design_commands_route_through_service_boundary():
         ("snapshot", ["snapshot", "small.json"], ("snapshot", "small.json")),
         ("run", ["run", "--steps", "none", "small.json"], ("run", "small.json", [])),
         ("probe", ["probe", "small.json"], ("probe", "small.json")),
+        ("export-json", ["export-json", "small.json"], ("export_json", "small.json")),
+        ("export-block-ui", ["export-block-ui", "small.json"], ("export_block_ui", "small.json")),
+        ("import-block-ui", ["import-block-ui", "small.json"], ("import_block_ui", "small.json")),
         ("export-netlist", ["export-netlist", "small.json"], ("export_netlist", "small.json")),
         ("export-verilog", ["export-verilog", "small.json"], ("export_verilog", "small.json")),
     ]

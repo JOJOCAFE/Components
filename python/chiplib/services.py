@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from time import perf_counter
 from typing import Any
 
@@ -250,6 +252,17 @@ class DesignCommandService:
     def export_json(self, json_file: str) -> JsonMap:
         return self.load_design(json_file).to_dict()
 
+    def export_block_ui(self, json_file: str) -> JsonMap:
+        return self.load_design(json_file).to_block_ui()
+
+    def import_block_ui(self, json_file: str) -> JsonMap:
+        from .design import Design
+
+        data = json.loads(Path(json_file).read_text(encoding="utf-8"))
+        if not isinstance(data, dict):
+            raise ValueError("block UI JSON root must be an object")
+        return Design.from_block_ui(data).to_dict()
+
     def export_netlist(self, json_file: str) -> JsonMap:
         return self.load_design(json_file).to_netlist()
 
@@ -289,6 +302,16 @@ class FrontendDesignService:
     def export_json(self) -> JsonMap:
         design = self._require_design()
         return self._ok("export-json", design.to_dict())
+
+    def export_block_ui(self) -> JsonMap:
+        design = self._require_design()
+        return self._ok("export-block-ui", design.to_block_ui())
+
+    def import_block_ui(self, data: JsonMap) -> JsonMap:
+        from .design import Design
+
+        self.design = Design.from_block_ui(data)
+        return self.snapshot()
 
     def create_chip(self, ref: str, part: str, **properties: Any) -> JsonMap:
         design = self._require_design()

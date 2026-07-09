@@ -58,6 +58,13 @@ def handle_request(request: JsonMap, service: FrontendDesignService | None = Non
             return service.snapshot()
         if command == "frontend-snapshot":
             return service.frontend_snapshot()
+        if command == "export-block-ui":
+            return service.export_block_ui()
+        if command == "import-block-ui":
+            block_ui = input_data.get("block_ui", input_data)
+            if not isinstance(block_ui, dict):
+                raise ValueError("input.block_ui must be an object")
+            return service.import_block_ui(block_ui)
         if command == "component-catalog":
             group = options.get("group", input_data.get("group"))
             return service.component_catalog(group=str(group) if group is not None else None)

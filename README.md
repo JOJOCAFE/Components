@@ -25,6 +25,8 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
   and future UI display.
 - `SERVICE_CONTRACT.md` - CLI/API service contract for validation, snapshots,
   simulation runs, probes, exporters, and DB audit/status responses.
+- `BLOCK_UI_CONTRACT.md` - drawable block import/export contract that
+  round-trips through the same normalized `Design` model as schematic JSON.
 - `PYTHON_BACKEND_ARCHITECTURE.md` - backend-first architecture where JSON,
   UI blocks, CLI commands, Python scripts, netlists, and Verilog all talk
   through one Python design model.
@@ -97,6 +99,10 @@ structural Verilog only for parts with explicit pin-number-to-port mappings; it
 reports unsupported parts instead of guessing from names.
 `Design.from_kicad_netlist()` can import KiCad generic netlists for compatibility
 smoke tests against existing projects such as RV8GR-V2.
+`Design.to_block_ui()` and `Design.from_block_ui()` bridge a future visual
+chip-block editor to the same schematic JSON contract. The block-UI format only
+adds drawable blocks, wires, and layout metadata; chip identity, pins, probes,
+tests, and behavior still come from `Design` and the DB catalog.
 
 Parts without manufacturer-verified DIP evidence, such as the previously
 provisional `74HC150` and `74HC260`, are intentionally absent from the active
@@ -117,6 +123,7 @@ Run from the Components repo root:
 cd python
 python3 -B -m tests.test_chips
 python3 -B -m tests.test_design
+python3 -B -m tests.test_block_ui
 python3 -B -m tests.test_netlist
 python3 -B -m tests.test_cli
 python3 -B -m tests.test_api
@@ -137,6 +144,7 @@ Expected pass markers:
 
 - `Components Python chip tests passed`
 - `Components Python design tests passed`
+- `Components block UI tests passed`
 - `Components Python netlist tests passed`
 - `Components Python CLI tests passed`
 - `Components API tests passed`
@@ -173,6 +181,9 @@ cd ..
   `Design.to_netlist()` exports consumed by CLI, UI, and HDL tooling.
 - `SERVICE_CONTRACT.md` - shared CLI/API request, response, error, versioning,
   and pluggable-service rules.
+- `BLOCK_UI_CONTRACT.md` - block editor import/export shape for drawable
+  chips, buses, rails, wires, and layout metadata over the normalized `Design`
+  model.
 - `PYTHON_BACKEND_ARCHITECTURE.md` - Python command/API model for the future
   block UI, CLI tool, Python script use, netlist exporter, and Verilog/testbench
   exporter.

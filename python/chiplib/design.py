@@ -131,6 +131,12 @@ class Design:
     def from_kicad_netlist(cls, path: str | Path, *, name: str | None = None) -> "Design":
         return design_from_kicad_netlist(path, cls, name=name)
 
+    @classmethod
+    def from_block_ui(cls, data: JsonMap) -> "Design":
+        from .block_ui import design_from_block_ui
+
+        return design_from_block_ui(data)
+
     def to_dict(self) -> JsonMap:
         data: JsonMap = {
             "name": self.name,
@@ -161,6 +167,11 @@ class Design:
     def to_netlist(self) -> JsonMap:
         return design_to_netlist(self)
 
+    def to_block_ui(self) -> JsonMap:
+        from .block_ui import design_to_block_ui
+
+        return design_to_block_ui(self)
+
     def to_verilog(self, *, include_testbench: bool = True) -> JsonMap:
         return export_verilog(self, include_testbench=include_testbench)
 
@@ -169,6 +180,9 @@ class Design:
 
     def endpoints(self, expr: str) -> list[JsonMap]:
         return [self._endpoint(item).snapshot() for item in _split_refs(expr)]
+
+    def connection_endpoints(self, rule: str) -> list[JsonMap]:
+        return [endpoint.snapshot() for endpoint in self._connection_endpoints(rule)]
 
     def connect(self, rule: str) -> "Design":
         self.connections.append(str(rule))

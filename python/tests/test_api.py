@@ -28,6 +28,10 @@ def test_frontend_design_service_edits_and_exports_design():
     assert exported["chips"]["U1"]["part"] == "74HC00"
     assert exported["inputs"]["power_on"] == ["DATA:0 = 1", "DATA:1 = 1"]
 
+    block_ui = service.export_block_ui()["result"]
+    assert block_ui["format"] == "components.block_ui"
+    assert {block["id"] for block in block_ui["blocks"]} >= {"U1", "DATA", "VCC", "GND"}
+
     service.disconnect("DATA:1 -> U1:2")
     assert "DATA:1 -> U1:2" not in service.export_json()["result"]["connect"]
     service.delete_chip("U1")
@@ -50,6 +54,16 @@ def test_json_api_adapter_dispatches_stateful_frontend_commands():
     assert exported["result"]["name"] == "api-session"
     assert exported["result"]["chips"]["U1"]["part"] == "74HC04"
     assert exported["result"]["connect"] == ["A -> U1:1"]
+
+    block_ui = handle_request({"command": "export-block-ui"}, service)
+    assert block_ui["ok"] is True
+    assert block_ui["result"]["format"] == "components.block_ui"
+
+    imported = handle_request({"command": "import-block-ui", "input": {"block_ui": block_ui["result"]}}, service)
+    assert imported["ok"] is True
+    imported_json = handle_request({"command": "export-json"}, service)
+    assert imported_json["result"]["chips"]["U1"]["part"] == "74HC04"
+    assert imported_json["result"]["connect"] == ["A -> U1:1"]
 
     unknown = handle_request({"command": "missing-command"}, service)
     assert unknown["ok"] is False

@@ -16,12 +16,12 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     parser = argparse.ArgumentParser(prog="python3 -m chiplib.cli")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    for name in ("validate", "snapshot", "run", "probe", "export-json"):
+    for name in ("validate", "snapshot", "run", "probe", "export-json", "export-block-ui", "import-block-ui"):
         cmd = sub.add_parser(name)
         cmd.add_argument("json_file")
         if name == "run":
             cmd.add_argument("--steps", default="all", help="'all' or 'none'")
-        if name in ("export-json",):
+        if name in ("export-json", "export-block-ui", "import-block-ui"):
             cmd.add_argument("-o", "--output")
 
     for name in ("export-netlist", "export-verilog"):
@@ -77,6 +77,10 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
         return write_json(designs.probe(args.json_file))
     if args.command == "export-json":
         return write_json(designs.export_json(args.json_file), output=getattr(args, "output", None))
+    if args.command == "export-block-ui":
+        return write_json(designs.export_block_ui(args.json_file), output=getattr(args, "output", None))
+    if args.command == "import-block-ui":
+        return write_json(designs.import_block_ui(args.json_file), output=getattr(args, "output", None))
     if args.command == "export-netlist":
         return write_json(designs.export_netlist(args.json_file), output=getattr(args, "output", None))
     if args.command == "export-verilog":
