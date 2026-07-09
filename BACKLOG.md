@@ -204,8 +204,13 @@ Done:
   profiles.
 - ✅ `74HC688` pin truth repair discovered during the ALU/Z proof: package
   pin 19 is `Y`/equality output and pins 11-18 are A4/B4 through A7/B7. The
-  Components DB/model/test package is corrected here; RV8GR U22 wiring/docs
-  should be checked in the RV8GR repo as a follow-up.
+  Components DB/model/test package is corrected here. RV8GR U22 wiring/docs,
+  local simulator model, vendored Components copy, KiCad netlist/EDF, and
+  generated chip-level RTL were corrected in RV8 commit `36d9aca`.
+- ✅ `RV8GR_VirtualTestHelpers`: virtual `ClockSource`, `Probe`, and `BusProbe`
+  package. Tests cover manual/random/fixed clock profiles, one-hot phase
+  probing, invalid phase detection, bus-driver observation, and forced IBUS/DBUS
+  contention detection.
 - ✅ Extra clock-profile tests for edge-sensitive circuits: `RV8GR_InstructionLatch`,
   `RV8GR_DataPageMemory`, `RV8GR_IRQLatch`, `RV8GR_PageDataRegisters`, and
   `RV8GR_BranchJumpControl` now declare and execute
@@ -214,17 +219,10 @@ Done:
 
 Next team tasks:
 
-1. **Fern + Bam: virtual test helpers**
-   - Add virtual clock, phase probe, bus monitor, and contention detector
-     components only where they make timing/bus tests clearer than ad hoc
-     Python helpers.
-2. **Ohm + Fern: RV8GR U22 wiring follow-up**
-   - Check RV8GR docs, KiCad, and wiring references for U22 `74HC688` after
-     the Components pin-truth repair.
-3. **Bank + Fern: opcode-sweep circuit proof**
+1. **Bank + Fern: opcode-sweep circuit proof**
    - Lift more `tb_rv8gr_opcode_sweep.v` expectations into reusable circuit
      package tests, especially reserved or illegal control mixes.
-4. **Ohm + Fern: hardware timing-margin proof**
+2. **Ohm + Fern: hardware timing-margin proof**
    - Keep 5 MHz marked functional simulation until physical timing and
      signal-integrity evidence exist.
 

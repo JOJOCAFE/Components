@@ -22,6 +22,7 @@ ROM_DBUS_READ = ROOT / "Lib" / "Circuits" / "RV8GR_RomDbusRead"
 PAGE_DATA_REGISTERS = ROOT / "Lib" / "Circuits" / "RV8GR_PageDataRegisters"
 BRANCH_JUMP_CONTROL = ROOT / "Lib" / "Circuits" / "RV8GR_BranchJumpControl"
 ALU_ACCUMULATOR = ROOT / "Lib" / "Circuits" / "RV8GR_AluAccumulator"
+VIRTUAL_TEST_HELPERS = ROOT / "Lib" / "Circuits" / "RV8GR_VirtualTestHelpers"
 RANDOM_PUSH_SEED = 0x8C16
 BYTE_D_PINS = [2, 3, 4, 5, 6, 7, 8, 9]
 BYTE_Q_PINS = [19, 18, 17, 16, 15, 14, 13, 12]
@@ -280,6 +281,35 @@ def z_compare_n(ac: int) -> int:
 
 def required_clock_profile_names() -> set[str]:
     return {"push_switch_single_step", "push_switch_random_100", "50_khz", "1_mhz", "2_mhz", "5_mhz"}
+
+
+def simulate_clock_profile(profile: dict) -> list[int]:
+    ticks = int(profile["expect_ticks"])
+    if profile["mode"] == "manual":
+        assert profile["ticks"] == ticks
+        return [1]
+    if profile["mode"] == "manual_random":
+        assert profile["ticks"] == ticks
+        intervals = random_push_intervals_ms(profile)
+        assert len(intervals) == ticks
+        return [1 for _interval in intervals]
+    if profile["mode"] == "fixed_frequency":
+        period_ns = int(round(1_000_000_000 / int(profile["frequency_hz"])))
+        assert profile["period_ns"] == period_ns
+        return [1] * ticks
+    raise AssertionError(profile["mode"])
+
+
+def phase_probe(t0: int, t1: int, t2: int) -> dict[str, object]:
+    active = [name for name, value in (("T0", t0), ("T1", t1), ("T2", t2)) if value]
+    if len(active) == 1:
+        return {"valid": True, "phase": active[0]}
+    return {"valid": False, "fault": "zero_hot" if not active else "multi_hot"}
+
+
+def bus_probe(drivers: list[str]) -> dict[str, object]:
+    active = [driver for driver in drivers if driver]
+    return {"drivers": active, "conflict": len(active) > 1}
 
 
 def bus_controls(phase: str, src: int, str_: int) -> dict[str, int]:
@@ -1514,6 +1544,60 @@ def test_rv8gr_alu_propagation_delay_checks_are_explicit():
         assert delay <= check["limit_ns"], check
 
 
+def test_rv8gr_virtual_test_helpers_package_shape():
+    circuit = load_json(VIRTUAL_TEST_HELPERS / "circuit.json")
+    proof = load_json(VIRTUAL_TEST_HELPERS / "tests" / "virtual_test_helpers.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_virtual_test_helpers"
+    assert proof["circuit"] == circuit["id"]
+    assert (VIRTUAL_TEST_HELPERS / "README.md").exists()
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips == {
+        "VCLK": "ClockSource",
+        "PH0": "Probe",
+        "PH1": "Probe",
+        "PH2": "Probe",
+        "IBUSMON": "BusProbe",
+        "DBUSMON": "BusProbe",
+    }
+    for part in proof["virtual_parts_required"]:
+        assert (ROOT / "DB" / "Virtual" / part / "definition" / "definition.json").exists(), part
+
+
+def test_rv8gr_virtual_clock_profiles_execute():
+    proof = load_json(VIRTUAL_TEST_HELPERS / "tests" / "virtual_test_helpers.json")
+    profiles = {profile["name"]: profile for profile in proof["clock_profiles"]}
+    assert required_clock_profile_names() <= set(profiles)
+    assert profiles["push_switch_random_100"]["seed"] == RANDOM_PUSH_SEED
+    assert "Functional simulation only" in profiles["5_mhz"]["note"]
+
+    for profile in profiles.values():
+        ticks = simulate_clock_profile(profile)
+        assert len(ticks) == profile["expect_ticks"], profile
+        assert all(tick == 1 for tick in ticks), profile
+
+
+def test_rv8gr_virtual_phase_probe_detects_invalid_phases():
+    proof = load_json(VIRTUAL_TEST_HELPERS / "tests" / "virtual_test_helpers.json")
+    for vector in proof["phase_vectors"]:
+        result = phase_probe(vector["T0"], vector["T1"], vector["T2"])
+        assert result["valid"] is vector["expect_valid"], vector
+        if vector["expect_valid"]:
+            assert result["phase"] == vector["expect_phase"], vector
+        else:
+            assert result["fault"] == vector["expect_fault"], vector
+
+
+def test_rv8gr_virtual_bus_probe_detects_contention():
+    proof = load_json(VIRTUAL_TEST_HELPERS / "tests" / "virtual_test_helpers.json")
+    for vector in proof["bus_vectors"]:
+        result = bus_probe(vector["drivers"])
+        assert result["drivers"] == vector["drivers"], vector
+        assert result["conflict"] is vector["expect_conflict"], vector
+
+
 def test_all_started_circuit_packages_have_tests():
     for circuit_path in sorted((ROOT / "Lib" / "Circuits").glob("RV8GR_*/circuit.json")):
         circuit = load_json(circuit_path)
@@ -1584,6 +1668,10 @@ def run_all():
     test_rv8gr_alu_opcode_sweep_samples_match_verilog_equation()
     test_rv8gr_alu_clock_profiles_capture_once_per_push()
     test_rv8gr_alu_propagation_delay_checks_are_explicit()
+    test_rv8gr_virtual_test_helpers_package_shape()
+    test_rv8gr_virtual_clock_profiles_execute()
+    test_rv8gr_virtual_phase_probe_detects_invalid_phases()
+    test_rv8gr_virtual_bus_probe_detects_contention()
     test_all_started_circuit_packages_have_tests()
 
 

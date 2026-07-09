@@ -1,0 +1,33 @@
+{
+  "schema": "components.lib.circuit.test.virtual_helpers",
+  "version": 1,
+  "circuit": "rv8gr_virtual_test_helpers",
+  "source": "Lib/Circuits/RV8GR_VirtualTestHelpers/circuit.json",
+  "clock_profiles": [
+    {"name": "push_switch_single_step", "mode": "manual", "ticks": 1, "expect_ticks": 1},
+    {"name": "push_switch_random_100", "mode": "manual_random", "ticks": 100, "max_interval_ms": 500, "seed": 35862, "expect_ticks": 100},
+    {"name": "50_khz", "mode": "fixed_frequency", "frequency_hz": 50000, "period_ns": 20000, "expect_ticks": 100},
+    {"name": "1_mhz", "mode": "fixed_frequency", "frequency_hz": 1000000, "period_ns": 1000, "expect_ticks": 100},
+    {"name": "2_mhz", "mode": "fixed_frequency", "frequency_hz": 2000000, "period_ns": 500, "expect_ticks": 100},
+    {"name": "5_mhz", "mode": "fixed_frequency", "frequency_hz": 5000000, "period_ns": 200, "expect_ticks": 100, "note": "Functional simulation only until physical timing and signal-integrity proof exists."}
+  ],
+  "phase_vectors": [
+    {"name": "t0_one_hot", "T0": 1, "T1": 0, "T2": 0, "expect_valid": true, "expect_phase": "T0"},
+    {"name": "t1_one_hot", "T0": 0, "T1": 1, "T2": 0, "expect_valid": true, "expect_phase": "T1"},
+    {"name": "t2_one_hot", "T0": 0, "T1": 0, "T2": 1, "expect_valid": true, "expect_phase": "T2"},
+    {"name": "zero_hot_fault", "T0": 0, "T1": 0, "T2": 0, "expect_valid": false, "expect_fault": "zero_hot"},
+    {"name": "multi_hot_fault", "T0": 1, "T1": 1, "T2": 0, "expect_valid": false, "expect_fault": "multi_hot"}
+  ],
+  "bus_vectors": [
+    {"name": "ibus_single_u7", "bus": "IBUS", "drivers": ["U7"], "expect_conflict": false},
+    {"name": "ibus_single_u34", "bus": "IBUS", "drivers": ["U34"], "expect_conflict": false},
+    {"name": "dbus_single_rom", "bus": "DBUS", "drivers": ["ROM1"], "expect_conflict": false},
+    {"name": "ibus_u7_u34_conflict", "bus": "IBUS", "drivers": ["U7", "U34"], "expect_conflict": true},
+    {"name": "dbus_rom_u7_conflict", "bus": "DBUS", "drivers": ["ROM1", "U7"], "expect_conflict": true}
+  ],
+  "virtual_parts_required": [
+    "ClockSource",
+    "Probe",
+    "BusProbe"
+  ]
+}

@@ -145,8 +145,12 @@ Current RV8GR circuit-library milestone:
   `74HC574` execution, model-delay propagation checks, and opcode-sweep ALU
   samples.
 - `74HC688` pin truth is corrected in Components: pin 19 is `Y` output and
-  pins 11-18 are A4/B4 through A7/B7. RV8GR U22 wiring/docs need a follow-up
-  audit in the RV8GR repo.
+  pins 11-18 are A4/B4 through A7/B7. RV8GR U22 wiring/docs, local simulator,
+  vendored Components copy, KiCad netlist/EDF, and generated chip-level RTL
+  were corrected in RV8 commit `36d9aca`.
+- `RV8GR_VirtualTestHelpers` proves the virtual helper policy with
+  `ClockSource`, `Probe`, and `BusProbe`: manual/random/fixed clock profiles,
+  one-hot phase checks, invalid phase detection, and bus contention detection.
 - Extra clock-profile tests now cover `RV8GR_InstructionLatch`,
   `RV8GR_DataPageMemory`, `RV8GR_IRQLatch`, `RV8GR_PageDataRegisters`, and
   `RV8GR_BranchJumpControl`, and `RV8GR_AluAccumulator` with push-switch,
@@ -156,7 +160,7 @@ Current RV8GR circuit-library milestone:
   or contention detectors when they make tests clearer, but do not replace real
   chip behavior with virtual behavior when the DB has a real model.
 - Next circuit/test lane must follow the same quality level:
-  `RV8GR_FullControlOpcodeSweep` and virtual test helpers.
+  `RV8GR_FullControlOpcodeSweep` and hardware timing-margin proof.
 
 ## Pim - Coordinator
 

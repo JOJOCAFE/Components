@@ -24,6 +24,7 @@ truth when lab wording is simplified.
 | `RV8GR_AluAccumulator` | U9-U14/U17-U22/U27 | Started | ALU path timing, AC latch edge, Z flag settle |
 | `RV8GR_PageDataRegisters` | U23/U32/U33/U25 | Started | `PG_CLK` and `DP_Load` edge timing |
 | `RV8GR_BranchJumpControl` | U24-U28 control gates | Started | `/PC_LD`, branch condition, no unintended load |
+| `RV8GR_VirtualTestHelpers` | `ClockSource`, `Probe`, `BusProbe` virtual helpers | Started | clock profiles, phase probes, bus contention observation |
 
 Each circuit package should include:
 
@@ -37,10 +38,7 @@ Each circuit package should include:
 1. `RV8GR_FullControlOpcodeSweep`: extract more of the Verilog opcode-sweep
    expectations into standalone circuit proofs, especially illegal/reserved
    control mixes.
-2. `RV8GR_VirtualTestHelpers`: create virtual clock, phase probe, bus monitor,
-   and contention detector helpers for circuit tests that need clearer
-   observation than ad hoc Python helper functions.
-3. `RV8GR_ClockProfiles`: keep push-switch, random debounced push, 50 kHz,
+2. `RV8GR_ClockProfiles`: keep push-switch, random debounced push, 50 kHz,
    1 MHz, 2 MHz, and 5 MHz profiles on every edge-sensitive circuit. Mark
    5 MHz as functional simulation until timing-margin and hardware
    signal-integrity proof exist.

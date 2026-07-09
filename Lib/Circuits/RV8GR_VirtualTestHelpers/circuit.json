@@ -1,0 +1,79 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_virtual_test_helpers",
+  "title": "RV8GR virtual timing and bus test helpers",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/06_debug_plan.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/07_risk_analysis.md",
+      "/home/jo/kiro/RV8/RV8GR/sim/verify_wiring.py",
+      "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_opcode_sweep.v"
+    ]
+  },
+  "purpose": "Provide reusable virtual observation helpers for RV8GR circuit tests without replacing real chip behavior.",
+  "chips": [
+    {"ref": "VCLK", "part": "ClockSource", "role": "Manual, random-push, and fixed-frequency clock profile source"},
+    {"ref": "PH0", "part": "Probe", "role": "Single-bit T0 phase probe"},
+    {"ref": "PH1", "part": "Probe", "role": "Single-bit T1 phase probe"},
+    {"ref": "PH2", "part": "Probe", "role": "Single-bit T2 phase probe"},
+    {"ref": "IBUSMON", "part": "BusProbe", "role": "IBUS driver/value monitor"},
+    {"ref": "DBUSMON", "part": "BusProbe", "role": "DBUS driver/value monitor"}
+  ],
+  "ports": [
+    {"name": "CLK", "direction": "output"},
+    {"name": "T0", "direction": "input"},
+    {"name": "T1", "direction": "input"},
+    {"name": "T2", "direction": "input"},
+    {"name": "IBUS0..IBUS7", "direction": "bidirectional"},
+    {"name": "DBUS0..DBUS7", "direction": "bidirectional"}
+  ],
+  "wiring": [
+    {"net": "CLK", "connections": ["VCLK.1", "circuit under test CLK input"]},
+    {"net": "T0", "connections": ["PH0.1", "circuit under test T0 output"]},
+    {"net": "T1", "connections": ["PH1.1", "circuit under test T1 output"]},
+    {"net": "T2", "connections": ["PH2.1", "circuit under test T2 output"]},
+    {"net": "IBUS0..IBUS7", "connections": ["IBUSMON.1", "circuit under test IBUS"]},
+    {"net": "DBUS0..DBUS7", "connections": ["DBUSMON.1", "circuit under test DBUS"]}
+  ],
+  "behavior": {
+    "clock_source": "Generates declared test events only. It must not mask missing edge-trigger behavior in real chips.",
+    "phase_probe": "Records one-hot T0/T1/T2 phase observations and flags zero-hot or multi-hot states.",
+    "bus_monitor": "Records active named drivers per bus and reports contention when more than one driver is active.",
+    "boundary": "Virtual helpers may observe and stimulate tests, but functional state transitions must still be proven by real DB component models when those models exist."
+  },
+  "timing": {
+    "clocking": "virtual_observation",
+    "clock_profiles": [
+      "push_switch_single_step",
+      "push_switch_random_100",
+      "50_khz",
+      "1_mhz",
+      "2_mhz",
+      "5_mhz"
+    ],
+    "sample_points": [
+      "before rising edge",
+      "after model propagation delay",
+      "before destination latch sample"
+    ],
+    "unsafe_states": [
+      "phase probe sees no active phase",
+      "phase probe sees more than one active phase",
+      "bus monitor sees multiple active drivers",
+      "5 MHz treated as hardware-proven instead of functional simulation"
+    ]
+  },
+  "verification": {
+    "tests": ["tests/virtual_test_helpers.json"],
+    "guarantees": [
+      "Clock profiles include manual push, random 100 pushes up to 500 ms, 50 kHz, 1 MHz, 2 MHz, and 5 MHz",
+      "Random push profile has deterministic seed and one logical tick per push",
+      "Phase probe catches zero-hot and multi-hot phase states",
+      "Bus monitor catches IBUS and DBUS multi-driver contention",
+      "5 MHz is marked functional simulation only"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}
