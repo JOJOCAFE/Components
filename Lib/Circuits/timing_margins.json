@@ -1,0 +1,220 @@
+{
+  "schema": "components.lib.circuit.timing_margins",
+  "version": 1,
+  "scope": "RV8GR circuits under Lib/Circuits",
+  "status": {
+    "model_delay_margin": "captured",
+    "physical_5mhz_timing": "not_proven",
+    "physical_signal_integrity": "not_proven",
+    "boundary_rule": "5 MHz remains functional simulation only until bench or source-backed physical timing evidence is added."
+  },
+  "clock_profiles": [
+    {"name": "50_khz", "frequency_hz": 50000, "period_ns": 20000, "physical_status": "timing_margin_large_by_model"},
+    {"name": "1_mhz", "frequency_hz": 1000000, "period_ns": 1000, "physical_status": "timing_margin_positive_by_model"},
+    {"name": "2_mhz", "frequency_hz": 2000000, "period_ns": 500, "physical_status": "timing_margin_positive_by_model"},
+    {"name": "5_mhz", "frequency_hz": 5000000, "period_ns": 200, "physical_status": "functional_simulation_only"}
+  ],
+  "part_timing_sources": [
+    {"part": "74HC00", "model_delay_ns": 12, "source": "DB/74xx/74HC00/definition/definition.json"},
+    {"part": "74HC04", "model_delay_ns": 12, "source": "DB/74xx/74HC04/definition/definition.json"},
+    {"part": "74HC21", "model_delay_ns": 15, "source": "DB/74xx/74HC21/definition/definition.json"},
+    {"part": "74HC74", "model_delay_ns": 20, "source": "DB/74xx/74HC74/definition/definition.json"},
+    {"part": "74HC86", "model_delay_ns": 15, "source": "DB/74xx/74HC86/definition/definition.json"},
+    {"part": "74HC157", "model_delay_ns": 18, "source": "DB/74xx/74HC157/definition/definition.json"},
+    {"part": "74HC161", "model_delay_ns": 22, "source": "DB/74xx/74HC161/definition/definition.json"},
+    {"part": "74HC164", "model_delay_ns": 20, "source": "DB/74xx/74HC164/definition/definition.json"},
+    {"part": "74HC245", "model_delay_ns": 12, "source": "DB/74xx/74HC245/definition/definition.json"},
+    {"part": "74HC283", "model_delay_ns": 35, "source": "DB/74xx/74HC283/definition/definition.json"},
+    {"part": "74HC541", "model_delay_ns": 12, "source": "DB/74xx/74HC541/definition/definition.json"},
+    {"part": "74HC574", "model_delay_ns": 20, "setup_before_clock_ns": 20, "hold_after_clock_ns": 5, "source": "DB/74xx/74HC574/definition/definition.json"},
+    {"part": "74HC688", "model_delay_ns": 30, "source": "DB/74xx/74HC688/definition/definition.json"},
+    {"part": "AT28C256", "model_read_delay_ns": 70, "datasheet_read_ns": {"at28c256_15": 150, "at28c256_20": 200, "at28c256_25": 250, "at28c256_35": 350}, "output_float_ns": {"at28c256_15": 50, "at28c256_20": 55, "at28c256_25": 60, "at28c256_35": 70}, "source": "DB/Memory/AT28C256/definition/definition.json"},
+    {"part": "62256", "model_read_delay_ns": 70, "source": "DB/Memory/62256/definition/definition.json"}
+  ],
+  "setup_hold_requirements": [
+    {
+      "destination": "74HC574 edge registers",
+      "used_by_circuits": ["RV8GR_InstructionLatch", "RV8GR_DataPageMemory", "RV8GR_PageDataRegisters", "RV8GR_AluAccumulator"],
+      "setup_before_clock_ns": 20,
+      "hold_after_clock_ns": 5,
+      "note": "Students should read this as: data must already be steady before the clock edge and must not change immediately after it."
+    },
+    {
+      "destination": "74HC161 program counter",
+      "used_by_circuits": ["RV8GR_PC16", "RV8GR_BranchJumpControl"],
+      "setup_before_clock_ns": {"data": 30, "load_low": 27, "enp_ent": 34, "clear_inactive": 25},
+      "hold_after_clock_ns": 0,
+      "note": "The ENP/ENT setup is the largest listed 74HC161 requirement and is the conservative counter-control value."
+    },
+    {
+      "destination": "AT28C256 EEPROM write",
+      "used_by_circuits": ["RV8GR_StorePath"],
+      "address_hold_ns": 50,
+      "data_setup_ns": 50,
+      "data_hold_ns": 0,
+      "note": "Ordinary RV8GR stores target RAM; ROM-page stores are documented as bus-safe but not as normal writable memory."
+    }
+  ],
+  "propagation_paths": [
+    {
+      "id": "ring_feedback_setup_for_next_clock",
+      "circuit": "RV8GR_RingCounter",
+      "from": "U8 Q0/Q1 phase outputs",
+      "through": ["74HC164 clock-to-Q", "74HC04 feedback inverter"],
+      "to": "U8 serial inputs for next rising edge",
+      "model_delay_ns": 32,
+      "required_setup_ns": 0,
+      "total_budget_ns": 32,
+      "slack_ns": {"50_khz": 19968, "1_mhz": 968, "2_mhz": 468, "5_mhz": 168},
+      "notes": ["Feedback must not be treated as changing the phase that was just clocked."]
+    },
+    {
+      "id": "pc_rco_cascade_to_next_nibble",
+      "circuit": "RV8GR_PC16",
+      "from": "lower 74HC161 terminal-count chain",
+      "through": ["three 74HC161 RCO/ENT-style model stages"],
+      "to": "next counter enable before rising clock",
+      "model_delay_ns": 66,
+      "required_setup_ns": 34,
+      "total_budget_ns": 100,
+      "slack_ns": {"50_khz": 19900, "1_mhz": 900, "2_mhz": 400, "5_mhz": 100},
+      "notes": ["Uses the largest listed 74HC161 control setup value.", "Physical 5 MHz still needs bench wiring and fanout evidence."]
+    },
+    {
+      "id": "pc_load_control_to_74hc161_load",
+      "circuit": "RV8GR_BranchJumpControl",
+      "from": "JMP/BR/Z/T2 control inputs",
+      "through": ["74HC86", "74HC00", "74HC00"],
+      "to": "/PC_LD at U1-U4",
+      "model_delay_ns": 39,
+      "required_setup_ns": 27,
+      "total_budget_ns": 66,
+      "slack_ns": {"50_khz": 19934, "1_mhz": 934, "2_mhz": 434, "5_mhz": 134},
+      "notes": ["The path must be settled before the PC clock edge that samples /PC_LD."]
+    },
+    {
+      "id": "address_mux_and_memory_select",
+      "circuit": "RV8GR_AddressMux16",
+      "from": "PC or {DP,IRL}",
+      "through": ["74HC157 address mux", "74HC04 A15 complement when RAM is selected"],
+      "to": "ABUS plus complementary ROM/RAM chip selects",
+      "model_delay_ns": 30,
+      "required_setup_ns": 0,
+      "total_budget_ns": 30,
+      "slack_ns": {"50_khz": 19970, "1_mhz": 970, "2_mhz": 470, "5_mhz": 170},
+      "notes": ["SRC/STR must be stable before T2 data-address use."]
+    },
+    {
+      "id": "rom_fetch_to_instruction_latch_setup",
+      "circuit": "RV8GR_InstructionLatch",
+      "from": "ABUS and ROM controls",
+      "through": ["AT28C256 model read", "74HC245 DBUS-to-IBUS"],
+      "to": "U5/U6 74HC574 data inputs before T0/T1 capture",
+      "model_delay_ns": 82,
+      "required_setup_ns": 20,
+      "total_budget_ns": 102,
+      "slack_ns": {"50_khz": 19898, "1_mhz": 898, "2_mhz": 398, "5_mhz": 98},
+      "notes": ["AT28C256 speed grade can be 150 ns or slower in the datasheet table, so the 70 ns model read is not enough to prove physical 5 MHz."]
+    },
+    {
+      "id": "ram_or_rom_data_read_to_ibus_setup",
+      "circuit": "RV8GR_DataPageMemory",
+      "from": "ABUS, ROM/RAM select, and memory output",
+      "through": ["62256 or AT28C256 model read", "74HC245 DBUS-to-IBUS"],
+      "to": "IBUS destination latch setup window",
+      "model_delay_ns": 82,
+      "required_setup_ns": 20,
+      "total_budget_ns": 102,
+      "slack_ns": {"50_khz": 19898, "1_mhz": 898, "2_mhz": 398, "5_mhz": 98},
+      "notes": ["RAM and ROM selects must remain mutually exclusive across the A15 boundary."]
+    },
+    {
+      "id": "setdp_decode_and_capture",
+      "circuit": "RV8GR_DataPageMemory",
+      "from": "T2/XOR_MODE//ADDR_MODE//AC_WR decode and IBUS",
+      "through": ["74HC21 DP_Load decode", "74HC574 data capture"],
+      "to": "DP register outputs",
+      "model_delay_ns": 35,
+      "required_setup_ns": 20,
+      "total_budget_ns": 55,
+      "slack_ns": {"50_khz": 19945, "1_mhz": 945, "2_mhz": 445, "5_mhz": 145},
+      "notes": ["IBUS must satisfy the U32 setup/hold window around DP_Load rising."]
+    },
+    {
+      "id": "setpg_decode_and_capture",
+      "circuit": "RV8GR_PageDataRegisters",
+      "from": "T2/XOR_MODE//ADDR_MODE//AC_WR decode and IBUS",
+      "through": ["74HC21 PG_CLK decode", "74HC574 data capture"],
+      "to": "PG register outputs",
+      "model_delay_ns": 35,
+      "required_setup_ns": 20,
+      "total_budget_ns": 55,
+      "slack_ns": {"50_khz": 19945, "1_mhz": 945, "2_mhz": 445, "5_mhz": 145},
+      "notes": ["IBUS must satisfy the U23 setup/hold window around PG_CLK rising."]
+    },
+    {
+      "id": "store_ac_to_ram_data_setup",
+      "circuit": "RV8GR_StorePath",
+      "from": "AC register outputs",
+      "through": ["74HC541 AC-to-IBUS", "74HC245 IBUS-to-DBUS"],
+      "to": "RAM data pins before /WE write window",
+      "model_delay_ns": 24,
+      "required_setup_ns": 50,
+      "total_budget_ns": 74,
+      "slack_ns": {"50_khz": 19926, "1_mhz": 926, "2_mhz": 426, "5_mhz": 126},
+      "notes": ["Store controls and data path are both T2-sensitive; physical proof must check that /WE is not asserted before data is valid."]
+    },
+    {
+      "id": "alu_result_to_accumulator_setup",
+      "circuit": "RV8GR_AluAccumulator",
+      "from": "IBUS and AC feedback",
+      "through": ["74HC157", "74HC86", "two 74HC283 stages", "74HC157"],
+      "to": "U9 74HC574 AC data inputs before ACC_CLK",
+      "model_delay_ns": 121,
+      "required_setup_ns": 20,
+      "total_budget_ns": 141,
+      "slack_ns": {"50_khz": 19859, "1_mhz": 859, "2_mhz": 359, "5_mhz": 59},
+      "notes": ["This is the tightest listed model path; it is still not a physical 5 MHz proof."]
+    },
+    {
+      "id": "ac_to_z_flag_settle",
+      "circuit": "RV8GR_AluAccumulator",
+      "from": "new AC after ACC_CLK",
+      "through": ["74HC574 clock-to-Q", "74HC688 zero compare", "74HC74 async preset behavior"],
+      "to": "Z_flag valid for later branch decision",
+      "model_delay_ns": 70,
+      "required_setup_ns": 0,
+      "total_budget_ns": 70,
+      "slack_ns": {"50_khz": 19930, "1_mhz": 930, "2_mhz": 430, "5_mhz": 130},
+      "notes": ["Branch control must not sample Z before this path settles."]
+    }
+  ],
+  "bus_race_notes": [
+    {
+      "id": "rom_to_u7_turnaround",
+      "circuits": ["RV8GR_BusOwnership", "RV8GR_RomDbusRead", "RV8GR_StorePath"],
+      "risk": "ROM output disable and U7 write enable can overlap during read-to-store direction changes.",
+      "current_evidence": "Functional bus-ownership tests catch forced simultaneous drivers.",
+      "still_needed": "Physical deadband or source-backed enable/disable timing for breadboard wiring; AT28C256 output-float values are speed-grade dependent."
+    },
+    {
+      "id": "ram_read_to_ram_write_turnaround",
+      "circuits": ["RV8GR_BusOwnership", "RV8GR_DataPageMemory", "RV8GR_StorePath"],
+      "risk": "RAM output and U7 write driver must not both drive DBUS during T2 store.",
+      "current_evidence": "Store path ties RAM /WE LOW during stores and tests forced DBUS conflict states.",
+      "still_needed": "RAM output-disable timing and /WE edge timing from the selected physical SRAM datasheet."
+    },
+    {
+      "id": "ibus_multiple_driver_guard",
+      "circuits": ["RV8GR_BusOwnership", "RV8GR_AluAccumulator", "RV8GR_InstructionLatch"],
+      "risk": "U14, U34, and U7 are all possible IBUS drivers and must remain one-hot.",
+      "current_evidence": "BusOwnership and AluAccumulator artifacts name unsafe multi-driver states.",
+      "still_needed": "Future tests should consume this artifact and assert no profile claims 5 MHz hardware safety without timing evidence."
+    }
+  ],
+  "student_summary": [
+    "50 kHz, 1 MHz, and 2 MHz have large positive model-delay margins for the listed paths.",
+    "5 MHz has a 200 ns period and positive model slack on these paths, but it is still functional-only because breadboard wiring, output-disable races, and selected memory speed grades are not proven here.",
+    "Setup means data is ready before a clock edge; hold means it stays steady just after the edge; bus race means two chips might briefly try to drive the same wire."
+  ]
+}

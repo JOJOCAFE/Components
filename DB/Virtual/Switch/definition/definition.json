@@ -1,0 +1,126 @@
+{
+  "schema": "db.component.definition",
+  "version": 1,
+  "id": "Switch",
+  "part": "Switch",
+  "group": "virtual",
+  "kind": "virtual",
+  "role": "stimulus",
+  "title": "Virtual switch and pulse source",
+  "family": "Virtual",
+  "package": {
+    "kind": "virtual",
+    "pins": 1
+  },
+  "status": {
+    "datasheet": "not_applicable",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "verilog_model": "not_applicable",
+    "verilog_export": "not_applicable",
+    "tests": "modeled"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "OUT",
+      "direction": "output"
+    }
+  ],
+  "simulation": {
+    "service": "sim.switch",
+    "modes": [
+      {
+        "name": "stable_off",
+        "description": "Held LOW until changed."
+      },
+      {
+        "name": "stable_on",
+        "description": "Held HIGH until changed."
+      },
+      {
+        "name": "one_shot_push_on_release_off",
+        "description": "A push drives HIGH for the requested duration, then returns LOW."
+      },
+      {
+        "name": "one_shot_on_off",
+        "description": "Generates one HIGH-to-LOW pulse without staying latched."
+      },
+      {
+        "name": "preset_pulse_train",
+        "description": "Generates a deterministic list of HIGH-to-LOW pulses."
+      }
+    ],
+    "default_mode": "stable_off",
+    "preset_profiles": [
+      {
+        "name": "100_pulses_10ms_interval",
+        "pulses": 100,
+        "interval_ms": 10,
+        "active_ms": 1,
+        "idle_state": 0,
+        "active_state": 1
+      }
+    ]
+  },
+  "ui": {
+    "widget": "switch",
+    "symbol": "switch"
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "Switch",
+      "title": "Virtual switch and pulse source",
+      "family": "Virtual",
+      "group": "virtual",
+      "kind": "virtual",
+      "role": "stimulus"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "Switch",
+      "packages": [
+        {
+          "id": "virtual",
+          "kind": "virtual",
+          "pins": 1
+        }
+      ],
+      "default_package": "virtual"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "Switch",
+      "pins": [
+        {
+          "number": 1,
+          "name": "OUT",
+          "direction": "output"
+        }
+      ],
+      "buses": {}
+    },
+    "simulation": {
+      "schema": "db.component.simulation",
+      "version": 1,
+      "part": "Switch",
+      "simulation": {
+        "service": "sim.switch",
+        "default_mode": "stable_off"
+      }
+    },
+    "ui": {
+      "schema": "db.component.ui",
+      "version": 1,
+      "part": "Switch",
+      "ui": {
+        "widget": "switch",
+        "symbol": "switch"
+      }
+    }
+  }
+}

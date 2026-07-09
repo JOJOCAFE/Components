@@ -15,6 +15,7 @@
   "purpose": "Provide reusable virtual observation helpers for RV8GR circuit tests without replacing real chip behavior.",
   "chips": [
     {"ref": "VCLK", "part": "ClockSource", "role": "Manual, random-push, and fixed-frequency clock profile source"},
+    {"ref": "SW1", "part": "Switch", "role": "Stable, one-shot, and preset pulse-train switch source"},
     {"ref": "PH0", "part": "Probe", "role": "Single-bit T0 phase probe"},
     {"ref": "PH1", "part": "Probe", "role": "Single-bit T1 phase probe"},
     {"ref": "PH2", "part": "Probe", "role": "Single-bit T2 phase probe"},
@@ -30,7 +31,7 @@
     {"name": "DBUS0..DBUS7", "direction": "bidirectional"}
   ],
   "wiring": [
-    {"net": "CLK", "connections": ["VCLK.1", "circuit under test CLK input"]},
+    {"net": "CLK", "connections": ["VCLK.1", "SW1.1", "circuit under test CLK input"]},
     {"net": "T0", "connections": ["PH0.1", "circuit under test T0 output"]},
     {"net": "T1", "connections": ["PH1.1", "circuit under test T1 output"]},
     {"net": "T2", "connections": ["PH2.1", "circuit under test T2 output"]},
@@ -39,6 +40,7 @@
   ],
   "behavior": {
     "clock_source": "Generates declared test events only. It must not mask missing edge-trigger behavior in real chips.",
+    "switch": "Generates stable on/off states, one-shot push/release pulses, one-shot on/off pulses, and deterministic preset pulse trains.",
     "phase_probe": "Records one-hot T0/T1/T2 phase observations and flags zero-hot or multi-hot states.",
     "bus_monitor": "Records active named drivers per bus and reports contention when more than one driver is active.",
     "boundary": "Virtual helpers may observe and stimulate tests, but functional state transitions must still be proven by real DB component models when those models exist."
@@ -62,6 +64,7 @@
       "phase probe sees no active phase",
       "phase probe sees more than one active phase",
       "bus monitor sees multiple active drivers",
+      "switch preset emits the wrong number of one-shot edges",
       "5 MHz treated as hardware-proven instead of functional simulation"
     ]
   },
@@ -69,6 +72,7 @@
     "tests": ["tests/virtual_test_helpers.json"],
     "guarantees": [
       "Clock profiles include manual push, random 100 pushes up to 500 ms, 50 kHz, 1 MHz, 2 MHz, and 5 MHz",
+      "Switch profiles include stable on/off, one-shot press/release, one-shot on/off, and 100 pulses at 10 ms interval",
       "Random push profile has deterministic seed and one logical tick per push",
       "Phase probe catches zero-hot and multi-hot phase states",
       "Bus monitor catches IBUS and DBUS multi-driver contention",

@@ -73,6 +73,7 @@ RV8GR_REQUIRED_PACKAGE_FILES = (
     "tests/bus_fight.json",
     "tests/propagation.json",
 )
+SPLIT_TEST_TYPES = ("truth_table", "timing", "tri_state", "bus_fight", "propagation")
 GENERATED_SIMPLE_GATE_BENCH_PARTS = ("74HC00", "74HC04", "74HC08", "74HC32", "74HC86")
 EXPECTED_BASIC_FUNCTION_PLACEHOLDERS = {
     "74HC02",
@@ -153,6 +154,22 @@ def load_targeted_record(part: str, test_type: str):
 
 def load_active_record(part: str, test_type: str):
     return json.loads((active_ic_test_roots()[part] / f"{test_type}.json").read_text(encoding="utf-8"))
+
+
+def expected_split_record_metadata(part: str, test_type: str):
+    record = load_active_record(part, test_type)
+    expected = {
+        "source": f"tests/{test_type}.json",
+        "present": True,
+        "applicable": record["applicable"],
+    }
+    if test_type == "truth_table":
+        expected["vectors"] = [item["name"] for item in record.get("vectors", [])]
+    else:
+        expected["checks"] = [item["name"] for item in record.get("checks", [])]
+    if record["applicable"] is not True and record.get("reason"):
+        expected["reason"] = record["reason"]
+    return expected
 
 
 def active_ic_test_roots() -> dict[str, Path]:
@@ -532,6 +549,7 @@ def test_split_records_generate_verilog_testbench_metadata():
         assert truth_metadata["present"] is True
         assert truth_metadata["applicable"] is truth["applicable"]
         assert truth_metadata["vectors"] == [item["name"] for item in truth["vectors"]]
+        assert set(artifact["split_records"]) == set(SPLIT_TEST_TYPES)
 
         emitted = artifact["emitted"]
         if part == "74HC157":
@@ -544,6 +562,15 @@ def test_split_records_generate_verilog_testbench_metadata():
         else:
             assert emitted["supported"] is False
             assert emitted["reason"]
+
+
+def test_generated_artifacts_report_split_record_metadata_without_drift():
+    for part in active_ic_test_roots():
+        artifacts = generate_component_artifacts(part)["artifacts"]
+        assert artifacts["unit_test"]["split_records"] == artifacts["verilog_testbench"]["split_records"]
+        assert set(artifacts["unit_test"]["split_records"]) == set(SPLIT_TEST_TYPES)
+        for test_type in SPLIT_TEST_TYPES:
+            assert artifacts["unit_test"]["split_records"][test_type] == expected_split_record_metadata(part, test_type), (part, test_type)
 
 
 def test_generated_simple_gate_verilog_testbench_metadata():
@@ -1070,6 +1097,7 @@ def run_all():
     test_rv8gr_audit_report_declares_complete_set()
     test_verilog_smoke_workflow_keeps_broad_compile_scope()
     test_split_records_generate_verilog_testbench_metadata()
+    test_generated_artifacts_report_split_record_metadata_without_drift()
     test_generated_simple_gate_verilog_testbench_metadata()
     test_generated_74hc157_verilog_testbench_compiles_when_iverilog_is_available()
     test_generated_simple_gate_verilog_testbenches_compile_when_iverilog_is_available()

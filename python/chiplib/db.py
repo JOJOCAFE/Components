@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DB_ROOT = ROOT / "DB"
 CHIP_STATUS_PATH = ROOT / "CHIP_STATUS.md"
 DIGITAL_SCHEMA_PATH = DB_ROOT / "digital.schema.json"
+SPLIT_TEST_TYPES = ("truth_table", "timing", "tri_state", "bus_fight", "propagation")
 
 REQUIRED_STATUS_KEYS = (
     "datasheet",
@@ -1344,6 +1345,7 @@ def _generated_test_plan(definition: JsonMap, package: JsonMap) -> JsonMap:
     tests = definition.get("verification", {}).get("tests", [])
     required_vectors = definition.get("verification", {}).get("required_vectors", [])
     split_tests = package.get("layers", {}).get("tests", {})
+    split_records = _split_record_metadata(split_tests)
     return {
         "schema": "db.component.generated.tests",
         "version": 1,
@@ -1357,8 +1359,38 @@ def _generated_test_plan(definition: JsonMap, package: JsonMap) -> JsonMap:
             for test_type in tests
             if isinstance(test_type, str)
         ],
+        "split_records": split_records,
         "required_vectors": list(required_vectors) if isinstance(required_vectors, list) else [],
     }
+
+
+def _split_record_metadata(split_tests: Any) -> JsonMap:
+    records: JsonMap = {}
+    split_map = split_tests if isinstance(split_tests, dict) else {}
+    for test_type in SPLIT_TEST_TYPES:
+        record = split_map.get(test_type)
+        metadata: JsonMap = {
+            "source": f"tests/{test_type}.json",
+            "present": isinstance(record, dict),
+            "applicable": bool(record.get("applicable")) if isinstance(record, dict) else False,
+        }
+        if isinstance(record, dict):
+            if test_type == "truth_table":
+                metadata["vectors"] = [
+                    str(vector.get("name"))
+                    for vector in record.get("vectors", [])
+                    if isinstance(vector, dict) and vector.get("name")
+                ]
+            else:
+                metadata["checks"] = [
+                    str(check.get("name"))
+                    for check in record.get("checks", [])
+                    if isinstance(check, dict) and check.get("name")
+                ]
+            if record.get("applicable") is not True and record.get("reason"):
+                metadata["reason"] = str(record["reason"])
+        records[test_type] = metadata
+    return records
 
 
 def _generated_verilog_testbench(definition: JsonMap, package: JsonMap) -> JsonMap:
@@ -1369,11 +1401,6 @@ def _generated_verilog_testbench(definition: JsonMap, package: JsonMap) -> JsonM
     module = str(verilog.get("module", ""))
     model_file = str(verilog.get("file", ""))
     bench_module = f"tb_generated_{part.lower()}"
-    vector_names = [
-        str(vector.get("name"))
-        for vector in truth.get("vectors", [])
-        if isinstance(truth, dict) and isinstance(vector, dict) and vector.get("name")
-    ] if isinstance(truth, dict) else []
     emitted = _simple_verilog_truth_bench(definition, package, truth, bench_module)
     return {
         "schema": "db.component.generated.verilog_testbench",
@@ -1387,14 +1414,7 @@ def _generated_verilog_testbench(definition: JsonMap, package: JsonMap) -> JsonM
             "sources": [model_file] if model_file else [],
             "top": bench_module,
         },
-        "split_records": {
-            "truth_table": {
-                "source": "tests/truth_table.json",
-                "present": isinstance(truth, dict),
-                "applicable": bool(truth.get("applicable")) if isinstance(truth, dict) else False,
-                "vectors": vector_names,
-            },
-        },
+        "split_records": _split_record_metadata(split_tests),
         "emitted": emitted,
     }
 

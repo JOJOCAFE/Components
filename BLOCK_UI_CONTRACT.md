@@ -17,6 +17,8 @@ future visual editors keep the same chip behavior and wiring rules.
   },
   "blocks": [],
   "wires": [],
+  "nets": [],
+  "run_config": {},
   "layout": {}
 }
 ```
@@ -24,14 +26,30 @@ future visual editors keep the same chip behavior and wiring rules.
 Rules:
 
 - `blocks` contains drawable things: `chip`, `bus`, and `rail` blocks.
+- `chip` blocks expose DIP placement metadata (`shape`, `package`) plus real
+  pin entries with number, name, direction, side, side index, DIP position,
+  value, and attached net when the backend can resolve one. `bus` and `rail`
+  blocks expose drawable terminal entries too.
 - `wires` contains visual wire records, each with the original schematic
-  connection `rule`, resolved endpoint labels, and optional layout metadata.
+  connection `rule`, resolved endpoint labels, endpoint detail objects for
+  pins/nets/buses/rails, and optional layout metadata.
+- `nets` exposes backend-resolved net names, connected pin endpoints, pulls,
+  sources, and current logic value for drawing or inspection. It is derived
+  from the normalized `Design`; layout still owns only coordinates.
+- `run_config` tells a visual editor which backend command shape to prepare and
+  which backend is selected. Python simulation starts from the normalized
+  design, while Verilog export starts from the normalized `chiplib.netlist`
+  boundary.
 - Simulation sections such as `inputs`, `input_sets`, `clocks`, `probes`,
   `displays`, `expect`, `steps`, and `validate` stay at top level so beginners
   can edit the visible circuit while tests and probes remain attached.
 - `layout.blocks` and `layout.wires` are UI-owned metadata. The backend
   preserves them but does not use them for electrical behavior.
 - Unknown future layout keys should be preserved by clients where practical.
+- Import accepts either legacy `wire.rule` strings or visual endpoint objects.
+  When a wire has no `rule`, the backend builds one from endpoint `ref` values
+  or from `{kind, chip, pin}`, `{kind, block, number}`, `{kind, bus, index}`,
+  `{kind, block, terminal}`, `{kind, rail}`, and `{kind, name}` fields.
 
 ## CLI
 

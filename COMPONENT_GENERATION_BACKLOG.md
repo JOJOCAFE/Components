@@ -434,6 +434,12 @@ Next CI tasks:
 
 - Keep Verilog smoke compiling all 74xx and memory models.
 - Keep memory smoke instantiating each memory module directly.
+- Next hardening lane: refresh physical `generated/artifacts.json` files from
+  the current generator and then add a strict no-drift gate that compares the
+  checked-in generated artifact file with `generate_component_artifacts(part)`
+  for every active IC package. Keep this separate from split-record metadata
+  hardening because many existing artifact files predate the latest generator
+  payload shape.
 - Grow generated Verilog bench emission to decoder, tri-state, sequential,
   arithmetic, and memory-specific shapes after their truth records are explicit.
 - Replace the remaining 44 `basic_function` truth placeholders with

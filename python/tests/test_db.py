@@ -33,6 +33,7 @@ SEED_PARTS = {
 GROUPED_PARTS = {
     "InputSource",
     "ClockSource",
+    "Switch",
     "Probe",
     "BusProbe",
     "VCC",
@@ -176,6 +177,23 @@ def test_db_seed_entries_are_loadable():
     assert source["pins"] == [{"number": 1, "name": "OUT", "direction": "output"}]
     assert source["simulation"]["service"] == "sim.input_source"
 
+    switch = load_component("Switch")
+    assert switch["group"] == "virtual"
+    assert switch["kind"] == "virtual"
+    assert switch["role"] == "stimulus"
+    assert switch["db_path"] == "DB/Virtual/Switch/definition/definition.json"
+    assert switch["pins"] == [{"number": 1, "name": "OUT", "direction": "output"}]
+    assert switch["simulation"]["service"] == "sim.switch"
+    assert switch["simulation"]["default_mode"] == "stable_off"
+    assert {mode["name"] for mode in switch["simulation"]["modes"]} == {
+        "stable_off",
+        "stable_on",
+        "one_shot_push_on_release_off",
+        "one_shot_on_off",
+        "preset_pulse_train",
+    }
+    assert switch["simulation"]["preset_profiles"][0]["name"] == "100_pulses_10ms_interval"
+
     led = load_component("LED")
     assert led["group"] == "passive"
     assert led["db_path"] == "DB/Passive/LED/definition/definition.json"
@@ -265,6 +283,7 @@ def test_virtual_and_passive_components_use_definition_packages():
     assert generic_package_parts() == {
         "InputSource",
         "ClockSource",
+        "Switch",
         "Probe",
         "BusProbe",
         "VCC",

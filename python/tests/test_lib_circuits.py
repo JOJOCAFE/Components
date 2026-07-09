@@ -23,6 +23,8 @@ PAGE_DATA_REGISTERS = ROOT / "Lib" / "Circuits" / "RV8GR_PageDataRegisters"
 BRANCH_JUMP_CONTROL = ROOT / "Lib" / "Circuits" / "RV8GR_BranchJumpControl"
 ALU_ACCUMULATOR = ROOT / "Lib" / "Circuits" / "RV8GR_AluAccumulator"
 VIRTUAL_TEST_HELPERS = ROOT / "Lib" / "Circuits" / "RV8GR_VirtualTestHelpers"
+FULL_CONTROL_OPCODE_SWEEP = ROOT / "Lib" / "Circuits" / "RV8GR_FullControlOpcodeSweep"
+TIMING_MARGINS = ROOT / "Lib" / "Circuits" / "timing_margins.json"
 RANDOM_PUSH_SEED = 0x8C16
 BYTE_D_PINS = [2, 3, 4, 5, 6, 7, 8, 9]
 BYTE_Q_PINS = [19, 18, 17, 16, 15, 14, 13, 12]
@@ -275,6 +277,40 @@ def alu_opcode_sweep_expected(opcode: int, start_ac: int, ibus: int, init_z: int
     }
 
 
+def full_control_opcode_expected(opcode: int, init_z: int, constants: dict[str, str]) -> dict[str, int]:
+    init_ac = int(constants["init_ac"], 16)
+    init_pg = int(constants["init_pg"], 16)
+    init_dp = int(constants["init_dp"], 16)
+    operand = int(constants["operand"], 16)
+    ram_value = int(constants["ram_value"], 16)
+    init_pc = int(constants["init_pc"], 16)
+    target = int(constants["target"], 16)
+
+    bits = control_bits(opcode)
+    ibus = ram_value if bits["SRC"] else operand
+    result = alu_datapath(
+        init_ac,
+        ibus,
+        bits["ALU_SUB"],
+        bits["XOR_MODE"],
+        bits["MUX_SEL"],
+        bits["AC_WR"],
+        "T2",
+    )
+    branch = branch_jump_control("T2", bits["JMP"], bits["BR"], init_z, bits["ALU_SUB"])
+    return {
+        "ibus": ibus,
+        "ac": result["ac"],
+        "z": result["z"] if bits["AC_WR"] else init_z,
+        "pg": ibus if bits["MUX_SEL"] and not bits["AC_WR"] else init_pg,
+        "dp": operand if bits["XOR_MODE"] and not (bits["SRC"] or bits["STR"]) and not bits["AC_WR"] else init_dp,
+        "ie": 1 if bits["SRC"] and not bits["XOR_MODE"] and not bits["AC_WR"] else 0,
+        "pc": target if branch["pc_load_cond"] else init_pc,
+        "ram": init_ac if bits["STR"] else ram_value,
+        "conflict": bus_ownership("T2", bits["SRC"], bits["STR"], 1)["conflict"],
+    }
+
+
 def z_compare_n(ac: int) -> int:
     return int((ac & 0xFF) != 0)
 
@@ -310,6 +346,33 @@ def phase_probe(t0: int, t1: int, t2: int) -> dict[str, object]:
 def bus_probe(drivers: list[str]) -> dict[str, object]:
     active = [driver for driver in drivers if driver]
     return {"drivers": active, "conflict": len(active) > 1}
+
+
+def switch_sequence(vector: dict) -> dict[str, object]:
+    mode = vector["mode"]
+    if mode == "stable_off":
+        return {"sequence": [0]}
+    if mode == "stable_on":
+        return {"sequence": [1]}
+    if mode == "one_shot_push_on_release_off":
+        return {"sequence": [0] + [1] * int(vector["active_ticks"]) + [0]}
+    if mode == "one_shot_on_off":
+        return {"sequence": [1] * int(vector["active_ticks"]) + [0]}
+    if mode == "preset_pulse_train":
+        pulses = int(vector["pulses"])
+        interval_ms = int(vector["interval_ms"])
+        active_ms = int(vector["active_ms"])
+        events = []
+        for index in range(pulses):
+            start_ms = index * interval_ms
+            events.append({"time_ms": start_ms, "value": 1})
+            events.append({"time_ms": start_ms + active_ms, "value": 0})
+        return {
+            "events": events,
+            "edges": sum(1 for event in events if event["value"] == 1),
+            "total_ms": pulses * interval_ms,
+        }
+    raise AssertionError(mode)
 
 
 def bus_controls(phase: str, src: int, str_: int) -> dict[str, int]:
@@ -1556,6 +1619,7 @@ def test_rv8gr_virtual_test_helpers_package_shape():
     chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
     assert chips == {
         "VCLK": "ClockSource",
+        "SW1": "Switch",
         "PH0": "Probe",
         "PH1": "Probe",
         "PH2": "Probe",
@@ -1596,6 +1660,148 @@ def test_rv8gr_virtual_bus_probe_detects_contention():
         result = bus_probe(vector["drivers"])
         assert result["drivers"] == vector["drivers"], vector
         assert result["conflict"] is vector["expect_conflict"], vector
+
+
+def test_rv8gr_virtual_switch_profiles_execute():
+    proof = load_json(VIRTUAL_TEST_HELPERS / "tests" / "virtual_test_helpers.json")
+    for vector in proof["switch_vectors"]:
+        result = switch_sequence(vector)
+        if "expect_sequence" in vector:
+            assert result["sequence"] == vector["expect_sequence"], vector
+        else:
+            switch_def = load_json(ROOT / "DB" / "Virtual" / "Switch" / "definition" / "definition.json")
+            presets = {preset["name"]: preset for preset in switch_def["simulation"]["preset_profiles"]}
+            preset = presets["100_pulses_10ms_interval"]
+            assert vector["pulses"] == preset["pulses"], vector
+            assert vector["interval_ms"] == preset["interval_ms"], vector
+            assert vector["active_ms"] == preset["active_ms"], vector
+            assert result["edges"] == vector["expect_edges"], vector
+            assert result["total_ms"] == vector["expect_total_ms"], vector
+            assert len(result["events"]) == vector["pulses"] * 2, vector
+            for index in range(vector["pulses"]):
+                start = index * vector["interval_ms"]
+                assert result["events"][index * 2] == {"time_ms": start, "value": preset["active_state"]}, vector
+                assert result["events"][index * 2 + 1] == {"time_ms": start + vector["active_ms"], "value": preset["idle_state"]}, vector
+
+
+def test_rv8gr_full_control_opcode_sweep_package_shape():
+    circuit = load_json(FULL_CONTROL_OPCODE_SWEEP / "circuit.json")
+    proof = load_json(FULL_CONTROL_OPCODE_SWEEP / "tests" / "full_control_opcode_sweep.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_full_control_opcode_sweep"
+    assert proof["circuit"] == circuit["id"]
+    assert (FULL_CONTROL_OPCODE_SWEEP / "README.md").exists()
+
+    refs = {chip["ref"] for chip in circuit["chips"]}
+    assert {"CTRL", "BUS", "ALU", "PGDP", "PC", "VT"} <= refs
+    assert "tb_rv8gr_opcode_sweep.v" in " ".join(circuit["source_project"]["paths"])
+    assert "reserved opcode mix" in " ".join(circuit["timing"]["unsafe_states"])
+
+
+def test_rv8gr_full_control_opcode_sweep_all_512_cases_match_verilog_equation():
+    proof = load_json(FULL_CONTROL_OPCODE_SWEEP / "tests" / "full_control_opcode_sweep.json")
+    constants = proof["constants"]
+    cases = 0
+
+    for opcode in range(proof["sweep"]["opcode_count"]):
+        for init_z in proof["sweep"]["initial_z_states"]:
+            expected = full_control_opcode_expected(opcode, init_z, constants)
+            bits = control_bits(opcode)
+            assert expected["ac"] == (expected["ibus"] if opcode == 0x30 else expected["ac"])
+            assert expected["z"] in (0, 1), (opcode, init_z)
+            assert expected["pg"] in range(256), (opcode, init_z)
+            assert expected["dp"] in range(256), (opcode, init_z)
+            assert expected["pc"] in range(0x10000), (opcode, init_z)
+            assert expected["ram"] == (int(constants["init_ac"], 16) if bits["STR"] else int(constants["ram_value"], 16)), (opcode, init_z)
+            assert expected["conflict"] is False, (opcode, init_z)
+            cases += 1
+
+    assert cases == proof["sweep"]["expect_cases"]
+
+
+def test_rv8gr_full_control_named_vectors_and_reserved_mixes_are_visible():
+    proof = load_json(FULL_CONTROL_OPCODE_SWEEP / "tests" / "full_control_opcode_sweep.json")
+    constants = proof["constants"]
+
+    for vector in proof["named_vectors"]:
+        expected = full_control_opcode_expected(int(vector["opcode"], 16), vector["init_z"], constants)
+        assert expected["ac"] == int(vector["expect_ac"], 16), vector
+        assert expected["z"] == vector["expect_z"], vector
+        assert expected["pg"] == int(vector["expect_pg"], 16), vector
+        assert expected["dp"] == int(vector["expect_dp"], 16), vector
+        assert expected["ie"] == vector["expect_ie"], vector
+        assert expected["pc"] == int(vector["expect_pc"], 16), vector
+        assert expected["ram"] == int(vector["expect_ram"], 16), vector
+
+    rules = " ".join(proof["reserved_mix_rules"])
+    assert "loads PG" in rules
+    assert "loads DP" in rules
+    assert "sets IE" in rules
+    assert "writes AC to RAM" in rules
+
+
+def test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary():
+    timing = load_json(TIMING_MARGINS)
+    assert timing["schema"] == "components.lib.circuit.timing_margins"
+    assert timing["status"]["physical_5mhz_timing"] == "not_proven"
+    assert timing["status"]["physical_signal_integrity"] == "not_proven"
+    assert "functional simulation only" in timing["status"]["boundary_rule"]
+    profiles = {profile["name"]: profile for profile in timing["clock_profiles"]}
+    assert set(profiles) == {"50_khz", "1_mhz", "2_mhz", "5_mhz"}
+    assert profiles["5_mhz"]["physical_status"] == "functional_simulation_only"
+
+    circuit_paths = {
+        path.parent.name
+        for path in (ROOT / "Lib" / "Circuits").glob("RV8GR_*/circuit.json")
+    }
+    part_sources = {entry["part"]: entry for entry in timing["part_timing_sources"]}
+    assert {"74HC574", "74HC161", "AT28C256", "62256"} <= set(part_sources)
+    for entry in part_sources.values():
+        assert (ROOT / entry["source"]).exists(), entry
+
+    for path in timing["propagation_paths"]:
+        assert path["circuit"] in circuit_paths, path
+        total = path["total_budget_ns"]
+        assert total == path["model_delay_ns"] + path["required_setup_ns"], path
+        assert set(path["slack_ns"]) == set(profiles), path
+        for name, profile in profiles.items():
+            assert path["slack_ns"][name] == profile["period_ns"] - total, path
+        if path["id"] == "alu_result_to_accumulator_setup":
+            assert path["slack_ns"]["5_mhz"] == 59
+
+    risks = {note["id"] for note in timing["bus_race_notes"]}
+    assert {"rom_to_u7_turnaround", "ram_read_to_ram_write_turnaround", "ibus_multiple_driver_guard"} <= risks
+    for note in timing["bus_race_notes"]:
+        assert set(note["circuits"]) <= circuit_paths, note
+        assert note["current_evidence"], note
+        assert note["still_needed"], note
+
+
+def test_rv8gr_timing_setup_hold_requirements_cover_edge_sensitive_paths():
+    timing = load_json(TIMING_MARGINS)
+    propagation_circuits = {path["circuit"] for path in timing["propagation_paths"]}
+    requirements = {item["destination"]: item for item in timing["setup_hold_requirements"]}
+
+    hc574 = requirements["74HC574 edge registers"]
+    assert hc574["setup_before_clock_ns"] == 20
+    assert hc574["hold_after_clock_ns"] == 5
+    assert set(hc574["used_by_circuits"]) <= propagation_circuits
+
+    counter = requirements["74HC161 program counter"]
+    assert counter["setup_before_clock_ns"]["enp_ent"] == 34
+    assert counter["hold_after_clock_ns"] == 0
+    assert set(counter["used_by_circuits"]) <= propagation_circuits
+
+    eeprom = requirements["AT28C256 EEPROM write"]
+    assert eeprom["address_hold_ns"] == 50
+    assert eeprom["data_setup_ns"] == 50
+    assert eeprom["data_hold_ns"] == 0
+    assert set(eeprom["used_by_circuits"]) <= propagation_circuits
+
+    summary = " ".join(timing["student_summary"])
+    assert "Setup means data is ready before a clock edge" in summary
+    assert "bus race means two chips might briefly try to drive the same wire" in summary
 
 
 def test_all_started_circuit_packages_have_tests():
@@ -1672,6 +1878,12 @@ def run_all():
     test_rv8gr_virtual_clock_profiles_execute()
     test_rv8gr_virtual_phase_probe_detects_invalid_phases()
     test_rv8gr_virtual_bus_probe_detects_contention()
+    test_rv8gr_virtual_switch_profiles_execute()
+    test_rv8gr_full_control_opcode_sweep_package_shape()
+    test_rv8gr_full_control_opcode_sweep_all_512_cases_match_verilog_equation()
+    test_rv8gr_full_control_named_vectors_and_reserved_mixes_are_visible()
+    test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary()
+    test_rv8gr_timing_setup_hold_requirements_cover_edge_sensitive_paths()
     test_all_started_circuit_packages_have_tests()
 
 

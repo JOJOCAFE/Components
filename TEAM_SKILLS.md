@@ -58,11 +58,11 @@ They complement the original JOJOCAFE role names below.
 
 | Agent | Main skills | Current Components ownership |
 |---|---|---|
-| Arendt | Specification, schema discipline, task framing, consistency checks | Owns component package specs, `definition.json` schema design, required/optional field rules, and missing-data representation. |
-| Feynman | Teaching, explanation, demo design, student-facing simplification | Owns generated docs, interactive demos, beginner-readable examples, and age 10-15 clarity. |
-| Halley | Verification, audit coverage, test matrix design | Owns truth table, timing, tri-state, bus-fight, propagation, equivalence, and CI verification planning. |
-| Ohm | Hardware truth, datasheets, pin/package/electrical evidence | Owns package evidence, pin truth, timing/electrical extraction, active-low naming, and breadboard realism. |
-| Leibniz | Tooling, loaders, generators, API/CLI integration | Owns definition-backed loaders, generator prototypes, legacy `chip.json` compatibility, and CLI/API generation commands. |
+| Arendt | Specification, schema discipline, task framing, consistency checks | Owns component package specs, `definition.json` schema design, required/optional field rules, missing-data representation, and visual-editor contract boundaries. |
+| Feynman | Teaching, explanation, demo design, student-facing simplification | Owns generated docs, interactive demos, beginner-readable examples, age 10-15 clarity, and switch/timing wording that does not hide hardware limits. |
+| Halley | Verification, audit coverage, test matrix design | Owns truth table, timing, tri-state, bus-fight, propagation, equivalence, CI verification planning, switch pulse-profile tests, and timing-margin consumers. |
+| Ohm | Hardware truth, datasheets, pin/package/electrical evidence | Owns package evidence, pin truth, timing/electrical extraction, active-low naming, breadboard realism, push-switch hardware caveats, and 5 MHz physical-readiness review. |
+| Leibniz | Tooling, loaders, generators, API/CLI integration | Owns definition-backed loaders, generator prototypes, legacy `chip.json` compatibility, CLI/API generation commands, `Switch` simulation-service semantics, and block-UI import/export contracts. |
 
 Shared specialist rule:
 
@@ -149,8 +149,20 @@ Current RV8GR circuit-library milestone:
   vendored Components copy, KiCad netlist/EDF, and generated chip-level RTL
   were corrected in RV8 commit `36d9aca`.
 - `RV8GR_VirtualTestHelpers` proves the virtual helper policy with
-  `ClockSource`, `Probe`, and `BusProbe`: manual/random/fixed clock profiles,
-  one-hot phase checks, invalid phase detection, and bus contention detection.
+  `ClockSource`, `Switch`, `Probe`, and `BusProbe`: manual/random/fixed clock
+  profiles, stable on/off switch states, one-shot press/release pulses,
+  one-shot on/off pulses, preset 100-pulse/10 ms switch trains, one-hot phase
+  checks, invalid phase detection, and bus contention detection.
+- `RV8GR_FullControlOpcodeSweep` proves all 512 T2 opcode/Z cases against the
+  RV8GR Verilog opcode-sweep equations and keeps reserved control-bit mixes
+  explicit instead of hiding them behind ISA names.
+- `Lib/Circuits/timing_margins.json` is the shared timing-margin artifact for
+  RV8GR circuit proof work. It captures model propagation budgets, setup/hold
+  windows, bus-race notes, and the rule that 5 MHz is functional simulation
+  only until physical evidence exists.
+- `BLOCK_UI_CONTRACT.md` and `python/chiplib/block_ui.py` are the current
+  visual chip-block editor foundation: DIP placement metadata, real pin lists,
+  net/wire endpoint details, and Python/Verilog run configuration.
 - Extra clock-profile tests now cover `RV8GR_InstructionLatch`,
   `RV8GR_DataPageMemory`, `RV8GR_IRQLatch`, `RV8GR_PageDataRegisters`, and
   `RV8GR_BranchJumpControl`, and `RV8GR_AluAccumulator` with push-switch,
@@ -160,7 +172,8 @@ Current RV8GR circuit-library milestone:
   or contention detectors when they make tests clearer, but do not replace real
   chip behavior with virtual behavior when the DB has a real model.
 - Next circuit/test lane must follow the same quality level:
-  `RV8GR_FullControlOpcodeSweep` and hardware timing-margin proof.
+  switch-backed clock-profile coverage, timing-margin consumers, and visual
+  chip-block editor contracts.
 
 ## Pim - Coordinator
 
@@ -185,6 +198,9 @@ Components focus:
 - For RV8GR circuit work, route the build order from `BACKLOG.md`, keep
   `Lib/Circuits/README.md`, circuit READMEs, tests, and pushed commits aligned,
   and make sure timing, synchronous edge, and bus-race concerns stay visible.
+- Keep virtual stimulus, circuit packages, tests, and team task lists moving
+  together; `Switch` pulse behavior must be reflected in DB, circuit tests, and
+  beginner docs.
 
 ## Bank - Architect
 
@@ -211,6 +227,10 @@ Components focus:
   packages so circuits prove behavior without becoming hidden chip-model forks.
 - Defines RV8GR circuit decomposition order and confirms address, bus, memory,
   and control subcircuits are reusable outside the full CPU context.
+- Owns the visual chip-block editor contract shape: block placement, pins,
+  endpoint-object wires, nets, and backend run configuration.
+- Owns the boundary between virtual stimulus (`ClockSource`, `Switch`) and real
+  chip behavior so tests do not hide physical circuit mistakes.
 
 ## Fern - Verifier
 
@@ -240,6 +260,10 @@ Components focus:
   combinations.
 - Reviews every `Lib/Circuits/` proof before it is treated as evidence for the
   full RV8GR timing, synchronous, or bus-race concerns.
+- Owns switch-profile verification: stable on/off, one-shot press/release,
+  one-shot on/off, random push, and preset 100-pulse/10 ms trains.
+- Owns timing-margin consumers that compare circuit propagation paths against
+  `Lib/Circuits/timing_margins.json`.
 
 ## Mint - RTL Coder
 
@@ -266,6 +290,8 @@ Components focus:
   wrappers for circuit-level export.
 - Keeps circuit timing assumptions explicit: functional simulator profiles are
   not the same as propagation-delay or hardware margin proof.
+- Checks that visual-editor Verilog export config and opcode-sweep expectations
+  stay compatible with generated structural netlists.
 
 ## Ohm - HW Coder
 
@@ -291,6 +317,11 @@ Components focus:
   physical warnings for push-switch clocking and MHz clock wiring.
 - Checks that extracted RV8GR circuits still match the real chip packages and
   wiring paths used by the CPU, not just the simplified simulator nets.
+- Owns physical interpretation of switch/push-button tests: virtual `Switch`
+  can model stimulus, but hardware signoff still needs real debounce/timing
+  evidence.
+- Owns timing-margin review for setup/hold, output-disable, bus-turnaround, and
+  5 MHz physical-readiness claims.
 
 ## Bam - SW Coder
 
@@ -319,6 +350,9 @@ Components focus:
   RV8GR circuit proofs.
 - Keeps circuit proof data serializable so later CLI/API/UI tools can load and
   explain the same circuit behavior without duplicating simulation logic.
+- Owns `Switch` service semantics in Python-facing contracts and future block
+  editor use: stable states, one-shot events, and preset pulse trains.
+- Owns block-UI import/export implementation for visual editor workflows.
 
 ## Noon - Docs Writer
 
@@ -346,6 +380,9 @@ Components focus:
   students without overselling functional simulation as hardware timing proof.
 - Keeps debug-plan and lab notes connected to student-facing circuit examples,
   especially for clock push switches, memory boundaries, and bus ownership.
+- Explains switch modes in beginner terms and distinguishes virtual switch
+  stimulus from real push-button hardware.
+- Keeps 5 MHz wording conservative: functional simulation is not hardware proof.
 
 ## Natural Pairings
 

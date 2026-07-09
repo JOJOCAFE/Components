@@ -211,6 +211,10 @@ Done:
   package. Tests cover manual/random/fixed clock profiles, one-hot phase
   probing, invalid phase detection, bus-driver observation, and forced IBUS/DBUS
   contention detection.
+- ✅ `RV8GR_FullControlOpcodeSweep`: T2 horizontal-control proof package.
+  Tests execute all 512 opcode/Z cases against the same equations as
+  `tb_rv8gr_opcode_sweep.v`, with named vectors for LI, SETPG, SETDP, EI,
+  store, BEQ, BNE, and reserved overlap behavior.
 - ✅ Extra clock-profile tests for edge-sensitive circuits: `RV8GR_InstructionLatch`,
   `RV8GR_DataPageMemory`, `RV8GR_IRQLatch`, `RV8GR_PageDataRegisters`, and
   `RV8GR_BranchJumpControl` now declare and execute
@@ -219,12 +223,17 @@ Done:
 
 Next team tasks:
 
-1. **Bank + Fern: opcode-sweep circuit proof**
-   - Lift more `tb_rv8gr_opcode_sweep.v` expectations into reusable circuit
-     package tests, especially reserved or illegal control mixes.
-2. **Ohm + Fern: hardware timing-margin proof**
+1. **Ohm + Fern: hardware timing-margin proof**
+   - ✅ Initial machine-readable timing-margin artifact added at
+     `Lib/Circuits/timing_margins.json`.
    - Keep 5 MHz marked functional simulation until physical timing and
      signal-integrity evidence exist.
+   - Next: wire tests to consume propagation-delay paths, setup/hold values,
+     and bus-race notes without touching the opcode-sweep package.
+2. **Bam + Noon + Bank: visual chip-block editor**
+   - Turn the current block-UI import/export contracts into a practical editor
+     surface for placing DIP blocks, wiring nets, and selecting Python or
+     Verilog simulation backend.
 
 Pim coordinates this plan and keeps `Lib/Circuits/README.md`, `BACKLOG.md`,
 tests, and pushed commits aligned.

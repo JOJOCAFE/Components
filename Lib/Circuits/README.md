@@ -25,6 +25,7 @@ truth when lab wording is simplified.
 | `RV8GR_PageDataRegisters` | U23/U32/U33/U25 | Started | `PG_CLK` and `DP_Load` edge timing |
 | `RV8GR_BranchJumpControl` | U24-U28 control gates | Started | `/PC_LD`, branch condition, no unintended load |
 | `RV8GR_VirtualTestHelpers` | `ClockSource`, `Probe`, `BusProbe` virtual helpers | Started | clock profiles, phase probes, bus contention observation |
+| `RV8GR_FullControlOpcodeSweep` | T2 horizontal-control equation proof | Started | all opcode/Z cases, reserved mixes, side-effect drift |
 
 Each circuit package should include:
 
@@ -32,13 +33,16 @@ Each circuit package should include:
 - `tests/*.json`: proof vectors or timing/bus checks.
 - `README.md`: student-readable explanation and debug checklist.
 - Python tests under `python/tests/` that fail loudly when the proof breaks.
+- `timing_margins.json`: shared RV8GR timing-margin data for propagation
+  paths, 50 kHz/1/2/5 MHz periods, setup/hold notes, bus-race risks, and the
+  current functional-only 5 MHz boundary.
 
 ## Next Tests From RV8GR Debug Plan
 
-1. `RV8GR_FullControlOpcodeSweep`: extract more of the Verilog opcode-sweep
-   expectations into standalone circuit proofs, especially illegal/reserved
-   control mixes.
-2. `RV8GR_ClockProfiles`: keep push-switch, random debounced push, 50 kHz,
+1. `RV8GR_ClockProfiles`: keep push-switch, random debounced push, 50 kHz,
    1 MHz, 2 MHz, and 5 MHz profiles on every edge-sensitive circuit. Mark
    5 MHz as functional simulation until timing-margin and hardware
    signal-integrity proof exist.
+2. `RV8GR_TimingMargins`: consume `timing_margins.json` in future tests so
+   model-delay slack, setup/hold requirements, and bus-race notes stay visible
+   without promoting 5 MHz to physically proven.
