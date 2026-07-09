@@ -160,6 +160,16 @@ Current RV8GR circuit-library milestone:
   RV8GR circuit proof work. It captures model propagation budgets, setup/hold
   windows, bus-race notes, and the rule that 5 MHz is functional simulation
   only until physical evidence exists.
+- `RV8GR_StoreLoadBranchTrace` packages SB, LB, and BEQ rows from
+  `doc/03_instruction_trace.md`. It proves RAM store, RAM load, taken/not-taken
+  branch state, U7 direction, and one-driver bus ownership for each trace row.
+- Chip-specific truth-vector batch 3 is complete for `74HC02`, `74HC10`,
+  `74HC11`, `74HC20`, `74HC27`, and `74HC30`. These parts no longer count as
+  `basic_function` placeholders, and their vectors execute against live Python
+  models in `tests.test_generated_split_records`.
+- Datasheet-backed timing/electrical extraction batch 1 is complete for
+  `74HC138`, `74HC139`, and `74HC151`. The DB keeps simulation default delay
+  separate from TI switching/electrical maxima so timing claims do not overreach.
 - `BLOCK_UI_CONTRACT.md` and `python/chiplib/block_ui.py` are the current
   visual chip-block editor foundation: DIP placement metadata, real pin lists,
   net/wire endpoint details, and Python/Verilog run configuration.
@@ -252,6 +262,9 @@ Components focus:
 - Expands equivalence tests before more exporter metadata is migrated.
 - Turns `tests/*.json` component package files into executable regression
   checks.
+- Owns placeholder-inventory pressure: when a part leaves `basic_function`, its
+  definition required vectors, generated artifacts, and live Python-model
+  execution must move together.
 - Requires every active IC truth-table test to state edge criteria explicitly:
   rising, falling, level/no-edge, or control-window behavior.
 - Owns RV8GR circuit proof completeness: edge-trigger checks, no-edge hold,
@@ -322,6 +335,8 @@ Components focus:
   evidence.
 - Owns timing-margin review for setup/hold, output-disable, bus-turnaround, and
   5 MHz physical-readiness claims.
+- Owns datasheet-backed timing/electrical extraction batches and must keep
+  source-named timing values separate from simulator defaults.
 
 ## Bam - SW Coder
 
@@ -350,6 +365,9 @@ Components focus:
   RV8GR circuit proofs.
 - Keeps circuit proof data serializable so later CLI/API/UI tools can load and
   explain the same circuit behavior without duplicating simulation logic.
+- Owns trace-package executable helpers for RV8GR circuits: store/load/branch
+  vectors must recompute state, bus owners, U7 direction, and contention status
+  from reusable helper logic.
 - Owns `Switch` service semantics in Python-facing contracts and future block
   editor use: stable states, one-shot events, and preset pulse trains.
 - Owns block-UI import/export implementation for visual editor workflows.
@@ -378,6 +396,9 @@ Components focus:
 - Owns RV8GR circuit READMEs and lab wording: explain the circuit purpose,
   signals, expected tick-by-tick behavior, and what each proof means for
   students without overselling functional simulation as hardware timing proof.
+- Keeps trace-package docs grounded in the source rows from
+  `doc/03_instruction_trace.md`, especially when a correct final byte would
+  still be unsafe if bus ownership is wrong.
 - Keeps debug-plan and lab notes connected to student-facing circuit examples,
   especially for clock push switches, memory boundaries, and bus ownership.
 - Explains switch modes in beginner terms and distinguishes virtual switch

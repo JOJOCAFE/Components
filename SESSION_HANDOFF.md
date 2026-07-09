@@ -257,3 +257,69 @@ Focused doc-save verification run:
 - `git diff --check`
 
 Note: rerun the focused tests after any new schema/loader/generator edits.
+
+## 2026-07-10 Pim Team Session Save
+
+Current repo state:
+
+- Branch: `main`
+- Latest pushed commit: `ee4c418 Add RV8GR traces and chip truth batches`
+- Working tree was clean immediately after the push before this handoff/skills
+  documentation update.
+
+Work completed in the latest pushed commit:
+
+- Task 2, RV8GR trace packages:
+  - Added `Lib/Circuits/RV8GR_StoreLoadBranchTrace/`.
+  - Covered SB, LB, and BEQ rows from
+    `/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md`.
+  - Tests recompute expected ABUS, IBUS, DBUS, PC, AC, Z, RAM state, U7
+    direction, and bus-owner/no-contention policy.
+- Task 4, chip-specific truth vectors:
+  - Replaced `basic_function` for `74HC02`, `74HC10`, `74HC11`, `74HC20`,
+    `74HC27`, and `74HC30`.
+  - Updated each part's `verification.required_vectors`, regenerated
+    `generated/artifacts.json`, and added live Python-model execution coverage
+    in `python/tests/test_generated_split_records.py`.
+- Task 5, datasheet timing/electrical extraction:
+  - Filled source-backed timing/electrical fields for `74HC138`, `74HC139`, and
+    `74HC151`.
+  - Source-named TI datasheet switching/electrical values are kept separate from
+    the simulator default delay so 5 MHz and propagation claims remain
+    conservative.
+- Updated `BACKLOG.md`, `Lib/Circuits/README.md`, and added
+  `Lib/Circuits/BACKLOG.md`.
+
+Verification run for that commit:
+
+- `PYTHONPATH=python python3 -B -m tests.test_lib_circuits`
+- `PYTHONPATH=python python3 -B -m tests.test_generated_split_records`
+- `PYTHONPATH=python python3 -B -m tests.test_db`
+- `python3 -m py_compile python/tests/test_lib_circuits.py python/tests/test_generated_split_records.py`
+- JSON parser check over the edited truth/circuit/definition files
+- `rg -n 'basic_function'` over the six task-4 chips returned no matches
+- `git diff --check`
+
+Team/skill updates from this handoff:
+
+- `TEAM_SKILLS.md` now records the Store/Load/Branch trace proof, the task-4
+  placeholder-removal discipline, and the task-5 datasheet extraction discipline.
+- Fern owns the placeholder inventory gate: truth records, required vectors,
+  generated artifacts, and executable Python-model coverage must move together.
+- Ohm owns source-named timing/electrical extraction and the separation between
+  datasheet maxima and simulator defaults.
+- Bam owns trace-package executable helpers that recompute state and bus
+  ownership from reusable circuit logic.
+- Noon owns source-row-grounded trace docs that do not hide bus contention risk.
+
+Recommended next tasks:
+
+1. Add `RV8GR_SetPageJumpTrace` for SETDP, SETPG, and J from
+   `doc/03_instruction_trace.md`, proving page-register state and PC page-load
+   behavior together.
+2. Continue task-4 truth-vector batches for placeholder parts such as `74HC138`,
+   `74HC139`, `74HC151`, `74HC153`, `74HC154`, `74HC155`, and `74HC158`.
+3. Continue task-5 datasheet extraction for the next decoder/mux batch, keeping
+   timing/electrical source names inside `definition/definition.json`.
+4. Add real bench-evidence fields for selected memory markings, SRAM
+   output-disable/read timing, DBUS deadband, and 5 MHz signal-integrity proof.
