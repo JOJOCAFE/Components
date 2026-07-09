@@ -27,7 +27,11 @@ outputs.
 
 1. ✅ Define package boundaries without moving code yet.
    - `DB/`: canonical per-chip manifests, schema, status, source evidence,
-     legacy implementation references, and DB-owned export metadata.
+     legacy implementation references, and DB-owned export metadata. The DB
+     boundary is currently frozen at manifest/service metadata; DB-owned
+     pinout files and model file moves are deferred unless a concrete
+     student-catalog, HDL-tooling, or downstream-project workflow requires
+     them.
    - `chipdb`: Python DB access layer over `DB/`; owns chip metadata,
      package/pin descriptions, status reports, audit checks, and capability
      queries. Current implementation: `python/chiplib/db.py`.

@@ -101,6 +101,28 @@ def component_catalog(*, group: str | None = None) -> JsonMap:
     }
 
 
+def student_component_catalog(*, group: str | None = None) -> JsonMap:
+    """Return a smaller catalog view suitable for learner-facing UIs."""
+
+    catalog = component_catalog(group=group)
+    components = [load_component(str(item["part"])) for item in catalog["components"]]
+    return {
+        "format": "components.db.student_catalog",
+        "version": 1,
+        "audience": "students ages 10-15, still useful for older learners",
+        "root": catalog["root"],
+        "group": catalog["group"],
+        "count": catalog["count"],
+        "groups": deepcopy(catalog["groups"]),
+        "components": [_student_component_card(item) for item in components],
+        "legend": {
+            "ready": "Good for building and simulation examples.",
+            "usable": "Usable, but some advanced output or evidence may be missing.",
+            "needs_info": "Visible in the catalog, but students should see the missing data first.",
+        },
+    }
+
+
 def component_detail(part: str) -> JsonMap:
     """Return frontend-oriented metadata for one component."""
 
@@ -477,6 +499,73 @@ def _component_card(manifest: JsonMap) -> JsonMap:
         "capabilities": _component_capabilities(manifest),
         "warnings": _component_warnings(manifest),
     }
+
+
+def _student_component_card(manifest: JsonMap) -> JsonMap:
+    part = str(manifest.get("part", manifest.get("id", "")))
+    capabilities = _component_capabilities(manifest)
+    warnings = _component_warnings(manifest)
+    pins = manifest.get("pins", [])
+    pin_list = pins if isinstance(pins, list) else []
+    status = manifest.get("status", {})
+    status_map = status if isinstance(status, dict) else {}
+    ready = bool(capabilities["physical_pinout"] and capabilities["python_behavior"] and not warnings)
+    export_ready = bool(capabilities["verilog_export"])
+    if ready and export_ready:
+        readiness = "ready"
+    elif capabilities["python_behavior"] or capabilities["simulation_service"]:
+        readiness = "usable"
+    else:
+        readiness = "needs_info"
+    return {
+        "part": part,
+        "title": manifest.get("title", part),
+        "group": manifest.get("group", ""),
+        "kind": manifest.get("kind", ""),
+        "role": manifest.get("role", ""),
+        "readiness": readiness,
+        "status": {
+            "datasheet": status_map.get("datasheet", "unknown"),
+            "pinout": status_map.get("pinout", "unknown"),
+            "python_behavior": status_map.get("python_behavior", "unknown"),
+            "verilog_model": status_map.get("verilog_model", "unknown"),
+            "verilog_export": status_map.get("verilog_export", "unknown"),
+            "tests": status_map.get("tests", "unknown"),
+        },
+        "capabilities": {
+            "can_simulate": bool(capabilities["python_behavior"] or capabilities["simulation_service"]),
+            "can_export_verilog": export_ready,
+            "has_verified_pinout": bool(capabilities["physical_pinout"]),
+            "has_datasheet": bool(capabilities["datasheet_verified"]),
+        },
+        "pins": {
+            "count": len(pin_list),
+            "preview": [
+                {
+                    "number": pin.get("number"),
+                    "name": pin.get("name"),
+                    "direction": pin.get("direction"),
+                }
+                for pin in pin_list[:8]
+                if isinstance(pin, dict)
+            ],
+        },
+        "files": {
+            "db": manifest.get("db_path", ""),
+            "verilog": capabilities["verilog_file"],
+        },
+        "warnings": warnings,
+        "student_note": _student_note(manifest, readiness),
+    }
+
+
+def _student_note(manifest: JsonMap, readiness: str) -> str:
+    role = str(manifest.get("role", "component")).replace("_", " ")
+    if readiness == "ready":
+        return f"Ready to use as a {role} in examples and simulations."
+    if readiness == "usable":
+        return f"Usable as a {role}; check the status fields before using advanced outputs."
+    return "Keep this visible, but show what information is missing before students build with it."
 
 
 def _component_capabilities(manifest: JsonMap) -> JsonMap:

@@ -5,7 +5,7 @@ from __future__ import annotations
 from time import perf_counter
 from typing import Any
 
-from .db import component_catalog, component_detail
+from .db import component_catalog, component_detail, student_component_catalog
 from .netlist import _verilog_mapping, design_to_verilog
 
 
@@ -361,6 +361,9 @@ class FrontendDesignService:
 
     def component_catalog(self, *, group: str | None = None) -> JsonMap:
         return self._ok("component-catalog", component_catalog(group=group))
+
+    def student_component_catalog(self, *, group: str | None = None) -> JsonMap:
+        return self._ok("student-component-catalog", student_component_catalog(group=group))
 
     def component_detail(self, part: str) -> JsonMap:
         return self._ok("component-detail", component_detail(part))

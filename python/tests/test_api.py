@@ -65,6 +65,13 @@ def test_json_api_adapter_exposes_component_metadata_without_design():
     assert catalog["result"]["group"] == "memory"
     assert {item["part"] for item in catalog["result"]["components"]} == {"62256", "AS6C62256", "AT28C256", "CY7C199", "SST39SF010A"}
 
+    student_catalog = handle_request({"command": "student-component-catalog", "options": {"group": "virtual"}}, service)
+    assert student_catalog["ok"] is True
+    assert student_catalog["result"]["format"] == "components.db.student_catalog"
+    probe = next(item for item in student_catalog["result"]["components"] if item["part"] == "Probe")
+    assert probe["readiness"] == "usable"
+    assert probe["capabilities"]["can_simulate"] is True
+
     detail = handle_request({"command": "component-detail", "options": {"part": "74HC00"}}, service)
     assert detail["ok"] is True
     assert detail["result"]["format"] == "components.db.component"

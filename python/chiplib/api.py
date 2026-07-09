@@ -61,6 +61,9 @@ def handle_request(request: JsonMap, service: FrontendDesignService | None = Non
         if command == "component-catalog":
             group = options.get("group", input_data.get("group"))
             return service.component_catalog(group=str(group) if group is not None else None)
+        if command == "student-component-catalog":
+            group = options.get("group", input_data.get("group"))
+            return service.student_component_catalog(group=str(group) if group is not None else None)
         if command == "component-detail":
             return service.component_detail(str(options.get("part", input_data.get("part"))))
         if command == "component-metadata":

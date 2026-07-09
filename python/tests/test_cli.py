@@ -173,6 +173,21 @@ def test_cli_db_summary_and_part_lookup():
     assert catalog_data["group"] == "virtual"
     assert "Probe" in {item["part"] for item in catalog_data["components"]}
 
+    student_catalog = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "db", "--student", "--group", "virtual"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert student_catalog.returncode == 0, student_catalog.stderr
+    student_data = json.loads(student_catalog.stdout)
+    assert student_data["format"] == "components.db.student_catalog"
+    assert student_data["group"] == "virtual"
+    probe = next(item for item in student_data["components"] if item["part"] == "Probe")
+    assert probe["readiness"] == "usable"
+    assert probe["capabilities"]["can_simulate"] is True
+
     detail = subprocess.run(
         [sys.executable, "-B", "-m", "chiplib.cli", "db", "74HC00", "--detail"],
         cwd=Path(__file__).resolve().parents[1],

@@ -46,6 +46,12 @@ DB/
     tests.json         # optional later
 ```
 
+This shape is aspirational, not the active migration target. The DB migration
+is frozen at the manifest/service boundary for now: manifests own identity,
+status, source evidence, pin metadata, capability metadata, and service-facing
+references; family-level Verilog and Python behavior files remain the active
+implementation locations.
+
 The first stable artifact is the manifest: `chip.json` for ICs and
 `component.json` for grouped virtual/passive/discrete components. It owns the
 component identity, group, kind, role, package/pins, source evidence, status,
@@ -217,6 +223,8 @@ Current proof point:
 
 ### Phase 5: Optional DB-Backed Pinout Documentation
 
+Status: deferred.
+
 Move pinout docs from legacy Verilog comments into chip folders only after
 references are DB-backed.
 
@@ -235,8 +243,12 @@ Exit criteria if chosen:
 
 - Pinout readers use DB paths.
 - Existing docs/tests still pass.
+- Student catalog pages are clearer with per-component DB pinout files than
+  with manifest-backed pin metadata plus linked implementation references.
 
 ### Phase 6: Optional DB-Owned Models
+
+Status: deferred.
 
 Only after metadata and export paths are stable, consider moving model files:
 
@@ -249,11 +261,18 @@ This is optional. It may be better to keep implementation models in family
 folders and let DB manifests own references. The decision should be based on
 which layout stays easiest for simulation, HDL tools, and student browsing.
 
+Current decision: keep model files in `Verilog/74xx/`, `Verilog/Memory/`, and
+Python behavior/catalog modules. DB-owned model moves are deferred until a
+student-facing catalog view, HDL tool, or downstream project has a concrete
+need that cannot be met by manifest references and service APIs.
+
 Exit criteria:
 
 - Verilog smoke tests pass.
 - Python behavior tests pass.
 - Existing projects can still locate component models.
+- The move removes real duplication or confusion in student browsing or HDL
+  tooling, instead of only changing repository layout.
 
 ## Do Not Do Yet
 
@@ -268,11 +287,15 @@ Exit criteria:
 ## Recommended Next Tasks
 
 1. Keep DB migration frozen at the manifest/service boundary unless a concrete
-   UI or downstream project needs pinout/model files physically moved.
-2. Build block-UI import/export against the normalized `Design` model and DB
-   component catalog.
-3. Add student-facing DB catalog views/examples that make status, missing
+   student-facing catalog, HDL tool, or downstream project needs pinout/model
+   files physically moved.
+2. Add student-facing DB catalog views/examples that make status, missing
    properties, and unsupported exports obvious.
-4. Defer DB-owned pinout/model moves until they improve student browsing or HDL
+3. Defer DB-owned pinout/model moves until they improve student browsing or HDL
    tooling; current family-level model folders remain the active implementation
-   location.
+   location. Revisit only with a failing workflow, duplicated source of truth,
+   or evidence that manifest references and service APIs are insufficient.
+4. Build block-UI import/export against the normalized `Design` model and DB
+   component catalog.
+5. Leave the full visual chip-block editor until after the DB catalog and
+   normalized import/export contracts are comfortable for student-facing use.

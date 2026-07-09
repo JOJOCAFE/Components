@@ -110,6 +110,8 @@ python3 -m chiplib.cli db
 python3 -m chiplib.cli db 74HC00
 python3 -m chiplib.cli db --catalog
 python3 -m chiplib.cli db --catalog --group virtual
+python3 -m chiplib.cli db --student
+python3 -m chiplib.cli db --student --group virtual
 python3 -m chiplib.cli db 74HC00 --detail
 python3 -m chiplib.cli db --audit
 python3 -m chiplib.cli db --status

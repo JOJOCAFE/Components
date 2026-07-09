@@ -110,3 +110,12 @@ cd ../python
 python3 -m chiplib.cli db --audit
 python3 -m chiplib.cli db --status
 ```
+
+Use the learner-facing catalog view for student UI/API work:
+
+```sh
+python3 -m chiplib.cli db --student
+python3 -m chiplib.cli db --student --group virtual
+```
+
+See `STUDENT_CATALOG.md` for the CLI, Python, and frontend API contract.

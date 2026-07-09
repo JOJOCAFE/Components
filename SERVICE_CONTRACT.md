@@ -523,12 +523,15 @@ CLI:
 ```sh
 python3 -m chiplib.cli db --catalog
 python3 -m chiplib.cli db --catalog --group virtual
+python3 -m chiplib.cli db --student
+python3 -m chiplib.cli db --student --group virtual
 python3 -m chiplib.cli db 74HC00 --detail
 ```
 
 API commands:
 
 - `component-catalog`
+- `student-component-catalog`
 - `component-detail`
 - `component-metadata`
 
@@ -538,7 +541,7 @@ Result shapes:
 {
   "format": "components.db.catalog",
   "version": 1,
-  "root": "db",
+  "root": "DB",
   "group": "virtual",
   "groups": [
     {
@@ -566,6 +569,12 @@ Result shapes:
   ]
 }
 ```
+
+The `student-component-catalog` command returns
+`format: components.db.student_catalog`. It is a smaller learner-facing view
+with `readiness`, visible status fields, simulation/export capability flags,
+pin previews, and warnings for missing information. It is intended for students
+around ages 10-15 while still remaining machine-readable for frontend clients.
 
 ```json
 {

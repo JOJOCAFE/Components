@@ -2,7 +2,7 @@
 
 import json
 
-from chiplib.db import audit_db, component_catalog, component_detail, component_ids, component_summary, db_root, db_status_report, legacy_catalog_parts, load_all_components, load_component
+from chiplib.db import audit_db, component_catalog, component_detail, component_ids, component_summary, db_root, db_status_report, legacy_catalog_parts, load_all_components, load_component, student_component_catalog
 from chiplib.db import _pinout_mismatches
 
 
@@ -180,6 +180,24 @@ def test_db_component_catalog_is_frontend_ready_and_grouped():
     memory = component_catalog(group="memory")
     assert memory["group"] == "memory"
     assert {item["part"] for item in memory["components"]} == {"62256", "AS6C62256", "AT28C256", "CY7C199", "SST39SF010A"}
+
+
+def test_student_component_catalog_is_learner_facing_and_status_visible():
+    catalog = student_component_catalog(group="virtual")
+    assert catalog["format"] == "components.db.student_catalog"
+    assert catalog["audience"] == "students ages 10-15, still useful for older learners"
+    assert catalog["legend"]["ready"].startswith("Good for building")
+    probe = next(item for item in catalog["components"] if item["part"] == "Probe")
+    assert probe["readiness"] == "usable"
+    assert probe["capabilities"]["can_simulate"] is True
+    assert probe["capabilities"]["can_export_verilog"] is False
+    assert probe["pins"]["preview"] == [{"number": 1, "name": "IN", "direction": "input"}]
+    assert probe["warnings"] == []
+
+    hc00 = next(item for item in student_component_catalog(group="74xx")["components"] if item["part"] == "74HC00")
+    assert hc00["readiness"] == "ready"
+    assert hc00["capabilities"]["can_export_verilog"] is True
+    assert hc00["files"]["verilog"] == "Verilog/74xx/74hc00.v"
 
 
 def test_db_component_detail_exposes_pins_and_capabilities():

@@ -122,11 +122,20 @@ Future work for the shared component library.
 
 ## Deferred UI Work
 
-- Build a visual chip-block editor where users can place DIP chip blocks on
-  screen, wire pins/nets, and run either the Python simulator or Verilog
-  simulation backend.
-- Add student-facing DB catalog views and examples for component status,
-  missing properties, pins, and export/simulation capability.
+Priority order before visual UI:
+
+1. ✅ Add student-facing DB catalog views and examples for component status,
+   missing properties, pins, and export/simulation capability.
+2. ✅ Keep DB migration frozen at the manifest/service boundary unless a concrete
+   UI or downstream project needs pinout/model files physically moved.
+3. ✅ Defer DB-owned pinout/model moves until they clearly improve student
+   browsing or HDL tooling; current family-level model folders remain the
+   active implementation location.
+4. Build block-UI import/export against the normalized `Design` model and DB
+   component catalog.
+5. Build a visual chip-block editor where users can place DIP chip blocks on
+   screen, wire pins/nets, and run either the Python simulator or Verilog
+   simulation backend.
 
 ## Backend Bus, Probe, And Test Logic
 
