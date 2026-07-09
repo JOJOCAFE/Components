@@ -1,0 +1,10 @@
+{
+  "schema": "db.component.test.propagation",
+  "version": 1,
+  "part": "74HC574",
+  "applicable": true,
+  "checks": [
+    {"name": "clock_to_q_delay_metadata", "expect_delay_ns": 20},
+    {"name": "disable_to_z_delay_metadata", "expect_delay_ns": 20}
+  ]
+}

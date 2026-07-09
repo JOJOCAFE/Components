@@ -1,0 +1,7 @@
+{
+  "schema": "db.component.test.tri_state",
+  "version": 1,
+  "part": "74HC157",
+  "applicable": false,
+  "reason": "74HC157 disabled outputs drive low instead of high-Z."
+}

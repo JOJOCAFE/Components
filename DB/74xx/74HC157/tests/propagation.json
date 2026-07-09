@@ -1,0 +1,10 @@
+{
+  "schema": "db.component.test.propagation",
+  "version": 1,
+  "part": "74HC157",
+  "applicable": true,
+  "checks": [
+    {"name": "data_to_y_delay_metadata", "expect_delay_ns": 18},
+    {"name": "select_to_y_delay_metadata", "expect_delay_ns": 18}
+  ]
+}

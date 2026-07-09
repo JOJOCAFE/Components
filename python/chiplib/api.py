@@ -77,6 +77,10 @@ def handle_request(request: JsonMap, service: FrontendDesignService | None = Non
             return service.component_metadata(str(options.get("part", input_data.get("part"))))
         if command == "component-digital":
             return service.component_digital(str(options.get("part", input_data.get("part"))))
+        if command == "component-package":
+            return service.component_package(str(options.get("part", input_data.get("part"))))
+        if command == "component-generate":
+            return service.component_generate(str(options.get("part", input_data.get("part"))))
         if command == "run":
             return service.run(options.get("steps", input_data.get("steps", "all")))
         if command == "probe":

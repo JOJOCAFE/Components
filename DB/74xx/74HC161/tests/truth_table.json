@@ -1,0 +1,13 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "74HC161",
+  "applicable": true,
+  "vectors": [
+    {"name": "async_clear", "intent": "active-low clear forces Q to 0"},
+    {"name": "parallel_load", "intent": "active-low load copies D to Q on clock"},
+    {"name": "count", "intent": "ENP and ENT high advance the counter"},
+    {"name": "disabled_count", "intent": "disabled enables hold Q"},
+    {"name": "terminal_count", "intent": "RCO reflects terminal count and ENT"}
+  ]
+}

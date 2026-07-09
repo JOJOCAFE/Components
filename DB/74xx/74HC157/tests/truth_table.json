@@ -1,0 +1,11 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "74HC157",
+  "applicable": true,
+  "vectors": [
+    {"name": "select_a", "inputs": {"A/B": 0, "/G": 0}, "expect": {"Y": "A"}},
+    {"name": "select_b", "inputs": {"A/B": 1, "/G": 0}, "expect": {"Y": "B"}},
+    {"name": "disabled_low", "inputs": {"/G": 1}, "expect": {"Y": 0}}
+  ]
+}

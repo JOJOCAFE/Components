@@ -1,0 +1,10 @@
+{
+  "schema": "db.component.test.tri_state",
+  "version": 1,
+  "part": "74HC574",
+  "applicable": true,
+  "checks": [
+    {"name": "disabled_releases_q", "when": "/OE=1", "expect": {"Q": "Z"}},
+    {"name": "enabled_drives_q", "when": "/OE=0", "expect": {"Q": "latched"}}
+  ]
+}

@@ -98,6 +98,16 @@ def test_json_api_adapter_exposes_component_metadata_without_design():
     assert digital["result"]["validation"]["ok"] is True
     assert "interactive_demo" in digital["result"]["generation"]["targets"]
 
+    package = handle_request({"command": "component-package", "options": {"part": "74HC245"}}, service)
+    assert package["ok"] is True
+    assert package["result"]["format"] == "db.component.package"
+    assert package["result"]["layers"]["tests"]["tri_state"]["applicable"] is True
+
+    generated = handle_request({"command": "component-generate", "options": {"part": "74HC245"}}, service)
+    assert generated["ok"] is True
+    assert generated["result"]["format"] == "db.component.generated"
+    assert generated["result"]["artifacts"]["interactive_demo"]["probes"] == ["A", "B"]
+
 
 def run_all():
     test_frontend_design_service_edits_and_exports_design()

@@ -148,16 +148,16 @@ Priority order before visual UI:
   for `74HC161`, `74HC157`, `74HC245`, `74HC574`, and `AT28C256`.
 - ✅ Add an initial split package for `74HC245` with `definition/`,
   `simulation/`, `tests/`, `symbol/`, and `datasheet/` folders.
-- ⬜ Add schemas and DB validation tests for the new `db.component.digital`
+- ✅ Add schemas and DB validation tests for the new `db.component.digital`
   package files.
-- ⬜ Add a loader that can read `definition/digital.json` while preserving
+- ✅ Add a loader that can read `definition/digital.json` while preserving
   current `chip.json` compatibility.
-- ⬜ Prototype generation from one file for `74HC245`: normalized JSON,
+- ✅ Prototype generation from one file for `74HC245`: normalized JSON,
   Python simulator report, Verilog wrapper/export metadata, KiCad symbol,
   SVG pinout, documentation data, unit test vectors, and interactive demo data.
-- ⬜ Expand split test files for the seed batch: truth table, timing,
+- ✅ Expand split test files for the seed batch: truth table, timing,
   tri-state, bus-fight, and propagation where applicable.
-- ⬜ Add GitHub Actions coverage for package/schema validation once the schemas
+- ✅ Add GitHub Actions coverage for package/schema validation once the schemas
   land.
 
 ## Backend Bus, Probe, And Test Logic

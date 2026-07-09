@@ -1,0 +1,13 @@
+{
+  "schema": "db.component.datasheet.sources",
+  "version": 1,
+  "part": "74HC157",
+  "sources": [
+    {
+      "label": "Texas Instruments SN74HC157",
+      "url": "https://www.ti.com/lit/ds/symlink/sn74hc157.pdf",
+      "package_evidence": "N, 16-pin PDIP",
+      "used_for": ["pins", "package", "logic", "electrical_characteristics", "switching_characteristics"]
+    }
+  ]
+}

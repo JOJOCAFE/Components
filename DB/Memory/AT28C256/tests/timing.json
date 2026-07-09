@@ -1,0 +1,10 @@
+{
+  "schema": "db.component.test.timing",
+  "version": 1,
+  "part": "AT28C256",
+  "applicable": true,
+  "checks": [
+    {"name": "read_access_delay_metadata", "type": "memory_access", "expect_delay_ns": 70},
+    {"name": "write_enable_control", "type": "write_control", "control": "/WE"}
+  ]
+}

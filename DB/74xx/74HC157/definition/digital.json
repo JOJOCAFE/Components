@@ -3,7 +3,7 @@
   "version": 1,
   "part": "74HC157",
   "metadata": {
-    "title": "Quad 2-line to 1-line multiplexer",
+    "title": "Quad 2-Line to 1-Line Multiplexer",
     "family": "74HC",
     "group": "74xx",
     "role": "multiplexer"

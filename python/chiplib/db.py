@@ -13,6 +13,7 @@ JsonMap = dict[str, Any]
 ROOT = Path(__file__).resolve().parents[2]
 DB_ROOT = ROOT / "DB"
 CHIP_STATUS_PATH = ROOT / "CHIP_STATUS.md"
+DIGITAL_SCHEMA_PATH = DB_ROOT / "digital.schema.json"
 
 REQUIRED_STATUS_KEYS = (
     "datasheet",
@@ -173,6 +174,119 @@ def load_digital_definition(part: str, *, required: bool = True) -> JsonMap | No
     return definition
 
 
+def load_digital_package(part: str) -> JsonMap:
+    """Load a digital definition plus any split-package layer files."""
+
+    definition = load_digital_definition(part)
+    if definition is None:
+        raise KeyError(f"digital definition not found: {part}")
+    manifest = load_component(part)
+    base = _manifest_path(part).parent
+    layers = {
+        "definition": {
+            "component": _load_optional_json(base / "definition" / "component.json"),
+            "package": _load_optional_json(base / "definition" / "package.json"),
+            "pins": _load_optional_json(base / "definition" / "pins.json"),
+            "power": _load_optional_json(base / "definition" / "power.json"),
+            "logic": _load_optional_json(base / "definition" / "logic.json"),
+            "timing": _load_optional_json(base / "definition" / "timing.json"),
+            "electrical": _load_optional_json(base / "definition" / "electrical.json"),
+        },
+        "simulation": {"model": _load_optional_json(base / "simulation" / "model.json")},
+        "tests": {
+            "truth_table": _load_optional_json(base / "tests" / "truth_table.json"),
+            "timing": _load_optional_json(base / "tests" / "timing.json"),
+            "tri_state": _load_optional_json(base / "tests" / "tri_state.json"),
+            "bus_fight": _load_optional_json(base / "tests" / "bus_fight.json"),
+            "propagation": _load_optional_json(base / "tests" / "propagation.json"),
+        },
+        "symbol": {"dip": _load_optional_json(base / "symbol" / "dip.json")},
+        "datasheet": {"sources": _load_optional_json(base / "datasheet" / "sources.json")},
+    }
+    files = {
+        name: str(path.relative_to(ROOT))
+        for name, path in {
+            "manifest": _manifest_path(part),
+            "digital": base / "definition" / "digital.json",
+            "component": base / "definition" / "component.json",
+            "package": base / "definition" / "package.json",
+            "pins": base / "definition" / "pins.json",
+            "power": base / "definition" / "power.json",
+            "logic": base / "definition" / "logic.json",
+            "timing": base / "definition" / "timing.json",
+            "electrical": base / "definition" / "electrical.json",
+            "simulation": base / "simulation" / "model.json",
+            "symbol": base / "symbol" / "dip.json",
+            "datasheet": base / "datasheet" / "sources.json",
+        }.items()
+        if path.exists()
+    }
+    return {
+        "format": "db.component.package",
+        "version": 1,
+        "part": definition["part"],
+        "manifest": manifest,
+        "definition": definition,
+        "digital": definition,
+        "layers": layers,
+        "derived": _derived_package_layers(definition, manifest),
+        "files": files,
+    }
+
+
+def generate_component_artifacts(part: str) -> JsonMap:
+    """Generate structured artifact payloads from definition/digital.json."""
+
+    package = load_digital_package(part)
+    definition = package["digital"]
+    manifest = package["manifest"]
+    pins = list(definition.get("pins", []))
+    buses = _digital_buses(pins)
+    power = _digital_power_rails(pins)
+    symbol = _dip_symbol_from_definition(definition)
+    tests = _generated_test_plan(definition, package)
+    docs = _documentation_data(definition, buses)
+    demo = _interactive_demo_data(definition, buses)
+    verilog = {
+        "part": definition["part"],
+        "module": definition.get("generation", {}).get("verilog", {}).get("module", ""),
+        "file": definition.get("generation", {}).get("verilog", {}).get("file", ""),
+        "export": deepcopy(manifest.get("verilog", {}).get("export", {})),
+    }
+    return {
+        "format": "db.component.generated",
+        "version": 1,
+        "source": definition.get("definition_path", ""),
+        "part": definition["part"],
+        "artifacts": {
+            "json": {
+                "format": "components.generated.detail",
+                "part": definition["part"],
+                "title": definition.get("metadata", {}).get("title", definition["part"]),
+                "family": definition.get("metadata", {}).get("family", ""),
+                "group": definition.get("metadata", {}).get("group", ""),
+                "role": definition.get("metadata", {}).get("role", ""),
+                "package": deepcopy(definition.get("package", {})),
+                "pins": deepcopy(pins),
+                "buses": buses,
+                "power": power,
+                "logic": deepcopy(definition.get("logic", {})),
+                "timing": deepcopy(definition.get("timing", {})),
+            },
+            "python_simulator": {
+                "part": definition["part"],
+                **deepcopy(definition.get("generation", {}).get("python", {})),
+            },
+            "verilog_wrapper": verilog,
+            "kicad_symbol": symbol,
+            "svg_pinout": symbol,
+            "documentation": docs,
+            "unit_test": tests,
+            "interactive_demo": demo,
+        },
+    }
+
+
 def validate_digital_definition(definition: JsonMap) -> JsonMap:
     """Return structured validation for a generator-ready digital definition."""
 
@@ -181,13 +295,24 @@ def validate_digital_definition(definition: JsonMap) -> JsonMap:
     path = str(definition.get("definition_path", f"DB/*/{part}/definition/digital.json"))
     if definition.get("schema") != "db.component.digital":
         errors.append(_issue("digital_schema_invalid", part, path, "schema must be db.component.digital"))
-    for key in ("metadata", "package", "pins", "logic", "generation", "verification", "datasheet"):
+    if not isinstance(definition.get("version"), int) or int(definition.get("version", 0)) < 1:
+        errors.append(_issue("digital_version_invalid", part, path, "version must be an integer >= 1"))
+    for key in ("metadata", "package", "pins", "logic", "timing", "generation", "verification", "datasheet"):
         if key not in definition:
             errors.append(_issue("digital_missing_section", part, path, f"missing section: {key}"))
+    metadata = definition.get("metadata", {})
+    if not isinstance(metadata, dict):
+        errors.append(_issue("digital_metadata_invalid", part, path, "metadata must be an object"))
+    else:
+        for key in ("title", "family", "group", "role"):
+            if not isinstance(metadata.get(key), str) or not metadata.get(key):
+                errors.append(_issue("digital_metadata_missing", part, path, f"metadata.{key} must be a non-empty string"))
     package = definition.get("package", {})
     pins = definition.get("pins", [])
     if not isinstance(package, dict):
         errors.append(_issue("digital_package_invalid", part, path, "package must be an object"))
+    elif not isinstance(package.get("kind"), str) or not package.get("kind"):
+        errors.append(_issue("digital_package_kind_invalid", part, path, "package.kind must be a non-empty string"))
     if not isinstance(pins, list) or not pins:
         errors.append(_issue("digital_pins_invalid", part, path, "pins must be a non-empty list"))
     elif isinstance(package, dict) and package.get("pins") != len(pins):
@@ -213,18 +338,54 @@ def validate_digital_definition(definition: JsonMap) -> JsonMap:
             errors.append(_issue("digital_pin_direction_invalid", part, path, f"pin {number} has invalid direction: {direction!r}"))
         if direction == "power" and isinstance(pin.get("rail"), str):
             power_rails.add(str(pin["rail"]))
+        if name.startswith("/") and pin.get("active_low") is not True:
+            errors.append(_issue("digital_active_low_flag_missing", part, path, f"pin {number} {name} should set active_low=true"))
+        if pin.get("active_low") is True and not name.startswith("/"):
+            errors.append(_issue("digital_active_low_name_mismatch", part, path, f"pin {number} {name} sets active_low but name is not /-prefixed"))
     if "VCC" not in power_rails and "VDD" not in power_rails:
         errors.append(_issue("digital_missing_positive_rail", part, path, "digital definition has no VCC/VDD rail"))
     if "GND" not in power_rails and "VSS" not in power_rails:
         errors.append(_issue("digital_missing_ground_rail", part, path, "digital definition has no GND/VSS rail"))
+    logic = definition.get("logic", {})
+    if not isinstance(logic, dict) or not isinstance(logic.get("type"), str) or not logic.get("type"):
+        errors.append(_issue("digital_logic_type_missing", part, path, "logic.type must be a non-empty string"))
+    timing = definition.get("timing", {})
+    if not isinstance(timing, dict):
+        errors.append(_issue("digital_timing_invalid", part, path, "timing must be an object"))
+    elif "delay_ns" in timing and (not isinstance(timing.get("delay_ns"), int) or timing.get("delay_ns") < 0):
+        errors.append(_issue("digital_delay_invalid", part, path, "timing.delay_ns must be an integer >= 0"))
     generation = definition.get("generation", {})
     targets = generation.get("targets", []) if isinstance(generation, dict) else []
     required_targets = {"json", "python_simulator", "verilog_wrapper", "kicad_symbol", "svg_pinout", "documentation", "unit_test", "interactive_demo"}
     if not isinstance(targets, list) or not required_targets.issubset(set(str(item) for item in targets)):
         errors.append(_issue("digital_generation_targets_missing", part, path, f"generation.targets must include {sorted(required_targets)}"))
+    if not isinstance(generation, dict):
+        errors.append(_issue("digital_generation_invalid", part, path, "generation must be an object"))
+    else:
+        python = generation.get("python", {})
+        verilog = generation.get("verilog", {})
+        if not isinstance(python, dict) or not python.get("factory") or not python.get("part"):
+            errors.append(_issue("digital_generation_python_invalid", part, path, "generation.python needs factory and part"))
+        if not isinstance(verilog, dict) or not verilog.get("module") or not verilog.get("file"):
+            errors.append(_issue("digital_generation_verilog_invalid", part, path, "generation.verilog needs module and file"))
     tests = definition.get("verification", {}).get("tests", []) if isinstance(definition.get("verification"), dict) else []
     if not isinstance(tests, list) or not tests:
         errors.append(_issue("digital_tests_missing", part, path, "verification.tests must list required test types"))
+    datasheet = definition.get("datasheet", {})
+    sources = datasheet.get("sources", []) if isinstance(datasheet, dict) else []
+    if not isinstance(sources, list) or not sources:
+        errors.append(_issue("digital_sources_missing", part, path, "datasheet.sources must list source evidence"))
+    for source in sources if isinstance(sources, list) else []:
+        if not isinstance(source, dict):
+            errors.append(_issue("digital_source_invalid", part, path, "datasheet source is not an object"))
+            continue
+        for key in ("label", "package_evidence"):
+            if not isinstance(source.get(key), str) or not source.get(key):
+                errors.append(_issue("digital_source_missing_field", part, path, f"datasheet source missing {key}"))
+        if not isinstance(source.get("url"), str) and not isinstance(source.get("file"), str):
+            errors.append(_issue("digital_source_missing_location", part, path, "datasheet source needs url or file"))
+    if part:
+        errors.extend(_digital_manifest_mismatches(definition, part, path))
     return {"ok": not errors, "errors": errors}
 
 
@@ -708,6 +869,310 @@ def _has_db_export(manifest: JsonMap) -> bool:
     ports = export.get("ports", []) if isinstance(export, dict) else []
     output_pins = export.get("output_pins", []) if isinstance(export, dict) else []
     return isinstance(ports, list) and bool(ports) and isinstance(output_pins, list)
+
+
+def _load_optional_json(path: Path) -> JsonMap | None:
+    if not path.exists():
+        return None
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError(f"split package file must be an object: {path}")
+    return data
+
+
+def _derived_package_layers(definition: JsonMap, manifest: JsonMap) -> JsonMap:
+    pins = list(definition.get("pins", [])) if isinstance(definition.get("pins"), list) else []
+    return {
+        "component": {
+            "schema": "db.component.definition",
+            "version": 1,
+            "part": definition.get("part", ""),
+            "title": definition.get("metadata", {}).get("title", ""),
+            "family": definition.get("metadata", {}).get("family", ""),
+            "group": definition.get("metadata", {}).get("group", ""),
+            "kind": manifest.get("kind", ""),
+            "role": definition.get("metadata", {}).get("role", manifest.get("role", "")),
+        },
+        "package": {
+            "schema": "db.component.package",
+            "version": 1,
+            "part": definition.get("part", ""),
+            "packages": [{
+                "id": definition.get("package", {}).get("default", definition.get("package", {}).get("kind", "")),
+                "kind": definition.get("package", {}).get("kind", ""),
+                "pins": definition.get("package", {}).get("pins", len(pins)),
+            }],
+            "default_package": definition.get("package", {}).get("default", ""),
+        },
+        "pins": {
+            "schema": "db.component.pins",
+            "version": 1,
+            "part": definition.get("part", ""),
+            "pins": deepcopy(pins),
+            "buses": _digital_buses(pins),
+        },
+        "power": {
+            "schema": "db.component.power",
+            "version": 1,
+            "part": definition.get("part", ""),
+            "rails": _digital_power_rails(pins),
+        },
+        "logic": {
+            "schema": "db.component.logic",
+            "version": 1,
+            "part": definition.get("part", ""),
+            "logic": deepcopy(definition.get("logic", {})),
+        },
+        "timing": {
+            "schema": "db.component.timing",
+            "version": 1,
+            "part": definition.get("part", ""),
+            "timing": deepcopy(definition.get("timing", {})),
+        },
+        "datasheet": {
+            "schema": "db.component.datasheet.sources",
+            "version": 1,
+            "part": definition.get("part", ""),
+            "sources": deepcopy(definition.get("datasheet", {}).get("sources", [])),
+        },
+    }
+
+
+def _digital_buses(pins: list[Any]) -> JsonMap:
+    buses: dict[str, list[JsonMap]] = {}
+    for pin in pins:
+        if not isinstance(pin, dict) or not isinstance(pin.get("bus"), str):
+            continue
+        buses.setdefault(str(pin["bus"]), []).append(pin)
+    result: JsonMap = {}
+    for name, bus_pins in sorted(buses.items()):
+        ordered = sorted(bus_pins, key=lambda item: int(item.get("bit", item.get("number", 0))))
+        result[name] = {
+            "width": len(ordered),
+            "pins_lsb_first": [int(item["number"]) for item in ordered if isinstance(item.get("number"), int)],
+        }
+    return result
+
+
+def _digital_power_rails(pins: list[Any]) -> list[JsonMap]:
+    rails: list[JsonMap] = []
+    for pin in pins:
+        if not isinstance(pin, dict) or pin.get("direction") != "power":
+            continue
+        rail = str(pin.get("rail", pin.get("name", "")))
+        rails.append({
+            "name": rail,
+            "pin": pin.get("number"),
+            "nominal_logic": 0 if rail in {"GND", "VSS"} else 1,
+        })
+    return rails
+
+
+def _dip_symbol_from_definition(definition: JsonMap) -> JsonMap:
+    pin_count = int(definition.get("package", {}).get("pins", 0))
+    midpoint = pin_count // 2
+    pins = list(definition.get("pins", [])) if isinstance(definition.get("pins"), list) else []
+    labels = {
+        str(pin["number"]): str(pin["name"])
+        for pin in pins
+        if isinstance(pin, dict) and isinstance(pin.get("number"), int) and pin.get("direction") in {"power", "input"}
+    }
+    return {
+        "schema": "db.component.symbol.dip",
+        "version": 1,
+        "part": definition.get("part", ""),
+        "shape": "dip",
+        "pins": pin_count,
+        "left": list(range(1, midpoint + 1)),
+        "right": list(range(pin_count, midpoint, -1)),
+        "labels": labels,
+        "bus_groups": {name: value["pins_lsb_first"] for name, value in _digital_buses(pins).items()},
+    }
+
+
+def _generated_test_plan(definition: JsonMap, package: JsonMap) -> JsonMap:
+    tests = definition.get("verification", {}).get("tests", [])
+    required_vectors = definition.get("verification", {}).get("required_vectors", [])
+    split_tests = package.get("layers", {}).get("tests", {})
+    return {
+        "schema": "db.component.generated.tests",
+        "version": 1,
+        "part": definition.get("part", ""),
+        "tests": [
+            {
+                "type": test_type,
+                "source": f"tests/{test_type}.json",
+                "present": split_tests.get(test_type) is not None if isinstance(split_tests, dict) else False,
+            }
+            for test_type in tests
+            if isinstance(test_type, str)
+        ],
+        "required_vectors": list(required_vectors) if isinstance(required_vectors, list) else [],
+    }
+
+
+def _documentation_data(definition: JsonMap, buses: JsonMap) -> JsonMap:
+    controls = [
+        {"pin": pin.get("name"), "function": pin.get("function", "control"), "active_low": pin.get("active_low", False)}
+        for pin in definition.get("pins", [])
+        if isinstance(pin, dict) and pin.get("function")
+    ]
+    return {
+        "schema": "db.component.generated.documentation",
+        "version": 1,
+        "part": definition.get("part", ""),
+        "title": definition.get("metadata", {}).get("title", definition.get("part", "")),
+        "summary": f"{definition.get('metadata', {}).get('title', definition.get('part', 'Component'))}.",
+        "sections": ["overview", "pins", "controls", "truth_table", "timing", "try_it"],
+        "pin_count": definition.get("package", {}).get("pins"),
+        "buses": buses,
+        "controls": controls,
+    }
+
+
+def _interactive_demo_data(definition: JsonMap, buses: JsonMap) -> JsonMap:
+    pins = list(definition.get("pins", [])) if isinstance(definition.get("pins"), list) else []
+    controls = [
+        str(pin.get("name"))
+        for pin in pins
+        if isinstance(pin, dict) and pin.get("direction") == "input" and pin.get("name")
+    ]
+    probes = sorted(buses) or [
+        str(pin.get("name"))
+        for pin in pins
+        if isinstance(pin, dict) and pin.get("direction") in {"output", "bidirectional"} and pin.get("name")
+    ][:8]
+    return {
+        "schema": "db.component.generated.interactive_demo",
+        "version": 1,
+        "part": definition.get("part", ""),
+        "controls": controls,
+        "probes": probes,
+        "default_steps": ["apply controls", "settle", "probe"],
+    }
+
+
+def _digital_manifest_mismatches(definition: JsonMap, part: str, path: str) -> list[JsonMap]:
+    try:
+        manifest = load_component(part)
+    except KeyError:
+        return [_issue("digital_manifest_missing", part, path, f"chip manifest not found for {part}")]
+
+    errors: list[JsonMap] = []
+    metadata = definition.get("metadata", {})
+    package = definition.get("package", {})
+    generation = definition.get("generation", {})
+    digital_pins = definition.get("pins", [])
+    manifest_pins = manifest.get("pins", [])
+
+    if isinstance(metadata, dict):
+        for key in ("title", "family", "group"):
+            expected = manifest.get(key)
+            actual = metadata.get(key)
+            if expected is not None and actual != expected:
+                errors.append(_issue(
+                    "digital_manifest_metadata_mismatch",
+                    part,
+                    path,
+                    f"metadata.{key}={actual!r} does not match manifest {expected!r}",
+                ))
+
+    if isinstance(package, dict):
+        manifest_package = manifest.get("package", {})
+        if isinstance(manifest_package, dict):
+            for key in ("kind", "pins"):
+                expected = manifest_package.get(key)
+                actual = package.get(key)
+                if expected is not None and actual != expected:
+                    errors.append(_issue(
+                        "digital_manifest_package_mismatch",
+                        part,
+                        path,
+                        f"package.{key}={actual!r} does not match manifest {expected!r}",
+                    ))
+
+    if isinstance(digital_pins, list) and isinstance(manifest_pins, list):
+        digital_by_number = {
+            pin["number"]: pin
+            for pin in digital_pins
+            if isinstance(pin, dict) and isinstance(pin.get("number"), int)
+        }
+        manifest_by_number = {
+            pin["number"]: pin
+            for pin in manifest_pins
+            if isinstance(pin, dict) and isinstance(pin.get("number"), int)
+        }
+        for number in sorted(set(digital_by_number) | set(manifest_by_number)):
+            digital_pin = digital_by_number.get(number)
+            manifest_pin = manifest_by_number.get(number)
+            if digital_pin is None:
+                errors.append(_issue("digital_manifest_pin_missing", part, path, f"pin {number} is missing from digital definition"))
+                continue
+            if manifest_pin is None:
+                errors.append(_issue("digital_manifest_pin_extra", part, path, f"pin {number} is not present in chip manifest"))
+                continue
+            for key in ("name", "direction", "active_low"):
+                if key not in manifest_pin:
+                    continue
+                if digital_pin.get(key) != manifest_pin.get(key):
+                    errors.append(_issue(
+                        "digital_manifest_pin_mismatch",
+                        part,
+                        path,
+                        f"pin {number} {key}={digital_pin.get(key)!r} does not match manifest {manifest_pin.get(key)!r}",
+                    ))
+
+    if isinstance(generation, dict):
+        python = generation.get("python", {})
+        manifest_python = manifest.get("python", {})
+        if isinstance(python, dict) and isinstance(manifest_python, dict):
+            for key in ("factory", "part"):
+                expected = manifest_python.get(key)
+                actual = python.get(key)
+                if expected is not None and actual != expected:
+                    errors.append(_issue(
+                        "digital_manifest_python_mismatch",
+                        part,
+                        path,
+                        f"generation.python.{key}={actual!r} does not match manifest {expected!r}",
+                    ))
+        verilog = generation.get("verilog", {})
+        manifest_verilog = manifest.get("verilog", {})
+        if isinstance(verilog, dict) and isinstance(manifest_verilog, dict):
+            for key in ("module", "file"):
+                expected = manifest_verilog.get(key)
+                actual = verilog.get(key)
+                if expected is not None and actual != expected:
+                    errors.append(_issue(
+                        "digital_manifest_verilog_mismatch",
+                        part,
+                        path,
+                        f"generation.verilog.{key}={actual!r} does not match manifest {expected!r}",
+                    ))
+
+    digital_pin_numbers = {
+        pin["number"]
+        for pin in digital_pins
+        if isinstance(pin, dict) and isinstance(pin.get("number"), int)
+    } if isinstance(digital_pins, list) else set()
+    verilog = manifest.get("verilog", {})
+    export = verilog.get("export", {}) if isinstance(verilog, dict) else {}
+    export_pins: set[int] = set()
+    if isinstance(export, dict):
+        for port in export.get("ports", []):
+            if not isinstance(port, dict):
+                continue
+            export_pins.update(pin for pin in port.get("pins", []) if isinstance(pin, int))
+        export_pins.update(pin for pin in export.get("output_pins", []) if isinstance(pin, int))
+    for number in sorted(export_pins - digital_pin_numbers):
+        errors.append(_issue(
+            "digital_manifest_export_pin_missing",
+            part,
+            path,
+            f"verilog export references pin {number}, which is missing from digital definition",
+        ))
+
+    return errors
 
 
 def _pinout_mismatches(manifest: JsonMap) -> list[JsonMap]:

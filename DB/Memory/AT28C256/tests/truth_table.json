@@ -1,0 +1,11 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "AT28C256",
+  "applicable": true,
+  "vectors": [
+    {"name": "write_read", "intent": "write DQ at address, then read back the same byte"},
+    {"name": "disabled_high_z", "inputs": {"/CE": 1}, "expect": {"DQ": "Z"}},
+    {"name": "oe_high_high_z", "inputs": {"/OE": 1}, "expect": {"DQ": "Z"}}
+  ]
+}

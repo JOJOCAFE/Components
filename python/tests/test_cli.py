@@ -240,6 +240,30 @@ def test_cli_db_summary_and_part_lookup():
     assert digital_data["validation"]["ok"] is True
     assert "svg_pinout" in digital_data["generation"]["targets"]
 
+    package = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "db", "74HC245", "--package"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert package.returncode == 0, package.stderr
+    package_data = json.loads(package.stdout)
+    assert package_data["format"] == "db.component.package"
+    assert package_data["layers"]["tests"]["truth_table"]["part"] == "74HC245"
+
+    generated = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "db", "74HC245", "--generate"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert generated.returncode == 0, generated.stderr
+    generated_data = json.loads(generated.stdout)
+    assert generated_data["format"] == "db.component.generated"
+    assert generated_data["artifacts"]["verilog_wrapper"]["module"] == "ttl_74hc245"
+
 
 class FakeDesignService:
     def __init__(self):

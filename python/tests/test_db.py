@@ -2,7 +2,7 @@
 
 import json
 
-from chiplib.db import audit_db, component_catalog, component_detail, component_ids, component_summary, db_root, db_status_report, legacy_catalog_parts, load_all_components, load_component, load_digital_definition, student_component_catalog
+from chiplib.db import audit_db, component_catalog, component_detail, component_ids, component_summary, db_root, db_status_report, generate_component_artifacts, legacy_catalog_parts, load_all_components, load_component, load_digital_definition, load_digital_package, student_component_catalog
 from chiplib.db import _pinout_mismatches
 
 
@@ -236,6 +236,167 @@ def test_generation_seed_digital_definitions_are_valid_and_generator_ready():
         assert definition["generation"]["verilog"]["file"].startswith("Verilog/")
 
 
+def test_digital_definition_schema_contract_is_strict_enough_for_generation():
+    schema = json.loads((db_root() / "digital.schema.json").read_text(encoding="utf-8"))
+    assert schema["properties"]["schema"]["const"] == "db.component.digital"
+    assert "timing" in schema["required"]
+    assert "package_evidence" in schema["properties"]["datasheet"]["properties"]["sources"]["items"]["required"]
+    assert {"required": ["url"]} in schema["properties"]["datasheet"]["properties"]["sources"]["items"]["anyOf"]
+    assert {"required": ["file"]} in schema["properties"]["datasheet"]["properties"]["sources"]["items"]["anyOf"]
+    assert set(schema["$defs"]["generationTarget"]["enum"]) == GENERATION_TARGETS
+    assert {"truth_table", "timing", "tri_state", "bus_fight", "propagation"} == set(schema["$defs"]["testType"]["enum"])
+
+    pin_schema = schema["properties"]["pins"]["items"]["properties"]
+    assert pin_schema["direction"]["$ref"] == "#/$defs/pinDirection"
+    assert set(schema["$defs"]["pinDirection"]["enum"]) == ALLOWED_DIRECTIONS
+    assert pin_schema["rail"]["enum"] == ["VCC", "VDD", "GND", "VSS"]
+
+
+def test_generation_seed_digital_definitions_match_chip_manifests():
+    for part in GENERATION_SEED_PARTS:
+        definition = load_digital_definition(part)
+        manifest = load_component(part)
+
+        assert definition["validation"]["ok"] is True, definition["validation"]["errors"]
+        assert definition["metadata"]["title"] == manifest["title"]
+        assert definition["metadata"]["family"] == manifest["family"]
+        assert definition["metadata"]["group"] == manifest["group"]
+        assert definition["package"]["kind"] == manifest["package"]["kind"]
+        assert definition["package"]["pins"] == manifest["package"]["pins"]
+
+        digital_pins = {pin["number"]: pin for pin in definition["pins"]}
+        manifest_pins = {pin["number"]: pin for pin in manifest["pins"]}
+        assert set(digital_pins) == set(manifest_pins)
+        for number, manifest_pin in manifest_pins.items():
+            digital_pin = digital_pins[number]
+            assert digital_pin["name"] == manifest_pin["name"]
+            assert digital_pin["direction"] == manifest_pin["direction"]
+            if "active_low" in manifest_pin:
+                assert digital_pin["active_low"] == manifest_pin["active_low"]
+
+        assert definition["generation"]["python"] == manifest["python"]
+        assert definition["generation"]["verilog"]["module"] == manifest["verilog"]["module"]
+        assert definition["generation"]["verilog"]["file"] == manifest["verilog"]["file"]
+
+        export = manifest["verilog"]["export"]
+        export_pins = set(export["output_pins"])
+        for port in export["ports"]:
+            export_pins.update(port["pins"])
+        assert export_pins.issubset(set(digital_pins))
+
+
+def test_generation_seed_digital_packages_load_split_tests():
+    for part in GENERATION_SEED_PARTS:
+        package = load_digital_package(part)
+        definition = package["definition"]
+        assert package["format"] == "db.component.package"
+        assert package["part"] == part
+        assert definition["part"] == part
+        assert definition["validation"]["ok"] is True, definition["validation"]["errors"]
+        assert definition["package"]["pins"] == len(definition["pins"])
+
+        tests = package["layers"]["tests"]
+        for test_type in ("truth_table", "timing", "tri_state", "bus_fight", "propagation"):
+            test_data = tests[test_type]
+            assert test_data is not None, (part, test_type)
+            assert test_data["schema"] == f"db.component.test.{test_type}"
+            assert test_data["version"] == 1
+            assert test_data["part"] == part
+            assert isinstance(test_data["applicable"], bool)
+
+        for test_type in definition["verification"]["tests"]:
+            assert tests[test_type]["applicable"] is True, (part, test_type)
+
+
+def test_74hc245_split_tests_and_evidence_are_loaded():
+    package = load_digital_package("74HC245")
+    tests = package["layers"]["tests"]
+    assert {item["name"] for item in tests["truth_table"]["vectors"]} == {"a_to_b", "b_to_a", "disabled"}
+    assert {item["name"] for item in tests["tri_state"]["checks"]} >= {"disabled_releases_a", "disabled_releases_b"}
+    assert {item["name"] for item in tests["bus_fight"]["checks"]} == {"external_b_driver_conflicts_with_a_to_b", "external_a_driver_conflicts_with_b_to_a"}
+    assert {item["control"] for item in tests["timing"]["checks"]} == {"DIR", "/OE"}
+    assert {item["expect_delay_ns"] for item in tests["propagation"]["checks"]} == {12}
+
+    timing = package["layers"]["definition"]["timing"]
+    assert timing["delay"]["datasheet_typical_ns"]["tpd_a_b_to_b_a"]["vcc_4_5_v"] == 15
+    assert timing["delay"]["datasheet_typical_ns"]["tdis_oe_to_a_b"]["vcc_6_v"] == 21
+    electrical = package["layers"]["definition"]["electrical"]
+    assert electrical["voltage"]["vcc"] == {"min_v": 2.0, "typ_v": 5.0, "max_v": 6.0, "status": "extracted"}
+    assert electrical["current"]["output_drive"]["vcc_4_5_v"] == {"ioh_ma": -6, "iol_ma": 6}
+    assert electrical["loading"]["input_capacitance"]["max_pf"] == 10
+
+
+def test_component_generation_artifacts_cover_declared_targets():
+    for part in GENERATION_SEED_PARTS:
+        generated = generate_component_artifacts(part)
+        assert generated["format"] == "db.component.generated"
+        assert generated["part"] == part
+        assert generated["source"].endswith("definition/digital.json")
+        assert set(generated["artifacts"]) == GENERATION_TARGETS
+        for artifact in generated["artifacts"].values():
+            assert artifact["part"] == part
+
+    hc245 = generate_component_artifacts("74HC245")
+    assert hc245["artifacts"]["json"]["buses"]["A"]["pins_lsb_first"] == [2, 3, 4, 5, 6, 7, 8, 9]
+    assert hc245["artifacts"]["verilog_wrapper"]["module"] == "ttl_74hc245"
+    assert hc245["artifacts"]["svg_pinout"]["shape"] == "dip"
+    assert hc245["artifacts"]["documentation"]["sections"] == ["overview", "pins", "controls", "truth_table", "timing", "try_it"]
+    assert hc245["artifacts"]["interactive_demo"]["probes"] == ["A", "B"]
+
+
+def test_generated_artifact_files_exist_for_seed_batch():
+    expected_paths = {
+        "74HC161": db_root() / "74xx" / "74HC161" / "generated" / "artifacts.json",
+        "74HC157": db_root() / "74xx" / "74HC157" / "generated" / "artifacts.json",
+        "74HC245": db_root() / "74xx" / "74HC245" / "generated" / "artifacts.json",
+        "74HC574": db_root() / "74xx" / "74HC574" / "generated" / "artifacts.json",
+        "AT28C256": db_root() / "Memory" / "AT28C256" / "generated" / "artifacts.json",
+    }
+    for part, path in expected_paths.items():
+        data = json.loads(path.read_text(encoding="utf-8"))
+        assert data["format"] == "db.component.generated"
+        assert data["part"] == part
+        assert set(data["artifacts"]) == GENERATION_TARGETS
+
+
+def test_remaining_seed_timing_and_electrical_evidence_is_extracted():
+    checks = {
+        "74HC161": {
+            "timing": ("clock_to_q", "vcc_4_5_v", 25),
+            "drive": {"ioh_ma": -4, "iol_ma": 4},
+        },
+        "74HC157": {
+            "timing": ("data_to_y", "vcc_4_5_v", 13),
+            "drive": {"ioh_ma": -6, "iol_ma": 6},
+        },
+        "74HC574": {
+            "timing": ("clock_to_q", "vcc_4_5_v", 28),
+            "drive": {"ioh_ma": -6, "iol_ma": 6},
+        },
+        "AT28C256": {
+            "timing": ("tacc_address_to_output", "at28c256_15", 150),
+            "vcc": {"min_v": 4.5, "typ_v": 5.0, "max_v": 5.5, "status": "extracted"},
+        },
+    }
+    for part, expected in checks.items():
+        package = load_digital_package(part)
+        timing = package["layers"]["definition"]["timing"]
+        electrical = package["layers"]["definition"]["electrical"]
+        assert timing is not None, part
+        assert electrical is not None, part
+        timing_name, key, value = expected["timing"]
+        if part == "AT28C256":
+            assert timing["delay"]["datasheet_read_ns"][timing_name][key] == value
+            assert electrical["voltage"]["vcc"] == expected["vcc"]
+            assert electrical["loading"]["input_capacitance"]["max_pf"] == 6
+        else:
+            assert timing["delay"]["datasheet_typical_ns"][timing_name][key] == value
+            assert electrical["current"]["output_drive"]["vcc_4_5_v"] == expected["drive"]
+            assert electrical["loading"]["input_capacitance"]["max_pf"] == 10
+        assert "url" in timing["evidence"]
+        assert "url" in electrical["evidence"]
+
+
 def test_db_manifests_match_schema_contract():
     schema = json.loads((db_root() / "chip.schema.json").read_text(encoding="utf-8"))
     assert schema["properties"]["schema"]["const"] == "db.chip"
@@ -328,8 +489,16 @@ def run_all():
     test_db_seed_entries_are_loadable()
     test_db_summary_reports_status_and_gaps()
     test_db_component_catalog_is_frontend_ready_and_grouped()
+    test_student_component_catalog_is_learner_facing_and_status_visible()
     test_db_component_detail_exposes_pins_and_capabilities()
     test_generation_seed_digital_definitions_are_valid_and_generator_ready()
+    test_digital_definition_schema_contract_is_strict_enough_for_generation()
+    test_generation_seed_digital_definitions_match_chip_manifests()
+    test_generation_seed_digital_packages_load_split_tests()
+    test_74hc245_split_tests_and_evidence_are_loaded()
+    test_component_generation_artifacts_cover_declared_targets()
+    test_generated_artifact_files_exist_for_seed_batch()
+    test_remaining_seed_timing_and_electrical_evidence_is_extracted()
     test_db_manifests_match_schema_contract()
     test_ic_manifests_with_python_behavior_paths_are_marked_simulatable()
     test_db_audit_reports_partial_legacy_coverage_without_hard_errors()

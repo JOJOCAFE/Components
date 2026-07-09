@@ -59,7 +59,8 @@ merge split component packages safely.
 
 ### 1. Arendt - Specification And Schema
 
-Status: next.
+Status: done for `db.component.digital` seed schema; split-file schemas remain
+future work.
 
 Owns:
 
@@ -80,9 +81,19 @@ Acceptance:
 - `python3 -B -m tests.test_db` validates every seed `digital.json`.
 - Missing timing/electrical values are visible, not silently absent.
 
+Done:
+
+- `DB/digital.schema.json` defines the current umbrella
+  `db.component.digital` seed schema.
+- `python/chiplib/db.py` validates seed definitions and checks compatibility
+  against `chip.json` pins, package, Python, and Verilog metadata.
+- `python/tests/test_db.py` covers schema shape and seed definition agreement.
+- `.github/workflows/python-tests.yml` already runs `tests.test_db` and
+  `tests.test_block_ui`.
+
 ### 2. Feynman - Learning Docs And Interactive Demos
 
-Status: next.
+Status: generated artifact files written; prose/demo polish remains.
 
 Owns:
 
@@ -103,9 +114,17 @@ Acceptance:
 - Demo definitions say which inputs can be toggled and which outputs/probes are
   shown.
 
+Done:
+
+- `generate_component_artifacts(part)` emits documentation and interactive demo
+  data from `definition/digital.json`.
+- `74HC245` exposes initial generated docs sections and demo controls/probes.
+- Each seed package now has `generated/artifacts.json` written from the CLI
+  generator path.
+
 ### 3. Halley - Verification Matrix
 
-Status: in progress.
+Status: seed split test records added and first executable checks wired.
 
 Owns:
 
@@ -129,9 +148,17 @@ Acceptance:
   first 74xx seed parts.
 - Verilog smoke instantiates every memory module directly.
 
+Done:
+
+- The seed batch has machine-readable `tests/truth_table.json`,
+  `tests/timing.json`, `tests/tri_state.json`, `tests/bus_fight.json`, and
+  `tests/propagation.json` records where applicable.
+- `python/tests/test_chips.py` reads seed split test records and exercises the
+  corresponding Python chip models.
+
 ### 4. Ohm - Electrical, Timing, And Datasheet Evidence
 
-Status: next.
+Status: first seed-batch extraction done.
 
 Owns:
 
@@ -151,9 +178,17 @@ Acceptance:
 - DB audit catches missing package evidence.
 - `74HC245` has traceable source evidence for package, logic, and timing.
 
+Done:
+
+- `74HC245` timing records include first TI datasheet switching values.
+- `74HC245` electrical records include first operating-voltage, input-threshold,
+  output-drive, supply-current, and input-capacitance facts.
+- `74HC161`, `74HC157`, `74HC574`, and `AT28C256` now have first
+  timing/electrical extraction files with datasheet evidence.
+
 ### 5. Leibniz - Generators And Loader Compatibility
 
-Status: next.
+Status: first loader and generator prototype done.
 
 Owns:
 
@@ -181,50 +216,65 @@ Acceptance:
 - The seed batch can be loaded through the current DB API.
 - At least `74HC245` can produce generator-ready outputs from one file.
 
+Done:
+
+- `load_digital_package(part)` loads `definition/digital.json`, split package
+  layers, and derived fallback layers without changing `load_component(part)`.
+- `generate_component_artifacts(part)` emits structured outputs for the seed
+  generation targets.
+- CLI/API expose `--package`, `--generate`, `component-package`, and
+  `component-generate`.
+
 ## Seed Batch Checklist
 
 ### 74HC161
 
 - ✅ `definition/digital.json`
-- ⬜ split test files
-- ⬜ generated doc data
-- ⬜ generated symbol data
-- ⬜ timing/electrical evidence extraction
+- ✅ split test files
+- ✅ generated doc data
+- ✅ generated symbol data
+- ✅ generated artifact report
+- ✅ timing/electrical evidence extraction
 
 ### 74HC157
 
 - ✅ `definition/digital.json`
-- ⬜ split test files
-- ⬜ generated doc data
-- ⬜ generated symbol data
-- ⬜ timing/electrical evidence extraction
+- ✅ split test files
+- ✅ generated doc data
+- ✅ generated symbol data
+- ✅ generated artifact report
+- ✅ timing/electrical evidence extraction
 
 ### 74HC245
 
 - ✅ `definition/digital.json`
 - ✅ initial split `definition/`, `simulation/`, `tests/`, `symbol/`,
   `datasheet/` package
-- ⬜ generator prototype
-- ⬜ generated KiCad symbol
-- ⬜ generated SVG pinout
-- ⬜ generated documentation
-- ⬜ generated interactive demo
+- ✅ generator prototype
+- ✅ generated KiCad symbol data
+- ✅ generated SVG pinout data
+- ✅ generated documentation data
+- ✅ generated interactive demo data
+- ✅ generated artifact report
+- ✅ timing/electrical evidence extraction
 
 ### 74HC574
 
 - ✅ `definition/digital.json`
-- ⬜ split test files
-- ⬜ generated doc data
-- ⬜ generated symbol data
-- ⬜ timing/electrical evidence extraction
+- ✅ split test files
+- ✅ generated doc data
+- ✅ generated symbol data
+- ✅ generated artifact report
+- ✅ timing/electrical evidence extraction
 
 ### AT28C256
 
 - ✅ `definition/digital.json`
-- ⬜ split test files
-- ⬜ generated doc data
-- ⬜ generated symbol data
-- ⬜ timing/electrical evidence extraction
+- ✅ split test files
+- ✅ generated doc data
+- ✅ generated symbol data
+- ✅ generated artifact report
+- ✅ timing/electrical evidence extraction
 
 ## GitHub Actions
 
@@ -235,7 +285,5 @@ Existing workflows already run on every push and pull request:
 
 Next CI tasks:
 
-- Add `tests.test_block_ui` to the Python workflow.
-- Add schema/package validation for seed `digital.json` files.
 - Keep Verilog smoke compiling all 74xx and memory models.
 - Keep memory smoke instantiating each memory module directly.

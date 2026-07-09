@@ -46,6 +46,18 @@ Shared specialist rule:
   Verilog, KiCad, SVG, docs, tests, and demos must be reproducible from that
   layer.
 
+Current seed-batch milestone:
+
+- `74HC161`, `74HC157`, `74HC245`, `74HC574`, and `AT28C256` now have
+  generator-ready `definition/digital.json`, split test records, generated
+  artifact reports, and first timing/electrical extraction records.
+- `load_digital_package(part)` and `generate_component_artifacts(part)` are the
+  current loader/generator entry points; `load_component(part)` remains the
+  compatibility manifest path.
+- `python/tests/test_chips.py` now executes selected split test records against
+  live Python chip models; broader generated Python/Verilog test generation is
+  the next verification step.
+
 ## Pim - Coordinator
 
 Core skills:

@@ -1,0 +1,10 @@
+{
+  "schema": "db.component.test.propagation",
+  "version": 1,
+  "part": "AT28C256",
+  "applicable": true,
+  "checks": [
+    {"name": "address_to_dq_delay_metadata", "expect_delay_ns": 70},
+    {"name": "output_enable_to_dq_delay_metadata", "expect_delay_ns": 70}
+  ]
+}

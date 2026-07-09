@@ -1,0 +1,10 @@
+{
+  "schema": "db.component.test.tri_state",
+  "version": 1,
+  "part": "AT28C256",
+  "applicable": true,
+  "checks": [
+    {"name": "ce_high_releases_dq", "when": "/CE=1", "expect": {"DQ": "Z"}},
+    {"name": "oe_high_releases_dq", "when": "/OE=1", "expect": {"DQ": "Z"}}
+  ]
+}

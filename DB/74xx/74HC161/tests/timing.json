@@ -1,0 +1,10 @@
+{
+  "schema": "db.component.test.timing",
+  "version": 1,
+  "part": "74HC161",
+  "applicable": true,
+  "checks": [
+    {"name": "rising_clock", "type": "clocked", "clock": "CLK", "edge": "rising"},
+    {"name": "async_clear", "type": "asynchronous_control", "control": "/CLR"}
+  ]
+}

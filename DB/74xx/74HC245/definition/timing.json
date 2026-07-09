@@ -4,12 +4,23 @@
   "part": "74HC245",
   "delay": {
     "default_ns": 12,
-    "source": "simulation default from Python model"
+    "source": "simulation default from Python model",
+    "datasheet_typical_ns": {
+      "condition": "SN74HC245, CL=50 pF, TA=25 C",
+      "tpd_a_b_to_b_a": {"vcc_4_5_v": 15, "vcc_6_v": 12},
+      "ten_oe_to_a_b": {"vcc_4_5_v": 23, "vcc_6_v": 20},
+      "tdis_oe_to_a_b": {"vcc_4_5_v": 25, "vcc_6_v": 21},
+      "transition_a_b": {"vcc_4_5_v": 8, "vcc_6_v": 6}
+    }
   },
   "propagation": [
     {"name": "A_to_B", "from": "A", "to": "B", "condition": "DIR=1 and /OE=0", "delay_ns": 12},
     {"name": "B_to_A", "from": "B", "to": "A", "condition": "DIR=0 and /OE=0", "delay_ns": 12},
     {"name": "disable_to_Z", "from": "/OE", "to": "A,B", "condition": "/OE rises", "delay_ns": 12}
   ],
-  "setup_hold": []
+  "setup_hold": [],
+  "evidence": {
+    "source": "Texas Instruments SN74HC245 datasheet, section 6.6 Switching Characteristics, CL = 50 pF",
+    "url": "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+  }
 }

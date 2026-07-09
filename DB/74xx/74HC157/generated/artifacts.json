@@ -1,0 +1,487 @@
+{
+  "artifacts": {
+    "documentation": {
+      "buses": {
+        "A": {
+          "pins_lsb_first": [
+            2,
+            5,
+            11,
+            14
+          ],
+          "width": 4
+        },
+        "B": {
+          "pins_lsb_first": [
+            3,
+            6,
+            10,
+            13
+          ],
+          "width": 4
+        },
+        "Y": {
+          "pins_lsb_first": [
+            4,
+            7,
+            9,
+            12
+          ],
+          "width": 4
+        }
+      },
+      "controls": [
+        {
+          "active_low": false,
+          "function": "select",
+          "pin": "A/B"
+        },
+        {
+          "active_low": true,
+          "function": "enable",
+          "pin": "/G"
+        }
+      ],
+      "part": "74HC157",
+      "pin_count": 16,
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "Quad 2-Line to 1-Line Multiplexer.",
+      "title": "Quad 2-Line to 1-Line Multiplexer",
+      "version": 1
+    },
+    "interactive_demo": {
+      "controls": [
+        "A/B",
+        "1A",
+        "1B",
+        "2A",
+        "2B",
+        "3B",
+        "3A",
+        "4B",
+        "4A",
+        "/G"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "part": "74HC157",
+      "probes": [
+        "A",
+        "B",
+        "Y"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1
+    },
+    "json": {
+      "buses": {
+        "A": {
+          "pins_lsb_first": [
+            2,
+            5,
+            11,
+            14
+          ],
+          "width": 4
+        },
+        "B": {
+          "pins_lsb_first": [
+            3,
+            6,
+            10,
+            13
+          ],
+          "width": 4
+        },
+        "Y": {
+          "pins_lsb_first": [
+            4,
+            7,
+            9,
+            12
+          ],
+          "width": 4
+        }
+      },
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "disabled_output": 0,
+        "enable": {
+          "active_low": true,
+          "pin": "/G"
+        },
+        "select": {
+          "0": "A",
+          "1": "B",
+          "pin": "A/B"
+        },
+        "type": "quad_2_to_1_mux",
+        "width": 4
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC157",
+      "pins": [
+        {
+          "direction": "input",
+          "function": "select",
+          "name": "A/B",
+          "number": 1
+        },
+        {
+          "bit": 0,
+          "bus": "A",
+          "direction": "input",
+          "name": "1A",
+          "number": 2
+        },
+        {
+          "bit": 0,
+          "bus": "B",
+          "direction": "input",
+          "name": "1B",
+          "number": 3
+        },
+        {
+          "bit": 0,
+          "bus": "Y",
+          "direction": "output",
+          "name": "1Y",
+          "number": 4
+        },
+        {
+          "bit": 1,
+          "bus": "A",
+          "direction": "input",
+          "name": "2A",
+          "number": 5
+        },
+        {
+          "bit": 1,
+          "bus": "B",
+          "direction": "input",
+          "name": "2B",
+          "number": 6
+        },
+        {
+          "bit": 1,
+          "bus": "Y",
+          "direction": "output",
+          "name": "2Y",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "bit": 2,
+          "bus": "Y",
+          "direction": "output",
+          "name": "3Y",
+          "number": 9
+        },
+        {
+          "bit": 2,
+          "bus": "B",
+          "direction": "input",
+          "name": "3B",
+          "number": 10
+        },
+        {
+          "bit": 2,
+          "bus": "A",
+          "direction": "input",
+          "name": "3A",
+          "number": 11
+        },
+        {
+          "bit": 3,
+          "bus": "Y",
+          "direction": "output",
+          "name": "4Y",
+          "number": 12
+        },
+        {
+          "bit": 3,
+          "bus": "B",
+          "direction": "input",
+          "name": "4B",
+          "number": 13
+        },
+        {
+          "bit": 3,
+          "bus": "A",
+          "direction": "input",
+          "name": "4A",
+          "number": 14
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "function": "enable",
+          "name": "/G",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "multiplexer",
+      "timing": {
+        "delay_ns": 18
+      },
+      "title": "Quad 2-Line to 1-Line Multiplexer"
+    },
+    "kicad_symbol": {
+      "bus_groups": {
+        "A": [
+          2,
+          5,
+          11,
+          14
+        ],
+        "B": [
+          3,
+          6,
+          10,
+          13
+        ],
+        "Y": [
+          4,
+          7,
+          9,
+          12
+        ]
+      },
+      "labels": {
+        "1": "A/B",
+        "10": "3B",
+        "11": "3A",
+        "13": "4B",
+        "14": "4A",
+        "15": "/G",
+        "16": "VCC",
+        "2": "1A",
+        "3": "1B",
+        "5": "2A",
+        "6": "2B",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC157",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "factory": "chiplib.create_chip",
+      "part": "74HC157"
+    },
+    "svg_pinout": {
+      "bus_groups": {
+        "A": [
+          2,
+          5,
+          11,
+          14
+        ],
+        "B": [
+          3,
+          6,
+          10,
+          13
+        ],
+        "Y": [
+          4,
+          7,
+          9,
+          12
+        ]
+      },
+      "labels": {
+        "1": "A/B",
+        "10": "3B",
+        "11": "3A",
+        "13": "4B",
+        "14": "4A",
+        "15": "/G",
+        "16": "VCC",
+        "2": "1A",
+        "3": "1B",
+        "5": "2A",
+        "6": "2B",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC157",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC157",
+      "required_vectors": [
+        "select_a",
+        "select_b",
+        "disabled_low"
+      ],
+      "schema": "db.component.generated.tests",
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          4,
+          7,
+          9,
+          12
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Enable_bar",
+            "pins": [
+              15
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Select",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              2,
+              5,
+              11,
+              14
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "B",
+            "pins": [
+              3,
+              6,
+              10,
+              13
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y",
+            "pins": [
+              4,
+              7,
+              9,
+              12
+            ]
+          }
+        ]
+      },
+      "file": "Verilog/74xx/74hc157.v",
+      "module": "ttl_74hc157",
+      "part": "74HC157"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC157",
+  "source": "DB/74xx/74HC157/definition/digital.json",
+  "version": 1
+}

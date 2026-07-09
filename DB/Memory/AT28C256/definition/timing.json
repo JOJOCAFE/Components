@@ -1,0 +1,25 @@
+{
+  "schema": "db.component.timing",
+  "version": 1,
+  "part": "AT28C256",
+  "delay": {
+    "default_ns": 70,
+    "source": "simulation default from Python model",
+    "datasheet_read_ns": {
+      "tacc_address_to_output": {"at28c256_15": 150, "at28c256_20": 200, "at28c256_25": 250, "at28c256_35": 350},
+      "tce_ce_to_output": {"at28c256_15": 150, "at28c256_20": 200, "at28c256_25": 250, "at28c256_35": 350},
+      "toe_oe_to_output": {"at28c256_15": 70, "at28c256_20": 80, "at28c256_25": 100, "at28c256_35": 100},
+      "tdf_ce_or_oe_to_float": {"at28c256_15": 50, "at28c256_20": 55, "at28c256_25": 60, "at28c256_35": 70}
+    },
+    "datasheet_write_ns": {
+      "address_hold": 50,
+      "write_pulse_width": 100,
+      "data_setup": 50,
+      "data_hold": 0
+    }
+  },
+  "evidence": {
+    "source": "Microchip AT28C256 datasheet, AC read and write characteristics",
+    "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf"
+  }
+}

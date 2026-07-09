@@ -1,0 +1,531 @@
+{
+  "artifacts": {
+    "documentation": {
+      "buses": {
+        "D": {
+          "pins_lsb_first": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "width": 8
+        },
+        "Q": {
+          "pins_lsb_first": [
+            19,
+            18,
+            17,
+            16,
+            15,
+            14,
+            13,
+            12
+          ],
+          "width": 8
+        }
+      },
+      "controls": [
+        {
+          "active_low": true,
+          "function": "enable",
+          "pin": "/OE"
+        }
+      ],
+      "part": "74HC574",
+      "pin_count": 20,
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "Octal D-type flip-flop with 3-state outputs.",
+      "title": "Octal D-type flip-flop with 3-state outputs",
+      "version": 1
+    },
+    "interactive_demo": {
+      "controls": [
+        "/OE",
+        "1D",
+        "2D",
+        "3D",
+        "4D",
+        "5D",
+        "6D",
+        "7D",
+        "8D",
+        "CLK"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "part": "74HC574",
+      "probes": [
+        "D",
+        "Q"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1
+    },
+    "json": {
+      "buses": {
+        "D": {
+          "pins_lsb_first": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "width": 8
+        },
+        "Q": {
+          "pins_lsb_first": [
+            19,
+            18,
+            17,
+            16,
+            15,
+            14,
+            13,
+            12
+          ],
+          "width": 8
+        }
+      },
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "clock": {
+          "edge": "rising",
+          "pin": "CLK"
+        },
+        "disabled_output": "Z",
+        "enable": {
+          "active_low": true,
+          "pin": "/OE"
+        },
+        "tristate": true,
+        "type": "octal_d_register",
+        "width": 8
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 20
+      },
+      "part": "74HC574",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "function": "enable",
+          "name": "/OE",
+          "number": 1
+        },
+        {
+          "bit": 0,
+          "bus": "D",
+          "direction": "input",
+          "name": "1D",
+          "number": 2
+        },
+        {
+          "bit": 1,
+          "bus": "D",
+          "direction": "input",
+          "name": "2D",
+          "number": 3
+        },
+        {
+          "bit": 2,
+          "bus": "D",
+          "direction": "input",
+          "name": "3D",
+          "number": 4
+        },
+        {
+          "bit": 3,
+          "bus": "D",
+          "direction": "input",
+          "name": "4D",
+          "number": 5
+        },
+        {
+          "bit": 4,
+          "bus": "D",
+          "direction": "input",
+          "name": "5D",
+          "number": 6
+        },
+        {
+          "bit": 5,
+          "bus": "D",
+          "direction": "input",
+          "name": "6D",
+          "number": 7
+        },
+        {
+          "bit": 6,
+          "bus": "D",
+          "direction": "input",
+          "name": "7D",
+          "number": 8
+        },
+        {
+          "bit": 7,
+          "bus": "D",
+          "direction": "input",
+          "name": "8D",
+          "number": 9
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "clock": true,
+          "direction": "input",
+          "name": "CLK",
+          "number": 11
+        },
+        {
+          "bit": 7,
+          "bus": "Q",
+          "direction": "output",
+          "name": "8Q",
+          "number": 12
+        },
+        {
+          "bit": 6,
+          "bus": "Q",
+          "direction": "output",
+          "name": "7Q",
+          "number": 13
+        },
+        {
+          "bit": 5,
+          "bus": "Q",
+          "direction": "output",
+          "name": "6Q",
+          "number": 14
+        },
+        {
+          "bit": 4,
+          "bus": "Q",
+          "direction": "output",
+          "name": "5Q",
+          "number": 15
+        },
+        {
+          "bit": 3,
+          "bus": "Q",
+          "direction": "output",
+          "name": "4Q",
+          "number": 16
+        },
+        {
+          "bit": 2,
+          "bus": "Q",
+          "direction": "output",
+          "name": "3Q",
+          "number": 17
+        },
+        {
+          "bit": 1,
+          "bus": "Q",
+          "direction": "output",
+          "name": "2Q",
+          "number": 18
+        },
+        {
+          "bit": 0,
+          "bus": "Q",
+          "direction": "output",
+          "name": "1Q",
+          "number": 19
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 10
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 20
+        }
+      ],
+      "role": "register",
+      "timing": {
+        "clock_edge": "rising",
+        "delay_ns": 20
+      },
+      "title": "Octal D-type flip-flop with 3-state outputs"
+    },
+    "kicad_symbol": {
+      "bus_groups": {
+        "D": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "Q": [
+          19,
+          18,
+          17,
+          16,
+          15,
+          14,
+          13,
+          12
+        ]
+      },
+      "labels": {
+        "1": "/OE",
+        "10": "GND",
+        "11": "CLK",
+        "2": "1D",
+        "20": "VCC",
+        "3": "2D",
+        "4": "3D",
+        "5": "4D",
+        "6": "5D",
+        "7": "6D",
+        "8": "7D",
+        "9": "8D"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC574",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "factory": "chiplib.create_chip",
+      "part": "74HC574"
+    },
+    "svg_pinout": {
+      "bus_groups": {
+        "D": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "Q": [
+          19,
+          18,
+          17,
+          16,
+          15,
+          14,
+          13,
+          12
+        ]
+      },
+      "labels": {
+        "1": "/OE",
+        "10": "GND",
+        "11": "CLK",
+        "2": "1D",
+        "20": "VCC",
+        "3": "2D",
+        "4": "3D",
+        "5": "4D",
+        "6": "5D",
+        "7": "6D",
+        "8": "7D",
+        "9": "8D"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC574",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC574",
+      "required_vectors": [
+        "rising_edge_latch",
+        "hold_after_d_change",
+        "disabled_high_z"
+      ],
+      "schema": "db.component.generated.tests",
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/tri_state.json",
+          "type": "tri_state"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "OE_bar",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Clk",
+            "pins": [
+              11
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "D",
+            "pins": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q",
+            "pins": [
+              19,
+              18,
+              17,
+              16,
+              15,
+              14,
+              13,
+              12
+            ]
+          }
+        ],
+        "sample_delay_ns": {
+          "U5": 40,
+          "U6": 40
+        }
+      },
+      "file": "Verilog/74xx/74hc574.v",
+      "module": "ttl_74hc574",
+      "part": "74HC574"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC574",
+  "source": "DB/74xx/74HC574/definition/digital.json",
+  "version": 1
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "db.component.test.bus_fight",
+  "version": 1,
+  "part": "AT28C256",
+  "applicable": true,
+  "checks": [
+    {
+      "name": "external_dq_driver_conflicts_during_read",
+      "when": "/CE=0 and /OE=0 and /WE=1",
+      "drive": {"DQ_external": "opposite"},
+      "expect": {"board_error": "bus_conflict"}
+    }
+  ]
+}

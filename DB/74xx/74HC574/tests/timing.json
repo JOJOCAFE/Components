@@ -1,0 +1,10 @@
+{
+  "schema": "db.component.test.timing",
+  "version": 1,
+  "part": "74HC574",
+  "applicable": true,
+  "checks": [
+    {"name": "rising_clock", "type": "clocked", "clock": "CLK", "edge": "rising"},
+    {"name": "output_enable_no_clock", "type": "combinational", "control": "/OE"}
+  ]
+}

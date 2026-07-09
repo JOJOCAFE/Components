@@ -1,0 +1,20 @@
+{
+  "schema": "db.component.timing",
+  "version": 1,
+  "part": "74HC157",
+  "delay": {
+    "default_ns": 18,
+    "source": "simulation default from Python model",
+    "datasheet_typical_ns": {
+      "condition": "SN74HC157, CL=50 pF, TA=25 C",
+      "data_to_y": {"vcc_4_5_v": 13, "vcc_6_v": 11},
+      "select_to_y": {"vcc_4_5_v": 18, "vcc_6_v": 14},
+      "enable_to_y": {"vcc_4_5_v": 16, "vcc_6_v": 13},
+      "transition_y": {"vcc_4_5_v": 8, "vcc_6_v": 6}
+    }
+  },
+  "evidence": {
+    "source": "Texas Instruments SN74HC157 datasheet, switching characteristics, CL = 50 pF",
+    "url": "https://www.ti.com/lit/ds/symlink/sn74hc157.pdf"
+  }
+}

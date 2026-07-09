@@ -94,20 +94,33 @@ merge split packages safely.
 
 ## Next Safe Tasks
 
-1. Add schema validation for `db.component.digital` files.
-2. Add tests that the five seed `digital.json` files agree with current
-   `chip.json` pins/package/module metadata.
-3. Add `tests.test_block_ui` to `.github/workflows/python-tests.yml`.
-4. Prototype `chiplib` loader support for `definition/digital.json` without
-   breaking `load_component(part)`.
-5. Start generator prototype for `74HC245`:
-   - normalized JSON detail
-   - Verilog export metadata
-   - SVG pinout data
-   - documentation data
-   - interactive demo data
-6. Keep `TEAM_SKILLS.md`, `COMPONENT_GENERATION_BACKLOG.md`, and this handoff
+1. Expand generated documentation and interactive demo wording beyond the
+   initial structured data.
+2. Turn split test records into broader executable Python/Verilog generators
+   instead of hand-written smoke checks.
+3. Keep Verilog smoke compiling all 74xx and memory models.
+4. Keep `TEAM_SKILLS.md`, `COMPONENT_GENERATION_BACKLOG.md`, and this handoff
    synchronized whenever the team roles or seed-chip plan changes.
+
+## Completed Since Last Handoff
+
+- Added schema validation for `db.component.digital` files.
+- Added tests that the five seed `digital.json` files agree with current
+  `chip.json` pins/package/module metadata.
+- Confirmed `tests.test_block_ui` is already present in
+  `.github/workflows/python-tests.yml`.
+- Added `load_digital_package(part)` for `definition/digital.json` plus split
+  package layers without changing `load_component(part)`.
+- Added `generate_component_artifacts(part)` and CLI/API access for structured
+  generator output.
+- Added split test files for the seed batch.
+- Extracted first `74HC245` timing/electrical facts from the TI datasheet.
+- Wrote seed generated artifact reports under each package's `generated/`
+  folder.
+- Added executable Python checks that read seed split test records and exercise
+  the live chip models.
+- Extracted first timing/electrical facts for `74HC161`, `74HC157`,
+  `74HC574`, and `AT28C256`.
 
 ## Verification Already Run Recently
 

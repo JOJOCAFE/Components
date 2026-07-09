@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from .db import audit_db, component_catalog, component_detail, component_summary, db_status_report, load_component, load_digital_definition, student_component_catalog
+from .db import audit_db, component_catalog, component_detail, component_summary, db_status_report, generate_component_artifacts, load_component, load_digital_definition, load_digital_package, student_component_catalog
 from .services import DesignCommandService
 
 
@@ -39,6 +39,8 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     db.add_argument("--student", action="store_true", help="emit learner-facing component catalog metadata")
     db.add_argument("--detail", action="store_true", help="emit frontend-oriented metadata for one component")
     db.add_argument("--digital", action="store_true", help="emit generator-ready definition/digital.json for one component")
+    db.add_argument("--package", action="store_true", help="emit digital definition plus split-package layers for one component")
+    db.add_argument("--generate", action="store_true", help="emit generated artifact data from definition/digital.json")
     db.add_argument("--group", help="filter --catalog by DB group, such as 74xx or memory")
     db.add_argument("-o", "--output")
 
@@ -69,6 +71,16 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
                 parser.error("db --digital requires a part")
             data = load_digital_definition(part)
             return write_json(data, output=getattr(args, "output", None), status=0 if data["validation"]["ok"] else 2)
+        if getattr(args, "package", False):
+            if not part:
+                parser.error("db --package requires a part")
+            data = load_digital_package(part)
+            return write_json(data, output=getattr(args, "output", None), status=0 if data["definition"]["validation"]["ok"] else 2)
+        if getattr(args, "generate", False):
+            if not part:
+                parser.error("db --generate requires a part")
+            data = generate_component_artifacts(part)
+            return write_json(data, output=getattr(args, "output", None), status=0 if load_digital_definition(part)["validation"]["ok"] else 2)
         data = load_component(part) if part else component_summary()
         return write_json(data, output=getattr(args, "output", None))
 

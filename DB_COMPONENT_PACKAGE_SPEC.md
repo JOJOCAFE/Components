@@ -22,6 +22,7 @@ Repository package layout:
 DB/74xx/74HC245/
   chip.json
   definition/
+    digital.json
     component.json
     package.json
     pins.json
@@ -42,6 +43,13 @@ DB/74xx/74HC245/
   datasheet/
     sources.json
 ```
+
+During the generator seed phase, `definition/digital.json` is the canonical
+umbrella file for a digital component. It keeps identity, package, pins, logic,
+timing, generation targets, verification intent, and datasheet evidence in one
+schema-validated file so loaders and generators can prove the full path before
+the package is split into smaller layer files. The split files shown above
+remain the long-term layer boundary.
 
 ## Layer Ownership
 

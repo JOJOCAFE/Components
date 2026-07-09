@@ -1,0 +1,14 @@
+{
+  "schema": "db.component.test.bus_fight",
+  "version": 1,
+  "part": "74HC574",
+  "applicable": true,
+  "checks": [
+    {
+      "name": "external_q_driver_conflicts_when_enabled",
+      "when": "/OE=0",
+      "drive": {"Q_external": "opposite"},
+      "expect": {"board_error": "bus_conflict"}
+    }
+  ]
+}

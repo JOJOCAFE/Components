@@ -1,5 +1,6 @@
 """Assertion-based smoke tests for the reusable chip library."""
 
+import json
 from pathlib import Path
 import tempfile
 
@@ -36,6 +37,7 @@ MEMORY_ADDR_PINS = {
     14: 1,
 }
 MEMORY_DQ_PINS = [11, 12, 13, 15, 16, 17, 18, 19]
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def set_pins(chip, pins, values):
@@ -216,6 +218,79 @@ def test_memory():
     set_pins(ram, [22, 27], [0, 1])
     eval_chip(ram)
     assert get_byte(ram, MEMORY_DQ_PINS) == 0xC3
+
+
+def test_seed_split_records_execute_against_python_models():
+    hc157 = json.loads((ROOT / "DB/74xx/74HC157/tests/truth_table.json").read_text(encoding="utf-8"))
+    assert {item["name"] for item in hc157["vectors"]} == {"select_a", "select_b", "disabled_low"}
+    mux = create_chip("74HC157", "U")
+    set_byte(mux, [2, 5, 11, 14], 0xA)
+    set_byte(mux, [3, 6, 10, 13], 0x5)
+    set_pins(mux, [15, 1], [0, 0])
+    eval_chip(mux)
+    assert get_byte(mux, [4, 7, 9, 12]) == 0xA
+    mux.set_input(1, 1)
+    eval_chip(mux)
+    assert get_byte(mux, [4, 7, 9, 12]) == 0x5
+    mux.set_input(15, 1)
+    eval_chip(mux)
+    assert get_byte(mux, [4, 7, 9, 12]) == 0
+
+    hc161 = json.loads((ROOT / "DB/74xx/74HC161/tests/truth_table.json").read_text(encoding="utf-8"))
+    assert {item["name"] for item in hc161["vectors"]} >= {"async_clear", "parallel_load", "count", "terminal_count"}
+    ctr = create_chip("74HC161", "U")
+    set_byte(ctr, [3, 4, 5, 6], 0xC)
+    set_pins(ctr, [1, 9, 7, 10], [1, 0, 1, 1])
+    ctr.clock_edge()
+    ctr.commit()
+    assert get_byte(ctr, [14, 13, 12, 11]) == 0xC
+    ctr.set_input(9, 1)
+    ctr.clock_edge()
+    ctr.commit()
+    assert get_byte(ctr, [14, 13, 12, 11]) == 0xD
+    ctr.set_input(1, 0)
+    eval_chip(ctr)
+    assert get_byte(ctr, [14, 13, 12, 11]) == 0
+
+    hc245 = json.loads((ROOT / "DB/74xx/74HC245/tests/truth_table.json").read_text(encoding="utf-8"))
+    assert {item["name"] for item in hc245["vectors"]} == {"a_to_b", "b_to_a", "disabled"}
+    trans = create_chip("74HC245", "U")
+    set_byte(trans, [2, 3, 4, 5, 6, 7, 8, 9], 0x5A)
+    set_pins(trans, [1, 19], [1, 0])
+    eval_chip(trans)
+    assert get_byte(trans, [18, 17, 16, 15, 14, 13, 12, 11]) == 0x5A
+    trans.set_input(19, 1)
+    eval_chip(trans)
+    assert trans.read(18) == Z
+
+    hc574 = json.loads((ROOT / "DB/74xx/74HC574/tests/truth_table.json").read_text(encoding="utf-8"))
+    assert {item["name"] for item in hc574["vectors"]} == {"rising_edge_latch", "hold_after_d_change", "disabled_high_z"}
+    reg = create_chip("74HC574", "U")
+    reg.set_input(1, 0)
+    set_byte(reg, [2, 3, 4, 5, 6, 7, 8, 9], 0xA5)
+    reg.clock_edge()
+    reg.commit()
+    assert get_byte(reg, [19, 18, 17, 16, 15, 14, 13, 12]) == 0xA5
+    set_byte(reg, [2, 3, 4, 5, 6, 7, 8, 9], 0x00)
+    eval_chip(reg)
+    assert get_byte(reg, [19, 18, 17, 16, 15, 14, 13, 12]) == 0xA5
+    reg.set_input(1, 1)
+    eval_chip(reg)
+    assert reg.read(19) == Z
+
+    at28 = json.loads((ROOT / "DB/Memory/AT28C256/tests/truth_table.json").read_text(encoding="utf-8"))
+    assert {item["name"] for item in at28["vectors"]} == {"write_read", "disabled_high_z", "oe_high_high_z"}
+    rom = create_chip("AT28C256", "ROM")
+    set_memory_addr(rom, 0x002A)
+    set_byte(rom, MEMORY_DQ_PINS, 0xC6)
+    set_pins(rom, [20, 22, 27], [0, 1, 0])
+    eval_chip(rom)
+    set_pins(rom, [22, 27], [0, 1])
+    eval_chip(rom)
+    assert get_byte(rom, MEMORY_DQ_PINS) == 0xC6
+    rom.set_input(22, 1)
+    eval_chip(rom)
+    assert rom.read(11) == Z
 
 
 def test_memory_image_loader():
@@ -746,6 +821,7 @@ def run_all():
     test_hc541_and_hc245_tristate()
     test_hc574_hc161_hc164_hc74()
     test_memory()
+    test_seed_split_records_execute_against_python_models()
     test_memory_image_loader()
     test_board_delay_and_bus_conflict()
     test_board_bus_tags_and_shared_connections()

@@ -1,0 +1,11 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "74HC574",
+  "applicable": true,
+  "vectors": [
+    {"name": "rising_edge_latch", "intent": "rising CLK captures D into Q"},
+    {"name": "hold_after_d_change", "intent": "Q holds after D changes without a clock edge"},
+    {"name": "disabled_high_z", "inputs": {"/OE": 1}, "expect": {"Q": "Z"}}
+  ]
+}
