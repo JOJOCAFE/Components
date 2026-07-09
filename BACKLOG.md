@@ -41,6 +41,36 @@ Future work for the shared component library.
 - ⬜ Implement block-UI model import/export against the same normalized design
   model, not a separate UI-only representation.
 
+## Backend/API Hardening
+
+- ✅ Create the first chip-centered `db/` slice with per-chip
+  manifests for easy test parts: `74HC00`, `74HC04`, and `62256`.
+- ⬜ Follow `SERVICE_ARCHITECTURE_TASKS.md` to split chip behavior, simulation,
+  exporters, CLI, and future API/UI adapters behind stable internal service
+  contracts before the repo grows too large.
+- ⬜ Finish production-ready CLI commands around the existing `Design` backend:
+  `validate`, `snapshot`, `run`, `probe`, `export-json`, `export-netlist`, and
+  `export-verilog`.
+- ⬜ Add canonical JSON round-trip tests: load schematic JSON, normalize through
+  `Design`, export JSON again, and verify the same logical design is preserved.
+- ⬜ Build a full simulation runner from JSON that applies clocks, inputs,
+  probes, expectations, and memory images, then returns structured results.
+- ⬜ Stabilize the Python API boundary for frontends: create/delete chips,
+  connect/disconnect endpoints, add buses, set inputs, step clocks, read
+  probes, validate, snapshot, and export.
+- ⬜ Define the frontend snapshot contract for UI/API clients, including chip
+  layout, pin states, net values, bus values, warnings/errors, probe history,
+  and display state.
+- ⬜ Fix remaining chip/export gaps, starting with the `74HC147`
+  pinout/model/export contract, and keep future parts gated by verified,
+  modeled, tested, and export status.
+- ⬜ Add example JSON circuits as runnable demos and regressions: NAND gate,
+  counter, bus transceiver, ROM/RAM read, tiny CPU slice, and other small
+  teaching circuits.
+- ⬜ Add stronger Python-vs-Verilog equivalence tests for selected chips and
+  circuits, especially memories, counters, tri-state bus parts, and ALU-like
+  chips.
+
 ## Deferred UI Work
 
 - Build a visual chip-block editor where users can place DIP chip blocks on

@@ -89,6 +89,22 @@ Coverage includes:
 Parts without manufacturer-verified HC-family DIP evidence are intentionally
 absent from the Python catalog.
 
+## Component DB
+
+`Components/db` is the new chip-centered DB layer. Each chip folder
+owns a `chip.json` manifest with status, pins, source evidence, behavior
+references, Verilog references, tests, and visible missing-property reports.
+
+The initial DB seed covers `74HC00`, `74HC04`, and `62256`. Existing legacy
+files remain the active model implementations during migration.
+
+CLI/API access:
+
+```bash
+python3 -m chiplib.cli db
+python3 -m chiplib.cli db 74HC00
+```
+
 ## Timing
 
 Each chip carries propagation delay metadata in nanoseconds. The event scheduler
@@ -140,6 +156,7 @@ python3 -B -m tests.test_chips
 python3 -B -m tests.test_design
 python3 -B -m tests.test_netlist
 python3 -B -m tests.test_cli
+python3 -B -m tests.test_db
 ```
 
 ## Future Use Guide

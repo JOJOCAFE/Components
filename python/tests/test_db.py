@@ -1,0 +1,76 @@
+"""DB manifest tests."""
+
+import json
+
+from chiplib.db import component_ids, component_summary, db_root, load_all_components, load_component
+
+
+ALLOWED_STATUS = {
+    "verified",
+    "modeled",
+    "tested",
+    "missing",
+    "blocked",
+    "unknown",
+    "not_applicable",
+}
+ALLOWED_DIRECTIONS = {"input", "output", "bidirectional", "power", "nc", "unknown"}
+
+
+def test_db_seed_entries_are_loadable():
+    assert db_root().name == "db"
+    assert {"62256", "74HC00", "74HC04"}.issubset(set(component_ids()))
+
+    hc00 = load_component("74HC00")
+    assert hc00["part"] == "74HC00"
+    assert hc00["package"]["pins"] == 14
+    assert hc00["verilog"]["module"] == "ttl_74hc00"
+    assert hc00["missing_properties"] == []
+    assert hc00["missing_files"] == []
+    assert hc00["pins"][0] == {"number": 1, "name": "1A", "direction": "input"}
+
+    ram = load_component("62256")
+    assert ram["family"] == "Memory"
+    assert ram["pins"][10]["direction"] == "bidirectional"
+    assert ram["pins"][19]["active_low"] is True
+
+
+def test_db_summary_reports_status_and_gaps():
+    summary = component_summary()
+    assert summary["format"] == "db.summary"
+    assert summary["count"] >= 3
+    parts = [item["part"] for item in summary["components"]]
+    assert {"62256", "74HC00", "74HC04"}.issubset(set(parts))
+    assert all(item["missing_properties"] == [] for item in summary["components"])
+    assert all(item["missing_files"] == [] for item in summary["components"])
+
+
+def test_db_manifests_match_schema_contract():
+    schema = json.loads((db_root() / "chip.schema.json").read_text(encoding="utf-8"))
+    assert schema["properties"]["schema"]["const"] == "db.chip"
+
+    for manifest in load_all_components():
+        for key in schema["required"]:
+            assert key in manifest, (manifest.get("part"), key)
+        assert manifest["schema"] == "db.chip"
+        assert isinstance(manifest["version"], int)
+        assert manifest["version"] >= 1
+        assert manifest["package"]["pins"] == len(manifest["pins"])
+        assert set(manifest["status"]).issuperset(set(schema["properties"]["status"]["required"]))
+        assert set(manifest["status"].values()).issubset(ALLOWED_STATUS)
+        for pin in manifest["pins"]:
+            assert {"number", "name", "direction"}.issubset(pin)
+            assert isinstance(pin["number"], int)
+            assert pin["number"] >= 1
+            assert pin["direction"] in ALLOWED_DIRECTIONS
+
+
+def run_all():
+    test_db_seed_entries_are_loadable()
+    test_db_summary_reports_status_and_gaps()
+    test_db_manifests_match_schema_contract()
+
+
+if __name__ == "__main__":
+    run_all()
+    print("Components DB tests passed")

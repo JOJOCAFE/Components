@@ -11,6 +11,9 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 
 - `74HC/` - behavioral Verilog models for 74HC-family logic chips plus per-chip pinout files named `74hcxx-pin.md`.
 - `Memory/` - behavioral Verilog models and pinout files for EEPROM, flash EEPROM, and SRAM parts.
+- `db/` - chip-centered DB manifests and schema where each component owns
+  status, pins, sources, behavior/export references, and visible missing
+  properties.
 - `python/` - reusable Python pin-level behavior models, net wiring, tri-state conflict checks, and propagation-delay simulation.
 - `source/` - manufacturer datasheet PDFs used as local evidence for pinout documentation; see `source/README.md` for the retained evidence list.
 - `SCHEMATIC_JSON_SPEC.md` - readable JSON schematic script contract for
@@ -21,6 +24,9 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
   through one Python design model.
 - `CHIP_STATUS.md` - chip status split by datasheet verification, models,
   test coverage, netlist export support, and missing-datasheet exclusions.
+- `SERVICE_ARCHITECTURE_TASKS.md` - task plan for splitting behavior,
+  simulation, exporters, CLI, and future API/UI work behind stable internal
+  service contracts.
 
 ## Verification Rule
 
@@ -91,6 +97,7 @@ python3 -B -m tests.test_chips
 python3 -B -m tests.test_design
 python3 -B -m tests.test_netlist
 python3 -B -m tests.test_cli
+python3 -B -m tests.test_db
 cd ..
 
 iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp 74HC/*.v 74HC/tests/tb_74hc_smoke.v
@@ -106,6 +113,7 @@ Expected pass markers:
 - `Components Python design tests passed`
 - `Components Python netlist tests passed`
 - `Components Python CLI tests passed`
+- `Components DB tests passed`
 - `74HC SMOKE TEST PASSED`
 - `MEMORY SMOKE TEST PASSED`
 
@@ -113,6 +121,8 @@ Expected pass markers:
 
 - `74HC/README.md` - full 74HC model list, scan notes, and 74xx source coverage.
 - `Memory/README.md` - memory model list and datasheet sources.
+- `db/README.md` - chip-centered DB migration notes and manifest
+  layout.
 - `python/README.md` - Python chip-library coverage and usage.
 - `CHIP_STATUS.md` - verified/modeled/tested/missing-datasheet status split
   for the active chip library.
@@ -121,4 +131,6 @@ Expected pass markers:
 - `PYTHON_BACKEND_ARCHITECTURE.md` - Python command/API model for the future
   block UI, CLI tool, Python script use, netlist exporter, and Verilog/testbench
   exporter.
+- `SERVICE_ARCHITECTURE_TASKS.md` - service-boundary task plan for keeping the
+  component library modular before it grows too large.
 - `BACKLOG.md` - deferred future work, including the visual chip-block UI idea.

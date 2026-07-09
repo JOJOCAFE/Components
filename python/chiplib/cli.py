@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .design import Design
+from .db import component_summary, load_component
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -30,9 +31,18 @@ def main(argv: list[str] | None = None) -> int:
         if name == "export-verilog":
             cmd.add_argument("--text", action="store_true", help="write only Verilog source text")
 
-    args = parser.parse_args(argv)
-    design = Design.load_json(args.json_file)
+    db = sub.add_parser("db")
+    db.add_argument("part", nargs="?", help="optional component part, such as 74HC00")
+    db.add_argument("-o", "--output")
 
+    args = parser.parse_args(argv)
+
+    if args.command == "db":
+        part = getattr(args, "part", None)
+        data = load_component(part) if part else component_summary()
+        return write_json(data, output=getattr(args, "output", None))
+
+    design = Design.load_json(args.json_file)
     if args.command == "validate":
         return write_json(design.validate())
     if args.command == "snapshot":

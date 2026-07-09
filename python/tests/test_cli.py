@@ -105,8 +105,36 @@ def test_cli_validate_snapshot_run_probe_and_export_json():
         assert "module cli_small();" in verilog_text_out.read_text(encoding="utf-8")
 
 
+def test_cli_db_summary_and_part_lookup():
+    summary = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "db"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert summary.returncode == 0, summary.stderr
+    summary_data = json.loads(summary.stdout)
+    assert summary_data["format"] == "db.summary"
+    parts = [item["part"] for item in summary_data["components"]]
+    assert {"62256", "74HC00", "74HC04"}.issubset(set(parts))
+
+    part = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "db", "74HC00"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert part.returncode == 0, part.stderr
+    part_data = json.loads(part.stdout)
+    assert part_data["part"] == "74HC00"
+    assert part_data["missing_properties"] == []
+
+
 def run_all():
     test_cli_validate_snapshot_run_probe_and_export_json()
+    test_cli_db_summary_and_part_lookup()
 
 
 if __name__ == "__main__":
