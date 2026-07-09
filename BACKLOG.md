@@ -51,6 +51,10 @@ Future work for the shared component library.
   `74HC74`, `74HC574`, `74HC138`, and `SST39SF010A`.
 - ✅ Add `DB_MIGRATION_PLAN.md` to define the phased transition from scattered
   legacy chip files to DB-owned chip identity and metadata.
+- ✅ Add `python3 -m chiplib.cli db --audit` for DB manifest checks and
+  DB-vs-legacy coverage reporting.
+- ✅ Add DB-vs-legacy coverage tests for current DB manifests, legacy Verilog
+  models, and legacy pinout files.
 - ⬜ Follow `SERVICE_ARCHITECTURE_TASKS.md` to split chip behavior, simulation,
   exporters, CLI, and future API/UI adapters behind stable internal service
   contracts before the repo grows too large.

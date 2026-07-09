@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .design import Design
-from .db import component_summary, load_component
+from .db import audit_db, component_summary, load_component
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -33,11 +33,15 @@ def main(argv: list[str] | None = None) -> int:
 
     db = sub.add_parser("db")
     db.add_argument("part", nargs="?", help="optional component part, such as 74HC00")
+    db.add_argument("--audit", action="store_true", help="audit DB manifests against legacy catalog files")
     db.add_argument("-o", "--output")
 
     args = parser.parse_args(argv)
 
     if args.command == "db":
+        if getattr(args, "audit", False):
+            data = audit_db()
+            return write_json(data, output=getattr(args, "output", None), status=0 if data["ok"] else 2)
         part = getattr(args, "part", None)
         data = load_component(part) if part else component_summary()
         return write_json(data, output=getattr(args, "output", None))

@@ -2,7 +2,7 @@
 
 import json
 
-from chiplib.db import component_ids, component_summary, db_root, load_all_components, load_component
+from chiplib.db import audit_db, component_ids, component_summary, db_root, legacy_catalog_parts, load_all_components, load_component
 
 
 ALLOWED_STATUS = {
@@ -111,10 +111,33 @@ def test_db_manifests_match_schema_contract():
             assert pin["direction"] in ALLOWED_DIRECTIONS
 
 
+def test_db_audit_reports_partial_legacy_coverage_without_hard_errors():
+    audit = audit_db()
+    assert audit["format"] == "db.audit"
+    assert audit["ok"] is True
+    assert audit["errors"] == []
+    assert SEED_PARTS.issubset(set(audit["coverage"]["db_parts"]))
+    assert SEED_PARTS.issubset(set(audit["coverage"]["legacy_model_parts"]))
+    assert "74HC147" in audit["coverage"]["legacy_parts_missing_db"]
+    assert any(item["code"] == "legacy_parts_missing_db" for item in audit["warnings"])
+
+
+def test_db_legacy_coverage_lists_models_and_pinouts():
+    legacy = legacy_catalog_parts()
+    assert "74HC00" in legacy["verilog_models"]
+    assert "74HC00" in legacy["pinouts"]
+    assert "AT28C256" in legacy["verilog_models"]
+    assert "SST39SF010A" in legacy["pinouts"]
+    assert set(component_ids()).issubset(set(legacy["verilog_models"]))
+    assert set(component_ids()).issubset(set(legacy["pinouts"]))
+
+
 def run_all():
     test_db_seed_entries_are_loadable()
     test_db_summary_reports_status_and_gaps()
     test_db_manifests_match_schema_contract()
+    test_db_audit_reports_partial_legacy_coverage_without_hard_errors()
+    test_db_legacy_coverage_lists_models_and_pinouts()
 
 
 if __name__ == "__main__":

@@ -105,6 +105,7 @@ CLI/API access:
 ```bash
 python3 -m chiplib.cli db
 python3 -m chiplib.cli db 74HC00
+python3 -m chiplib.cli db --audit
 ```
 
 ## Timing

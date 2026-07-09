@@ -16,7 +16,7 @@ from .core import (
     parse_bus_tag,
 )
 from .chips import CHIP_FACTORIES, create_chip
-from .db import component_ids, component_summary, db_root, load_all_components, load_component
+from .db import audit_db, component_ids, component_summary, db_root, legacy_catalog_parts, load_all_components, load_component
 from .design import Design, Endpoint
 from .loader import ImageLoadError, load_image, load_memory, parse_hex_text, parse_ihex
 from .netlist import design_from_kicad_netlist, design_from_netlist, design_to_netlist, design_to_verilog
@@ -39,9 +39,11 @@ __all__ = [
     "Z",
     "parse_bus_tag",
     "create_chip",
+    "audit_db",
     "component_ids",
     "component_summary",
     "db_root",
+    "legacy_catalog_parts",
     "load_all_components",
     "load_component",
     "Design",

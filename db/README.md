@@ -70,3 +70,10 @@ The next useful set adds flip-flop, register, decoder, and flash coverage:
 - `74HC574`
 - `74HC138`
 - `SST39SF010A`
+
+Audit the DB against the active legacy catalog:
+
+```sh
+cd ../python
+python3 -m chiplib.cli db --audit
+```

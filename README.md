@@ -119,6 +119,14 @@ Expected pass markers:
 - `74HC SMOKE TEST PASSED`
 - `MEMORY SMOKE TEST PASSED`
 
+DB audit:
+
+```sh
+cd python
+python3 -m chiplib.cli db --audit
+cd ..
+```
+
 ## Subfolder Docs
 
 - `74HC/README.md` - full 74HC model list, scan notes, and 74xx source coverage.

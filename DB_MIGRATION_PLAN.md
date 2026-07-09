@@ -76,24 +76,27 @@ Exit criteria:
 
 ### Phase 2: DB Audit
 
+Status: started.
+
 Add audit tooling that compares DB state against the legacy catalog.
 
 Required checks:
 
-- DB parts vs `74HC/*.v` and `Memory/*.v`.
-- DB parts vs `*-pin.md` files.
-- DB part status vs `CHIP_STATUS.md`.
-- DB legacy paths exist.
-- Pin count equals package pin count.
-- Power pins are present.
-- Active-low pin names and `active_low` flags are consistent.
-- Verilog module names exist in referenced model files.
-- Export status agrees with known `Design.to_verilog()` mappings.
+- ✅ DB parts vs `74HC/*.v` and `Memory/*.v`.
+- ✅ DB parts vs `*-pin.md` files.
+- ⬜ DB part status vs `CHIP_STATUS.md`.
+- ✅ DB legacy paths exist.
+- ✅ Pin count equals package pin count.
+- ✅ Power pins are present.
+- ✅ Active-low pin names and `active_low` flags are consistent.
+- ✅ Verilog module names exist in referenced model files.
+- ✅ Export status agrees with known `Design.to_verilog()` mappings.
 
 Exit criteria:
 
-- `python3 -m chiplib.cli db --audit` or equivalent exists.
-- Audit returns structured JSON and a nonzero exit code on hard failures.
+- ✅ `python3 -m chiplib.cli db --audit` or equivalent exists.
+- ✅ Audit returns structured JSON and a nonzero exit code on hard failures.
+- ⬜ Audit checks DB status against `CHIP_STATUS.md`.
 
 ### Phase 3: DB-Backed Metadata
 

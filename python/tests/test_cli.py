@@ -131,6 +131,19 @@ def test_cli_db_summary_and_part_lookup():
     assert part_data["part"] == "74HC00"
     assert part_data["missing_properties"] == []
 
+    audit = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "db", "--audit"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert audit.returncode == 0, audit.stderr
+    audit_data = json.loads(audit.stdout)
+    assert audit_data["format"] == "db.audit"
+    assert audit_data["ok"] is True
+    assert "legacy_parts_missing_db" in audit_data["coverage"]
+
 
 def run_all():
     test_cli_validate_snapshot_run_probe_and_export_json()
