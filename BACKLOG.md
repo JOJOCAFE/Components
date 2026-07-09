@@ -225,6 +225,11 @@ Done:
   62256 physical read/float fields are marked pending, 74HC574 and 74HC161
   setup/hold fields are checked against DB definitions, bus turnaround
   deadband remains not proven, and 5 MHz is not promoted to hardware proof.
+- ✅ Physical evidence task 1 deepening: AT28C256-15 ROM fetch is recorded as a
+  source-backed but unmeasured 5 MHz candidate, slower AT28C256 grades are
+  marked unsafe at 5 MHz by source timing, 62256 RAM timing remains blocked on
+  selected physical SRAM evidence, DBUS deadband has a minimum known ROM-float
+  window, and the required scope/bench evidence is machine-readable.
 - ✅ Extra clock-profile tests for edge-sensitive circuits: `RV8GR_InstructionLatch`,
   `RV8GR_DataPageMemory`, `RV8GR_IRQLatch`, `RV8GR_PageDataRegisters`, and
   `RV8GR_BranchJumpControl` now declare and execute
@@ -238,11 +243,13 @@ Next team tasks:
      `Lib/Circuits/timing_margins.json`.
    - ✅ Tests now consume propagation-delay paths, setup/hold values,
      source-file requirements, physical timing caveats, and bus-race notes.
+   - ✅ Source-backed candidate paths and bench-evidence gates now keep
+     selected-part timing separate from measured hardware proof.
    - Keep 5 MHz marked functional simulation until physical timing and
      signal-integrity evidence exist.
-   - Next: add measured or source-backed physical memory speed grade,
-     output-disable timing, clock-phase deadband, and breadboard/PCB
-     signal-integrity evidence.
+   - Next: fill the missing bench evidence: actual memory chip markings,
+     measured or source-backed SRAM read/output-float timing, clock-phase
+     deadband, and breadboard/PCB signal-integrity captures.
 2. **Bam + Noon + Bank: visual chip-block editor**
    - Turn the current block-UI import/export contracts into a practical editor
      surface for placing DIP blocks, wiring nets, and selecting Python or

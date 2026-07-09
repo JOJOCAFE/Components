@@ -1992,6 +1992,63 @@ def test_rv8gr_timing_physical_assumptions_are_source_backed_and_not_proven():
     assert "clock_phase_deadband_ns" in deadband["missing_physical_fields"]
 
 
+def test_rv8gr_physical_candidate_paths_keep_5mhz_claim_blocked():
+    timing = load_json(TIMING_MARGINS)
+    candidates = {item["id"]: item for item in timing["physical_candidate_paths"]}
+    at28 = load_json(ROOT / "DB" / "Memory" / "AT28C256" / "definition" / "definition.json")
+    tacc = nested_value(at28, "definition_layers.timing.delay.datasheet_read_ns.tacc_address_to_output")
+    tfloat = nested_value(at28, "definition_layers.timing.delay.datasheet_read_ns.tdf_ce_or_oe_to_float")
+    period_5mhz = next(profile["period_ns"] for profile in timing["clock_profiles"] if profile["name"] == "5_mhz")
+
+    rom15 = candidates["rom_fetch_at28c256_15_candidate"]
+    assert rom15["physical_status"] == "candidate_source_backed_not_measured"
+    assert rom15["period_ns"] == period_5mhz
+    assert rom15["source_backed_terms_ns"]["rom_tacc_address_to_output"] == tacc["at28c256_15"]
+    assert rom15["total_source_backed_budget_ns"] == sum(rom15["source_backed_terms_ns"].values())
+    assert rom15["source_backed_slack_ns"] == period_5mhz - rom15["total_source_backed_budget_ns"]
+    assert "not included" in rom15["claim_boundary"]
+
+    slower = candidates["rom_fetch_slower_at28c256_grades_not_5mhz_safe"]
+    assert slower["physical_status"] == "not_safe_at_5mhz_by_source_tacc"
+    for grade in slower["grades"]:
+        key = grade["grade"].lower().replace("-", "_")
+        assert grade["rom_tacc_address_to_output_ns"] == tacc[key]
+        assert grade["total_with_u7_and_setup_ns"] > period_5mhz
+        assert grade["slack_ns"] == period_5mhz - grade["total_with_u7_and_setup_ns"]
+
+    sram = candidates["ram_read_62256_candidate_blocked"]
+    assert sram["physical_status"] == "blocked_missing_selected_sram_timing"
+    assert {"selected_sram_part_number", "read_access_ns", "output_disable_to_float_ns"} <= set(sram["missing_physical_fields"])
+
+    turnaround = candidates["dbus_turnaround_deadband_candidate"]
+    assert turnaround["physical_status"] == "blocked_missing_clock_phase_deadband"
+    assert turnaround["minimum_known_disable_window_ns"] == tfloat["at28c256_15"]
+    assert turnaround["minimum_deadband_before_new_driver_ns"] == turnaround["minimum_known_disable_window_ns"] + turnaround["u7_model_enable_delay_ns"]
+    assert "measured_or_source_backed_phase_deadband_ns" in turnaround["missing_physical_fields"]
+
+
+def test_rv8gr_physical_bench_evidence_required_before_hardware_speed_claims():
+    timing = load_json(TIMING_MARGINS)
+    evidence = {item["id"]: item for item in timing["physical_bench_evidence_required"]}
+    assert {
+        "clock_reset_scope_capture",
+        "phase_one_hot_scope_capture",
+        "dbus_turnaround_scope_capture",
+        "selected_memory_speed_grade_record",
+    } <= set(evidence)
+
+    for item in evidence.values():
+        assert item["status"] == "missing", item
+        assert item["owner"] in {"Ohm", "Fern", "Pim"}, item
+        assert item["required_evidence"], item
+        assert item["pass_condition"], item
+
+    assert "5 MHz clock if attempted" in evidence["clock_reset_scope_capture"]["required_evidence"]
+    assert "100 observed ticks" in evidence["phase_one_hot_scope_capture"]["pass_condition"]
+    assert "measured deadband" in evidence["dbus_turnaround_scope_capture"]["pass_condition"]
+    assert "actual EEPROM marking" in evidence["selected_memory_speed_grade_record"]["required_evidence"]
+
+
 def test_all_started_circuit_packages_have_tests():
     for circuit_path in sorted((ROOT / "Lib" / "Circuits").glob("RV8GR_*/circuit.json")):
         circuit = load_json(circuit_path)
@@ -2078,6 +2135,8 @@ def run_all():
     test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary()
     test_rv8gr_timing_setup_hold_requirements_cover_edge_sensitive_paths()
     test_rv8gr_timing_physical_assumptions_are_source_backed_and_not_proven()
+    test_rv8gr_physical_candidate_paths_keep_5mhz_claim_blocked()
+    test_rv8gr_physical_bench_evidence_required_before_hardware_speed_claims()
     test_all_started_circuit_packages_have_tests()
 
 

@@ -95,6 +95,93 @@
       "requirement": "No bus turnaround path may be described as physically proven until the deadband is quantified."
     }
   ],
+  "physical_candidate_paths": [
+    {
+      "id": "rom_fetch_at28c256_15_candidate",
+      "physical_status": "candidate_source_backed_not_measured",
+      "circuit": "RV8GR_InstructionLatch",
+      "selected_parts": {
+        "rom": "AT28C256-15",
+        "bus_transceiver": "74HC245",
+        "destination": "74HC574"
+      },
+      "clock_profile": "5_mhz",
+      "period_ns": 200,
+      "source_backed_terms_ns": {
+        "rom_tacc_address_to_output": 150,
+        "u7_model_propagation": 12,
+        "destination_setup": 20
+      },
+      "total_source_backed_budget_ns": 182,
+      "source_backed_slack_ns": 18,
+      "claim_boundary": "This is a selected-part timing candidate only; breadboard wiring delay, fanout, edge quality, and measured signal integrity are not included."
+    },
+    {
+      "id": "rom_fetch_slower_at28c256_grades_not_5mhz_safe",
+      "physical_status": "not_safe_at_5mhz_by_source_tacc",
+      "circuit": "RV8GR_InstructionLatch",
+      "clock_profile": "5_mhz",
+      "period_ns": 200,
+      "grades": [
+        {"grade": "AT28C256-20", "rom_tacc_address_to_output_ns": 200, "total_with_u7_and_setup_ns": 232, "slack_ns": -32},
+        {"grade": "AT28C256-25", "rom_tacc_address_to_output_ns": 250, "total_with_u7_and_setup_ns": 282, "slack_ns": -82},
+        {"grade": "AT28C256-35", "rom_tacc_address_to_output_ns": 350, "total_with_u7_and_setup_ns": 382, "slack_ns": -182}
+      ],
+      "claim_boundary": "A slower EEPROM speed grade fails this 5 MHz source-backed ROM fetch budget before wiring margin is added."
+    },
+    {
+      "id": "ram_read_62256_candidate_blocked",
+      "physical_status": "blocked_missing_selected_sram_timing",
+      "circuit": "RV8GR_DataPageMemory",
+      "clock_profile": "5_mhz",
+      "missing_physical_fields": ["selected_sram_part_number", "read_access_ns", "output_disable_to_float_ns", "breadboard_or_pcb_margin_ns"],
+      "claim_boundary": "RAM read/write turnaround cannot be physically signed off from the current 70 ns model-derived delay."
+    },
+    {
+      "id": "dbus_turnaround_deadband_candidate",
+      "physical_status": "blocked_missing_clock_phase_deadband",
+      "circuits": ["RV8GR_BusOwnership", "RV8GR_RomDbusRead", "RV8GR_StorePath"],
+      "selected_parts": {
+        "rom": "AT28C256-15",
+        "bus_transceiver": "74HC245"
+      },
+      "minimum_known_disable_window_ns": 50,
+      "u7_model_enable_delay_ns": 12,
+      "minimum_deadband_before_new_driver_ns": 62,
+      "missing_physical_fields": ["measured_or_source_backed_phase_deadband_ns", "selected_sram_output_float_ns"],
+      "claim_boundary": "The old DBUS driver must be disabled and floated before U7 or RAM is allowed to drive the same bus."
+    }
+  ],
+  "physical_bench_evidence_required": [
+    {
+      "id": "clock_reset_scope_capture",
+      "owner": "Ohm",
+      "status": "missing",
+      "required_evidence": ["reset release waveform", "manual push-clock release edge", "50 kHz clock", "1 MHz clock", "2 MHz clock", "5 MHz clock if attempted"],
+      "pass_condition": "Clock and reset edges are monotonic at TTL inputs, with no double-triggering and no reset release runt pulse."
+    },
+    {
+      "id": "phase_one_hot_scope_capture",
+      "owner": "Fern",
+      "status": "missing",
+      "required_evidence": ["T0", "T1", "T2", "CLK"],
+      "pass_condition": "Exactly one of T0/T1/T2 is high after each clean clock edge across at least 100 observed ticks."
+    },
+    {
+      "id": "dbus_turnaround_scope_capture",
+      "owner": "Ohm",
+      "status": "missing",
+      "required_evidence": ["ROM /OE", "RAM /OE or /CE", "U7 /OE", "WR_DIR", "DBUS sample point"],
+      "pass_condition": "No overlap window shows two enabled DBUS output drivers; measured deadband is greater than selected memory output-float plus buffer enable skew."
+    },
+    {
+      "id": "selected_memory_speed_grade_record",
+      "owner": "Pim",
+      "status": "missing",
+      "required_evidence": ["actual EEPROM marking", "actual SRAM marking", "datasheet timing row used"],
+      "pass_condition": "The physical chips installed match the speed-grade rows used in timing calculations."
+    }
+  ],
   "setup_hold_requirements": [
     {
       "destination": "74HC574 edge registers",
