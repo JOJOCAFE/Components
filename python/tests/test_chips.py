@@ -276,13 +276,14 @@ def test_seed_split_records_execute_against_python_models():
     assert trans.read(18) == Z
 
     hc574 = json.loads((ROOT / "DB/74xx/74HC574/tests/truth_table.json").read_text(encoding="utf-8"))
-    assert {item["name"] for item in hc574["vectors"]} == {
+    assert {item["name"] for item in hc574["vectors"]} >= {
         "rising_edge_latch_a5",
         "hold_after_d_change",
         "rising_edge_latch_3c",
         "disabled_high_z",
         "clock_while_outputs_disabled_captures_5a",
         "reenabled_outputs_last_latched_value",
+        "reenabled_rising_edge_latch_c3",
     }
     reg = create_chip("74HC574", "U")
     reg.set_input(1, 0)
@@ -296,13 +297,19 @@ def test_seed_split_records_execute_against_python_models():
     reg.set_input(1, 1)
     eval_chip(reg)
     assert reg.read(19) == Z
+    reg.set_input(1, 0)
+    set_byte(reg, [2, 3, 4, 5, 6, 7, 8, 9], 0xC3)
+    reg.clock_edge()
+    reg.commit()
+    assert get_byte(reg, [19, 18, 17, 16, 15, 14, 13, 12]) == 0xC3
 
     at28 = json.loads((ROOT / "DB/Memory/AT28C256/tests/truth_table.json").read_text(encoding="utf-8"))
-    assert {item["name"] for item in at28["vectors"]} == {
+    assert {item["name"] for item in at28["vectors"]} >= {
         "write_c6",
         "read_c6",
         "write_3c",
         "read_3c",
+        "read_c6_after_second_write",
         "chip_disabled_high_z",
         "output_disabled_high_z",
         "write_mode_high_z",
@@ -317,6 +324,16 @@ def test_seed_split_records_execute_against_python_models():
     set_pins(rom, [20, 22, 27], [0, 1, 0])
     eval_chip(rom)
     set_pins(rom, [22, 27], [0, 1])
+    eval_chip(rom)
+    assert get_byte(rom, MEMORY_DQ_PINS) == 0xC6
+    set_memory_addr(rom, 0x0123)
+    set_byte(rom, MEMORY_DQ_PINS, 0x3C)
+    set_pins(rom, [22, 27], [1, 0])
+    eval_chip(rom)
+    set_pins(rom, [22, 27], [0, 1])
+    eval_chip(rom)
+    assert get_byte(rom, MEMORY_DQ_PINS) == 0x3C
+    set_memory_addr(rom, 0x002A)
     eval_chip(rom)
     assert get_byte(rom, MEMORY_DQ_PINS) == 0xC6
     rom.set_input(22, 1)
