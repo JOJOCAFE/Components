@@ -7,6 +7,7 @@ definition/definition.json
   -> normalized JSON component detail
   -> Python simulator adapter
   -> Verilog wrapper/export metadata
+  -> Verilog testbench metadata / generated benches
   -> KiCad symbol
   -> SVG pinout
   -> documentation
@@ -42,6 +43,10 @@ on that runtime support file for `Chip`, `Delay`, logic, and pin primitives.
 For a circuit or system export with many chips, copy `chiplib/core.py` once and
 share it across the copied chip models.
 
+`generated/artifacts.json` is reproducible output. It is not a second source of
+truth. Regenerate it after changing `definition/definition.json`, split test
+records, symbol metadata, or generator code.
+
 ## Required Generation Targets
 
 Each seed `definition.json` must declare:
@@ -76,6 +81,35 @@ Every `tests/truth_table.json` record must declare `edge_criteria`.
 - New chips cannot rely on `basic_function` placeholders when they are used by
   RV8GR or another system-level package.
 
+## Verification Generation Rules
+
+Generated tests start from the split records in `tests/`:
+
+- `truth_table.json`: per-chip functional vectors, edge criteria, enable/hold
+  behavior, async-control priority, and memory write protection.
+- `timing.json`: clock/control mode records and datasheet/model timing facts.
+- `tri_state.json`: high-Z behavior for disabled outputs or bidirectional pins.
+- `bus_fight.json`: board-level conflict/no-conflict cases for shared buses.
+- `propagation.json`: delay expectations that must match definition metadata.
+
+For seed chips and RV8GR-used parts:
+
+- truth records must be executable against Python models
+- bus-fight records must be executable through `Board.errors()`
+- direct Python-vs-Verilog equivalence must exist when a Verilog model exists
+- timing and propagation records must be non-placeholder metadata
+- memory records must prove `/CE=1` and `/WE=1` prevent writes
+
+The split-record regression entry point is:
+
+```sh
+PYTHONPATH=python python3 -B -m tests.test_generated_split_records
+```
+
+The current generated Verilog testbench artifact records Icarus compile
+metadata for every seed package and emits a simple generated bench where the
+split-record shape is already supported.
+
 ## First Seed Parts
 
 The first generator-ready chips are:
@@ -88,3 +122,10 @@ The first generator-ready chips are:
 
 These cover counters, multiplexers, bidirectional bus transceivers, tri-state
 registers, and EEPROM memory.
+
+## RV8GR Batch 2 Direction
+
+The RV8GR-used chip set now follows the seed-package verification shape. See
+`DB/RV8GR_BATCH2_VERIFICATION_AUDIT.md` for the current per-chip truth coverage
+and the edge-criteria policy. The same standard should be applied to the rest
+of the migrated IC catalog before a part is called fully verified.

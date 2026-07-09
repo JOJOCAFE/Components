@@ -1,0 +1,104 @@
+{
+  "schema": "db.component.definition",
+  "version": 1,
+  "id": "RedLED",
+  "part": "RedLED",
+  "group": "passive",
+  "kind": "physical",
+  "role": "indicator",
+  "title": "Red light emitting diode",
+  "family": "Passive",
+  "package": {
+    "kind": "two_terminal",
+    "pins": 2
+  },
+  "status": {
+    "datasheet": "not_applicable",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "verilog_model": "not_applicable",
+    "verilog_export": "not_applicable",
+    "tests": "modeled"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "A",
+      "direction": "passive"
+    },
+    {
+      "number": 2,
+      "name": "K",
+      "direction": "passive"
+    }
+  ],
+  "simulation": {
+    "service": "sim.led"
+  },
+  "ui": {
+    "widget": "led",
+    "symbol": "led",
+    "default_color": "red"
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "RedLED",
+      "title": "Red light emitting diode",
+      "family": "Passive",
+      "group": "passive",
+      "kind": "physical",
+      "role": "indicator"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "RedLED",
+      "packages": [
+        {
+          "id": "two_terminal",
+          "kind": "two_terminal",
+          "pins": 2
+        }
+      ],
+      "default_package": "two_terminal"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "RedLED",
+      "pins": [
+        {
+          "number": 1,
+          "name": "A",
+          "direction": "passive"
+        },
+        {
+          "number": 2,
+          "name": "K",
+          "direction": "passive"
+        }
+      ],
+      "buses": {}
+    },
+    "simulation": {
+      "schema": "db.component.simulation",
+      "version": 1,
+      "part": "RedLED",
+      "simulation": {
+        "service": "sim.led"
+      }
+    },
+    "ui": {
+      "schema": "db.component.ui",
+      "version": 1,
+      "part": "RedLED",
+      "ui": {
+        "widget": "led",
+        "symbol": "led",
+        "default_color": "red"
+      }
+    }
+  }
+}

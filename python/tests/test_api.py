@@ -103,6 +103,12 @@ def test_json_api_adapter_exposes_component_metadata_without_design():
     assert package["result"]["format"] == "db.component.package"
     assert package["result"]["layers"]["tests"]["tri_state"]["applicable"] is True
 
+    virtual_package = handle_request({"command": "component-package", "options": {"part": "Probe"}}, service)
+    assert virtual_package["ok"] is True
+    assert virtual_package["result"]["format"] == "db.component.package"
+    assert virtual_package["result"]["definition"]["schema"] == "db.component.definition"
+    assert virtual_package["result"]["layers"]["simulation"]["service"] == "sim.probe"
+
     generated = handle_request({"command": "component-generate", "options": {"part": "74HC245"}}, service)
     assert generated["ok"] is True
     assert generated["result"]["format"] == "db.component.generated"

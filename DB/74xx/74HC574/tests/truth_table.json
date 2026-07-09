@@ -67,6 +67,17 @@
       "expect": {
         "Q": "0x5A"
       }
+    },
+    {
+      "name": "reenabled_rising_edge_latch_c3",
+      "inputs": {
+        "/OE": 0,
+        "D": "0xC3"
+      },
+      "clock": true,
+      "expect": {
+        "Q": "0xC3"
+      }
     }
   ],
   "edge_criteria": {

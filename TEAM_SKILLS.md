@@ -30,6 +30,15 @@ simulation services, and student-facing documentation.
   `definition_layers`; datasheet sources live inside the same file as
   `datasheet.sources`; split definition and datasheet files are compatibility
   fallback only.
+- Standalone package discipline: chip-local `simulation/model.py`,
+  `simulation/model.v`, `simulation/model.json`, `simulation/netlist.json`,
+  `symbol/dip.json`, `tests/*.json`, and `generated/artifacts.json` travel
+  with the chip folder; exported projects copy shared `python/chiplib/core.py`
+  once as the runtime primitive layer.
+- Verification-record discipline: active IC truth records must declare
+  `edge_criteria`; clocked chips prove active-edge behavior and no-edge hold,
+  tri-state/bus chips prove high-Z and bus-fight/no-conflict behavior, and
+  memory chips prove write protection plus read/write control windows.
 
 ## Active Specialist Agents
 
@@ -58,7 +67,7 @@ Current seed-batch milestone:
   `simulation/model.v`, `simulation/netlist.json`, `simulation/model.json`,
   `symbol/dip.json`, split test records, generated artifact reports, and first
   timing/electrical extraction records.
-- Seed `chip.json` files are removed; `load_component(part)` synthesizes
+- Active IC `chip.json` files are removed; `load_component(part)` synthesizes
   compatibility data from `definition/definition.json` and
   `simulation/netlist.json`.
 - Project/system exports must use package `portable_files` and copy the local
@@ -77,6 +86,11 @@ Current seed-batch milestone:
   the next verification step.
 - `python/tests/test_generated_split_records.py` is the current generated-check
   harness for seed records and Verilog smoke workflow scope.
+- Next seed-chip hardening targets are full counter/load/RCO behavior for
+  `74HC161`, select and enable propagation for `74HC157`, repeated DIR and
+  `/OE` bus-conflict coverage for `74HC245`, capture/hold/output-disable
+  coverage for `74HC574`, and write-cycle/read-after-write/protection coverage
+  for `AT28C256`.
 
 ## Pim - Coordinator
 
@@ -141,6 +155,8 @@ Components focus:
 - Expands equivalence tests before more exporter metadata is migrated.
 - Turns `tests/*.json` component package files into executable regression
   checks.
+- Requires every active IC truth-table test to state edge criteria explicitly:
+  rising, falling, level/no-edge, or control-window behavior.
 
 ## Mint - RTL Coder
 
@@ -203,7 +219,7 @@ Components focus:
 - Moves exporter metadata into DB only when equivalence and netlist tests prove
   the behavior.
 - Keeps frontend-facing responses serializable and stable.
-- Owns loader compatibility for legacy `chip.json` while seed chips are
+- Owns loader compatibility for legacy `chip.json` while active IC packages are
   definition-backed.
 
 ## Noon - Docs Writer
@@ -243,14 +259,18 @@ Run these before claiming broad Components health:
 cd python
 python3 -B -m tests.test_chips
 python3 -B -m tests.test_design
+python3 -B -m tests.test_block_ui
 python3 -B -m tests.test_netlist
 python3 -B -m tests.test_cli
 python3 -B -m tests.test_api
 python3 -B -m tests.test_db
+python3 -B -m tests.test_generated_split_records
 python3 -B -m tests.test_contracts
 python3 -B -m tests.test_simulation_service
 python3 -B -m tests.test_equivalence
 python3 -m py_compile chiplib/*.py tests/*.py
+python3 -m chiplib.cli db --audit
+python3 -m chiplib.cli db --status
 cd ..
 
 iverilog -g2012 -Wall -o /tmp/tb_74xx_smoke.vvp Verilog/74xx/*.v Verilog/74xx/tests/tb_74xx_smoke.v

@@ -40,17 +40,17 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 - `FRONTEND_SNAPSHOT_CONTRACT.md` - UI/API snapshot shape for drawing chips,
   nets, buses, probes, displays, errors, and warnings without scraping backend
   internals.
-- `DB_MIGRATION_PLAN.md` - phased plan for making `DB/` the chip identity
-  layer while legacy model files with embedded pinout comments remain active
-  during migration.
+- `DB_MIGRATION_PLAN.md` - historical migration plan for making `DB/` the chip
+  identity layer; active ICs now use layered DB packages under the frozen
+  `v0.1` chip model.
 - `DB_COMPONENT_PACKAGE_SPEC.md` - layered component package structure for
   definition, simulation, verification, and symbol data, with datasheet
   evidence embedded in the definition file.
 - `GENERATION_PIPELINE.md` - one-file `definition/definition.json` flow for
   generating JSON, simulator adapters, Verilog wrappers, KiCad symbols, SVG
   pinouts, docs, unit tests, and interactive demos.
-- `COMPONENT_GENERATION_BACKLOG.md` - seed-batch tasks for generator-ready
-  component definitions.
+- `COMPONENT_GENERATION_BACKLOG.md` - package generation backlog covering seed,
+  RV8GR Batch 2, and active catalog package status.
 - `AGENTS.md` - local JOJOCAFE team ownership map for Components work.
 - `TEAM_SKILLS.md` - individual and shared skills for DB, Python, Verilog,
   simulation, verification, and student-facing documentation.
@@ -62,6 +62,61 @@ Pinout documentation is for physical wiring, so it must be verified from a manuf
 If a part has no verified DIP/PDIP source, do not keep physical pinout
 documentation or a catalog model for it. Add the part only after
 manufacturer-backed package and pin evidence is available.
+
+## Chip Package Rule
+
+Active ICs under `DB/74xx/` and `DB/Memory/` are standalone packages. The
+canonical source is:
+
+```text
+DB/<group>/<part>/definition/definition.json
+```
+
+That file owns chip identity, package, pins, logic, timing, generation targets,
+verification requirements, datasheet evidence, and embedded definition layers.
+The old IC-level `chip.json` files are no longer required; compatibility data
+is synthesized from `definition/definition.json` and `simulation/netlist.json`.
+
+Each IC package carries the layers needed to travel as a standalone chip:
+
+```text
+definition/definition.json
+simulation/model.py
+simulation/model.v
+simulation/model.json
+simulation/netlist.json
+tests/truth_table.json
+tests/timing.json
+tests/tri_state.json
+tests/bus_fight.json
+tests/propagation.json
+symbol/dip.json
+generated/artifacts.json
+```
+
+Project, circuit, and system exports must copy the chip-local
+`simulation/model.py` with the chip. Python exports must also copy
+`python/chiplib/core.py`; one shared copy is enough for a multi-chip exported
+project.
+
+## Test Record Rule
+
+Every active IC truth-table record must declare `edge_criteria`. Clocked chips
+state rising/falling trigger behavior and prove non-trigger-edge or no-edge
+hold behavior. Level-sensitive logic states `trigger_edge: none`. Memory parts
+state their write/read control window and high-Z behavior.
+
+Seed chips and RV8GR-used chips must not use `basic_function` or intent-only
+truth vectors. They need concrete per-chip `inputs` and `expect` records.
+Important required checks include:
+
+- async control priority for clocked chips
+- enable/hold behavior around clock edges
+- tri-state/high-Z behavior
+- executable bus-fight/no-conflict cases for bus-driving chips
+- memory write protection: `/CE=1` and `/WE=1` prevent writes
+- propagation/timing metadata matching definition records
+- Python-vs-Verilog equivalence coverage when Verilog exists
 
 ## System Cross-Check Rule
 
@@ -136,6 +191,7 @@ python3 -B -m tests.test_netlist
 python3 -B -m tests.test_cli
 python3 -B -m tests.test_api
 python3 -B -m tests.test_db
+python3 -B -m tests.test_generated_split_records
 python3 -B -m tests.test_contracts
 python3 -B -m tests.test_simulation_service
 python3 -B -m tests.test_equivalence
@@ -157,6 +213,7 @@ Expected pass markers:
 - `Components Python CLI tests passed`
 - `Components API tests passed`
 - `Components DB tests passed`
+- `Components generated split-record tests passed`
 - `Components contract tests passed`
 - `Components simulation service tests passed`
 - `Components equivalence tests passed`
@@ -176,8 +233,7 @@ cd ..
 
 - `Verilog/74xx/README.md` - full 74xx logic model list, scan notes, and 74xx source coverage.
 - `Verilog/Memory/README.md` - memory model list and datasheet sources.
-- `DB/README.md` - chip-centered DB migration notes and manifest
-  layout.
+- `DB/README.md` - chip-centered DB package layout and migration notes.
 - `python/README.md` - Python chip-library coverage and usage.
 - `Examples/*.json` - service-ready NAND, counter, bus transceiver, memory
   read, and tiny CPU-slice schematics used by contract tests.
@@ -189,8 +245,8 @@ cd ..
   `Design.to_netlist()` exports consumed by CLI, UI, and HDL tooling.
 - `SERVICE_CONTRACT.md` - shared CLI/API request, response, error, versioning,
   and pluggable-service rules.
-- `DB_COMPONENT_PACKAGE_SPEC.md` and `GENERATION_PIPELINE.md` - next DB
-  package layer where one `definition/definition.json` can drive generated JSON,
+- `DB_COMPONENT_PACKAGE_SPEC.md` and `GENERATION_PIPELINE.md` - current DB
+  package layer where one `definition/definition.json` drives generated JSON,
   simulator adapters, Verilog wrappers, KiCad symbols, SVG pinouts,
   documentation, unit tests, and interactive demos.
 - `BLOCK_UI_CONTRACT.md` - block editor import/export shape for drawable

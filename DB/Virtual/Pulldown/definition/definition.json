@@ -1,0 +1,94 @@
+{
+  "schema": "db.component.definition",
+  "version": 1,
+  "id": "Pulldown",
+  "part": "Pulldown",
+  "group": "virtual",
+  "kind": "virtual",
+  "role": "rail",
+  "title": "Weak logic low pull",
+  "family": "Virtual",
+  "package": {
+    "kind": "virtual",
+    "pins": 1
+  },
+  "status": {
+    "datasheet": "not_applicable",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "verilog_model": "not_applicable",
+    "verilog_export": "not_applicable",
+    "tests": "modeled"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "PULL",
+      "direction": "passive"
+    }
+  ],
+  "simulation": {
+    "service": "sim.pull",
+    "value": 0
+  },
+  "ui": {
+    "widget": "pulldown",
+    "symbol": "pulldown"
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "Pulldown",
+      "title": "Weak logic low pull",
+      "family": "Virtual",
+      "group": "virtual",
+      "kind": "virtual",
+      "role": "rail"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "Pulldown",
+      "packages": [
+        {
+          "id": "virtual",
+          "kind": "virtual",
+          "pins": 1
+        }
+      ],
+      "default_package": "virtual"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "Pulldown",
+      "pins": [
+        {
+          "number": 1,
+          "name": "PULL",
+          "direction": "passive"
+        }
+      ],
+      "buses": {}
+    },
+    "simulation": {
+      "schema": "db.component.simulation",
+      "version": 1,
+      "part": "Pulldown",
+      "simulation": {
+        "service": "sim.pull",
+        "value": 0
+      }
+    },
+    "ui": {
+      "schema": "db.component.ui",
+      "version": 1,
+      "part": "Pulldown",
+      "ui": {
+        "widget": "pulldown",
+        "symbol": "pulldown"
+      }
+    }
+  }
+}

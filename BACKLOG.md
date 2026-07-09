@@ -70,8 +70,9 @@ Future work for the shared component library.
   repo grows too large.
 - ✅ Freeze the normalized netlist schema in
   `Schemas/normalized-netlist.schema.json` as the first plugin boundary.
-- ✅ Add grouped DB seed manifests for virtual tools, passive parts, and
-  discrete transistors.
+- ✅ Add grouped DB entries for Virtual, Passive, and Discrete components.
+  Virtual and Passive now use layered `definition/definition.json` packages;
+  Discrete remains compact `component.json`.
 - ✅ Move IC DB manifests into grouped folders: 74HC parts under `DB/74xx/`
   and memory parts under `DB/Memory/`.
 - ✅ Add DB-backed adapters so schematic JSON can instantiate virtual sources,
@@ -118,8 +119,8 @@ Future work for the shared component library.
   metadata.
 - ✅ Finish DB-backed Verilog export migration: all 62 active
   `verilog_export=tested` IC parts now own structural export metadata in
-  grouped `chip.json` manifests, and runtime export no longer uses a legacy
-  mapping table.
+  package `simulation/netlist.json` files, and runtime export no longer uses a
+  legacy mapping table.
 
 ## Deferred UI Work
 
@@ -127,11 +128,12 @@ Priority order before visual UI:
 
 1. ✅ Add student-facing DB catalog views and examples for component status,
    missing properties, pins, and export/simulation capability.
-2. ✅ Keep DB migration frozen at the manifest/service boundary unless a concrete
-   UI or downstream project needs pinout/model files physically moved.
-3. ✅ Defer DB-owned pinout/model moves until they clearly improve student
-   browsing or HDL tooling; current family-level model folders remain the
-   active implementation location.
+2. ✅ Move active ICs from manifest-only metadata into standalone DB packages
+   with `definition/definition.json`, package-local simulation files, split
+   test records, symbol metadata, and generated artifacts.
+3. ✅ Keep shared family Verilog folders for smoke coverage and comparison,
+   while package-local `simulation/model.py` and `simulation/model.v` are the
+   active per-chip package files.
 4. ✅ Build block-UI import/export against the normalized `Design` model and DB
    component catalog.
 5. Build a visual chip-block editor where users can place DIP chip blocks on
@@ -146,12 +148,13 @@ Priority order before visual UI:
   interactive demos.
 - ✅ Start the seed batch with generator-ready `definition/definition.json` files
   for `74HC161`, `74HC157`, `74HC245`, `74HC574`, and `AT28C256`.
-- ✅ Add an initial layered package for `74HC245` with
-  `definition/definition.json`, `simulation/`, `tests/`, and `symbol/` layers.
+- ✅ Add layered packages for all active ICs with
+  `definition/definition.json`, `simulation/`, `tests/`, `symbol/`, and
+  `generated/` layers.
 - ✅ Add schemas and DB validation tests for the new `db.component.digital`
   package files.
 - ✅ Add a loader that can read `definition/definition.json` while preserving
-  current `chip.json` compatibility.
+  legacy `chip.json` compatibility.
 - ✅ Prototype generation from one file for `74HC245`: normalized JSON,
   Python simulator report, Verilog wrapper/export metadata, KiCad symbol,
   SVG pinout, documentation data, unit test vectors, and interactive demo data.

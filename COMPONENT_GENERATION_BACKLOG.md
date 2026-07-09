@@ -52,8 +52,9 @@ components.
   generators scrape Verilog comments, Python classes, or Markdown.
 - Keep datasheet evidence visible. If timing or electrical data is not
   extracted yet, mark it as missing or `datasheet-required`.
-- Do not migrate all chips at once. Finish the seed batch, build tests and
-  generators, then expand family by family.
+- Migration proceeded seed batch first, then RV8GR Batch 2, then the rest of
+  the active IC catalog. Keep future package changes gated by tests and
+  generated artifacts.
 - For students, the generated docs and demos matter as much as simulator
   correctness. The same definition should explain the chip and run it.
 - The DB package must separate definition, simulation, schematic/symbol,
@@ -128,8 +129,9 @@ Done:
 
 ### 3. Halley - Verification Matrix
 
-Status: generated split-record Python checks wired; generated Verilog benches
-remain future work.
+Status: generated split-record Python checks wired; first generated Verilog
+bench artifact exists; RV8GR Batch 2 is now a complete seed-style set with
+package-layer, truth-vector, edge-criteria, and split-record gates.
 
 Owns:
 
@@ -152,6 +154,11 @@ Acceptance:
 - `python3 -B -m tests.test_equivalence` covers all memory seed parts and the
   first 74xx seed parts.
 - Verilog smoke instantiates every memory module directly.
+- Every active IC truth-table record declares `edge_criteria`.
+- RV8GR-used truth records do not use `basic_function` placeholders or
+  intent-only vectors.
+- The RV8GR Batch 2 complete set has the same required package/test layers as
+  the seed chips.
 
 Done:
 
@@ -164,6 +171,18 @@ Done:
   records through generated dispatch checks, validates timing/tri-state/bus
   records, and guards Verilog smoke workflow scope.
 - `.github/workflows/python-tests.yml` runs `tests.test_generated_split_records`.
+- `tests.test_generated_split_records` now enforces `edge_criteria` on all IC
+  truth records.
+- Seed checks cover enable/hold behavior, async priority, executable
+  bus-fight/no-conflict cases, Python-vs-Verilog coverage guards, memory write
+  protection, and propagation/timing metadata.
+- RV8GR-used chips now have explicit per-chip truth vectors for logic, clocked
+  controls, bus parts, and ROM/RAM options.
+- `python/tests/test_generated_split_records.py` now enforces the RV8GR
+  complete-set gate: package files, non-placeholder truth vectors, declared
+  edge criteria, split test records, and executable truth coverage.
+- `DB/RV8GR_BATCH2_VERIFICATION_AUDIT.md` records the RV8GR complete-set
+  verification state.
 
 ### 4. Ohm - Electrical, Timing, And Datasheet Evidence
 
@@ -197,7 +216,8 @@ Done:
 
 ### 5. Leibniz - Generators And Loader Compatibility
 
-Status: first loader and generator prototype done.
+Status: loader and generator path active for layered IC packages; generic
+Virtual/Passive definition packages are also supported.
 
 Owns:
 
@@ -223,8 +243,9 @@ Tasks:
 
 Acceptance:
 
-- The seed batch can be loaded through the current DB API.
-- At least `74HC245` can produce generator-ready outputs from one file.
+- Seed, RV8GR Batch 2, and active IC packages load through the current DB API
+  from `definition/definition.json`.
+- Package definitions emit generator-ready artifact reports from one file.
 
 Done:
 
@@ -266,6 +287,8 @@ Done:
 - ✅ generated symbol data
 - ✅ generated artifact report
 - ✅ timing/electrical evidence extraction
+- ✅ edge criteria, ENP/ENT hold, no-rising-edge hold, count resume, and
+  `/CLR` priority truth tests
 
 ### 74HC157
 
@@ -276,6 +299,7 @@ Done:
 - ✅ generated symbol data
 - ✅ generated artifact report
 - ✅ timing/electrical evidence extraction
+- ✅ level-sensitive edge criteria and Python-vs-Verilog coverage guard
 
 ### 74HC245
 
@@ -289,6 +313,8 @@ Done:
 - ✅ generated interactive demo data
 - ✅ generated artifact report
 - ✅ timing/electrical evidence extraction
+- ✅ DIR both directions, `/OE=1` high-Z, reverse patterns, and executable
+  bus-fight/no-conflict checks
 
 ### 74HC574
 
@@ -299,6 +325,8 @@ Done:
 - ✅ generated symbol data
 - ✅ generated artifact report
 - ✅ timing/electrical evidence extraction
+- ✅ rising-edge latch, no-clock hold, output-disable capture, re-enable, and
+  bus-conflict/high-Z checks
 
 ### AT28C256
 
@@ -309,11 +337,16 @@ Done:
 - ✅ generated symbol data
 - ✅ generated artifact report
 - ✅ timing/electrical evidence extraction
+- ✅ write/read, `/CE=1` write-protect, `/WE=1` write-protect, output-disable
+  high-Z, and control-window edge criteria
 
 ## Batch 2 - RV8GR Chip Migration
 
-Status: package migration done for the RV8GR BOM chip set; deeper per-chip
-truth-vector and datasheet extraction polish remains future verification work.
+Status: complete by the seed-package record gate for the RV8GR BOM chip set.
+Package migration, explicit truth vectors, edge criteria, split test records,
+and executable coverage are done for all RV8GR Batch 2 parts. Deeper
+datasheet-backed timing/electrical extraction remains future work for
+rest-of-catalog parts beyond the seed/RV8GR checkpoint.
 
 Source of truth:
 
@@ -358,6 +391,17 @@ Done:
   and only `chiplib.core` as the shared runtime dependency.
 - Expanded package tests to discover all `definition/definition.json` IC
   packages dynamically instead of maintaining a manual migrated-part list.
+- Replaced RV8GR-used `basic_function` placeholders with chip-specific truth
+  vectors for the full RV8GR Batch 2 set.
+- Deepened representative RV8GR records for counter load/count, bus
+  transceiver high-Z and repeated direction reversal, register re-enable
+  capture, and memory cross-address persistence.
+- Added `edge_criteria` to every active IC truth-table record.
+- Added a hard RV8GR complete-set test gate in
+  `python/tests/test_generated_split_records.py`.
+- Added generated `verilog_testbench` artifact metadata and first emitted
+  generated bench support.
+- Added CI/workflow guard to compile package-local `simulation/model.v` files.
 
 Acceptance for each migrated Batch 2 chip:
 
@@ -371,6 +415,9 @@ Acceptance for each migrated Batch 2 chip:
   also require shared `python/chiplib/core.py`, copied once for chip/circuit/
   system exports.
 - ✅ Focused Python DB/generation tests and Verilog smoke/equivalence checks pass.
+- ✅ RV8GR-used truth records are explicit and executable through
+  `tests.test_generated_split_records`.
+- ✅ RV8GR Batch 2 parts are now checked as a complete seed-style set.
 
 ## GitHub Actions
 
@@ -383,4 +430,7 @@ Next CI tasks:
 
 - Keep Verilog smoke compiling all 74xx and memory models.
 - Keep memory smoke instantiating each memory module directly.
-- Grow split-record generated checks toward emitted Verilog testbenches.
+- Grow generated Verilog bench emission beyond the first simple supported
+  truth-table shape.
+- Extend RV8GR-grade executable edge/enable/bus/memory checks to the rest of
+  the migrated IC catalog.

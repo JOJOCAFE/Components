@@ -144,6 +144,35 @@
         "Q": "0xF",
         "RCO": 0
       }
+    },
+    {
+      "name": "load_then_count_from_7",
+      "inputs": {
+        "/CLR": 1,
+        "/LD": 0,
+        "ENP": 1,
+        "ENT": 1,
+        "D": "0x7"
+      },
+      "clock": true,
+      "expect": {
+        "Q": "0x7",
+        "RCO": 0
+      }
+    },
+    {
+      "name": "count_after_load_7",
+      "inputs": {
+        "/CLR": 1,
+        "/LD": 1,
+        "ENP": 1,
+        "ENT": 1
+      },
+      "clock": true,
+      "expect": {
+        "Q": "0x8",
+        "RCO": 0
+      }
     }
   ],
   "edge_criteria": {

@@ -55,6 +55,18 @@
       }
     },
     {
+      "name": "read_3c_after_second_write",
+      "inputs": {
+        "A": "0x10123",
+        "/CE": 0,
+        "/WE": 1,
+        "/OE": 0
+      },
+      "expect": {
+        "DQ": "0x3C"
+      }
+    },
+    {
       "name": "chip_disabled_high_z",
       "inputs": {
         "/CE": 1,

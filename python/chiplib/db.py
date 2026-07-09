@@ -156,21 +156,37 @@ def component_metadata(part: str) -> JsonMap:
     return component_detail(part)
 
 
-def load_digital_definition(part: str, *, required: bool = True) -> JsonMap | None:
-    """Load the generator-ready one-file digital definition for a component."""
+def load_package_definition(part: str, *, required: bool = True) -> JsonMap | None:
+    """Load a one-file package definition for any component kind."""
 
     path = _digital_definition_path(part)
     if not path.exists():
         if required:
-            raise KeyError(f"digital definition not found: {part}")
+            raise KeyError(f"component definition not found: {part}")
         return None
     data = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
-        raise ValueError(f"digital definition must be an object: {path}")
+        raise ValueError(f"component definition must be an object: {path}")
     definition = deepcopy(data)
     definition.setdefault("part", path.parents[1].name)
     definition["definition_path"] = path.relative_to(ROOT).as_posix()
-    definition["validation"] = validate_digital_definition(definition)
+    if definition.get("schema") == "db.component.digital":
+        definition["validation"] = validate_digital_definition(definition)
+    else:
+        definition["validation"] = validate_component_definition(definition)
+    return definition
+
+
+def load_digital_definition(part: str, *, required: bool = True) -> JsonMap | None:
+    """Load the generator-ready one-file digital definition for a component."""
+
+    definition = load_package_definition(part, required=required)
+    if definition is None:
+        return None
+    if definition.get("schema") != "db.component.digital":
+        if required:
+            raise KeyError(f"digital definition not found: {part}")
+        return None
     return definition
 
 
@@ -233,6 +249,57 @@ def load_digital_package(part: str) -> JsonMap:
         "derived": derived,
         "files": files,
         "portable_files": portable_files,
+    }
+
+
+def load_component_package(part: str) -> JsonMap:
+    """Load package layers for either a digital IC or a generic component."""
+
+    definition = load_package_definition(part)
+    if definition is None:
+        raise KeyError(f"component definition not found: {part}")
+    if definition.get("schema") == "db.component.digital":
+        return load_digital_package(part)
+    manifest = load_component(part)
+    base = _component_base_path(part)
+    layers = definition.get("definition_layers", {})
+    if not isinstance(layers, dict):
+        layers = {}
+    pins = list(definition.get("pins", [])) if isinstance(definition.get("pins"), list) else []
+    definition_layers = {
+        "component": _generic_definition_layer(definition, manifest, "component"),
+        "package": _generic_definition_layer(definition, manifest, "package"),
+        "pins": _generic_definition_layer(definition, manifest, "pins"),
+        "simulation": _generic_definition_layer(definition, manifest, "simulation"),
+        "ui": _generic_definition_layer(definition, manifest, "ui"),
+    }
+    files = {
+        "manifest": _manifest_path(part).relative_to(ROOT).as_posix(),
+        "definition": (base / "definition" / "definition.json").relative_to(ROOT).as_posix(),
+    }
+    return {
+        "format": "db.component.package",
+        "version": 1,
+        "part": definition["part"],
+        "manifest": manifest,
+        "definition": definition,
+        "layers": {
+            "definition": definition_layers,
+            "simulation": deepcopy(definition.get("simulation", {})),
+            "symbol": deepcopy(definition.get("ui", {})),
+            "datasheet": {"sources": deepcopy(definition.get("sources", []))},
+        },
+        "derived": {
+            "pins": {
+                "schema": "db.component.pins",
+                "version": 1,
+                "part": definition["part"],
+                "pins": deepcopy(pins),
+                "buses": _digital_buses(pins),
+            }
+        },
+        "files": files,
+        "portable_files": [],
     }
 
 
@@ -428,6 +495,65 @@ def validate_digital_definition(definition: JsonMap) -> JsonMap:
                     errors.append(_issue("digital_status_invalid_value", part, path, f"status.{key} must be one of {sorted(allowed_status)}"))
     if part:
         errors.extend(_digital_manifest_mismatches(definition, part, path))
+    return {"ok": not errors, "errors": errors}
+
+
+def validate_component_definition(definition: JsonMap) -> JsonMap:
+    """Return structured validation for a generic component definition."""
+
+    errors: list[JsonMap] = []
+    part = str(definition.get("part", ""))
+    path = str(definition.get("definition_path", f"DB/*/{part}/definition/definition.json"))
+    if definition.get("schema") != "db.component.definition":
+        errors.append(_issue("component_schema_invalid", part, path, "schema must be db.component.definition"))
+    if not isinstance(definition.get("version"), int) or int(definition.get("version", 0)) < 1:
+        errors.append(_issue("component_version_invalid", part, path, "version must be an integer >= 1"))
+    for key in ("part", "title", "family", "group", "kind", "role", "package", "status", "pins"):
+        if key not in definition:
+            errors.append(_issue("component_missing_section", part, path, f"missing section: {key}"))
+    package = definition.get("package", {})
+    pins = definition.get("pins", [])
+    if not isinstance(package, dict):
+        errors.append(_issue("component_package_invalid", part, path, "package must be an object"))
+    elif not isinstance(package.get("pins"), int) or package.get("pins") < 1:
+        errors.append(_issue("component_package_pins_invalid", part, path, "package.pins must be an integer >= 1"))
+    if not isinstance(pins, list) or not pins:
+        errors.append(_issue("component_pins_invalid", part, path, "pins must be a non-empty list"))
+    elif isinstance(package, dict) and package.get("pins") != len(pins):
+        errors.append(_issue("component_pin_count_mismatch", part, path, f"package pins={package.get('pins')} but definition has {len(pins)} pins"))
+    seen_numbers: set[int] = set()
+    for pin in pins if isinstance(pins, list) else []:
+        if not isinstance(pin, dict):
+            errors.append(_issue("component_pin_invalid", part, path, "pin entry is not an object"))
+            continue
+        number = pin.get("number")
+        name = pin.get("name")
+        direction = pin.get("direction")
+        if not isinstance(number, int) or number < 1:
+            errors.append(_issue("component_pin_number_invalid", part, path, f"invalid pin number: {number!r}"))
+        elif number in seen_numbers:
+            errors.append(_issue("component_duplicate_pin", part, path, f"duplicate pin number: {number}"))
+        else:
+            seen_numbers.add(number)
+        if not isinstance(name, str) or not name:
+            errors.append(_issue("component_pin_name_invalid", part, path, f"pin {number} has no name"))
+        if direction not in {"input", "output", "bidirectional", "passive", "power", "nc", "unknown"}:
+            errors.append(_issue("component_pin_direction_invalid", part, path, f"pin {number} has invalid direction: {direction!r}"))
+    status = definition.get("status", {})
+    allowed_status = {"verified", "modeled", "tested", "missing", "blocked", "unknown", "not_applicable"}
+    if not isinstance(status, dict):
+        errors.append(_issue("component_status_invalid", part, path, "status must be an object"))
+    else:
+        for key in REQUIRED_STATUS_KEYS:
+            value = status.get(key)
+            if value not in allowed_status:
+                errors.append(_issue("component_status_invalid_value", part, path, f"status.{key} must be one of {sorted(allowed_status)}"))
+    simulation = definition.get("simulation", {})
+    if not isinstance(simulation, dict) or not isinstance(simulation.get("service"), str) or not simulation.get("service"):
+        errors.append(_issue("component_simulation_service_missing", part, path, "simulation.service must be a non-empty string"))
+    ui = definition.get("ui", {})
+    if not isinstance(ui, dict) or not isinstance(ui.get("symbol"), str) or not ui.get("symbol"):
+        errors.append(_issue("component_ui_symbol_missing", part, path, "ui.symbol must be a non-empty string"))
     return {"ok": not errors, "errors": errors}
 
 
@@ -737,6 +863,14 @@ def _definition_manifest_path(part: str) -> Path:
 
 
 def _manifest_from_definition(definition: JsonMap, path: Path) -> JsonMap:
+    if definition.get("schema") != "db.component.digital":
+        manifest = deepcopy(definition)
+        manifest["schema"] = "db.chip"
+        manifest["version"] = 1
+        manifest.setdefault("id", manifest.get("part", path.parents[1].name))
+        manifest.setdefault("part", path.parents[1].name)
+        return manifest
+
     base = path.parents[1]
     metadata = definition.get("metadata", {}) if isinstance(definition.get("metadata"), dict) else {}
     generation = definition.get("generation", {}) if isinstance(definition.get("generation"), dict) else {}
@@ -1096,6 +1230,62 @@ def _derived_package_layers(definition: JsonMap, manifest: JsonMap) -> JsonMap:
             "sources": deepcopy(definition.get("datasheet", {}).get("sources", [])),
         },
     }
+
+
+def _generic_definition_layer(definition: JsonMap, manifest: JsonMap, key: str) -> JsonMap:
+    layers = definition.get("definition_layers", {})
+    if isinstance(layers, dict) and isinstance(layers.get(key), dict):
+        return deepcopy(layers[key])
+    part = str(definition.get("part", manifest.get("part", "")))
+    if key == "component":
+        return {
+            "schema": "db.component.definition",
+            "version": 1,
+            "part": part,
+            "title": definition.get("title", manifest.get("title", part)),
+            "family": definition.get("family", manifest.get("family", "")),
+            "group": definition.get("group", manifest.get("group", "")),
+            "kind": definition.get("kind", manifest.get("kind", "")),
+            "role": definition.get("role", manifest.get("role", "")),
+        }
+    if key == "package":
+        package = definition.get("package", {})
+        package_map = package if isinstance(package, dict) else {}
+        return {
+            "schema": "db.component.package",
+            "version": 1,
+            "part": part,
+            "packages": [{
+                "id": package_map.get("kind", "component"),
+                "kind": package_map.get("kind", ""),
+                "pins": package_map.get("pins", 0),
+            }],
+            "default_package": package_map.get("kind", ""),
+        }
+    if key == "pins":
+        pins = list(definition.get("pins", [])) if isinstance(definition.get("pins"), list) else []
+        return {
+            "schema": "db.component.pins",
+            "version": 1,
+            "part": part,
+            "pins": deepcopy(pins),
+            "buses": _digital_buses(pins),
+        }
+    if key == "simulation":
+        return {
+            "schema": "db.component.simulation",
+            "version": 1,
+            "part": part,
+            "simulation": deepcopy(definition.get("simulation", {})),
+        }
+    if key == "ui":
+        return {
+            "schema": "db.component.ui",
+            "version": 1,
+            "part": part,
+            "ui": deepcopy(definition.get("ui", {})),
+        }
+    return {"schema": f"db.component.{key}", "version": 1, "part": part}
 
 
 def _digital_buses(pins: list[Any]) -> JsonMap:

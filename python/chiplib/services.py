@@ -7,7 +7,7 @@ from pathlib import Path
 from time import perf_counter
 from typing import Any
 
-from .db import component_catalog, component_detail, generate_component_artifacts, load_digital_definition, load_digital_package, student_component_catalog
+from .db import component_catalog, component_detail, generate_component_artifacts, load_component_package, load_digital_definition, load_digital_package, student_component_catalog
 from .netlist import _verilog_mapping, design_to_verilog
 
 
@@ -398,7 +398,7 @@ class FrontendDesignService:
         return self._ok("component-digital", load_digital_definition(part))
 
     def component_package(self, part: str) -> JsonMap:
-        return self._ok("component-package", load_digital_package(part))
+        return self._ok("component-package", load_component_package(part))
 
     def component_generate(self, part: str) -> JsonMap:
         return self._ok("component-generate", generate_component_artifacts(part))

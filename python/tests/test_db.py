@@ -4,7 +4,7 @@ import importlib.util
 import json
 from pathlib import Path
 
-from chiplib.db import audit_db, component_catalog, component_detail, component_ids, component_summary, db_root, db_status_report, generate_component_artifacts, legacy_catalog_parts, load_all_components, load_component, load_digital_definition, load_digital_package, student_component_catalog
+from chiplib.db import audit_db, component_catalog, component_detail, component_ids, component_summary, db_root, db_status_report, generate_component_artifacts, legacy_catalog_parts, load_all_components, load_component, load_component_package, load_digital_definition, load_digital_package, load_package_definition, student_component_catalog
 from chiplib.db import _pinout_mismatches
 
 
@@ -40,16 +40,30 @@ GROUPED_PARTS = {
     "Pullup",
     "Pulldown",
     "LED",
+    "RedLED",
+    "BlueLED",
+    "YellowLED",
     "Resistor",
     "Capacitor",
     "NPN",
     "PNP",
+    "BC549",
+    "BC559",
 }
 GENERATION_SEED_PARTS = {"74HC161", "74HC157", "74HC245", "74HC574", "AT28C256"}
 def generation_package_parts() -> set[str]:
     return {
         path.parents[1].name
         for path in db_root().glob("*/*/definition/definition.json")
+        if path.parents[2].name in {"74xx", "Memory"}
+    }
+
+
+def generic_package_parts() -> set[str]:
+    return {
+        path.parents[1].name
+        for path in db_root().glob("*/*/definition/definition.json")
+        if path.parents[2].name in {"Virtual", "Passive"}
     }
 
 
@@ -158,17 +172,41 @@ def test_db_seed_entries_are_loadable():
     assert source["group"] == "virtual"
     assert source["kind"] == "virtual"
     assert source["role"] == "stimulus"
+    assert source["db_path"] == "DB/Virtual/InputSource/definition/definition.json"
     assert source["pins"] == [{"number": 1, "name": "OUT", "direction": "output"}]
     assert source["simulation"]["service"] == "sim.input_source"
 
     led = load_component("LED")
     assert led["group"] == "passive"
+    assert led["db_path"] == "DB/Passive/LED/definition/definition.json"
     assert led["pins"][0]["direction"] == "passive"
     assert led["ui"]["symbol"] == "led"
+
+    red_led = load_component("RedLED")
+    assert red_led["title"] == "Red light emitting diode"
+    assert red_led["ui"]["default_color"] == "red"
+
+    blue_led = load_component("BlueLED")
+    assert blue_led["title"] == "Blue light emitting diode"
+    assert blue_led["ui"]["default_color"] == "blue"
+
+    yellow_led = load_component("YellowLED")
+    assert yellow_led["title"] == "Yellow light emitting diode"
+    assert yellow_led["ui"]["default_color"] == "yellow"
 
     npn = load_component("NPN")
     assert npn["group"] == "discrete"
     assert [pin["name"] for pin in npn["pins"]] == ["C", "B", "E"]
+
+    bc549 = load_component("BC549")
+    assert bc549["group"] == "discrete"
+    assert bc549["title"] == "BC549 NPN transistor"
+    assert bc549["simulation"]["service"] == "sim.transistor.npn"
+
+    bc559 = load_component("BC559")
+    assert bc559["group"] == "discrete"
+    assert bc559["title"] == "BC559 PNP transistor"
+    assert bc559["simulation"]["service"] == "sim.transistor.pnp"
 
 
 def test_db_summary_reports_status_and_gaps():
@@ -178,6 +216,8 @@ def test_db_summary_reports_status_and_gaps():
     parts = [item["part"] for item in summary["components"]]
     assert SEED_PARTS.issubset(set(parts))
     assert GROUPED_PARTS.issubset(set(parts))
+    assert "BC549" in parts
+    assert "BC559" in parts
     assert all(item["missing_properties"] == [] for item in summary["components"])
     assert all(item["missing_files"] == [] for item in summary["components"])
 
@@ -219,6 +259,82 @@ def test_student_component_catalog_is_learner_facing_and_status_visible():
     assert hc00["readiness"] == "ready"
     assert hc00["capabilities"]["can_export_verilog"] is True
     assert hc00["files"]["verilog"] == "DB/74xx/74HC00/simulation/model.v"
+
+
+def test_virtual_and_passive_components_use_definition_packages():
+    assert generic_package_parts() == {
+        "InputSource",
+        "ClockSource",
+        "Probe",
+        "BusProbe",
+        "VCC",
+        "GND",
+        "Pullup",
+        "Pulldown",
+        "LED",
+        "RedLED",
+        "BlueLED",
+        "YellowLED",
+        "Resistor",
+        "Capacitor",
+    }
+    assert not list((db_root() / "Virtual").glob("*/component.json"))
+    assert not list((db_root() / "Passive").glob("*/component.json"))
+
+    probe_definition = load_package_definition("Probe")
+    assert probe_definition["schema"] == "db.component.definition"
+    assert probe_definition["validation"]["ok"] is True, probe_definition["validation"]["errors"]
+    assert probe_definition["definition_path"] == "DB/Virtual/Probe/definition/definition.json"
+    assert load_digital_definition("Probe", required=False) is None
+
+    probe_package = load_component_package("Probe")
+    assert probe_package["format"] == "db.component.package"
+    assert probe_package["part"] == "Probe"
+    assert probe_package["definition"]["schema"] == "db.component.definition"
+    assert probe_package["definition"]["validation"]["ok"] is True
+    assert probe_package["manifest"]["db_path"] == "DB/Virtual/Probe/definition/definition.json"
+    assert probe_package["layers"]["definition"]["component"]["group"] == "virtual"
+    assert probe_package["layers"]["definition"]["pins"]["pins"] == [{"number": 1, "name": "IN", "direction": "input"}]
+    assert probe_package["layers"]["simulation"]["service"] == "sim.probe"
+    assert probe_package["layers"]["symbol"]["symbol"] == "probe"
+    assert probe_package["portable_files"] == []
+
+    led_package = load_component_package("LED")
+    assert led_package["definition"]["validation"]["ok"] is True
+    assert led_package["manifest"]["db_path"] == "DB/Passive/LED/definition/definition.json"
+    assert led_package["layers"]["definition"]["package"]["packages"] == [{"id": "two_terminal", "kind": "two_terminal", "pins": 2}]
+    assert led_package["layers"]["symbol"]["default_color"] == "red"
+
+    red_package = load_component_package("RedLED")
+    assert red_package["manifest"]["db_path"] == "DB/Passive/RedLED/definition/definition.json"
+    assert red_package["layers"]["symbol"]["default_color"] == "red"
+
+    blue_package = load_component_package("BlueLED")
+    assert blue_package["manifest"]["db_path"] == "DB/Passive/BlueLED/definition/definition.json"
+    assert blue_package["layers"]["symbol"]["default_color"] == "blue"
+
+    yellow_package = load_component_package("YellowLED")
+    assert yellow_package["manifest"]["db_path"] == "DB/Passive/YellowLED/definition/definition.json"
+    assert yellow_package["layers"]["symbol"]["default_color"] == "yellow"
+
+
+def test_memory_components_use_definition_packages():
+    memory_parts = {"62256", "AS6C62256", "AT28C256", "CY7C199", "SST39SF010A"}
+    assert memory_parts.issubset(set(component_ids()))
+    assert not list((db_root() / "Memory").glob("*/chip.json"))
+    assert {path.parents[1].name for path in (db_root() / "Memory").glob("*/definition/definition.json")} == memory_parts
+
+    for part in memory_parts:
+        definition = load_digital_definition(part)
+        assert definition["schema"] == "db.component.digital"
+        assert definition["validation"]["ok"] is True, (part, definition["validation"]["errors"])
+
+        package = load_component_package(part)
+        assert package["format"] == "db.component.package"
+        assert package["definition"]["schema"] == "db.component.digital"
+        assert package["manifest"]["db_path"] == f"DB/Memory/{part}/definition/definition.json"
+        assert package["layers"]["definition"]["component"]["family"] == "Memory"
+        assert package["layers"]["simulation"]["model"]["schema"] == "db.component.simulation"
 
 
 def test_db_component_detail_exposes_pins_and_capabilities():
@@ -403,6 +519,8 @@ def test_74hc245_split_tests_and_evidence_are_loaded():
         "dir_low_b_to_a_reverse_pattern",
         "disabled_oe_high_releases_a_and_b",
         "disabled_oe_high_reverse_releases_a_and_b",
+        "reenabled_a_to_b_after_high_z",
+        "direction_reversal_back_to_b_to_a",
     }
     assert {item["name"] for item in tests["tri_state"]["checks"]} >= {"disabled_releases_a", "disabled_releases_b"}
     assert {item["name"] for item in tests["bus_fight"]["checks"]} == {
@@ -612,6 +730,8 @@ def run_all():
     test_db_summary_reports_status_and_gaps()
     test_db_component_catalog_is_frontend_ready_and_grouped()
     test_student_component_catalog_is_learner_facing_and_status_visible()
+    test_virtual_and_passive_components_use_definition_packages()
+    test_memory_components_use_definition_packages()
     test_db_component_detail_exposes_pins_and_capabilities()
     test_generation_seed_digital_definitions_are_valid_and_generator_ready()
     test_digital_definition_schema_contract_is_strict_enough_for_generation()

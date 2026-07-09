@@ -3,5 +3,7 @@
   "version": 1,
   "id": "passive",
   "title": "Passive physical components",
-  "components": ["LED", "Resistor", "Capacitor"]
+  "migration_status": "layered_packages_active",
+  "manifest_note": "Passive component packages live in DB/Passive/<part>/definition/definition.json.",
+  "components": ["LED", "RedLED", "BlueLED", "YellowLED", "Resistor", "Capacitor"]
 }

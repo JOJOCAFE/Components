@@ -58,6 +58,21 @@ BATCH2_TEST_ROOTS = {
     "SST39SF010A": ROOT / "DB" / "Memory" / "SST39SF010A" / "tests",
 }
 TASK3_REPRESENTATIVE_PARTS = ("74HC00", "74HC04", "74HC32")
+RV8GR_EXECUTED_PARTS = set(TASK3_REPRESENTATIVE_PARTS) | set(TARGETED_TRUTH_TEST_ROOTS) | {"74HC157"}
+RV8GR_REQUIRED_PACKAGE_FILES = (
+    "definition/definition.json",
+    "simulation/model.py",
+    "simulation/model.v",
+    "simulation/model.json",
+    "simulation/netlist.json",
+    "symbol/dip.json",
+    "generated/artifacts.json",
+    "tests/truth_table.json",
+    "tests/timing.json",
+    "tests/tri_state.json",
+    "tests/bus_fight.json",
+    "tests/propagation.json",
+)
 MEMORY_ADDR_PINS = {
     0: 10,
     1: 9,
@@ -248,15 +263,20 @@ def test_seed_enable_hold_and_write_protection_vectors_are_present():
             "no_rising_edge_holds_even_when_enabled",
             "count_resumes_on_next_rising_edge",
             "clear_priority_over_load_and_count",
+            "load_then_count_from_7",
+            "count_after_load_7",
         },
         "74HC245": {
             "disabled_oe_high_releases_a_and_b",
             "disabled_oe_high_reverse_releases_a_and_b",
+            "reenabled_a_to_b_after_high_z",
+            "direction_reversal_back_to_b_to_a",
         },
         "74HC574": {
             "hold_after_d_change",
             "clock_while_outputs_disabled_captures_5a",
             "reenabled_outputs_last_latched_value",
+            "reenabled_rising_edge_latch_c3",
         },
         "62256": {
             "ce_high_prevents_write",
@@ -347,19 +367,37 @@ def test_task3_representative_batch2_records_have_datasheet_electrical_extractio
         assert "electrical" in definition["datasheet"]["sources"][0]["used_for"]
 
 
-def test_batch2_audit_report_tracks_placeholder_records_instead_of_calling_them_complete():
-    audit = (ROOT / "DB" / "RV8GR_BATCH2_VERIFICATION_AUDIT.md").read_text(encoding="utf-8")
-    for part in TASK3_REPRESENTATIVE_PARTS:
-        assert f"| {part} |" in audit
+def test_rv8gr_complete_set_has_seed_package_layers_and_executable_truth_coverage():
+    assert RV8GR_EXECUTED_PARTS == set(BATCH2_TEST_ROOTS)
+    for part, tests_root in BATCH2_TEST_ROOTS.items():
+        package_root = tests_root.parent
+        for relative_path in RV8GR_REQUIRED_PACKAGE_FILES:
+            assert (package_root / relative_path).exists(), (part, relative_path)
 
-    for part, root in BATCH2_TEST_ROOTS.items():
-        record = json.loads((root / "truth_table.json").read_text(encoding="utf-8"))
-        placeholder = any(
-            item.get("name") == "basic_function" or "inputs" not in item or "expect" not in item
-            for item in record.get("vectors", [])
-        )
-        if placeholder:
-            assert f"- `{part}`:" in audit
+        truth = json.loads((tests_root / "truth_table.json").read_text(encoding="utf-8"))
+        assert truth["applicable"] is True, part
+        assert truth["vectors"], part
+        assert all(
+            item.get("name") != "basic_function" and "inputs" in item and "expect" in item
+            for item in truth["vectors"]
+        ), part
+
+        for test_type in ("timing", "tri_state", "bus_fight", "propagation"):
+            record = json.loads((tests_root / f"{test_type}.json").read_text(encoding="utf-8"))
+            assert record["part"] == part
+            assert isinstance(record["applicable"], bool), (part, test_type)
+            if record["applicable"]:
+                assert record.get("checks"), (part, test_type)
+            else:
+                assert record.get("reason"), (part, test_type)
+
+
+def test_rv8gr_audit_report_declares_complete_set():
+    audit = (ROOT / "DB" / "RV8GR_BATCH2_VERIFICATION_AUDIT.md").read_text(encoding="utf-8")
+    assert "RV8GR complete set" in audit
+    assert "All RV8GR Batch 2 parts now meet the seed-package record gate." in audit
+    for part in BATCH2_TEST_ROOTS:
+        assert f"`{part}`" in audit
 
 
 def test_verilog_smoke_workflow_keeps_broad_compile_scope():
@@ -889,7 +927,8 @@ def run_all():
     test_seed_timing_and_propagation_records_are_not_placeholders()
     test_seed_bus_fight_records_execute_against_board_errors()
     test_task3_representative_batch2_records_have_datasheet_electrical_extraction()
-    test_batch2_audit_report_tracks_placeholder_records_instead_of_calling_them_complete()
+    test_rv8gr_complete_set_has_seed_package_layers_and_executable_truth_coverage()
+    test_rv8gr_audit_report_declares_complete_set()
     test_verilog_smoke_workflow_keeps_broad_compile_scope()
     test_split_records_generate_verilog_testbench_metadata()
     test_generated_74hc157_verilog_testbench_compiles_when_iverilog_is_available()

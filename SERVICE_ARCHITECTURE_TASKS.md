@@ -26,18 +26,21 @@ outputs.
 ## Task List
 
 1. ✅ Define package boundaries without moving code yet.
-   - `DB/`: canonical per-chip manifests, schema, status, source evidence,
-     legacy implementation references, and DB-owned export metadata. The DB
-     boundary is currently frozen at manifest/service metadata; DB-owned
-     pinout files and model file moves are deferred unless a concrete
-     student-catalog, HDL-tooling, or downstream-project workflow requires
-     them.
+   - `DB/`: canonical per-chip definitions, package layers, schema, status,
+     source evidence, package-local simulation references, and DB-owned export
+     metadata. Active ICs now use `definition/definition.json` plus local
+     `simulation/`, `tests/`, `symbol/`, and `generated/` folders. Virtual and
+     Passive components now use generic `definition/definition.json` packages.
+     Legacy manifest loading remains for older/not-yet-migrated compatibility
+     paths.
    - `chipdb`: Python DB access layer over `DB/`; owns chip metadata,
      package/pin descriptions, status reports, audit checks, and capability
      queries. Current implementation: `python/chiplib/db.py`.
    - `behavior`: Python physical pin-level chip behavior and catalog-backed
-     chip construction. Current implementation: `python/chiplib/chips.py` and
-     `python/chiplib/catalog.py`.
+     chip construction. Current implementation: package-local
+     `DB/*/*/simulation/model.py` for active IC packages plus
+     `python/chiplib/chips.py` and `python/chiplib/catalog.py` compatibility
+     helpers.
    - `design`: schematic JSON parsing, normalized `Design`, round-trip JSON,
      and conversion into runtime boards. Current implementation:
      `python/chiplib/design.py`.

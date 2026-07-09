@@ -3,5 +3,7 @@
   "version": 1,
   "id": "discrete",
   "title": "Discrete semiconductor components",
-  "components": ["NPN", "PNP"]
+  "migration_status": "compact_manifests_active",
+  "manifest_note": "Discrete component manifests live in DB/Discrete/<part>/component.json.",
+  "components": ["NPN", "PNP", "BC549", "BC559"]
 }

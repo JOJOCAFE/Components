@@ -92,16 +92,23 @@ absent from the Python catalog.
 
 ## Component DB
 
-`Components/DB` is the new chip-centered DB layer. Each chip folder
-owns a `chip.json` manifest with status, pins, source evidence, behavior
-references, Verilog references, DB-owned structural export metadata, tests, and
-visible missing-property reports.
+`Components/DB` is the chip-centered DB layer. Each active IC folder owns a
+canonical `definition/definition.json` file plus package-local
+`simulation/`, `tests/`, `symbol/`, and `generated/` layers. Virtual and
+Passive components also use `definition/definition.json`, with embedded
+definition layers for component identity, package, pins, simulation service,
+and UI metadata. IC definitions own status, pins, source evidence,
+logic/timing/electrical facts, generator contracts, and visible
+missing-property reports. Package-local `simulation/netlist.json` owns
+structural Verilog export metadata.
 
-The DB seed covers representative gates, sequential parts, bus parts, decoders,
-SRAM, EEPROM, and flash: `74HC00`, `74HC04`, `74HC74`, `74HC138`, `74HC161`,
-`74HC245`, `74HC574`, `62256`, `AT28C256`, and `SST39SF010A`. Existing legacy
-files remain the active model implementations, while DB manifests own the
-metadata and export contracts.
+The original DB seed covered representative gates, sequential parts, bus parts,
+decoders, SRAM, EEPROM, and flash: `74HC00`, `74HC04`, `74HC74`, `74HC138`,
+`74HC161`, `74HC245`, `74HC574`, `62256`, `AT28C256`, and `SST39SF010A`.
+All active ICs, Virtual components, and Passive components now use the layered
+package shape. Legacy `chip.json` and compact `component.json` loading remain
+as compatibility for older or not-yet-migrated paths, not as the active IC,
+Virtual, or Passive source.
 
 CLI/API access:
 
@@ -113,6 +120,8 @@ python3 -m chiplib.cli db --catalog --group virtual
 python3 -m chiplib.cli db --student
 python3 -m chiplib.cli db --student --group virtual
 python3 -m chiplib.cli db 74HC00 --detail
+python3 -m chiplib.cli db 74HC00 --package
+python3 -m chiplib.cli db 74HC00 --generate
 python3 -m chiplib.cli db --audit
 python3 -m chiplib.cli db --status
 ```

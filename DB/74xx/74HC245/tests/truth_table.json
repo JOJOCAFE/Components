@@ -77,6 +77,30 @@
         "A": "Z",
         "B": "Z"
       }
+    },
+    {
+      "name": "reenabled_a_to_b_after_high_z",
+      "inputs": {
+        "DIR": 1,
+        "/OE": 0,
+        "A": "0x96"
+      },
+      "expect": {
+        "B": "0x96",
+        "A": "Z"
+      }
+    },
+    {
+      "name": "direction_reversal_back_to_b_to_a",
+      "inputs": {
+        "DIR": 0,
+        "/OE": 0,
+        "B": "0x69"
+      },
+      "expect": {
+        "A": "0x69",
+        "B": "Z"
+      }
     }
   ],
   "edge_criteria": {

@@ -48,6 +48,35 @@ top-level `datasheet.sources` section of the same file. Legacy split definition
 or datasheet files may still be loaded as a compatibility fallback, but they
 are not required physical source files for generator seed packages.
 
+All active IC packages under `DB/74xx/` and `DB/Memory/` now use this package
+shape. IC `chip.json` files are no longer required for those packages; loader
+compatibility is synthesized from `definition/definition.json` plus
+`simulation/netlist.json`. Legacy `chip.json` support remains only for older or
+non-IC components.
+
+## Definition Contract
+
+`definition/definition.json` is the only canonical chip definition file for a
+package. It must contain:
+
+- `schema`, `version`, and `part`.
+- `metadata`: title, group, family, role, and status-facing identity.
+- `package`: physical package kind and pin count.
+- `pins`: real package pin numbers, names, directions, active-low flags, and
+  functions.
+- `logic`: machine-readable behavior summary used by generators and docs.
+- `timing`: model delay plus extracted timing facts when available.
+- `generation`: required generator targets and local file paths.
+- `verification`: required test types and required vector names.
+- `datasheet.sources`: manufacturer/source evidence used for package, pins,
+  logic, timing, and electrical claims.
+- `definition_layers`: embedded component/package/pins/power/logic/timing/
+  electrical sublayers for tools that want layer-specific records.
+
+Do not move behavior code, generated prose, or UI-only state into
+`definition.json`. It describes source facts and generator contracts; it does
+not execute behavior.
+
 ## Layer Ownership
 
 - `definition/definition.json` owns chip identity, package, pins, power, logic,
@@ -66,6 +95,9 @@ are not required physical source files for generator seed packages.
 - `tests/` owns machine-readable verification intent. Test files can be turned
   into Python, Verilog, CLI, or UI checks.
 - `symbol/` owns schematic and visual block hints. It must not define behavior.
+- `generated/` owns reproducible artifact reports from
+  `generate_component_artifacts(part)`. Regenerate these files after changing
+  definitions, tests, symbols, or generator logic.
 
 ## Rules
 
@@ -89,6 +121,74 @@ Each active IC package should eventually include:
 Not every part has every behavior. If a test type is not applicable, the test
 file should say `applicable: false` with a short reason. Missing information
 should be visible, not hidden.
+
+### Truth Table Contract
+
+`tests/truth_table.json` is the primary executable behavior record. For active
+ICs it must not use a generic `basic_function` placeholder. System-used chips,
+such as RV8GR parts, must have per-chip vectors with concrete `inputs` and
+`expect` fields.
+
+Every truth table record must include `edge_criteria`:
+
+```json
+{
+  "clocking": "edge_sensitive",
+  "trigger_edge": "rising",
+  "non_trigger_edge": "falling_or_no_rising_edge_holds_state",
+  "notes": "Truth tests must prove state changes only on the triggering rising edge and holds without that edge."
+}
+```
+
+Allowed clocking modes:
+
+- `edge_sensitive`: clocked state changes. The record must state `rising` or
+  `falling` and include vectors or linked checks proving the non-trigger edge
+  holds state.
+- `level_sensitive`: combinational or level-controlled logic. Use
+  `trigger_edge: none`.
+- `control_edge_or_level_sensitive`: memory read/write or similar control
+  windows. Use `trigger_edge: WE_control` when write-enable behavior is the
+  relevant transition.
+
+Clocked seed and RV8GR chips must include negative edge/hold coverage. Examples:
+
+- `74HC161`: ENP/ENT hold, no-rising-edge hold, count resumes on rising edge,
+  `/CLR` priority over load/count.
+- `74HC574`: no-clock hold, clock while `/OE=1` captures internally, re-enable
+  exposes the captured value.
+- `74HC164` and `74HC74`: explicit clocked behavior and asynchronous controls.
+
+### Bus Fight And High-Z Contract
+
+`bus_fight.json` must be present for bidirectional or bus-driving chips. If a
+chip can drive a shared bus, tests should cover both:
+
+- conflict when the chip and an external driver drive opposite values
+- no conflict when the chip output is disabled/high-Z
+
+The Python regression suite must execute representative bus-fight records
+through `Board.errors()`; JSON records alone are not enough for seed or RV8GR
+bus parts.
+
+### Memory Write Protection Contract
+
+Memory truth records must prove:
+
+- write then read at one or more addresses
+- `/CE=1` prevents writes
+- `/WE=1` prevents writes
+- `/OE=1` or disabled chip states release DQ to high-Z
+- write-mode DQ high-Z behavior is explicit
+
+The seed records for `62256` and `AT28C256` are the reference shape.
+
+### Python/Verilog Equivalence Contract
+
+Seed and system-used chips should have direct Python-vs-Verilog equivalence
+coverage whenever a Verilog model exists. The split-record tests guard that the
+seed chips have matching equivalence tests, and generated Verilog testbench
+metadata is emitted as a package artifact.
 
 ## First Reference Part
 

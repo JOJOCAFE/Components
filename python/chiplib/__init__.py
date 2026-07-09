@@ -17,7 +17,7 @@ from .core import (
 )
 from .chips import CHIP_FACTORIES, create_chip
 from .block_ui import design_from_block_ui, design_to_block_ui
-from .db import audit_db, component_ids, component_summary, db_root, db_status_report, generate_component_artifacts, legacy_catalog_parts, load_all_components, load_component, load_digital_definition, load_digital_package, validate_digital_definition
+from .db import audit_db, component_ids, component_summary, db_root, db_status_report, generate_component_artifacts, legacy_catalog_parts, load_all_components, load_component, load_component_package, load_digital_definition, load_digital_package, load_package_definition, validate_component_definition, validate_digital_definition
 from .design import Design, Endpoint
 from .loader import ImageLoadError, load_image, load_memory, parse_hex_text, parse_ihex
 from .netlist import design_from_kicad_netlist, design_from_netlist, design_to_netlist, design_to_verilog
@@ -52,8 +52,11 @@ __all__ = [
     "legacy_catalog_parts",
     "load_all_components",
     "load_component",
+    "load_component_package",
     "load_digital_definition",
     "load_digital_package",
+    "load_package_definition",
+    "validate_component_definition",
     "validate_digital_definition",
     "Design",
     "Endpoint",

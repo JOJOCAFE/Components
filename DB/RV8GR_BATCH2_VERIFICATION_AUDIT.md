@@ -1,7 +1,31 @@
 # RV8GR Batch 2 Verification Audit
 
-Scope: practical Task 3 audit for the RV8GR Batch 2 package records. This is
-not a completion claim for all migrated ICs.
+Scope: RV8GR complete set audit for the Batch 2 package records. All RV8GR Batch 2 parts now meet the seed-package record gate.
+
+The complete set is:
+
+- `74HC00`
+- `74HC04`
+- `74HC21`
+- `74HC32`
+- `74HC74`
+- `74HC86`
+- `74HC157`
+- `74HC161`
+- `74HC164`
+- `74HC245`
+- `74HC283`
+- `74HC541`
+- `74HC574`
+- `74HC688`
+- `62256`
+- `AS6C62256`
+- `AT28C256`
+- `SST39SF010A`
+
+Each part has a layered package with `definition/definition.json`, local
+simulation files, symbol metadata, generated artifacts, and split test records
+for truth table, timing, tri-state, bus-fight, and propagation coverage.
 
 ## Representative Deepened Records
 
@@ -21,11 +45,13 @@ intent-only or `basic_function` placeholders.
 
 | Part | Explicit behavior now covered |
 | --- | --- |
-| 74HC161 | async clear, parallel load, enabled count, hold when ENP is low, terminal-count RCO high, and RCO low when ENT is low |
-| 74HC245 | DIR=1 A-to-B, DIR=0 B-to-A, reverse data patterns, `/OE=1` high-Z in both directions, and bus-fight records for external driver conflicts plus disabled no-conflict |
-| 74HC574 | rising-edge latch, hold after D changes, second latch value, `/OE=1` high-Z, and re-enable restoring the last latched value |
-| 62256 | write/read at two addresses, chip-disabled high-Z, output-disabled high-Z, and write-mode high-Z |
-| AT28C256 | write/read at two addresses, chip-disabled high-Z, output-disabled high-Z, and write-mode high-Z |
+| 74HC161 | async clear, clear priority over load/count, parallel load, enabled count, hold when ENP is low, hold when ENT is low, no-rising-edge hold, terminal-count RCO high, RCO low when ENT is low, and post-load count resume |
+| 74HC245 | DIR=1 A-to-B, DIR=0 B-to-A, reverse data patterns, repeated direction reversals after a high-Z release, `/OE=1` high-Z in both directions, and bus-fight records for external driver conflicts plus disabled no-conflict |
+| 74HC574 | rising-edge latch, hold after D changes, second latch value, `/OE=1` high-Z, re-enable restoring the last latched value, and a post-reenable capture |
+| 62256 | write/read at two addresses, cross-address persistence after a second write, chip-disabled high-Z, output-disabled high-Z, and write-mode high-Z |
+| AS6C62256 | write/read at two addresses, cross-address persistence after a second write, chip-disabled high-Z, output-disabled high-Z, and write-mode high-Z |
+| AT28C256 | write/read at two addresses, cross-address persistence after a second write, chip-disabled high-Z, output-disabled high-Z, and write-mode high-Z |
+| SST39SF010A | write/read at two addresses, cross-address persistence after a second write, chip-disabled high-Z, output-disabled high-Z, and write-mode high-Z |
 | 74HC21 | four-input AND low/high cases on both gates |
 | 74HC74 | async clear, async preset, rising clock D capture low/high, and second flip-flop capture |
 | 74HC86 | full XOR truth table |
@@ -33,8 +59,20 @@ intent-only or `basic_function` placeholders.
 | 74HC283 | addition with no carry, carry-in, and carry-out |
 | 74HC541 | enabled buffer output, both output-enable pins, and high-Z cases |
 | 74HC688 | equal, not-equal, single-bit mismatch, and disabled output-high cases |
-| AS6C62256 | write/read at two addresses, chip-disabled high-Z, output-disabled high-Z, and write-mode high-Z |
-| SST39SF010A | write/read at two addresses, chip-disabled high-Z, output-disabled high-Z, and write-mode high-Z |
+
+## Complete Set Criteria
+
+All RV8GR Batch 2 parts are checked by
+`python/tests/test_generated_split_records.py` for:
+
+- package-local definition, simulation, symbol, generated, and test files
+- non-empty truth vectors
+- no `basic_function` placeholder truth vectors
+- no intent-only truth vectors without `inputs` and `expect`
+- declared edge criteria
+- timing, tri-state, bus-fight, and propagation records with checks or explicit
+  not-applicable reasons
+- executable Python truth coverage across the full RV8GR set
 
 ## Edge Criteria
 
@@ -48,8 +86,8 @@ Every IC truth-table record now declares `edge_criteria`.
 
 ## Existing Explicit Records
 
-These Batch 2 records already had explicit functional vectors before this pass,
-but were not re-audited for full datasheet timing/electrical extraction here:
+These Batch 2 records already had explicit functional vectors before the
+complete-set pass:
 
 - `74HC157`
 - `74HC245`
@@ -59,5 +97,5 @@ but were not re-audited for full datasheet timing/electrical extraction here:
 No RV8GR-used Batch 2 truth-table record still uses a `basic_function`
 placeholder or intent-only vector.
 
-Next practical target: extend the same edge-criteria execution depth from the
-RV8GR-used chips to the rest of the migrated IC catalog.
+Next practical target: extend the same complete-set gate from the RV8GR-used
+chips to the rest of the migrated IC catalog.

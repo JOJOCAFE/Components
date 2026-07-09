@@ -3,5 +3,7 @@
   "version": 1,
   "id": "virtual",
   "title": "Virtual simulation components",
+  "migration_status": "layered_packages_active",
+  "manifest_note": "Virtual component packages live in DB/Virtual/<part>/definition/definition.json.",
   "components": ["InputSource", "ClockSource", "Probe", "BusProbe", "VCC", "GND", "Pullup", "Pulldown"]
 }

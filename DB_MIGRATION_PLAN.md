@@ -3,104 +3,125 @@
 Goal: make `DB/` the chip identity layer for Components without breaking the
 current simulator, Verilog models, exporter, tests, or existing projects.
 
-The migration is gradual. Existing implementation files stay active until DB
-loaders and tests prove the replacement path is equivalent.
+The migration is gradual. For active IC packages, the replacement path is now
+the current path: `definition/definition.json` plus package-local simulation,
+netlist, symbol, test, and generated artifact files. Virtual and Passive
+components also use `definition/definition.json` packages. Legacy manifest
+loading remains only as compatibility for older or not-yet-migrated component
+groups.
 
 ## Target Shape
 
-The DB is now a grouped component catalog. IC manifests live with their family,
-and non-IC component manifests live with their component class:
+The DB is now a grouped component catalog. Active IC, Virtual, and Passive
+packages live with their family/class and use a layered package shape.
+Not-yet-migrated component manifests live with their component class:
 
 ```text
 DB/
   74xx/
     74HC245/
-      chip.json
-  memory/
+      definition/definition.json
+      simulation/model.py
+      simulation/model.v
+      simulation/model.json
+      simulation/netlist.json
+      symbol/dip.json
+      tests/*.json
+      generated/artifacts.json
+  Memory/
     AT28C256/
-      chip.json
-  virtual/
+      definition/definition.json
+      simulation/model.py
+      simulation/model.v
+      simulation/model.json
+      simulation/netlist.json
+      symbol/dip.json
+      tests/*.json
+      generated/artifacts.json
+  Virtual/
     InputSource/
-      component.json
+      definition/definition.json
     Probe/
-      component.json
-  passive/
+      definition/definition.json
+  Passive/
     LED/
-      component.json
+      definition/definition.json
     Resistor/
-      component.json
-  discrete/
+      definition/definition.json
+  Discrete/
     NPN/
       component.json
 ```
 
-Future IC folders may own implementation files directly:
+For active ICs, `definition/definition.json` is the canonical source artifact.
+It owns component identity, package and pin facts, source evidence, status,
+logic/timing/electrical records, and generator contracts. Package-local
+`simulation/`, `tests/`, `symbol/`, and `generated/` layers travel with the
+chip and are reproducible from the definition plus generator/test inputs.
 
-```text
-DB/
-  74xx/74HC245/
-    chip.json
-    pinout.md          # later, after migration
-    model.v            # later, after migration
-    behavior.py        # optional later
-    tests.json         # optional later
-```
-
-This shape is aspirational, not the active migration target. The DB migration
-is frozen at the manifest/service boundary for now: manifests own identity,
-status, source evidence, pin metadata, capability metadata, and service-facing
-references; family-level Verilog and Python behavior files remain the active
-implementation locations.
-
-The first stable artifact is the manifest: `chip.json` for ICs and
-`component.json` for grouped virtual/passive/discrete components. It owns the
-component identity, group, kind, role, package/pins, source evidence, status,
-and references to active legacy files when any exist.
+Virtual and Passive components use `schema: db.component.definition` inside
+`definition/definition.json`; their embedded layers describe component
+identity, package, pins, simulation service, and UI metadata. The compact
+`component.json` artifact remains only for not-yet-migrated grouped components
+such as Discrete. Legacy `chip.json` loading remains supported for older
+compatibility paths, but no active IC under `DB/74xx` or `DB/Memory` requires
+`chip.json`.
 
 ## Current Transitional Shape
 
-Grouped `chip.json` manifests may still point to family-level implementation
-files:
+Active IC package files now provide local implementation and export references:
 
 ```text
-Verilog/74xx/74hc245.v
-Verilog/Memory/at28c256.v
-python/chiplib/chips.py
-python/chiplib/catalog.py
+DB/74xx/<part>/definition/definition.json
+DB/74xx/<part>/simulation/model.py
+DB/74xx/<part>/simulation/model.v
+DB/74xx/<part>/simulation/model.json
+DB/74xx/<part>/simulation/netlist.json
+DB/74xx/<part>/symbol/dip.json
+DB/74xx/<part>/tests/*.json
+DB/74xx/<part>/generated/artifacts.json
 ```
 
-This keeps HDL tools and student browsing simple while the DB owns identity,
-status, pins, and exporter metadata.
-Grouped component manifests live under:
+`load_component(part)` synthesizes compatibility data from
+`definition/definition.json` and `simulation/netlist.json`. Project/system
+exports copy the chip-local `simulation/model.py` with the package and copy
+`python/chiplib/core.py` once as the shared runtime primitive layer.
+
+Migrated Virtual and Passive component packages live under:
 
 ```text
-DB/74xx/<part>/chip.json
-DB/Memory/<part>/chip.json
-DB/Virtual/<component>/component.json
-DB/Passive/<component>/component.json
+DB/Virtual/<component>/definition/definition.json
+DB/Passive/<component>/definition/definition.json
+```
+
+Not-yet-migrated component manifests live under:
+
+```text
 DB/Discrete/<component>/component.json
 ```
 
 ## Migration Rules
 
-1. Add DB entries before moving files.
-2. Every DB entry must pass `DB/chip.schema.json`.
+1. Add or update DB package data before changing generators or services.
+2. Every active IC definition must pass `DB/digital.schema.json`; generic
+   component definitions must pass loader validation; legacy component
+   manifests must pass their relevant schema.
 3. Missing chip properties are allowed only when visible in `status`,
    `missing_properties`, or `missing_files`.
 4. Exporters and simulators should consume DB metadata through `chiplib.db`,
    not by scanning old folders directly.
 5. A physical file move is allowed only after tests prove the old and new
    lookup paths produce the same behavior.
-6. Do not delete legacy files until all current tests and at least one existing
-   project smoke test still pass.
+6. Do not delete legacy compatibility loaders until older/not-yet-migrated
+   components and at least one existing project smoke test still pass.
 7. Keep manufacturer-backed DIP/PDIP evidence mandatory for physical pinout
    status.
-8. Grouped virtual/passive/discrete manifests are allowed before behavior is
+8. Grouped virtual/passive/discrete definitions are allowed before behavior is
    executable, but they must declare `group`, `kind`, `role`, `pins`, `status`,
    and their intended `simulation.service`.
 9. Direct flat `DB/<part>/chip.json` lookups are retired in runtime code. New
-   code must use the DB loader so grouped IC and non-IC manifests resolve
-   through one path.
+   code must use the DB loader so layered IC packages, generic component
+   packages, and legacy manifests resolve through one path.
 
 ## Phases
 
@@ -117,7 +138,8 @@ Status: complete.
 
 Exit criteria:
 
-- ✅ `python3 -B -m tests.test_db` validates all DB manifests.
+- ✅ `python3 -B -m tests.test_db` validates all DB manifests and layered IC
+  definitions.
 - ✅ `python3 -m chiplib.cli db` lists the current DB.
 - ✅ No DB manifest has hidden missing file references.
 
@@ -169,9 +191,9 @@ Exit criteria:
 
 - ✅ `CHIP_STATUS.md` can be checked from DB data with
   `python3 -m chiplib.cli db --status`.
-- ✅ DB loader can read grouped IC `chip.json` manifests and grouped
-  `component.json` manifests.
-- ✅ Seed grouped manifests exist for virtual, passive, and discrete schematic
+- ✅ DB loader can read layered IC packages, generic Virtual/Passive packages,
+  and grouped `component.json` manifests for not-yet-migrated components.
+- ✅ Seed grouped records exist for virtual, passive, and discrete schematic
   components.
 - ✅ UI/API-facing chip metadata comes from DB manifests.
 
@@ -180,21 +202,17 @@ Exit criteria:
 Status: complete.
 
 Move Verilog export mappings out of the large shared mapping table and into
-DB-owned export metadata.
+DB-owned package export metadata.
 
 Target:
 
 ```text
-DB/74xx/<part>/chip.json
-DB/Memory/<part>/chip.json
-  verilog:
-    module
-    file
-    export:
-      kind
-      ports
-      output_pins
-      parameters
+DB/74xx/<part>/simulation/netlist.json
+DB/Memory/<part>/simulation/netlist.json
+  verilog.module
+  verilog.file
+  verilog.export
+  portable_files
 ```
 
 Rules:
@@ -212,7 +230,7 @@ Exit criteria:
 
 Current proof point:
 
-- ✅ All 62 active `verilog_export=tested` IC manifests have DB-owned Verilog
+- ✅ All 62 active `verilog_export=tested` IC packages have DB-owned Verilog
   export metadata.
 - ✅ `Design.to_verilog()` uses DB metadata through `chiplib.db.load_component`
   and has no legacy mapping-table fallback.
@@ -246,56 +264,59 @@ Exit criteria if chosen:
 - Student catalog pages are clearer with per-component DB pinout files than
   with manifest-backed pin metadata plus linked implementation references.
 
-### Phase 6: Optional DB-Owned Models
+### Phase 6: Package-Local IC Models
 
-Status: deferred.
+Status: complete for active IC packages.
 
-Only after metadata and export paths are stable, consider moving model files:
+Active IC packages now own package-local model files:
 
 ```text
-Verilog/74xx/74hc245.v -> DB/74xx/74HC245/model.v
-Verilog/Memory/at28c256.v -> DB/Memory/AT28C256/model.v
+DB/74xx/74HC245/simulation/model.py
+DB/74xx/74HC245/simulation/model.v
+DB/Memory/AT28C256/simulation/model.py
+DB/Memory/AT28C256/simulation/model.v
 ```
 
-This is optional. It may be better to keep implementation models in family
-folders and let DB manifests own references. The decision should be based on
-which layout stays easiest for simulation, HDL tools, and student browsing.
-
-Current decision: keep model files in `Verilog/74xx/`, `Verilog/Memory/`, and
-Python behavior/catalog modules. DB-owned model moves are deferred until a
-student-facing catalog view, HDL tool, or downstream project has a concrete
-need that cannot be met by manifest references and service APIs.
+The shared `Verilog/74xx/` and `Verilog/Memory/` trees remain useful for
+family-level smoke coverage and comparison, but exported projects should use
+the package-local `simulation/model.py` and copy `python/chiplib/core.py` once
+as the shared runtime primitive layer. Legacy Python catalog helpers stay only
+as loader/runtime compatibility, not as the source of active IC package facts.
 
 Exit criteria:
 
-- Verilog smoke tests pass.
-- Python behavior tests pass.
-- Existing projects can still locate component models.
-- The move removes real duplication or confusion in student browsing or HDL
-  tooling, instead of only changing repository layout.
+- Verilog smoke tests pass for shared family models and package-local
+  `simulation/model.v` files.
+- Python behavior tests pass using package-local `simulation/model.py` files.
+- Existing projects can still locate component models through DB metadata and
+  `portable_files`.
+- Student browsing sees one component package instead of needing to assemble
+  facts from multiple legacy locations.
 
 ## Do Not Do Yet
 
 - Do not split chip behavior into Rust/C/C++ until the DB and service
   contracts are stable.
 - Do not make every backend piece a separate process.
-- Do not delete `Verilog/74xx/`, `Verilog/Memory/`, or `python/chiplib/catalog.py` while any
-  loader still depends on them.
+- Do not delete `Verilog/74xx/`, `Verilog/Memory/`, or
+  `python/chiplib/catalog.py` while smoke tests, legacy compatibility, or
+  comparison checks still depend on them.
 - Do not let exporters or UI parse raw chip files independently from DB
   metadata.
 
 ## Recommended Next Tasks
 
-1. Keep DB migration frozen at the manifest/service boundary unless a concrete
-   student-facing catalog, HDL tool, or downstream project needs pinout/model
-   files physically moved.
-2. Add student-facing DB catalog views/examples that make status, missing
-   properties, and unsupported exports obvious.
-3. Defer DB-owned pinout/model moves until they improve student browsing or HDL
-   tooling; current family-level model folders remain the active implementation
-   location. Revisit only with a failing workflow, duplicated source of truth,
-   or evidence that manifest references and service APIs are insufficient.
-4. Build block-UI import/export against the normalized `Design` model and DB
-   component catalog.
-5. Leave the full visual chip-block editor until after the DB catalog and
-   normalized import/export contracts are comfortable for student-facing use.
+1. Reconcile stale docs so every entry point describes active IC packages as
+   `definition/definition.json` plus package-local simulation, netlist, symbol,
+   tests, and generated artifacts.
+2. Make the student-facing catalog path obvious: status, missing properties,
+   package readiness, and unsupported exports should be visible before a
+   learner opens a raw definition file.
+3. Expand generated Verilog bench emission beyond the first simple truth-table
+   shape, especially for edge-sensitive, tri-state, bidirectional, and memory
+   control-window parts.
+4. Resolve remaining `datasheet-required` package evidence placeholders, then
+   deepen timing/electrical extraction for the rest of the active IC catalog.
+5. Leave the full visual chip-block editor until after generated docs, demos,
+   and normalized import/export contracts are comfortable for student-facing
+   use.

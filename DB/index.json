@@ -1,6 +1,11 @@
 {
   "schema": "db.index",
   "version": 1,
+  "model": {
+    "name": "chip",
+    "version": "v0.1",
+    "frozen_on": "2026-07-09"
+  },
   "groups": [
     {"id": "74xx", "title": "74xx and 74HC logic ICs", "path": "DB/74xx"},
     {"id": "memory", "title": "Memory ICs", "path": "DB/Memory"},

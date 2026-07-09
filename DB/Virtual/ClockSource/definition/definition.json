@@ -1,0 +1,94 @@
+{
+  "schema": "db.component.definition",
+  "version": 1,
+  "id": "ClockSource",
+  "part": "ClockSource",
+  "group": "virtual",
+  "kind": "virtual",
+  "role": "stimulus",
+  "title": "Clock source",
+  "family": "Virtual",
+  "package": {
+    "kind": "virtual",
+    "pins": 1
+  },
+  "status": {
+    "datasheet": "not_applicable",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "verilog_model": "not_applicable",
+    "verilog_export": "not_applicable",
+    "tests": "modeled"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "CLK",
+      "direction": "output"
+    }
+  ],
+  "simulation": {
+    "service": "sim.clock_source",
+    "default_period_ns": 100
+  },
+  "ui": {
+    "widget": "clock",
+    "symbol": "clock"
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "ClockSource",
+      "title": "Clock source",
+      "family": "Virtual",
+      "group": "virtual",
+      "kind": "virtual",
+      "role": "stimulus"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "ClockSource",
+      "packages": [
+        {
+          "id": "virtual",
+          "kind": "virtual",
+          "pins": 1
+        }
+      ],
+      "default_package": "virtual"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "ClockSource",
+      "pins": [
+        {
+          "number": 1,
+          "name": "CLK",
+          "direction": "output"
+        }
+      ],
+      "buses": {}
+    },
+    "simulation": {
+      "schema": "db.component.simulation",
+      "version": 1,
+      "part": "ClockSource",
+      "simulation": {
+        "service": "sim.clock_source",
+        "default_period_ns": 100
+      }
+    },
+    "ui": {
+      "schema": "db.component.ui",
+      "version": 1,
+      "part": "ClockSource",
+      "ui": {
+        "widget": "clock",
+        "symbol": "clock"
+      }
+    }
+  }
+}

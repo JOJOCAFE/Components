@@ -252,6 +252,20 @@ def test_cli_db_summary_and_part_lookup():
     assert package_data["format"] == "db.component.package"
     assert package_data["layers"]["tests"]["truth_table"]["part"] == "74HC245"
 
+    virtual_package = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "db", "Probe", "--package"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert virtual_package.returncode == 0, virtual_package.stderr
+    virtual_package_data = json.loads(virtual_package.stdout)
+    assert virtual_package_data["format"] == "db.component.package"
+    assert virtual_package_data["definition"]["schema"] == "db.component.definition"
+    assert virtual_package_data["definition"]["validation"]["ok"] is True
+    assert virtual_package_data["layers"]["simulation"]["service"] == "sim.probe"
+
     generated = subprocess.run(
         [sys.executable, "-B", "-m", "chiplib.cli", "db", "74HC245", "--generate"],
         cwd=Path(__file__).resolve().parents[1],
