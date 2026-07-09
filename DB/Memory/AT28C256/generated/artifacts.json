@@ -1,8 +1,245 @@
 {
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/Memory/AT28C256/definition/definition.json",
+  "part": "AT28C256",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/Memory/AT28C256/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/Memory/AT28C256/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/Memory/AT28C256/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
   "artifacts": {
-    "documentation": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "AT28C256",
+      "title": "32K x 8 parallel EEPROM",
+      "family": "Memory",
+      "group": "memory",
+      "role": "eeprom",
+      "package": {
+        "kind": "DIP",
+        "pins": 28,
+        "default": "PDIP"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "A14",
+          "direction": "input",
+          "bus": "A",
+          "bit": 14
+        },
+        {
+          "number": 2,
+          "name": "A12",
+          "direction": "input",
+          "bus": "A",
+          "bit": 12
+        },
+        {
+          "number": 3,
+          "name": "A7",
+          "direction": "input",
+          "bus": "A",
+          "bit": 7
+        },
+        {
+          "number": 4,
+          "name": "A6",
+          "direction": "input",
+          "bus": "A",
+          "bit": 6
+        },
+        {
+          "number": 5,
+          "name": "A5",
+          "direction": "input",
+          "bus": "A",
+          "bit": 5
+        },
+        {
+          "number": 6,
+          "name": "A4",
+          "direction": "input",
+          "bus": "A",
+          "bit": 4
+        },
+        {
+          "number": 7,
+          "name": "A3",
+          "direction": "input",
+          "bus": "A",
+          "bit": 3
+        },
+        {
+          "number": 8,
+          "name": "A2",
+          "direction": "input",
+          "bus": "A",
+          "bit": 2
+        },
+        {
+          "number": 9,
+          "name": "A1",
+          "direction": "input",
+          "bus": "A",
+          "bit": 1
+        },
+        {
+          "number": 10,
+          "name": "A0",
+          "direction": "input",
+          "bus": "A",
+          "bit": 0
+        },
+        {
+          "number": 11,
+          "name": "I/O0",
+          "direction": "bidirectional",
+          "bus": "DQ",
+          "bit": 0
+        },
+        {
+          "number": 12,
+          "name": "I/O1",
+          "direction": "bidirectional",
+          "bus": "DQ",
+          "bit": 1
+        },
+        {
+          "number": 13,
+          "name": "I/O2",
+          "direction": "bidirectional",
+          "bus": "DQ",
+          "bit": 2
+        },
+        {
+          "number": 14,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 15,
+          "name": "I/O3",
+          "direction": "bidirectional",
+          "bus": "DQ",
+          "bit": 3
+        },
+        {
+          "number": 16,
+          "name": "I/O4",
+          "direction": "bidirectional",
+          "bus": "DQ",
+          "bit": 4
+        },
+        {
+          "number": 17,
+          "name": "I/O5",
+          "direction": "bidirectional",
+          "bus": "DQ",
+          "bit": 5
+        },
+        {
+          "number": 18,
+          "name": "I/O6",
+          "direction": "bidirectional",
+          "bus": "DQ",
+          "bit": 6
+        },
+        {
+          "number": 19,
+          "name": "I/O7",
+          "direction": "bidirectional",
+          "bus": "DQ",
+          "bit": 7
+        },
+        {
+          "number": 20,
+          "name": "/CE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 21,
+          "name": "A10",
+          "direction": "input",
+          "bus": "A",
+          "bit": 10
+        },
+        {
+          "number": 22,
+          "name": "/OE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 23,
+          "name": "A11",
+          "direction": "input",
+          "bus": "A",
+          "bit": 11
+        },
+        {
+          "number": 24,
+          "name": "A9",
+          "direction": "input",
+          "bus": "A",
+          "bit": 9
+        },
+        {
+          "number": 25,
+          "name": "A8",
+          "direction": "input",
+          "bus": "A",
+          "bit": 8
+        },
+        {
+          "number": 26,
+          "name": "A13",
+          "direction": "input",
+          "bus": "A",
+          "bit": 13
+        },
+        {
+          "number": 27,
+          "name": "/WE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 28,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
       "buses": {
         "A": {
+          "width": 15,
           "pins_lsb_first": [
             10,
             9,
@@ -19,10 +256,10 @@
             2,
             26,
             1
-          ],
-          "width": 15
+          ]
         },
         "DQ": {
+          "width": 8,
           "pins_lsb_first": [
             11,
             12,
@@ -32,14 +269,317 @@
             17,
             18,
             19
-          ],
-          "width": 8
+          ]
         }
       },
-      "controls": [],
+      "power": [
+        {
+          "name": "GND",
+          "pin": 14,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 28,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "parallel_eeprom",
+        "address_width": 15,
+        "data_width": 8,
+        "read": {
+          "when": "/CE=0 and /OE=0 and /WE=1",
+          "drive": "DQ"
+        },
+        "write": {
+          "when": "/CE=0 and /OE=1 and /WE=0",
+          "sample": "DQ"
+        },
+        "tristate": {
+          "when": "not read",
+          "DQ": "Z"
+        }
+      },
+      "timing": {
+        "delay_ns": 70
+      }
+    },
+    "python_simulator": {
       "part": "AT28C256",
-      "pin_count": 28,
+      "portable": true,
+      "copy_with_chip": [
+        "DB/Memory/AT28C256/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/Memory/AT28C256/simulation/model.py",
+      "class": "AT28C256"
+    },
+    "verilog_wrapper": {
+      "part": "AT28C256",
+      "module": "mem_at28c256",
+      "file": "DB/Memory/AT28C256/simulation/model.v",
+      "netlist": "DB/Memory/AT28C256/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "A",
+            "pins": [
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              3,
+              25,
+              24,
+              21,
+              23,
+              2,
+              26,
+              1
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "DQ",
+            "pins": [
+              11,
+              12,
+              13,
+              15,
+              16,
+              17,
+              18,
+              19
+            ],
+            "direction": "output"
+          },
+          {
+            "name": "CE_bar",
+            "pins": [
+              20
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "OE_bar",
+            "pins": [
+              22
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "WE_bar",
+            "pins": [
+              27
+            ],
+            "direction": "input",
+            "fallback": "1'b1"
+          }
+        ],
+        "output_pins": [
+          11,
+          12,
+          13,
+          15,
+          16,
+          17,
+          18,
+          19
+        ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "AT28C256",
+      "shape": "dip",
+      "pins": 28,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "right": [
+        28,
+        27,
+        26,
+        25,
+        24,
+        23,
+        22,
+        21,
+        20,
+        19,
+        18,
+        17,
+        16,
+        15
+      ],
+      "labels": {
+        "1": "A14",
+        "2": "A12",
+        "3": "A7",
+        "4": "A6",
+        "5": "A5",
+        "6": "A4",
+        "7": "A3",
+        "8": "A2",
+        "9": "A1",
+        "10": "A0",
+        "14": "GND",
+        "20": "/CE",
+        "21": "A10",
+        "22": "/OE",
+        "23": "A11",
+        "24": "A9",
+        "25": "A8",
+        "26": "A13",
+        "27": "/WE",
+        "28": "VCC"
+      },
+      "bus_groups": {
+        "A": [
+          10,
+          9,
+          8,
+          7,
+          6,
+          5,
+          4,
+          3,
+          25,
+          24,
+          21,
+          23,
+          2,
+          26,
+          1
+        ],
+        "DQ": [
+          11,
+          12,
+          13,
+          15,
+          16,
+          17,
+          18,
+          19
+        ]
+      }
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "AT28C256",
+      "shape": "dip",
+      "pins": 28,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "right": [
+        28,
+        27,
+        26,
+        25,
+        24,
+        23,
+        22,
+        21,
+        20,
+        19,
+        18,
+        17,
+        16,
+        15
+      ],
+      "labels": {
+        "1": "A14",
+        "2": "A12",
+        "3": "A7",
+        "4": "A6",
+        "5": "A5",
+        "6": "A4",
+        "7": "A3",
+        "8": "A2",
+        "9": "A1",
+        "10": "A0",
+        "14": "GND",
+        "20": "/CE",
+        "21": "A10",
+        "22": "/OE",
+        "23": "A11",
+        "24": "A9",
+        "25": "A8",
+        "26": "A13",
+        "27": "/WE",
+        "28": "VCC"
+      },
+      "bus_groups": {
+        "A": [
+          10,
+          9,
+          8,
+          7,
+          6,
+          5,
+          4,
+          3,
+          25,
+          24,
+          21,
+          23,
+          2,
+          26,
+          1
+        ],
+        "DQ": [
+          11,
+          12,
+          13,
+          15,
+          16,
+          17,
+          18,
+          19
+        ]
+      }
+    },
+    "documentation": {
       "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "AT28C256",
+      "title": "32K x 8 parallel EEPROM",
+      "summary": "32K x 8 parallel EEPROM.",
       "sections": [
         "overview",
         "pins",
@@ -48,11 +588,80 @@
         "timing",
         "try_it"
       ],
-      "summary": "32K x 8 parallel EEPROM.",
-      "title": "32K x 8 parallel EEPROM",
-      "version": 1
+      "pin_count": 28,
+      "buses": {
+        "A": {
+          "width": 15,
+          "pins_lsb_first": [
+            10,
+            9,
+            8,
+            7,
+            6,
+            5,
+            4,
+            3,
+            25,
+            24,
+            21,
+            23,
+            2,
+            26,
+            1
+          ]
+        },
+        "DQ": {
+          "width": 8,
+          "pins_lsb_first": [
+            11,
+            12,
+            13,
+            15,
+            16,
+            17,
+            18,
+            19
+          ]
+        }
+      },
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "AT28C256",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "tri_state",
+          "source": "tests/tri_state.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "write_read",
+        "disabled_high_z",
+        "oe_high_high_z"
+      ]
     },
     "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "AT28C256",
       "controls": [
         "A14",
         "A12",
@@ -73,588 +682,15 @@
         "A13",
         "/WE"
       ],
-      "default_steps": [
-        "apply controls",
-        "settle",
-        "probe"
-      ],
-      "part": "AT28C256",
       "probes": [
         "A",
         "DQ"
       ],
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1
-    },
-    "json": {
-      "buses": {
-        "A": {
-          "pins_lsb_first": [
-            10,
-            9,
-            8,
-            7,
-            6,
-            5,
-            4,
-            3,
-            25,
-            24,
-            21,
-            23,
-            2,
-            26,
-            1
-          ],
-          "width": 15
-        },
-        "DQ": {
-          "pins_lsb_first": [
-            11,
-            12,
-            13,
-            15,
-            16,
-            17,
-            18,
-            19
-          ],
-          "width": 8
-        }
-      },
-      "family": "Memory",
-      "format": "components.generated.detail",
-      "group": "memory",
-      "logic": {
-        "address_width": 15,
-        "data_width": 8,
-        "read": {
-          "drive": "DQ",
-          "when": "/CE=0 and /OE=0 and /WE=1"
-        },
-        "tristate": {
-          "DQ": "Z",
-          "when": "not read"
-        },
-        "type": "parallel_eeprom",
-        "write": {
-          "sample": "DQ",
-          "when": "/CE=0 and /OE=1 and /WE=0"
-        }
-      },
-      "package": {
-        "default": "PDIP",
-        "kind": "DIP",
-        "pins": 28
-      },
-      "part": "AT28C256",
-      "pins": [
-        {
-          "bit": 14,
-          "bus": "A",
-          "direction": "input",
-          "name": "A14",
-          "number": 1
-        },
-        {
-          "bit": 12,
-          "bus": "A",
-          "direction": "input",
-          "name": "A12",
-          "number": 2
-        },
-        {
-          "bit": 7,
-          "bus": "A",
-          "direction": "input",
-          "name": "A7",
-          "number": 3
-        },
-        {
-          "bit": 6,
-          "bus": "A",
-          "direction": "input",
-          "name": "A6",
-          "number": 4
-        },
-        {
-          "bit": 5,
-          "bus": "A",
-          "direction": "input",
-          "name": "A5",
-          "number": 5
-        },
-        {
-          "bit": 4,
-          "bus": "A",
-          "direction": "input",
-          "name": "A4",
-          "number": 6
-        },
-        {
-          "bit": 3,
-          "bus": "A",
-          "direction": "input",
-          "name": "A3",
-          "number": 7
-        },
-        {
-          "bit": 2,
-          "bus": "A",
-          "direction": "input",
-          "name": "A2",
-          "number": 8
-        },
-        {
-          "bit": 1,
-          "bus": "A",
-          "direction": "input",
-          "name": "A1",
-          "number": 9
-        },
-        {
-          "bit": 0,
-          "bus": "A",
-          "direction": "input",
-          "name": "A0",
-          "number": 10
-        },
-        {
-          "bit": 0,
-          "bus": "DQ",
-          "direction": "bidirectional",
-          "name": "I/O0",
-          "number": 11
-        },
-        {
-          "bit": 1,
-          "bus": "DQ",
-          "direction": "bidirectional",
-          "name": "I/O1",
-          "number": 12
-        },
-        {
-          "bit": 2,
-          "bus": "DQ",
-          "direction": "bidirectional",
-          "name": "I/O2",
-          "number": 13
-        },
-        {
-          "direction": "power",
-          "name": "GND",
-          "number": 14,
-          "rail": "GND"
-        },
-        {
-          "bit": 3,
-          "bus": "DQ",
-          "direction": "bidirectional",
-          "name": "I/O3",
-          "number": 15
-        },
-        {
-          "bit": 4,
-          "bus": "DQ",
-          "direction": "bidirectional",
-          "name": "I/O4",
-          "number": 16
-        },
-        {
-          "bit": 5,
-          "bus": "DQ",
-          "direction": "bidirectional",
-          "name": "I/O5",
-          "number": 17
-        },
-        {
-          "bit": 6,
-          "bus": "DQ",
-          "direction": "bidirectional",
-          "name": "I/O6",
-          "number": 18
-        },
-        {
-          "bit": 7,
-          "bus": "DQ",
-          "direction": "bidirectional",
-          "name": "I/O7",
-          "number": 19
-        },
-        {
-          "active_low": true,
-          "direction": "input",
-          "name": "/CE",
-          "number": 20
-        },
-        {
-          "bit": 10,
-          "bus": "A",
-          "direction": "input",
-          "name": "A10",
-          "number": 21
-        },
-        {
-          "active_low": true,
-          "direction": "input",
-          "name": "/OE",
-          "number": 22
-        },
-        {
-          "bit": 11,
-          "bus": "A",
-          "direction": "input",
-          "name": "A11",
-          "number": 23
-        },
-        {
-          "bit": 9,
-          "bus": "A",
-          "direction": "input",
-          "name": "A9",
-          "number": 24
-        },
-        {
-          "bit": 8,
-          "bus": "A",
-          "direction": "input",
-          "name": "A8",
-          "number": 25
-        },
-        {
-          "bit": 13,
-          "bus": "A",
-          "direction": "input",
-          "name": "A13",
-          "number": 26
-        },
-        {
-          "active_low": true,
-          "direction": "input",
-          "name": "/WE",
-          "number": 27
-        },
-        {
-          "direction": "power",
-          "name": "VCC",
-          "number": 28,
-          "rail": "VCC"
-        }
-      ],
-      "power": [
-        {
-          "name": "GND",
-          "nominal_logic": 0,
-          "pin": 14
-        },
-        {
-          "name": "VCC",
-          "nominal_logic": 1,
-          "pin": 28
-        }
-      ],
-      "role": "eeprom",
-      "timing": {
-        "delay_ns": 70
-      },
-      "title": "32K x 8 parallel EEPROM"
-    },
-    "kicad_symbol": {
-      "bus_groups": {
-        "A": [
-          10,
-          9,
-          8,
-          7,
-          6,
-          5,
-          4,
-          3,
-          25,
-          24,
-          21,
-          23,
-          2,
-          26,
-          1
-        ],
-        "DQ": [
-          11,
-          12,
-          13,
-          15,
-          16,
-          17,
-          18,
-          19
-        ]
-      },
-      "labels": {
-        "1": "A14",
-        "10": "A0",
-        "14": "GND",
-        "2": "A12",
-        "20": "/CE",
-        "21": "A10",
-        "22": "/OE",
-        "23": "A11",
-        "24": "A9",
-        "25": "A8",
-        "26": "A13",
-        "27": "/WE",
-        "28": "VCC",
-        "3": "A7",
-        "4": "A6",
-        "5": "A5",
-        "6": "A4",
-        "7": "A3",
-        "8": "A2",
-        "9": "A1"
-      },
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14
-      ],
-      "part": "AT28C256",
-      "pins": 28,
-      "right": [
-        28,
-        27,
-        26,
-        25,
-        24,
-        23,
-        22,
-        21,
-        20,
-        19,
-        18,
-        17,
-        16,
-        15
-      ],
-      "schema": "db.component.symbol.dip",
-      "shape": "dip",
-      "version": 1
-    },
-    "python_simulator": {
-      "factory": "chiplib.create_chip",
-      "part": "AT28C256"
-    },
-    "svg_pinout": {
-      "bus_groups": {
-        "A": [
-          10,
-          9,
-          8,
-          7,
-          6,
-          5,
-          4,
-          3,
-          25,
-          24,
-          21,
-          23,
-          2,
-          26,
-          1
-        ],
-        "DQ": [
-          11,
-          12,
-          13,
-          15,
-          16,
-          17,
-          18,
-          19
-        ]
-      },
-      "labels": {
-        "1": "A14",
-        "10": "A0",
-        "14": "GND",
-        "2": "A12",
-        "20": "/CE",
-        "21": "A10",
-        "22": "/OE",
-        "23": "A11",
-        "24": "A9",
-        "25": "A8",
-        "26": "A13",
-        "27": "/WE",
-        "28": "VCC",
-        "3": "A7",
-        "4": "A6",
-        "5": "A5",
-        "6": "A4",
-        "7": "A3",
-        "8": "A2",
-        "9": "A1"
-      },
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14
-      ],
-      "part": "AT28C256",
-      "pins": 28,
-      "right": [
-        28,
-        27,
-        26,
-        25,
-        24,
-        23,
-        22,
-        21,
-        20,
-        19,
-        18,
-        17,
-        16,
-        15
-      ],
-      "schema": "db.component.symbol.dip",
-      "shape": "dip",
-      "version": 1
-    },
-    "unit_test": {
-      "part": "AT28C256",
-      "required_vectors": [
-        "write_read",
-        "disabled_high_z",
-        "oe_high_high_z"
-      ],
-      "schema": "db.component.generated.tests",
-      "tests": [
-        {
-          "present": true,
-          "source": "tests/truth_table.json",
-          "type": "truth_table"
-        },
-        {
-          "present": true,
-          "source": "tests/timing.json",
-          "type": "timing"
-        },
-        {
-          "present": true,
-          "source": "tests/tri_state.json",
-          "type": "tri_state"
-        },
-        {
-          "present": true,
-          "source": "tests/propagation.json",
-          "type": "propagation"
-        }
-      ],
-      "version": 1
-    },
-    "verilog_wrapper": {
-      "export": {
-        "kind": "structural_port_map",
-        "output_pins": [
-          11,
-          12,
-          13,
-          15,
-          16,
-          17,
-          18,
-          19
-        ],
-        "ports": [
-          {
-            "direction": "input",
-            "name": "A",
-            "pins": [
-              10,
-              9,
-              8,
-              7,
-              6,
-              5,
-              4,
-              3,
-              25,
-              24,
-              21,
-              23,
-              2,
-              26,
-              1
-            ]
-          },
-          {
-            "direction": "output",
-            "name": "DQ",
-            "pins": [
-              11,
-              12,
-              13,
-              15,
-              16,
-              17,
-              18,
-              19
-            ]
-          },
-          {
-            "direction": "input",
-            "name": "CE_bar",
-            "pins": [
-              20
-            ]
-          },
-          {
-            "direction": "input",
-            "name": "OE_bar",
-            "pins": [
-              22
-            ]
-          },
-          {
-            "direction": "input",
-            "fallback": "1'b1",
-            "name": "WE_bar",
-            "pins": [
-              27
-            ]
-          }
-        ]
-      },
-      "file": "Verilog/Memory/at28c256.v",
-      "module": "mem_at28c256",
-      "part": "AT28C256"
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
     }
-  },
-  "format": "db.component.generated",
-  "part": "AT28C256",
-  "source": "DB/Memory/AT28C256/definition/digital.json",
-  "version": 1
+  }
 }

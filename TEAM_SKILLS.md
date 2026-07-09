@@ -19,12 +19,17 @@ simulation services, and student-facing documentation.
   change needs focused tests plus smoke coverage.
 - Beginner-readable failure messages and examples: errors must point to the
   chip, pin, net, source, or missing property that the learner can fix.
-- Layered component generation: one canonical `definition/digital.json` should
+- Layered component generation: one canonical `definition/definition.json` should
   drive normalized JSON, Python simulator adapters, Verilog wrappers/export,
   KiCad symbols, SVG pinouts, documentation, unit tests, and interactive demos.
 - Package separation discipline: definition, simulation, schematic/symbol,
   verification, generation, datasheet evidence, and project use must stay as
   separate layers even when one file can generate outputs.
+- One-file definition discipline: component/package/pins/power/logic/timing/
+  electrical definition sublayers live inside `definition/definition.json` as
+  `definition_layers`; datasheet sources live inside the same file as
+  `datasheet.sources`; split definition and datasheet files are compatibility
+  fallback only.
 
 ## Active Specialist Agents
 
@@ -33,30 +38,45 @@ They complement the original JOJOCAFE role names below.
 
 | Agent | Main skills | Current Components ownership |
 |---|---|---|
-| Arendt | Specification, schema discipline, task framing, consistency checks | Owns component package specs, `digital.json` schema design, required/optional field rules, and missing-data representation. |
+| Arendt | Specification, schema discipline, task framing, consistency checks | Owns component package specs, `definition.json` schema design, required/optional field rules, and missing-data representation. |
 | Feynman | Teaching, explanation, demo design, student-facing simplification | Owns generated docs, interactive demos, beginner-readable examples, and age 10-15 clarity. |
 | Halley | Verification, audit coverage, test matrix design | Owns truth table, timing, tri-state, bus-fight, propagation, equivalence, and CI verification planning. |
 | Ohm | Hardware truth, datasheets, pin/package/electrical evidence | Owns package evidence, pin truth, timing/electrical extraction, active-low naming, and breadboard realism. |
-| Leibniz | Tooling, loaders, generators, API/CLI integration | Owns split-package loaders, generator prototypes, compatibility with `chip.json`, and CLI/API generation commands. |
+| Leibniz | Tooling, loaders, generators, API/CLI integration | Owns definition-backed loaders, generator prototypes, legacy `chip.json` compatibility, and CLI/API generation commands. |
 
 Shared specialist rule:
 
 - No generated artifact is authoritative by itself. The source is
-  `definition/digital.json` plus datasheet evidence; generated Python,
+  `definition/definition.json` plus datasheet evidence; generated Python,
   Verilog, KiCad, SVG, docs, tests, and demos must be reproducible from that
   layer.
 
 Current seed-batch milestone:
 
 - `74HC161`, `74HC157`, `74HC245`, `74HC574`, and `AT28C256` now have
-  generator-ready `definition/digital.json`, split test records, generated
-  artifact reports, and first timing/electrical extraction records.
+  generator-ready `definition/definition.json`, local `simulation/model.py`,
+  `simulation/model.v`, `simulation/netlist.json`, `simulation/model.json`,
+  `symbol/dip.json`, split test records, generated artifact reports, and first
+  timing/electrical extraction records.
+- Seed `chip.json` files are removed; `load_component(part)` synthesizes
+  compatibility data from `definition/definition.json` and
+  `simulation/netlist.json`.
+- Project/system exports must use package `portable_files` and copy the local
+  `simulation/model.py` with each chip so standalone projects do not link back
+  to the DB package folder for behavior.
+- Whenever `simulation/model.py` is copied, `python/chiplib/core.py` must be
+  copied too as the runtime primitive layer.
+- For circuit/system exports, copy `chiplib/core.py` once and share it across
+  all local chip models in that exported project.
 - `load_digital_package(part)` and `generate_component_artifacts(part)` are the
-  current loader/generator entry points; `load_component(part)` remains the
-  compatibility manifest path.
+  current loader/generator entry points. Definition sublayers are read from
+  `definition_layers` first; `load_component(part)` remains the compatibility
+  manifest path.
 - `python/tests/test_chips.py` now executes selected split test records against
   live Python chip models; broader generated Python/Verilog test generation is
   the next verification step.
+- `python/tests/test_generated_split_records.py` is the current generated-check
+  harness for seed records and Verilog smoke workflow scope.
 
 ## Pim - Coordinator
 
@@ -140,7 +160,7 @@ Components focus:
 - Reviews DB-owned `verilog.export` mappings for correct port direction and
   pin order.
 - Adds focused benches when a chip becomes export-supported.
-- Helps ensure Verilog wrappers can be generated from `definition/digital.json`
+- Helps ensure Verilog wrappers can be generated from `definition/definition.json`
   without losing readable HDL.
 
 ## Ohm - HW Coder
@@ -160,8 +180,8 @@ Components focus:
 - Owns pinout truth for DB manifests and model comments.
 - Treats missing-datasheet chips as explicit exclusions, not partial parts.
 - Helps Noon convert physical facts into beginner-safe labels.
-- Owns `datasheet/sources.json`, package evidence, electrical placeholders,
-  and extracted timing values.
+- Owns package evidence, electrical placeholders, and extracted timing values
+  inside `definition/definition.json`.
 
 ## Bam - SW Coder
 
@@ -183,7 +203,8 @@ Components focus:
 - Moves exporter metadata into DB only when equivalence and netlist tests prove
   the behavior.
 - Keeps frontend-facing responses serializable and stable.
-- Owns loader compatibility while `chip.json` and split package files coexist.
+- Owns loader compatibility for legacy `chip.json` while seed chips are
+  definition-backed.
 
 ## Noon - Docs Writer
 
@@ -205,7 +226,7 @@ Components focus:
 - Works with Ohm and Bam so UI/API metadata is both physically true and easy to
   display.
 - Owns generated documentation and interactive demo wording from
-  `definition/digital.json`.
+  `definition/definition.json`.
 
 ## Natural Pairings
 

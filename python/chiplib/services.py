@@ -465,6 +465,8 @@ class VerilogExportService:
             path = _verilog_file_for_part(part, str(mapping.get("module", "")))
             if path is not None:
                 files.add(path)
+            for required in _portable_files_for_part(part):
+                files.add(required)
         return sorted(files)
 
 
@@ -568,3 +570,18 @@ def _verilog_file_for_part(part: str, module: str) -> str | None:
     if module.startswith("mem_"):
         return f"Verilog/Memory/{module[4:]}.v"
     return None
+
+
+def _portable_files_for_part(part: str) -> list[str]:
+    try:
+        package = load_digital_package(part)
+    except (KeyError, ValueError):
+        return []
+    result: list[str] = []
+    for item in package.get("portable_files", []):
+        if not isinstance(item, dict):
+            continue
+        source = item.get("source")
+        if isinstance(source, str) and source:
+            result.append(source)
+    return result

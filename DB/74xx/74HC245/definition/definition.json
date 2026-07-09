@@ -1,0 +1,661 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC245",
+  "metadata": {
+    "title": "Octal bus transceiver with 3-state outputs",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "bus_transceiver"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 20,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "DIR",
+      "direction": "input",
+      "function": "direction_control"
+    },
+    {
+      "number": 2,
+      "name": "A1",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 0
+    },
+    {
+      "number": 3,
+      "name": "A2",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 1
+    },
+    {
+      "number": 4,
+      "name": "A3",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 2
+    },
+    {
+      "number": 5,
+      "name": "A4",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 3
+    },
+    {
+      "number": 6,
+      "name": "A5",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 4
+    },
+    {
+      "number": 7,
+      "name": "A6",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 5
+    },
+    {
+      "number": 8,
+      "name": "A7",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 6
+    },
+    {
+      "number": 9,
+      "name": "A8",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 7
+    },
+    {
+      "number": 10,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 11,
+      "name": "B8",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 7
+    },
+    {
+      "number": 12,
+      "name": "B7",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 6
+    },
+    {
+      "number": 13,
+      "name": "B6",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 5
+    },
+    {
+      "number": 14,
+      "name": "B5",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 4
+    },
+    {
+      "number": 15,
+      "name": "B4",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 3
+    },
+    {
+      "number": 16,
+      "name": "B3",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 2
+    },
+    {
+      "number": 17,
+      "name": "B2",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 1
+    },
+    {
+      "number": 18,
+      "name": "B1",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 0
+    },
+    {
+      "number": 19,
+      "name": "/OE",
+      "direction": "input",
+      "active_low": true,
+      "function": "enable"
+    },
+    {
+      "number": 20,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "octal_bus_transceiver",
+    "width": 8,
+    "direction_control": {
+      "pin": "DIR",
+      "1": "A_to_B",
+      "0": "B_to_A"
+    },
+    "enable": {
+      "pin": "/OE",
+      "active_low": true
+    },
+    "tristate": true,
+    "paths": [
+      {
+        "when": "DIR=1 and /OE=0",
+        "from": "A",
+        "to": "B"
+      },
+      {
+        "when": "DIR=0 and /OE=0",
+        "from": "B",
+        "to": "A"
+      },
+      {
+        "when": "/OE=1",
+        "A": "Z",
+        "B": "Z"
+      }
+    ]
+  },
+  "timing": {
+    "delay_ns": 12
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC245",
+      "file": "DB/74xx/74HC245/simulation/model.py",
+      "class": "HC245"
+    },
+    "verilog": {
+      "module": "ttl_74hc245",
+      "file": "DB/74xx/74HC245/simulation/model.v",
+      "netlist": "DB/74xx/74HC245/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "tri_state",
+      "bus_fight",
+      "propagation"
+    ],
+    "required_vectors": [
+      "a_to_b",
+      "b_to_a",
+      "disabled_high_z",
+      "bus_conflict"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC245",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC245",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf",
+        "package_evidence": "N, 20-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic",
+          "active_low_controls",
+          "recommended_operating_conditions",
+          "electrical_characteristics",
+          "switching_characteristics"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "74HC245",
+      "title": "Octal bus transceiver with 3-state outputs",
+      "family": "74HC",
+      "group": "74xx",
+      "kind": "ic",
+      "role": "bus_transceiver",
+      "summary": "8-bit bidirectional bus transceiver controlled by DIR and active-low output enable.",
+      "layers": {
+        "definition": "complete",
+        "simulation": "modeled",
+        "schematic": "defined",
+        "verification": "tested",
+        "generation": "tested"
+      },
+      "files": {
+        "simulation": "simulation/model.json",
+        "symbol": "symbol/dip.json"
+      }
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "74HC245",
+      "packages": [
+        {
+          "id": "N",
+          "kind": "DIP",
+          "pins": 20,
+          "through_hole": true,
+          "evidence": "Texas Instruments SN74HC245, N package, 20-pin PDIP"
+        }
+      ],
+      "default_package": "N"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC245",
+      "pins": [
+        {
+          "number": 1,
+          "name": "DIR",
+          "direction": "input",
+          "function": "direction_control"
+        },
+        {
+          "number": 2,
+          "name": "A1",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 0
+        },
+        {
+          "number": 3,
+          "name": "A2",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 1
+        },
+        {
+          "number": 4,
+          "name": "A3",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 2
+        },
+        {
+          "number": 5,
+          "name": "A4",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 3
+        },
+        {
+          "number": 6,
+          "name": "A5",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 4
+        },
+        {
+          "number": 7,
+          "name": "A6",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 5
+        },
+        {
+          "number": 8,
+          "name": "A7",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 6
+        },
+        {
+          "number": 9,
+          "name": "A8",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 7
+        },
+        {
+          "number": 10,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 11,
+          "name": "B8",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 7
+        },
+        {
+          "number": 12,
+          "name": "B7",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 6
+        },
+        {
+          "number": 13,
+          "name": "B6",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 5
+        },
+        {
+          "number": 14,
+          "name": "B5",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 4
+        },
+        {
+          "number": 15,
+          "name": "B4",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 3
+        },
+        {
+          "number": 16,
+          "name": "B3",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 2
+        },
+        {
+          "number": 17,
+          "name": "B2",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 1
+        },
+        {
+          "number": 18,
+          "name": "B1",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 0
+        },
+        {
+          "number": 19,
+          "name": "/OE",
+          "direction": "input",
+          "active_low": true,
+          "function": "output_enable"
+        },
+        {
+          "number": 20,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {
+        "A": {
+          "width": 8,
+          "pins_lsb_first": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ]
+        },
+        "B": {
+          "width": 8,
+          "pins_lsb_first": [
+            18,
+            17,
+            16,
+            15,
+            14,
+            13,
+            12,
+            11
+          ]
+        }
+      }
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC245",
+      "rails": [
+        {
+          "name": "VCC",
+          "pin": 20,
+          "nominal_logic": 1
+        },
+        {
+          "name": "GND",
+          "pin": 10,
+          "nominal_logic": 0
+        }
+      ]
+    },
+    "logic": {
+      "schema": "db.component.logic",
+      "version": 1,
+      "part": "74HC245",
+      "functions": [
+        {
+          "name": "octal_bus_transceiver",
+          "type": "bidirectional_buffer",
+          "width": 8,
+          "direction_control": {
+            "pin": "DIR",
+            "active_high_a_to_b": true
+          },
+          "enable": {
+            "pin": "/OE",
+            "active_low": true
+          },
+          "tristate": true,
+          "paths": [
+            {
+              "when": "DIR=1 and /OE=0",
+              "from": "A",
+              "to": "B"
+            },
+            {
+              "when": "DIR=0 and /OE=0",
+              "from": "B",
+              "to": "A"
+            },
+            {
+              "when": "/OE=1",
+              "A": "Z",
+              "B": "Z"
+            }
+          ],
+          "conflict_rule": "external drivers on the driven bus can create a bus fight"
+        }
+      ],
+      "states": {
+        "enabled_a_to_b": {
+          "DIR": 1,
+          "/OE": 0
+        },
+        "enabled_b_to_a": {
+          "DIR": 0,
+          "/OE": 0
+        },
+        "disabled": {
+          "/OE": 1
+        }
+      }
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC245",
+      "delay": {
+        "default_ns": 12,
+        "source": "simulation default from Python model",
+        "datasheet_typical_ns": {
+          "condition": "SN74HC245, CL=50 pF, TA=25 C",
+          "tpd_a_b_to_b_a": {
+            "vcc_4_5_v": 15,
+            "vcc_6_v": 12
+          },
+          "ten_oe_to_a_b": {
+            "vcc_4_5_v": 23,
+            "vcc_6_v": 20
+          },
+          "tdis_oe_to_a_b": {
+            "vcc_4_5_v": 25,
+            "vcc_6_v": 21
+          },
+          "transition_a_b": {
+            "vcc_4_5_v": 8,
+            "vcc_6_v": 6
+          }
+        }
+      },
+      "propagation": [
+        {
+          "name": "A_to_B",
+          "from": "A",
+          "to": "B",
+          "condition": "DIR=1 and /OE=0",
+          "delay_ns": 12
+        },
+        {
+          "name": "B_to_A",
+          "from": "B",
+          "to": "A",
+          "condition": "DIR=0 and /OE=0",
+          "delay_ns": 12
+        },
+        {
+          "name": "disable_to_Z",
+          "from": "/OE",
+          "to": "A,B",
+          "condition": "/OE rises",
+          "delay_ns": 12
+        }
+      ],
+      "setup_hold": [],
+      "evidence": {
+        "source": "Texas Instruments SN74HC245 datasheet, section 6.6 Switching Characteristics, CL = 50 pF",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC245",
+      "logic_family": "74HC",
+      "voltage": {
+        "vcc": {
+          "min_v": 2.0,
+          "typ_v": 5.0,
+          "max_v": 6.0,
+          "status": "extracted"
+        },
+        "input_high_v": {
+          "vcc_2_v": {
+            "min_v": 1.5
+          },
+          "vcc_4_5_v": {
+            "min_v": 3.15
+          },
+          "vcc_6_v": {
+            "min_v": 4.2
+          },
+          "status": "extracted"
+        },
+        "input_low_v": {
+          "vcc_2_v": {
+            "max_v": 0.5
+          },
+          "vcc_4_5_v": {
+            "max_v": 1.35
+          },
+          "vcc_6_v": {
+            "max_v": 1.8
+          },
+          "status": "extracted"
+        }
+      },
+      "current": {
+        "output_drive": {
+          "vcc_4_5_v": {
+            "ioh_ma": -6,
+            "iol_ma": 6
+          },
+          "vcc_6_v": {
+            "ioh_ma": -7.8,
+            "iol_ma": 7.8
+          },
+          "status": "extracted"
+        },
+        "supply_current": {
+          "vcc_6_v_max_ua": 80,
+          "status": "extracted"
+        }
+      },
+      "loading": {
+        "input_capacitance": {
+          "typ_pf": 3,
+          "max_pf": 10,
+          "status": "extracted"
+        }
+      },
+      "evidence": {
+        "source": "Texas Instruments SN74HC245 datasheet, sections 6.3 and 6.5",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+      },
+      "notes": [
+        "Values are the first extracted student-facing operating facts; detailed per-temperature tables remain in the datasheet."
+      ]
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  }
+}

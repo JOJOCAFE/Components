@@ -249,7 +249,21 @@ def _chip_entry(ref: str, spec: Any, pins: dict[int, JsonMap]) -> JsonMap:
             }
             for pin in chip.pins.values()
         ]
+    portable_files = _portable_files_for_part(part)
+    if portable_files:
+        entry["portable_files"] = portable_files
     return entry
+
+
+def _portable_files_for_part(part: str) -> list[JsonMap]:
+    from .db import load_digital_package
+
+    try:
+        package = load_digital_package(part)
+    except (KeyError, ValueError):
+        return []
+    files = package.get("portable_files", [])
+    return deepcopy(files) if isinstance(files, list) else []
 
 
 def _pin_index(snapshot: JsonMap) -> dict[str, dict[int, JsonMap]]:
@@ -369,7 +383,19 @@ def _verilog_mapping(part: str) -> JsonMap | None:
 
 
 def _db_verilog_mapping(part: str) -> JsonMap | None:
-    from .db import load_component
+    from .db import load_component, load_digital_package
+
+    try:
+        package = load_digital_package(part)
+        netlist = package.get("layers", {}).get("simulation", {}).get("netlist", {})
+        verilog = netlist.get("verilog", {}) if isinstance(netlist, dict) else {}
+        export = verilog.get("export", {}) if isinstance(verilog, dict) else {}
+        ports = export.get("ports", {}) if isinstance(export, dict) else {}
+        module = verilog.get("module") if isinstance(verilog, dict) else None
+        if isinstance(module, str) and isinstance(ports, list):
+            return _mapping_from_export(module, export)
+    except (KeyError, ValueError):
+        pass
 
     try:
         manifest = load_component(part)
@@ -382,6 +408,11 @@ def _db_verilog_mapping(part: str) -> JsonMap | None:
     if not isinstance(module, str) or not isinstance(ports, list):
         return None
 
+    return _mapping_from_export(module, export)
+
+
+def _mapping_from_export(module: str, export: JsonMap) -> JsonMap:
+    ports = export.get("ports", []) if isinstance(export, dict) else []
     port_specs = deepcopy(ports)
 
     def db_ports(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:

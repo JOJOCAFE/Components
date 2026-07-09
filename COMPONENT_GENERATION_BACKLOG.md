@@ -26,25 +26,29 @@ The first seed batch is:
 Each chip gets one generator-ready source file:
 
 ```text
-DB/<group>/<part>/definition/digital.json
+DB/<group>/<part>/definition/definition.json
 ```
 
-Split folders can still hold derived or detailed views:
+Other package folders hold non-definition layers:
 
 ```text
-definition/
 simulation/
 tests/
 symbol/
-datasheet/
 ```
 
-`chip.json` stays as the current compatibility manifest until the loader can
-merge split component packages safely.
+Definition sublayers are embedded in `definition/definition.json` under
+`definition_layers`, and datasheet sources are embedded under
+`datasheet.sources`. Legacy split definition or datasheet files are
+compatibility fallback inputs, not required seed-package source files.
+Seed packages no longer need `chip.json`; `load_component(part)` can synthesize
+the compatibility manifest from `definition/definition.json` and
+`simulation/netlist.json`. Legacy `chip.json` files remain supported for older
+components.
 
 ## Pim's Comments
 
-- Keep `digital.json` as the canonical source for generators. Do not make
+- Keep `definition.json` as the canonical source for generators. Do not make
   generators scrape Verilog comments, Python classes, or Markdown.
 - Keep datasheet evidence visible. If timing or electrical data is not
   extracted yet, mark it as missing or `datasheet-required`.
@@ -78,15 +82,15 @@ Tasks:
 
 Acceptance:
 
-- `python3 -B -m tests.test_db` validates every seed `digital.json`.
+- `python3 -B -m tests.test_db` validates every seed `definition.json`.
 - Missing timing/electrical values are visible, not silently absent.
 
 Done:
 
 - `DB/digital.schema.json` defines the current umbrella
   `db.component.digital` seed schema.
-- `python/chiplib/db.py` validates seed definitions and checks compatibility
-  against `chip.json` pins, package, Python, and Verilog metadata.
+- `python/chiplib/db.py` validates seed definitions and checks synthesized
+  compatibility data against definition, simulation, and generation metadata.
 - `python/tests/test_db.py` covers schema shape and seed definition agreement.
 - `.github/workflows/python-tests.yml` already runs `tests.test_db` and
   `tests.test_block_ui`.
@@ -103,7 +107,7 @@ Owns:
 
 Tasks:
 
-- Define generated Markdown sections from `digital.json`.
+- Define generated Markdown sections from `definition.json`.
 - Define a simple interactive demo contract for each seed chip.
 - Keep language clear for ages `10-15`, while preserving correct pin names.
 - Start with `74HC245` and `74HC161` examples.
@@ -117,14 +121,15 @@ Acceptance:
 Done:
 
 - `generate_component_artifacts(part)` emits documentation and interactive demo
-  data from `definition/digital.json`.
+  data from `definition/definition.json`.
 - `74HC245` exposes initial generated docs sections and demo controls/probes.
 - Each seed package now has `generated/artifacts.json` written from the CLI
   generator path.
 
 ### 3. Halley - Verification Matrix
 
-Status: seed split test records added and first executable checks wired.
+Status: generated split-record Python checks wired; generated Verilog benches
+remain future work.
 
 Owns:
 
@@ -155,6 +160,10 @@ Done:
   `tests/propagation.json` records where applicable.
 - `python/tests/test_chips.py` reads seed split test records and exercises the
   corresponding Python chip models.
+- `python/tests/test_generated_split_records.py` executes seed truth-table
+  records through generated dispatch checks, validates timing/tri-state/bus
+  records, and guards Verilog smoke workflow scope.
+- `.github/workflows/python-tests.yml` runs `tests.test_generated_split_records`.
 
 ### 4. Ohm - Electrical, Timing, And Datasheet Evidence
 
@@ -198,8 +207,9 @@ Owns:
 
 Tasks:
 
-- Add a loader that can read `definition/digital.json`.
-- Keep `load_component(part)` backward-compatible with `chip.json`.
+- Add a loader that can read `definition/definition.json`.
+- Keep `load_component(part)` backward-compatible with legacy `chip.json` while
+  supporting seed chips without `chip.json`.
 - Prototype generators for:
   - normalized JSON detail
   - Python simulator adapter report
@@ -218,18 +228,39 @@ Acceptance:
 
 Done:
 
-- `load_digital_package(part)` loads `definition/digital.json`, split package
-  layers, and derived fallback layers without changing `load_component(part)`.
+- `load_digital_package(part)` loads definition sublayers from
+  `definition/definition.json`, with legacy split-file and derived fallback layers
+  preserved for compatibility.
 - `generate_component_artifacts(part)` emits structured outputs for the seed
   generation targets.
 - CLI/API expose `--package`, `--generate`, `component-package`, and
   `component-generate`.
+- All five seed packages now include physical `simulation/model.json`,
+  `simulation/model.py`, `simulation/model.v`, `simulation/netlist.json`, and
+  `symbol/dip.json` layers.
+- All five seed packages now expose `portable_files` metadata so project/system
+  exports know to copy local `simulation/model.py` with each chip.
+- `portable_files` also lists `python/chiplib/core.py`, which must travel with
+  local Python chip models as the shared runtime primitive layer.
+- Circuit/system exports de-duplicate that runtime: one copied
+  `chiplib/core.py` is shared by all exported chip `model.py` files.
+- Seed `status` now lives in `definition/definition.json`, and active Verilog
+  export mapping is read from `simulation/netlist.json` before the legacy
+  `chip.json` fallback.
+- Seed `chip.json` files have been removed; seed catalog/API compatibility is
+  synthesized from `definition/definition.json` plus `simulation/netlist.json`.
+- All five seed packages now keep component/package/pins/power/logic/timing/
+  electrical definition sublayers inside the single `definition/definition.json`
+  source file.
+- All five seed packages now keep datasheet source records inside
+  `definition/definition.json`.
 
 ## Seed Batch Checklist
 
 ### 74HC161
 
-- ✅ `definition/digital.json`
+- ✅ `definition/definition.json`
+- ✅ merged `definition_layers` source
 - ✅ split test files
 - ✅ generated doc data
 - ✅ generated symbol data
@@ -238,7 +269,8 @@ Done:
 
 ### 74HC157
 
-- ✅ `definition/digital.json`
+- ✅ `definition/definition.json`
+- ✅ merged `definition_layers` source
 - ✅ split test files
 - ✅ generated doc data
 - ✅ generated symbol data
@@ -247,9 +279,9 @@ Done:
 
 ### 74HC245
 
-- ✅ `definition/digital.json`
-- ✅ initial split `definition/`, `simulation/`, `tests/`, `symbol/`,
-  `datasheet/` package
+- ✅ `definition/definition.json`
+- ✅ merged `definition_layers` source
+- ✅ initial `simulation/`, `tests/`, `symbol/` package
 - ✅ generator prototype
 - ✅ generated KiCad symbol data
 - ✅ generated SVG pinout data
@@ -260,7 +292,8 @@ Done:
 
 ### 74HC574
 
-- ✅ `definition/digital.json`
+- ✅ `definition/definition.json`
+- ✅ merged `definition_layers` source
 - ✅ split test files
 - ✅ generated doc data
 - ✅ generated symbol data
@@ -269,7 +302,8 @@ Done:
 
 ### AT28C256
 
-- ✅ `definition/digital.json`
+- ✅ `definition/definition.json`
+- ✅ merged `definition_layers` source
 - ✅ split test files
 - ✅ generated doc data
 - ✅ generated symbol data
@@ -287,3 +321,4 @@ Next CI tasks:
 
 - Keep Verilog smoke compiling all 74xx and memory models.
 - Keep memory smoke instantiating each memory module directly.
+- Grow split-record generated checks toward emitted Verilog testbenches.

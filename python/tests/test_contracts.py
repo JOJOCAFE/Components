@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from chiplib.design import Design
+from chiplib.netlist import _verilog_mapping
 from chiplib.services import VerilogExportService
 
 
@@ -67,9 +68,41 @@ def test_design_to_verilog_uses_internal_service_boundary():
     assert "ttl_74hc00" in exported["verilog"]
 
 
+def test_seed_chip_exports_include_portable_local_models():
+    design = load_example("counter")
+    netlist = design.to_netlist()
+    chip = netlist["chips"][0]
+    assert chip["part"] == "74HC161"
+    assert any(item["runtime"] == "python" and item["copy_as"] == "model.py" for item in chip["portable_files"])
+    assert any(item["kind"] == "python_runtime" and item["copy_as"] == "chiplib/core.py" for item in chip["portable_files"])
+
+    exported = VerilogExportService().export(design)
+    assert "DB/74xx/74HC161/simulation/model.py" in exported["required_files"]
+    assert "python/chiplib/core.py" in exported["required_files"]
+    assert "DB/74xx/74HC161/simulation/model.v" in exported["required_files"]
+    assert "DB/74xx/74HC161/simulation/netlist.json" in exported["required_files"]
+
+
+def test_system_exports_share_one_python_core_runtime():
+    exported = VerilogExportService().export(load_example("tiny_cpu_slice"))
+    assert exported["required_files"].count("python/chiplib/core.py") == 1
+    assert "DB/74xx/74HC161/simulation/model.py" in exported["required_files"]
+    assert "Verilog/74xx/74hc00.v" in exported["required_files"]
+
+
+def test_seed_verilog_mapping_comes_from_simulation_netlist_shape():
+    mapping = _verilog_mapping("74HC245")
+    assert mapping is not None
+    assert mapping["module"] == "ttl_74hc245"
+    assert mapping["output_pins"] == [2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18]
+
+
 def run_all():
     test_service_ready_examples_validate_snapshot_run_netlist_and_export_verilog()
     test_design_to_verilog_uses_internal_service_boundary()
+    test_seed_chip_exports_include_portable_local_models()
+    test_system_exports_share_one_python_core_runtime()
+    test_seed_verilog_mapping_comes_from_simulation_netlist_shape()
 
 
 if __name__ == "__main__":

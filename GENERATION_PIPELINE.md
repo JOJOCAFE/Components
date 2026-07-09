@@ -3,7 +3,7 @@
 Goal: one component definition file can drive every generated artifact.
 
 ```text
-definition/digital.json
+definition/definition.json
   -> normalized JSON component detail
   -> Python simulator adapter
   -> Verilog wrapper/export metadata
@@ -19,24 +19,32 @@ definition/digital.json
 For each chip, the canonical generator input is:
 
 ```text
-DB/<group>/<part>/definition/digital.json
+DB/<group>/<part>/definition/definition.json
 ```
 
 The split package folders remain useful:
 
 ```text
 definition/   source facts and generated definition views
-simulation/   behavior model adapters
+simulation/   local behavior source, Verilog model, and netlist metadata
 tests/        truth table, timing, tri-state, bus-fight, propagation checks
 symbol/       schematic and SVG symbol metadata
-datasheet/    evidence
 ```
 
-But generators should be able to start from `definition/digital.json` alone.
+Datasheet source evidence is embedded in `definition/definition.json` under
+`datasheet.sources`, so generators can start from that one file alone.
+
+When a chip is copied into a project or system, copy its local
+`simulation/model.py` with it. The exported package metadata lists this under
+`portable_files` so standalone projects do not need to import behavior from the
+DB package folder. Also copy `python/chiplib/core.py`; the local models depend
+on that runtime support file for `Chip`, `Delay`, logic, and pin primitives.
+For a circuit or system export with many chips, copy `chiplib/core.py` once and
+share it across the copied chip models.
 
 ## Required Generation Targets
 
-Each seed `digital.json` must declare:
+Each seed `definition.json` must declare:
 
 - `json`: normalized component JSON/API detail
 - `python_simulator`: Python behavior model or adapter

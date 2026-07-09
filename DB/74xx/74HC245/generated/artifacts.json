@@ -1,468 +1,325 @@
 {
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/74xx/74HC245/definition/definition.json",
+  "part": "74HC245",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC245/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC245/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC245/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
   "artifacts": {
-    "documentation": {
-      "buses": {
-        "A": {
-          "pins_lsb_first": [
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
-          ],
-          "width": 8
-        },
-        "B": {
-          "pins_lsb_first": [
-            18,
-            17,
-            16,
-            15,
-            14,
-            13,
-            12,
-            11
-          ],
-          "width": 8
-        }
-      },
-      "controls": [
-        {
-          "active_low": false,
-          "function": "direction_control",
-          "pin": "DIR"
-        },
-        {
-          "active_low": true,
-          "function": "enable",
-          "pin": "/OE"
-        }
-      ],
-      "part": "74HC245",
-      "pin_count": 20,
-      "schema": "db.component.generated.documentation",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
-      ],
-      "summary": "Octal bus transceiver with 3-state outputs.",
-      "title": "Octal bus transceiver with 3-state outputs",
-      "version": 1
-    },
-    "interactive_demo": {
-      "controls": [
-        "DIR",
-        "/OE"
-      ],
-      "default_steps": [
-        "apply controls",
-        "settle",
-        "probe"
-      ],
-      "part": "74HC245",
-      "probes": [
-        "A",
-        "B"
-      ],
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1
-    },
     "json": {
-      "buses": {
-        "A": {
-          "pins_lsb_first": [
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
-          ],
-          "width": 8
-        },
-        "B": {
-          "pins_lsb_first": [
-            18,
-            17,
-            16,
-            15,
-            14,
-            13,
-            12,
-            11
-          ],
-          "width": 8
-        }
-      },
-      "family": "74HC",
       "format": "components.generated.detail",
-      "group": "74xx",
-      "logic": {
-        "direction_control": {
-          "0": "B_to_A",
-          "1": "A_to_B",
-          "pin": "DIR"
-        },
-        "enable": {
-          "active_low": true,
-          "pin": "/OE"
-        },
-        "paths": [
-          {
-            "from": "A",
-            "to": "B",
-            "when": "DIR=1 and /OE=0"
-          },
-          {
-            "from": "B",
-            "to": "A",
-            "when": "DIR=0 and /OE=0"
-          },
-          {
-            "A": "Z",
-            "B": "Z",
-            "when": "/OE=1"
-          }
-        ],
-        "tristate": true,
-        "type": "octal_bus_transceiver",
-        "width": 8
-      },
-      "package": {
-        "default": "N",
-        "kind": "DIP",
-        "pins": 20
-      },
       "part": "74HC245",
+      "title": "Octal bus transceiver with 3-state outputs",
+      "family": "74HC",
+      "group": "74xx",
+      "role": "bus_transceiver",
+      "package": {
+        "kind": "DIP",
+        "pins": 20,
+        "default": "N"
+      },
       "pins": [
         {
-          "direction": "input",
-          "function": "direction_control",
+          "number": 1,
           "name": "DIR",
-          "number": 1
+          "direction": "input",
+          "function": "direction_control"
         },
         {
-          "bit": 0,
-          "bus": "A",
-          "direction": "bidirectional",
+          "number": 2,
           "name": "A1",
-          "number": 2
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 0
         },
         {
-          "bit": 1,
-          "bus": "A",
-          "direction": "bidirectional",
+          "number": 3,
           "name": "A2",
-          "number": 3
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 1
         },
         {
-          "bit": 2,
-          "bus": "A",
-          "direction": "bidirectional",
+          "number": 4,
           "name": "A3",
-          "number": 4
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 2
         },
         {
-          "bit": 3,
-          "bus": "A",
-          "direction": "bidirectional",
+          "number": 5,
           "name": "A4",
-          "number": 5
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 3
         },
         {
-          "bit": 4,
-          "bus": "A",
-          "direction": "bidirectional",
+          "number": 6,
           "name": "A5",
-          "number": 6
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 4
         },
         {
-          "bit": 5,
-          "bus": "A",
-          "direction": "bidirectional",
+          "number": 7,
           "name": "A6",
-          "number": 7
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 5
         },
         {
-          "bit": 6,
-          "bus": "A",
-          "direction": "bidirectional",
+          "number": 8,
           "name": "A7",
-          "number": 8
-        },
-        {
-          "bit": 7,
-          "bus": "A",
           "direction": "bidirectional",
-          "name": "A8",
-          "number": 9
+          "bus": "A",
+          "bit": 6
         },
         {
-          "direction": "power",
-          "name": "GND",
+          "number": 9,
+          "name": "A8",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 7
+        },
+        {
           "number": 10,
+          "name": "GND",
+          "direction": "power",
           "rail": "GND"
         },
         {
-          "bit": 7,
-          "bus": "B",
-          "direction": "bidirectional",
+          "number": 11,
           "name": "B8",
-          "number": 11
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 7
         },
         {
-          "bit": 6,
-          "bus": "B",
-          "direction": "bidirectional",
+          "number": 12,
           "name": "B7",
-          "number": 12
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 6
         },
         {
-          "bit": 5,
-          "bus": "B",
-          "direction": "bidirectional",
+          "number": 13,
           "name": "B6",
-          "number": 13
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 5
         },
         {
-          "bit": 4,
-          "bus": "B",
-          "direction": "bidirectional",
+          "number": 14,
           "name": "B5",
-          "number": 14
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 4
         },
         {
-          "bit": 3,
-          "bus": "B",
-          "direction": "bidirectional",
+          "number": 15,
           "name": "B4",
-          "number": 15
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 3
         },
         {
-          "bit": 2,
-          "bus": "B",
-          "direction": "bidirectional",
+          "number": 16,
           "name": "B3",
-          "number": 16
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 2
         },
         {
-          "bit": 1,
-          "bus": "B",
-          "direction": "bidirectional",
+          "number": 17,
           "name": "B2",
-          "number": 17
-        },
-        {
-          "bit": 0,
-          "bus": "B",
           "direction": "bidirectional",
+          "bus": "B",
+          "bit": 1
+        },
+        {
+          "number": 18,
           "name": "B1",
-          "number": 18
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 0
         },
         {
-          "active_low": true,
-          "direction": "input",
-          "function": "enable",
+          "number": 19,
           "name": "/OE",
-          "number": 19
+          "direction": "input",
+          "active_low": true,
+          "function": "enable"
         },
         {
-          "direction": "power",
-          "name": "VCC",
           "number": 20,
+          "name": "VCC",
+          "direction": "power",
           "rail": "VCC"
         }
       ],
+      "buses": {
+        "A": {
+          "width": 8,
+          "pins_lsb_first": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ]
+        },
+        "B": {
+          "width": 8,
+          "pins_lsb_first": [
+            18,
+            17,
+            16,
+            15,
+            14,
+            13,
+            12,
+            11
+          ]
+        }
+      },
       "power": [
         {
           "name": "GND",
-          "nominal_logic": 0,
-          "pin": 10
+          "pin": 10,
+          "nominal_logic": 0
         },
         {
           "name": "VCC",
-          "nominal_logic": 1,
-          "pin": 20
+          "pin": 20,
+          "nominal_logic": 1
         }
       ],
-      "role": "bus_transceiver",
+      "logic": {
+        "type": "octal_bus_transceiver",
+        "width": 8,
+        "direction_control": {
+          "pin": "DIR",
+          "1": "A_to_B",
+          "0": "B_to_A"
+        },
+        "enable": {
+          "pin": "/OE",
+          "active_low": true
+        },
+        "tristate": true,
+        "paths": [
+          {
+            "when": "DIR=1 and /OE=0",
+            "from": "A",
+            "to": "B"
+          },
+          {
+            "when": "DIR=0 and /OE=0",
+            "from": "B",
+            "to": "A"
+          },
+          {
+            "when": "/OE=1",
+            "A": "Z",
+            "B": "Z"
+          }
+        ]
+      },
       "timing": {
         "delay_ns": 12
-      },
-      "title": "Octal bus transceiver with 3-state outputs"
-    },
-    "kicad_symbol": {
-      "bus_groups": {
-        "A": [
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9
-        ],
-        "B": [
-          18,
-          17,
-          16,
-          15,
-          14,
-          13,
-          12,
-          11
-        ]
-      },
-      "labels": {
-        "1": "DIR",
-        "10": "GND",
-        "19": "/OE",
-        "20": "VCC"
-      },
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ],
-      "part": "74HC245",
-      "pins": 20,
-      "right": [
-        20,
-        19,
-        18,
-        17,
-        16,
-        15,
-        14,
-        13,
-        12,
-        11
-      ],
-      "schema": "db.component.symbol.dip",
-      "shape": "dip",
-      "version": 1
+      }
     },
     "python_simulator": {
-      "factory": "chiplib.create_chip",
-      "part": "74HC245"
-    },
-    "svg_pinout": {
-      "bus_groups": {
-        "A": [
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9
-        ],
-        "B": [
-          18,
-          17,
-          16,
-          15,
-          14,
-          13,
-          12,
-          11
-        ]
-      },
-      "labels": {
-        "1": "DIR",
-        "10": "GND",
-        "19": "/OE",
-        "20": "VCC"
-      },
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ],
       "part": "74HC245",
-      "pins": 20,
-      "right": [
-        20,
-        19,
-        18,
-        17,
-        16,
-        15,
-        14,
-        13,
-        12,
-        11
+      "portable": true,
+      "copy_with_chip": [
+        "DB/74xx/74HC245/simulation/model.py",
+        "python/chiplib/core.py"
       ],
-      "schema": "db.component.symbol.dip",
-      "shape": "dip",
-      "version": 1
-    },
-    "unit_test": {
-      "part": "74HC245",
-      "required_vectors": [
-        "a_to_b",
-        "b_to_a",
-        "disabled_high_z",
-        "bus_conflict"
-      ],
-      "schema": "db.component.generated.tests",
-      "tests": [
-        {
-          "present": true,
-          "source": "tests/truth_table.json",
-          "type": "truth_table"
-        },
-        {
-          "present": true,
-          "source": "tests/timing.json",
-          "type": "timing"
-        },
-        {
-          "present": true,
-          "source": "tests/tri_state.json",
-          "type": "tri_state"
-        },
-        {
-          "present": true,
-          "source": "tests/bus_fight.json",
-          "type": "bus_fight"
-        },
-        {
-          "present": true,
-          "source": "tests/propagation.json",
-          "type": "propagation"
-        }
-      ],
-      "version": 1
+      "factory": "create",
+      "file": "DB/74xx/74HC245/simulation/model.py",
+      "class": "HC245"
     },
     "verilog_wrapper": {
+      "part": "74HC245",
+      "module": "ttl_74hc245",
+      "file": "DB/74xx/74HC245/simulation/model.v",
+      "netlist": "DB/74xx/74HC245/simulation/netlist.json",
       "export": {
         "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "OE_bar",
+            "pins": [
+              19
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "DIR",
+            "pins": [
+              1
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "A",
+            "pins": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "direction": "output"
+          },
+          {
+            "name": "B",
+            "pins": [
+              18,
+              17,
+              16,
+              15,
+              14,
+              13,
+              12,
+              11
+            ],
+            "direction": "output"
+          }
+        ],
         "output_pins": [
           2,
           3,
@@ -480,59 +337,238 @@
           16,
           17,
           18
-        ],
-        "ports": [
-          {
-            "direction": "input",
-            "name": "OE_bar",
-            "pins": [
-              19
-            ]
-          },
-          {
-            "direction": "input",
-            "name": "DIR",
-            "pins": [
-              1
-            ]
-          },
-          {
-            "direction": "output",
-            "name": "A",
-            "pins": [
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9
-            ]
-          },
-          {
-            "direction": "output",
-            "name": "B",
-            "pins": [
-              18,
-              17,
-              16,
-              15,
-              14,
-              13,
-              12,
-              11
-            ]
-          }
         ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC245",
+      "shape": "dip",
+      "pins": 20,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "labels": {
+        "1": "DIR",
+        "10": "GND",
+        "19": "/OE",
+        "20": "VCC"
       },
-      "file": "Verilog/74xx/74hc245.v",
-      "module": "ttl_74hc245",
-      "part": "74HC245"
+      "bus_groups": {
+        "A": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "B": [
+          18,
+          17,
+          16,
+          15,
+          14,
+          13,
+          12,
+          11
+        ]
+      }
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC245",
+      "shape": "dip",
+      "pins": 20,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "labels": {
+        "1": "DIR",
+        "10": "GND",
+        "19": "/OE",
+        "20": "VCC"
+      },
+      "bus_groups": {
+        "A": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "B": [
+          18,
+          17,
+          16,
+          15,
+          14,
+          13,
+          12,
+          11
+        ]
+      }
+    },
+    "documentation": {
+      "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "74HC245",
+      "title": "Octal bus transceiver with 3-state outputs",
+      "summary": "Octal bus transceiver with 3-state outputs.",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "pin_count": 20,
+      "buses": {
+        "A": {
+          "width": 8,
+          "pins_lsb_first": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ]
+        },
+        "B": {
+          "width": 8,
+          "pins_lsb_first": [
+            18,
+            17,
+            16,
+            15,
+            14,
+            13,
+            12,
+            11
+          ]
+        }
+      },
+      "controls": [
+        {
+          "pin": "DIR",
+          "function": "direction_control",
+          "active_low": false
+        },
+        {
+          "pin": "/OE",
+          "function": "enable",
+          "active_low": true
+        }
+      ]
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "74HC245",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "tri_state",
+          "source": "tests/tri_state.json",
+          "present": true
+        },
+        {
+          "type": "bus_fight",
+          "source": "tests/bus_fight.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "a_to_b",
+        "b_to_a",
+        "disabled_high_z",
+        "bus_conflict"
+      ]
+    },
+    "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "74HC245",
+      "controls": [
+        "DIR",
+        "/OE"
+      ],
+      "probes": [
+        "A",
+        "B"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
     }
-  },
-  "format": "db.component.generated",
-  "part": "74HC245",
-  "source": "DB/74xx/74HC245/definition/digital.json",
-  "version": 1
+  }
 }

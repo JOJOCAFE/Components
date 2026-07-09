@@ -31,18 +31,17 @@ Last updated: 2026-07-09, session save
   - `DB_COMPONENT_PACKAGE_SPEC.md`
   - `GENERATION_PIPELINE.md`
   - `COMPONENT_GENERATION_BACKLOG.md`
-- Added generator-ready `definition/digital.json` seed files for:
+- Added generator-ready `definition/definition.json` seed files for:
   - `74HC161`
   - `74HC157`
   - `74HC245`
   - `74HC574`
   - `AT28C256`
-- Added an initial split package for `74HC245`:
-  - `definition/`
+- Added an initial layered package for `74HC245`:
+  - `definition/definition.json`
   - `simulation/`
   - `tests/`
   - `symbol/`
-  - `datasheet/`
 - Saved current specialist-agent skills in `TEAM_SKILLS.md`:
   - Arendt: specs and schemas
   - Feynman: docs and demos
@@ -55,7 +54,7 @@ Last updated: 2026-07-09, session save
 Use one canonical component definition file per chip:
 
 ```text
-DB/<group>/<part>/definition/digital.json
+DB/<group>/<part>/definition/definition.json
 ```
 
 That one file should drive:
@@ -71,18 +70,18 @@ JSON component detail
   -> interactive demo
 ```
 
-Layer split:
+Package layers:
 
 ```text
 definition/
 simulation/
 tests/
 symbol/
-datasheet/
 ```
 
-Keep `chip.json` as the current compatibility manifest until the loader can
-merge split packages safely.
+Seed packages no longer need `chip.json`; compatibility catalog/API data is
+synthesized from `definition/definition.json` and `simulation/netlist.json`.
+Legacy `chip.json` remains supported for older components.
 
 ## Team Task Assignments
 
@@ -96,8 +95,8 @@ merge split packages safely.
 
 1. Expand generated documentation and interactive demo wording beyond the
    initial structured data.
-2. Turn split test records into broader executable Python/Verilog generators
-   instead of hand-written smoke checks.
+2. Grow generated split-record execution from Python-only checks toward
+   generated Verilog testbenches.
 3. Keep Verilog smoke compiling all 74xx and memory models.
 4. Keep `TEAM_SKILLS.md`, `COMPONENT_GENERATION_BACKLOG.md`, and this handoff
    synchronized whenever the team roles or seed-chip plan changes.
@@ -105,12 +104,12 @@ merge split packages safely.
 ## Completed Since Last Handoff
 
 - Added schema validation for `db.component.digital` files.
-- Added tests that the five seed `digital.json` files agree with current
+- Added tests that the five seed `definition.json` files agree with current
   `chip.json` pins/package/module metadata.
 - Confirmed `tests.test_block_ui` is already present in
   `.github/workflows/python-tests.yml`.
-- Added `load_digital_package(part)` for `definition/digital.json` plus split
-  package layers without changing `load_component(part)`.
+- Added `load_digital_package(part)` for `definition/definition.json` package
+  layers without changing `load_component(part)`.
 - Added `generate_component_artifacts(part)` and CLI/API access for structured
   generator output.
 - Added split test files for the seed batch.
@@ -121,6 +120,28 @@ merge split packages safely.
   the live chip models.
 - Extracted first timing/electrical facts for `74HC161`, `74HC157`,
   `74HC574`, and `AT28C256`.
+- Added `tests.test_generated_split_records` to execute seed split records and
+  guard Verilog smoke workflow scope.
+- Verified 74xx and memory Verilog smoke locally.
+- Added `simulation/model.json`, local `simulation/model.py`,
+  `simulation/model.v`, `simulation/netlist.json`, and `symbol/dip.json`
+  package layers for all five seed chips.
+- Added `portable_files` metadata and export required-file coverage so projects
+  copy local `simulation/model.py` with each seed chip for standalone use.
+- `portable_files` also requires `python/chiplib/core.py` whenever a local
+  Python `model.py` is exported.
+- Circuit/system exports should copy `chiplib/core.py` once and share it across
+  all copied chip models.
+- Seed chip `status` is now copied into `definition/definition.json`; active
+  Verilog export mapping is read from `simulation/netlist.json` with
+  `chip.json` kept as a compatibility fallback.
+- Removed seed `chip.json` files after migrating their remaining status/export
+  data into `definition/definition.json` and `simulation/netlist.json`.
+- Merged seed chip definition sublayers into the single canonical
+  `definition/definition.json` file and removed redundant split definition JSON
+  files.
+- Merged seed chip datasheet source records into `definition/definition.json`
+  and removed redundant `datasheet/` folders.
 
 ## Verification Already Run Recently
 

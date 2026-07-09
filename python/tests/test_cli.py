@@ -234,11 +234,11 @@ def test_cli_db_summary_and_part_lookup():
         check=False,
     )
     assert digital.returncode == 0, digital.stderr
-    digital_data = json.loads(digital.stdout)
-    assert digital_data["schema"] == "db.component.digital"
-    assert digital_data["part"] == "74HC245"
-    assert digital_data["validation"]["ok"] is True
-    assert "svg_pinout" in digital_data["generation"]["targets"]
+    definition_data = json.loads(digital.stdout)
+    assert definition_data["schema"] == "db.component.digital"
+    assert definition_data["part"] == "74HC245"
+    assert definition_data["validation"]["ok"] is True
+    assert "svg_pinout" in definition_data["generation"]["targets"]
 
     package = subprocess.run(
         [sys.executable, "-B", "-m", "chiplib.cli", "db", "74HC245", "--package"],

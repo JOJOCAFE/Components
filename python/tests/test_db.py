@@ -1,6 +1,8 @@
 """DB manifest tests."""
 
+import importlib.util
 import json
+from pathlib import Path
 
 from chiplib.db import audit_db, component_catalog, component_detail, component_ids, component_summary, db_root, db_status_report, generate_component_artifacts, legacy_catalog_parts, load_all_components, load_component, load_digital_definition, load_digital_package, student_component_catalog
 from chiplib.db import _pinout_mismatches
@@ -95,7 +97,7 @@ def test_db_seed_entries_are_loadable():
 
     counter = load_component("74HC161")
     assert counter["pins"][0]["name"] == "/CLR"
-    assert counter["pins"][14] == {"number": 15, "name": "RCO", "direction": "output"}
+    assert {key: counter["pins"][14][key] for key in ("number", "name", "direction")} == {"number": 15, "name": "RCO", "direction": "output"}
     assert counter["verilog"]["export"]["ports"] == [
         {"name": "Clear_bar", "pins": [1], "direction": "input"},
         {"name": "Load_bar", "pins": [9], "direction": "input"},
@@ -125,7 +127,7 @@ def test_db_seed_entries_are_loadable():
     register = load_component("74HC574")
     assert register["verilog"]["module"] == "ttl_74hc574"
     assert register["pins"][0]["active_low"] is True
-    assert register["pins"][11] == {"number": 12, "name": "8Q", "direction": "output"}
+    assert {key: register["pins"][11][key] for key in ("number", "name", "direction")} == {"number": 12, "name": "8Q", "direction": "output"}
 
     decoder = load_component("74HC138")
     assert decoder["verilog"]["module"] == "ttl_74hc138"
@@ -216,11 +218,11 @@ def test_db_component_detail_exposes_pins_and_capabilities():
     assert detail["format"] == "components.db.component"
     assert detail["part"] == "AT28C256"
     assert detail["group"] == "memory"
-    assert detail["db_path"] == "DB/Memory/AT28C256/chip.json"
-    assert detail["pins"][0] == {"number": 1, "name": "A14", "direction": "input"}
+    assert detail["db_path"] == "DB/Memory/AT28C256/definition/definition.json"
+    assert {key: detail["pins"][0][key] for key in ("number", "name", "direction")} == {"number": 1, "name": "A14", "direction": "input"}
     assert detail["capabilities"]["verilog_model"] is True
-    assert detail["capabilities"]["verilog_file"] == "Verilog/Memory/at28c256.v"
-    assert detail["digital_definition"]["path"] == "DB/Memory/AT28C256/definition/digital.json"
+    assert detail["capabilities"]["verilog_file"] == "DB/Memory/AT28C256/simulation/model.v"
+    assert detail["digital_definition"]["path"] == "DB/Memory/AT28C256/definition/definition.json"
     assert set(detail["digital_definition"]["generation_targets"]) == GENERATION_TARGETS
 
 
@@ -232,8 +234,8 @@ def test_generation_seed_digital_definitions_are_valid_and_generator_ready():
         assert definition["validation"]["ok"] is True, definition["validation"]["errors"]
         assert set(definition["generation"]["targets"]) == GENERATION_TARGETS
         assert len(definition["pins"]) == definition["package"]["pins"]
-        assert definition["generation"]["python"]["factory"] == "chiplib.create_chip"
-        assert definition["generation"]["verilog"]["file"].startswith("Verilog/")
+        assert definition["generation"]["python"]["factory"] == "create"
+        assert definition["generation"]["verilog"]["file"].endswith("/simulation/model.v")
 
 
 def test_digital_definition_schema_contract_is_strict_enough_for_generation():
@@ -256,6 +258,8 @@ def test_generation_seed_digital_definitions_match_chip_manifests():
     for part in GENERATION_SEED_PARTS:
         definition = load_digital_definition(part)
         manifest = load_component(part)
+        package = load_digital_package(part)
+        simulation = package["layers"]["simulation"]["model"]
 
         assert definition["validation"]["ok"] is True, definition["validation"]["errors"]
         assert definition["metadata"]["title"] == manifest["title"]
@@ -263,6 +267,7 @@ def test_generation_seed_digital_definitions_match_chip_manifests():
         assert definition["metadata"]["group"] == manifest["group"]
         assert definition["package"]["kind"] == manifest["package"]["kind"]
         assert definition["package"]["pins"] == manifest["package"]["pins"]
+        assert definition["status"] == manifest["status"]
 
         digital_pins = {pin["number"]: pin for pin in definition["pins"]}
         manifest_pins = {pin["number"]: pin for pin in manifest["pins"]}
@@ -274,9 +279,11 @@ def test_generation_seed_digital_definitions_match_chip_manifests():
             if "active_low" in manifest_pin:
                 assert digital_pin["active_low"] == manifest_pin["active_low"]
 
-        assert definition["generation"]["python"] == manifest["python"]
-        assert definition["generation"]["verilog"]["module"] == manifest["verilog"]["module"]
-        assert definition["generation"]["verilog"]["file"] == manifest["verilog"]["file"]
+        assert definition["generation"]["python"]["factory"] == simulation["python"]["factory"]
+        assert definition["generation"]["python"]["file"] == simulation["python"]["file"]
+        assert definition["generation"]["verilog"]["module"] == simulation["verilog"]["module"]
+        assert definition["generation"]["verilog"]["file"] == simulation["verilog"]["file"]
+        assert definition["generation"]["verilog"]["netlist"] == simulation["netlist_generation"]["source"]
 
         export = manifest["verilog"]["export"]
         export_pins = set(export["output_pins"])
@@ -308,6 +315,73 @@ def test_generation_seed_digital_packages_load_split_tests():
             assert tests[test_type]["applicable"] is True, (part, test_type)
 
 
+def test_generation_seed_packages_have_required_layers():
+    required_definition_layers = ("component", "package", "pins", "power", "logic", "timing", "electrical")
+    for part in GENERATION_SEED_PARTS:
+        package = load_digital_package(part)
+        definition = package["layers"]["definition"]
+        digital = package["definition"]
+        simulation = package["layers"]["simulation"]
+        assert package["definition"]["validation"]["ok"] is True, part
+        assert set(digital["definition_layers"]) >= set(required_definition_layers), part
+        for layer_name in required_definition_layers:
+            assert definition[layer_name] == digital["definition_layers"][layer_name], (part, layer_name)
+            assert definition[layer_name]["part"] == part, (part, layer_name)
+        assert simulation["model"] is not None, part
+        assert simulation["netlist"] is not None, part
+        assert package["layers"]["symbol"]["dip"] is not None, part
+        assert package["layers"]["datasheet"]["sources"] is not None, part
+        assert package["layers"]["symbol"]["dip"]["schema"] == "db.component.symbol.dip"
+        assert simulation["model"]["schema"] == "db.component.simulation"
+        assert simulation["model"]["python"]["factory"] == "create"
+        assert simulation["model"]["python"]["file"].endswith("/simulation/model.py")
+        assert simulation["model"]["verilog"]["file"].endswith("/simulation/model.v")
+        assert simulation["model"]["netlist_generation"]["source"].endswith("/simulation/netlist.json")
+        assert simulation["netlist"]["schema"] == "db.component.simulation.netlist"
+        assert simulation["netlist"]["simulation"]["python"] == simulation["model"]["python"]["file"]
+        assert simulation["netlist"]["simulation"]["verilog"] == simulation["model"]["verilog"]["file"]
+        assert simulation["netlist"]["verilog"]["module"] == package["manifest"]["verilog"]["module"]
+        assert simulation["netlist"]["verilog"]["export"] == package["manifest"]["verilog"]["export"]
+        portable = package["portable_files"]
+        assert {item["kind"] for item in portable} == {"python_model", "python_runtime", "verilog_model", "netlist"}
+        assert any(item["runtime"] == "python" and item["copy_as"] == "model.py" for item in portable)
+        assert any(
+            item["kind"] == "python_runtime"
+            and item["copy_as"] == "chiplib/core.py"
+            and item["shared"] is True
+            and item["copy_once"] is True
+            for item in portable
+        )
+        assert simulation["model"]["python"]["file"] in {item["source"] for item in portable}
+
+
+def test_generation_seed_simulation_sources_are_local_and_importable():
+    for part in GENERATION_SEED_PARTS:
+        package = load_digital_package(part)
+        model = package["layers"]["simulation"]["model"]
+        for file_key in ("simulation_model_py", "simulation_model_v", "simulation_netlist"):
+            assert file_key in package["files"], (part, file_key)
+            assert Path(package["files"][file_key]).parts[-2] == "simulation", (part, file_key)
+
+        model_path = db_root().parent / model["python"]["file"]
+        spec = importlib.util.spec_from_file_location(f"local_{part.lower()}_model", model_path)
+        assert spec is not None and spec.loader is not None, part
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        chip = module.create("U1")
+        assert chip.part == part
+        assert chip.name == "U1"
+
+
+def test_generation_seed_definitions_are_one_file_sources():
+    for part in GENERATION_SEED_PARTS:
+        package = load_digital_package(part)
+        definition_dir = db_root() / package["files"]["definition"]
+        json_files = sorted(path.name for path in definition_dir.parent.glob("*.json"))
+        assert json_files == ["definition.json"], (part, json_files)
+        assert not any(name.startswith("legacy_") for name in package["files"]), part
+
+
 def test_74hc245_split_tests_and_evidence_are_loaded():
     package = load_digital_package("74HC245")
     tests = package["layers"]["tests"]
@@ -331,10 +405,19 @@ def test_component_generation_artifacts_cover_declared_targets():
         generated = generate_component_artifacts(part)
         assert generated["format"] == "db.component.generated"
         assert generated["part"] == part
-        assert generated["source"].endswith("definition/digital.json")
+        assert generated["source"].endswith("definition/definition.json")
+        assert any(item["runtime"] == "python" and item["copy_as"] == "model.py" for item in generated["portable_files"])
+        assert any(
+            item["kind"] == "python_runtime"
+            and item["source"] == "python/chiplib/core.py"
+            and item["copy_once"] is True
+            for item in generated["portable_files"]
+        )
         assert set(generated["artifacts"]) == GENERATION_TARGETS
         for artifact in generated["artifacts"].values():
             assert artifact["part"] == part
+        assert generated["artifacts"]["python_simulator"]["portable"] is True
+        assert generated["artifacts"]["python_simulator"]["copy_with_chip"]
 
     hc245 = generate_component_artifacts("74HC245")
     assert hc245["artifacts"]["json"]["buses"]["A"]["pins_lsb_first"] == [2, 3, 4, 5, 6, 7, 8, 9]
@@ -401,6 +484,16 @@ def test_db_manifests_match_schema_contract():
     schema = json.loads((db_root() / "chip.schema.json").read_text(encoding="utf-8"))
     assert schema["properties"]["schema"]["const"] == "db.chip"
     assert "passive" in schema["properties"]["pins"]["items"]["properties"]["direction"]["enum"]
+    digital_schema = json.loads((db_root() / "digital.schema.json").read_text(encoding="utf-8"))
+    assert set(digital_schema["properties"]["definition_layers"]["required"]) == {
+        "component",
+        "package",
+        "pins",
+        "power",
+        "logic",
+        "timing",
+        "electrical",
+    }
 
     for manifest in load_all_components():
         for key in schema["required"]:
@@ -495,6 +588,7 @@ def run_all():
     test_digital_definition_schema_contract_is_strict_enough_for_generation()
     test_generation_seed_digital_definitions_match_chip_manifests()
     test_generation_seed_digital_packages_load_split_tests()
+    test_generation_seed_packages_have_required_layers()
     test_74hc245_split_tests_and_evidence_are_loaded()
     test_component_generation_artifacts_cover_declared_targets()
     test_generated_artifact_files_exist_for_seed_batch()

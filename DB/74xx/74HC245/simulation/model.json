@@ -3,18 +3,27 @@
   "version": 1,
   "part": "74HC245",
   "python": {
-    "factory": "chiplib.create_chip",
+    "factory": "create",
     "class": "HC245",
-    "file": "python/chiplib/chips.py",
-    "implements": ["direction", "tristate", "bidirectional", "propagation_delay"]
+    "file": "DB/74xx/74HC245/simulation/model.py",
+    "implements": [
+      "direction",
+      "tristate",
+      "bidirectional",
+      "propagation_delay"
+    ]
   },
   "verilog": {
     "module": "ttl_74hc245",
-    "file": "Verilog/74xx/74hc245.v",
-    "implements": ["direction", "tristate", "bidirectional"]
+    "file": "DB/74xx/74HC245/simulation/model.v",
+    "implements": [
+      "direction",
+      "tristate",
+      "bidirectional"
+    ]
   },
   "netlist_generation": {
-    "source": "DB/74xx/74HC245/chip.json",
+    "source": "DB/74xx/74HC245/simulation/netlist.json",
     "status": "tested"
   }
 }

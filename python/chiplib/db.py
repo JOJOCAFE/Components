@@ -44,8 +44,8 @@ def load_component(part: str) -> JsonMap:
         data = json.load(handle)
     if not isinstance(data, dict):
         raise ValueError(f"component DB manifest must be an object: {path}")
-    manifest = deepcopy(data)
-    manifest.setdefault("part", path.parent.name)
+    manifest = _manifest_from_definition(data, path) if path.name == "definition.json" else deepcopy(data)
+    manifest.setdefault("part", path.parents[1].name if path.name == "definition.json" else path.parent.name)
     manifest.setdefault("id", manifest["part"])
     manifest["db_path"] = str(path.relative_to(ROOT))
     _apply_path_defaults(manifest, path)
@@ -175,24 +175,28 @@ def load_digital_definition(part: str, *, required: bool = True) -> JsonMap | No
 
 
 def load_digital_package(part: str) -> JsonMap:
-    """Load a digital definition plus any split-package layer files."""
+    """Load a digital definition plus package layer files."""
 
     definition = load_digital_definition(part)
     if definition is None:
         raise KeyError(f"digital definition not found: {part}")
     manifest = load_component(part)
-    base = _manifest_path(part).parent
+    base = _component_base_path(part)
+    derived = _derived_package_layers(definition, manifest)
     layers = {
         "definition": {
-            "component": _load_optional_json(base / "definition" / "component.json"),
-            "package": _load_optional_json(base / "definition" / "package.json"),
-            "pins": _load_optional_json(base / "definition" / "pins.json"),
-            "power": _load_optional_json(base / "definition" / "power.json"),
-            "logic": _load_optional_json(base / "definition" / "logic.json"),
-            "timing": _load_optional_json(base / "definition" / "timing.json"),
-            "electrical": _load_optional_json(base / "definition" / "electrical.json"),
+            "component": _definition_layer(definition, base, derived, "component"),
+            "package": _definition_layer(definition, base, derived, "package"),
+            "pins": _definition_layer(definition, base, derived, "pins"),
+            "power": _definition_layer(definition, base, derived, "power"),
+            "logic": _definition_layer(definition, base, derived, "logic"),
+            "timing": _definition_layer(definition, base, derived, "timing"),
+            "electrical": _definition_layer(definition, base, derived, "electrical"),
         },
-        "simulation": {"model": _load_optional_json(base / "simulation" / "model.json")},
+        "simulation": {
+            "model": _load_optional_json(base / "simulation" / "model.json"),
+            "netlist": _load_optional_json(base / "simulation" / "netlist.json"),
+        },
         "tests": {
             "truth_table": _load_optional_json(base / "tests" / "truth_table.json"),
             "timing": _load_optional_json(base / "tests" / "timing.json"),
@@ -201,26 +205,23 @@ def load_digital_package(part: str) -> JsonMap:
             "propagation": _load_optional_json(base / "tests" / "propagation.json"),
         },
         "symbol": {"dip": _load_optional_json(base / "symbol" / "dip.json")},
-        "datasheet": {"sources": _load_optional_json(base / "datasheet" / "sources.json")},
+        "datasheet": {"sources": _datasheet_layer(definition, base)},
     }
-    files = {
-        name: str(path.relative_to(ROOT))
-        for name, path in {
+    file_candidates = {
             "manifest": _manifest_path(part),
-            "digital": base / "definition" / "digital.json",
-            "component": base / "definition" / "component.json",
-            "package": base / "definition" / "package.json",
-            "pins": base / "definition" / "pins.json",
-            "power": base / "definition" / "power.json",
-            "logic": base / "definition" / "logic.json",
-            "timing": base / "definition" / "timing.json",
-            "electrical": base / "definition" / "electrical.json",
+            "definition": base / "definition" / "definition.json",
+            "simulation_model_py": base / "simulation" / "model.py",
+            "simulation_model_v": base / "simulation" / "model.v",
+            "simulation_netlist": base / "simulation" / "netlist.json",
             "simulation": base / "simulation" / "model.json",
             "symbol": base / "symbol" / "dip.json",
-            "datasheet": base / "datasheet" / "sources.json",
-        }.items()
-        if path.exists()
     }
+    for key in ("component", "package", "pins", "power", "logic", "timing", "electrical"):
+        legacy_path = base / "definition" / f"{key}.json"
+        if legacy_path.exists():
+            file_candidates[f"legacy_{key}"] = legacy_path
+    files = {name: str(path.relative_to(ROOT)) for name, path in file_candidates.items() if path.exists()}
+    portable_files = _portable_simulation_files(files)
     return {
         "format": "db.component.package",
         "version": 1,
@@ -229,13 +230,14 @@ def load_digital_package(part: str) -> JsonMap:
         "definition": definition,
         "digital": definition,
         "layers": layers,
-        "derived": _derived_package_layers(definition, manifest),
+        "derived": derived,
         "files": files,
+        "portable_files": portable_files,
     }
 
 
 def generate_component_artifacts(part: str) -> JsonMap:
-    """Generate structured artifact payloads from definition/digital.json."""
+    """Generate structured artifact payloads from definition/definition.json."""
 
     package = load_digital_package(part)
     definition = package["digital"]
@@ -251,6 +253,7 @@ def generate_component_artifacts(part: str) -> JsonMap:
         "part": definition["part"],
         "module": definition.get("generation", {}).get("verilog", {}).get("module", ""),
         "file": definition.get("generation", {}).get("verilog", {}).get("file", ""),
+        "netlist": definition.get("generation", {}).get("verilog", {}).get("netlist", ""),
         "export": deepcopy(manifest.get("verilog", {}).get("export", {})),
     }
     return {
@@ -258,6 +261,7 @@ def generate_component_artifacts(part: str) -> JsonMap:
         "version": 1,
         "source": definition.get("definition_path", ""),
         "part": definition["part"],
+        "portable_files": deepcopy(package.get("portable_files", [])),
         "artifacts": {
             "json": {
                 "format": "components.generated.detail",
@@ -275,6 +279,8 @@ def generate_component_artifacts(part: str) -> JsonMap:
             },
             "python_simulator": {
                 "part": definition["part"],
+                "portable": True,
+                "copy_with_chip": [item["source"] for item in package.get("portable_files", []) if item.get("runtime") == "python"],
                 **deepcopy(definition.get("generation", {}).get("python", {})),
             },
             "verilog_wrapper": verilog,
@@ -292,7 +298,7 @@ def validate_digital_definition(definition: JsonMap) -> JsonMap:
 
     errors: list[JsonMap] = []
     part = str(definition.get("part", ""))
-    path = str(definition.get("definition_path", f"DB/*/{part}/definition/digital.json"))
+    path = str(definition.get("definition_path", f"DB/*/{part}/definition/definition.json"))
     if definition.get("schema") != "db.component.digital":
         errors.append(_issue("digital_schema_invalid", part, path, "schema must be db.component.digital"))
     if not isinstance(definition.get("version"), int) or int(definition.get("version", 0)) < 1:
@@ -354,6 +360,20 @@ def validate_digital_definition(definition: JsonMap) -> JsonMap:
         errors.append(_issue("digital_timing_invalid", part, path, "timing must be an object"))
     elif "delay_ns" in timing and (not isinstance(timing.get("delay_ns"), int) or timing.get("delay_ns") < 0):
         errors.append(_issue("digital_delay_invalid", part, path, "timing.delay_ns must be an integer >= 0"))
+    layers = definition.get("definition_layers")
+    if layers is not None:
+        if not isinstance(layers, dict):
+            errors.append(_issue("digital_definition_layers_invalid", part, path, "definition_layers must be an object"))
+        else:
+            for key in ("component", "package", "pins", "power", "logic", "timing", "electrical"):
+                layer = layers.get(key)
+                if not isinstance(layer, dict):
+                    errors.append(_issue("digital_definition_layer_missing", part, path, f"definition_layers.{key} must be an object"))
+                    continue
+                if not isinstance(layer.get("schema"), str) or not layer.get("schema"):
+                    errors.append(_issue("digital_definition_layer_schema_missing", part, path, f"definition_layers.{key}.schema must be a non-empty string"))
+                if layer.get("part") != part:
+                    errors.append(_issue("digital_definition_layer_part_mismatch", part, path, f"definition_layers.{key}.part must match {part}"))
     generation = definition.get("generation", {})
     targets = generation.get("targets", []) if isinstance(generation, dict) else []
     required_targets = {"json", "python_simulator", "verilog_wrapper", "kicad_symbol", "svg_pinout", "documentation", "unit_test", "interactive_demo"}
@@ -384,6 +404,16 @@ def validate_digital_definition(definition: JsonMap) -> JsonMap:
                 errors.append(_issue("digital_source_missing_field", part, path, f"datasheet source missing {key}"))
         if not isinstance(source.get("url"), str) and not isinstance(source.get("file"), str):
             errors.append(_issue("digital_source_missing_location", part, path, "datasheet source needs url or file"))
+    status = definition.get("status")
+    if status is not None:
+        if not isinstance(status, dict):
+            errors.append(_issue("digital_status_invalid", part, path, "status must be an object"))
+        else:
+            allowed_status = {"verified", "modeled", "tested", "missing", "blocked", "unknown", "not_applicable"}
+            for key in REQUIRED_STATUS_KEYS:
+                value = status.get(key)
+                if value not in allowed_status:
+                    errors.append(_issue("digital_status_invalid_value", part, path, f"status.{key} must be one of {sorted(allowed_status)}"))
     if part:
         errors.extend(_digital_manifest_mismatches(definition, part, path))
     return {"ok": not errors, "errors": errors}
@@ -651,14 +681,26 @@ def _manifest_path(part: str) -> Path:
     ]
     if matches:
         return sorted(matches)[0]
+    grouped_definition = _definition_manifest_path(clean)
+    if grouped_definition.exists():
+        return grouped_definition
     return flat
 
 
 def _digital_definition_path(part: str) -> Path:
     manifest_path = _manifest_path(part)
+    if manifest_path.name == "definition.json":
+        return manifest_path
     if manifest_path.exists():
-        return manifest_path.parent / "definition" / "digital.json"
-    return manifest_path.parent / "definition" / "digital.json"
+        return manifest_path.parent / "definition" / "definition.json"
+    return manifest_path.parent / "definition" / "definition.json"
+
+
+def _component_base_path(part: str) -> Path:
+    manifest_path = _manifest_path(part)
+    if manifest_path.name == "definition.json":
+        return manifest_path.parents[1]
+    return manifest_path.parent
 
 
 def _manifest_paths() -> dict[str, Path]:
@@ -670,7 +712,55 @@ def _manifest_paths() -> dict[str, Path]:
             result[path.parent.name] = path
         for path in DB_ROOT.glob(f"*/*/{name}"):
             result[path.parent.name] = path
+    for path in DB_ROOT.glob("*/*/definition/definition.json"):
+        result.setdefault(path.parents[1].name, path)
     return result
+
+
+def _definition_manifest_path(part: str) -> Path:
+    for path in DB_ROOT.glob("*/*/definition/definition.json"):
+        if path.parents[1].name == part:
+            return path
+    return DB_ROOT / part / "definition" / "definition.json"
+
+
+def _manifest_from_definition(definition: JsonMap, path: Path) -> JsonMap:
+    base = path.parents[1]
+    metadata = definition.get("metadata", {}) if isinstance(definition.get("metadata"), dict) else {}
+    generation = definition.get("generation", {}) if isinstance(definition.get("generation"), dict) else {}
+    verilog_generation = generation.get("verilog", {}) if isinstance(generation.get("verilog"), dict) else {}
+    python_generation = generation.get("python", {}) if isinstance(generation.get("python"), dict) else {}
+    netlist = _load_optional_json(base / "simulation" / "netlist.json") or {}
+    netlist_verilog = netlist.get("verilog", {}) if isinstance(netlist.get("verilog"), dict) else {}
+    verilog = {
+        "module": verilog_generation.get("module", netlist_verilog.get("module", "")),
+        "file": verilog_generation.get("file", ""),
+        "export": deepcopy(netlist_verilog.get("export", {})),
+    }
+    if verilog_generation.get("netlist"):
+        verilog["netlist"] = verilog_generation["netlist"]
+    return {
+        "schema": "db.chip",
+        "version": 1,
+        "part": definition.get("part", base.name),
+        "title": metadata.get("title", definition.get("part", base.name)),
+        "family": metadata.get("family", ""),
+        "group": metadata.get("group", ""),
+        "role": metadata.get("role", ""),
+        "kind": "ic",
+        "package": deepcopy(definition.get("package", {})),
+        "status": deepcopy(definition.get("status", {})),
+        "pins": deepcopy(definition.get("pins", [])),
+        "legacy_paths": {
+            "pinout": verilog.get("file", ""),
+            "verilog": verilog.get("file", ""),
+            "python_behavior": python_generation.get("file", ""),
+            "verilog_export": (base / "simulation" / "netlist.json").relative_to(ROOT).as_posix(),
+        },
+        "verilog": verilog,
+        "python": deepcopy(python_generation),
+        "sources": deepcopy(definition.get("datasheet", {}).get("sources", [])),
+    }
 
 
 def _apply_path_defaults(manifest: JsonMap, path: Path) -> None:
@@ -880,6 +970,58 @@ def _load_optional_json(path: Path) -> JsonMap | None:
     return data
 
 
+def _definition_layer(definition: JsonMap, base: Path, derived: JsonMap, key: str) -> JsonMap | None:
+    merged_layers = definition.get("definition_layers", {})
+    if isinstance(merged_layers, dict) and isinstance(merged_layers.get(key), dict):
+        return deepcopy(merged_layers[key])
+
+    legacy_layer = _load_optional_json(base / "definition" / f"{key}.json")
+    if legacy_layer is not None:
+        return legacy_layer
+
+    layer = derived.get(key)
+    return deepcopy(layer) if isinstance(layer, dict) else None
+
+
+def _datasheet_layer(definition: JsonMap, base: Path) -> JsonMap | None:
+    datasheet = definition.get("datasheet")
+    if isinstance(datasheet, dict) and isinstance(datasheet.get("sources"), list):
+        return {
+            "schema": "db.component.datasheet.sources",
+            "version": 1,
+            "part": definition.get("part", ""),
+            "sources": deepcopy(datasheet["sources"]),
+        }
+    return _load_optional_json(base / "datasheet" / "sources.json")
+
+
+def _portable_simulation_files(files: JsonMap) -> list[JsonMap]:
+    result: list[JsonMap] = []
+    for key, kind, runtime, copy_as in (
+        ("simulation_model_py", "python_model", "python", "model.py"),
+        ("simulation_model_v", "verilog_model", "verilog", "model.v"),
+        ("simulation_netlist", "netlist", "metadata", "netlist.json"),
+    ):
+        source = files.get(key)
+        if isinstance(source, str) and source:
+            result.append({
+                "kind": kind,
+                "runtime": runtime,
+                "source": source,
+                "copy_as": copy_as,
+            })
+            if key == "simulation_model_py":
+                result.append({
+                    "kind": "python_runtime",
+                    "runtime": "python",
+                    "source": "python/chiplib/core.py",
+                    "copy_as": "chiplib/core.py",
+                    "shared": True,
+                    "copy_once": True,
+                })
+    return result
+
+
 def _derived_package_layers(definition: JsonMap, manifest: JsonMap) -> JsonMap:
     pins = list(definition.get("pins", [])) if isinstance(definition.get("pins"), list) else []
     return {
@@ -928,6 +1070,12 @@ def _derived_package_layers(definition: JsonMap, manifest: JsonMap) -> JsonMap:
             "version": 1,
             "part": definition.get("part", ""),
             "timing": deepcopy(definition.get("timing", {})),
+        },
+        "electrical": {
+            "schema": "db.component.electrical",
+            "version": 1,
+            "part": definition.get("part", ""),
+            "electrical": deepcopy(definition.get("electrical", {})),
         },
         "datasheet": {
             "schema": "db.component.datasheet.sources",

@@ -1,0 +1,31 @@
+{
+  "schema": "db.component.simulation",
+  "version": 1,
+  "part": "AT28C256",
+  "python": {
+    "factory": "create",
+    "class": "AT28C256",
+    "file": "DB/Memory/AT28C256/simulation/model.py",
+    "implements": [
+      "parallel_read",
+      "parallel_write",
+      "bidirectional_data",
+      "tristate",
+      "memory_image"
+    ]
+  },
+  "verilog": {
+    "module": "mem_at28c256",
+    "file": "DB/Memory/AT28C256/simulation/model.v",
+    "implements": [
+      "parallel_read",
+      "parallel_write",
+      "bidirectional_data",
+      "tristate"
+    ]
+  },
+  "netlist_generation": {
+    "source": "DB/Memory/AT28C256/simulation/netlist.json",
+    "status": "tested"
+  }
+}

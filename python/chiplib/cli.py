@@ -38,9 +38,9 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     db.add_argument("--catalog", action="store_true", help="emit frontend-oriented component catalog metadata")
     db.add_argument("--student", action="store_true", help="emit learner-facing component catalog metadata")
     db.add_argument("--detail", action="store_true", help="emit frontend-oriented metadata for one component")
-    db.add_argument("--digital", action="store_true", help="emit generator-ready definition/digital.json for one component")
+    db.add_argument("--digital", action="store_true", help="emit generator-ready definition/definition.json for one component")
     db.add_argument("--package", action="store_true", help="emit digital definition plus split-package layers for one component")
-    db.add_argument("--generate", action="store_true", help="emit generated artifact data from definition/digital.json")
+    db.add_argument("--generate", action="store_true", help="emit generated artifact data from definition/definition.json")
     db.add_argument("--group", help="filter --catalog by DB group, such as 74xx or memory")
     db.add_argument("-o", "--output")
 

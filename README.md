@@ -44,8 +44,9 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
   layer while legacy model files with embedded pinout comments remain active
   during migration.
 - `DB_COMPONENT_PACKAGE_SPEC.md` - layered component package structure for
-  definition, simulation, verification, symbol, and datasheet data.
-- `GENERATION_PIPELINE.md` - one-file `definition/digital.json` flow for
+  definition, simulation, verification, and symbol data, with datasheet
+  evidence embedded in the definition file.
+- `GENERATION_PIPELINE.md` - one-file `definition/definition.json` flow for
   generating JSON, simulator adapters, Verilog wrappers, KiCad symbols, SVG
   pinouts, docs, unit tests, and interactive demos.
 - `COMPONENT_GENERATION_BACKLOG.md` - seed-batch tasks for generator-ready
@@ -189,7 +190,7 @@ cd ..
 - `SERVICE_CONTRACT.md` - shared CLI/API request, response, error, versioning,
   and pluggable-service rules.
 - `DB_COMPONENT_PACKAGE_SPEC.md` and `GENERATION_PIPELINE.md` - next DB
-  package layer where one `definition/digital.json` can drive generated JSON,
+  package layer where one `definition/definition.json` can drive generated JSON,
   simulator adapters, Verilog wrappers, KiCad symbols, SVG pinouts,
   documentation, unit tests, and interactive demos.
 - `BLOCK_UI_CONTRACT.md` - block editor import/export shape for drawable

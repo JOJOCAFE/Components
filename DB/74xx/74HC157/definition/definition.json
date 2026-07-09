@@ -1,0 +1,486 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC157",
+  "metadata": {
+    "title": "Quad 2-Line to 1-Line Multiplexer",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "multiplexer"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 16,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "A/B",
+      "direction": "input",
+      "function": "select"
+    },
+    {
+      "number": 2,
+      "name": "1A",
+      "direction": "input",
+      "bus": "A",
+      "bit": 0
+    },
+    {
+      "number": 3,
+      "name": "1B",
+      "direction": "input",
+      "bus": "B",
+      "bit": 0
+    },
+    {
+      "number": 4,
+      "name": "1Y",
+      "direction": "output",
+      "bus": "Y",
+      "bit": 0
+    },
+    {
+      "number": 5,
+      "name": "2A",
+      "direction": "input",
+      "bus": "A",
+      "bit": 1
+    },
+    {
+      "number": 6,
+      "name": "2B",
+      "direction": "input",
+      "bus": "B",
+      "bit": 1
+    },
+    {
+      "number": 7,
+      "name": "2Y",
+      "direction": "output",
+      "bus": "Y",
+      "bit": 1
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "3Y",
+      "direction": "output",
+      "bus": "Y",
+      "bit": 2
+    },
+    {
+      "number": 10,
+      "name": "3B",
+      "direction": "input",
+      "bus": "B",
+      "bit": 2
+    },
+    {
+      "number": 11,
+      "name": "3A",
+      "direction": "input",
+      "bus": "A",
+      "bit": 2
+    },
+    {
+      "number": 12,
+      "name": "4Y",
+      "direction": "output",
+      "bus": "Y",
+      "bit": 3
+    },
+    {
+      "number": 13,
+      "name": "4B",
+      "direction": "input",
+      "bus": "B",
+      "bit": 3
+    },
+    {
+      "number": 14,
+      "name": "4A",
+      "direction": "input",
+      "bus": "A",
+      "bit": 3
+    },
+    {
+      "number": 15,
+      "name": "/G",
+      "direction": "input",
+      "active_low": true,
+      "function": "enable"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "quad_2_to_1_mux",
+    "width": 4,
+    "select": {
+      "pin": "A/B",
+      "0": "A",
+      "1": "B"
+    },
+    "enable": {
+      "pin": "/G",
+      "active_low": true
+    },
+    "disabled_output": 0
+  },
+  "timing": {
+    "delay_ns": 18
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC157",
+      "file": "DB/74xx/74HC157/simulation/model.py",
+      "class": "HC157"
+    },
+    "verilog": {
+      "module": "ttl_74hc157",
+      "file": "DB/74xx/74HC157/simulation/model.v",
+      "netlist": "DB/74xx/74HC157/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "select_a",
+      "select_b",
+      "disabled_low"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC157",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC157",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc157.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic",
+          "electrical_characteristics",
+          "switching_characteristics"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "74HC157",
+      "title": "Quad 2-Line to 1-Line Multiplexer",
+      "family": "74HC",
+      "group": "74xx",
+      "kind": "ic",
+      "role": "multiplexer"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "74HC157",
+      "packages": [
+        {
+          "id": "N",
+          "kind": "DIP",
+          "pins": 16
+        }
+      ],
+      "default_package": "N"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC157",
+      "pins": [
+        {
+          "number": 1,
+          "name": "A/B",
+          "direction": "input",
+          "function": "select"
+        },
+        {
+          "number": 2,
+          "name": "1A",
+          "direction": "input",
+          "bus": "A",
+          "bit": 0
+        },
+        {
+          "number": 3,
+          "name": "1B",
+          "direction": "input",
+          "bus": "B",
+          "bit": 0
+        },
+        {
+          "number": 4,
+          "name": "1Y",
+          "direction": "output",
+          "bus": "Y",
+          "bit": 0
+        },
+        {
+          "number": 5,
+          "name": "2A",
+          "direction": "input",
+          "bus": "A",
+          "bit": 1
+        },
+        {
+          "number": 6,
+          "name": "2B",
+          "direction": "input",
+          "bus": "B",
+          "bit": 1
+        },
+        {
+          "number": 7,
+          "name": "2Y",
+          "direction": "output",
+          "bus": "Y",
+          "bit": 1
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "3Y",
+          "direction": "output",
+          "bus": "Y",
+          "bit": 2
+        },
+        {
+          "number": 10,
+          "name": "3B",
+          "direction": "input",
+          "bus": "B",
+          "bit": 2
+        },
+        {
+          "number": 11,
+          "name": "3A",
+          "direction": "input",
+          "bus": "A",
+          "bit": 2
+        },
+        {
+          "number": 12,
+          "name": "4Y",
+          "direction": "output",
+          "bus": "Y",
+          "bit": 3
+        },
+        {
+          "number": 13,
+          "name": "4B",
+          "direction": "input",
+          "bus": "B",
+          "bit": 3
+        },
+        {
+          "number": 14,
+          "name": "4A",
+          "direction": "input",
+          "bus": "A",
+          "bit": 3
+        },
+        {
+          "number": 15,
+          "name": "/G",
+          "direction": "input",
+          "active_low": true,
+          "function": "enable"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {
+        "A": {
+          "width": 4,
+          "pins_lsb_first": [
+            2,
+            5,
+            11,
+            14
+          ]
+        },
+        "B": {
+          "width": 4,
+          "pins_lsb_first": [
+            3,
+            6,
+            10,
+            13
+          ]
+        },
+        "Y": {
+          "width": 4,
+          "pins_lsb_first": [
+            4,
+            7,
+            9,
+            12
+          ]
+        }
+      }
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC157",
+      "rails": [
+        {
+          "name": "GND",
+          "pin": 8,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 16,
+          "nominal_logic": 1
+        }
+      ]
+    },
+    "logic": {
+      "schema": "db.component.logic",
+      "version": 1,
+      "part": "74HC157",
+      "logic": {
+        "type": "quad_2_to_1_mux",
+        "width": 4,
+        "select": {
+          "pin": "A/B",
+          "0": "A",
+          "1": "B"
+        },
+        "enable": {
+          "pin": "/G",
+          "active_low": true
+        },
+        "disabled_output": 0
+      }
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC157",
+      "delay": {
+        "default_ns": 18,
+        "source": "simulation default from Python model",
+        "datasheet_typical_ns": {
+          "condition": "SN74HC157, CL=50 pF, TA=25 C",
+          "data_to_y": {
+            "vcc_4_5_v": 13,
+            "vcc_6_v": 11
+          },
+          "select_to_y": {
+            "vcc_4_5_v": 18,
+            "vcc_6_v": 14
+          },
+          "enable_to_y": {
+            "vcc_4_5_v": 16,
+            "vcc_6_v": 13
+          },
+          "transition_y": {
+            "vcc_4_5_v": 8,
+            "vcc_6_v": 6
+          }
+        }
+      },
+      "evidence": {
+        "source": "Texas Instruments SN74HC157 datasheet, switching characteristics, CL = 50 pF",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc157.pdf"
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC157",
+      "logic_family": "74HC",
+      "voltage": {
+        "vcc": {
+          "min_v": 2.0,
+          "typ_v": 5.0,
+          "max_v": 6.0,
+          "status": "extracted"
+        }
+      },
+      "current": {
+        "output_drive": {
+          "vcc_4_5_v": {
+            "ioh_ma": -6,
+            "iol_ma": 6
+          },
+          "vcc_6_v": {
+            "ioh_ma": -7.8,
+            "iol_ma": 7.8
+          },
+          "status": "extracted"
+        },
+        "supply_current": {
+          "vcc_6_v_max_ua": 160,
+          "status": "extracted"
+        }
+      },
+      "loading": {
+        "input_capacitance": {
+          "typ_pf": 3,
+          "max_pf": 10,
+          "status": "extracted"
+        }
+      },
+      "evidence": {
+        "source": "Texas Instruments SN74HC157 datasheet, electrical characteristics",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc157.pdf"
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  }
+}

@@ -1,8 +1,9 @@
 # DB Component Package Spec
 
 This document defines the next DB shape for a component as a layered digital
-definition package. `chip.json` remains as the compatibility manifest while
-tools migrate to the split files.
+definition package. Seed packages use `definition/definition.json` directly;
+legacy `chip.json` manifests remain supported for older components while tools
+migrate.
 
 ## Layers
 
@@ -20,18 +21,13 @@ Repository package layout:
 
 ```text
 DB/74xx/74HC245/
-  chip.json
   definition/
-    digital.json
-    component.json
-    package.json
-    pins.json
-    power.json
-    logic.json
-    timing.json
-    electrical.json
+    definition.json
   simulation/
     model.json
+    model.py
+    model.v
+    netlist.json
   tests/
     truth_table.json
     timing.json
@@ -40,27 +36,36 @@ DB/74xx/74HC245/
     propagation.json
   symbol/
     dip.json
-  datasheet/
-    sources.json
 ```
 
-During the generator seed phase, `definition/digital.json` is the canonical
+During the generator seed phase, `definition/definition.json` is the canonical
 umbrella file for a digital component. It keeps identity, package, pins, logic,
 timing, generation targets, verification intent, and datasheet evidence in one
-schema-validated file so loaders and generators can prove the full path before
-the package is split into smaller layer files. The split files shown above
-remain the long-term layer boundary.
+schema-validated file. Definition sublayers such as component metadata,
+package, pins, power, logic, timing, and electrical facts live under
+`definition_layers` inside that file. Datasheet source records live in the
+top-level `datasheet.sources` section of the same file. Legacy split definition
+or datasheet files may still be loaded as a compatibility fallback, but they
+are not required physical source files for generator seed packages.
 
 ## Layer Ownership
 
-- `definition/` owns chip identity, package, pins, power, logic, timing,
-  propagation, tri-state, direction, voltage, current, and electrical facts.
+- `definition/definition.json` owns chip identity, package, pins, power, logic,
+  timing, propagation, tri-state, direction, voltage, current, electrical facts,
+  and datasheet source evidence.
 - `simulation/` points to executable Python/Verilog behavior and records which
   definition features the simulator implements.
+- `simulation/model.py` is the portable Python behavior source. Project,
+  system, and chip-add/export tools should copy it with the chip instead of
+  linking back to the DB package path.
+- Python exports that copy `simulation/model.py` must also copy
+  `python/chiplib/core.py`, because the local models use the shared `Chip`,
+  `Delay`, logic, and pin primitives from that runtime file.
+- Single-chip exports, circuits, and larger systems should include one shared
+  copy of `chiplib/core.py` per exported project, not one duplicate per chip.
 - `tests/` owns machine-readable verification intent. Test files can be turned
   into Python, Verilog, CLI, or UI checks.
 - `symbol/` owns schematic and visual block hints. It must not define behavior.
-- `datasheet/` owns source evidence and package evidence.
 
 ## Rules
 

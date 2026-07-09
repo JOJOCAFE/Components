@@ -144,13 +144,13 @@ Priority order before visual UI:
   generate or drive JSON component detail, Python simulator adapters, Verilog
   wrappers, KiCad symbols, SVG pinouts, documentation, unit tests, and
   interactive demos.
-- ✅ Start the seed batch with generator-ready `definition/digital.json` files
+- ✅ Start the seed batch with generator-ready `definition/definition.json` files
   for `74HC161`, `74HC157`, `74HC245`, `74HC574`, and `AT28C256`.
-- ✅ Add an initial split package for `74HC245` with `definition/`,
-  `simulation/`, `tests/`, `symbol/`, and `datasheet/` folders.
+- ✅ Add an initial layered package for `74HC245` with
+  `definition/definition.json`, `simulation/`, `tests/`, and `symbol/` layers.
 - ✅ Add schemas and DB validation tests for the new `db.component.digital`
   package files.
-- ✅ Add a loader that can read `definition/digital.json` while preserving
+- ✅ Add a loader that can read `definition/definition.json` while preserving
   current `chip.json` compatibility.
 - ✅ Prototype generation from one file for `74HC245`: normalized JSON,
   Python simulator report, Verilog wrapper/export metadata, KiCad symbol,

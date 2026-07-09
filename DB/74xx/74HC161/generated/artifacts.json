@@ -1,30 +1,415 @@
 {
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/74xx/74HC161/definition/definition.json",
+  "part": "74HC161",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC161/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC161/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC161/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
   "artifacts": {
-    "documentation": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "74HC161",
+      "title": "4-bit binary counter with parallel load and asynchronous clear",
+      "family": "74HC",
+      "group": "74xx",
+      "role": "counter",
+      "package": {
+        "kind": "DIP",
+        "pins": 16,
+        "default": "N"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "/CLR",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 2,
+          "name": "CLK",
+          "direction": "input",
+          "clock": true
+        },
+        {
+          "number": 3,
+          "name": "A",
+          "direction": "input",
+          "bus": "D",
+          "bit": 0
+        },
+        {
+          "number": 4,
+          "name": "B",
+          "direction": "input",
+          "bus": "D",
+          "bit": 1
+        },
+        {
+          "number": 5,
+          "name": "C",
+          "direction": "input",
+          "bus": "D",
+          "bit": 2
+        },
+        {
+          "number": 6,
+          "name": "D",
+          "direction": "input",
+          "bus": "D",
+          "bit": 3
+        },
+        {
+          "number": 7,
+          "name": "ENP",
+          "direction": "input"
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "/LOAD",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 10,
+          "name": "ENT",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "QD",
+          "direction": "output",
+          "bus": "Q",
+          "bit": 3
+        },
+        {
+          "number": 12,
+          "name": "QC",
+          "direction": "output",
+          "bus": "Q",
+          "bit": 2
+        },
+        {
+          "number": 13,
+          "name": "QB",
+          "direction": "output",
+          "bus": "Q",
+          "bit": 1
+        },
+        {
+          "number": 14,
+          "name": "QA",
+          "direction": "output",
+          "bus": "Q",
+          "bit": 0
+        },
+        {
+          "number": 15,
+          "name": "RCO",
+          "direction": "output"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
       "buses": {
         "D": {
+          "width": 4,
           "pins_lsb_first": [
             3,
             4,
             5,
             6
-          ],
-          "width": 4
+          ]
         },
         "Q": {
+          "width": 4,
           "pins_lsb_first": [
             14,
             13,
             12,
             11
-          ],
-          "width": 4
+          ]
         }
       },
-      "controls": [],
+      "power": [
+        {
+          "name": "GND",
+          "pin": 8,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 16,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "sync_binary_counter",
+        "width": 4,
+        "async_clear": {
+          "pin": "/CLR",
+          "active_low": true
+        },
+        "parallel_load": {
+          "pin": "/LOAD",
+          "active_low": true,
+          "input_bus": "D"
+        },
+        "count_enable": [
+          "ENP",
+          "ENT"
+        ],
+        "terminal_count": {
+          "output": "RCO",
+          "condition": "Q=15 and ENT=1"
+        }
+      },
+      "timing": {
+        "delay_ns": 22,
+        "clock_edge": "rising"
+      }
+    },
+    "python_simulator": {
       "part": "74HC161",
-      "pin_count": 16,
+      "portable": true,
+      "copy_with_chip": [
+        "DB/74xx/74HC161/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC161/simulation/model.py",
+      "class": "HC161"
+    },
+    "verilog_wrapper": {
+      "part": "74HC161",
+      "module": "ttl_74hc161",
+      "file": "DB/74xx/74HC161/simulation/model.v",
+      "netlist": "DB/74xx/74HC161/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "Clear_bar",
+            "pins": [
+              1
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Load_bar",
+            "pins": [
+              9
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "ENT",
+            "pins": [
+              10
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "ENP",
+            "pins": [
+              7
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "D",
+            "pins": [
+              3,
+              4,
+              5,
+              6
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Clk",
+            "pins": [
+              2
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "RCO",
+            "pins": [
+              15
+            ],
+            "direction": "output"
+          },
+          {
+            "name": "Q",
+            "pins": [
+              14,
+              13,
+              12,
+              11
+            ],
+            "direction": "output"
+          }
+        ],
+        "output_pins": [
+          11,
+          12,
+          13,
+          14,
+          15
+        ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC161",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "/CLR",
+        "2": "CLK",
+        "3": "A",
+        "4": "B",
+        "5": "C",
+        "6": "D",
+        "7": "ENP",
+        "8": "GND",
+        "9": "/LOAD",
+        "10": "ENT",
+        "16": "VCC"
+      },
+      "bus_groups": {
+        "D": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "Q": [
+          14,
+          13,
+          12,
+          11
+        ]
+      }
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC161",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "/CLR",
+        "2": "CLK",
+        "3": "A",
+        "4": "B",
+        "5": "C",
+        "6": "D",
+        "7": "ENP",
+        "8": "GND",
+        "9": "/LOAD",
+        "10": "ENT",
+        "16": "VCC"
+      },
+      "bus_groups": {
+        "D": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "Q": [
+          14,
+          13,
+          12,
+          11
+        ]
+      }
+    },
+    "documentation": {
       "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "74HC161",
+      "title": "4-bit binary counter with parallel load and asynchronous clear",
+      "summary": "4-bit binary counter with parallel load and asynchronous clear.",
       "sections": [
         "overview",
         "pins",
@@ -33,11 +418,62 @@
         "timing",
         "try_it"
       ],
-      "summary": "4-bit binary counter with parallel load and asynchronous clear.",
-      "title": "4-bit binary counter with parallel load and asynchronous clear",
-      "version": 1
+      "pin_count": 16,
+      "buses": {
+        "D": {
+          "width": 4,
+          "pins_lsb_first": [
+            3,
+            4,
+            5,
+            6
+          ]
+        },
+        "Q": {
+          "width": 4,
+          "pins_lsb_first": [
+            14,
+            13,
+            12,
+            11
+          ]
+        }
+      },
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "74HC161",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "async_clear",
+        "parallel_load",
+        "count",
+        "disabled_count",
+        "terminal_count"
+      ]
     },
     "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "74HC161",
       "controls": [
         "/CLR",
         "CLK",
@@ -49,415 +485,15 @@
         "/LOAD",
         "ENT"
       ],
-      "default_steps": [
-        "apply controls",
-        "settle",
-        "probe"
-      ],
-      "part": "74HC161",
       "probes": [
         "D",
         "Q"
       ],
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1
-    },
-    "json": {
-      "buses": {
-        "D": {
-          "pins_lsb_first": [
-            3,
-            4,
-            5,
-            6
-          ],
-          "width": 4
-        },
-        "Q": {
-          "pins_lsb_first": [
-            14,
-            13,
-            12,
-            11
-          ],
-          "width": 4
-        }
-      },
-      "family": "74HC",
-      "format": "components.generated.detail",
-      "group": "74xx",
-      "logic": {
-        "async_clear": {
-          "active_low": true,
-          "pin": "/CLR"
-        },
-        "count_enable": [
-          "ENP",
-          "ENT"
-        ],
-        "parallel_load": {
-          "active_low": true,
-          "input_bus": "D",
-          "pin": "/LOAD"
-        },
-        "terminal_count": {
-          "condition": "Q=15 and ENT=1",
-          "output": "RCO"
-        },
-        "type": "sync_binary_counter",
-        "width": 4
-      },
-      "package": {
-        "default": "N",
-        "kind": "DIP",
-        "pins": 16
-      },
-      "part": "74HC161",
-      "pins": [
-        {
-          "active_low": true,
-          "direction": "input",
-          "name": "/CLR",
-          "number": 1
-        },
-        {
-          "clock": true,
-          "direction": "input",
-          "name": "CLK",
-          "number": 2
-        },
-        {
-          "bit": 0,
-          "bus": "D",
-          "direction": "input",
-          "name": "A",
-          "number": 3
-        },
-        {
-          "bit": 1,
-          "bus": "D",
-          "direction": "input",
-          "name": "B",
-          "number": 4
-        },
-        {
-          "bit": 2,
-          "bus": "D",
-          "direction": "input",
-          "name": "C",
-          "number": 5
-        },
-        {
-          "bit": 3,
-          "bus": "D",
-          "direction": "input",
-          "name": "D",
-          "number": 6
-        },
-        {
-          "direction": "input",
-          "name": "ENP",
-          "number": 7
-        },
-        {
-          "direction": "power",
-          "name": "GND",
-          "number": 8,
-          "rail": "GND"
-        },
-        {
-          "active_low": true,
-          "direction": "input",
-          "name": "/LOAD",
-          "number": 9
-        },
-        {
-          "direction": "input",
-          "name": "ENT",
-          "number": 10
-        },
-        {
-          "bit": 3,
-          "bus": "Q",
-          "direction": "output",
-          "name": "QD",
-          "number": 11
-        },
-        {
-          "bit": 2,
-          "bus": "Q",
-          "direction": "output",
-          "name": "QC",
-          "number": 12
-        },
-        {
-          "bit": 1,
-          "bus": "Q",
-          "direction": "output",
-          "name": "QB",
-          "number": 13
-        },
-        {
-          "bit": 0,
-          "bus": "Q",
-          "direction": "output",
-          "name": "QA",
-          "number": 14
-        },
-        {
-          "direction": "output",
-          "name": "RCO",
-          "number": 15
-        },
-        {
-          "direction": "power",
-          "name": "VCC",
-          "number": 16,
-          "rail": "VCC"
-        }
-      ],
-      "power": [
-        {
-          "name": "GND",
-          "nominal_logic": 0,
-          "pin": 8
-        },
-        {
-          "name": "VCC",
-          "nominal_logic": 1,
-          "pin": 16
-        }
-      ],
-      "role": "counter",
-      "timing": {
-        "clock_edge": "rising",
-        "delay_ns": 22
-      },
-      "title": "4-bit binary counter with parallel load and asynchronous clear"
-    },
-    "kicad_symbol": {
-      "bus_groups": {
-        "D": [
-          3,
-          4,
-          5,
-          6
-        ],
-        "Q": [
-          14,
-          13,
-          12,
-          11
-        ]
-      },
-      "labels": {
-        "1": "/CLR",
-        "10": "ENT",
-        "16": "VCC",
-        "2": "CLK",
-        "3": "A",
-        "4": "B",
-        "5": "C",
-        "6": "D",
-        "7": "ENP",
-        "8": "GND",
-        "9": "/LOAD"
-      },
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ],
-      "part": "74HC161",
-      "pins": 16,
-      "right": [
-        16,
-        15,
-        14,
-        13,
-        12,
-        11,
-        10,
-        9
-      ],
-      "schema": "db.component.symbol.dip",
-      "shape": "dip",
-      "version": 1
-    },
-    "python_simulator": {
-      "factory": "chiplib.create_chip",
-      "part": "74HC161"
-    },
-    "svg_pinout": {
-      "bus_groups": {
-        "D": [
-          3,
-          4,
-          5,
-          6
-        ],
-        "Q": [
-          14,
-          13,
-          12,
-          11
-        ]
-      },
-      "labels": {
-        "1": "/CLR",
-        "10": "ENT",
-        "16": "VCC",
-        "2": "CLK",
-        "3": "A",
-        "4": "B",
-        "5": "C",
-        "6": "D",
-        "7": "ENP",
-        "8": "GND",
-        "9": "/LOAD"
-      },
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ],
-      "part": "74HC161",
-      "pins": 16,
-      "right": [
-        16,
-        15,
-        14,
-        13,
-        12,
-        11,
-        10,
-        9
-      ],
-      "schema": "db.component.symbol.dip",
-      "shape": "dip",
-      "version": 1
-    },
-    "unit_test": {
-      "part": "74HC161",
-      "required_vectors": [
-        "async_clear",
-        "parallel_load",
-        "count",
-        "disabled_count",
-        "terminal_count"
-      ],
-      "schema": "db.component.generated.tests",
-      "tests": [
-        {
-          "present": true,
-          "source": "tests/truth_table.json",
-          "type": "truth_table"
-        },
-        {
-          "present": true,
-          "source": "tests/timing.json",
-          "type": "timing"
-        },
-        {
-          "present": true,
-          "source": "tests/propagation.json",
-          "type": "propagation"
-        }
-      ],
-      "version": 1
-    },
-    "verilog_wrapper": {
-      "export": {
-        "kind": "structural_port_map",
-        "output_pins": [
-          11,
-          12,
-          13,
-          14,
-          15
-        ],
-        "ports": [
-          {
-            "direction": "input",
-            "name": "Clear_bar",
-            "pins": [
-              1
-            ]
-          },
-          {
-            "direction": "input",
-            "name": "Load_bar",
-            "pins": [
-              9
-            ]
-          },
-          {
-            "direction": "input",
-            "name": "ENT",
-            "pins": [
-              10
-            ]
-          },
-          {
-            "direction": "input",
-            "name": "ENP",
-            "pins": [
-              7
-            ]
-          },
-          {
-            "direction": "input",
-            "name": "D",
-            "pins": [
-              3,
-              4,
-              5,
-              6
-            ]
-          },
-          {
-            "direction": "input",
-            "name": "Clk",
-            "pins": [
-              2
-            ]
-          },
-          {
-            "direction": "output",
-            "name": "RCO",
-            "pins": [
-              15
-            ]
-          },
-          {
-            "direction": "output",
-            "name": "Q",
-            "pins": [
-              14,
-              13,
-              12,
-              11
-            ]
-          }
-        ]
-      },
-      "file": "Verilog/74xx/74hc161.v",
-      "module": "ttl_74hc161",
-      "part": "74HC161"
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
     }
-  },
-  "format": "db.component.generated",
-  "part": "74HC161",
-  "source": "DB/74xx/74HC161/definition/digital.json",
-  "version": 1
+  }
 }

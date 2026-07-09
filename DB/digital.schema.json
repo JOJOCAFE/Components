@@ -160,9 +160,56 @@
         }
         }
       }
+    },
+    "status": {
+      "type": "object",
+      "additionalProperties": {"type": "string"},
+      "required": [
+        "datasheet",
+        "pinout",
+        "python_behavior",
+        "verilog_model",
+        "verilog_export",
+        "tests"
+      ],
+      "properties": {
+        "datasheet": {"$ref": "#/$defs/statusValue"},
+        "pinout": {"$ref": "#/$defs/statusValue"},
+        "python_behavior": {"$ref": "#/$defs/statusValue"},
+        "verilog_model": {"$ref": "#/$defs/statusValue"},
+        "verilog_export": {"$ref": "#/$defs/statusValue"},
+        "tests": {"$ref": "#/$defs/statusValue"}
+      }
+    },
+    "definition_layers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component", "package", "pins", "power", "logic", "timing", "electrical"],
+      "properties": {
+        "component": {"$ref": "#/$defs/definitionLayer"},
+        "package": {"$ref": "#/$defs/definitionLayer"},
+        "pins": {"$ref": "#/$defs/definitionLayer"},
+        "power": {"$ref": "#/$defs/definitionLayer"},
+        "logic": {"$ref": "#/$defs/definitionLayer"},
+        "timing": {"$ref": "#/$defs/definitionLayer"},
+        "electrical": {"$ref": "#/$defs/definitionLayer"}
+      }
     }
   },
   "$defs": {
+    "definitionLayer": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schema", "version", "part"],
+      "properties": {
+        "schema": {"type": "string", "minLength": 1},
+        "version": {"type": "integer", "minimum": 1},
+        "part": {"type": "string", "minLength": 1}
+      }
+    },
+    "statusValue": {
+      "enum": ["verified", "modeled", "tested", "missing", "blocked", "unknown", "not_applicable"]
+    },
     "pinDirection": {
       "enum": ["input", "output", "bidirectional", "passive", "power", "nc", "unknown"]
     },
