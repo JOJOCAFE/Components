@@ -1,0 +1,356 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC153",
+  "metadata": {
+    "title": "Dual 4-Line to 1-Line Data Selector/Multiplexer",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "multiplexer"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 16,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "/1G",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 2,
+      "name": "B",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "1C3",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "1C2",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "1C1",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "1C0",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "1Y",
+      "direction": "output"
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "2Y",
+      "direction": "output"
+    },
+    {
+      "number": 10,
+      "name": "2C0",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "2C1",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "2C2",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "2C3",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "A",
+      "direction": "input"
+    },
+    {
+      "number": 15,
+      "name": "/2G",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "dual_4_line_to_1_line_data_selector",
+    "description": "Dual 4-Line to 1-Line Data Selector/Multiplexer"
+  },
+  "timing": {
+    "delay_ns": 15
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC153",
+      "file": "DB/74xx/74HC153/simulation/model.py",
+      "class": "HC153"
+    },
+    "verilog": {
+      "module": "ttl_74hc153",
+      "file": "DB/74xx/74HC153/simulation/model.v",
+      "netlist": "DB/74xx/74HC153/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC153",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC153",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc153.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "74HC153",
+      "title": "Dual 4-Line to 1-Line Data Selector/Multiplexer",
+      "family": "74HC",
+      "group": "74xx",
+      "kind": "ic",
+      "role": "multiplexer"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "74HC153",
+      "packages": [
+        {
+          "id": "N",
+          "kind": "DIP",
+          "pins": 16
+        }
+      ],
+      "default_package": "N"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC153",
+      "pins": [
+        {
+          "number": 1,
+          "name": "/1G",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 2,
+          "name": "B",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "1C3",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "1C2",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "1C1",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "1C0",
+          "direction": "input"
+        },
+        {
+          "number": 7,
+          "name": "1Y",
+          "direction": "output"
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "2Y",
+          "direction": "output"
+        },
+        {
+          "number": 10,
+          "name": "2C0",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "2C1",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "2C2",
+          "direction": "input"
+        },
+        {
+          "number": 13,
+          "name": "2C3",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "A",
+          "direction": "input"
+        },
+        {
+          "number": 15,
+          "name": "/2G",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC153",
+      "rails": [
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "logic": {
+      "schema": "db.component.logic",
+      "version": 1,
+      "part": "74HC153",
+      "logic": {
+        "type": "dual_4_line_to_1_line_data_selector",
+        "description": "Dual 4-Line to 1-Line Data Selector/Multiplexer"
+      }
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC153",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "model-derived"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC153",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc153.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC153",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC153",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc153.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  }
+}

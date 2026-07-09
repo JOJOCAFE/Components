@@ -1,0 +1,442 @@
+{
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/74xx/74HC154/definition/definition.json",
+  "part": "74HC154",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC154/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC154/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC154/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
+  "artifacts": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "74HC154",
+      "title": "4-to-16 line decoder/demultiplexer",
+      "family": "74HC",
+      "group": "74xx",
+      "role": "decoder",
+      "package": {
+        "kind": "DIP",
+        "pins": 24,
+        "default": "N"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "Y0",
+          "direction": "output"
+        },
+        {
+          "number": 2,
+          "name": "Y1",
+          "direction": "output"
+        },
+        {
+          "number": 3,
+          "name": "Y2",
+          "direction": "output"
+        },
+        {
+          "number": 4,
+          "name": "Y3",
+          "direction": "output"
+        },
+        {
+          "number": 5,
+          "name": "Y4",
+          "direction": "output"
+        },
+        {
+          "number": 6,
+          "name": "Y5",
+          "direction": "output"
+        },
+        {
+          "number": 7,
+          "name": "Y6",
+          "direction": "output"
+        },
+        {
+          "number": 8,
+          "name": "Y7",
+          "direction": "output"
+        },
+        {
+          "number": 9,
+          "name": "Y8",
+          "direction": "output"
+        },
+        {
+          "number": 10,
+          "name": "Y9",
+          "direction": "output"
+        },
+        {
+          "number": 11,
+          "name": "Y10",
+          "direction": "output"
+        },
+        {
+          "number": 12,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 13,
+          "name": "Y11",
+          "direction": "output"
+        },
+        {
+          "number": 14,
+          "name": "Y12",
+          "direction": "output"
+        },
+        {
+          "number": 15,
+          "name": "Y13",
+          "direction": "output"
+        },
+        {
+          "number": 16,
+          "name": "Y14",
+          "direction": "output"
+        },
+        {
+          "number": 17,
+          "name": "Y15",
+          "direction": "output"
+        },
+        {
+          "number": 18,
+          "name": "E0",
+          "direction": "input"
+        },
+        {
+          "number": 19,
+          "name": "E1",
+          "direction": "input"
+        },
+        {
+          "number": 20,
+          "name": "A3",
+          "direction": "input"
+        },
+        {
+          "number": 21,
+          "name": "A2",
+          "direction": "input"
+        },
+        {
+          "number": 22,
+          "name": "A1",
+          "direction": "input"
+        },
+        {
+          "number": 23,
+          "name": "A0",
+          "direction": "input"
+        },
+        {
+          "number": 24,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {},
+      "power": [
+        {
+          "name": "GND",
+          "pin": 12,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 24,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "4_to_16_line_decoder_demultiplexer",
+        "description": "4-to-16 line decoder/demultiplexer"
+      },
+      "timing": {
+        "delay_ns": 15
+      }
+    },
+    "python_simulator": {
+      "part": "74HC154",
+      "portable": true,
+      "copy_with_chip": [
+        "DB/74xx/74HC154/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC154/simulation/model.py",
+      "class": "HC154"
+    },
+    "verilog_wrapper": {
+      "part": "74HC154",
+      "module": "ttl_74hc154",
+      "file": "DB/74xx/74HC154/simulation/model.v",
+      "netlist": "DB/74xx/74HC154/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "Enable1_bar",
+            "pins": [
+              18
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Enable2_bar",
+            "pins": [
+              19
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "A",
+            "pins": [
+              23,
+              22,
+              21,
+              20
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Y",
+            "pins": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              13,
+              14,
+              15,
+              16,
+              17
+            ],
+            "direction": "output"
+          }
+        ],
+        "output_pins": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          13,
+          14,
+          15,
+          16,
+          17
+        ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC154",
+      "shape": "dip",
+      "pins": 24,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "right": [
+        24,
+        23,
+        22,
+        21,
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13
+      ],
+      "labels": {
+        "12": "GND",
+        "18": "E0",
+        "19": "E1",
+        "20": "A3",
+        "21": "A2",
+        "22": "A1",
+        "23": "A0",
+        "24": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC154",
+      "shape": "dip",
+      "pins": 24,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "right": [
+        24,
+        23,
+        22,
+        21,
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13
+      ],
+      "labels": {
+        "12": "GND",
+        "18": "E0",
+        "19": "E1",
+        "20": "A3",
+        "21": "A2",
+        "22": "A1",
+        "23": "A0",
+        "24": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "documentation": {
+      "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "74HC154",
+      "title": "4-to-16 line decoder/demultiplexer",
+      "summary": "4-to-16 line decoder/demultiplexer.",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "pin_count": 24,
+      "buses": {},
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "74HC154",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "basic_function"
+      ]
+    },
+    "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "74HC154",
+      "controls": [
+        "E0",
+        "E1",
+        "A3",
+        "A2",
+        "A1",
+        "A0"
+      ],
+      "probes": [
+        "Y0",
+        "Y1",
+        "Y2",
+        "Y3",
+        "Y4",
+        "Y5",
+        "Y6",
+        "Y7"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
+    }
+  }
+}

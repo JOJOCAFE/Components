@@ -97,8 +97,11 @@ Legacy `chip.json` remains supported for older components.
    initial structured data.
 2. Grow generated split-record execution from Python-only checks toward
    generated Verilog testbenches.
-3. Keep Verilog smoke compiling all 74xx and memory models.
-4. Keep `TEAM_SKILLS.md`, `COMPONENT_GENERATION_BACKLOG.md`, and this handoff
+3. Deepen Batch 2 verification records from placeholder/basic function records
+   and the rest-of-IC migration records into chip-specific truth vectors and
+   datasheet-backed timing/electrical extraction.
+4. Keep Verilog smoke compiling all 74xx and memory models.
+5. Keep `TEAM_SKILLS.md`, `COMPONENT_GENERATION_BACKLOG.md`, and this handoff
    synchronized whenever the team roles or seed-chip plan changes.
 
 ## Completed Since Last Handoff
@@ -142,6 +145,29 @@ Legacy `chip.json` remains supported for older components.
   files.
 - Merged seed chip datasheet source records into `definition/definition.json`
   and removed redundant `datasheet/` folders.
+- Recorded Batch 2 as the full RV8GR chip migration, using
+  `/home/jo/kiro/RV8/RV8GR/README.md` and `doc/12_netlist.md` as the source of
+  truth for the 34 logic packages plus ROM/RAM.
+- Migrated the remaining RV8GR Batch 2 parts to standalone packages:
+  `74HC00`, `74HC04`, `74HC21`, `74HC32`, `74HC74`, `74HC86`, `74HC164`,
+  `74HC283`, `74HC541`, `74HC688`, `62256`, `AS6C62256`, and `SST39SF010A`.
+- Each Batch 2 package now has `definition/definition.json`,
+  `simulation/model.py`, `simulation/model.v`, `simulation/model.json`,
+  `simulation/netlist.json`, `symbol/dip.json`, split test records, and
+  generated artifacts.
+- Legacy `chip.json` files were removed for those Batch 2 parts; compatibility
+  now synthesizes catalog/API data from each `definition/definition.json` plus
+  `simulation/netlist.json`.
+- Migrated the rest of the active IC catalog after RV8GR Batch 2. All 62 IC
+  parts under `DB/74xx` and `DB/Memory` now have standalone package folders
+  with `definition/definition.json`, local `simulation/model.py`, local
+  `simulation/model.v`, `simulation/model.json`, `simulation/netlist.json`,
+  `symbol/dip.json`, split test records, and generated artifacts.
+- No IC `chip.json` files remain under `DB/74xx` or `DB/Memory`; legacy
+  `chip.json` support remains in the loader for older/non-IC components.
+- Added `tools/migrate_ic_packages.py` so this package migration shape can be
+  repeated or audited. Catalog chips get local behavior code embedded in their
+  own `simulation/model.py`, with only `chiplib.core` shared at export time.
 
 ## Verification Already Run Recently
 

@@ -1,0 +1,132 @@
+{
+  "schema": "db.component.simulation.netlist",
+  "version": 1,
+  "part": "74HC00",
+  "source": "DB/74xx/74HC00/definition/definition.json",
+  "simulation": {
+    "python": "DB/74xx/74HC00/simulation/model.py",
+    "verilog": "DB/74xx/74HC00/simulation/model.v"
+  },
+  "verilog": {
+    "module": "ttl_74hc00",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "A",
+          "pins": [
+            1,
+            4,
+            9,
+            12
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "B",
+          "pins": [
+            2,
+            5,
+            10,
+            13
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Y",
+          "pins": [
+            3,
+            6,
+            8,
+            11
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        3,
+        6,
+        8,
+        11
+      ],
+      "delay_ns": {
+        "U26": 8,
+        "*": 1
+      }
+    }
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "1A",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "1B",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "1Y",
+      "direction": "output"
+    },
+    {
+      "number": 4,
+      "name": "2A",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "2B",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "2Y",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 8,
+      "name": "3Y",
+      "direction": "output"
+    },
+    {
+      "number": 9,
+      "name": "3A",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "3B",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "4Y",
+      "direction": "output"
+    },
+    {
+      "number": 12,
+      "name": "4A",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "4B",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ]
+}

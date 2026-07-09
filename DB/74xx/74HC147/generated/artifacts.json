@@ -1,0 +1,381 @@
+{
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/74xx/74HC147/definition/definition.json",
+  "part": "74HC147",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC147/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC147/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC147/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
+  "artifacts": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "74HC147",
+      "title": "10-line to 4-line priority encoder with active-low inputs and outputs",
+      "family": "74HC",
+      "group": "74xx",
+      "role": "logic",
+      "package": {
+        "kind": "DIP",
+        "pins": 16,
+        "default": "N"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "/I4",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 2,
+          "name": "/I5",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 3,
+          "name": "/I6",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 4,
+          "name": "/I7",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 5,
+          "name": "/I8",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 6,
+          "name": "/Y2",
+          "direction": "output",
+          "active_low": true
+        },
+        {
+          "number": 7,
+          "name": "/Y1",
+          "direction": "output",
+          "active_low": true
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "/I0",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 10,
+          "name": "/I9",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 11,
+          "name": "/I1",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 12,
+          "name": "/I2",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 13,
+          "name": "/I3",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 14,
+          "name": "/Y3",
+          "direction": "output",
+          "active_low": true
+        },
+        {
+          "number": 15,
+          "name": "NC",
+          "direction": "nc"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {},
+      "power": [
+        {
+          "name": "GND",
+          "pin": 8,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 16,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "10_line_to_4_line_priority_encoder_with",
+        "description": "10-line to 4-line priority encoder with active-low inputs and outputs"
+      },
+      "timing": {
+        "delay_ns": 15
+      }
+    },
+    "python_simulator": {
+      "part": "74HC147",
+      "portable": true,
+      "copy_with_chip": [
+        "DB/74xx/74HC147/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC147/simulation/model.py",
+      "class": "HC147"
+    },
+    "verilog_wrapper": {
+      "part": "74HC147",
+      "module": "ttl_74hc147",
+      "file": "DB/74xx/74HC147/simulation/model.v",
+      "netlist": "DB/74xx/74HC147/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "I0_bar",
+            "pins": [
+              9
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "A_bar",
+            "pins": [
+              11,
+              12,
+              13,
+              1,
+              2,
+              3,
+              4,
+              5,
+              10
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Y_bar",
+            "pins": [
+              0,
+              7,
+              6,
+              14
+            ],
+            "direction": "output",
+            "note": "Pin 0 is an internal open placeholder for Y_bar[0], which is unbonded by the repository TI pin table."
+          }
+        ],
+        "output_pins": [
+          0,
+          6,
+          7,
+          14
+        ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC147",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "/I4",
+        "2": "/I5",
+        "3": "/I6",
+        "4": "/I7",
+        "5": "/I8",
+        "8": "GND",
+        "9": "/I0",
+        "10": "/I9",
+        "11": "/I1",
+        "12": "/I2",
+        "13": "/I3",
+        "16": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC147",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "/I4",
+        "2": "/I5",
+        "3": "/I6",
+        "4": "/I7",
+        "5": "/I8",
+        "8": "GND",
+        "9": "/I0",
+        "10": "/I9",
+        "11": "/I1",
+        "12": "/I2",
+        "13": "/I3",
+        "16": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "documentation": {
+      "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "74HC147",
+      "title": "10-line to 4-line priority encoder with active-low inputs and outputs",
+      "summary": "10-line to 4-line priority encoder with active-low inputs and outputs.",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "pin_count": 16,
+      "buses": {},
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "74HC147",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "basic_function"
+      ]
+    },
+    "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "74HC147",
+      "controls": [
+        "/I4",
+        "/I5",
+        "/I6",
+        "/I7",
+        "/I8",
+        "/I0",
+        "/I9",
+        "/I1",
+        "/I2",
+        "/I3"
+      ],
+      "probes": [
+        "/Y2",
+        "/Y1",
+        "/Y3"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
+    }
+  }
+}

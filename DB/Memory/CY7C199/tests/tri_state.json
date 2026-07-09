@@ -1,0 +1,11 @@
+{
+  "schema": "db.component.test.tri_state",
+  "version": 1,
+  "part": "CY7C199",
+  "applicable": true,
+  "checks": [
+    {
+      "name": "disabled_outputs_release_bus"
+    }
+  ]
+}

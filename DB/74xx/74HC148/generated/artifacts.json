@@ -1,0 +1,379 @@
+{
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/74xx/74HC148/definition/definition.json",
+  "part": "74HC148",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC148/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC148/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC148/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
+  "artifacts": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "74HC148",
+      "title": "8-to-3 line priority encoder",
+      "family": "74HC",
+      "group": "74xx",
+      "role": "logic",
+      "package": {
+        "kind": "DIP",
+        "pins": 16,
+        "default": "N"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "I3",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "I4",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "I5",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "I6",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "EI",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "A2",
+          "direction": "output"
+        },
+        {
+          "number": 7,
+          "name": "A1",
+          "direction": "output"
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "A0",
+          "direction": "output"
+        },
+        {
+          "number": 10,
+          "name": "I7",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "I0",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "I1",
+          "direction": "input"
+        },
+        {
+          "number": 13,
+          "name": "I2",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "GS",
+          "direction": "output"
+        },
+        {
+          "number": 15,
+          "name": "EO",
+          "direction": "output"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {},
+      "power": [
+        {
+          "name": "GND",
+          "pin": 8,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 16,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "8_to_3_line_priority_encoder",
+        "description": "8-to-3 line priority encoder"
+      },
+      "timing": {
+        "delay_ns": 15
+      }
+    },
+    "python_simulator": {
+      "part": "74HC148",
+      "portable": true,
+      "copy_with_chip": [
+        "DB/74xx/74HC148/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC148/simulation/model.py",
+      "class": "HC148"
+    },
+    "verilog_wrapper": {
+      "part": "74HC148",
+      "module": "ttl_74hc148",
+      "file": "DB/74xx/74HC148/simulation/model.v",
+      "netlist": "DB/74xx/74HC148/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "EI_bar",
+            "pins": [
+              5
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "A_bar",
+            "pins": [
+              11,
+              12,
+              13,
+              1,
+              2,
+              3,
+              4,
+              10
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "EO_bar",
+            "pins": [
+              15
+            ],
+            "direction": "output"
+          },
+          {
+            "name": "GS_bar",
+            "pins": [
+              14
+            ],
+            "direction": "output"
+          },
+          {
+            "name": "Y_bar",
+            "pins": [
+              9,
+              7,
+              6
+            ],
+            "direction": "output"
+          }
+        ],
+        "output_pins": [
+          6,
+          7,
+          9,
+          14,
+          15
+        ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC148",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "I3",
+        "2": "I4",
+        "3": "I5",
+        "4": "I6",
+        "5": "EI",
+        "8": "GND",
+        "10": "I7",
+        "11": "I0",
+        "12": "I1",
+        "13": "I2",
+        "16": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC148",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "I3",
+        "2": "I4",
+        "3": "I5",
+        "4": "I6",
+        "5": "EI",
+        "8": "GND",
+        "10": "I7",
+        "11": "I0",
+        "12": "I1",
+        "13": "I2",
+        "16": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "documentation": {
+      "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "74HC148",
+      "title": "8-to-3 line priority encoder",
+      "summary": "8-to-3 line priority encoder.",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "pin_count": 16,
+      "buses": {},
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "74HC148",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "basic_function"
+      ]
+    },
+    "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "74HC148",
+      "controls": [
+        "I3",
+        "I4",
+        "I5",
+        "I6",
+        "EI",
+        "I7",
+        "I0",
+        "I1",
+        "I2"
+      ],
+      "probes": [
+        "A2",
+        "A1",
+        "A0",
+        "GS",
+        "EO"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "db.component.test.bus_fight",
+  "version": 1,
+  "part": "74HC257",
+  "applicable": true,
+  "checks": [
+    {
+      "name": "external_driver_conflict_is_detectable"
+    }
+  ]
+}

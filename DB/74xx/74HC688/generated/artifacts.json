@@ -1,0 +1,422 @@
+{
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/74xx/74HC688/definition/definition.json",
+  "part": "74HC688",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC688/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC688/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC688/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
+  "artifacts": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "74HC688",
+      "title": "8-Bit Identity Comparator",
+      "family": "74HC",
+      "group": "74xx",
+      "role": "comparator",
+      "package": {
+        "kind": "DIP",
+        "pins": 20,
+        "default": "N"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "/E",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 2,
+          "name": "A0",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "B0",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "A1",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "B1",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "A2",
+          "direction": "input"
+        },
+        {
+          "number": 7,
+          "name": "B2",
+          "direction": "input"
+        },
+        {
+          "number": 8,
+          "name": "A3",
+          "direction": "input"
+        },
+        {
+          "number": 9,
+          "name": "B3",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 11,
+          "name": "Y",
+          "direction": "output"
+        },
+        {
+          "number": 12,
+          "name": "B7",
+          "direction": "input"
+        },
+        {
+          "number": 13,
+          "name": "A7",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "B6",
+          "direction": "input"
+        },
+        {
+          "number": 15,
+          "name": "A6",
+          "direction": "input"
+        },
+        {
+          "number": 16,
+          "name": "B5",
+          "direction": "input"
+        },
+        {
+          "number": 17,
+          "name": "A5",
+          "direction": "input"
+        },
+        {
+          "number": 18,
+          "name": "B4",
+          "direction": "input"
+        },
+        {
+          "number": 19,
+          "name": "A4",
+          "direction": "input"
+        },
+        {
+          "number": 20,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {},
+      "power": [
+        {
+          "name": "GND",
+          "pin": 10,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 20,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "eight_bit_identity_comparator",
+        "description": "8-Bit Identity Comparator"
+      },
+      "timing": {
+        "delay_ns": 30
+      }
+    },
+    "python_simulator": {
+      "part": "74HC688",
+      "portable": true,
+      "copy_with_chip": [
+        "DB/74xx/74HC688/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC688/simulation/model.py",
+      "class": "HC688"
+    },
+    "verilog_wrapper": {
+      "part": "74HC688",
+      "module": "ttl_74hc688",
+      "file": "DB/74xx/74HC688/simulation/model.v",
+      "netlist": "DB/74xx/74HC688/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "Enable_bar",
+            "pins": [
+              1
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "A",
+            "pins": [
+              2,
+              4,
+              6,
+              8,
+              19,
+              17,
+              15,
+              13
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "B",
+            "pins": [
+              3,
+              5,
+              7,
+              9,
+              18,
+              16,
+              14,
+              12
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Equal_bar",
+            "pins": [
+              11
+            ],
+            "direction": "output"
+          }
+        ],
+        "output_pins": [
+          11
+        ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC688",
+      "shape": "dip",
+      "pins": 20,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "labels": {
+        "1": "/E",
+        "2": "A0",
+        "3": "B0",
+        "4": "A1",
+        "5": "B1",
+        "6": "A2",
+        "7": "B2",
+        "8": "A3",
+        "9": "B3",
+        "10": "GND",
+        "12": "B7",
+        "13": "A7",
+        "14": "B6",
+        "15": "A6",
+        "16": "B5",
+        "17": "A5",
+        "18": "B4",
+        "19": "A4",
+        "20": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC688",
+      "shape": "dip",
+      "pins": 20,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "labels": {
+        "1": "/E",
+        "2": "A0",
+        "3": "B0",
+        "4": "A1",
+        "5": "B1",
+        "6": "A2",
+        "7": "B2",
+        "8": "A3",
+        "9": "B3",
+        "10": "GND",
+        "12": "B7",
+        "13": "A7",
+        "14": "B6",
+        "15": "A6",
+        "16": "B5",
+        "17": "A5",
+        "18": "B4",
+        "19": "A4",
+        "20": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "documentation": {
+      "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "74HC688",
+      "title": "8-Bit Identity Comparator",
+      "summary": "8-Bit Identity Comparator.",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "pin_count": 20,
+      "buses": {},
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "74HC688",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "basic_function"
+      ]
+    },
+    "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "74HC688",
+      "controls": [
+        "/E",
+        "A0",
+        "B0",
+        "A1",
+        "B1",
+        "A2",
+        "B2",
+        "A3",
+        "B3",
+        "B7",
+        "A7",
+        "B6",
+        "A6",
+        "B5",
+        "A5",
+        "B4",
+        "A4"
+      ],
+      "probes": [
+        "Y"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
+    }
+  }
+}

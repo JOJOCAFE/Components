@@ -1,0 +1,165 @@
+{
+  "schema": "db.component.symbol.dip",
+  "version": 1,
+  "part": "74HC181",
+  "shape": "dip",
+  "package": {
+    "kind": "DIP",
+    "pins": 24,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "B0",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "A0",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "S3",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "S2",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "S1",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "S0",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "Cn",
+      "direction": "input"
+    },
+    {
+      "number": 8,
+      "name": "M",
+      "direction": "input"
+    },
+    {
+      "number": 9,
+      "name": "F0",
+      "direction": "output"
+    },
+    {
+      "number": 10,
+      "name": "F1",
+      "direction": "output"
+    },
+    {
+      "number": 11,
+      "name": "F2",
+      "direction": "output"
+    },
+    {
+      "number": 12,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 13,
+      "name": "F3",
+      "direction": "output"
+    },
+    {
+      "number": 14,
+      "name": "A_eq_B",
+      "direction": "output"
+    },
+    {
+      "number": 15,
+      "name": "P",
+      "direction": "output"
+    },
+    {
+      "number": 16,
+      "name": "Cn+4",
+      "direction": "output"
+    },
+    {
+      "number": 17,
+      "name": "G",
+      "direction": "output"
+    },
+    {
+      "number": 18,
+      "name": "B3",
+      "direction": "input"
+    },
+    {
+      "number": 19,
+      "name": "A3",
+      "direction": "input"
+    },
+    {
+      "number": 20,
+      "name": "B2",
+      "direction": "input"
+    },
+    {
+      "number": 21,
+      "name": "A2",
+      "direction": "input"
+    },
+    {
+      "number": 22,
+      "name": "B1",
+      "direction": "input"
+    },
+    {
+      "number": 23,
+      "name": "A1",
+      "direction": "input"
+    },
+    {
+      "number": 24,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "layout": {
+    "left": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "right": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ]
+  }
+}

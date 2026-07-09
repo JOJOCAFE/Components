@@ -1,0 +1,416 @@
+{
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/74xx/74HC240/definition/definition.json",
+  "part": "74HC240",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC240/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC240/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC240/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
+  "artifacts": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "74HC240",
+      "title": "Octal Inverting Buffer/Line Driver",
+      "family": "74HC",
+      "group": "74xx",
+      "role": "buffer",
+      "package": {
+        "kind": "DIP",
+        "pins": 20,
+        "default": "N"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "/1OE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 2,
+          "name": "1A1",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "2Y4",
+          "direction": "output"
+        },
+        {
+          "number": 4,
+          "name": "1A2",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "2Y3",
+          "direction": "output"
+        },
+        {
+          "number": 6,
+          "name": "1A3",
+          "direction": "input"
+        },
+        {
+          "number": 7,
+          "name": "2Y2",
+          "direction": "output"
+        },
+        {
+          "number": 8,
+          "name": "1A4",
+          "direction": "input"
+        },
+        {
+          "number": 9,
+          "name": "2Y1",
+          "direction": "output"
+        },
+        {
+          "number": 10,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 11,
+          "name": "2A1",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "1Y4",
+          "direction": "output"
+        },
+        {
+          "number": 13,
+          "name": "2A2",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "1Y3",
+          "direction": "output"
+        },
+        {
+          "number": 15,
+          "name": "2A3",
+          "direction": "input"
+        },
+        {
+          "number": 16,
+          "name": "1Y2",
+          "direction": "output"
+        },
+        {
+          "number": 17,
+          "name": "2A4",
+          "direction": "input"
+        },
+        {
+          "number": 18,
+          "name": "1Y1",
+          "direction": "output"
+        },
+        {
+          "number": 19,
+          "name": "/2OE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 20,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {},
+      "power": [
+        {
+          "name": "GND",
+          "pin": 10,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 20,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "octal_inverting_buffer_line_driver",
+        "description": "Octal Inverting Buffer/Line Driver"
+      },
+      "timing": {
+        "delay_ns": 15
+      }
+    },
+    "python_simulator": {
+      "part": "74HC240",
+      "portable": true,
+      "copy_with_chip": [
+        "DB/74xx/74HC240/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC240/simulation/model.py",
+      "class": "HC240"
+    },
+    "verilog_wrapper": {
+      "part": "74HC240",
+      "module": "ttl_74hc240",
+      "file": "DB/74xx/74HC240/simulation/model.v",
+      "netlist": "DB/74xx/74HC240/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "OE1_bar",
+            "pins": [
+              1
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "OE2_bar",
+            "pins": [
+              19
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "A",
+            "pins": [
+              2,
+              4,
+              6,
+              8,
+              11,
+              13,
+              15,
+              17
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Y",
+            "pins": [
+              18,
+              16,
+              14,
+              12,
+              9,
+              7,
+              5,
+              3
+            ],
+            "direction": "output"
+          }
+        ],
+        "output_pins": [
+          3,
+          5,
+          7,
+          9,
+          12,
+          14,
+          16,
+          18
+        ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC240",
+      "shape": "dip",
+      "pins": 20,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "labels": {
+        "1": "/1OE",
+        "2": "1A1",
+        "4": "1A2",
+        "6": "1A3",
+        "8": "1A4",
+        "10": "GND",
+        "11": "2A1",
+        "13": "2A2",
+        "15": "2A3",
+        "17": "2A4",
+        "19": "/2OE",
+        "20": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC240",
+      "shape": "dip",
+      "pins": 20,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "labels": {
+        "1": "/1OE",
+        "2": "1A1",
+        "4": "1A2",
+        "6": "1A3",
+        "8": "1A4",
+        "10": "GND",
+        "11": "2A1",
+        "13": "2A2",
+        "15": "2A3",
+        "17": "2A4",
+        "19": "/2OE",
+        "20": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "documentation": {
+      "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "74HC240",
+      "title": "Octal Inverting Buffer/Line Driver",
+      "summary": "Octal Inverting Buffer/Line Driver.",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "pin_count": 20,
+      "buses": {},
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "74HC240",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "basic_function"
+      ]
+    },
+    "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "74HC240",
+      "controls": [
+        "/1OE",
+        "1A1",
+        "1A2",
+        "1A3",
+        "1A4",
+        "2A1",
+        "2A2",
+        "2A3",
+        "2A4",
+        "/2OE"
+      ],
+      "probes": [
+        "2Y4",
+        "2Y3",
+        "2Y2",
+        "2Y1",
+        "1Y4",
+        "1Y3",
+        "1Y2",
+        "1Y1"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
+    }
+  }
+}

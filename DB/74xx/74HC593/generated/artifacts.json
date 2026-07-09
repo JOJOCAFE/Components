@@ -1,0 +1,456 @@
+{
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/74xx/74HC593/definition/definition.json",
+  "part": "74HC593",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC593/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC593/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC593/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
+  "artifacts": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "74HC593",
+      "title": "8-Bit Binary Counter With Input Register",
+      "family": "74HC",
+      "group": "74xx",
+      "role": "counter",
+      "package": {
+        "kind": "DIP",
+        "pins": 20,
+        "default": "N"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "A/QA",
+          "direction": "output"
+        },
+        {
+          "number": 2,
+          "name": "B/QB",
+          "direction": "output"
+        },
+        {
+          "number": 3,
+          "name": "C/QC",
+          "direction": "output"
+        },
+        {
+          "number": 4,
+          "name": "D/QD",
+          "direction": "output"
+        },
+        {
+          "number": 5,
+          "name": "E/QE",
+          "direction": "output"
+        },
+        {
+          "number": 6,
+          "name": "F/QF",
+          "direction": "output"
+        },
+        {
+          "number": 7,
+          "name": "G/QG",
+          "direction": "output"
+        },
+        {
+          "number": 8,
+          "name": "H/QH",
+          "direction": "output"
+        },
+        {
+          "number": 9,
+          "name": "CLOAD",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 11,
+          "name": "RCO",
+          "direction": "output"
+        },
+        {
+          "number": 12,
+          "name": "CCLR",
+          "direction": "input"
+        },
+        {
+          "number": 13,
+          "name": "CCK",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "CCKEN",
+          "direction": "input"
+        },
+        {
+          "number": 15,
+          "name": "/CCKEN",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 16,
+          "name": "RCK",
+          "direction": "input"
+        },
+        {
+          "number": 17,
+          "name": "RCKEN",
+          "direction": "input"
+        },
+        {
+          "number": 18,
+          "name": "G",
+          "direction": "input"
+        },
+        {
+          "number": 19,
+          "name": "/G",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 20,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {},
+      "power": [
+        {
+          "name": "GND",
+          "pin": 10,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 20,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "8_bit_binary_counter_with_input_register",
+        "description": "8-Bit Binary Counter With Input Register"
+      },
+      "timing": {
+        "delay_ns": 15
+      }
+    },
+    "python_simulator": {
+      "part": "74HC593",
+      "portable": true,
+      "copy_with_chip": [
+        "DB/74xx/74HC593/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC593/simulation/model.py",
+      "class": "HC593"
+    },
+    "verilog_wrapper": {
+      "part": "74HC593",
+      "module": "ttl_74hc593",
+      "file": "DB/74xx/74HC593/simulation/model.v",
+      "netlist": "DB/74xx/74HC593/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "A_Q",
+            "pins": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+            ],
+            "direction": "output"
+          },
+          {
+            "name": "CLOAD",
+            "pins": [
+              9
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "RCO",
+            "pins": [
+              11
+            ],
+            "direction": "output"
+          },
+          {
+            "name": "CCLR",
+            "pins": [
+              12
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "CCK",
+            "pins": [
+              13
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "CCKEN",
+            "pins": [
+              14
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "CCKEN_bar",
+            "pins": [
+              15
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "RCK",
+            "pins": [
+              16
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "RCKEN",
+            "pins": [
+              17
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "G",
+            "pins": [
+              18
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "G_bar",
+            "pins": [
+              19
+            ],
+            "direction": "input"
+          }
+        ],
+        "output_pins": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          11
+        ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC593",
+      "shape": "dip",
+      "pins": 20,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "labels": {
+        "9": "CLOAD",
+        "10": "GND",
+        "12": "CCLR",
+        "13": "CCK",
+        "14": "CCKEN",
+        "15": "/CCKEN",
+        "16": "RCK",
+        "17": "RCKEN",
+        "18": "G",
+        "19": "/G",
+        "20": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC593",
+      "shape": "dip",
+      "pins": 20,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "labels": {
+        "9": "CLOAD",
+        "10": "GND",
+        "12": "CCLR",
+        "13": "CCK",
+        "14": "CCKEN",
+        "15": "/CCKEN",
+        "16": "RCK",
+        "17": "RCKEN",
+        "18": "G",
+        "19": "/G",
+        "20": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "documentation": {
+      "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "74HC593",
+      "title": "8-Bit Binary Counter With Input Register",
+      "summary": "8-Bit Binary Counter With Input Register.",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "pin_count": 20,
+      "buses": {},
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "74HC593",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "basic_function"
+      ]
+    },
+    "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "74HC593",
+      "controls": [
+        "CLOAD",
+        "CCLR",
+        "CCK",
+        "CCKEN",
+        "/CCKEN",
+        "RCK",
+        "RCKEN",
+        "G",
+        "/G"
+      ],
+      "probes": [
+        "A/QA",
+        "B/QB",
+        "C/QC",
+        "D/QD",
+        "E/QE",
+        "F/QF",
+        "G/QG",
+        "H/QH"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
+    }
+  }
+}

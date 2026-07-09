@@ -1,0 +1,330 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC73",
+  "metadata": {
+    "title": "dual JK flip-flop with reset, negative-edge trigger",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "register"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 14,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "1CP",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "1R",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "1K",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    },
+    {
+      "number": 5,
+      "name": "2CP",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "2R",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "2J",
+      "direction": "input"
+    },
+    {
+      "number": 8,
+      "name": "2Q_bar",
+      "direction": "output"
+    },
+    {
+      "number": 9,
+      "name": "2Q",
+      "direction": "output"
+    },
+    {
+      "number": 10,
+      "name": "2K",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 12,
+      "name": "1Q_bar",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "1Q",
+      "direction": "output"
+    },
+    {
+      "number": 14,
+      "name": "1J",
+      "direction": "input"
+    }
+  ],
+  "logic": {
+    "type": "dual_jk_flip_flop_with_reset_negative_edge",
+    "description": "dual JK flip-flop with reset, negative-edge trigger"
+  },
+  "timing": {
+    "delay_ns": 15
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC73",
+      "file": "DB/74xx/74HC73/simulation/model.py",
+      "class": "HC73"
+    },
+    "verilog": {
+      "module": "ttl_74hc73",
+      "file": "DB/74xx/74HC73/simulation/model.v",
+      "netlist": "DB/74xx/74HC73/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC73",
+    "sources": [
+      {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC73_NXP_344664_DIPCHECK.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ],
+        "package_evidence": "datasheet-required"
+      }
+    ]
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "74HC73",
+      "title": "dual JK flip-flop with reset, negative-edge trigger",
+      "family": "74HC",
+      "group": "74xx",
+      "kind": "ic",
+      "role": "register"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "74HC73",
+      "packages": [
+        {
+          "id": "N",
+          "kind": "DIP",
+          "pins": 14
+        }
+      ],
+      "default_package": "N"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC73",
+      "pins": [
+        {
+          "number": 1,
+          "name": "1CP",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "1R",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "1K",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        },
+        {
+          "number": 5,
+          "name": "2CP",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "2R",
+          "direction": "input"
+        },
+        {
+          "number": 7,
+          "name": "2J",
+          "direction": "input"
+        },
+        {
+          "number": 8,
+          "name": "2Q_bar",
+          "direction": "output"
+        },
+        {
+          "number": 9,
+          "name": "2Q",
+          "direction": "output"
+        },
+        {
+          "number": 10,
+          "name": "2K",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 12,
+          "name": "1Q_bar",
+          "direction": "output"
+        },
+        {
+          "number": 13,
+          "name": "1Q",
+          "direction": "output"
+        },
+        {
+          "number": 14,
+          "name": "1J",
+          "direction": "input"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC73",
+      "rails": [
+        {
+          "number": 4,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        },
+        {
+          "number": 11,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        }
+      ]
+    },
+    "logic": {
+      "schema": "db.component.logic",
+      "version": 1,
+      "part": "74HC73",
+      "logic": {
+        "type": "dual_jk_flip_flop_with_reset_negative_edge",
+        "description": "dual JK flip-flop with reset, negative-edge trigger"
+      }
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC73",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "model-derived"
+      },
+      "evidence": {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC73_NXP_344664_DIPCHECK.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC73",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC73_NXP_344664_DIPCHECK.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  }
+}

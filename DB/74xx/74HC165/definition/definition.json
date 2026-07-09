@@ -1,0 +1,356 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC165",
+  "metadata": {
+    "title": "8-Bit Parallel-Load Shift Register",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "register"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 16,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "/SH/LD",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 2,
+      "name": "CLK",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "E",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "F",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "G",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "H",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "/QH",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "QH",
+      "direction": "output"
+    },
+    {
+      "number": 10,
+      "name": "SER",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "A",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "B",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "C",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "D",
+      "direction": "input"
+    },
+    {
+      "number": 15,
+      "name": "CLK INH",
+      "direction": "input"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "8_bit_parallel_load_shift_register",
+    "description": "8-Bit Parallel-Load Shift Register"
+  },
+  "timing": {
+    "delay_ns": 15
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC165",
+      "file": "DB/74xx/74HC165/simulation/model.py",
+      "class": "HC165"
+    },
+    "verilog": {
+      "module": "ttl_74hc165",
+      "file": "DB/74xx/74HC165/simulation/model.v",
+      "netlist": "DB/74xx/74HC165/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC165",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC165",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc165.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "74HC165",
+      "title": "8-Bit Parallel-Load Shift Register",
+      "family": "74HC",
+      "group": "74xx",
+      "kind": "ic",
+      "role": "register"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "74HC165",
+      "packages": [
+        {
+          "id": "N",
+          "kind": "DIP",
+          "pins": 16
+        }
+      ],
+      "default_package": "N"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC165",
+      "pins": [
+        {
+          "number": 1,
+          "name": "/SH/LD",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 2,
+          "name": "CLK",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "E",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "F",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "G",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "H",
+          "direction": "input"
+        },
+        {
+          "number": 7,
+          "name": "/QH",
+          "direction": "output",
+          "active_low": true
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "QH",
+          "direction": "output"
+        },
+        {
+          "number": 10,
+          "name": "SER",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "A",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "B",
+          "direction": "input"
+        },
+        {
+          "number": 13,
+          "name": "C",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "D",
+          "direction": "input"
+        },
+        {
+          "number": 15,
+          "name": "CLK INH",
+          "direction": "input"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC165",
+      "rails": [
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "logic": {
+      "schema": "db.component.logic",
+      "version": 1,
+      "part": "74HC165",
+      "logic": {
+        "type": "8_bit_parallel_load_shift_register",
+        "description": "8-Bit Parallel-Load Shift Register"
+      }
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC165",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "model-derived"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC165",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc165.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC165",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC165",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc165.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  }
+}

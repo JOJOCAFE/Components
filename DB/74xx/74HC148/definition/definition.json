@@ -1,0 +1,350 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC148",
+  "metadata": {
+    "title": "8-to-3 line priority encoder",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "logic"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 16,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "I3",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "I4",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "I5",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "I6",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "EI",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "A2",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "A1",
+      "direction": "output"
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "A0",
+      "direction": "output"
+    },
+    {
+      "number": 10,
+      "name": "I7",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "I0",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "I1",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "I2",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "GS",
+      "direction": "output"
+    },
+    {
+      "number": 15,
+      "name": "EO",
+      "direction": "output"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "8_to_3_line_priority_encoder",
+    "description": "8-to-3 line priority encoder"
+  },
+  "timing": {
+    "delay_ns": 15
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC148",
+      "file": "DB/74xx/74HC148/simulation/model.py",
+      "class": "HC148"
+    },
+    "verilog": {
+      "module": "ttl_74hc148",
+      "file": "DB/74xx/74HC148/simulation/model.v",
+      "netlist": "DB/74xx/74HC148/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC148",
+    "sources": [
+      {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC148_STMICROELECTRONICS_23041.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ],
+        "package_evidence": "datasheet-required"
+      }
+    ]
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "74HC148",
+      "title": "8-to-3 line priority encoder",
+      "family": "74HC",
+      "group": "74xx",
+      "kind": "ic",
+      "role": "logic"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "74HC148",
+      "packages": [
+        {
+          "id": "N",
+          "kind": "DIP",
+          "pins": 16
+        }
+      ],
+      "default_package": "N"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC148",
+      "pins": [
+        {
+          "number": 1,
+          "name": "I3",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "I4",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "I5",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "I6",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "EI",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "A2",
+          "direction": "output"
+        },
+        {
+          "number": 7,
+          "name": "A1",
+          "direction": "output"
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "A0",
+          "direction": "output"
+        },
+        {
+          "number": 10,
+          "name": "I7",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "I0",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "I1",
+          "direction": "input"
+        },
+        {
+          "number": 13,
+          "name": "I2",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "GS",
+          "direction": "output"
+        },
+        {
+          "number": 15,
+          "name": "EO",
+          "direction": "output"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC148",
+      "rails": [
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "logic": {
+      "schema": "db.component.logic",
+      "version": 1,
+      "part": "74HC148",
+      "logic": {
+        "type": "8_to_3_line_priority_encoder",
+        "description": "8-to-3 line priority encoder"
+      }
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC148",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "model-derived"
+      },
+      "evidence": {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC148_STMICROELECTRONICS_23041.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC148",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC148_STMICROELECTRONICS_23041.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  }
+}

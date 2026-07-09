@@ -89,7 +89,7 @@ def test_json_api_adapter_exposes_component_metadata_without_design():
     detail = handle_request({"command": "component-detail", "options": {"part": "74HC00"}}, service)
     assert detail["ok"] is True
     assert detail["result"]["format"] == "components.db.component"
-    assert detail["result"]["db_path"] == "DB/74xx/74HC00/chip.json"
+    assert detail["result"]["db_path"] == "DB/74xx/74HC00/definition/definition.json"
     assert detail["result"]["capabilities"]["physical_pinout"] is True
 
     digital = handle_request({"command": "component-digital", "options": {"part": "74HC245"}}, service)

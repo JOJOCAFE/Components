@@ -1,0 +1,129 @@
+{
+  "schema": "db.component.symbol.dip",
+  "version": 1,
+  "part": "74HC922",
+  "shape": "dip",
+  "package": {
+    "kind": "DIP",
+    "pins": 18,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "ROW Y1",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "ROW Y2",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "ROW Y3",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "ROW Y4",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "OSCILLATOR",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "KEYBOUNCE MASK",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "COLUMN X4",
+      "direction": "output"
+    },
+    {
+      "number": 8,
+      "name": "COLUMN X3",
+      "direction": "output"
+    },
+    {
+      "number": 9,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 10,
+      "name": "COLUMN X2",
+      "direction": "output"
+    },
+    {
+      "number": 11,
+      "name": "COLUMN X1",
+      "direction": "output"
+    },
+    {
+      "number": 12,
+      "name": "DATA AVAILABLE",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "OUTPUT ENABLE",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "DATA OUT D",
+      "direction": "output"
+    },
+    {
+      "number": 15,
+      "name": "DATA OUT C",
+      "direction": "output"
+    },
+    {
+      "number": 16,
+      "name": "DATA OUT B",
+      "direction": "output"
+    },
+    {
+      "number": 17,
+      "name": "DATA OUT A",
+      "direction": "output"
+    },
+    {
+      "number": 18,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "layout": {
+    "left": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "right": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+    ]
+  }
+}

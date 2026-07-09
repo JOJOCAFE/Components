@@ -1,0 +1,374 @@
+{
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/74xx/74HC158/definition/definition.json",
+  "part": "74HC158",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC158/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC158/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC158/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
+  "artifacts": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "74HC158",
+      "title": "quad 2-input multiplexer, inverting outputs",
+      "family": "74HC",
+      "group": "74xx",
+      "role": "multiplexer",
+      "package": {
+        "kind": "DIP",
+        "pins": 16,
+        "default": "N"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "S",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "1I0",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "1I1",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "1Y",
+          "direction": "output"
+        },
+        {
+          "number": 5,
+          "name": "2I0",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "2I1",
+          "direction": "input"
+        },
+        {
+          "number": 7,
+          "name": "2Y",
+          "direction": "output"
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "3Y",
+          "direction": "output"
+        },
+        {
+          "number": 10,
+          "name": "3I1",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "3I0",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "4Y",
+          "direction": "output"
+        },
+        {
+          "number": 13,
+          "name": "4I1",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "4I0",
+          "direction": "input"
+        },
+        {
+          "number": 15,
+          "name": "E",
+          "direction": "input"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {},
+      "power": [
+        {
+          "name": "GND",
+          "pin": 8,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 16,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "quad_2_input_multiplexer_inverting_outputs",
+        "description": "quad 2-input multiplexer, inverting outputs"
+      },
+      "timing": {
+        "delay_ns": 15
+      }
+    },
+    "python_simulator": {
+      "part": "74HC158",
+      "portable": true,
+      "copy_with_chip": [
+        "DB/74xx/74HC158/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC158/simulation/model.py",
+      "class": "HC158"
+    },
+    "verilog_wrapper": {
+      "part": "74HC158",
+      "module": "ttl_74hc158",
+      "file": "DB/74xx/74HC158/simulation/model.v",
+      "netlist": "DB/74xx/74HC158/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "Enable_bar",
+            "pins": [
+              15
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Select",
+            "pins": [
+              1
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "A_2D",
+            "pins": [
+              2,
+              3,
+              5,
+              6,
+              11,
+              10,
+              14,
+              13
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Y_bar",
+            "pins": [
+              4,
+              7,
+              9,
+              12
+            ],
+            "direction": "output"
+          }
+        ],
+        "output_pins": [
+          4,
+          7,
+          9,
+          12
+        ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC158",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "S",
+        "2": "1I0",
+        "3": "1I1",
+        "5": "2I0",
+        "6": "2I1",
+        "8": "GND",
+        "10": "3I1",
+        "11": "3I0",
+        "13": "4I1",
+        "14": "4I0",
+        "15": "E",
+        "16": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC158",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "S",
+        "2": "1I0",
+        "3": "1I1",
+        "5": "2I0",
+        "6": "2I1",
+        "8": "GND",
+        "10": "3I1",
+        "11": "3I0",
+        "13": "4I1",
+        "14": "4I0",
+        "15": "E",
+        "16": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "documentation": {
+      "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "74HC158",
+      "title": "quad 2-input multiplexer, inverting outputs",
+      "summary": "quad 2-input multiplexer, inverting outputs.",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "pin_count": 16,
+      "buses": {},
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "74HC158",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "basic_function"
+      ]
+    },
+    "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "74HC158",
+      "controls": [
+        "S",
+        "1I0",
+        "1I1",
+        "2I0",
+        "2I1",
+        "3I1",
+        "3I0",
+        "4I1",
+        "4I0",
+        "E"
+      ],
+      "probes": [
+        "1Y",
+        "2Y",
+        "3Y",
+        "4Y"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
+    }
+  }
+}

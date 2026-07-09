@@ -1,0 +1,397 @@
+{
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/74xx/74HC160/definition/definition.json",
+  "part": "74HC160",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC160/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC160/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC160/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
+  "artifacts": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "74HC160",
+      "title": "presettable synchronous BCD decade counter, asynchronous reset",
+      "family": "74HC",
+      "group": "74xx",
+      "role": "counter",
+      "package": {
+        "kind": "DIP",
+        "pins": 16,
+        "default": "N"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "MR",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "CP",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "D0",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "D1",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "D2",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "D3",
+          "direction": "input"
+        },
+        {
+          "number": 7,
+          "name": "CEP",
+          "direction": "input"
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "PE",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "CET",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "Q3",
+          "direction": "output"
+        },
+        {
+          "number": 12,
+          "name": "Q2",
+          "direction": "output"
+        },
+        {
+          "number": 13,
+          "name": "Q1",
+          "direction": "output"
+        },
+        {
+          "number": 14,
+          "name": "Q0",
+          "direction": "output"
+        },
+        {
+          "number": 15,
+          "name": "TC",
+          "direction": "output"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {},
+      "power": [
+        {
+          "name": "GND",
+          "pin": 8,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 16,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "presettable_synchronous_bcd_decade_counter_asynchronous_reset",
+        "description": "presettable synchronous BCD decade counter, asynchronous reset"
+      },
+      "timing": {
+        "delay_ns": 15
+      }
+    },
+    "python_simulator": {
+      "part": "74HC160",
+      "portable": true,
+      "copy_with_chip": [
+        "DB/74xx/74HC160/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC160/simulation/model.py",
+      "class": "HC160"
+    },
+    "verilog_wrapper": {
+      "part": "74HC160",
+      "module": "ttl_74hc160",
+      "file": "DB/74xx/74HC160/simulation/model.v",
+      "netlist": "DB/74xx/74HC160/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "Clear_bar",
+            "pins": [
+              1
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Load_bar",
+            "pins": [
+              9
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "ENT",
+            "pins": [
+              10
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "ENP",
+            "pins": [
+              7
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "D",
+            "pins": [
+              3,
+              4,
+              5,
+              6
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Clk",
+            "pins": [
+              2
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "RCO",
+            "pins": [
+              15
+            ],
+            "direction": "output"
+          },
+          {
+            "name": "Q",
+            "pins": [
+              14,
+              13,
+              12,
+              11
+            ],
+            "direction": "output"
+          }
+        ],
+        "output_pins": [
+          11,
+          12,
+          13,
+          14,
+          15
+        ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC160",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "MR",
+        "2": "CP",
+        "3": "D0",
+        "4": "D1",
+        "5": "D2",
+        "6": "D3",
+        "7": "CEP",
+        "8": "GND",
+        "9": "PE",
+        "10": "CET",
+        "16": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC160",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "MR",
+        "2": "CP",
+        "3": "D0",
+        "4": "D1",
+        "5": "D2",
+        "6": "D3",
+        "7": "CEP",
+        "8": "GND",
+        "9": "PE",
+        "10": "CET",
+        "16": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "documentation": {
+      "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "74HC160",
+      "title": "presettable synchronous BCD decade counter, asynchronous reset",
+      "summary": "presettable synchronous BCD decade counter, asynchronous reset.",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "pin_count": 16,
+      "buses": {},
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "74HC160",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "basic_function"
+      ]
+    },
+    "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "74HC160",
+      "controls": [
+        "MR",
+        "CP",
+        "D0",
+        "D1",
+        "D2",
+        "D3",
+        "CEP",
+        "PE",
+        "CET"
+      ],
+      "probes": [
+        "Q3",
+        "Q2",
+        "Q1",
+        "Q0",
+        "TC"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
+    }
+  }
+}

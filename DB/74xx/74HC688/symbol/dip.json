@@ -1,0 +1,142 @@
+{
+  "schema": "db.component.symbol.dip",
+  "version": 1,
+  "part": "74HC688",
+  "shape": "dip",
+  "package": {
+    "kind": "DIP",
+    "pins": 20,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "/E",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 2,
+      "name": "A0",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "B0",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "A1",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "B1",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "A2",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "B2",
+      "direction": "input"
+    },
+    {
+      "number": 8,
+      "name": "A3",
+      "direction": "input"
+    },
+    {
+      "number": 9,
+      "name": "B3",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 11,
+      "name": "Y",
+      "direction": "output"
+    },
+    {
+      "number": 12,
+      "name": "B7",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "A7",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "B6",
+      "direction": "input"
+    },
+    {
+      "number": 15,
+      "name": "A6",
+      "direction": "input"
+    },
+    {
+      "number": 16,
+      "name": "B5",
+      "direction": "input"
+    },
+    {
+      "number": 17,
+      "name": "A5",
+      "direction": "input"
+    },
+    {
+      "number": 18,
+      "name": "B4",
+      "direction": "input"
+    },
+    {
+      "number": 19,
+      "name": "A4",
+      "direction": "input"
+    },
+    {
+      "number": 20,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "layout": {
+    "left": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "right": [
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ]
+  }
+}

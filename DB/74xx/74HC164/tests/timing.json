@@ -1,0 +1,12 @@
+{
+  "schema": "db.component.test.timing",
+  "version": 1,
+  "part": "74HC164",
+  "applicable": true,
+  "checks": [
+    {
+      "name": "model_delay",
+      "expect_delay_ns": 20
+    }
+  ]
+}

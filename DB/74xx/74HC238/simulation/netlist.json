@@ -1,0 +1,156 @@
+{
+  "schema": "db.component.simulation.netlist",
+  "version": 1,
+  "part": "74HC238",
+  "source": "DB/74xx/74HC238/definition/definition.json",
+  "simulation": {
+    "python": "DB/74xx/74HC238/simulation/model.py",
+    "verilog": "DB/74xx/74HC238/simulation/model.v"
+  },
+  "verilog": {
+    "module": "ttl_74hc238",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "Enable1_bar",
+          "pins": [
+            4
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Enable2_bar",
+          "pins": [
+            5
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Enable3",
+          "pins": [
+            6
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "A",
+          "pins": [
+            1,
+            2,
+            3
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Y",
+          "pins": [
+            15,
+            14,
+            13,
+            12,
+            11,
+            10,
+            9,
+            7
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    }
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "A0",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "A1",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "A2",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "E1",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "E2",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "E3",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "Y7",
+      "direction": "output"
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "Y6",
+      "direction": "output"
+    },
+    {
+      "number": 10,
+      "name": "Y5",
+      "direction": "output"
+    },
+    {
+      "number": 11,
+      "name": "Y4",
+      "direction": "output"
+    },
+    {
+      "number": 12,
+      "name": "Y3",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "Y2",
+      "direction": "output"
+    },
+    {
+      "number": 14,
+      "name": "Y1",
+      "direction": "output"
+    },
+    {
+      "number": 15,
+      "name": "Y0",
+      "direction": "output"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ]
+}

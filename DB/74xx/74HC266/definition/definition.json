@@ -1,0 +1,330 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC266",
+  "metadata": {
+    "title": "quad 2-input XNOR gate with open-drain outputs",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "logic"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 14,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "1A",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "1B",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "1Y",
+      "direction": "output"
+    },
+    {
+      "number": 4,
+      "name": "2Y",
+      "direction": "output"
+    },
+    {
+      "number": 5,
+      "name": "2A",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "2B",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 8,
+      "name": "3A",
+      "direction": "input"
+    },
+    {
+      "number": 9,
+      "name": "3B",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "3Y",
+      "direction": "output"
+    },
+    {
+      "number": 11,
+      "name": "4Y",
+      "direction": "output"
+    },
+    {
+      "number": 12,
+      "name": "4A",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "4B",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "quad_2_input_xnor_gate_with_open_drain",
+    "description": "quad 2-input XNOR gate with open-drain outputs"
+  },
+  "timing": {
+    "delay_ns": 15
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC266",
+      "file": "DB/74xx/74HC266/simulation/model.py",
+      "class": "HC266"
+    },
+    "verilog": {
+      "module": "ttl_74hc266",
+      "file": "DB/74xx/74HC266/simulation/model.v",
+      "netlist": "DB/74xx/74HC266/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC266",
+    "sources": [
+      {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC266_TI2_2204305.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ],
+        "package_evidence": "datasheet-required"
+      }
+    ]
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "74HC266",
+      "title": "quad 2-input XNOR gate with open-drain outputs",
+      "family": "74HC",
+      "group": "74xx",
+      "kind": "ic",
+      "role": "logic"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "74HC266",
+      "packages": [
+        {
+          "id": "N",
+          "kind": "DIP",
+          "pins": 14
+        }
+      ],
+      "default_package": "N"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC266",
+      "pins": [
+        {
+          "number": 1,
+          "name": "1A",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "1B",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "1Y",
+          "direction": "output"
+        },
+        {
+          "number": 4,
+          "name": "2Y",
+          "direction": "output"
+        },
+        {
+          "number": 5,
+          "name": "2A",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "2B",
+          "direction": "input"
+        },
+        {
+          "number": 7,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 8,
+          "name": "3A",
+          "direction": "input"
+        },
+        {
+          "number": 9,
+          "name": "3B",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "3Y",
+          "direction": "output"
+        },
+        {
+          "number": 11,
+          "name": "4Y",
+          "direction": "output"
+        },
+        {
+          "number": 12,
+          "name": "4A",
+          "direction": "input"
+        },
+        {
+          "number": 13,
+          "name": "4B",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC266",
+      "rails": [
+        {
+          "number": 7,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 14,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "logic": {
+      "schema": "db.component.logic",
+      "version": 1,
+      "part": "74HC266",
+      "logic": {
+        "type": "quad_2_input_xnor_gate_with_open_drain",
+        "description": "quad 2-input XNOR gate with open-drain outputs"
+      }
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC266",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "model-derived"
+      },
+      "evidence": {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC266_TI2_2204305.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC266",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC266_TI2_2204305.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  }
+}

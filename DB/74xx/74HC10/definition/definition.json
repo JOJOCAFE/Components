@@ -1,0 +1,330 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC10",
+  "metadata": {
+    "title": "triple 3-input NAND gate",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "logic"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 14,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "1A",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "1B",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "2A",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "2B",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "2C",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "2Y",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 8,
+      "name": "3Y",
+      "direction": "output"
+    },
+    {
+      "number": 9,
+      "name": "3A",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "3B",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "3C",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "1Y",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "1C",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "triple_3_input_nand_gate",
+    "description": "triple 3-input NAND gate"
+  },
+  "timing": {
+    "delay_ns": 15
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC10",
+      "file": "DB/74xx/74HC10/simulation/model.py",
+      "class": "HC10"
+    },
+    "verilog": {
+      "module": "ttl_74hc10",
+      "file": "DB/74xx/74HC10/simulation/model.v",
+      "netlist": "DB/74xx/74HC10/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC10",
+    "sources": [
+      {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC10_TI_27881_SN74HC10N_DIPVERIFY.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ],
+        "package_evidence": "datasheet-required"
+      }
+    ]
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "74HC10",
+      "title": "triple 3-input NAND gate",
+      "family": "74HC",
+      "group": "74xx",
+      "kind": "ic",
+      "role": "logic"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "74HC10",
+      "packages": [
+        {
+          "id": "N",
+          "kind": "DIP",
+          "pins": 14
+        }
+      ],
+      "default_package": "N"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC10",
+      "pins": [
+        {
+          "number": 1,
+          "name": "1A",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "1B",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "2A",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "2B",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "2C",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "2Y",
+          "direction": "output"
+        },
+        {
+          "number": 7,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 8,
+          "name": "3Y",
+          "direction": "output"
+        },
+        {
+          "number": 9,
+          "name": "3A",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "3B",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "3C",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "1Y",
+          "direction": "output"
+        },
+        {
+          "number": 13,
+          "name": "1C",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC10",
+      "rails": [
+        {
+          "number": 7,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 14,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "logic": {
+      "schema": "db.component.logic",
+      "version": 1,
+      "part": "74HC10",
+      "logic": {
+        "type": "triple_3_input_nand_gate",
+        "description": "triple 3-input NAND gate"
+      }
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC10",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "model-derived"
+      },
+      "evidence": {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC10_TI_27881_SN74HC10N_DIPVERIFY.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC10",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC10_TI_27881_SN74HC10N_DIPVERIFY.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  }
+}

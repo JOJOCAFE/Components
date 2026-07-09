@@ -1,0 +1,332 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC21",
+  "metadata": {
+    "title": "Dual 4-Input AND Gate",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "and_gate"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 14,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "1A",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "1B",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "NC",
+      "direction": "nc"
+    },
+    {
+      "number": 4,
+      "name": "1C",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "1D",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "1Y",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 8,
+      "name": "2Y",
+      "direction": "output"
+    },
+    {
+      "number": 9,
+      "name": "2A",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "2B",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "NC",
+      "direction": "nc"
+    },
+    {
+      "number": 12,
+      "name": "2C",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "2D",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "dual_4_input_and",
+    "description": "Dual 4-Input AND Gate"
+  },
+  "timing": {
+    "delay_ns": 15
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC21",
+      "file": "DB/74xx/74HC21/simulation/model.py",
+      "class": "HC21"
+    },
+    "verilog": {
+      "module": "ttl_74hc21",
+      "file": "DB/74xx/74HC21/simulation/model.v",
+      "netlist": "DB/74xx/74HC21/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC21",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC21",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc21.pdf",
+        "package_evidence": "N, 14-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "74HC21",
+      "title": "Dual 4-Input AND Gate",
+      "family": "74HC",
+      "group": "74xx",
+      "kind": "ic",
+      "role": "and_gate"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "74HC21",
+      "packages": [
+        {
+          "id": "N",
+          "kind": "DIP",
+          "pins": 14
+        }
+      ],
+      "default_package": "N"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC21",
+      "pins": [
+        {
+          "number": 1,
+          "name": "1A",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "1B",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "NC",
+          "direction": "nc"
+        },
+        {
+          "number": 4,
+          "name": "1C",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "1D",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "1Y",
+          "direction": "output"
+        },
+        {
+          "number": 7,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 8,
+          "name": "2Y",
+          "direction": "output"
+        },
+        {
+          "number": 9,
+          "name": "2A",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "2B",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "NC",
+          "direction": "nc"
+        },
+        {
+          "number": 12,
+          "name": "2C",
+          "direction": "input"
+        },
+        {
+          "number": 13,
+          "name": "2D",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC21",
+      "rails": [
+        {
+          "number": 7,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 14,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "logic": {
+      "schema": "db.component.logic",
+      "version": 1,
+      "part": "74HC21",
+      "logic": {
+        "type": "dual_4_input_and",
+        "description": "Dual 4-Input AND Gate"
+      }
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC21",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "model-derived"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC21",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc21.pdf",
+        "package_evidence": "N, 14-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC21",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC21",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc21.pdf",
+        "package_evidence": "N, 14-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  }
+}

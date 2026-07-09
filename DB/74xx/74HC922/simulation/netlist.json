@@ -1,0 +1,181 @@
+{
+  "schema": "db.component.simulation.netlist",
+  "version": 1,
+  "part": "74HC922",
+  "source": "DB/74xx/74HC922/definition/definition.json",
+  "simulation": {
+    "python": "DB/74xx/74HC922/simulation/model.py",
+    "verilog": "DB/74xx/74HC922/simulation/model.v"
+  },
+  "verilog": {
+    "module": "ttl_74hc922",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "RowY",
+          "pins": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "ColumnX",
+          "pins": [
+            11,
+            10,
+            8,
+            7
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "Oscillator",
+          "pins": [
+            5
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "KeybounceMask",
+          "pins": [
+            6
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "OutputEnable",
+          "pins": [
+            13
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "DataOut",
+          "pins": [
+            17,
+            16,
+            15,
+            14
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "DataAvailable",
+          "pins": [
+            12
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        7,
+        8,
+        10,
+        11,
+        12,
+        14,
+        15,
+        16,
+        17
+      ]
+    }
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "ROW Y1",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "ROW Y2",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "ROW Y3",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "ROW Y4",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "OSCILLATOR",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "KEYBOUNCE MASK",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "COLUMN X4",
+      "direction": "output"
+    },
+    {
+      "number": 8,
+      "name": "COLUMN X3",
+      "direction": "output"
+    },
+    {
+      "number": 9,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 10,
+      "name": "COLUMN X2",
+      "direction": "output"
+    },
+    {
+      "number": 11,
+      "name": "COLUMN X1",
+      "direction": "output"
+    },
+    {
+      "number": 12,
+      "name": "DATA AVAILABLE",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "OUTPUT ENABLE",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "DATA OUT D",
+      "direction": "output"
+    },
+    {
+      "number": 15,
+      "name": "DATA OUT C",
+      "direction": "output"
+    },
+    {
+      "number": 16,
+      "name": "DATA OUT B",
+      "direction": "output"
+    },
+    {
+      "number": 17,
+      "name": "DATA OUT A",
+      "direction": "output"
+    },
+    {
+      "number": 18,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ]
+}

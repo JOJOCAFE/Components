@@ -1,0 +1,378 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC147",
+  "metadata": {
+    "title": "10-line to 4-line priority encoder with active-low inputs and outputs",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "logic"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 16,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "/I4",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 2,
+      "name": "/I5",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 3,
+      "name": "/I6",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 4,
+      "name": "/I7",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 5,
+      "name": "/I8",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 6,
+      "name": "/Y2",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 7,
+      "name": "/Y1",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "/I0",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 10,
+      "name": "/I9",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 11,
+      "name": "/I1",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 12,
+      "name": "/I2",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 13,
+      "name": "/I3",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 14,
+      "name": "/Y3",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 15,
+      "name": "NC",
+      "direction": "nc"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "10_line_to_4_line_priority_encoder_with",
+    "description": "10-line to 4-line priority encoder with active-low inputs and outputs"
+  },
+  "timing": {
+    "delay_ns": 15
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC147",
+      "file": "DB/74xx/74HC147/simulation/model.py",
+      "class": "HC147"
+    },
+    "verilog": {
+      "module": "ttl_74hc147",
+      "file": "DB/74xx/74HC147/simulation/model.v",
+      "netlist": "DB/74xx/74HC147/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC147",
+    "sources": [
+      {
+        "label": "Texas Instruments CD74HC147/CD74HCT147",
+        "file": "Source/74HC147_TI2_2202533.pdf",
+        "package_evidence": "PDIP16 pinout in repository source PDF",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "74HC147",
+      "title": "10-line to 4-line priority encoder with active-low inputs and outputs",
+      "family": "74HC",
+      "group": "74xx",
+      "kind": "ic",
+      "role": "logic"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "74HC147",
+      "packages": [
+        {
+          "id": "N",
+          "kind": "DIP",
+          "pins": 16
+        }
+      ],
+      "default_package": "N"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC147",
+      "pins": [
+        {
+          "number": 1,
+          "name": "/I4",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 2,
+          "name": "/I5",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 3,
+          "name": "/I6",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 4,
+          "name": "/I7",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 5,
+          "name": "/I8",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 6,
+          "name": "/Y2",
+          "direction": "output",
+          "active_low": true
+        },
+        {
+          "number": 7,
+          "name": "/Y1",
+          "direction": "output",
+          "active_low": true
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "/I0",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 10,
+          "name": "/I9",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 11,
+          "name": "/I1",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 12,
+          "name": "/I2",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 13,
+          "name": "/I3",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 14,
+          "name": "/Y3",
+          "direction": "output",
+          "active_low": true
+        },
+        {
+          "number": 15,
+          "name": "NC",
+          "direction": "nc"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC147",
+      "rails": [
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "logic": {
+      "schema": "db.component.logic",
+      "version": 1,
+      "part": "74HC147",
+      "logic": {
+        "type": "10_line_to_4_line_priority_encoder_with",
+        "description": "10-line to 4-line priority encoder with active-low inputs and outputs"
+      }
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC147",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "model-derived"
+      },
+      "evidence": {
+        "label": "Texas Instruments CD74HC147/CD74HCT147",
+        "file": "Source/74HC147_TI2_2202533.pdf",
+        "package_evidence": "PDIP16 pinout in repository source PDF",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC147",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments CD74HC147/CD74HCT147",
+        "file": "Source/74HC147_TI2_2202533.pdf",
+        "package_evidence": "PDIP16 pinout in repository source PDF",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  }
+}

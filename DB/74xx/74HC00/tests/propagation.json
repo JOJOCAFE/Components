@@ -1,0 +1,12 @@
+{
+  "schema": "db.component.test.propagation",
+  "version": 1,
+  "part": "74HC00",
+  "applicable": true,
+  "checks": [
+    {
+      "name": "model_propagation",
+      "expect_delay_ns": 12
+    }
+  ]
+}

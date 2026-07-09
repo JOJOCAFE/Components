@@ -1,0 +1,390 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC377",
+  "metadata": {
+    "title": "octal D-type flip-flop with data enable, positive-edge trigger",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "register"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 20,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "E",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "Q0",
+      "direction": "output"
+    },
+    {
+      "number": 3,
+      "name": "D0",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "D1",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "Q1",
+      "direction": "output"
+    },
+    {
+      "number": 6,
+      "name": "Q2",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "D2",
+      "direction": "input"
+    },
+    {
+      "number": 8,
+      "name": "D3",
+      "direction": "input"
+    },
+    {
+      "number": 9,
+      "name": "Q3",
+      "direction": "output"
+    },
+    {
+      "number": 10,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 11,
+      "name": "CP",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "Q4",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "D4",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "D5",
+      "direction": "input"
+    },
+    {
+      "number": 15,
+      "name": "Q5",
+      "direction": "output"
+    },
+    {
+      "number": 16,
+      "name": "Q6",
+      "direction": "output"
+    },
+    {
+      "number": 17,
+      "name": "D6",
+      "direction": "input"
+    },
+    {
+      "number": 18,
+      "name": "D7",
+      "direction": "input"
+    },
+    {
+      "number": 19,
+      "name": "Q7",
+      "direction": "output"
+    },
+    {
+      "number": 20,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "octal_d_type_flip_flop_with_data_enable",
+    "description": "octal D-type flip-flop with data enable, positive-edge trigger"
+  },
+  "timing": {
+    "delay_ns": 15
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC377",
+      "file": "DB/74xx/74HC377/simulation/model.py",
+      "class": "HC377"
+    },
+    "verilog": {
+      "module": "ttl_74hc377",
+      "file": "DB/74xx/74HC377/simulation/model.v",
+      "netlist": "DB/74xx/74HC377/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC377",
+    "sources": [
+      {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC377_TI_27924_SN74HC377N_DIPVERIFY.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ],
+        "package_evidence": "datasheet-required"
+      }
+    ]
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "74HC377",
+      "title": "octal D-type flip-flop with data enable, positive-edge trigger",
+      "family": "74HC",
+      "group": "74xx",
+      "kind": "ic",
+      "role": "register"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "74HC377",
+      "packages": [
+        {
+          "id": "N",
+          "kind": "DIP",
+          "pins": 20
+        }
+      ],
+      "default_package": "N"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC377",
+      "pins": [
+        {
+          "number": 1,
+          "name": "E",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "Q0",
+          "direction": "output"
+        },
+        {
+          "number": 3,
+          "name": "D0",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "D1",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "Q1",
+          "direction": "output"
+        },
+        {
+          "number": 6,
+          "name": "Q2",
+          "direction": "output"
+        },
+        {
+          "number": 7,
+          "name": "D2",
+          "direction": "input"
+        },
+        {
+          "number": 8,
+          "name": "D3",
+          "direction": "input"
+        },
+        {
+          "number": 9,
+          "name": "Q3",
+          "direction": "output"
+        },
+        {
+          "number": 10,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 11,
+          "name": "CP",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "Q4",
+          "direction": "output"
+        },
+        {
+          "number": 13,
+          "name": "D4",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "D5",
+          "direction": "input"
+        },
+        {
+          "number": 15,
+          "name": "Q5",
+          "direction": "output"
+        },
+        {
+          "number": 16,
+          "name": "Q6",
+          "direction": "output"
+        },
+        {
+          "number": 17,
+          "name": "D6",
+          "direction": "input"
+        },
+        {
+          "number": 18,
+          "name": "D7",
+          "direction": "input"
+        },
+        {
+          "number": 19,
+          "name": "Q7",
+          "direction": "output"
+        },
+        {
+          "number": 20,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC377",
+      "rails": [
+        {
+          "number": 10,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 20,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "logic": {
+      "schema": "db.component.logic",
+      "version": 1,
+      "part": "74HC377",
+      "logic": {
+        "type": "octal_d_type_flip_flop_with_data_enable",
+        "description": "octal D-type flip-flop with data enable, positive-edge trigger"
+      }
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC377",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "model-derived"
+      },
+      "evidence": {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC377_TI_27924_SN74HC377N_DIPVERIFY.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC377",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Legacy pinout datasheet source",
+        "file": "Source/74HC377_TI_27924_SN74HC377N_DIPVERIFY.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  }
+}

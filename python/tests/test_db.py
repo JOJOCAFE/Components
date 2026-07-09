@@ -46,6 +46,13 @@ GROUPED_PARTS = {
     "PNP",
 }
 GENERATION_SEED_PARTS = {"74HC161", "74HC157", "74HC245", "74HC574", "AT28C256"}
+def generation_package_parts() -> set[str]:
+    return {
+        path.parents[1].name
+        for path in db_root().glob("*/*/definition/definition.json")
+    }
+
+
 GENERATION_TARGETS = {
     "json",
     "python_simulator",
@@ -185,9 +192,9 @@ def test_db_component_catalog_is_frontend_ready_and_grouped():
 
     hc00 = next(item for item in catalog["components"] if item["part"] == "74HC00")
     assert hc00["group"] == "74xx"
-    assert hc00["db_path"] == "DB/74xx/74HC00/chip.json"
+    assert hc00["db_path"] == "DB/74xx/74HC00/definition/definition.json"
     assert hc00["capabilities"]["physical_pinout"] is True
-    assert hc00["capabilities"]["verilog_file"] == "Verilog/74xx/74hc00.v"
+    assert hc00["capabilities"]["verilog_file"] == "DB/74xx/74HC00/simulation/model.v"
     assert hc00["warnings"] == []
 
     memory = component_catalog(group="memory")
@@ -210,7 +217,7 @@ def test_student_component_catalog_is_learner_facing_and_status_visible():
     hc00 = next(item for item in student_component_catalog(group="74xx")["components"] if item["part"] == "74HC00")
     assert hc00["readiness"] == "ready"
     assert hc00["capabilities"]["can_export_verilog"] is True
-    assert hc00["files"]["verilog"] == "Verilog/74xx/74hc00.v"
+    assert hc00["files"]["verilog"] == "DB/74xx/74HC00/simulation/model.v"
 
 
 def test_db_component_detail_exposes_pins_and_capabilities():
@@ -227,7 +234,7 @@ def test_db_component_detail_exposes_pins_and_capabilities():
 
 
 def test_generation_seed_digital_definitions_are_valid_and_generator_ready():
-    for part in GENERATION_SEED_PARTS:
+    for part in generation_package_parts():
         definition = load_digital_definition(part)
         assert definition["schema"] == "db.component.digital"
         assert definition["part"] == part
@@ -255,7 +262,7 @@ def test_digital_definition_schema_contract_is_strict_enough_for_generation():
 
 
 def test_generation_seed_digital_definitions_match_chip_manifests():
-    for part in GENERATION_SEED_PARTS:
+    for part in generation_package_parts():
         definition = load_digital_definition(part)
         manifest = load_component(part)
         package = load_digital_package(part)
@@ -289,11 +296,14 @@ def test_generation_seed_digital_definitions_match_chip_manifests():
         export_pins = set(export["output_pins"])
         for port in export["ports"]:
             export_pins.update(port["pins"])
+            if "internal" in str(port.get("note", "")).lower() and "placeholder" in str(port.get("note", "")).lower():
+                export_pins.difference_update(pin for pin in port.get("pins", []) if pin == 0)
+        export_pins.discard(0)
         assert export_pins.issubset(set(digital_pins))
 
 
 def test_generation_seed_digital_packages_load_split_tests():
-    for part in GENERATION_SEED_PARTS:
+    for part in generation_package_parts():
         package = load_digital_package(part)
         definition = package["definition"]
         assert package["format"] == "db.component.package"
@@ -317,7 +327,7 @@ def test_generation_seed_digital_packages_load_split_tests():
 
 def test_generation_seed_packages_have_required_layers():
     required_definition_layers = ("component", "package", "pins", "power", "logic", "timing", "electrical")
-    for part in GENERATION_SEED_PARTS:
+    for part in generation_package_parts():
         package = load_digital_package(part)
         definition = package["layers"]["definition"]
         digital = package["definition"]
@@ -356,7 +366,7 @@ def test_generation_seed_packages_have_required_layers():
 
 
 def test_generation_seed_simulation_sources_are_local_and_importable():
-    for part in GENERATION_SEED_PARTS:
+    for part in generation_package_parts():
         package = load_digital_package(part)
         model = package["layers"]["simulation"]["model"]
         for file_key in ("simulation_model_py", "simulation_model_v", "simulation_netlist"):
@@ -374,7 +384,7 @@ def test_generation_seed_simulation_sources_are_local_and_importable():
 
 
 def test_generation_seed_definitions_are_one_file_sources():
-    for part in GENERATION_SEED_PARTS:
+    for part in generation_package_parts():
         package = load_digital_package(part)
         definition_dir = db_root() / package["files"]["definition"]
         json_files = sorted(path.name for path in definition_dir.parent.glob("*.json"))
@@ -401,7 +411,7 @@ def test_74hc245_split_tests_and_evidence_are_loaded():
 
 
 def test_component_generation_artifacts_cover_declared_targets():
-    for part in GENERATION_SEED_PARTS:
+    for part in generation_package_parts():
         generated = generate_component_artifacts(part)
         assert generated["format"] == "db.component.generated"
         assert generated["part"] == part
@@ -428,14 +438,9 @@ def test_component_generation_artifacts_cover_declared_targets():
 
 
 def test_generated_artifact_files_exist_for_seed_batch():
-    expected_paths = {
-        "74HC161": db_root() / "74xx" / "74HC161" / "generated" / "artifacts.json",
-        "74HC157": db_root() / "74xx" / "74HC157" / "generated" / "artifacts.json",
-        "74HC245": db_root() / "74xx" / "74HC245" / "generated" / "artifacts.json",
-        "74HC574": db_root() / "74xx" / "74HC574" / "generated" / "artifacts.json",
-        "AT28C256": db_root() / "Memory" / "AT28C256" / "generated" / "artifacts.json",
-    }
-    for part, path in expected_paths.items():
+    for part in generation_package_parts():
+        definition_path = db_root().parent / load_digital_definition(part)["definition_path"]
+        path = definition_path.parents[1] / "generated" / "artifacts.json"
         data = json.loads(path.read_text(encoding="utf-8"))
         assert data["format"] == "db.component.generated"
         assert data["part"] == part

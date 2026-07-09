@@ -1,0 +1,164 @@
+{
+  "schema": "db.component.simulation.netlist",
+  "version": 1,
+  "part": "74HC165",
+  "source": "DB/74xx/74HC165/definition/definition.json",
+  "simulation": {
+    "python": "DB/74xx/74HC165/simulation/model.py",
+    "verilog": "DB/74xx/74HC165/simulation/model.v"
+  },
+  "verilog": {
+    "module": "ttl_74hc165",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "ShiftLoad_bar",
+          "pins": [
+            1
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Clk",
+          "pins": [
+            2
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "ClkInhibit",
+          "pins": [
+            15
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Serial",
+          "pins": [
+            10
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "D",
+          "pins": [
+            11,
+            12,
+            13,
+            14,
+            3,
+            4,
+            5,
+            6
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "QH",
+          "pins": [
+            9
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "QH_bar",
+          "pins": [
+            7
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        7,
+        9
+      ]
+    }
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "/SH/LD",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 2,
+      "name": "CLK",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "E",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "F",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "G",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "H",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "/QH",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "QH",
+      "direction": "output"
+    },
+    {
+      "number": 10,
+      "name": "SER",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "A",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "B",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "C",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "D",
+      "direction": "input"
+    },
+    {
+      "number": 15,
+      "name": "CLK INH",
+      "direction": "input"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ]
+}

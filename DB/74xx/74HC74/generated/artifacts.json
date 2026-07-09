@@ -1,0 +1,373 @@
+{
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/74xx/74HC74/definition/definition.json",
+  "part": "74HC74",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC74/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC74/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC74/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
+  "artifacts": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "74HC74",
+      "title": "Dual D-type flip-flop with asynchronous preset and clear",
+      "family": "74HC",
+      "group": "74xx",
+      "role": "flip_flop",
+      "package": {
+        "kind": "DIP",
+        "pins": 14,
+        "default": "N"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "/1CLR",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 2,
+          "name": "1D",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "1CLK",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "/1PRE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 5,
+          "name": "1Q",
+          "direction": "output"
+        },
+        {
+          "number": 6,
+          "name": "/1Q",
+          "direction": "output",
+          "active_low": true
+        },
+        {
+          "number": 7,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 8,
+          "name": "/2Q",
+          "direction": "output",
+          "active_low": true
+        },
+        {
+          "number": 9,
+          "name": "2Q",
+          "direction": "output"
+        },
+        {
+          "number": 10,
+          "name": "/2PRE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 11,
+          "name": "2CLK",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "2D",
+          "direction": "input"
+        },
+        {
+          "number": 13,
+          "name": "/2CLR",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 14,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {},
+      "power": [
+        {
+          "name": "GND",
+          "pin": 7,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 14,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "dual_d_flip_flop",
+        "description": "Dual D-type flip-flop with asynchronous preset and clear"
+      },
+      "timing": {
+        "delay_ns": 20
+      }
+    },
+    "python_simulator": {
+      "part": "74HC74",
+      "portable": true,
+      "copy_with_chip": [
+        "DB/74xx/74HC74/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC74/simulation/model.py",
+      "class": "HC74"
+    },
+    "verilog_wrapper": {
+      "part": "74HC74",
+      "module": "ttl_74hc74",
+      "file": "DB/74xx/74HC74/simulation/model.v",
+      "netlist": "DB/74xx/74HC74/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "Preset_bar",
+            "pins": [
+              4,
+              10
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Clear_bar",
+            "pins": [
+              1,
+              13
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "D",
+            "pins": [
+              2,
+              12
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Clk",
+            "pins": [
+              3,
+              11
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Q",
+            "pins": [
+              5,
+              9
+            ],
+            "direction": "output"
+          },
+          {
+            "name": "Q_bar",
+            "pins": [
+              6,
+              8
+            ],
+            "direction": "output"
+          }
+        ],
+        "output_pins": [
+          5,
+          6,
+          8,
+          9
+        ],
+        "sample_delay_ns": {
+          "U21": 20
+        }
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC74",
+      "shape": "dip",
+      "pins": 14,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "labels": {
+        "1": "/1CLR",
+        "2": "1D",
+        "3": "1CLK",
+        "4": "/1PRE",
+        "7": "GND",
+        "10": "/2PRE",
+        "11": "2CLK",
+        "12": "2D",
+        "13": "/2CLR",
+        "14": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC74",
+      "shape": "dip",
+      "pins": 14,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "labels": {
+        "1": "/1CLR",
+        "2": "1D",
+        "3": "1CLK",
+        "4": "/1PRE",
+        "7": "GND",
+        "10": "/2PRE",
+        "11": "2CLK",
+        "12": "2D",
+        "13": "/2CLR",
+        "14": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "documentation": {
+      "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "74HC74",
+      "title": "Dual D-type flip-flop with asynchronous preset and clear",
+      "summary": "Dual D-type flip-flop with asynchronous preset and clear.",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "pin_count": 14,
+      "buses": {},
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "74HC74",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "basic_function"
+      ]
+    },
+    "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "74HC74",
+      "controls": [
+        "/1CLR",
+        "1D",
+        "1CLK",
+        "/1PRE",
+        "/2PRE",
+        "2CLK",
+        "2D",
+        "/2CLR"
+      ],
+      "probes": [
+        "1Q",
+        "/1Q",
+        "/2Q",
+        "2Q"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
+    }
+  }
+}

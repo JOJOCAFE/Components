@@ -1,0 +1,152 @@
+{
+  "schema": "db.component.simulation.netlist",
+  "version": 1,
+  "part": "74HC251",
+  "source": "DB/74xx/74HC251/definition/definition.json",
+  "simulation": {
+    "python": "DB/74xx/74HC251/simulation/model.py",
+    "verilog": "DB/74xx/74HC251/simulation/model.v"
+  },
+  "verilog": {
+    "module": "ttl_74hc251",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "OE_bar",
+          "pins": [
+            7
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Select",
+          "pins": [
+            11,
+            10,
+            9
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "D",
+          "pins": [
+            4,
+            3,
+            2,
+            1,
+            15,
+            14,
+            13,
+            12
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Y",
+          "pins": [
+            5
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "Y_bar",
+          "pins": [
+            6
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        5,
+        6
+      ]
+    }
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "D3",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "D2",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "D1",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "D0",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "Y",
+      "direction": "output"
+    },
+    {
+      "number": 6,
+      "name": "/Y",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 7,
+      "name": "/OE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "C",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "B",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "A",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "D7",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "D6",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "D5",
+      "direction": "input"
+    },
+    {
+      "number": 15,
+      "name": "D4",
+      "direction": "input"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ]
+}

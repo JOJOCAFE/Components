@@ -1,0 +1,376 @@
+{
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/74xx/74HC238/definition/definition.json",
+  "part": "74HC238",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC238/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC238/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC238/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
+  "artifacts": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "74HC238",
+      "title": "3-to-8 line decoder/demultiplexer, active-high outputs",
+      "family": "74HC",
+      "group": "74xx",
+      "role": "decoder",
+      "package": {
+        "kind": "DIP",
+        "pins": 16,
+        "default": "N"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "A0",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "A1",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "A2",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "E1",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "E2",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "E3",
+          "direction": "input"
+        },
+        {
+          "number": 7,
+          "name": "Y7",
+          "direction": "output"
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "Y6",
+          "direction": "output"
+        },
+        {
+          "number": 10,
+          "name": "Y5",
+          "direction": "output"
+        },
+        {
+          "number": 11,
+          "name": "Y4",
+          "direction": "output"
+        },
+        {
+          "number": 12,
+          "name": "Y3",
+          "direction": "output"
+        },
+        {
+          "number": 13,
+          "name": "Y2",
+          "direction": "output"
+        },
+        {
+          "number": 14,
+          "name": "Y1",
+          "direction": "output"
+        },
+        {
+          "number": 15,
+          "name": "Y0",
+          "direction": "output"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {},
+      "power": [
+        {
+          "name": "GND",
+          "pin": 8,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 16,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "3_to_8_line_decoder_demultiplexer_active_high",
+        "description": "3-to-8 line decoder/demultiplexer, active-high outputs"
+      },
+      "timing": {
+        "delay_ns": 15
+      }
+    },
+    "python_simulator": {
+      "part": "74HC238",
+      "portable": true,
+      "copy_with_chip": [
+        "DB/74xx/74HC238/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC238/simulation/model.py",
+      "class": "HC238"
+    },
+    "verilog_wrapper": {
+      "part": "74HC238",
+      "module": "ttl_74hc238",
+      "file": "DB/74xx/74HC238/simulation/model.v",
+      "netlist": "DB/74xx/74HC238/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "Enable1_bar",
+            "pins": [
+              4
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Enable2_bar",
+            "pins": [
+              5
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Enable3",
+            "pins": [
+              6
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "A",
+            "pins": [
+              1,
+              2,
+              3
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Y",
+            "pins": [
+              15,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              7
+            ],
+            "direction": "output"
+          }
+        ],
+        "output_pins": [
+          7,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC238",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "A0",
+        "2": "A1",
+        "3": "A2",
+        "4": "E1",
+        "5": "E2",
+        "6": "E3",
+        "8": "GND",
+        "16": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC238",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "A0",
+        "2": "A1",
+        "3": "A2",
+        "4": "E1",
+        "5": "E2",
+        "6": "E3",
+        "8": "GND",
+        "16": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "documentation": {
+      "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "74HC238",
+      "title": "3-to-8 line decoder/demultiplexer, active-high outputs",
+      "summary": "3-to-8 line decoder/demultiplexer, active-high outputs.",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "pin_count": 16,
+      "buses": {},
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "74HC238",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "basic_function"
+      ]
+    },
+    "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "74HC238",
+      "controls": [
+        "A0",
+        "A1",
+        "A2",
+        "E1",
+        "E2",
+        "E3"
+      ],
+      "probes": [
+        "Y7",
+        "Y6",
+        "Y5",
+        "Y4",
+        "Y3",
+        "Y2",
+        "Y1",
+        "Y0"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
+    }
+  }
+}

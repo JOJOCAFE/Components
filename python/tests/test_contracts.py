@@ -64,7 +64,10 @@ def test_design_to_verilog_uses_internal_service_boundary():
 
     assert exported["ok"] is True
     assert exported["warnings"] == []
-    assert exported["required_files"] == ["Verilog/74xx/74hc00.v"]
+    assert "DB/74xx/74HC00/simulation/model.py" in exported["required_files"]
+    assert "DB/74xx/74HC00/simulation/model.v" in exported["required_files"]
+    assert "DB/74xx/74HC00/simulation/netlist.json" in exported["required_files"]
+    assert "python/chiplib/core.py" in exported["required_files"]
     assert "ttl_74hc00" in exported["verilog"]
 
 
@@ -87,7 +90,8 @@ def test_system_exports_share_one_python_core_runtime():
     exported = VerilogExportService().export(load_example("tiny_cpu_slice"))
     assert exported["required_files"].count("python/chiplib/core.py") == 1
     assert "DB/74xx/74HC161/simulation/model.py" in exported["required_files"]
-    assert "Verilog/74xx/74hc00.v" in exported["required_files"]
+    assert "DB/74xx/74HC00/simulation/model.py" in exported["required_files"]
+    assert "DB/Memory/62256/simulation/model.py" in exported["required_files"]
 
 
 def test_seed_verilog_mapping_comes_from_simulation_netlist_shape():

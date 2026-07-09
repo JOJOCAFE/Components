@@ -1,0 +1,399 @@
+{
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/74xx/74HC85/definition/definition.json",
+  "part": "74HC85",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC85/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC85/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC85/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
+  "artifacts": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "74HC85",
+      "title": "4-bit magnitude comparator",
+      "family": "74HC",
+      "group": "74xx",
+      "role": "comparator",
+      "package": {
+        "kind": "DIP",
+        "pins": 16,
+        "default": "N"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "B3",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "IA_LT_B",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "IA_EQ_B",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "IA_GT_B",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "QA_GT_B",
+          "direction": "output"
+        },
+        {
+          "number": 6,
+          "name": "QA_EQ_B",
+          "direction": "output"
+        },
+        {
+          "number": 7,
+          "name": "QA_LT_B",
+          "direction": "output"
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "B0",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "A0",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "B1",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "A1",
+          "direction": "input"
+        },
+        {
+          "number": 13,
+          "name": "A2",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "B2",
+          "direction": "input"
+        },
+        {
+          "number": 15,
+          "name": "A3",
+          "direction": "input"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {},
+      "power": [
+        {
+          "name": "GND",
+          "pin": 8,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 16,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "4_bit_magnitude_comparator",
+        "description": "4-bit magnitude comparator"
+      },
+      "timing": {
+        "delay_ns": 15
+      }
+    },
+    "python_simulator": {
+      "part": "74HC85",
+      "portable": true,
+      "copy_with_chip": [
+        "DB/74xx/74HC85/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC85/simulation/model.py",
+      "class": "HC85"
+    },
+    "verilog_wrapper": {
+      "part": "74HC85",
+      "module": "ttl_74hc85",
+      "file": "DB/74xx/74HC85/simulation/model.v",
+      "netlist": "DB/74xx/74HC85/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "A",
+            "pins": [
+              10,
+              12,
+              13,
+              15
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "B",
+            "pins": [
+              9,
+              11,
+              14,
+              1
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "ALess_in",
+            "pins": [
+              2
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "Equal_in",
+            "pins": [
+              3
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "AGreater_in",
+            "pins": [
+              4
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "ALess_out",
+            "pins": [
+              7
+            ],
+            "direction": "output"
+          },
+          {
+            "name": "Equal_out",
+            "pins": [
+              6
+            ],
+            "direction": "output"
+          },
+          {
+            "name": "AGreater_out",
+            "pins": [
+              5
+            ],
+            "direction": "output"
+          }
+        ],
+        "output_pins": [
+          5,
+          6,
+          7
+        ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC85",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "B3",
+        "2": "IA_LT_B",
+        "3": "IA_EQ_B",
+        "4": "IA_GT_B",
+        "8": "GND",
+        "9": "B0",
+        "10": "A0",
+        "11": "B1",
+        "12": "A1",
+        "13": "A2",
+        "14": "B2",
+        "15": "A3",
+        "16": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "74HC85",
+      "shape": "dip",
+      "pins": 16,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "labels": {
+        "1": "B3",
+        "2": "IA_LT_B",
+        "3": "IA_EQ_B",
+        "4": "IA_GT_B",
+        "8": "GND",
+        "9": "B0",
+        "10": "A0",
+        "11": "B1",
+        "12": "A1",
+        "13": "A2",
+        "14": "B2",
+        "15": "A3",
+        "16": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "documentation": {
+      "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "74HC85",
+      "title": "4-bit magnitude comparator",
+      "summary": "4-bit magnitude comparator.",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "pin_count": 16,
+      "buses": {},
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "74HC85",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "basic_function"
+      ]
+    },
+    "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "74HC85",
+      "controls": [
+        "B3",
+        "IA_LT_B",
+        "IA_EQ_B",
+        "IA_GT_B",
+        "B0",
+        "A0",
+        "B1",
+        "A1",
+        "A2",
+        "B2",
+        "A3"
+      ],
+      "probes": [
+        "QA_GT_B",
+        "QA_EQ_B",
+        "QA_LT_B"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
+    }
+  }
+}

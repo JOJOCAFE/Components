@@ -1306,13 +1306,18 @@ def _digital_manifest_mismatches(definition: JsonMap, part: str, path: str) -> l
     verilog = manifest.get("verilog", {})
     export = verilog.get("export", {}) if isinstance(verilog, dict) else {}
     export_pins: set[int] = set()
+    internal_placeholder_pins: set[int] = set()
     if isinstance(export, dict):
         for port in export.get("ports", []):
             if not isinstance(port, dict):
                 continue
-            export_pins.update(pin for pin in port.get("pins", []) if isinstance(pin, int))
+            port_pins = [pin for pin in port.get("pins", []) if isinstance(pin, int)]
+            export_pins.update(port_pins)
+            note = str(port.get("note", "")).lower()
+            if "internal" in note and "placeholder" in note:
+                internal_placeholder_pins.update(pin for pin in port_pins if pin == 0)
         export_pins.update(pin for pin in export.get("output_pins", []) if isinstance(pin, int))
-    for number in sorted(export_pins - digital_pin_numbers):
+    for number in sorted((export_pins - internal_placeholder_pins) - digital_pin_numbers):
         errors.append(_issue(
             "digital_manifest_export_pin_missing",
             part,

@@ -1,0 +1,111 @@
+{
+  "schema": "db.component.symbol.dip",
+  "version": 1,
+  "part": "74HC74",
+  "shape": "dip",
+  "package": {
+    "kind": "DIP",
+    "pins": 14,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "/1CLR",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 2,
+      "name": "1D",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "1CLK",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "/1PRE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 5,
+      "name": "1Q",
+      "direction": "output"
+    },
+    {
+      "number": 6,
+      "name": "/1Q",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 7,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 8,
+      "name": "/2Q",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 9,
+      "name": "2Q",
+      "direction": "output"
+    },
+    {
+      "number": 10,
+      "name": "/2PRE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 11,
+      "name": "2CLK",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "2D",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "/2CLR",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 14,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "layout": {
+    "left": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "right": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ]
+  }
+}

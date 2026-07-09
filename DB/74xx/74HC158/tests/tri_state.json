@@ -1,0 +1,7 @@
+{
+  "schema": "db.component.test.tri_state",
+  "version": 1,
+  "part": "74HC158",
+  "applicable": false,
+  "reason": "tri_state is not applicable to 74HC158"
+}

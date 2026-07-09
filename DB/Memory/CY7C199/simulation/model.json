@@ -1,0 +1,28 @@
+{
+  "schema": "db.component.simulation",
+  "version": 1,
+  "part": "CY7C199",
+  "python": {
+    "factory": "create",
+    "class": "CY7C199",
+    "file": "DB/Memory/CY7C199/simulation/model.py",
+    "implements": [
+      "propagation_delay",
+      "tristate",
+      "bidirectional"
+    ]
+  },
+  "verilog": {
+    "module": "mem_cy7c199",
+    "file": "DB/Memory/CY7C199/simulation/model.v",
+    "implements": [
+      "propagation_delay",
+      "tristate",
+      "bidirectional"
+    ]
+  },
+  "netlist_generation": {
+    "source": "DB/Memory/CY7C199/simulation/netlist.json",
+    "status": "tested"
+  }
+}

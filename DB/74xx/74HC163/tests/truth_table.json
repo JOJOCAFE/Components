@@ -1,0 +1,12 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "74HC163",
+  "applicable": true,
+  "vectors": [
+    {
+      "name": "basic_function",
+      "description": "Covered by Python model and Verilog smoke tests"
+    }
+  ]
+}

@@ -1,0 +1,521 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "SST39SF010A",
+  "metadata": {
+    "title": "128K x 8 flash EEPROM",
+    "family": "Memory",
+    "group": "memory",
+    "role": "flash"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 32,
+    "default": "DIP"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "NC",
+      "direction": "nc"
+    },
+    {
+      "number": 2,
+      "name": "A16",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "A15",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "A12",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "A7",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "A6",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "A5",
+      "direction": "input"
+    },
+    {
+      "number": 8,
+      "name": "A4",
+      "direction": "input"
+    },
+    {
+      "number": 9,
+      "name": "A3",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "A2",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "A1",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "A0",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "DQ0",
+      "direction": "bidirectional"
+    },
+    {
+      "number": 14,
+      "name": "DQ1",
+      "direction": "bidirectional"
+    },
+    {
+      "number": 15,
+      "name": "DQ2",
+      "direction": "bidirectional"
+    },
+    {
+      "number": 16,
+      "name": "VSS",
+      "direction": "power",
+      "rail": "VSS"
+    },
+    {
+      "number": 17,
+      "name": "DQ3",
+      "direction": "bidirectional"
+    },
+    {
+      "number": 18,
+      "name": "DQ4",
+      "direction": "bidirectional"
+    },
+    {
+      "number": 19,
+      "name": "DQ5",
+      "direction": "bidirectional"
+    },
+    {
+      "number": 20,
+      "name": "DQ6",
+      "direction": "bidirectional"
+    },
+    {
+      "number": 21,
+      "name": "DQ7",
+      "direction": "bidirectional"
+    },
+    {
+      "number": 22,
+      "name": "/CE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 23,
+      "name": "A10",
+      "direction": "input"
+    },
+    {
+      "number": 24,
+      "name": "/OE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 25,
+      "name": "A11",
+      "direction": "input"
+    },
+    {
+      "number": 26,
+      "name": "A9",
+      "direction": "input"
+    },
+    {
+      "number": 27,
+      "name": "A8",
+      "direction": "input"
+    },
+    {
+      "number": 28,
+      "name": "A13",
+      "direction": "input"
+    },
+    {
+      "number": 29,
+      "name": "A14",
+      "direction": "input"
+    },
+    {
+      "number": 30,
+      "name": "NC",
+      "direction": "nc"
+    },
+    {
+      "number": 31,
+      "name": "/WE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 32,
+      "name": "VDD",
+      "direction": "power",
+      "rail": "VDD"
+    }
+  ],
+  "logic": {
+    "type": "128k_x_8_flash",
+    "description": "128K x 8 flash EEPROM"
+  },
+  "timing": {
+    "delay_ns": 70
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "SST39SF010A",
+      "file": "DB/Memory/SST39SF010A/simulation/model.py",
+      "class": "SST39SF010A"
+    },
+    "verilog": {
+      "module": "mem_sst39sf010a",
+      "file": "DB/Memory/SST39SF010A/simulation/model.v",
+      "netlist": "DB/Memory/SST39SF010A/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation",
+      "tri_state",
+      "bus_fight"
+    ],
+    "required_vectors": [
+      "basic_function",
+      "disabled_or_high_z"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "SST39SF010A",
+    "sources": [
+      {
+        "label": "Microchip SST39SF010A/SST39SF020A/SST39SF040",
+        "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/SST39SF010A-SST39SF020A-SST39SF040-Data-Sheet-DS20005022.pdf",
+        "package_evidence": "32-pin PDIP flash package",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "SST39SF010A",
+      "title": "128K x 8 flash EEPROM",
+      "family": "Memory",
+      "group": "memory",
+      "kind": "ic",
+      "role": "flash"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "SST39SF010A",
+      "packages": [
+        {
+          "id": "DIP",
+          "kind": "DIP",
+          "pins": 32
+        }
+      ],
+      "default_package": "DIP"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "SST39SF010A",
+      "pins": [
+        {
+          "number": 1,
+          "name": "NC",
+          "direction": "nc"
+        },
+        {
+          "number": 2,
+          "name": "A16",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "A15",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "A12",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "A7",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "A6",
+          "direction": "input"
+        },
+        {
+          "number": 7,
+          "name": "A5",
+          "direction": "input"
+        },
+        {
+          "number": 8,
+          "name": "A4",
+          "direction": "input"
+        },
+        {
+          "number": 9,
+          "name": "A3",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "A2",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "A1",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "A0",
+          "direction": "input"
+        },
+        {
+          "number": 13,
+          "name": "DQ0",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 14,
+          "name": "DQ1",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 15,
+          "name": "DQ2",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 16,
+          "name": "VSS",
+          "direction": "power",
+          "rail": "VSS"
+        },
+        {
+          "number": 17,
+          "name": "DQ3",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 18,
+          "name": "DQ4",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 19,
+          "name": "DQ5",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 20,
+          "name": "DQ6",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 21,
+          "name": "DQ7",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 22,
+          "name": "/CE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 23,
+          "name": "A10",
+          "direction": "input"
+        },
+        {
+          "number": 24,
+          "name": "/OE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 25,
+          "name": "A11",
+          "direction": "input"
+        },
+        {
+          "number": 26,
+          "name": "A9",
+          "direction": "input"
+        },
+        {
+          "number": 27,
+          "name": "A8",
+          "direction": "input"
+        },
+        {
+          "number": 28,
+          "name": "A13",
+          "direction": "input"
+        },
+        {
+          "number": 29,
+          "name": "A14",
+          "direction": "input"
+        },
+        {
+          "number": 30,
+          "name": "NC",
+          "direction": "nc"
+        },
+        {
+          "number": 31,
+          "name": "/WE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 32,
+          "name": "VDD",
+          "direction": "power",
+          "rail": "VDD"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "SST39SF010A",
+      "rails": [
+        {
+          "number": 16,
+          "name": "VSS",
+          "direction": "power",
+          "rail": "VSS"
+        },
+        {
+          "number": 32,
+          "name": "VDD",
+          "direction": "power",
+          "rail": "VDD"
+        }
+      ]
+    },
+    "logic": {
+      "schema": "db.component.logic",
+      "version": 1,
+      "part": "SST39SF010A",
+      "logic": {
+        "type": "128k_x_8_flash",
+        "description": "128K x 8 flash EEPROM"
+      }
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "SST39SF010A",
+      "delay": {
+        "model_delay_ns": 70,
+        "status": "model-derived"
+      },
+      "evidence": {
+        "label": "Microchip SST39SF010A/SST39SF020A/SST39SF040",
+        "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/SST39SF010A-SST39SF020A-SST39SF040-Data-Sheet-DS20005022.pdf",
+        "package_evidence": "32-pin PDIP flash package",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "SST39SF010A",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Microchip SST39SF010A/SST39SF020A/SST39SF040",
+        "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/SST39SF010A-SST39SF020A-SST39SF040-Data-Sheet-DS20005022.pdf",
+        "package_evidence": "32-pin PDIP flash package",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  }
+}

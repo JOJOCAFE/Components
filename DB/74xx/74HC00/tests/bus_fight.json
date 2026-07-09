@@ -1,0 +1,7 @@
+{
+  "schema": "db.component.test.bus_fight",
+  "version": 1,
+  "part": "74HC00",
+  "applicable": false,
+  "reason": "bus_fight is not applicable to 74HC00"
+}

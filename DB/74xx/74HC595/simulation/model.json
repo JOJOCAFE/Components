@@ -1,0 +1,28 @@
+{
+  "schema": "db.component.simulation",
+  "version": 1,
+  "part": "74HC595",
+  "python": {
+    "factory": "create",
+    "class": "HC595",
+    "file": "DB/74xx/74HC595/simulation/model.py",
+    "implements": [
+      "propagation_delay",
+      "tristate",
+      "bidirectional"
+    ]
+  },
+  "verilog": {
+    "module": "ttl_74hc595",
+    "file": "DB/74xx/74HC595/simulation/model.v",
+    "implements": [
+      "propagation_delay",
+      "tristate",
+      "bidirectional"
+    ]
+  },
+  "netlist_generation": {
+    "source": "DB/74xx/74HC595/simulation/netlist.json",
+    "status": "tested"
+  }
+}

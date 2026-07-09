@@ -310,6 +310,68 @@ Done:
 - ✅ generated artifact report
 - ✅ timing/electrical evidence extraction
 
+## Batch 2 - RV8GR Chip Migration
+
+Status: package migration done for the RV8GR BOM chip set; deeper per-chip
+truth-vector and datasheet extraction polish remains future verification work.
+
+Source of truth:
+
+- `/home/jo/kiro/RV8/RV8GR/README.md` BOM: 34 logic packages plus ROM and RAM.
+- `/home/jo/kiro/RV8/RV8GR/doc/12_netlist.md`: U1-U34, ROM, and RAM package
+  list from the wiring source.
+
+Target parts:
+
+- Logic: `74HC161`, `74HC574`, `74HC245`, `74HC164`, `74HC283`, `74HC86`,
+  `74HC541`, `74HC157`, `74HC74`, `74HC688`, `74HC04`, `74HC32`, `74HC00`,
+  and `74HC21`.
+- Memory: `AT28C256` or `SST39SF010A` for ROM, and `62256` or `AS6C62256`
+  for RAM.
+
+Migration phases:
+
+1. Done from seed batch: `74HC161`, `74HC574`, `74HC245`, `74HC157`, and
+   `AT28C256`.
+2. Done RV8GR logic chips: `74HC00`, `74HC04`, `74HC21`, `74HC32`, `74HC74`,
+   `74HC86`, `74HC164`, `74HC283`, `74HC541`, and `74HC688`.
+3. Done RV8GR memory chips/options: `62256`, `AS6C62256`, and
+   `SST39SF010A`.
+
+Done:
+
+- Added full package folders for the 13 Batch 2 parts, with
+  `definition/definition.json`, local `simulation/model.py`, local
+  `simulation/model.v`, `simulation/netlist.json`, `simulation/model.json`,
+  `symbol/dip.json`, split test records, and generated artifacts.
+- Removed legacy `chip.json` files for the migrated Batch 2 parts.
+- Expanded package contract tests so all migrated seed and RV8GR Batch 2 chips
+  must load from `definition/definition.json` and expose package-local
+  simulation/export files.
+- Added `tools/migrate_ic_packages.py` as a repeatable migration helper for
+  this package shape.
+- Migrated the rest of the active IC catalog after Batch 2. All 62 IC parts
+  under `DB/74xx` and `DB/Memory` now use package folders with
+  `definition/definition.json`; no IC `chip.json` files remain.
+- Generalized the migration helper as `tools/migrate_ic_packages.py`; catalog
+  chips get package-local `simulation/model.py` files with local behavior logic
+  and only `chiplib.core` as the shared runtime dependency.
+- Expanded package tests to discover all `definition/definition.json` IC
+  packages dynamically instead of maintaining a manual migrated-part list.
+
+Acceptance for each migrated Batch 2 chip:
+
+- ✅ `definition/definition.json` is the canonical package definition.
+- ✅ No seed-style `chip.json` remains after status/export/datasheet data are
+  migrated.
+- ✅ `simulation/model.py`, `simulation/model.v`, `simulation/netlist.json`, and
+  `simulation/model.json` live inside the chip package.
+- ✅ `symbol/dip.json`, split test records, and generated artifacts are present.
+- ✅ `portable_files` includes the local `simulation/model.py`; Python models
+  also require shared `python/chiplib/core.py`, copied once for chip/circuit/
+  system exports.
+- ✅ Focused Python DB/generation tests and Verilog smoke/equivalence checks pass.
+
 ## GitHub Actions
 
 Existing workflows already run on every push and pull request:

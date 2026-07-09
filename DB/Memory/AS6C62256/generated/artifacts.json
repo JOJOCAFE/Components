@@ -1,0 +1,523 @@
+{
+  "format": "db.component.generated",
+  "version": 1,
+  "source": "DB/Memory/AS6C62256/definition/definition.json",
+  "part": "AS6C62256",
+  "portable_files": [
+    {
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/Memory/AS6C62256/simulation/model.py",
+      "copy_as": "model.py"
+    },
+    {
+      "kind": "python_runtime",
+      "runtime": "python",
+      "source": "python/chiplib/core.py",
+      "copy_as": "chiplib/core.py",
+      "shared": true,
+      "copy_once": true
+    },
+    {
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/Memory/AS6C62256/simulation/model.v",
+      "copy_as": "model.v"
+    },
+    {
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/Memory/AS6C62256/simulation/netlist.json",
+      "copy_as": "netlist.json"
+    }
+  ],
+  "artifacts": {
+    "json": {
+      "format": "components.generated.detail",
+      "part": "AS6C62256",
+      "title": "32K x 8 static RAM wrapper",
+      "family": "Memory",
+      "group": "memory",
+      "role": "sram",
+      "package": {
+        "kind": "DIP",
+        "pins": 28,
+        "default": "DIP"
+      },
+      "pins": [
+        {
+          "number": 1,
+          "name": "A14",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "A12",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "A7",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "A6",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "A5",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "A4",
+          "direction": "input"
+        },
+        {
+          "number": 7,
+          "name": "A3",
+          "direction": "input"
+        },
+        {
+          "number": 8,
+          "name": "A2",
+          "direction": "input"
+        },
+        {
+          "number": 9,
+          "name": "A1",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "A0",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "I/O0",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 12,
+          "name": "I/O1",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 13,
+          "name": "I/O2",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 14,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 15,
+          "name": "I/O3",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 16,
+          "name": "I/O4",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 17,
+          "name": "I/O5",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 18,
+          "name": "I/O6",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 19,
+          "name": "I/O7",
+          "direction": "bidirectional"
+        },
+        {
+          "number": 20,
+          "name": "/CE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 21,
+          "name": "A10",
+          "direction": "input"
+        },
+        {
+          "number": 22,
+          "name": "/OE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 23,
+          "name": "A11",
+          "direction": "input"
+        },
+        {
+          "number": 24,
+          "name": "A9",
+          "direction": "input"
+        },
+        {
+          "number": 25,
+          "name": "A8",
+          "direction": "input"
+        },
+        {
+          "number": 26,
+          "name": "A13",
+          "direction": "input"
+        },
+        {
+          "number": 27,
+          "name": "/WE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 28,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ],
+      "buses": {},
+      "power": [
+        {
+          "name": "GND",
+          "pin": 14,
+          "nominal_logic": 0
+        },
+        {
+          "name": "VCC",
+          "pin": 28,
+          "nominal_logic": 1
+        }
+      ],
+      "logic": {
+        "type": "32k_x_8_sram",
+        "description": "32K x 8 static RAM wrapper"
+      },
+      "timing": {
+        "delay_ns": 70
+      }
+    },
+    "python_simulator": {
+      "part": "AS6C62256",
+      "portable": true,
+      "copy_with_chip": [
+        "DB/Memory/AS6C62256/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/Memory/AS6C62256/simulation/model.py",
+      "class": "AS6C62256"
+    },
+    "verilog_wrapper": {
+      "part": "AS6C62256",
+      "module": "mem_as6c62256",
+      "file": "DB/Memory/AS6C62256/simulation/model.v",
+      "netlist": "DB/Memory/AS6C62256/simulation/netlist.json",
+      "export": {
+        "kind": "structural_port_map",
+        "ports": [
+          {
+            "name": "A",
+            "pins": [
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              3,
+              25,
+              24,
+              21,
+              23,
+              2,
+              26,
+              1
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "DQ",
+            "pins": [
+              11,
+              12,
+              13,
+              15,
+              16,
+              17,
+              18,
+              19
+            ],
+            "direction": "output"
+          },
+          {
+            "name": "CE_bar",
+            "pins": [
+              20
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "OE_bar",
+            "pins": [
+              22
+            ],
+            "direction": "input"
+          },
+          {
+            "name": "WE_bar",
+            "pins": [
+              27
+            ],
+            "direction": "input",
+            "fallback": "1'b1"
+          }
+        ],
+        "output_pins": [
+          11,
+          12,
+          13,
+          15,
+          16,
+          17,
+          18,
+          19
+        ]
+      }
+    },
+    "kicad_symbol": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "AS6C62256",
+      "shape": "dip",
+      "pins": 28,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "right": [
+        28,
+        27,
+        26,
+        25,
+        24,
+        23,
+        22,
+        21,
+        20,
+        19,
+        18,
+        17,
+        16,
+        15
+      ],
+      "labels": {
+        "1": "A14",
+        "2": "A12",
+        "3": "A7",
+        "4": "A6",
+        "5": "A5",
+        "6": "A4",
+        "7": "A3",
+        "8": "A2",
+        "9": "A1",
+        "10": "A0",
+        "14": "GND",
+        "20": "/CE",
+        "21": "A10",
+        "22": "/OE",
+        "23": "A11",
+        "24": "A9",
+        "25": "A8",
+        "26": "A13",
+        "27": "/WE",
+        "28": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "svg_pinout": {
+      "schema": "db.component.symbol.dip",
+      "version": 1,
+      "part": "AS6C62256",
+      "shape": "dip",
+      "pins": 28,
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "right": [
+        28,
+        27,
+        26,
+        25,
+        24,
+        23,
+        22,
+        21,
+        20,
+        19,
+        18,
+        17,
+        16,
+        15
+      ],
+      "labels": {
+        "1": "A14",
+        "2": "A12",
+        "3": "A7",
+        "4": "A6",
+        "5": "A5",
+        "6": "A4",
+        "7": "A3",
+        "8": "A2",
+        "9": "A1",
+        "10": "A0",
+        "14": "GND",
+        "20": "/CE",
+        "21": "A10",
+        "22": "/OE",
+        "23": "A11",
+        "24": "A9",
+        "25": "A8",
+        "26": "A13",
+        "27": "/WE",
+        "28": "VCC"
+      },
+      "bus_groups": {}
+    },
+    "documentation": {
+      "schema": "db.component.generated.documentation",
+      "version": 1,
+      "part": "AS6C62256",
+      "title": "32K x 8 static RAM wrapper",
+      "summary": "32K x 8 static RAM wrapper.",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "pin_count": 28,
+      "buses": {},
+      "controls": []
+    },
+    "unit_test": {
+      "schema": "db.component.generated.tests",
+      "version": 1,
+      "part": "AS6C62256",
+      "tests": [
+        {
+          "type": "truth_table",
+          "source": "tests/truth_table.json",
+          "present": true
+        },
+        {
+          "type": "timing",
+          "source": "tests/timing.json",
+          "present": true
+        },
+        {
+          "type": "propagation",
+          "source": "tests/propagation.json",
+          "present": true
+        },
+        {
+          "type": "tri_state",
+          "source": "tests/tri_state.json",
+          "present": true
+        },
+        {
+          "type": "bus_fight",
+          "source": "tests/bus_fight.json",
+          "present": true
+        }
+      ],
+      "required_vectors": [
+        "basic_function",
+        "disabled_or_high_z"
+      ]
+    },
+    "interactive_demo": {
+      "schema": "db.component.generated.interactive_demo",
+      "version": 1,
+      "part": "AS6C62256",
+      "controls": [
+        "A14",
+        "A12",
+        "A7",
+        "A6",
+        "A5",
+        "A4",
+        "A3",
+        "A2",
+        "A1",
+        "A0",
+        "/CE",
+        "A10",
+        "/OE",
+        "A11",
+        "A9",
+        "A8",
+        "A13",
+        "/WE"
+      ],
+      "probes": [
+        "I/O0",
+        "I/O1",
+        "I/O2",
+        "I/O3",
+        "I/O4",
+        "I/O5",
+        "I/O6",
+        "I/O7"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ]
+    }
+  }
+}
