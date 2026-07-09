@@ -35,8 +35,8 @@
     {"number": 16, "name": "VCC", "direction": "power"}
   ],
   "legacy_paths": {
-    "pinout": "verilog/74HC/74hc147-pin.md",
-    "verilog": "verilog/74HC/74hc147.v",
+    "pinout": "verilog/74xx/74hc147-pin.md",
+    "verilog": "verilog/74xx/74hc147.v",
     "python_behavior": "python/chiplib/catalog.py",
     "verilog_export": "python/chiplib/netlist.py",
     "tests": [
@@ -47,7 +47,7 @@
   },
   "verilog": {
     "module": "ttl_74hc147",
-    "file": "verilog/74HC/74hc147.v",
+    "file": "verilog/74xx/74hc147.v",
     "export": {
       "ports": [
         {"name": "I0_bar", "pins": [9], "direction": "input"},

@@ -21,7 +21,7 @@ from .design import Design, Endpoint
 from .loader import ImageLoadError, load_image, load_memory, parse_hex_text, parse_ihex
 from .netlist import design_from_kicad_netlist, design_from_netlist, design_to_netlist, design_to_verilog
 from .probe import ProbeChannel, ProbeController, ProbeError, ProbeSample, ProbeSet
-from .services import DesignCommandService, SimulationService, VerilogExportService, export_verilog
+from .services import DesignCommandService, FrontendDesignService, SimulationService, VerilogExportService, export_verilog
 from .stimulus import ClockChannel, InputChannel, InputSet, StimulusController, StimulusError
 
 __all__ = [
@@ -60,6 +60,7 @@ __all__ = [
     "design_to_netlist",
     "design_to_verilog",
     "DesignCommandService",
+    "FrontendDesignService",
     "SimulationService",
     "VerilogExportService",
     "export_verilog",

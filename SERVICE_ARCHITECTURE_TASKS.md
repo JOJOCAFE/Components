@@ -109,11 +109,12 @@ outputs.
      proven.
    - See `EXTERNAL_ENGINE_ADAPTER_PLAN.md`.
 
-10. ⬜ Add an API wrapper only after CLI contracts are stable.
-    - Candidate: local HTTP server or stdio JSON-RPC.
+10. ✅ Add an API wrapper only after CLI contracts are stable.
+    - Current adapter: `python/chiplib/api.py`.
+    - Supports local HTTP server or stdio JSON lines.
     - API should expose the same operations as CLI/service interfaces:
       validate, snapshot, run, probe, export-json, export-netlist,
-      export-verilog, and check-equivalence.
+      export-verilog, and frontend edit operations.
 
 ## Next Implementation Rule
 

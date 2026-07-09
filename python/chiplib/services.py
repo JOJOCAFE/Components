@@ -258,6 +258,147 @@ class DesignCommandService:
         return self.verilog.export(self.load_design(json_file))
 
 
+class FrontendDesignService:
+    """Stateful design editing service for frontend/API adapters."""
+
+    contract = CONTRACT
+
+    def __init__(
+        self,
+        design: Any | None = None,
+        *,
+        simulation: SimulationService | None = None,
+        verilog: "VerilogExportService | None" = None,
+    ):
+        self.design = design
+        self.simulation = simulation or SimulationService()
+        self.verilog = verilog or VerilogExportService()
+
+    def create_design(self, name: str = "untitled", *, description: str = "") -> JsonMap:
+        from .design import Design
+
+        self.design = Design(str(name))
+        self.design.description = str(description)
+        return self.snapshot()
+
+    def load(self, data: JsonMap) -> JsonMap:
+        from .design import Design
+
+        self.design = Design.from_dict(data)
+        return self.snapshot()
+
+    def export_json(self) -> JsonMap:
+        design = self._require_design()
+        return self._ok("export-json", design.to_dict())
+
+    def create_chip(self, ref: str, part: str, **properties: Any) -> JsonMap:
+        design = self._require_design()
+        design.chips[str(ref)] = {"part": str(part), **properties}
+        self._clear_runtime()
+        return self.frontend_snapshot()
+
+    def delete_chip(self, ref: str) -> JsonMap:
+        design = self._require_design()
+        ref = str(ref)
+        design.chips.pop(ref, None)
+        design.connections = [rule for rule in design.connections if not _rule_mentions_ref(rule, ref)]
+        self._clear_runtime()
+        return self.frontend_snapshot()
+
+    def connect(self, rule: str) -> JsonMap:
+        design = self._require_design()
+        design.connections.append(str(rule))
+        self._clear_runtime()
+        return self.frontend_snapshot()
+
+    def disconnect(self, rule: str) -> JsonMap:
+        design = self._require_design()
+        try:
+            design.connections.remove(str(rule))
+        except ValueError:
+            return self._fail("disconnect", [{"type": "connection_missing", "rule": str(rule)}])
+        self._clear_runtime()
+        return self.frontend_snapshot()
+
+    def add_bus(self, name: str, width: int = 1, **properties: Any) -> JsonMap:
+        design = self._require_design()
+        design.buses[str(name)] = {"width": int(width), **properties}
+        self._clear_runtime()
+        return self.frontend_snapshot()
+
+    def set_inputs(self, name: str, rules: list[str] | dict[str, Any]) -> JsonMap:
+        design = self._require_design()
+        if isinstance(rules, dict):
+            design.inputs[str(name)] = [f"{ref} = {value}" for ref, value in rules.items()]
+        else:
+            design.inputs[str(name)] = [str(rule) for rule in rules]
+        self._clear_runtime()
+        return self.frontend_snapshot()
+
+    def step(self, step: str) -> JsonMap:
+        design = self._require_design()
+        return self.simulation.run(design, steps=[str(step)])
+
+    def run(self, steps: str | list[str] = "all") -> JsonMap:
+        return self.simulation.run(self._require_design(), steps=steps)
+
+    def read_probes(self, set_name: str | None = None) -> JsonMap:
+        return self.simulation.probe(self._require_design(), set_name=set_name)
+
+    def validate(self) -> JsonMap:
+        return self.simulation.validate(self._require_design())
+
+    def snapshot(self) -> JsonMap:
+        return self.simulation.snapshot(self._require_design())
+
+    def frontend_snapshot(self) -> JsonMap:
+        return self.simulation.frontend_snapshot(self._require_design())
+
+    def export_netlist(self) -> JsonMap:
+        return self._ok("export-netlist", self._require_design().to_netlist())
+
+    def export_verilog(self) -> JsonMap:
+        return self._ok("export-verilog", self.verilog.export(self._require_design()))
+
+    def _require_design(self) -> Any:
+        if self.design is None:
+            raise ValueError("no design loaded")
+        return self.design
+
+    def _clear_runtime(self) -> None:
+        if self.design is None:
+            return
+        self.design._board = None
+        self.design.stimulus = None
+        self.design.probe_controller = None
+
+    def _ok(self, command: str, result: JsonMap) -> JsonMap:
+        return {
+            "contract": self.contract,
+            "command": command,
+            "ok": True,
+            "result": result,
+            "warnings": [],
+            "metadata": {"engine": "python", "components_version": None, "elapsed_ms": 0},
+        }
+
+    def _fail(self, command: str, errors: list[Any]) -> JsonMap:
+        return {
+            "contract": self.contract,
+            "command": command,
+            "ok": False,
+            "warnings": [],
+            "errors": errors,
+            "error": {
+                "code": "frontend.operation_failed",
+                "message": f"{command} failed.",
+                "severity": "error",
+                "details": {"errors": errors},
+            },
+            "metadata": {"engine": "python", "components_version": None, "elapsed_ms": 0},
+        }
+
+
 class VerilogExportService:
     """Stable internal boundary for structural Verilog export."""
 
@@ -299,6 +440,14 @@ def _probe_channels(items: Any) -> list[Any]:
         channels = items.get("channels", [])
         return channels if isinstance(channels, list) else []
     return items if isinstance(items, list) else []
+
+
+def _rule_mentions_ref(rule: str, ref: str) -> bool:
+    for token in str(rule).replace("->", ",").replace("<->", ",").split(","):
+        endpoint = token.strip()
+        if endpoint == ref or endpoint.startswith(f"{ref}:"):
+            return True
+    return False
 
 
 def _warnings_from_run(payload: JsonMap) -> list[JsonMap]:
@@ -376,7 +525,7 @@ def _verilog_file_for_part(part: str, module: str) -> str | None:
         except (OSError, ValueError):
             pass
     if module.startswith("ttl_"):
-        return f"verilog/74HC/{part.lower()}.v"
+        return f"verilog/74xx/{part.lower()}.v"
     if module.startswith("mem_"):
         return f"verilog/Memory/{module[4:]}.v"
     return None

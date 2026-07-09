@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module tb_74hc_smoke;
+module tb_74xx_smoke;
   integer failures = 0;
 
   task check;
@@ -511,11 +511,11 @@ module tb_74hc_smoke;
     check(xcv_a_bus === 8'hzz && xcv_b_bus === 8'hzz, "74HC245 disabled high-Z");
 
     if (failures == 0) begin
-      $display("74HC SMOKE TEST PASSED");
+      $display("74xx SMOKE TEST PASSED");
       $finish;
     end
 
-    $display("74HC SMOKE TEST FAILED: %0d failures", failures);
+    $display("74xx SMOKE TEST FAILED: %0d failures", failures);
     $fatal(1);
   end
 endmodule

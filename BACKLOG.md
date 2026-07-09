@@ -89,7 +89,7 @@ Future work for the shared component library.
   Verilog when supported.
 - ✅ Build a full simulation runner from JSON that applies clocks, inputs,
   probes, expectations, and memory images, then returns structured results.
-- ⬜ Stabilize the Python API boundary for frontends: create/delete chips,
+- ✅ Stabilize the Python API boundary for frontends: create/delete chips,
   connect/disconnect endpoints, add buses, set inputs, step clocks, read
   probes, validate, snapshot, and export.
 - ✅ Define the frontend snapshot contract for UI/API clients, including chip
@@ -100,9 +100,9 @@ Future work for the shared component library.
 - ✅ Add example JSON circuits as runnable demos and regressions: NAND gate,
   counter, bus transceiver, ROM/RAM read, tiny CPU slice, and other small
   teaching circuits.
-- ⬜ Add stronger Python-vs-Verilog equivalence tests for selected chips and
+- ✅ Add stronger Python-vs-Verilog equivalence tests for selected chips and
   circuits, especially memories, counters, tri-state bus parts, and ALU-like
-  chips.
+  chips. Initial coverage checks `74HC00`, `74HC161`, and `74HC245`.
 
 ## Deferred UI Work
 

@@ -16,10 +16,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y iverilog
 
-      - name: Run 74HC smoke test
+      - name: Run 74xx smoke test
         run: |
-          iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp verilog/74HC/*.v verilog/74HC/tests/tb_74hc_smoke.v
-          vvp /tmp/tb_74hc_smoke.vvp
+          iverilog -g2012 -Wall -o /tmp/tb_74xx_smoke.vvp verilog/74xx/*.v verilog/74xx/tests/tb_74xx_smoke.v
+          vvp /tmp/tb_74xx_smoke.vvp
 
       - name: Run memory smoke test
         run: |

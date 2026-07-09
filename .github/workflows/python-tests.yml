@@ -23,5 +23,8 @@ jobs:
           python3 -B -m tests.test_design
           python3 -B -m tests.test_netlist
           python3 -B -m tests.test_cli
+          python3 -B -m tests.test_api
           python3 -B -m tests.test_db
           python3 -B -m tests.test_contracts
+          python3 -B -m tests.test_simulation_service
+          python3 -B -m tests.test_equivalence

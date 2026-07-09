@@ -553,6 +553,55 @@ Result:
 }
 ```
 
+### local API wrapper
+
+Purpose: expose the same backend through local stdio JSON lines or HTTP POST
+without duplicating chip behavior.
+
+Entrypoints:
+
+```sh
+python3 -m chiplib.api --stdio
+python3 -m chiplib.api --http --host 127.0.0.1 --port 8765
+```
+
+The API accepts the standard service envelope and dispatches by `command`.
+Stateful frontend-edit commands operate on the loaded in-memory design:
+
+- `create-design`
+- `load`
+- `create-chip`
+- `delete-chip`
+- `connect`
+- `disconnect`
+- `add-bus`
+- `set-inputs`
+- `step`
+- `validate`
+- `snapshot`
+- `frontend-snapshot`
+- `run`
+- `probe`
+- `export-json`
+- `export-netlist`
+- `export-verilog`
+
+Example:
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "create-chip",
+  "options": {
+    "ref": "U1",
+    "part": "74HC00",
+    "properties": {
+      "label": "NAND"
+    }
+  }
+}
+```
+
 ## Pluggable Service Rules
 
 - The canonical chip identity DB is `db/` and is read through Components DB

@@ -55,13 +55,13 @@ and PDF evidence summary.
 Additional future-use models imported from JOJOCAFE ice-chips-verilog/source-7400 are listed in `SOURCE_7400_COVERAGE.md`. These files use HC names such as `74hc10.v` and module names such as `ttl_74hc10`.
 
 Memory devices such as AT28C256 EEPROM and 62256 SRAM are intentionally not
-modeled in this `verilog/74HC/` logic-chip library.
+modeled in this `verilog/74xx/` logic-chip library.
 
 Run the smoke test with:
 
 ```sh
-iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp Components/verilog/74HC/*.v Components/verilog/74HC/tests/tb_74hc_smoke.v
-vvp /tmp/tb_74hc_smoke.vvp
+iverilog -g2012 -Wall -o /tmp/tb_74xx_smoke.vvp Components/verilog/74xx/*.v Components/verilog/74xx/tests/tb_74xx_smoke.v
+vvp /tmp/tb_74xx_smoke.vvp
 ```
 
 Yosys can parse and elaborate these files, but it warns on the intentionally

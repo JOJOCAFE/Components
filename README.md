@@ -9,7 +9,7 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 
 ## Layout
 
-- `verilog/74HC/` - behavioral Verilog models for 74HC-family logic chips plus per-chip pinout files named `74hcxx-pin.md`.
+- `verilog/74xx/` - behavioral Verilog models for 74HC-family logic chips plus per-chip pinout files named `74hcxx-pin.md`.
 - `verilog/Memory/` - behavioral Verilog models and pinout files for EEPROM, flash EEPROM, and SRAM parts.
 - `db/` - component DB manifests and schema where chips, virtual tools,
   passives, and discrete parts own status, pins, sources, behavior/export
@@ -100,7 +100,7 @@ catalog.
 
 ## Naming
 
-- Chip model files use lowercase part names, for example `verilog/74HC/74hc245.v`.
+- Chip model files use lowercase part names, for example `verilog/74xx/74hc245.v`.
 - 74HC Verilog modules use `ttl_74hcxx` names.
 - Memory Verilog modules use `mem_<part>` names.
 - Pinout files use `<part>-pin.md`, one file per chip.
@@ -115,13 +115,15 @@ python3 -B -m tests.test_chips
 python3 -B -m tests.test_design
 python3 -B -m tests.test_netlist
 python3 -B -m tests.test_cli
+python3 -B -m tests.test_api
 python3 -B -m tests.test_db
 python3 -B -m tests.test_contracts
 python3 -B -m tests.test_simulation_service
+python3 -B -m tests.test_equivalence
 cd ..
 
-iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp verilog/74HC/*.v verilog/74HC/tests/tb_74hc_smoke.v
-vvp /tmp/tb_74hc_smoke.vvp
+iverilog -g2012 -Wall -o /tmp/tb_74xx_smoke.vvp verilog/74xx/*.v verilog/74xx/tests/tb_74xx_smoke.v
+vvp /tmp/tb_74xx_smoke.vvp
 
 iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp verilog/Memory/*.v verilog/Memory/tests/tb_memory_smoke.v
 vvp /tmp/tb_memory_smoke.vvp
@@ -133,10 +135,12 @@ Expected pass markers:
 - `Components Python design tests passed`
 - `Components Python netlist tests passed`
 - `Components Python CLI tests passed`
+- `Components API tests passed`
 - `Components DB tests passed`
 - `Components contract tests passed`
 - `Components simulation service tests passed`
-- `74HC SMOKE TEST PASSED`
+- `Components equivalence tests passed`
+- `74xx SMOKE TEST PASSED`
 - `MEMORY SMOKE TEST PASSED`
 
 DB audit:
@@ -150,7 +154,7 @@ cd ..
 
 ## Subfolder Docs
 
-- `verilog/74HC/README.md` - full 74HC model list, scan notes, and 74xx source coverage.
+- `verilog/74xx/README.md` - full 74xx logic model list, scan notes, and 74xx source coverage.
 - `verilog/Memory/README.md` - memory model list and datasheet sources.
 - `db/README.md` - chip-centered DB migration notes and manifest
   layout.

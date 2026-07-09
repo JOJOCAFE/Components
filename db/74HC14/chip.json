@@ -89,19 +89,19 @@
     }
   ],
   "legacy_paths": {
-    "pinout": "verilog/74HC/74hc14-pin.md",
-    "verilog": "verilog/74HC/74hc14.v",
+    "pinout": "verilog/74xx/74hc14-pin.md",
+    "verilog": "verilog/74xx/74hc14.v",
     "python_behavior": "python/chiplib/chips.py",
     "verilog_export": "python/chiplib/netlist.py",
     "tests": [
       "python/tests/test_chips.py",
       "python/tests/test_netlist.py",
-      "verilog/74HC/tests/tb_74hc_smoke.v"
+      "verilog/74xx/tests/tb_74xx_smoke.v"
     ]
   },
   "verilog": {
     "module": "ttl_74hc14",
-    "file": "verilog/74HC/74hc14.v"
+    "file": "verilog/74xx/74hc14.v"
   },
   "python": {
     "factory": "chiplib.create_chip",

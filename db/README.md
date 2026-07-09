@@ -52,7 +52,7 @@ readable and identifies the part. A grouped component folder is valid when
 
 The old layout remains active during migration:
 
-- `verilog/74HC/`
+- `verilog/74xx/`
 - `verilog/Memory/`
 - `python/chiplib/`
 

@@ -347,7 +347,7 @@ def _referenced_paths(manifest: JsonMap) -> list[str]:
 
 
 def _legacy_74hc_models() -> list[str]:
-    return [path.stem.upper() for path in (ROOT / "verilog" / "74HC").glob("*.v")]
+    return [path.stem.upper() for path in (ROOT / "verilog" / "74xx").glob("*.v")]
 
 
 def _legacy_memory_models() -> list[str]:
@@ -355,7 +355,7 @@ def _legacy_memory_models() -> list[str]:
 
 
 def _legacy_74hc_pinouts() -> list[str]:
-    return [path.name[:-7].upper() for path in (ROOT / "verilog" / "74HC").glob("*-pin.md")]
+    return [path.name[:-7].upper() for path in (ROOT / "verilog" / "74xx").glob("*-pin.md")]
 
 
 def _legacy_memory_pinouts() -> list[str]:
