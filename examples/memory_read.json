@@ -1,0 +1,64 @@
+{
+  "name": "memory_read",
+  "description": "62256 SRAM read-mode fixture with address zero selected.",
+  "chips": {
+    "U1": {"part": "62256", "label": "SRAM"}
+  },
+  "buses": {
+    "ADDR": {"width": 15},
+    "DATA": {"width": 8}
+  },
+  "connect": [
+    "VCC -> U1:28",
+    "GND -> U1:14",
+    "U1:10 -> ADDR:0",
+    "U1:9 -> ADDR:1",
+    "U1:8 -> ADDR:2",
+    "U1:7 -> ADDR:3",
+    "U1:6 -> ADDR:4",
+    "U1:5 -> ADDR:5",
+    "U1:4 -> ADDR:6",
+    "U1:3 -> ADDR:7",
+    "U1:25 -> ADDR:8",
+    "U1:24 -> ADDR:9",
+    "U1:21 -> ADDR:10",
+    "U1:23 -> ADDR:11",
+    "U1:2 -> ADDR:12",
+    "U1:26 -> ADDR:13",
+    "U1:1 -> ADDR:14",
+    "U1:11 -> DATA:0",
+    "U1:12 -> DATA:1",
+    "U1:13 -> DATA:2",
+    "U1:15 -> DATA:3",
+    "U1:16 -> DATA:4",
+    "U1:17 -> DATA:5",
+    "U1:18 -> DATA:6",
+    "U1:19 -> DATA:7"
+  ],
+  "inputs": {
+    "read_zero": [
+      "ADDR:0 = 0",
+      "ADDR:1 = 0",
+      "ADDR:2 = 0",
+      "ADDR:3 = 0",
+      "ADDR:4 = 0",
+      "ADDR:5 = 0",
+      "ADDR:6 = 0",
+      "ADDR:7 = 0",
+      "ADDR:8 = 0",
+      "ADDR:9 = 0",
+      "ADDR:10 = 0",
+      "ADDR:11 = 0",
+      "ADDR:12 = 0",
+      "ADDR:13 = 0",
+      "ADDR:14 = 0",
+      "U1:20 = 0",
+      "U1:22 = 0",
+      "U1:27 = 1"
+    ]
+  },
+  "probes": {
+    "data": ["DATA:0", "DATA:1", "DATA:2", "DATA:3"]
+  },
+  "steps": ["apply read_zero", "settle", "probe"]
+}

@@ -11,8 +11,9 @@ from typing import Any
 from .chips import create_chip
 from .core import Board, Logic, normalize_logic
 from .loader import load_memory
-from .netlist import design_from_kicad_netlist, design_from_netlist, design_to_netlist, design_to_verilog
+from .netlist import design_from_kicad_netlist, design_from_netlist, design_to_netlist
 from .probe import ProbeController
+from .services import export_verilog
 from .stimulus import StimulusController
 
 
@@ -159,7 +160,7 @@ class Design:
         return design_to_netlist(self)
 
     def to_verilog(self, *, include_testbench: bool = True) -> JsonMap:
-        return design_to_verilog(self, include_testbench=include_testbench)
+        return export_verilog(self, include_testbench=include_testbench)
 
     def endpoint(self, ref: str) -> JsonMap:
         return self._endpoint(ref).snapshot()
@@ -464,7 +465,11 @@ class Design:
         if endpoint.kind == "pin":
             board.drive(board.chips[endpoint.chip or ""], endpoint.pin or 0, value)
             return
-        board.logic_source(f"input:{endpoint.ref}", endpoint.target, value)
+        source_name = f"input:{endpoint.ref}"
+        if source_name in board.sources:
+            board.set_source(source_name, value)
+            return
+        board.logic_source(source_name, endpoint.target, value)
 
     def _connection_endpoints(self, rule: str) -> list[Endpoint]:
         return [self._endpoint(ref) for ref in _split_refs(_strip_arrow(rule))]

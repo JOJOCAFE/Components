@@ -1,0 +1,39 @@
+{
+  "name": "counter",
+  "description": "74HC161 counter fixture with control pins held in count mode.",
+  "chips": {
+    "U1": {"part": "74HC161", "label": "COUNTER"}
+  },
+  "aliases": {
+    "CLK": "U1:2",
+    "QA": "U1:14",
+    "QB": "U1:13",
+    "QC": "U1:12",
+    "QD": "U1:11",
+    "RCO": "U1:15"
+  },
+  "connect": [
+    "VCC -> U1:16",
+    "GND -> U1:8"
+  ],
+  "inputs": {
+    "count_mode": [
+      "U1:1 = 1",
+      "U1:9 = 1",
+      "U1:7 = 1",
+      "U1:10 = 1",
+      "U1:3 = 0",
+      "U1:4 = 0",
+      "U1:5 = 0",
+      "U1:6 = 0",
+      "CLK = 0"
+    ]
+  },
+  "clocks": {
+    "main": {"to": "CLK", "period_ns": 100, "initial": 0}
+  },
+  "probes": {
+    "count": ["QA", "QB", "QC", "QD", "RCO"]
+  },
+  "steps": ["apply count_mode", "settle", "clock main pulse 20ns", "probe"]
+}

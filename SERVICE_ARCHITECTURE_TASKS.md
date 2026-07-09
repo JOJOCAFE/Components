@@ -67,7 +67,9 @@ outputs.
    - No exporter should parse student schematic JSON directly unless it goes
      through `Design`.
 
-4. ⬜ Refactor Verilog export behind an internal service interface.
+4. ✅ Refactor Verilog export behind an internal service interface.
+   - Current service boundary: `python/chiplib/services.py`
+     `VerilogExportService`.
    - Keep current behavior unchanged.
    - Move exporter-specific mapping logic behind a narrow function/class.
    - Return structured export data: `ok`, `verilog`, `testbench`,
@@ -83,12 +85,13 @@ outputs.
    - CLI should not know chip internals.
    - CLI should print JSON for machine use and readable summaries for humans.
 
-7. ⬜ Add contract tests.
+7. ✅ Add contract tests.
+   - Current coverage: `python/tests/test_contracts.py`.
    - Same fixture JSON should validate, snapshot, export netlist, export
      Verilog when supported, and run through simulation.
    - Use examples as regression fixtures.
 
-8. ⬜ Add service-ready examples.
+8. ✅ Add service-ready examples.
    - `examples/nand.json`
    - `examples/counter.json`
    - `examples/bus_transceiver.json`

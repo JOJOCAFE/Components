@@ -14,6 +14,8 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 - `db/` - chip-centered DB manifests and schema where each component owns
   status, pins, sources, behavior/export references, and visible missing
   properties.
+- `examples/` - service-ready schematic JSON fixtures for CLI/API contracts
+  and regression tests.
 - `python/` - reusable Python pin-level behavior models, net wiring, tri-state conflict checks, and propagation-delay simulation.
 - `schemas/` - machine-readable schemas for exported interchange artifacts,
   including the normalized netlist contract.
@@ -104,6 +106,7 @@ python3 -B -m tests.test_design
 python3 -B -m tests.test_netlist
 python3 -B -m tests.test_cli
 python3 -B -m tests.test_db
+python3 -B -m tests.test_contracts
 cd ..
 
 iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp verilog/74HC/*.v verilog/74HC/tests/tb_74hc_smoke.v
@@ -120,6 +123,7 @@ Expected pass markers:
 - `Components Python netlist tests passed`
 - `Components Python CLI tests passed`
 - `Components DB tests passed`
+- `Components contract tests passed`
 - `74HC SMOKE TEST PASSED`
 - `MEMORY SMOKE TEST PASSED`
 
@@ -139,6 +143,8 @@ cd ..
 - `db/README.md` - chip-centered DB migration notes and manifest
   layout.
 - `python/README.md` - Python chip-library coverage and usage.
+- `examples/*.json` - service-ready NAND, counter, bus transceiver, memory
+  read, and tiny CPU-slice schematics used by contract tests.
 - `CHIP_STATUS.md` - verified/modeled/tested/missing-datasheet status split
   for the active chip library.
 - `SCHEMATIC_JSON_SPEC.md` - complete JSON schematic-script shape for digital

@@ -69,13 +69,14 @@ Future work for the shared component library.
 - ✅ Freeze the normalized netlist schema in
   `schemas/normalized-netlist.schema.json` as the first plugin boundary.
 - ⬜ Follow `SERVICE_ARCHITECTURE_TASKS.md` to split chip behavior, simulation,
-  exporters, CLI, and future API/UI adapters behind the stable internal service
-  contracts.
+  CLI, and future API/UI adapters behind the stable internal service
+  contracts. Verilog export now has an initial internal service boundary.
 - ⬜ Finish production-ready CLI commands around the existing `Design` backend:
   `validate`, `snapshot`, `run`, `probe`, `export-json`, `export-netlist`, and
   `export-verilog`.
-- ⬜ Add canonical JSON round-trip tests: load schematic JSON, normalize through
-  `Design`, export JSON again, and verify the same logical design is preserved.
+- ✅ Add canonical JSON contract tests using service-ready example schematics:
+  load schematic JSON, validate, snapshot, run, export netlist, and export
+  Verilog when supported.
 - ⬜ Build a full simulation runner from JSON that applies clocks, inputs,
   probes, expectations, and memory images, then returns structured results.
 - ⬜ Stabilize the Python API boundary for frontends: create/delete chips,
@@ -86,7 +87,7 @@ Future work for the shared component library.
   and display state.
 - ✅ Repair the `74HC147` Verilog model/export contract so the model exposes
   all source-supported inputs, including `/I0`.
-- ⬜ Add example JSON circuits as runnable demos and regressions: NAND gate,
+- ✅ Add example JSON circuits as runnable demos and regressions: NAND gate,
   counter, bus transceiver, ROM/RAM read, tiny CPU slice, and other small
   teaching circuits.
 - ⬜ Add stronger Python-vs-Verilog equivalence tests for selected chips and

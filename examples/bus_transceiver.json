@@ -1,0 +1,43 @@
+{
+  "name": "bus_transceiver",
+  "description": "74HC245 bus transceiver fixture with A-to-B direction enabled.",
+  "chips": {
+    "U1": {"part": "74HC245", "label": "BUS"}
+  },
+  "buses": {
+    "A": {"width": 8},
+    "B": {"width": 8}
+  },
+  "connect": [
+    "VCC -> U1:20",
+    "GND -> U1:10",
+    "U1:2 -> A:0",
+    "U1:3 -> A:1",
+    "U1:4 -> A:2",
+    "U1:5 -> A:3",
+    "U1:6 -> A:4",
+    "U1:7 -> A:5",
+    "U1:8 -> A:6",
+    "U1:9 -> A:7",
+    "U1:18 -> B:0",
+    "U1:17 -> B:1",
+    "U1:16 -> B:2",
+    "U1:15 -> B:3",
+    "U1:14 -> B:4",
+    "U1:13 -> B:5",
+    "U1:12 -> B:6",
+    "U1:11 -> B:7"
+  ],
+  "inputs": {
+    "a_to_b": [
+      "U1:1 = 1",
+      "U1:19 = 0",
+      "A:0 = 1",
+      "A:1 = 0"
+    ]
+  },
+  "probes": {
+    "bus": ["A:0", "A:1", "B:0", "B:1"]
+  },
+  "steps": ["apply a_to_b", "settle", "probe"]
+}
