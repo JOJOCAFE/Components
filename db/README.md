@@ -12,6 +12,12 @@ db/
     chip.json
   62256/
     chip.json
+  74HC161/
+    chip.json
+  74HC245/
+    chip.json
+  AT28C256/
+    chip.json
 ```
 
 Each chip owns one manifest. The manifest may reference existing legacy files
@@ -39,3 +45,13 @@ The old layout remains active during migration:
 The DB is the new chip identity layer. Simulators, exporters, CLI tools, and
 future UI/API code should eventually ask the DB what properties a chip has
 instead of scattering chip facts across unrelated files.
+
+The first seed set intentionally covers simple gates, a sequential counter, a
+bidirectional bus transceiver, SRAM, and EEPROM:
+
+- `74HC00`
+- `74HC04`
+- `74HC161`
+- `74HC245`
+- `62256`
+- `AT28C256`

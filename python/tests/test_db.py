@@ -15,11 +15,12 @@ ALLOWED_STATUS = {
     "not_applicable",
 }
 ALLOWED_DIRECTIONS = {"input", "output", "bidirectional", "power", "nc", "unknown"}
+SEED_PARTS = {"62256", "74HC00", "74HC04", "74HC161", "74HC245", "AT28C256"}
 
 
 def test_db_seed_entries_are_loadable():
     assert db_root().name == "db"
-    assert {"62256", "74HC00", "74HC04"}.issubset(set(component_ids()))
+    assert SEED_PARTS.issubset(set(component_ids()))
 
     hc00 = load_component("74HC00")
     assert hc00["part"] == "74HC00"
@@ -34,13 +35,26 @@ def test_db_seed_entries_are_loadable():
     assert ram["pins"][10]["direction"] == "bidirectional"
     assert ram["pins"][19]["active_low"] is True
 
+    transceiver = load_component("74HC245")
+    assert transceiver["package"]["pins"] == 20
+    assert transceiver["pins"][1]["direction"] == "bidirectional"
+    assert transceiver["pins"][18]["active_low"] is True
+
+    counter = load_component("74HC161")
+    assert counter["pins"][0]["name"] == "/CLR"
+    assert counter["pins"][14] == {"number": 15, "name": "RCO", "direction": "output"}
+
+    eeprom = load_component("AT28C256")
+    assert eeprom["family"] == "Memory"
+    assert eeprom["verilog"]["module"] == "mem_at28c256"
+
 
 def test_db_summary_reports_status_and_gaps():
     summary = component_summary()
     assert summary["format"] == "db.summary"
     assert summary["count"] >= 3
     parts = [item["part"] for item in summary["components"]]
-    assert {"62256", "74HC00", "74HC04"}.issubset(set(parts))
+    assert SEED_PARTS.issubset(set(parts))
     assert all(item["missing_properties"] == [] for item in summary["components"])
     assert all(item["missing_files"] == [] for item in summary["components"])
 

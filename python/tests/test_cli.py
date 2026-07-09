@@ -117,7 +117,7 @@ def test_cli_db_summary_and_part_lookup():
     summary_data = json.loads(summary.stdout)
     assert summary_data["format"] == "db.summary"
     parts = [item["part"] for item in summary_data["components"]]
-    assert {"62256", "74HC00", "74HC04"}.issubset(set(parts))
+    assert {"62256", "74HC00", "74HC04", "74HC161", "74HC245", "AT28C256"}.issubset(set(parts))
 
     part = subprocess.run(
         [sys.executable, "-B", "-m", "chiplib.cli", "db", "74HC00"],
