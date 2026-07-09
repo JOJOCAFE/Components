@@ -25,8 +25,14 @@ Future work for the shared component library.
   for the first common batch: `74HC02`, `74HC08`, `74HC10`, `74HC14`,
   `74HC20`, `74HC30`, `74HC138`, `74HC139`, `74HC244`, `74HC273`,
   `74HC374`, and `74HC377`.
-- ⬜ Continue full-catalog Verilog export mappings for remaining muxes,
-  decoders, counters, transceivers, ALU/control parts, and memory chips.
+- ✅ Expand Verilog export mappings for the second common batch: `74HC07`,
+  `74HC11`, `74HC27`, `74HC42`, `74HC73`, `74HC85`, `74HC154`,
+  `74HC155`, `74HC158`, `74HC160`, `74HC162`, `74HC163`, `74HC238`,
+  `74HC266`, and `74HC352`.
+- ⬜ Continue full-catalog Verilog export mappings for specialized remaining
+  parts that need closer behavioral review before pin mapping: `74HC147`,
+  `74HC148`, `74HC181`, `74HC593`, `74HC922`, and memory chips beyond the
+  current `62256`/`AT28C256` bridge mappings.
 - ⬜ Implement block-UI model import/export against the same normalized design
   model, not a separate UI-only representation.
 

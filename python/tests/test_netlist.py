@@ -208,6 +208,60 @@ def test_design_to_verilog_exports_mux_shift_and_counter_74hc_mappings():
         assert compiled.returncode == 0, compiled.stderr
 
 
+def test_design_to_verilog_exports_decoder_counter_and_gate_74hc_mappings():
+    parts = [
+        "74HC07",
+        "74HC11",
+        "74HC27",
+        "74HC42",
+        "74HC73",
+        "74HC85",
+        "74HC154",
+        "74HC155",
+        "74HC158",
+        "74HC160",
+        "74HC162",
+        "74HC163",
+        "74HC238",
+        "74HC266",
+        "74HC352",
+    ]
+    design = Design.from_dict({
+        "name": "decoder-counter-gate-mappings",
+        "chips": {
+            f"U{index + 1}": {"part": part}
+            for index, part in enumerate(parts)
+        },
+    })
+
+    exported = design.to_verilog()
+    verilog = exported["verilog"]
+
+    assert exported["ok"] is True
+    assert exported["unsupported"] == []
+    for part in parts:
+        assert f"ttl_{part.lower()}" in verilog
+
+    iverilog = shutil.which("iverilog")
+    if iverilog is None:
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        top = Path(tmp) / "decoder_counter_gate_mappings.v"
+        top.write_text(verilog + "\n" + exported["testbench"], encoding="utf-8")
+        root = Path(__file__).resolve().parents[2]
+        cmd = [
+            iverilog,
+            "-g2012",
+            "-Wall",
+            "-o",
+            str(Path(tmp) / "decoder_counter_gate_mappings.vvp"),
+            *[str(root / "74HC" / f"{part.lower()}.v") for part in parts],
+            str(top),
+        ]
+        compiled = subprocess.run(cmd, text=True, capture_output=True, check=False)
+        assert compiled.returncode == 0, compiled.stderr
+
+
 def test_design_from_kicad_netlist_imports_chip_values_and_connection_rules():
     text = """(export (version "E")
   (components
@@ -317,6 +371,7 @@ def run_all():
     test_design_to_verilog_reports_unsupported_parts()
     test_design_to_verilog_exports_expanded_common_74hc_mappings()
     test_design_to_verilog_exports_mux_shift_and_counter_74hc_mappings()
+    test_design_to_verilog_exports_decoder_counter_and_gate_74hc_mappings()
     test_design_from_kicad_netlist_imports_chip_values_and_connection_rules()
     test_rv8gr_v2_kicad_netlist_smoke_when_available()
 
