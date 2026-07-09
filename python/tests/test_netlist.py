@@ -99,12 +99,12 @@ def test_design_to_verilog_exports_known_gate_instances_and_testbench():
 def test_design_to_verilog_reports_unsupported_parts():
     design = Design.from_dict({
         "name": "unsupported",
-        "chips": {"U1": {"part": "74HC151"}},
+        "chips": {"U1": {"part": "74HC147"}},
     })
 
     exported = design.to_verilog()
     assert exported["ok"] is False
-    assert exported["unsupported"] == [{"ref": "U1", "part": "74HC151", "reason": "no Verilog port mapping"}]
+    assert exported["unsupported"] == [{"ref": "U1", "part": "74HC147", "reason": "no Verilog port mapping"}]
 
 
 def test_design_to_verilog_exports_expanded_common_74hc_mappings():
@@ -151,6 +151,56 @@ def test_design_to_verilog_exports_expanded_common_74hc_mappings():
             "-Wall",
             "-o",
             str(Path(tmp) / "expanded_common_mappings.vvp"),
+            *[str(root / "74HC" / f"{part.lower()}.v") for part in parts],
+            str(top),
+        ]
+        compiled = subprocess.run(cmd, text=True, capture_output=True, check=False)
+        assert compiled.returncode == 0, compiled.stderr
+
+
+def test_design_to_verilog_exports_mux_shift_and_counter_74hc_mappings():
+    parts = [
+        "74HC112",
+        "74HC151",
+        "74HC153",
+        "74HC165",
+        "74HC166",
+        "74HC193",
+        "74HC240",
+        "74HC251",
+        "74HC257",
+        "74HC595",
+        "74HC4078",
+    ]
+    design = Design.from_dict({
+        "name": "mux-shift-counter-mappings",
+        "chips": {
+            f"U{index + 1}": {"part": part}
+            for index, part in enumerate(parts)
+        },
+    })
+
+    exported = design.to_verilog()
+    verilog = exported["verilog"]
+
+    assert exported["ok"] is True
+    assert exported["unsupported"] == []
+    for part in parts:
+        assert f"ttl_{part.lower()}" in verilog
+
+    iverilog = shutil.which("iverilog")
+    if iverilog is None:
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        top = Path(tmp) / "mux_shift_counter_mappings.v"
+        top.write_text(verilog + "\n" + exported["testbench"], encoding="utf-8")
+        root = Path(__file__).resolve().parents[2]
+        cmd = [
+            iverilog,
+            "-g2012",
+            "-Wall",
+            "-o",
+            str(Path(tmp) / "mux_shift_counter_mappings.vvp"),
             *[str(root / "74HC" / f"{part.lower()}.v") for part in parts],
             str(top),
         ]
@@ -266,6 +316,7 @@ def run_all():
     test_design_to_verilog_exports_known_gate_instances_and_testbench()
     test_design_to_verilog_reports_unsupported_parts()
     test_design_to_verilog_exports_expanded_common_74hc_mappings()
+    test_design_to_verilog_exports_mux_shift_and_counter_74hc_mappings()
     test_design_from_kicad_netlist_imports_chip_values_and_connection_rules()
     test_rv8gr_v2_kicad_netlist_smoke_when_available()
 
