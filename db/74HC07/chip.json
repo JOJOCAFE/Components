@@ -89,7 +89,7 @@
     }
   ],
   "legacy_paths": {
-    "pinout": "verilog/74xx/74hc07-pin.md",
+    "pinout": "verilog/74xx/74hc07.v",
     "verilog": "verilog/74xx/74hc07.v",
     "python_behavior": "python/chiplib/chips.py",
     "verilog_export": "python/chiplib/netlist.py",

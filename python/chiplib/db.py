@@ -355,11 +355,19 @@ def _legacy_memory_models() -> list[str]:
 
 
 def _legacy_74hc_pinouts() -> list[str]:
-    return [path.name[:-7].upper() for path in (ROOT / "verilog" / "74xx").glob("*-pin.md")]
+    return [
+        path.stem.upper()
+        for path in (ROOT / "verilog" / "74xx").glob("*.v")
+        if "Embedded pinout documentation" in path.read_text(encoding="utf-8")
+    ]
 
 
 def _legacy_memory_pinouts() -> list[str]:
-    return [_memory_part_id(path.name[:-7]) for path in (ROOT / "verilog" / "Memory").glob("*-pin.md")]
+    return [
+        _memory_part_id(path.stem)
+        for path in (ROOT / "verilog" / "Memory").glob("*.v")
+        if "Embedded pinout documentation" in path.read_text(encoding="utf-8")
+    ]
 
 
 def _memory_part_id(value: str) -> str:

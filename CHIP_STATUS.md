@@ -15,11 +15,12 @@ Status snapshot for the shared Components library.
 
 ## Verified
 
-All active files in `verilog/74xx/*-pin.md` and `verilog/Memory/*-pin.md` are intended to be
-manufacturer-backed DIP/PDIP evidence files. Parts without that evidence must
-not stay in the active physical pinout catalog.
+All active embedded pinout comments in `verilog/74xx/*.v` and
+`verilog/Memory/*.v` are intended to be manufacturer-backed DIP/PDIP evidence.
+Parts without that evidence must not stay in the active physical pinout
+catalog.
 
-Verified 74HC pinout files currently cover:
+Verified 74HC embedded pinout documentation currently covers:
 
 `74HC00`, `74HC02`, `74HC04`, `74HC07`, `74HC08`, `74HC10`, `74HC11`,
 `74HC14`, `74HC20`, `74HC21`, `74HC27`, `74HC30`, `74HC32`, `74HC42`,
@@ -31,7 +32,7 @@ Verified 74HC pinout files currently cover:
 `74HC377`, `74HC4078`, `74HC541`, `74HC574`, `74HC593`, `74HC595`,
 `74HC688`, and `74HC922`.
 
-Verified memory pinout files currently cover:
+Verified memory embedded pinout documentation currently covers:
 
 `62256`, `AS6C62256`, `AT28C256`, `CY7C199`, and `SST39SF010A`.
 

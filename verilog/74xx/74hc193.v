@@ -1,5 +1,39 @@
 `timescale 1ns/1ps
 
+//
+// Embedded pinout documentation.
+// This block replaces the former standalone pinout Markdown file.
+// # 74HC193 DIP Pinout
+//
+// Active-low pins are written with a leading slash, for example `/OE`.
+//
+// | Manufacturer datasheet | DIP package checked |
+// |---|---|
+// | Texas Instruments SN74HC193: https://www.ti.com/lit/ds/symlink/sn74hc193.pdf | N, 16-pin PDIP |
+//
+// ## 74HC193 - 4-Bit Synchronous Up/Down Binary Counter, 16-Pin DIP
+//
+// | Pin | Name |
+// |---:|---|
+// | 1 | B |
+// | 2 | QB |
+// | 3 | QA |
+// | 4 | DOWN |
+// | 5 | UP |
+// | 6 | QC |
+// | 7 | QD |
+// | 8 | GND |
+// | 9 | D |
+// | 10 | C |
+// | 11 | /LOAD |
+// | 12 | /CO |
+// | 13 | /BO |
+// | 14 | CLR |
+// | 15 | A |
+// | 16 | VCC |
+//
+
+
 // 74HC193: 4-bit synchronous up/down binary counter
 
 module ttl_74hc193 #(parameter DELAY_RISE = 0, DELAY_FALL = 0)

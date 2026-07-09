@@ -1,5 +1,46 @@
 `timescale 1ns/1ps
 
+//
+// Embedded pinout documentation.
+// This block replaces the former standalone pinout Markdown file.
+// # 74HC181 DIP pinout
+//
+// - Function: 4-bit arithmetic logic unit
+// - Package verified: DIP24
+// - Source: `../../source/74HC181_PHILIPS_15554.pdf`
+//
+// | Pin | Name |
+// | --- | --- |
+// | 1 | B0 |
+// | 2 | A0 |
+// | 3 | S3 |
+// | 4 | S2 |
+// | 5 | S1 |
+// | 6 | S0 |
+// | 7 | Cn |
+// | 8 | M |
+// | 9 | F0 |
+// | 10 | F1 |
+// | 11 | F2 |
+// | 12 | GND |
+// | 13 | F3 |
+// | 14 | A_eq_B |
+// | 15 | P |
+// | 16 | Cn+4 |
+// | 17 | G |
+// | 18 | B3 |
+// | 19 | A3 |
+// | 20 | B2 |
+// | 21 | A2 |
+// | 22 | B1 |
+// | 23 | A1 |
+// | 24 | VCC |
+//
+// Notes:
+// - Datasheet marks A/B operands and F/P/G as active LOW where applicable.
+//
+
+
 // 74HC181: 4-bit arithmetic logic unit
 
 // Notes:

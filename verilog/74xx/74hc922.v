@@ -1,5 +1,41 @@
 `timescale 1ns/1ps
 
+//
+// Embedded pinout documentation.
+// This block replaces the former standalone pinout Markdown file.
+// # 74HC922 DIP Pinout
+//
+// Active-low pins are written with a leading slash, for example `/OE`.
+//
+// | Manufacturer datasheet | DIP package checked |
+// |---|---|
+// | Fairchild MM74C922/MM74C923: `Components/source/MM74C922.PDF` | N18A, 18-pin PDIP |
+//
+// ## 74HC922/MM74C922 - 16-Key Encoder, 18-Pin DIP
+//
+// | Pin | Name |
+// |---:|---|
+// | 1 | ROW Y1 |
+// | 2 | ROW Y2 |
+// | 3 | ROW Y3 |
+// | 4 | ROW Y4 |
+// | 5 | OSCILLATOR |
+// | 6 | KEYBOUNCE MASK |
+// | 7 | COLUMN X4 |
+// | 8 | COLUMN X3 |
+// | 9 | GND |
+// | 10 | COLUMN X2 |
+// | 11 | COLUMN X1 |
+// | 12 | DATA AVAILABLE |
+// | 13 | OUTPUT ENABLE |
+// | 14 | DATA OUT D |
+// | 15 | DATA OUT C |
+// | 16 | DATA OUT B |
+// | 17 | DATA OUT A |
+// | 18 | VCC |
+//
+
+
 // 74HC922/MM74C922: 16-key encoder behavioral model
 
 module ttl_74hc922 #(parameter DELAY_RISE = 0, DELAY_FALL = 0)

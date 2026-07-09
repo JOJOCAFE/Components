@@ -51,7 +51,7 @@
     {"number": 32, "name": "VDD", "direction": "power"}
   ],
   "legacy_paths": {
-    "pinout": "verilog/Memory/sst39sf010a-pin.md",
+    "pinout": "verilog/Memory/sst39sf010a.v",
     "verilog": "verilog/Memory/sst39sf010a.v",
     "python_behavior": "python/chiplib/catalog.py",
     "verilog_export": "python/chiplib/netlist.py",

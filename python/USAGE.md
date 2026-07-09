@@ -539,7 +539,8 @@ directly.
 `Components/verilog/74xx` and `Components/verilog/Memory`:
 
 - hand-written models cover the RV8GR-V2 starter set and core memory parts
-- catalog models cover the remaining 74HC and memory parts from pinout docs
+- catalog models cover the remaining 74HC and memory parts from embedded or
+  embedded pinout docs
 - `AS6C62256`, `CY7C199`, and `SST39SF010A` are memory catalog models
 
 Parts without manufacturer-verified HC-family DIP sources are intentionally
@@ -568,7 +569,7 @@ that consume `Components` so Python and Verilog stay aligned.
 Keep Python and Verilog compatible:
 
 1. Use manufacturer-backed DIP pin numbers as the source of truth. Pin names are
-   aliases and must match the pinout docs used by catalog loading.
+   aliases and must match the pinout documentation used by catalog loading.
 2. Preserve active-low spelling and polarity, normally names beginning with `/`.
 3. Disabled tri-state outputs and non-driving bidirectional pins must output
    `Z`.
@@ -590,4 +591,4 @@ Keep Python and Verilog compatible:
    same controls, same output polarity, same tri-state rules, and same reset or
    clock behavior. Verilog vector ports may differ, but behavior must not.
 11. If a pinout is provisional, mark it clearly and block physical-wiring use
-    until the pinout Markdown is manufacturer-verified.
+    until the pinout documentation is manufacturer-verified.

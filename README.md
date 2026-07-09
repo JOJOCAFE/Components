@@ -9,8 +9,8 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 
 ## Layout
 
-- `verilog/74xx/` - behavioral Verilog models for 74HC-family logic chips plus per-chip pinout files named `74hcxx-pin.md`.
-- `verilog/Memory/` - behavioral Verilog models and pinout files for EEPROM, flash EEPROM, and SRAM parts.
+- `verilog/74xx/` - behavioral Verilog models for 74HC-family logic chips, with each `74hcxx.v` embedding its pinout notes as comments.
+- `verilog/Memory/` - behavioral Verilog models for EEPROM, flash EEPROM, and SRAM parts, with each `.v` embedding its pinout notes as comments.
 - `db/` - component DB manifests and schema where chips, virtual tools,
   passives, and discrete parts own status, pins, sources, behavior/export
   references, and visible missing properties.
@@ -39,15 +39,16 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
   nets, buses, probes, displays, errors, and warnings without scraping backend
   internals.
 - `DB_MIGRATION_PLAN.md` - phased plan for making `db/` the chip identity
-  layer while legacy model and pinout files remain active during migration.
+  layer while legacy model files with embedded pinout comments remain active
+  during migration.
 
 ## Verification Rule
 
-Pinout files are for physical wiring, so they must be verified from a manufacturer datasheet, not memory or generic web summaries. For DIP builds, the cited source must explicitly support a DIP, PDIP, P-DIP, or equivalent through-hole plastic package for that part.
+Pinout documentation is for physical wiring, so it must be verified from a manufacturer datasheet, not memory or generic web summaries. For DIP builds, the cited source must explicitly support a DIP, PDIP, P-DIP, or equivalent through-hole plastic package for that part.
 
-If a part has no verified DIP/PDIP source, do not keep a physical pinout file or
-catalog model for it. Add the part only after manufacturer-backed package and
-pin evidence is available.
+If a part has no verified DIP/PDIP source, do not keep physical pinout
+documentation or a catalog model for it. Add the part only after
+manufacturer-backed package and pin evidence is available.
 
 ## System Cross-Check Rule
 

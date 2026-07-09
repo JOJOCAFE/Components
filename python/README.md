@@ -84,7 +84,8 @@ Coverage includes:
 - all 57 current `verilog/74xx/*.v` parts
 - all 5 current `verilog/Memory/*.v` parts
 - the RV8GR-V2 starter set as hand-written models
-- the remaining Components parts as catalog models loaded from the pinout docs
+- the remaining Components parts as catalog models loaded from embedded or
+  embedded pinout docs
 
 Parts without manufacturer-verified HC-family DIP evidence are intentionally
 absent from the Python catalog.

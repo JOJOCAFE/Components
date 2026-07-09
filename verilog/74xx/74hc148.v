@@ -1,5 +1,35 @@
 `timescale 1ns/1ps
 
+//
+// Embedded pinout documentation.
+// This block replaces the former standalone pinout Markdown file.
+// # 74HC148 DIP pinout
+//
+// - Function: 8-to-3 line priority encoder
+// - Package verified: DIP16
+// - Source: `../../source/74HC148_STMICROELECTRONICS_23041.pdf`
+//
+// | Pin | Name |
+// | --- | --- |
+// | 1 | I3 |
+// | 2 | I4 |
+// | 3 | I5 |
+// | 4 | I6 |
+// | 5 | EI |
+// | 6 | A2 |
+// | 7 | A1 |
+// | 8 | GND |
+// | 9 | A0 |
+// | 10 | I7 |
+// | 11 | I0 |
+// | 12 | I1 |
+// | 13 | I2 |
+// | 14 | GS |
+// | 15 | EO |
+// | 16 | VCC |
+//
+
+
 // 74HC148: 8-line to 3-line priority encoder
 
 module ttl_74hc148 #(parameter WIDTH_IN = 8, WIDTH_OUT = 3, DELAY_RISE = 0, DELAY_FALL = 0)

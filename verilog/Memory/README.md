@@ -1,7 +1,8 @@
 # Memory Component Library
 
-Standalone behavioral Verilog models and DIP pinout files for the memory parts
-used or explicitly allowed by the RV8 project docs.
+Standalone behavioral Verilog models for the memory parts used or explicitly
+allowed by the RV8 project docs. Each model embeds its DIP pinout notes as
+comments near the top of the `.v` file.
 
 Included devices:
 
@@ -11,7 +12,8 @@ Included devices:
 - `as6c62256.v` (`mem_as6c62256`) - Alliance Memory-compatible 32K x 8 SRAM wrapper
 - `cy7c199.v` (`mem_cy7c199`) - Cypress/Infineon-compatible 32K x 8 SRAM wrapper
 
-Each device has a matching DIP pinout file named `<part>-pin.md`.
+Each device keeps the Verilog behavior and manufacturer-backed DIP pinout
+documentation together in the matching `.v` file.
 
 The Python memory models in `../python/` use the real 28-pin DIP pin numbers.
 The Verilog memory models keep HDL-friendly vector ports, but their read,

@@ -162,7 +162,7 @@
     }
   ],
   "legacy_paths": {
-    "pinout": "verilog/Memory/cy7c199-pin.md",
+    "pinout": "verilog/Memory/cy7c199.v",
     "verilog": "verilog/Memory/cy7c199.v",
     "python_behavior": "python/chiplib/chips.py",
     "verilog_export": "python/chiplib/netlist.py",

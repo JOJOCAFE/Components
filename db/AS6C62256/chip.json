@@ -162,7 +162,7 @@
     }
   ],
   "legacy_paths": {
-    "pinout": "verilog/Memory/as6c62256-pin.md",
+    "pinout": "verilog/Memory/as6c62256.v",
     "verilog": "verilog/Memory/as6c62256.v",
     "python_behavior": "python/chiplib/chips.py",
     "verilog_export": "python/chiplib/netlist.py",

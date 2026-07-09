@@ -47,7 +47,7 @@
     {"number": 28, "name": "VCC", "direction": "power"}
   ],
   "legacy_paths": {
-    "pinout": "verilog/Memory/at28c256-pin.md",
+    "pinout": "verilog/Memory/at28c256.v",
     "verilog": "verilog/Memory/at28c256.v",
     "python_behavior": "python/chiplib/chips.py",
     "verilog_export": "python/chiplib/netlist.py",

@@ -1,5 +1,35 @@
 `timescale 1ns/1ps
 
+//
+// Embedded pinout documentation.
+// This block replaces the former standalone pinout Markdown file.
+// # 74HC155 DIP pinout
+//
+// - Function: dual 2-to-4 line decoder / 3-to-8 line decoder
+// - Package verified: DIP16
+// - Source: `../../source/74HC155_STMICROELECTRONICS_23044.pdf`
+//
+// | Pin | Name |
+// | --- | --- |
+// | 1 | 1C |
+// | 2 | 1G |
+// | 3 | B |
+// | 4 | 1Y3 |
+// | 5 | 1Y2 |
+// | 6 | 1Y1 |
+// | 7 | 1Y0 |
+// | 8 | GND |
+// | 9 | 2Y0 |
+// | 10 | 2Y1 |
+// | 11 | 2Y2 |
+// | 12 | 2Y3 |
+// | 13 | A |
+// | 14 | 2G |
+// | 15 | 2C |
+// | 16 | VCC |
+//
+
+
 // 74HC155: Dual 2-line to 4-line decoder/demultiplexer (inverted outputs)
 
 module ttl_74hc155 #(parameter BLOCKS_DIFFERENT = 2, BLOCK0 = 0, BLOCK1 = 1, WIDTH_OUT = 4,

@@ -57,9 +57,9 @@ and references to active legacy files when any exist.
 During migration, `chip.json` may point to legacy files:
 
 ```text
-verilog/74xx/74hc245-pin.md
 verilog/74xx/74hc245.v
-verilog/Memory/at28c256-pin.md
+verilog/74xx/74hc245.v
+verilog/Memory/at28c256.v
 verilog/Memory/at28c256.v
 python/chiplib/chips.py
 python/chiplib/catalog.py
@@ -124,7 +124,7 @@ Add audit tooling that compares DB state against the legacy catalog.
 Required checks:
 
 - ✅ DB parts vs `verilog/74xx/*.v` and `verilog/Memory/*.v`.
-- ✅ DB parts vs `*-pin.md` files.
+- ✅ DB parts vs embedded 74xx pinout comments and Memory embedded pinout comments.
 - ✅ DB part status vs `CHIP_STATUS.md`.
 - ✅ DB legacy paths exist.
 - ✅ Pin count equals package pin count.
@@ -206,15 +206,15 @@ Current proof point:
 - ✅ `74HC147` has an explicit DB-owned `/I0` export contract and keeps the
   unbonded low output bit as an internal open placeholder.
 
-### Phase 5: DB-Backed Pinout Files
+### Phase 5: DB-Backed Pinout Documentation
 
-Move pinout docs from legacy folders into chip folders only after references
-are DB-backed.
+Move pinout docs from legacy Verilog comments comments into
+chip folders only after references are DB-backed.
 
 Example future move:
 
 ```text
-verilog/74xx/74hc245-pin.md -> db/74HC245/pinout.md
+verilog/74xx/74hc245.v embedded comments -> db/74HC245/pinout.md
 ```
 
 Temporary compatibility options:

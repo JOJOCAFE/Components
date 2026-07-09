@@ -1,5 +1,37 @@
 `timescale 1ns/1ps
 
+//
+// Embedded pinout documentation.
+// This block replaces the former standalone pinout Markdown file.
+// # 74HC160 DIP pinout
+//
+// - Function: presettable synchronous BCD decade counter, asynchronous reset
+// - Package verified: DIP16 / P-DIP16; Renesas HD74HC160P P-DIP16 and Motorola MC74HC160A N suffix plastic package
+// - Source: `../../source/74HC160_RENESAS_RENESAS_248480_HD74HC160P_DIPVERIFY.pdf`
+//
+// | Pin | Name |
+// | --- | --- |
+// | 1 | MR |
+// | 2 | CP |
+// | 3 | D0 |
+// | 4 | D1 |
+// | 5 | D2 |
+// | 6 | D3 |
+// | 7 | CEP |
+// | 8 | GND |
+// | 9 | PE |
+// | 10 | CET |
+// | 11 | Q3 |
+// | 12 | Q2 |
+// | 13 | Q1 |
+// | 14 | Q0 |
+// | 15 | TC |
+// | 16 | VCC |
+// Notes:
+// - DIP verification: package/order table in the cited datasheet explicitly lists DIP/PDIP or an N/P plastic DIP package for this part.
+//
+
+
 // 4-bit BCD decade counter with parallel load, asynchronous clear
 
 module ttl_74hc160 #(parameter WIDTH = 4, DELAY_RISE = 0, DELAY_FALL = 0)

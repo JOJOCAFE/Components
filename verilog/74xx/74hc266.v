@@ -1,5 +1,33 @@
 `timescale 1ns/1ps
 
+//
+// Embedded pinout documentation.
+// This block replaces the former standalone pinout Markdown file.
+// # 74HC266 DIP pinout
+//
+// - Function: quad 2-input XNOR gate with open-drain outputs
+// - Package verified: PDIP14
+// - Source: `../../source/74HC266_TI2_2204305.pdf`
+//
+// | Pin | Name |
+// | --- | --- |
+// | 1 | 1A |
+// | 2 | 1B |
+// | 3 | 1Y |
+// | 4 | 2Y |
+// | 5 | 2A |
+// | 6 | 2B |
+// | 7 | GND |
+// | 8 | 3A |
+// | 9 | 3B |
+// | 10 | 3Y |
+// | 11 | 4Y |
+// | 12 | 4A |
+// | 13 | 4B |
+// | 14 | VCC |
+//
+
+
 // 74HC266: Quad 2-input XNOR gate (OC)
 
 // Note: For WIDTH_IN > 2, this is the "parity checker" interpretation of multi-input XOR (or XNOR)

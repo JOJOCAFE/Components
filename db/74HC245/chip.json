@@ -39,7 +39,7 @@
     {"number": 20, "name": "VCC", "direction": "power"}
   ],
   "legacy_paths": {
-    "pinout": "verilog/74xx/74hc245-pin.md",
+    "pinout": "verilog/74xx/74hc245.v",
     "verilog": "verilog/74xx/74hc245.v",
     "python_behavior": "python/chiplib/chips.py",
     "verilog_export": "python/chiplib/netlist.py",

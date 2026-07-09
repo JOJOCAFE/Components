@@ -44,10 +44,11 @@ Included chips:
 - `74hc688.v` (`ttl_74hc688`) - 8-bit identity comparator with active-low enable and output
 - `74hc922.v` (`ttl_74hc922`) - 16-key encoder behavioral model
 
-Project-used chips and future-use imports have matching pinout files named
-`74hcxx-pin.md`, for example `74hc00-pin.md`. Pinout Markdown files cite
-the manufacturer datasheet PDF used for verification. Parts without clean
-HC-family manufacturer DIP evidence are omitted instead of kept as placeholders.
+Project-used chips and future-use imports keep model and pinout documentation
+together in the matching `74hcxx.v` file, for example `74hc00.v`. The embedded
+pinout comments cite the manufacturer datasheet PDF used for verification.
+Parts without clean HC-family manufacturer DIP evidence are omitted instead of
+kept as placeholders.
 
 See `SCAN_74XX_MAP.md` for the whole-folder scan result, LS/HCT-to-HC mapping,
 and PDF evidence summary.

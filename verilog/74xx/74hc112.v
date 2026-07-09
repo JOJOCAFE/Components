@@ -1,5 +1,39 @@
 `timescale 1ns/1ps
 
+//
+// Embedded pinout documentation.
+// This block replaces the former standalone pinout Markdown file.
+// # 74HC112 DIP pinout
+//
+// - Function: dual JK flip-flop with set and reset, negative-edge trigger
+// - Package verified: DIP16; Philips 74HC112N plastic dual in-line package SOT38-1
+// - Source: `../../source/74HC112_PHILIPS_15529_DIPCHECK.pdf`
+//
+// | Pin | Name |
+// | --- | --- |
+// | 1 | 1CP |
+// | 2 | 1K |
+// | 3 | 1J |
+// | 4 | 1SD |
+// | 5 | 1Q |
+// | 6 | 1Q_bar |
+// | 7 | 2Q_bar |
+// | 8 | GND |
+// | 9 | 2Q |
+// | 10 | 2SD |
+// | 11 | 2J |
+// | 12 | 2K |
+// | 13 | 2CP |
+// | 14 | 2RD |
+// | 15 | 1RD |
+// | 16 | VCC |
+//
+// Notes:
+// - DIP verification: package/order table in the cited datasheet explicitly lists DIP/PDIP or an N/P plastic DIP package for this part.
+// - Datasheet prints complemented outputs with an overbar; `_bar` is used here for ASCII.
+//
+
+
 // Dual J-K flip-flop with set and clear; negative-edge-triggered
 
 module ttl_74hc112 #(parameter BLOCKS = 2, DELAY_RISE = 0, DELAY_FALL = 0)

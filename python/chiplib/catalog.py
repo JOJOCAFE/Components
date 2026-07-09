@@ -1,8 +1,9 @@
 
 """Catalog chip models for the full Components 74HC and memory set.
 
-These models use the repository pinout Markdown files as the pin-number/name
-source and mirror the behavior of the companion Verilog models. The older
+These models use repository pinout documentation as the pin-number/name source:
+embedded Verilog comments in the 74xx and Memory Verilog model files.
+They mirror the behavior of the companion Verilog models. The older
 hand-written classes in chips.py remain for the RV8GR-V2 starter set; this file
 covers the rest of the shared Components catalog.
 """
@@ -18,14 +19,32 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def _parse_pinout(folder: str, part: str) -> dict[int, str]:
-    path = _folder_path(folder) / f"{part.lower()}-pin.md"
+    base = _folder_path(folder)
+    path = base / f"{part.lower()}.v"
     pins: dict[int, str] = {}
     if path.exists():
-        for line in path.read_text().splitlines():
+        for line in _pinout_lines(path, embedded=True):
             m = re.match(r"\|\s*(\d+)\s*\|\s*([^|]+?)\s*\|", line)
             if m:
                 pins[int(m.group(1))] = m.group(2).strip()
     return pins
+
+
+def _pinout_lines(path: Path, *, embedded: bool) -> list[str]:
+    lines = path.read_text(encoding="utf-8").splitlines()
+    if not embedded:
+        return lines
+    result: list[str] = []
+    inside = False
+    for line in lines:
+        if line.strip() == "// Embedded pinout documentation.":
+            inside = True
+            continue
+        if inside and line.startswith("`timescale"):
+            break
+        if inside and line.startswith("//"):
+            result.append(line[2:].strip())
+    return result
 
 
 def _folder_path(folder: str) -> Path:

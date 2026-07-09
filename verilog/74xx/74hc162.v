@@ -1,5 +1,35 @@
 `timescale 1ns/1ps
 
+//
+// Embedded pinout documentation.
+// This block replaces the former standalone pinout Markdown file.
+// # 74HC162 DIP pinout
+//
+// - Function: presettable synchronous BCD decade counter, synchronous reset
+// - Package verified: DIP16
+// - Source: `../../source/74HC162_PHILIPS_15546.pdf`
+//
+// | Pin | Name |
+// | --- | --- |
+// | 1 | MR |
+// | 2 | CP |
+// | 3 | D0 |
+// | 4 | D1 |
+// | 5 | D2 |
+// | 6 | D3 |
+// | 7 | CEP |
+// | 8 | GND |
+// | 9 | PE |
+// | 10 | CET |
+// | 11 | Q3 |
+// | 12 | Q2 |
+// | 13 | Q1 |
+// | 14 | Q0 |
+// | 15 | TC |
+// | 16 | VCC |
+//
+
+
 // 4-bit BCD decade counter with parallel load, synchronous clear
 
 module ttl_74hc162 #(parameter WIDTH = 4, DELAY_RISE = 0, DELAY_FALL = 0)
