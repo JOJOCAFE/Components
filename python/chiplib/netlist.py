@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import json
 from pathlib import Path
 import re
 from typing import Any
@@ -183,7 +184,7 @@ def design_to_verilog(design: Any, *, include_testbench: bool = True) -> JsonMap
 
     net_for_pin = _net_for_pin(netlist)
     for chip in netlist["chips"]:
-        mapping = VERILOG_MAPPINGS.get(str(chip["part"]).upper())
+        mapping = _verilog_mapping(str(chip["part"]))
         if mapping is None:
             unsupported.append({"ref": chip["ref"], "part": chip["part"], "reason": "no Verilog port mapping"})
             continue
@@ -354,13 +355,68 @@ def _open_output_wires(netlist: JsonMap) -> list[str]:
     result: list[str] = []
     net_for_pin = _net_for_pin(netlist)
     for chip in netlist["chips"]:
-        mapping = VERILOG_MAPPINGS.get(str(chip["part"]).upper())
+        mapping = _verilog_mapping(str(chip["part"]))
         if mapping is None:
             continue
         for pin in mapping.get("output_pins", []):
             if (chip["ref"], pin) not in net_for_pin:
                 result.append(_open_wire(chip["ref"], pin))
     return sorted(result)
+
+
+def _verilog_mapping(part: str) -> JsonMap | None:
+    part_id = str(part).upper()
+    db_mapping = _db_verilog_mapping(part_id)
+    if db_mapping is not None:
+        return db_mapping
+    return VERILOG_MAPPINGS.get(part_id)
+
+
+def _db_verilog_mapping(part: str) -> JsonMap | None:
+    if part != "74HC00":
+        return None
+
+    manifest_path = Path(__file__).resolve().parents[2] / "db" / part / "chip.json"
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    verilog = manifest.get("verilog", {})
+    export = verilog.get("export", {}) if isinstance(verilog, dict) else {}
+    ports = export.get("ports", {}) if isinstance(export, dict) else {}
+    module = verilog.get("module") if isinstance(verilog, dict) else None
+    if not isinstance(module, str) or not isinstance(ports, list):
+        return None
+
+    port_specs = deepcopy(ports)
+
+    def db_ports(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+        return _ports_from_db_export(ref, net_for_pin, port_specs)
+
+    return {
+        "module": module,
+        "ports": db_ports,
+        "output_pins": [int(pin) for pin in export.get("output_pins", [])],
+        "delay_ns": deepcopy(export.get("delay_ns", 1)),
+    }
+
+
+def _ports_from_db_export(
+    ref: str,
+    net_for_pin: dict[tuple[str, int], str],
+    port_specs: list[JsonMap],
+) -> list[tuple[str, str]]:
+    ports: list[tuple[str, str]] = []
+    for spec in port_specs:
+        name = str(spec["name"])
+        pins = [int(pin) for pin in spec.get("pins", [])]
+        is_output = spec.get("direction") == "output"
+        if len(pins) == 1:
+            fallback = _open_wire(ref, pins[0]) if is_output else "1'bz"
+            ports.append((name, _pin(ref, pins[0], net_for_pin, fallback=fallback)))
+        else:
+            ports.append((name, _vec(ref, pins, net_for_pin, output=is_output)))
+    return ports
 
 
 def _quad_2_input(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:

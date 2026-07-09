@@ -1,0 +1,130 @@
+{
+  "schema": "db.chip",
+  "version": 1,
+  "part": "74HC193",
+  "title": "4-Bit Synchronous Up/Down Binary Counter",
+  "family": "74HC",
+  "package": {
+    "kind": "DIP",
+    "pins": 16
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "not_applicable",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "B",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "QB",
+      "direction": "output"
+    },
+    {
+      "number": 3,
+      "name": "QA",
+      "direction": "output"
+    },
+    {
+      "number": 4,
+      "name": "DOWN",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "UP",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "QC",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "QD",
+      "direction": "output"
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power"
+    },
+    {
+      "number": 9,
+      "name": "D",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "C",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "/LOAD",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 12,
+      "name": "/CO",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 13,
+      "name": "/BO",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 14,
+      "name": "CLR",
+      "direction": "input"
+    },
+    {
+      "number": 15,
+      "name": "A",
+      "direction": "input"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power"
+    }
+  ],
+  "legacy_paths": {
+    "pinout": "74HC/74hc193-pin.md",
+    "verilog": "74HC/74hc193.v",
+    "python_behavior": "python/chiplib/chips.py",
+    "verilog_export": "python/chiplib/netlist.py",
+    "tests": [
+      "python/tests/test_chips.py",
+      "python/tests/test_netlist.py",
+      "74HC/tests/tb_74hc_smoke.v"
+    ]
+  },
+  "verilog": {
+    "module": "ttl_74hc193",
+    "file": "74HC/74hc193.v"
+  },
+  "python": {
+    "factory": "chiplib.create_chip",
+    "part": "74HC193"
+  },
+  "sources": [
+    {
+      "label": "Texas Instruments SN74HC193",
+      "url": "https://www.ti.com/lit/ds/symlink/sn74hc193.pdf",
+      "package_evidence": "N, 16-pin PDIP"
+    }
+  ]
+}

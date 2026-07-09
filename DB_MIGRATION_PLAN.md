@@ -65,7 +65,7 @@ Status: started.
 - ✅ Add seed manifests for simple gates and memory.
 - ✅ Add `chiplib.db` loader and CLI access.
 - ✅ Report missing properties and missing referenced files.
-- ⬜ Expand representative seed coverage across gates, decoders, registers,
+- ✅ Expand representative seed coverage across gates, decoders, registers,
   counters, bus parts, SRAM, EEPROM, and flash.
 
 Exit criteria:
@@ -84,7 +84,7 @@ Required checks:
 
 - ✅ DB parts vs `74HC/*.v` and `Memory/*.v`.
 - ✅ DB parts vs `*-pin.md` files.
-- ⬜ DB part status vs `CHIP_STATUS.md`.
+- ✅ DB part status vs `CHIP_STATUS.md`.
 - ✅ DB legacy paths exist.
 - ✅ Pin count equals package pin count.
 - ✅ Power pins are present.
@@ -96,7 +96,7 @@ Exit criteria:
 
 - ✅ `python3 -m chiplib.cli db --audit` or equivalent exists.
 - ✅ Audit returns structured JSON and a nonzero exit code on hard failures.
-- ⬜ Audit checks DB status against `CHIP_STATUS.md`.
+- ✅ Audit checks DB status against `CHIP_STATUS.md`.
 
 ### Phase 3: DB-Backed Metadata
 
@@ -118,6 +118,8 @@ Exit criteria:
 - UI/API-facing chip metadata comes from DB manifests.
 
 ### Phase 4: DB-Backed Export Metadata
+
+Status: started.
 
 Move Verilog export mappings out of the large shared mapping table and into
 DB-owned export metadata.
@@ -146,6 +148,14 @@ Exit criteria:
 
 - Existing `Design.to_verilog()` tests pass.
 - DB can explain why a chip is or is not exportable.
+
+Current proof point:
+
+- ✅ `74HC00` has DB-owned Verilog export metadata.
+- ✅ `Design.to_verilog()` uses DB metadata for `74HC00` and falls back to the
+  legacy mapping table for the rest.
+- ✅ `74HC147` has DB-owned blocked export status explaining that the current
+  Verilog module cannot represent the source-supported `/I0` input.
 
 ### Phase 5: DB-Backed Pinout Files
 

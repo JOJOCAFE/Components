@@ -124,6 +124,7 @@ DB audit:
 ```sh
 cd python
 python3 -m chiplib.cli db --audit
+python3 -m chiplib.cli db --status
 cd ..
 ```
 

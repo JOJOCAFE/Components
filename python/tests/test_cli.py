@@ -144,6 +144,18 @@ def test_cli_db_summary_and_part_lookup():
     assert audit_data["ok"] is True
     assert "legacy_parts_missing_db" in audit_data["coverage"]
 
+    status = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "db", "--status"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert status.returncode == 0, status.stderr
+    status_data = json.loads(status.stdout)
+    assert status_data["format"] == "db.status"
+    assert status_data["ok"] is True
+
 
 def run_all():
     test_cli_validate_snapshot_run_probe_and_export_json()

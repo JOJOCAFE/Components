@@ -55,6 +55,15 @@ Future work for the shared component library.
   DB-vs-legacy coverage reporting.
 - ✅ Add DB-vs-legacy coverage tests for current DB manifests, legacy Verilog
   models, and legacy pinout files.
+- ✅ Expand DB manifests to full active legacy model/pinout catalog coverage:
+  62 DB parts for 62 legacy model parts.
+- ✅ Add `python3 -m chiplib.cli db --status` to compare DB-derived status
+  categories against `CHIP_STATUS.md`.
+- ✅ Prove DB-backed Verilog export metadata with `74HC00` while preserving
+  existing structural Verilog output.
+- ✅ Review `74HC147` export gap and keep structural export blocked because the
+  verified pinout includes `/I0` but the current Verilog module has no matching
+  input port.
 - ⬜ Follow `SERVICE_ARCHITECTURE_TASKS.md` to split chip behavior, simulation,
   exporters, CLI, and future API/UI adapters behind stable internal service
   contracts before the repo grows too large.
@@ -71,9 +80,8 @@ Future work for the shared component library.
 - ⬜ Define the frontend snapshot contract for UI/API clients, including chip
   layout, pin states, net values, bus values, warnings/errors, probe history,
   and display state.
-- ⬜ Fix remaining chip/export gaps, starting with the `74HC147`
-  pinout/model/export contract, and keep future parts gated by verified,
-  modeled, tested, and export status.
+- ⬜ Repair the `74HC147` Verilog model/export contract if the model is updated
+  to expose all source-supported inputs, including `/I0`.
 - ⬜ Add example JSON circuits as runnable demos and regressions: NAND gate,
   counter, bus transceiver, ROM/RAM read, tiny CPU slice, and other small
   teaching circuits.

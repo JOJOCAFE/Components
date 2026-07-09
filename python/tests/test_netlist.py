@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 
 from chiplib.design import Design
+from chiplib.netlist import VERILOG_MAPPINGS, _verilog_mapping
 
 
 def netlist_schematic():
@@ -94,6 +95,23 @@ def test_design_to_verilog_exports_known_gate_instances_and_testbench():
     assert "ttl_74hc04" in verilog
     assert " U2 (" in verilog
     assert "module tb_netlist_small();" in exported["testbench"]
+
+
+def test_74hc00_verilog_export_uses_db_metadata_without_changing_output():
+    design = Design.from_dict(netlist_schematic())
+
+    exported = design.to_verilog()
+    db_mapping = _verilog_mapping("74HC00")
+    legacy_mapping = VERILOG_MAPPINGS["74HC00"]
+
+    assert db_mapping is not None
+    assert db_mapping is not legacy_mapping
+    assert db_mapping["module"] == legacy_mapping["module"]
+    assert db_mapping["output_pins"] == legacy_mapping["output_pins"]
+    assert db_mapping["delay_ns"] == legacy_mapping["delay_ns"]
+    assert db_mapping["ports"]("U1", {}) == legacy_mapping["ports"]("U1", {})
+    assert exported["ok"] is True
+    assert "ttl_74hc00 #(.DELAY_RISE(1), .DELAY_FALL(1)) U1 (.A({" in exported["verilog"]
 
 
 def test_design_to_verilog_reports_unsupported_parts():
@@ -420,6 +438,7 @@ def run_all():
     test_design_to_netlist_exports_chips_nets_buses_metadata_and_validation()
     test_design_from_netlist_round_trips_canonical_design_json()
     test_design_to_verilog_exports_known_gate_instances_and_testbench()
+    test_74hc00_verilog_export_uses_db_metadata_without_changing_output()
     test_design_to_verilog_reports_unsupported_parts()
     test_design_to_verilog_exports_expanded_common_74hc_mappings()
     test_design_to_verilog_exports_mux_shift_and_counter_74hc_mappings()

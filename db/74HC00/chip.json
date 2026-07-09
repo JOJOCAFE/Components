@@ -45,7 +45,16 @@
   },
   "verilog": {
     "module": "ttl_74hc00",
-    "file": "74HC/74hc00.v"
+    "file": "74HC/74hc00.v",
+    "export": {
+      "ports": [
+        {"name": "A", "pins": [1, 4, 9, 12], "direction": "input"},
+        {"name": "B", "pins": [2, 5, 10, 13], "direction": "input"},
+        {"name": "Y", "pins": [3, 6, 8, 11], "direction": "output"}
+      ],
+      "output_pins": [3, 6, 8, 11],
+      "delay_ns": {"U26": 8, "*": 1}
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

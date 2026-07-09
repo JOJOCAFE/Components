@@ -14,6 +14,7 @@ from .netlist import VERILOG_MAPPINGS
 JsonMap = dict[str, Any]
 ROOT = Path(__file__).resolve().parents[2]
 DB_ROOT = ROOT / "db"
+CHIP_STATUS_PATH = ROOT / "CHIP_STATUS.md"
 
 REQUIRED_STATUS_KEYS = (
     "datasheet",
@@ -167,6 +168,9 @@ def audit_db() -> JsonMap:
             "message": f"{len(missing_model)} DB parts do not have legacy model files",
             "parts": missing_model,
         })
+    status_report = db_status_report()
+    errors.extend(status_report["errors"])
+    warnings.extend(status_report["warnings"])
 
     return {
         "format": "db.audit",
@@ -183,6 +187,73 @@ def audit_db() -> JsonMap:
             "legacy_parts_missing_db": missing_db,
             "db_parts_missing_legacy_model": missing_model,
         },
+        "chip_status": status_report,
+        "errors": errors,
+        "warnings": warnings,
+    }
+
+
+def db_status_report() -> JsonMap:
+    components = load_all_components()
+    generated = {
+        "verified": sorted(
+            str(item.get("part", "")).upper()
+            for item in components
+            if _status(item, "pinout") == "verified" and _status(item, "datasheet") == "verified"
+        ),
+        "modeled": sorted(
+            str(item.get("part", "")).upper()
+            for item in components
+            if _status(item, "python_behavior") == "modeled" or _status(item, "verilog_model") == "modeled"
+        ),
+        "tested": sorted(
+            str(item.get("part", "")).upper()
+            for item in components
+            if _status(item, "verilog_export") == "tested"
+        ),
+        "missing_datasheet": sorted(
+            str(item.get("part", "")).upper()
+            for item in components
+            if _status(item, "datasheet") in ("missing", "unknown")
+        ),
+    }
+    chip_status = parse_chip_status()
+    errors: list[JsonMap] = []
+    warnings: list[JsonMap] = []
+
+    checks = (
+        ("verified", "verified"),
+        ("modeled", "modeled"),
+        ("tested", "tested"),
+        ("missing_datasheet", "missing_datasheet"),
+    )
+    for generated_key, status_key in checks:
+        generated_parts = set(generated[generated_key])
+        status_parts = set(chip_status[status_key])
+        for part in sorted(generated_parts - status_parts):
+            errors.append(_issue(
+                "chip_status_missing_db_part",
+                part,
+                str(CHIP_STATUS_PATH.relative_to(ROOT)),
+                f"DB marks {part} as {generated_key}, but CHIP_STATUS.md does not list it in {status_key}",
+            ))
+        missing_db_parts = sorted(status_parts - generated_parts)
+        if missing_db_parts:
+            warnings.append({
+                "code": "chip_status_parts_missing_db",
+                "severity": "warning",
+                "category": status_key,
+                "message": f"{len(missing_db_parts)} CHIP_STATUS.md {status_key} parts do not have matching DB status yet",
+                "parts": missing_db_parts,
+            })
+
+    return {
+        "format": "db.status",
+        "version": 1,
+        "ok": not errors,
+        "source": str(CHIP_STATUS_PATH.relative_to(ROOT)),
+        "generated": generated,
+        "chip_status": chip_status,
         "errors": errors,
         "warnings": warnings,
     }
@@ -192,6 +263,18 @@ def legacy_catalog_parts() -> JsonMap:
     return {
         "verilog_models": sorted(set(_legacy_74hc_models()) | set(_legacy_memory_models())),
         "pinouts": sorted(set(_legacy_74hc_pinouts()) | set(_legacy_memory_pinouts())),
+    }
+
+
+def parse_chip_status() -> JsonMap:
+    if not CHIP_STATUS_PATH.exists():
+        return {"verified": [], "modeled": [], "tested": [], "missing_datasheet": []}
+    text = CHIP_STATUS_PATH.read_text(encoding="utf-8")
+    return {
+        "verified": _section_parts(text, "Verified", "Modeled"),
+        "modeled": _section_parts(text, "Modeled", "Tested"),
+        "tested": _section_parts(text, "Tested", "Remaining Export Gap"),
+        "missing_datasheet": _section_parts(text, "Missing Datasheet", None),
     }
 
 
@@ -253,6 +336,36 @@ def _legacy_memory_pinouts() -> list[str]:
 
 def _memory_part_id(value: str) -> str:
     return str(value).upper()
+
+
+def _status(manifest: JsonMap, key: str) -> str:
+    status = manifest.get("status", {})
+    if isinstance(status, dict):
+        return str(status.get(key, ""))
+    return ""
+
+
+def _section_parts(text: str, heading: str, next_heading: str | None) -> list[str]:
+    start = text.find(f"## {heading}")
+    if start < 0:
+        return []
+    end = len(text)
+    if next_heading is not None:
+        next_start = text.find(f"## {next_heading}", start + 1)
+        if next_start >= 0:
+            end = next_start
+    section = text[start:end]
+    return sorted(set(
+        part
+        for part in (item.upper() for item in re.findall(r"`([^`]+)`", section))
+        if _looks_like_part_id(part)
+    ))
+
+
+def _looks_like_part_id(value: str) -> bool:
+    if any(char in value for char in " /*.-"):
+        return False
+    return re.match(r"^(74HC[0-9A-Z]+|[A-Z]*[0-9][A-Z0-9]*)$", value) is not None
 
 
 def _issue(code: str, part: str, location: str, message: str) -> JsonMap:

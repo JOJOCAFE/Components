@@ -2,7 +2,7 @@
 
 import json
 
-from chiplib.db import audit_db, component_ids, component_summary, db_root, legacy_catalog_parts, load_all_components, load_component
+from chiplib.db import audit_db, component_ids, component_summary, db_root, db_status_report, legacy_catalog_parts, load_all_components, load_component
 
 
 ALLOWED_STATUS = {
@@ -32,11 +32,19 @@ SEED_PARTS = {
 def test_db_seed_entries_are_loadable():
     assert db_root().name == "db"
     assert SEED_PARTS.issubset(set(component_ids()))
+    assert "74HC147" in component_ids()
 
     hc00 = load_component("74HC00")
     assert hc00["part"] == "74HC00"
     assert hc00["package"]["pins"] == 14
     assert hc00["verilog"]["module"] == "ttl_74hc00"
+    assert hc00["verilog"]["export"]["ports"] == [
+        {"name": "A", "pins": [1, 4, 9, 12], "direction": "input"},
+        {"name": "B", "pins": [2, 5, 10, 13], "direction": "input"},
+        {"name": "Y", "pins": [3, 6, 8, 11], "direction": "output"},
+    ]
+    assert hc00["verilog"]["export"]["output_pins"] == [3, 6, 8, 11]
+    assert hc00["verilog"]["export"]["delay_ns"] == {"U26": 8, "*": 1}
     assert hc00["missing_properties"] == []
     assert hc00["missing_files"] == []
     assert hc00["pins"][0] == {"number": 1, "name": "1A", "direction": "input"}
@@ -73,6 +81,13 @@ def test_db_seed_entries_are_loadable():
     assert decoder["verilog"]["module"] == "ttl_74hc138"
     assert decoder["pins"][3]["name"] == "/G2A"
     assert decoder["pins"][14]["active_low"] is True
+
+    encoder = load_component("74HC147")
+    assert encoder["status"]["verilog_export"] == "blocked"
+    assert encoder["export"]["status"] == "blocked"
+    assert "I0" in encoder["export"]["reason"]
+    assert encoder["pins"][8] == {"number": 9, "name": "/I0", "direction": "input", "active_low": True}
+    assert encoder["pins"][14] == {"number": 15, "name": "NC", "direction": "nc"}
 
     flash = load_component("SST39SF010A")
     assert flash["family"] == "Memory"
@@ -117,9 +132,12 @@ def test_db_audit_reports_partial_legacy_coverage_without_hard_errors():
     assert audit["ok"] is True
     assert audit["errors"] == []
     assert SEED_PARTS.issubset(set(audit["coverage"]["db_parts"]))
+    assert "74HC147" in audit["coverage"]["db_parts"]
     assert SEED_PARTS.issubset(set(audit["coverage"]["legacy_model_parts"]))
-    assert "74HC147" in audit["coverage"]["legacy_parts_missing_db"]
-    assert any(item["code"] == "legacy_parts_missing_db" for item in audit["warnings"])
+    assert "74HC147" not in audit["coverage"]["legacy_parts_missing_db"]
+    assert any(item["code"] == "chip_status_parts_missing_db" for item in audit["warnings"])
+    assert audit["chip_status"]["format"] == "db.status"
+    assert audit["chip_status"]["ok"] is True
 
 
 def test_db_legacy_coverage_lists_models_and_pinouts():
@@ -132,12 +150,28 @@ def test_db_legacy_coverage_lists_models_and_pinouts():
     assert set(component_ids()).issubset(set(legacy["pinouts"]))
 
 
+def test_db_status_report_checks_chip_status_snapshot():
+    report = db_status_report()
+    tested_seed_parts = SEED_PARTS - {"74HC147"}
+    assert report["format"] == "db.status"
+    assert report["ok"] is True
+    assert report["errors"] == []
+    assert SEED_PARTS.issubset(set(report["generated"]["verified"]))
+    assert SEED_PARTS.issubset(set(report["generated"]["modeled"]))
+    assert tested_seed_parts.issubset(set(report["generated"]["tested"]))
+    assert SEED_PARTS.issubset(set(report["chip_status"]["verified"]))
+    assert SEED_PARTS.issubset(set(report["chip_status"]["modeled"]))
+    assert tested_seed_parts.issubset(set(report["chip_status"]["tested"]))
+    assert any(item["code"] == "chip_status_parts_missing_db" for item in report["warnings"])
+
+
 def run_all():
     test_db_seed_entries_are_loadable()
     test_db_summary_reports_status_and_gaps()
     test_db_manifests_match_schema_contract()
     test_db_audit_reports_partial_legacy_coverage_without_hard_errors()
     test_db_legacy_coverage_lists_models_and_pinouts()
+    test_db_status_report_checks_chip_status_snapshot()
 
 
 if __name__ == "__main__":

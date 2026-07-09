@@ -71,9 +71,13 @@ The next useful set adds flip-flop, register, decoder, and flash coverage:
 - `74HC138`
 - `SST39SF010A`
 
+The DB now has one manifest for every active legacy Verilog model and pinout
+entry: 62 DB parts for 62 legacy model parts.
+
 Audit the DB against the active legacy catalog:
 
 ```sh
 cd ../python
 python3 -m chiplib.cli db --audit
+python3 -m chiplib.cli db --status
 ```

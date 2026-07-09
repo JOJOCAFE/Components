@@ -106,6 +106,7 @@ CLI/API access:
 python3 -m chiplib.cli db
 python3 -m chiplib.cli db 74HC00
 python3 -m chiplib.cli db --audit
+python3 -m chiplib.cli db --status
 ```
 
 ## Timing
