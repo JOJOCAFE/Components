@@ -19,6 +19,32 @@ simulation services, and student-facing documentation.
   change needs focused tests plus smoke coverage.
 - Beginner-readable failure messages and examples: errors must point to the
   chip, pin, net, source, or missing property that the learner can fix.
+- Layered component generation: one canonical `definition/digital.json` should
+  drive normalized JSON, Python simulator adapters, Verilog wrappers/export,
+  KiCad symbols, SVG pinouts, documentation, unit tests, and interactive demos.
+- Package separation discipline: definition, simulation, schematic/symbol,
+  verification, generation, datasheet evidence, and project use must stay as
+  separate layers even when one file can generate outputs.
+
+## Active Specialist Agents
+
+These are the current Codex specialist agents used for Components delegation.
+They complement the original JOJOCAFE role names below.
+
+| Agent | Main skills | Current Components ownership |
+|---|---|---|
+| Arendt | Specification, schema discipline, task framing, consistency checks | Owns component package specs, `digital.json` schema design, required/optional field rules, and missing-data representation. |
+| Feynman | Teaching, explanation, demo design, student-facing simplification | Owns generated docs, interactive demos, beginner-readable examples, and age 10-15 clarity. |
+| Halley | Verification, audit coverage, test matrix design | Owns truth table, timing, tri-state, bus-fight, propagation, equivalence, and CI verification planning. |
+| Ohm | Hardware truth, datasheets, pin/package/electrical evidence | Owns package evidence, pin truth, timing/electrical extraction, active-low naming, and breadboard realism. |
+| Leibniz | Tooling, loaders, generators, API/CLI integration | Owns split-package loaders, generator prototypes, compatibility with `chip.json`, and CLI/API generation commands. |
+
+Shared specialist rule:
+
+- No generated artifact is authoritative by itself. The source is
+  `definition/digital.json` plus datasheet evidence; generated Python,
+  Verilog, KiCad, SVG, docs, tests, and demos must be reproducible from that
+  layer.
 
 ## Pim - Coordinator
 
@@ -38,6 +64,8 @@ Components focus:
 - Treat the DB as the product center.
 - Keep the next task list short, concrete, and executable.
 - Make sure completed work ends with tests, task docs, and a push when asked.
+- Preserve the active specialist assignments in this file and route new work
+  through `COMPONENT_GENERATION_BACKLOG.md`.
 
 ## Bank - Architect
 
@@ -58,6 +86,8 @@ Components focus:
 - Challenges duplication or hidden coupling between DB, Python, and Verilog.
 - Keeps C/C++/Rust plugin ideas behind stable adapter contracts until the
   Python/DB path is proven.
+- Owns the long-term architecture of the definition/simulation/schematic/
+  verification/generation layer split.
 
 ## Fern - Verifier
 
@@ -77,6 +107,8 @@ Components focus:
 - Owns the final confidence pass before push.
 - Treats `python3 -m chiplib.cli db --audit` and `db --status` as quality gates.
 - Expands equivalence tests before more exporter metadata is migrated.
+- Turns `tests/*.json` component package files into executable regression
+  checks.
 
 ## Mint - RTL Coder
 
@@ -96,6 +128,8 @@ Components focus:
 - Reviews DB-owned `verilog.export` mappings for correct port direction and
   pin order.
 - Adds focused benches when a chip becomes export-supported.
+- Helps ensure Verilog wrappers can be generated from `definition/digital.json`
+  without losing readable HDL.
 
 ## Ohm - HW Coder
 
@@ -114,6 +148,8 @@ Components focus:
 - Owns pinout truth for DB manifests and model comments.
 - Treats missing-datasheet chips as explicit exclusions, not partial parts.
 - Helps Noon convert physical facts into beginner-safe labels.
+- Owns `datasheet/sources.json`, package evidence, electrical placeholders,
+  and extracted timing values.
 
 ## Bam - SW Coder
 
@@ -135,6 +171,7 @@ Components focus:
 - Moves exporter metadata into DB only when equivalence and netlist tests prove
   the behavior.
 - Keeps frontend-facing responses serializable and stable.
+- Owns loader compatibility while `chip.json` and split package files coexist.
 
 ## Noon - Docs Writer
 
@@ -155,6 +192,8 @@ Components focus:
 - Keeps the primary customer visible in planning docs.
 - Works with Ohm and Bam so UI/API metadata is both physically true and easy to
   display.
+- Owns generated documentation and interactive demo wording from
+  `definition/digital.json`.
 
 ## Natural Pairings
 

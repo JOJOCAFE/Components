@@ -1,6 +1,7 @@
 # Components Session Handoff
 
 Date: 2026-07-09
+Last updated: 2026-07-09, session save
 
 ## Current State
 
@@ -8,6 +9,7 @@ Date: 2026-07-09
 - Branch: `main`
 - Status at handoff: clean, `main...origin/main`
 - Latest commit: `aa81704 Add generator-ready component definitions`
+- Latest pushed commit before this save: `e4dfeff Add Components session handoff`
 
 ## Completed This Session
 
@@ -41,6 +43,12 @@ Date: 2026-07-09
   - `tests/`
   - `symbol/`
   - `datasheet/`
+- Saved current specialist-agent skills in `TEAM_SKILLS.md`:
+  - Arendt: specs and schemas
+  - Feynman: docs and demos
+  - Halley: verification matrix
+  - Ohm: datasheet/pin/timing/electrical evidence
+  - Leibniz: loaders, generators, CLI/API integration
 
 ## Architecture Direction
 
@@ -98,6 +106,8 @@ merge split packages safely.
    - SVG pinout data
    - documentation data
    - interactive demo data
+6. Keep `TEAM_SKILLS.md`, `COMPONENT_GENERATION_BACKLOG.md`, and this handoff
+   synchronized whenever the team roles or seed-chip plan changes.
 
 ## Verification Already Run Recently
 
