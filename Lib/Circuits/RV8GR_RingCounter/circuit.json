@@ -1,0 +1,151 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_ring_counter",
+  "title": "RV8GR three-phase ring counter",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/labs/lab02_ring_counter.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/labs/README.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/build_plan/01_student_incremental_build_plan.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/06_debug_plan.md",
+      "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_chip_level.v"
+    ]
+  },
+  "purpose": "Generate the RV8GR T0, T1, and T2 instruction phases from one shared clock.",
+  "chips": [
+    {
+      "ref": "U8",
+      "part": "74HC164",
+      "role": "8-bit serial-in parallel-out shift register"
+    },
+    {
+      "ref": "U24",
+      "part": "74HC04",
+      "role": "feedback inverter package; uses gates 1 and 2"
+    }
+  ],
+  "ports": [
+    {
+      "name": "CLK",
+      "direction": "input",
+      "edge": "rising",
+      "description": "Shared RV8GR clock."
+    },
+    {
+      "name": "/CLR",
+      "direction": "input",
+      "active_low": true,
+      "description": "Asynchronous clear for U8. LOW clears Q0-Q7 to zero."
+    },
+    {
+      "name": "T0",
+      "direction": "output",
+      "source": "U8.Q0"
+    },
+    {
+      "name": "T1",
+      "direction": "output",
+      "source": "U8.Q1"
+    },
+    {
+      "name": "T2",
+      "direction": "output",
+      "source": "U8.Q2"
+    }
+  ],
+  "wiring": [
+    {
+      "net": "T0",
+      "connections": ["U8.3", "U24.1"],
+      "description": "U8 Q0 drives T0 and inverter gate 1 input."
+    },
+    {
+      "net": "NOT_T0",
+      "connections": ["U24.2", "U8.1"],
+      "description": "U24 gate 1 output drives U8 serial input A."
+    },
+    {
+      "net": "T1",
+      "connections": ["U8.4", "U24.3"],
+      "description": "U8 Q1 drives T1 and inverter gate 2 input."
+    },
+    {
+      "net": "NOT_T1",
+      "connections": ["U24.4", "U8.2"],
+      "description": "U24 gate 2 output drives U8 serial input B."
+    },
+    {
+      "net": "T2",
+      "connections": ["U8.5"],
+      "description": "U8 Q2 drives T2."
+    },
+    {
+      "net": "CLK",
+      "connections": ["U8.8"],
+      "description": "Rising edge shifts U8."
+    },
+    {
+      "net": "/CLR",
+      "connections": ["U8.9"],
+      "description": "Active-low asynchronous clear."
+    }
+  ],
+  "behavior": {
+    "state_bits": {
+      "T0": "U8.Q0",
+      "T1": "U8.Q1",
+      "T2": "U8.Q2"
+    },
+    "serial_input": "NOT(T0) AND NOT(T1)",
+    "reset_state": {
+      "T0": 0,
+      "T1": 0,
+      "T2": 0
+    },
+    "normal_sequence_after_reset_clock": [
+      {"T0": 1, "T1": 0, "T2": 0},
+      {"T0": 0, "T1": 1, "T2": 0},
+      {"T0": 0, "T1": 0, "T2": 1}
+    ],
+    "notes": [
+      "74HC164 /CLR clears the register to 00000000; the first clock after clear enters T0.",
+      "RV8GR lab/build-plan shorthand calls the first usable post-clear phase reset-to-T0; this package records the electrical clear state separately.",
+      "Q3..Q7 are ignored shift-tail bits in this RV8GR use and are not part of the phase-health contract."
+    ]
+  },
+  "timing": {
+    "clocking": "edge_sensitive",
+    "trigger_edge": "rising",
+    "non_trigger_edge": "falling_or_no_rising_edge_holds_state",
+    "paths": [
+      {
+        "name": "phase_output",
+        "from": "U8.CLK",
+        "to": "U8.Q0..Q2",
+        "source_part": "74HC164"
+      },
+      {
+        "name": "feedback_setup_for_next_clock",
+        "from": "U8.Q0/U8.Q1",
+        "through": "U24.74HC04",
+        "to": "U8.A/U8.B",
+        "rule": "Feedback only affects the next rising clock, not the just-captured phase."
+      }
+    ]
+  },
+  "verification": {
+    "tests": [
+      "tests/ring_counter.json"
+    ],
+    "guarantees": [
+      "normal T0/T1/T2 one-hot sequence",
+      "no normal phase overlap",
+      "asynchronous clear to all-zero",
+      "lower three-bit illegal state recovery within three clocks",
+      "Q3..Q7 are ignored and not required to remain low"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

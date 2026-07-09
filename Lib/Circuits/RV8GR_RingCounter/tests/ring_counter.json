@@ -1,0 +1,39 @@
+{
+  "schema": "components.lib.circuit.test.ring_counter",
+  "version": 1,
+  "circuit": "rv8gr_ring_counter",
+  "source": "Lib/Circuits/RV8GR_RingCounter/circuit.json",
+  "reset": {
+    "input": {"/CLR": 0},
+    "expect": {"T0": 0, "T1": 0, "T2": 0}
+  },
+  "sequence_after_reset": [
+    {"clock": 1, "expect": {"T0": 1, "T1": 0, "T2": 0}},
+    {"clock": 2, "expect": {"T0": 0, "T1": 1, "T2": 0}},
+    {"clock": 3, "expect": {"T0": 0, "T1": 0, "T2": 1}},
+    {"clock": 4, "expect": {"T0": 1, "T1": 0, "T2": 0}},
+    {"clock": 5, "expect": {"T0": 0, "T1": 1, "T2": 0}},
+    {"clock": 6, "expect": {"T0": 0, "T1": 0, "T2": 1}}
+  ],
+  "illegal_lower_state_recovery": {
+    "max_clocks": 3,
+    "normal_states": [
+      {"T0": 1, "T1": 0, "T2": 0},
+      {"T0": 0, "T1": 1, "T2": 0},
+      {"T0": 0, "T1": 0, "T2": 1}
+    ],
+    "states": [
+      {"T0": 0, "T1": 0, "T2": 0},
+      {"T0": 0, "T1": 1, "T2": 1},
+      {"T0": 1, "T1": 0, "T2": 1},
+      {"T0": 1, "T1": 1, "T2": 0},
+      {"T0": 1, "T1": 1, "T2": 1}
+    ]
+  },
+  "edge_criteria": {
+    "clocking": "edge_sensitive",
+    "trigger_edge": "rising",
+    "non_trigger_edge": "falling_or_no_rising_edge_holds_state",
+    "notes": "T0/T1/T2 change only after U8 rising clock edges or asynchronous /CLR."
+  }
+}
