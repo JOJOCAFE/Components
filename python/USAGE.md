@@ -536,7 +536,7 @@ directly.
 ## Coverage And Caveats
 
 `create_chip(part, name)` currently instantiates every Verilog component in
-`Components/verilog/74HC` and `Components/Memory`:
+`Components/verilog/74HC` and `Components/verilog/Memory`:
 
 - hand-written models cover the RV8GR-V2 starter set and core memory parts
 - catalog models cover the remaining 74HC and memory parts from pinout docs

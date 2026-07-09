@@ -162,19 +162,19 @@
     }
   ],
   "legacy_paths": {
-    "pinout": "Memory/cy7c199-pin.md",
-    "verilog": "Memory/cy7c199.v",
+    "pinout": "verilog/Memory/cy7c199-pin.md",
+    "verilog": "verilog/Memory/cy7c199.v",
     "python_behavior": "python/chiplib/chips.py",
     "verilog_export": "python/chiplib/netlist.py",
     "tests": [
       "python/tests/test_chips.py",
       "python/tests/test_netlist.py",
-      "Memory/tests/tb_memory_smoke.v"
+      "verilog/Memory/tests/tb_memory_smoke.v"
     ]
   },
   "verilog": {
     "module": "mem_cy7c199",
-    "file": "Memory/cy7c199.v"
+    "file": "verilog/Memory/cy7c199.v"
   },
   "python": {
     "factory": "chiplib.create_chip",

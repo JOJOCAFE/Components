@@ -23,5 +23,5 @@ jobs:
 
       - name: Run memory smoke test
         run: |
-          iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp Memory/*.v Memory/tests/tb_memory_smoke.v
+          iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp verilog/Memory/*.v verilog/Memory/tests/tb_memory_smoke.v
           vvp /tmp/tb_memory_smoke.vvp

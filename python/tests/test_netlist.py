@@ -367,10 +367,10 @@ def test_design_to_verilog_exports_specialized_74hc_and_memory_mappings():
             "-o",
             str(Path(tmp) / "specialized_mappings.vvp"),
             *[str(root / "verilog" / "74HC" / f"{part.lower()}.v") for part in ("74HC148", "74HC181", "74HC593", "74HC922")],
-            str(root / "Memory" / "62256.v"),
-            str(root / "Memory" / "as6c62256.v"),
-            str(root / "Memory" / "cy7c199.v"),
-            str(root / "Memory" / "sst39sf010a.v"),
+            str(root / "verilog" / "Memory" / "62256.v"),
+            str(root / "verilog" / "Memory" / "as6c62256.v"),
+            str(root / "verilog" / "Memory" / "cy7c199.v"),
+            str(root / "verilog" / "Memory" / "sst39sf010a.v"),
             str(top),
         ]
         compiled = subprocess.run(cmd, text=True, capture_output=True, check=False)
@@ -471,8 +471,8 @@ def test_rv8gr_v2_kicad_netlist_smoke_when_available():
                 "74hc574.v",
                 "74hc688.v",
             )],
-            str(root / "Memory" / "62256.v"),
-            str(root / "Memory" / "at28c256.v"),
+            str(root / "verilog" / "Memory" / "62256.v"),
+            str(root / "verilog" / "Memory" / "at28c256.v"),
             str(top),
         ]
         compiled = subprocess.run(cmd, text=True, capture_output=True, check=False)

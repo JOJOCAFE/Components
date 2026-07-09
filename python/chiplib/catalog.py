@@ -31,6 +31,8 @@ def _parse_pinout(folder: str, part: str) -> dict[int, str]:
 def _folder_path(folder: str) -> Path:
     if folder == "74HC":
         return ROOT / "verilog" / "74HC"
+    if folder == "Memory":
+        return ROOT / "verilog" / "Memory"
     return ROOT / folder
 
 

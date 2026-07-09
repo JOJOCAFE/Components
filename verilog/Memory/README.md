@@ -28,6 +28,6 @@ Manufacturer datasheet sources used for pinouts:
 Run the smoke test with:
 
 ```sh
-iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp Components/Memory/*.v Components/Memory/tests/tb_memory_smoke.v
+iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp Components/verilog/Memory/*.v Components/verilog/Memory/tests/tb_memory_smoke.v
 vvp /tmp/tb_memory_smoke.vvp
 ```

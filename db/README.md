@@ -47,7 +47,7 @@ readable and identifies the part.
 The old layout remains active during migration:
 
 - `verilog/74HC/`
-- `Memory/`
+- `verilog/Memory/`
 - `python/chiplib/`
 
 The DB is the new chip identity layer. Simulators, exporters, CLI tools, and

@@ -10,7 +10,7 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 ## Layout
 
 - `verilog/74HC/` - behavioral Verilog models for 74HC-family logic chips plus per-chip pinout files named `74hcxx-pin.md`.
-- `Memory/` - behavioral Verilog models and pinout files for EEPROM, flash EEPROM, and SRAM parts.
+- `verilog/Memory/` - behavioral Verilog models and pinout files for EEPROM, flash EEPROM, and SRAM parts.
 - `db/` - chip-centered DB manifests and schema where each component owns
   status, pins, sources, behavior/export references, and visible missing
   properties.
@@ -109,7 +109,7 @@ cd ..
 iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp verilog/74HC/*.v verilog/74HC/tests/tb_74hc_smoke.v
 vvp /tmp/tb_74hc_smoke.vvp
 
-iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp Memory/*.v Memory/tests/tb_memory_smoke.v
+iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp verilog/Memory/*.v verilog/Memory/tests/tb_memory_smoke.v
 vvp /tmp/tb_memory_smoke.vvp
 ```
 
@@ -135,7 +135,7 @@ cd ..
 ## Subfolder Docs
 
 - `verilog/74HC/README.md` - full 74HC model list, scan notes, and 74xx source coverage.
-- `Memory/README.md` - memory model list and datasheet sources.
+- `verilog/Memory/README.md` - memory model list and datasheet sources.
 - `db/README.md` - chip-centered DB migration notes and manifest
   layout.
 - `python/README.md` - Python chip-library coverage and usage.

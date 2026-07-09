@@ -31,8 +31,8 @@ During migration, `chip.json` may point to legacy files:
 ```text
 verilog/74HC/74hc245-pin.md
 verilog/74HC/74hc245.v
-Memory/at28c256-pin.md
-Memory/at28c256.v
+verilog/Memory/at28c256-pin.md
+verilog/Memory/at28c256.v
 python/chiplib/chips.py
 python/chiplib/catalog.py
 python/chiplib/netlist.py
@@ -82,7 +82,7 @@ Add audit tooling that compares DB state against the legacy catalog.
 
 Required checks:
 
-- ✅ DB parts vs `verilog/74HC/*.v` and `Memory/*.v`.
+- ✅ DB parts vs `verilog/74HC/*.v` and `verilog/Memory/*.v`.
 - ✅ DB parts vs `*-pin.md` files.
 - ✅ DB part status vs `CHIP_STATUS.md`.
 - ✅ DB legacy paths exist.
@@ -185,7 +185,7 @@ Only after metadata and export paths are stable, consider moving model files:
 
 ```text
 verilog/74HC/74hc245.v -> db/74HC245/model.v
-Memory/at28c256.v -> db/AT28C256/model.v
+verilog/Memory/at28c256.v -> db/AT28C256/model.v
 ```
 
 This is optional. It may be better to keep implementation models in family
@@ -203,7 +203,7 @@ Exit criteria:
 - Do not split chip behavior into Rust/C/C++ until the DB and service
   contracts are stable.
 - Do not make every backend piece a separate process.
-- Do not delete `verilog/74HC/`, `Memory/`, or `python/chiplib/catalog.py` while any
+- Do not delete `verilog/74HC/`, `verilog/Memory/`, or `python/chiplib/catalog.py` while any
   loader still depends on them.
 - Do not let exporters or UI parse raw chip files independently from DB
   metadata.

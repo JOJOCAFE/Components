@@ -323,7 +323,7 @@ def _legacy_74hc_models() -> list[str]:
 
 
 def _legacy_memory_models() -> list[str]:
-    return [_memory_part_id(path.stem) for path in (ROOT / "Memory").glob("*.v")]
+    return [_memory_part_id(path.stem) for path in (ROOT / "verilog" / "Memory").glob("*.v")]
 
 
 def _legacy_74hc_pinouts() -> list[str]:
@@ -331,7 +331,7 @@ def _legacy_74hc_pinouts() -> list[str]:
 
 
 def _legacy_memory_pinouts() -> list[str]:
-    return [_memory_part_id(path.name[:-7]) for path in (ROOT / "Memory").glob("*-pin.md")]
+    return [_memory_part_id(path.name[:-7]) for path in (ROOT / "verilog" / "Memory").glob("*-pin.md")]
 
 
 def _memory_part_id(value: str) -> str:

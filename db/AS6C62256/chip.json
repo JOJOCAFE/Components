@@ -162,19 +162,19 @@
     }
   ],
   "legacy_paths": {
-    "pinout": "Memory/as6c62256-pin.md",
-    "verilog": "Memory/as6c62256.v",
+    "pinout": "verilog/Memory/as6c62256-pin.md",
+    "verilog": "verilog/Memory/as6c62256.v",
     "python_behavior": "python/chiplib/chips.py",
     "verilog_export": "python/chiplib/netlist.py",
     "tests": [
       "python/tests/test_chips.py",
       "python/tests/test_netlist.py",
-      "Memory/tests/tb_memory_smoke.v"
+      "verilog/Memory/tests/tb_memory_smoke.v"
     ]
   },
   "verilog": {
     "module": "mem_as6c62256",
-    "file": "Memory/as6c62256.v"
+    "file": "verilog/Memory/as6c62256.v"
   },
   "python": {
     "factory": "chiplib.create_chip",
