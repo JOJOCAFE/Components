@@ -5,14 +5,82 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "nand4_0000",
+      "inputs": {
+        "A": 0,
+        "B": 0,
+        "C": 0,
+        "D": 0
+      },
+      "expect": {
+        "Y": 1
+      }
+    },
+    {
+      "name": "nand4_0111",
+      "inputs": {
+        "A": 0,
+        "B": 1,
+        "C": 1,
+        "D": 1
+      },
+      "expect": {
+        "Y": 1
+      }
+    },
+    {
+      "name": "nand4_1011",
+      "inputs": {
+        "A": 1,
+        "B": 0,
+        "C": 1,
+        "D": 1
+      },
+      "expect": {
+        "Y": 1
+      }
+    },
+    {
+      "name": "nand4_1101",
+      "inputs": {
+        "A": 1,
+        "B": 1,
+        "C": 0,
+        "D": 1
+      },
+      "expect": {
+        "Y": 1
+      }
+    },
+    {
+      "name": "nand4_1110",
+      "inputs": {
+        "A": 1,
+        "B": 1,
+        "C": 1,
+        "D": 0
+      },
+      "expect": {
+        "Y": 1
+      }
+    },
+    {
+      "name": "nand4_1111",
+      "inputs": {
+        "A": 1,
+        "B": 1,
+        "C": 1,
+        "D": 1
+      },
+      "expect": {
+        "Y": 0
+      }
     }
   ],
   "edge_criteria": {
     "clocking": "level_sensitive",
     "trigger_edge": "none",
     "non_trigger_edge": "not_applicable",
-    "notes": "Combinational or level-controlled part; outputs are checked after input/control level changes and propagation delay."
+    "notes": "Combinational 4-input NAND gate; outputs are checked after input level changes and propagation delay."
   }
 }

@@ -347,7 +347,9 @@
     "unit_test": {
       "part": "74HC30",
       "required_vectors": [
-        "basic_function"
+        "nand8_all_low",
+        "nand8_one_low",
+        "nand8_all_high"
       ],
       "schema": "db.component.generated.tests",
       "split_records": {
@@ -386,7 +388,9 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "nand8_all_low",
+            "nand8_one_low",
+            "nand8_all_high"
           ]
         }
       },
@@ -462,7 +466,9 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "nand8_all_low",
+            "nand8_one_low",
+            "nand8_all_high"
           ]
         }
       },

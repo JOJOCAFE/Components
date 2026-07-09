@@ -28,6 +28,7 @@ truth when lab wording is simplified.
 | `RV8GR_FullControlOpcodeSweep` | T2 horizontal-control equation proof | Started | all opcode/Z cases, reserved mixes, side-effect drift |
 | `RV8GR_ResetClockBringup` | `lab01_power_clock` + `tb_rv8gr_chip_level` reset/ring sanity | Started | reset idle/release, one-hot phase pushes, PC known-state policy, clock profiles |
 | `RV8GR_FetchCycleTrace` | `doc/03_instruction_trace.md` + `tb_rv8gr_tasks.v` basic fetch | Started | T0 control fetch, T1 operand fetch, T2 LI execute, PC motion, bus owners |
+| `RV8GR_StoreLoadBranchTrace` | `doc/03_instruction_trace.md` traces 2, 4, and 7 | Started | SB RAM write, LB RAM read, BEQ PC load, bus owners, PC/AC/RAM state |
 
 Each circuit package should include:
 
@@ -38,6 +39,7 @@ Each circuit package should include:
 - `timing_margins.json`: shared RV8GR timing-margin data for propagation
   paths, 50 kHz/1/2/5 MHz periods, setup/hold notes, bus-race risks, and the
   current functional-only 5 MHz boundary.
+- `BACKLOG.md`: short list of next trace/circuit packages and proof gaps.
 
 ## Next Tests From RV8GR Debug Plan
 

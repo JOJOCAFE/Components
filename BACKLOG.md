@@ -249,6 +249,9 @@ Next team tasks:
      source-file requirements, physical timing caveats, and bus-race notes.
    - ✅ Source-backed candidate paths and bench-evidence gates now keep
      selected-part timing separate from measured hardware proof.
+   - ✅ Task 5 DB extraction batch filled source-backed timing/electrical
+     fields for `74HC138`, `74HC139`, and `74HC151` from the named TI
+     datasheets while leaving simulation delay assumptions separate.
    - Keep 5 MHz marked functional simulation until physical timing and
      signal-integrity evidence exist.
    - Next: fill the missing bench evidence: actual memory chip markings,
@@ -260,9 +263,11 @@ Next team tasks:
      Verilog simulation backend.
 3. **Bank + Bam + Noon: continue RV8GR circuit extraction**
    - ✅ `RV8GR_FetchCycleTrace` is now extracted.
-   - Next candidates: reset/clock distribution with physical debounce variants,
-     complete full-system golden trace package, or branch/store/load trace
-     packages from `doc/03_instruction_trace.md`.
+   - ✅ `RV8GR_StoreLoadBranchTrace` now packages SB, LB, and BEQ rows from
+     `doc/03_instruction_trace.md` with state and bus-ownership vectors.
+   - Next candidates: SETDP/SETPG/J trace package, reset/clock distribution
+     with physical debounce variants, or complete full-system golden trace
+     package.
 
 Pim coordinates this plan and keeps `Lib/Circuits/README.md`, `BACKLOG.md`,
 tests, and pushed commits aligned.
@@ -292,6 +297,9 @@ tests, and pushed commits aligned.
 - ✅ Refresh all 62 active IC `generated/artifacts.json` files from the current
   generator and add a strict no-drift gate in
   `tests.test_generated_split_records`.
+- ✅ Task 4 chip-specific truth-vector batch: `74HC02`, `74HC10`, `74HC11`,
+  `74HC20`, `74HC27`, and `74HC30` now have explicit gate vectors, generated
+  artifacts, and executable Python-model regression coverage.
 
 ## Backend Bus, Probe, And Test Logic
 

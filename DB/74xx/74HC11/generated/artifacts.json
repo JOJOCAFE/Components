@@ -371,7 +371,11 @@
     "unit_test": {
       "part": "74HC11",
       "required_vectors": [
-        "basic_function"
+        "and3_000",
+        "and3_011",
+        "and3_101",
+        "and3_110",
+        "and3_111"
       ],
       "schema": "db.component.generated.tests",
       "split_records": {
@@ -410,7 +414,11 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "and3_000",
+            "and3_011",
+            "and3_101",
+            "and3_110",
+            "and3_111"
           ]
         }
       },
@@ -486,7 +494,11 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "and3_000",
+            "and3_011",
+            "and3_101",
+            "and3_110",
+            "and3_111"
           ]
         }
       },

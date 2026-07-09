@@ -160,7 +160,9 @@
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     ]
@@ -321,44 +323,108 @@
       "version": 1,
       "part": "74HC138",
       "delay": {
-        "model_delay_ns": 15,
-        "status": "model-derived"
+        "default_ns": 15,
+        "source": "simulation default from Python model",
+        "status": "datasheet-backed",
+        "conditions": {
+          "load_capacitance_pf": 50,
+          "device": "SN74HC138",
+          "paths": [
+            "address_to_y",
+            "enable_to_y",
+            "transition_y"
+          ]
+        },
+        "datasheet_typical_ns": {
+          "address_to_y": {
+            "vcc_4_5_v": 18,
+            "vcc_6_v": 15
+          },
+          "enable_to_y": {
+            "vcc_4_5_v": 18,
+            "vcc_6_v": 15
+          },
+          "transition_y": {
+            "vcc_4_5_v": 8,
+            "vcc_6_v": 6
+          }
+        },
+        "datasheet_max_ns_25c": {
+          "address_to_y": {
+            "vcc_4_5_v": 36,
+            "vcc_6_v": 31
+          },
+          "enable_to_y": {
+            "vcc_4_5_v": 31,
+            "vcc_6_v": 26
+          },
+          "transition_y": {
+            "vcc_4_5_v": 15,
+            "vcc_6_v": 13
+          }
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "address_to_y": {
+            "vcc_4_5_v": 45,
+            "vcc_6_v": 38
+          },
+          "enable_to_y": {
+            "vcc_4_5_v": 39,
+            "vcc_6_v": 33
+          },
+          "transition_y": {
+            "vcc_4_5_v": 19,
+            "vcc_6_v": 16
+          }
+        }
       },
       "evidence": {
-        "label": "Texas Instruments SN74HC138",
+        "source": "Texas Instruments SN74HC138 datasheet, switching characteristics, CL = 50 pF",
         "url": "https://www.ti.com/lit/ds/symlink/sn74hc138.pdf",
-        "package_evidence": "N, 16-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
+        "package_evidence": "N, 16-pin PDIP"
       }
     },
     "electrical": {
       "schema": "db.component.electrical",
       "version": 1,
       "part": "74HC138",
+      "logic_family": "74HC",
       "voltage": {
         "vcc": {
-          "status": "datasheet-required"
+          "min_v": 2.0,
+          "typ_v": 5.0,
+          "max_v": 6.0,
+          "status": "extracted"
         }
       },
       "current": {
-        "status": "datasheet-required"
+        "output_drive": {
+          "vcc_4_5_v": {
+            "ioh_ma": -4,
+            "iol_ma": 4
+          },
+          "vcc_6_v": {
+            "ioh_ma": -5.2,
+            "iol_ma": 5.2
+          },
+          "status": "extracted"
+        },
+        "supply_current": {
+          "vcc_6_v_max_ua": 80,
+          "status": "extracted"
+        }
       },
       "loading": {
-        "status": "datasheet-required"
+        "input_capacitance": {
+          "typ_pf": 3,
+          "max_pf": 10,
+          "status": "extracted"
+        }
       },
       "evidence": {
-        "label": "Texas Instruments SN74HC138",
+        "source": "Texas Instruments SN74HC138 datasheet, electrical characteristics",
         "url": "https://www.ti.com/lit/ds/symlink/sn74hc138.pdf",
-        "package_evidence": "N, 16-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
+        "package_evidence": "N, 16-pin PDIP"
       }
     }
   },

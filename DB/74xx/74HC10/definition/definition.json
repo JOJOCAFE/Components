@@ -134,7 +134,11 @@
       "propagation"
     ],
     "required_vectors": [
-      "basic_function"
+      "nand3_000",
+      "nand3_011",
+      "nand3_101",
+      "nand3_110",
+      "nand3_111"
     ]
   },
   "datasheet": {

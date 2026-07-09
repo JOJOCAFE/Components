@@ -1,0 +1,73 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_store_load_branch_trace",
+  "title": "RV8GR store/load/branch trace",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md",
+      "Lib/Circuits/RV8GR_BusOwnership/circuit.json",
+      "Lib/Circuits/RV8GR_StorePath/circuit.json",
+      "Lib/Circuits/RV8GR_DataPageMemory/circuit.json",
+      "Lib/Circuits/RV8GR_BranchJumpControl/circuit.json"
+    ]
+  },
+  "purpose": "Package the SB, LB, and BEQ T2 traces so store direction, load direction, branch loading, bus ownership, and architectural state can be checked without running the full CPU.",
+  "chips": [
+    {"ref": "U1_U4", "part": "74HC161", "role": "16-bit program counter chain"},
+    {"ref": "U7", "part": "74HC245", "role": "DBUS/IBUS bridge; DBUS-to-IBUS for load, IBUS-to-DBUS for store"},
+    {"ref": "U14", "part": "74HC541", "role": "AC output buffer for SB store data"},
+    {"ref": "U15_U16_U29_U30", "part": "74HC157", "role": "PC versus {DP,IRL} address selection"},
+    {"ref": "U24_U28", "part": "74HCxx gates", "role": "branch condition and /PC_LD control"},
+    {"ref": "U34", "part": "74HC541", "role": "immediate operand driver for BEQ target low byte"},
+    {"ref": "RAM1", "part": "62256", "role": "RAM byte at {DP,IRL} for SB and LB"},
+    {"ref": "IBUSMON", "part": "BusProbe", "role": "IBUS owner monitor"},
+    {"ref": "DBUSMON", "part": "BusProbe", "role": "DBUS owner monitor"}
+  ],
+  "ports": [
+    {"name": "T2", "direction": "input"},
+    {"name": "PC0..PC15", "direction": "input/output"},
+    {"name": "PG0..PG7", "direction": "input"},
+    {"name": "DP0..DP7", "direction": "input"},
+    {"name": "IRH0..IRH7", "direction": "input"},
+    {"name": "IRL0..IRL7", "direction": "input"},
+    {"name": "AC0..AC7", "direction": "input/output"},
+    {"name": "Z", "direction": "input/output"},
+    {"name": "ABUS0..ABUS15", "direction": "output"},
+    {"name": "IBUS0..IBUS7", "direction": "bidirectional"},
+    {"name": "DBUS0..DBUS7", "direction": "bidirectional"}
+  ],
+  "wiring": [
+    {"net": "ABUS0..ABUS15", "connections": ["U1_U4.Q", "U15_U16_U29_U30.Y", "RAM1.A0..A14"], "rule": "SB and LB select {DP,IRL}; BEQ keeps ABUS on PC during T2."},
+    {"net": "IBUS0..IBUS7", "connections": ["U7.A0..A7", "U14.Y0..Y7", "U34.Y0..Y7", "IBUSMON.1"]},
+    {"net": "DBUS0..DBUS7", "connections": ["U7.B0..B7", "RAM1.DQ0..DQ7", "DBUSMON.1"]},
+    {"net": "/AC_BUF", "connections": ["U14./OE"], "rule": "LOW only during T2 store."},
+    {"net": "WR_DIR", "connections": ["U7.DIR"], "rule": "1 means IBUS to DBUS for store; 0 means DBUS to IBUS for load."},
+    {"net": "BUF_OE_N", "connections": ["U7./OE"], "rule": "LOW for LB and SB T2 data movement."},
+    {"net": "/PC_LD", "connections": ["U1_U4./LOAD"], "rule": "LOW only when branch/jump control takes PC in T2."}
+  ],
+  "behavior": {
+    "sb": "Trace 2: opcode 0x04 drives AC through U14 onto IBUS, U7 writes DBUS, and RAM[{DP,IRL}] captures AC when A15 selects RAM.",
+    "lb": "Trace 7: opcode 0x38 selects RAM[{DP,IRL}], U7 bridges DBUS to IBUS, and AC captures the RAM byte.",
+    "beq": "Trace 4: opcode 0x02 loads PC with {PG,IRL} when Z=1; AC and RAM are unchanged.",
+    "bus_policy": "Each vector must have no more than one active IBUS driver and no more than one active DBUS driver."
+  },
+  "timing": {
+    "clocking": "T2 execute trace only",
+    "frequency_boundary": "Functional trace proof only; physical timing is owned by timing_margins.json.",
+    "student_rule": "Check bus ownership before checking the state result, because a correct-looking byte is not acceptable if two chips fought for the bus."
+  },
+  "verification": {
+    "tests": ["tests/store_load_branch_trace.json"],
+    "guarantees": [
+      "SB writes AC to RAM at {DP,IRL}",
+      "LB reads RAM at {DP,IRL} into AC and updates Z",
+      "BEQ loads PC with {PG,IRL} only when Z=1",
+      "AC, PC, and RAM final state match each trace vector",
+      "IBUS and DBUS ownership is conflict-free for every vector"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

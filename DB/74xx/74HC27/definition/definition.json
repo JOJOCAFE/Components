@@ -125,7 +125,11 @@
       "propagation"
     ],
     "required_vectors": [
-      "basic_function"
+      "nor3_000",
+      "nor3_001",
+      "nor3_010",
+      "nor3_100",
+      "nor3_111"
     ]
   },
   "datasheet": {

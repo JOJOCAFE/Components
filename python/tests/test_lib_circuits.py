@@ -26,6 +26,7 @@ VIRTUAL_TEST_HELPERS = ROOT / "Lib" / "Circuits" / "RV8GR_VirtualTestHelpers"
 FULL_CONTROL_OPCODE_SWEEP = ROOT / "Lib" / "Circuits" / "RV8GR_FullControlOpcodeSweep"
 RESET_CLOCK_BRINGUP = ROOT / "Lib" / "Circuits" / "RV8GR_ResetClockBringup"
 FETCH_CYCLE_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_FetchCycleTrace"
+STORE_LOAD_BRANCH_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_StoreLoadBranchTrace"
 TIMING_MARGINS = ROOT / "Lib" / "Circuits" / "timing_margins.json"
 RANDOM_PUSH_SEED = 0x8C16
 BYTE_D_PINS = [2, 3, 4, 5, 6, 7, 8, 9]
@@ -317,6 +318,72 @@ def full_control_opcode_expected(opcode: int, init_z: int, constants: dict[str, 
         "pc": target if branch["pc_load_cond"] else init_pc,
         "ram": init_ac if bits["STR"] else ram_value,
         "conflict": bus_ownership("T2", bits["SRC"], bits["STR"], 1)["conflict"],
+    }
+
+
+def parse_hex(value: str) -> int:
+    return int(value, 16)
+
+
+def parse_ram_image(ram: dict[str, str]) -> dict[int, int]:
+    return {parse_hex(address): parse_hex(value) for address, value in ram.items()}
+
+
+def u7_direction_from_ownership(ownership: dict) -> str:
+    controls = ownership["controls"]
+    if controls["BUF_OE_N"] != 0:
+        return "DISABLED"
+    return "IBUS_TO_DBUS" if controls["WR_DIR"] else "DBUS_TO_IBUS"
+
+
+def store_load_branch_trace_execute(vector: dict) -> dict[str, object]:
+    opcode = parse_hex(vector["opcode"])
+    operand = parse_hex(vector["operand"])
+    initial = vector["initial"]
+    pc = parse_hex(initial["PC"])
+    pg = parse_hex(initial["PG"])
+    dp = parse_hex(initial["DP"])
+    ac = parse_hex(initial["AC"])
+    z = int(initial["Z"])
+    ram = parse_ram_image(initial["RAM"])
+    bits = control_bits(opcode)
+    addr_mode_n = addr_mode_n_for(vector["phase"], bits["SRC"], bits["STR"])
+    abus = address_mux16(pc, dp, operand, addr_mode_n)
+    a15 = (abus >> 15) & 1
+    ownership = bus_ownership(vector["phase"], bits["SRC"], bits["STR"], a15)
+    ibus: int | None = None
+    dbus: int | None = None
+
+    if bits["STR"]:
+        ibus = ac
+        dbus = ac
+        controls = store_path_controls(vector["phase"], bits["STR"], a15)
+        if controls["write"]:
+            ram[abus] = ac
+    elif bits["SRC"]:
+        dbus = ram.get(abus, 0)
+        ibus = dbus
+        result = alu_datapath(ac, ibus, bits["ALU_SUB"], bits["XOR_MODE"], bits["MUX_SEL"], bits["AC_WR"], vector["phase"])
+        ac = result["ac"]
+        z = result["z"] if bits["AC_WR"] else z
+    else:
+        ibus = operand
+        branch = branch_jump_control(vector["phase"], bits["JMP"], bits["BR"], z, bits["ALU_SUB"])
+        if branch["pc_ld_n"] == 0:
+            pc = jump_target(pg, operand)
+
+    return {
+        "ABUS": abus,
+        "IBUS": ibus,
+        "DBUS": dbus,
+        "PC": pc,
+        "AC": ac,
+        "Z": z,
+        "RAM": ram,
+        "ibus_drivers": ownership["ibus_drivers"],
+        "dbus_drivers": ownership["dbus_drivers"],
+        "u7_direction": u7_direction_from_ownership(ownership),
+        "conflict": ownership["conflict"],
     }
 
 
@@ -2030,6 +2097,62 @@ def test_rv8gr_fetch_cycle_bus_driver_policy_is_conflict_free():
     assert {"ibus_multi_driver", "dbus_multi_driver", "rom_ram_dual_select"} <= rejects
 
 
+def test_rv8gr_store_load_branch_trace_package_shape():
+    circuit = load_json(STORE_LOAD_BRANCH_TRACE / "circuit.json")
+    proof = load_json(STORE_LOAD_BRANCH_TRACE / "tests" / "store_load_branch_trace.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_store_load_branch_trace"
+    assert proof["circuit"] == circuit["id"]
+    assert (STORE_LOAD_BRANCH_TRACE / "README.md").exists()
+    assert "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md" in circuit["source_project"]["paths"]
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips["U7"] == "74HC245"
+    assert chips["U14"] == "74HC541"
+    assert chips["U34"] == "74HC541"
+    assert chips["RAM1"] == "62256"
+
+
+def test_rv8gr_store_load_branch_trace_vectors_execute():
+    proof = load_json(STORE_LOAD_BRANCH_TRACE / "tests" / "store_load_branch_trace.json")
+    assert {trace["name"] for trace in proof["source_traces"]} == {"SB", "LB", "BEQ"}
+
+    for vector in proof["vectors"]:
+        result = store_load_branch_trace_execute(vector)
+        expect = vector["expect"]
+        assert result["ABUS"] == parse_hex(expect["ABUS"]), vector
+        assert result["IBUS"] == parse_hex(expect["IBUS"]), vector
+        assert result["DBUS"] == (None if expect["DBUS"] is None else parse_hex(expect["DBUS"])), vector
+        assert result["PC"] == parse_hex(expect["PC"]), vector
+        assert result["AC"] == parse_hex(expect["AC"]), vector
+        assert result["Z"] == expect["Z"], vector
+        assert result["ibus_drivers"] == expect["ibus_drivers"], vector
+        assert result["dbus_drivers"] == expect["dbus_drivers"], vector
+        assert result["u7_direction"] == expect["u7_direction"], vector
+        assert result["conflict"] is expect["conflict"], vector
+        for address, value in expect["RAM"].items():
+            assert result["RAM"][parse_hex(address)] == parse_hex(value), vector
+
+
+def test_rv8gr_store_load_branch_trace_bus_policy_is_conflict_free():
+    proof = load_json(STORE_LOAD_BRANCH_TRACE / "tests" / "store_load_branch_trace.json")
+    assert {"ibus_multi_driver", "dbus_multi_driver", "rom_ram_dual_select"} <= set(proof["bus_safety"]["reject"])
+
+    for vector in proof["vectors"]:
+        result = store_load_branch_trace_execute(vector)
+        assert result["conflict"] is False, vector
+        assert len(result["ibus_drivers"]) <= 1, vector
+        assert len(result["dbus_drivers"]) <= 1, vector
+
+    sb = next(vector for vector in proof["vectors"] if vector["mnemonic"] == "SB")
+    lb = next(vector for vector in proof["vectors"] if vector["mnemonic"] == "LB")
+    beq = next(vector for vector in proof["vectors"] if vector["mnemonic"] == "BEQ" and vector["initial"]["Z"] == 1)
+    assert store_load_branch_trace_execute(sb)["RAM"][0x8003] == 0xAA
+    assert store_load_branch_trace_execute(lb)["AC"] == 0xAA
+    assert store_load_branch_trace_execute(beq)["PC"] == 0x0020
+
+
 def test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary():
     timing = load_json(TIMING_MARGINS)
     assert timing["schema"] == "components.lib.circuit.timing_margins"
@@ -2306,6 +2429,9 @@ def run_all():
     test_rv8gr_fetch_cycle_basic_fetch_matches_verilog_task()
     test_rv8gr_fetch_cycle_golden_trace_matches_doc_rows()
     test_rv8gr_fetch_cycle_bus_driver_policy_is_conflict_free()
+    test_rv8gr_store_load_branch_trace_package_shape()
+    test_rv8gr_store_load_branch_trace_vectors_execute()
+    test_rv8gr_store_load_branch_trace_bus_policy_is_conflict_free()
     test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary()
     test_rv8gr_timing_setup_hold_requirements_cover_edge_sensitive_paths()
     test_rv8gr_timing_physical_assumptions_are_source_backed_and_not_proven()

@@ -76,10 +76,7 @@ RV8GR_REQUIRED_PACKAGE_FILES = (
 SPLIT_TEST_TYPES = ("truth_table", "timing", "tri_state", "bus_fight", "propagation")
 GENERATED_SIMPLE_GATE_BENCH_PARTS = ("74HC00", "74HC04", "74HC08", "74HC32", "74HC86")
 EXPECTED_BASIC_FUNCTION_PLACEHOLDERS = {
-    "74HC02",
     "74HC07",
-    "74HC10",
-    "74HC11",
     "74HC112",
     "74HC138",
     "74HC139",
@@ -98,16 +95,13 @@ EXPECTED_BASIC_FUNCTION_PLACEHOLDERS = {
     "74HC166",
     "74HC181",
     "74HC193",
-    "74HC20",
     "74HC238",
     "74HC240",
     "74HC244",
     "74HC251",
     "74HC257",
     "74HC266",
-    "74HC27",
     "74HC273",
-    "74HC30",
     "74HC352",
     "74HC374",
     "74HC377",
@@ -323,6 +317,24 @@ def test_task3_representative_batch2_truth_records_execute_against_python_models
         record = load_batch2_record(part, "truth_table")
         assert record["applicable"] is True
         assert all(item["name"] != "basic_function" for item in record["vectors"])
+        assert all("inputs" in item and "expect" in item for item in record["vectors"])
+        executed = executor(record)
+        assert executed == {item["name"] for item in record["vectors"]}, part
+
+
+def test_simple_gate_truth_batch3_records_execute_against_python_models():
+    executors = {
+        "74HC02": lambda record: _execute_numbered_gate_truth(record, "74HC02", ["A", "B"], "Y"),
+        "74HC10": lambda record: _execute_numbered_gate_truth(record, "74HC10", ["A", "B", "C"], "Y"),
+        "74HC11": lambda record: _execute_numbered_gate_truth(record, "74HC11", ["A", "B", "C"], "Y"),
+        "74HC20": lambda record: _execute_numbered_gate_truth(record, "74HC20", ["A", "B", "C", "D"], "Y"),
+        "74HC27": lambda record: _execute_numbered_gate_truth(record, "74HC27", ["A", "B", "C"], "Y"),
+        "74HC30": _execute_74hc30_truth,
+    }
+    for part, executor in executors.items():
+        record = load_active_record(part, "truth_table")
+        assert record["applicable"] is True
+        assert all(item.get("name") != "basic_function" for item in record["vectors"])
         assert all("inputs" in item and "expect" in item for item in record["vectors"])
         executed = executor(record)
         assert executed == {item["name"] for item in record["vectors"]}, part
@@ -1092,6 +1104,28 @@ def _execute_74hc32_truth(record) -> set[str]:
     return set(vectors)
 
 
+def _execute_numbered_gate_truth(record, part: str, input_suffixes: list[str], output_suffix: str) -> set[str]:
+    vectors = {item["name"]: item for item in record["vectors"]}
+    chip = create_chip(part, "U")
+    for item in vectors.values():
+        for suffix in input_suffixes:
+            chip.set_input(f"1{suffix}", item["inputs"][suffix])
+        eval_chip(chip)
+        assert chip.read(f"1{output_suffix}") == item["expect"][output_suffix], item["name"]
+    return set(vectors)
+
+
+def _execute_74hc30_truth(record) -> set[str]:
+    vectors = {item["name"]: item for item in record["vectors"]}
+    chip = create_chip("74HC30", "U")
+    for item in vectors.values():
+        for name, value in item["inputs"].items():
+            chip.set_input(name, value)
+        eval_chip(chip)
+        assert chip.read("Y") == item["expect"]["Y"], item["name"]
+    return set(vectors)
+
+
 def run_all():
     test_seed_truth_table_records_execute_against_python_models()
     test_seed_timing_and_propagation_records_match_definition_metadata()
@@ -1100,6 +1134,7 @@ def run_all():
     test_active_ic_catalog_has_structural_package_gate()
     test_active_ic_truth_placeholder_inventory_is_explicit()
     test_task3_representative_batch2_truth_records_execute_against_python_models()
+    test_simple_gate_truth_batch3_records_execute_against_python_models()
     test_targeted_truth_records_are_explicit_and_execute_against_python_models()
     test_74hc245_direction_high_z_and_bus_fight_records_are_explicit()
     test_seed_enable_hold_and_write_protection_vectors_are_present()

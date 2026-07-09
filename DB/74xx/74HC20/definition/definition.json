@@ -125,7 +125,12 @@
       "propagation"
     ],
     "required_vectors": [
-      "basic_function"
+      "nand4_0000",
+      "nand4_0111",
+      "nand4_1011",
+      "nand4_1101",
+      "nand4_1110",
+      "nand4_1111"
     ]
   },
   "datasheet": {

@@ -125,7 +125,9 @@
       "propagation"
     ],
     "required_vectors": [
-      "basic_function"
+      "nand8_all_low",
+      "nand8_one_low",
+      "nand8_all_high"
     ]
   },
   "datasheet": {

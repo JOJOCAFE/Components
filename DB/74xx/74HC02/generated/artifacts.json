@@ -368,7 +368,10 @@
     "unit_test": {
       "part": "74HC02",
       "required_vectors": [
-        "basic_function"
+        "nor_00",
+        "nor_01",
+        "nor_10",
+        "nor_11"
       ],
       "schema": "db.component.generated.tests",
       "split_records": {
@@ -407,7 +410,10 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "nor_00",
+            "nor_01",
+            "nor_10",
+            "nor_11"
           ]
         }
       },
@@ -483,7 +489,10 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "nor_00",
+            "nor_01",
+            "nor_10",
+            "nor_11"
           ]
         }
       },
