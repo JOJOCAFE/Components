@@ -544,7 +544,7 @@ Result shapes:
     {
       "id": "virtual",
       "title": "Virtual simulation components",
-      "path": "db/virtual",
+      "path": "DB/Virtual",
       "count": 8
     }
   ],
@@ -573,7 +573,7 @@ Result shapes:
   "version": 1,
   "part": "74HC00",
   "group": "74xx",
-  "db_path": "db/74xx/74HC00/chip.json",
+  "db_path": "DB/74xx/74HC00/chip.json",
   "pins": [
     {"number": 1, "name": "1A", "direction": "input"}
   ],
@@ -682,7 +682,7 @@ Example:
 
 ## Pluggable Service Rules
 
-- The canonical chip identity DB is `db/` and is read through Components DB
+- The canonical chip identity DB is `DB/` and is read through Components DB
   APIs.
 - The canonical student-facing schematic format is `SCHEMATIC_JSON_SPEC.md`.
 - A plugin may implement simulation, netlist export, Verilog export, or API

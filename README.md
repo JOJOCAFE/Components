@@ -9,17 +9,17 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 
 ## Layout
 
-- `verilog/74xx/` - behavioral Verilog models for 74HC-family logic chips, with each `74hcxx.v` embedding its pinout notes as comments.
-- `verilog/Memory/` - behavioral Verilog models for EEPROM, flash EEPROM, and SRAM parts, with each `.v` embedding its pinout notes as comments.
-- `db/` - component DB manifests and schema where chips, virtual tools,
+- `Verilog/74xx/` - behavioral Verilog models for 74HC-family logic chips, with each `74hcxx.v` embedding its pinout notes as comments.
+- `Verilog/Memory/` - behavioral Verilog models for EEPROM, flash EEPROM, and SRAM parts, with each `.v` embedding its pinout notes as comments.
+- `DB/` - component DB manifests and schema where chips, virtual tools,
   passives, and discrete parts own status, pins, sources, behavior/export
   references, and visible missing properties.
-- `examples/` - service-ready schematic JSON fixtures for CLI/API contracts
+- `Examples/` - service-ready schematic JSON fixtures for CLI/API contracts
   and regression tests.
 - `python/` - reusable Python pin-level behavior models, net wiring, tri-state conflict checks, and propagation-delay simulation.
-- `schemas/` - machine-readable schemas for exported interchange artifacts,
+- `Schemas/` - machine-readable schemas for exported interchange artifacts,
   including the normalized netlist contract.
-- `source/` - manufacturer datasheet PDFs used as local evidence for pinout documentation; see `source/README.md` for the retained evidence list.
+- `Source/` - manufacturer datasheet PDFs used as local evidence for pinout documentation; see `Source/README.md` for the retained evidence list.
 - `SCHEMATIC_JSON_SPEC.md` - readable JSON schematic script contract for
   digital simulation, CPU labs, netlist export, Verilog/testbench generation,
   and future UI display.
@@ -38,7 +38,7 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 - `FRONTEND_SNAPSHOT_CONTRACT.md` - UI/API snapshot shape for drawing chips,
   nets, buses, probes, displays, errors, and warnings without scraping backend
   internals.
-- `DB_MIGRATION_PLAN.md` - phased plan for making `db/` the chip identity
+- `DB_MIGRATION_PLAN.md` - phased plan for making `DB/` the chip identity
   layer while legacy model files with embedded pinout comments remain active
   during migration.
 - `AGENTS.md` - local JOJOCAFE team ownership map for Components work.
@@ -104,7 +104,7 @@ catalog.
 
 ## Naming
 
-- Chip model files use lowercase part names, for example `verilog/74xx/74hc245.v`.
+- Chip model files use lowercase part names, for example `Verilog/74xx/74hc245.v`.
 - 74HC Verilog modules use `ttl_74hcxx` names.
 - Memory Verilog modules use `mem_<part>` names.
 - Pinout files use `<part>-pin.md`, one file per chip.
@@ -126,10 +126,10 @@ python3 -B -m tests.test_simulation_service
 python3 -B -m tests.test_equivalence
 cd ..
 
-iverilog -g2012 -Wall -o /tmp/tb_74xx_smoke.vvp verilog/74xx/*.v verilog/74xx/tests/tb_74xx_smoke.v
+iverilog -g2012 -Wall -o /tmp/tb_74xx_smoke.vvp Verilog/74xx/*.v Verilog/74xx/tests/tb_74xx_smoke.v
 vvp /tmp/tb_74xx_smoke.vvp
 
-iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp verilog/Memory/*.v verilog/Memory/tests/tb_memory_smoke.v
+iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp Verilog/Memory/*.v Verilog/Memory/tests/tb_memory_smoke.v
 vvp /tmp/tb_memory_smoke.vvp
 ```
 
@@ -158,18 +158,18 @@ cd ..
 
 ## Subfolder Docs
 
-- `verilog/74xx/README.md` - full 74xx logic model list, scan notes, and 74xx source coverage.
-- `verilog/Memory/README.md` - memory model list and datasheet sources.
-- `db/README.md` - chip-centered DB migration notes and manifest
+- `Verilog/74xx/README.md` - full 74xx logic model list, scan notes, and 74xx source coverage.
+- `Verilog/Memory/README.md` - memory model list and datasheet sources.
+- `DB/README.md` - chip-centered DB migration notes and manifest
   layout.
 - `python/README.md` - Python chip-library coverage and usage.
-- `examples/*.json` - service-ready NAND, counter, bus transceiver, memory
+- `Examples/*.json` - service-ready NAND, counter, bus transceiver, memory
   read, and tiny CPU-slice schematics used by contract tests.
 - `CHIP_STATUS.md` - verified/modeled/tested/missing-datasheet status split
   for the active chip library.
 - `SCHEMATIC_JSON_SPEC.md` - complete JSON schematic-script shape for digital
   and CPU simulation projects.
-- `schemas/normalized-netlist.schema.json` - JSON Schema for
+- `Schemas/normalized-netlist.schema.json` - JSON Schema for
   `Design.to_netlist()` exports consumed by CLI, UI, and HDL tooling.
 - `SERVICE_CONTRACT.md` - shared CLI/API request, response, error, versioning,
   and pluggable-service rules.

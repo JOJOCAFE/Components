@@ -15,8 +15,8 @@ Status snapshot for the shared Components library.
 
 ## Verified
 
-All active embedded pinout comments in `verilog/74xx/*.v` and
-`verilog/Memory/*.v` are intended to be manufacturer-backed DIP/PDIP evidence.
+All active embedded pinout comments in `Verilog/74xx/*.v` and
+`Verilog/Memory/*.v` are intended to be manufacturer-backed DIP/PDIP evidence.
 Parts without that evidence must not stay in the active physical pinout
 catalog.
 
@@ -38,7 +38,7 @@ Verified memory embedded pinout documentation currently covers:
 
 ## Modeled
 
-Modeled 74HC parts currently have `verilog/74xx/*.v` Verilog models and Python catalog
+Modeled 74HC parts currently have `Verilog/74xx/*.v` Verilog models and Python catalog
 coverage:
 
 `74HC00`, `74HC02`, `74HC04`, `74HC07`, `74HC08`, `74HC10`, `74HC11`,
@@ -62,8 +62,8 @@ Runnable test coverage is split by layer:
 - Python behavior/catalog tests: `python3 -B -m tests.test_chips`
 - Python design/netlist/CLI tests: `python3 -B -m tests.test_design`,
   `python3 -B -m tests.test_netlist`, and `python3 -B -m tests.test_cli`
-- 74xx Verilog smoke: `iverilog ... verilog/74xx/*.v ... && vvp ...`
-- Memory Verilog smoke: `iverilog ... verilog/Memory/*.v ... && vvp ...`
+- 74xx Verilog smoke: `iverilog ... Verilog/74xx/*.v ... && vvp ...`
+- Memory Verilog smoke: `iverilog ... Verilog/Memory/*.v ... && vvp ...`
 
 Structural netlist-export compile tests currently cover every mapped part below:
 

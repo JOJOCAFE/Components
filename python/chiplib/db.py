@@ -11,7 +11,7 @@ from typing import Any
 
 JsonMap = dict[str, Any]
 ROOT = Path(__file__).resolve().parents[2]
-DB_ROOT = ROOT / "db"
+DB_ROOT = ROOT / "DB"
 CHIP_STATUS_PATH = ROOT / "CHIP_STATUS.md"
 
 REQUIRED_STATUS_KEYS = (
@@ -137,7 +137,7 @@ def audit_db() -> JsonMap:
 
     for manifest in components:
         part = str(manifest.get("part", ""))
-        location = str(manifest.get("db_path", f"db/{part}/chip.json"))
+        location = str(manifest.get("db_path", f"DB/{part}/chip.json"))
         for key in manifest.get("missing_properties", []):
             errors.append(_issue("missing_property", part, location, f"missing status/property: {key}"))
         for path in manifest.get("missing_files", []):
@@ -418,7 +418,7 @@ def _manifest_group_from_path(path: Path) -> str:
         return ""
     parts = rel.parts
     if len(parts) >= 3:
-        return parts[0]
+        return parts[0].lower()
     return ""
 
 
@@ -435,7 +435,7 @@ def _group_summaries(components: list[JsonMap]) -> list[JsonMap]:
         result.append({
             "id": group_id,
             "title": index.get("title", group_id),
-            "path": f"db/{group_id}",
+            "path": index.get("path", f"DB/{group_id}"),
             "count": counts[group_id],
             "migration_status": index.get("migration_status", ""),
         })
@@ -453,6 +453,7 @@ def _db_group_indexes() -> dict[str, JsonMap]:
             continue
         if isinstance(data, dict):
             group_id = str(data.get("id", path.parent.name))
+            data.setdefault("path", str(path.parent.relative_to(ROOT)))
             indexes[group_id] = data
     return indexes
 
@@ -588,17 +589,17 @@ def _embedded_pinout_pins(path: Path) -> dict[int, str]:
 
 
 def _legacy_74hc_models() -> list[str]:
-    return [path.stem.upper() for path in (ROOT / "verilog" / "74xx").glob("*.v")]
+    return [path.stem.upper() for path in (ROOT / "Verilog" / "74xx").glob("*.v")]
 
 
 def _legacy_memory_models() -> list[str]:
-    return [_memory_part_id(path.stem) for path in (ROOT / "verilog" / "Memory").glob("*.v")]
+    return [_memory_part_id(path.stem) for path in (ROOT / "Verilog" / "Memory").glob("*.v")]
 
 
 def _legacy_74hc_pinouts() -> list[str]:
     return [
         path.stem.upper()
-        for path in (ROOT / "verilog" / "74xx").glob("*.v")
+        for path in (ROOT / "Verilog" / "74xx").glob("*.v")
         if "Embedded pinout documentation" in path.read_text(encoding="utf-8")
     ]
 
@@ -606,7 +607,7 @@ def _legacy_74hc_pinouts() -> list[str]:
 def _legacy_memory_pinouts() -> list[str]:
     return [
         _memory_part_id(path.stem)
-        for path in (ROOT / "verilog" / "Memory").glob("*.v")
+        for path in (ROOT / "Verilog" / "Memory").glob("*.v")
         if "Embedded pinout documentation" in path.read_text(encoding="utf-8")
     ]
 

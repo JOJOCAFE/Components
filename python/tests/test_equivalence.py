@@ -70,7 +70,7 @@ def test_74hc00_python_matches_verilog_vectors():
     expected = sum(bit << i for i, bit in enumerate(expected_bits))
 
     output = run_verilog(
-        "verilog/74xx/74hc00.v",
+        "Verilog/74xx/74hc00.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -100,7 +100,7 @@ def test_74hc161_python_matches_verilog_count_sequence():
     expected_rco = chip.read(15)
 
     output = run_verilog(
-        "verilog/74xx/74hc161.v",
+        "Verilog/74xx/74hc161.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -138,7 +138,7 @@ def test_74hc245_python_matches_verilog_a_to_b_and_high_z():
     assert chip.read(18) == Z
 
     output = run_verilog(
-        "verilog/74xx/74hc245.v",
+        "Verilog/74xx/74hc245.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -175,7 +175,7 @@ endmodule
     assert chip.read(18) == Z
 
     output = run_verilog(
-        "verilog/74xx/74hc245.v",
+        "Verilog/74xx/74hc245.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -213,7 +213,7 @@ def test_74hc541_python_matches_verilog_enable_and_high_z():
     assert chip.read(18) == Z
 
     output = run_verilog(
-        "verilog/74xx/74hc541.v",
+        "Verilog/74xx/74hc541.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -251,7 +251,7 @@ def test_74hc574_python_matches_verilog_latch_hold_and_high_z():
     assert chip.read(19) == Z
 
     output = run_verilog(
-        "verilog/74xx/74hc574.v",
+        "Verilog/74xx/74hc574.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -293,7 +293,7 @@ def test_62256_python_matches_verilog_write_read_and_high_z():
     assert chip.read(11) == Z
 
     output = run_verilog(
-        "verilog/Memory/62256.v",
+        "Verilog/Memory/62256.v",
         """
 `timescale 1ns/1ps
 module tb;

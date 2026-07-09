@@ -49,9 +49,9 @@ def _pinout_lines(path: Path, *, embedded: bool) -> list[str]:
 
 def _folder_path(folder: str) -> Path:
     if folder == "74HC":
-        return ROOT / "verilog" / "74xx"
+        return ROOT / "Verilog" / "74xx"
     if folder == "Memory":
-        return ROOT / "verilog" / "Memory"
+        return ROOT / "Verilog" / "Memory"
     return ROOT / folder
 
 

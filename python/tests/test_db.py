@@ -46,7 +46,7 @@ GROUPED_PARTS = {
 
 
 def test_db_seed_entries_are_loadable():
-    assert db_root().name == "db"
+    assert db_root().name == "DB"
     assert SEED_PARTS.issubset(set(component_ids()))
     assert GROUPED_PARTS.issubset(set(component_ids()))
     assert "74HC147" in component_ids()
@@ -172,9 +172,9 @@ def test_db_component_catalog_is_frontend_ready_and_grouped():
 
     hc00 = next(item for item in catalog["components"] if item["part"] == "74HC00")
     assert hc00["group"] == "74xx"
-    assert hc00["db_path"] == "db/74xx/74HC00/chip.json"
+    assert hc00["db_path"] == "DB/74xx/74HC00/chip.json"
     assert hc00["capabilities"]["physical_pinout"] is True
-    assert hc00["capabilities"]["verilog_file"] == "verilog/74xx/74hc00.v"
+    assert hc00["capabilities"]["verilog_file"] == "Verilog/74xx/74hc00.v"
     assert hc00["warnings"] == []
 
     memory = component_catalog(group="memory")
@@ -187,10 +187,10 @@ def test_db_component_detail_exposes_pins_and_capabilities():
     assert detail["format"] == "components.db.component"
     assert detail["part"] == "AT28C256"
     assert detail["group"] == "memory"
-    assert detail["db_path"] == "db/memory/AT28C256/chip.json"
+    assert detail["db_path"] == "DB/Memory/AT28C256/chip.json"
     assert detail["pins"][0] == {"number": 1, "name": "A14", "direction": "input"}
     assert detail["capabilities"]["verilog_model"] is True
-    assert detail["capabilities"]["verilog_file"] == "verilog/Memory/at28c256.v"
+    assert detail["capabilities"]["verilog_file"] == "Verilog/Memory/at28c256.v"
 
 
 def test_db_manifests_match_schema_contract():

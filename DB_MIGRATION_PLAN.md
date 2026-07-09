@@ -1,6 +1,6 @@
 # DB Migration Plan
 
-Goal: make `db/` the chip identity layer for Components without breaking the
+Goal: make `DB/` the chip identity layer for Components without breaking the
 current simulator, Verilog models, exporter, tests, or existing projects.
 
 The migration is gradual. Existing implementation files stay active until DB
@@ -12,7 +12,7 @@ The DB is now a grouped component catalog. IC manifests live with their family,
 and non-IC component manifests live with their component class:
 
 ```text
-db/
+DB/
   74xx/
     74HC245/
       chip.json
@@ -37,7 +37,7 @@ db/
 Future IC folders may own implementation files directly:
 
 ```text
-db/
+DB/
   74xx/74HC245/
     chip.json
     pinout.md          # later, after migration
@@ -57,8 +57,8 @@ Grouped `chip.json` manifests may still point to family-level implementation
 files:
 
 ```text
-verilog/74xx/74hc245.v
-verilog/Memory/at28c256.v
+Verilog/74xx/74hc245.v
+Verilog/Memory/at28c256.v
 python/chiplib/chips.py
 python/chiplib/catalog.py
 ```
@@ -68,17 +68,17 @@ status, pins, and exporter metadata.
 Grouped component manifests live under:
 
 ```text
-db/74xx/<part>/chip.json
-db/memory/<part>/chip.json
-db/virtual/<component>/component.json
-db/passive/<component>/component.json
-db/discrete/<component>/component.json
+DB/74xx/<part>/chip.json
+DB/Memory/<part>/chip.json
+DB/Virtual/<component>/component.json
+DB/Passive/<component>/component.json
+DB/Discrete/<component>/component.json
 ```
 
 ## Migration Rules
 
 1. Add DB entries before moving files.
-2. Every DB entry must pass `db/chip.schema.json`.
+2. Every DB entry must pass `DB/chip.schema.json`.
 3. Missing chip properties are allowed only when visible in `status`,
    `missing_properties`, or `missing_files`.
 4. Exporters and simulators should consume DB metadata through `chiplib.db`,
@@ -92,7 +92,7 @@ db/discrete/<component>/component.json
 8. Grouped virtual/passive/discrete manifests are allowed before behavior is
    executable, but they must declare `group`, `kind`, `role`, `pins`, `status`,
    and their intended `simulation.service`.
-9. Direct flat `db/<part>/chip.json` lookups are retired in runtime code. New
+9. Direct flat `DB/<part>/chip.json` lookups are retired in runtime code. New
    code must use the DB loader so grouped IC and non-IC manifests resolve
    through one path.
 
@@ -102,7 +102,7 @@ db/discrete/<component>/component.json
 
 Status: complete.
 
-- ✅ Add `db/chip.schema.json`.
+- ✅ Add `DB/chip.schema.json`.
 - ✅ Add seed manifests for simple gates and memory.
 - ✅ Add `chiplib.db` loader and CLI access.
 - ✅ Report missing properties and missing referenced files.
@@ -123,7 +123,7 @@ Add audit tooling that compares DB state against the legacy catalog.
 
 Required checks:
 
-- ✅ DB parts vs `verilog/74xx/*.v` and `verilog/Memory/*.v`.
+- ✅ DB parts vs `Verilog/74xx/*.v` and `Verilog/Memory/*.v`.
 - ✅ DB parts vs embedded 74xx pinout comments and Memory embedded pinout comments.
 - ✅ DB part status vs `CHIP_STATUS.md`.
 - ✅ Missing-datasheet exclusions cannot also appear in verified, modeled,
@@ -179,8 +179,8 @@ DB-owned export metadata.
 Target:
 
 ```text
-db/74xx/<part>/chip.json
-db/memory/<part>/chip.json
+DB/74xx/<part>/chip.json
+DB/Memory/<part>/chip.json
   verilog:
     module
     file
@@ -223,7 +223,7 @@ references are DB-backed.
 Example future move:
 
 ```text
-verilog/74xx/74hc245.v embedded comments -> db/74xx/74HC245/pinout.md
+Verilog/74xx/74hc245.v embedded comments -> DB/74xx/74HC245/pinout.md
 ```
 
 Temporary compatibility options:
@@ -241,8 +241,8 @@ Exit criteria if chosen:
 Only after metadata and export paths are stable, consider moving model files:
 
 ```text
-verilog/74xx/74hc245.v -> db/74xx/74HC245/model.v
-verilog/Memory/at28c256.v -> db/memory/AT28C256/model.v
+Verilog/74xx/74hc245.v -> DB/74xx/74HC245/model.v
+Verilog/Memory/at28c256.v -> DB/Memory/AT28C256/model.v
 ```
 
 This is optional. It may be better to keep implementation models in family
@@ -260,7 +260,7 @@ Exit criteria:
 - Do not split chip behavior into Rust/C/C++ until the DB and service
   contracts are stable.
 - Do not make every backend piece a separate process.
-- Do not delete `verilog/74xx/`, `verilog/Memory/`, or `python/chiplib/catalog.py` while any
+- Do not delete `Verilog/74xx/`, `Verilog/Memory/`, or `python/chiplib/catalog.py` while any
   loader still depends on them.
 - Do not let exporters or UI parse raw chip files independently from DB
   metadata.

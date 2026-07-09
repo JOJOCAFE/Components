@@ -92,7 +92,7 @@ Core skills:
 
 Components focus:
 
-- Owns `verilog/74xx/`, `verilog/Memory/`, and Verilog smoke tests.
+- Owns `Verilog/74xx/`, `Verilog/Memory/`, and Verilog smoke tests.
 - Reviews DB-owned `verilog.export` mappings for correct port direction and
   pin order.
 - Adds focused benches when a chip becomes export-supported.
@@ -181,9 +181,9 @@ python3 -B -m tests.test_equivalence
 python3 -m py_compile chiplib/*.py tests/*.py
 cd ..
 
-iverilog -g2012 -Wall -o /tmp/tb_74xx_smoke.vvp verilog/74xx/*.v verilog/74xx/tests/tb_74xx_smoke.v
+iverilog -g2012 -Wall -o /tmp/tb_74xx_smoke.vvp Verilog/74xx/*.v Verilog/74xx/tests/tb_74xx_smoke.v
 vvp /tmp/tb_74xx_smoke.vvp
 
-iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp verilog/Memory/*.v verilog/Memory/tests/tb_memory_smoke.v
+iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp Verilog/Memory/*.v Verilog/Memory/tests/tb_memory_smoke.v
 vvp /tmp/tb_memory_smoke.vvp
 ```

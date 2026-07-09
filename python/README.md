@@ -77,12 +77,12 @@ the behavior must remain compatible with the Python real-pin model.
 ## Current Coverage
 
 The Python package can instantiate every current Verilog component in
-`Components/verilog/74xx` and `Components/verilog/Memory` through `create_chip(part, name)`.
+`Components/Verilog/74xx` and `Components/Verilog/Memory` through `create_chip(part, name)`.
 
 Coverage includes:
 
-- all 57 current `verilog/74xx/*.v` parts
-- all 5 current `verilog/Memory/*.v` parts
+- all 57 current `Verilog/74xx/*.v` parts
+- all 5 current `Verilog/Memory/*.v` parts
 - the RV8GR-V2 starter set as hand-written models
 - the remaining Components parts as catalog models loaded from embedded or
   embedded pinout docs
@@ -92,7 +92,7 @@ absent from the Python catalog.
 
 ## Component DB
 
-`Components/db` is the new chip-centered DB layer. Each chip folder
+`Components/DB` is the new chip-centered DB layer. Each chip folder
 owns a `chip.json` manifest with status, pins, source evidence, behavior
 references, Verilog references, DB-owned structural export metadata, tests, and
 visible missing-property reports.

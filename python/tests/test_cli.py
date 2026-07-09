@@ -183,7 +183,7 @@ def test_cli_db_summary_and_part_lookup():
     assert detail.returncode == 0, detail.stderr
     detail_data = json.loads(detail.stdout)
     assert detail_data["format"] == "components.db.component"
-    assert detail_data["db_path"] == "db/74xx/74HC00/chip.json"
+    assert detail_data["db_path"] == "DB/74xx/74HC00/chip.json"
 
 
 class FakeDesignService:

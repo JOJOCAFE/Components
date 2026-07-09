@@ -1,8 +1,0 @@
-{
-  "schema": "db.group",
-  "version": 1,
-  "id": "74xx",
-  "title": "74xx and 74HC logic ICs",
-  "migration_status": "grouped_manifests_active",
-  "manifest_note": "74HC IC manifests live in db/74xx/<part>/chip.json."
-}

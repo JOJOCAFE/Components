@@ -46,7 +46,7 @@ Future work for the shared component library.
 
 ## Backend/API Hardening
 
-- ✅ Create the first chip-centered `db/` slice with per-chip
+- ✅ Create the first chip-centered `DB/` slice with per-chip
   manifests for easy test parts: `74HC00`, `74HC04`, and `62256`.
 - ✅ Expand the DB seed set with representative sequential, bus, and EEPROM
   parts: `74HC161`, `74HC245`, and `AT28C256`.
@@ -69,11 +69,11 @@ Future work for the shared component library.
 - ✅ Add `SERVICE_CONTRACT.md` for stable CLI/API service contracts before the
   repo grows too large.
 - ✅ Freeze the normalized netlist schema in
-  `schemas/normalized-netlist.schema.json` as the first plugin boundary.
+  `Schemas/normalized-netlist.schema.json` as the first plugin boundary.
 - ✅ Add grouped DB seed manifests for virtual tools, passive parts, and
   discrete transistors.
-- ✅ Move IC DB manifests into grouped folders: 74HC parts under `db/74xx/`
-  and memory parts under `db/memory/`.
+- ✅ Move IC DB manifests into grouped folders: 74HC parts under `DB/74xx/`
+  and memory parts under `DB/Memory/`.
 - ✅ Add DB-backed adapters so schematic JSON can instantiate virtual sources,
   rails, probes, passive parts, and discrete parts without forcing those
   representation-only components through chip behavior factories.

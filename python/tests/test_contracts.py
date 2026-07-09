@@ -20,7 +20,7 @@ EXAMPLES = [
 
 
 def load_example(name: str) -> Design:
-    path = ROOT / "examples" / f"{name}.json"
+    path = ROOT / "Examples" / f"{name}.json"
     return Design.from_dict(json.loads(path.read_text(encoding="utf-8")))
 
 
@@ -63,7 +63,7 @@ def test_design_to_verilog_uses_internal_service_boundary():
 
     assert exported["ok"] is True
     assert exported["warnings"] == []
-    assert exported["required_files"] == ["verilog/74xx/74hc00.v"]
+    assert exported["required_files"] == ["Verilog/74xx/74hc00.v"]
     assert "ttl_74hc00" in exported["verilog"]
 
 

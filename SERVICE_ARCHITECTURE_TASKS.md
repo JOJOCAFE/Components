@@ -26,9 +26,9 @@ outputs.
 ## Task List
 
 1. ✅ Define package boundaries without moving code yet.
-   - `db/`: canonical per-chip manifests, schema, status, source evidence,
+   - `DB/`: canonical per-chip manifests, schema, status, source evidence,
      legacy implementation references, and DB-owned export metadata.
-   - `chipdb`: Python DB access layer over `db/`; owns chip metadata,
+   - `chipdb`: Python DB access layer over `DB/`; owns chip metadata,
      package/pin descriptions, status reports, audit checks, and capability
      queries. Current implementation: `python/chiplib/db.py`.
    - `behavior`: Python physical pin-level chip behavior and catalog-backed
@@ -42,7 +42,7 @@ outputs.
    - `exporters.verilog`: structural Verilog/testbench export and DB-backed
      pin-to-port mapping. Current implementation: `python/chiplib/netlist.py`.
    - `exporters.netlist`: normalized netlist import/export using
-     `schemas/normalized-netlist.schema.json`. Current implementation:
+     `Schemas/normalized-netlist.schema.json`. Current implementation:
      `python/chiplib/netlist.py`.
    - `cli`: command-line adapter over service-style APIs; it may format human
      output but should not own chip behavior, schema rules, or exporter logic.
@@ -62,7 +62,7 @@ outputs.
      and suggested fix.
 
 3. ✅ Freeze the normalized netlist schema as the first plugin boundary.
-   - See `schemas/normalized-netlist.schema.json`.
+   - See `Schemas/normalized-netlist.schema.json`.
    - Every exporter or external engine must read this schema.
    - No exporter should parse student schematic JSON directly unless it goes
      through `Design`.
@@ -95,11 +95,11 @@ outputs.
    - Use examples as regression fixtures.
 
 8. ✅ Add service-ready examples.
-   - `examples/nand.json`
-   - `examples/counter.json`
-   - `examples/bus_transceiver.json`
-   - `examples/memory_read.json`
-   - `examples/tiny_cpu_slice.json`
+   - `Examples/nand.json`
+   - `Examples/counter.json`
+   - `Examples/bus_transceiver.json`
+   - `Examples/memory_read.json`
+   - `Examples/tiny_cpu_slice.json`
 
 9. ✅ Add a future external-engine adapter plan.
    - Define how a Rust/C/C++ simulator would be invoked.

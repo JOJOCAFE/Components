@@ -529,7 +529,7 @@ def _verilog_file_for_part(part: str, module: str) -> str | None:
     except (KeyError, ValueError):
         pass
     if module.startswith("ttl_"):
-        return f"verilog/74xx/{part.lower()}.v"
+        return f"Verilog/74xx/{part.lower()}.v"
     if module.startswith("mem_"):
-        return f"verilog/Memory/{module[4:]}.v"
+        return f"Verilog/Memory/{module[4:]}.v"
     return None

@@ -1,8 +1,0 @@
-{
-  "schema": "db.group",
-  "version": 1,
-  "id": "memory",
-  "title": "Memory ICs",
-  "migration_status": "grouped_manifests_active",
-  "manifest_note": "Memory IC manifests live in db/memory/<part>/chip.json."
-}

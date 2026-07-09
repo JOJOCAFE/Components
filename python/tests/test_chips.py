@@ -663,8 +663,8 @@ def test_probe_counts_clock_pulses_over_time_window():
 
 def test_all_component_parts_instantiate():
     root = Path(__file__).resolve().parents[2]
-    parts = sorted(p.stem.upper() for p in (root / "verilog" / "74HC").glob("74hc*.v"))
-    parts += sorted(p.stem.upper() for p in (root / "verilog" / "Memory").glob("*.v"))
+    parts = sorted(p.stem.upper() for p in (root / "Verilog" / "74xx").glob("74hc*.v"))
+    parts += sorted(p.stem.upper() for p in (root / "Verilog" / "Memory").glob("*.v"))
     assert parts, "no Components parts found"
     for part in parts:
         chip = create_chip(part, "U")
@@ -675,8 +675,8 @@ def test_all_component_parts_instantiate():
 
 def test_catalog_behavior_smoke():
     root = Path(__file__).resolve().parents[2]
-    parts = sorted(p.stem.upper() for p in (root / "verilog" / "74HC").glob("74hc*.v"))
-    parts += sorted(p.stem.upper() for p in (root / "verilog" / "Memory").glob("*.v"))
+    parts = sorted(p.stem.upper() for p in (root / "Verilog" / "74xx").glob("74hc*.v"))
+    parts += sorted(p.stem.upper() for p in (root / "Verilog" / "Memory").glob("*.v"))
     for part in parts:
         chip = create_chip(part, "U")
         chip.update()
