@@ -196,6 +196,16 @@ Done:
   cover T0/T1 no-load, T2 jump load, BEQ/BNE taken and not-taken cases,
   no-op hold, JMP+BR overlap, Verilog opcode-sweep equation for all 256
   opcodes and Z states, target `$125A`, and clock profiles.
+- ✅ `RV8GR_AluAccumulator`: U9-U14/U17-U22/U27 accumulator and ALU proof.
+  Tests cover LI, ADDI, SUBI, XORI, SUB borrow/carry, AC no-capture outside
+  T2/`AC_WR`, live `74HC283` carry-chain execution, live `74HC574` AC capture,
+  U14 store buffer high-Z/drive behavior, U22 zero compare, Z toggle behavior,
+  model-delay propagation checks, Verilog opcode-sweep ALU samples, and clock
+  profiles.
+- ✅ `74HC688` pin truth repair discovered during the ALU/Z proof: package
+  pin 19 is `Y`/equality output and pins 11-18 are A4/B4 through A7/B7. The
+  Components DB/model/test package is corrected here; RV8GR U22 wiring/docs
+  should be checked in the RV8GR repo as a follow-up.
 - ✅ Extra clock-profile tests for edge-sensitive circuits: `RV8GR_InstructionLatch`,
   `RV8GR_DataPageMemory`, `RV8GR_IRQLatch`, `RV8GR_PageDataRegisters`, and
   `RV8GR_BranchJumpControl` now declare and execute
@@ -204,13 +214,13 @@ Done:
 
 Next team tasks:
 
-1. **Mint + Fern: `RV8GR_AluAccumulator`**
-   - Prove ALU input muxes, AC latch edge, Z flag path, and immediate vs memory
-     source timing.
-2. **Fern + Bam: virtual test helpers**
+1. **Fern + Bam: virtual test helpers**
    - Add virtual clock, phase probe, bus monitor, and contention detector
      components only where they make timing/bus tests clearer than ad hoc
      Python helpers.
+2. **Ohm + Fern: RV8GR U22 wiring follow-up**
+   - Check RV8GR docs, KiCad, and wiring references for U22 `74HC688` after
+     the Components pin-truth repair.
 3. **Bank + Fern: opcode-sweep circuit proof**
    - Lift more `tb_rv8gr_opcode_sweep.v` expectations into reusable circuit
      package tests, especially reserved or illegal control mixes.

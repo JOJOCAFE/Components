@@ -21,7 +21,7 @@ truth when lab wording is simplified.
 | `RV8GR_DataPageMemory` | U32/U33/RAM/ROM/address mux | Started | SETDP, RAM read/write, ROM read via DP, and `$7FFF/$8000` boundary |
 | `RV8GR_IRQLatch` | U31 `74HC74` + U33 `74HC21` EI decode | Started | IE set, `/IRQ` release latch, sticky IRQ_FF, no v1.0 vector |
 | `RV8GR_RomDbusRead` | ROM + U7 `74HC245` | Started | DBUS to IBUS read direction and ROM `/OE` safety |
-| `RV8GR_AluAccumulator` | U9-U14/U21/U22/U27/U28 | Next | ALU path timing, AC latch edge, Z flag settle |
+| `RV8GR_AluAccumulator` | U9-U14/U17-U22/U27 | Started | ALU path timing, AC latch edge, Z flag settle |
 | `RV8GR_PageDataRegisters` | U23/U32/U33/U25 | Started | `PG_CLK` and `DP_Load` edge timing |
 | `RV8GR_BranchJumpControl` | U24-U28 control gates | Started | `/PC_LD`, branch condition, no unintended load |
 
@@ -34,11 +34,12 @@ Each circuit package should include:
 
 ## Next Tests From RV8GR Debug Plan
 
-1. `RV8GR_AluAccumulator`: prove ALU input muxes, AC latch edge, Z flag path,
-   and immediate vs memory source timing.
-2. `RV8GR_FullControlOpcodeSweep`: extract more of the Verilog opcode-sweep
+1. `RV8GR_FullControlOpcodeSweep`: extract more of the Verilog opcode-sweep
    expectations into standalone circuit proofs, especially illegal/reserved
    control mixes.
+2. `RV8GR_VirtualTestHelpers`: create virtual clock, phase probe, bus monitor,
+   and contention detector helpers for circuit tests that need clearer
+   observation than ad hoc Python helper functions.
 3. `RV8GR_ClockProfiles`: keep push-switch, random debounced push, 50 kHz,
    1 MHz, 2 MHz, and 5 MHz profiles on every edge-sensitive circuit. Mark
    5 MHz as functional simulation until timing-margin and hardware

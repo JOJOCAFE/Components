@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import random
 
-from chiplib import create_chip
+from chiplib import Z, create_chip
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -21,9 +21,12 @@ IRQ_LATCH = ROOT / "Lib" / "Circuits" / "RV8GR_IRQLatch"
 ROM_DBUS_READ = ROOT / "Lib" / "Circuits" / "RV8GR_RomDbusRead"
 PAGE_DATA_REGISTERS = ROOT / "Lib" / "Circuits" / "RV8GR_PageDataRegisters"
 BRANCH_JUMP_CONTROL = ROOT / "Lib" / "Circuits" / "RV8GR_BranchJumpControl"
+ALU_ACCUMULATOR = ROOT / "Lib" / "Circuits" / "RV8GR_AluAccumulator"
 RANDOM_PUSH_SEED = 0x8C16
 BYTE_D_PINS = [2, 3, 4, 5, 6, 7, 8, 9]
 BYTE_Q_PINS = [19, 18, 17, 16, 15, 14, 13, 12]
+HC541_A_PINS = [2, 3, 4, 5, 6, 7, 8, 9]
+HC541_Y_PINS = [18, 17, 16, 15, 14, 13, 12, 11]
 U7_A_PINS = [2, 3, 4, 5, 6, 7, 8, 9]
 U7_B_PINS = [18, 17, 16, 15, 14, 13, 12, 11]
 MEMORY_ADDR_PINS = {0: 10, 1: 9, 2: 8, 3: 7, 4: 6, 5: 5, 6: 4, 7: 3, 8: 25, 9: 24, 10: 21, 11: 23, 12: 2, 13: 26, 14: 1}
@@ -234,6 +237,45 @@ def branch_jump_control(phase: str, jmp: int, br: int, z_flag: int, alu_sub: int
         "pc_load_cond": pc_load_cond,
         "pc_ld_n": pc_ld_n,
     }
+
+
+def alu_datapath(start_ac: int, ibus: int, alu_sub: int, xor_mode: int, mux_sel: int, ac_wr: int, phase: str) -> dict[str, int]:
+    xor_b = start_ac if xor_mode else (0xFF if alu_sub else 0x00)
+    xor_out = (ibus ^ xor_b) & 0xFF
+    adder_full = start_ac + xor_out + alu_sub
+    adder_sum = adder_full & 0xFF
+    ac_mux = xor_out if mux_sel else adder_sum
+    acc_clk = int(bool(phase == "T2" and ac_wr))
+    ac = ac_mux if acc_clk else start_ac & 0xFF
+    return {
+        "xor_b": xor_b,
+        "xor": xor_out,
+        "sum": adder_sum,
+        "cout": (adder_full >> 8) & 1,
+        "acc_clk": acc_clk,
+        "ac": ac,
+        "z": int(ac == 0),
+    }
+
+
+def alu_opcode_sweep_expected(opcode: int, start_ac: int, ibus: int, init_z: int) -> dict[str, int]:
+    result = alu_datapath(
+        start_ac,
+        ibus,
+        (opcode >> 7) & 1,
+        (opcode >> 6) & 1,
+        (opcode >> 5) & 1,
+        (opcode >> 4) & 1,
+        "T2",
+    )
+    return {
+        "ac": result["ac"],
+        "z": result["z"] if ((opcode >> 4) & 1) else init_z,
+    }
+
+
+def z_compare_n(ac: int) -> int:
+    return int((ac & 0xFF) != 0)
 
 
 def required_clock_profile_names() -> set[str]:
@@ -1280,6 +1322,198 @@ def test_rv8gr_new_control_clock_profiles_exist_and_are_functional():
         assert result["pc_ld_n"] == (0 if z_flag else 1)
 
 
+def test_rv8gr_alu_accumulator_package_shape():
+    circuit = load_json(ALU_ACCUMULATOR / "circuit.json")
+    proof = load_json(ALU_ACCUMULATOR / "tests" / "alu_accumulator.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_alu_accumulator"
+    assert proof["circuit"] == circuit["id"]
+    assert (ALU_ACCUMULATOR / "README.md").exists()
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips == {
+        "U9": "74HC574",
+        "U10": "74HC283",
+        "U11": "74HC283",
+        "U12": "74HC86",
+        "U13": "74HC86",
+        "U14": "74HC541",
+        "U17": "74HC157",
+        "U18": "74HC157",
+        "U19": "74HC157",
+        "U20": "74HC157",
+        "U21": "74HC74",
+        "U22": "74HC688",
+        "U27": "74HC00",
+    }
+    for part in set(chips.values()):
+        assert list((ROOT / "DB").glob(f"*/*{part}/definition/definition.json")), part
+    assert "ClockProfileMonitor" in circuit["timing"]["virtual_test_helpers"]
+
+
+def test_rv8gr_alu_accumulator_vectors_execute():
+    proof = load_json(ALU_ACCUMULATOR / "tests" / "alu_accumulator.json")
+
+    for vector in proof["vectors"]:
+        result = alu_datapath(
+            int(vector["start_ac"], 16),
+            int(vector["ibus"], 16),
+            vector["alu_sub"],
+            vector["xor_mode"],
+            vector["mux_sel"],
+            vector["ac_wr"],
+            vector["phase"],
+        )
+        assert result["xor_b"] == int(vector["expect_xor_b"], 16), vector
+        assert result["xor"] == int(vector["expect_xor"], 16), vector
+        assert result["sum"] == int(vector["expect_sum"], 16), vector
+        assert result["cout"] == vector["expect_cout"], vector
+        assert result["ac"] == int(vector["expect_ac"], 16), vector
+        assert result["z"] == vector["expect_z"], vector
+
+
+def test_rv8gr_alu_adder_vectors_execute_with_component_models():
+    proof = load_json(ALU_ACCUMULATOR / "tests" / "alu_accumulator.json")
+
+    for vector in proof["vectors"]:
+        low = create_chip("74HC283", "U10")
+        high = create_chip("74HC283", "U11")
+        result = alu_datapath(
+            int(vector["start_ac"], 16),
+            int(vector["ibus"], 16),
+            vector["alu_sub"],
+            vector["xor_mode"],
+            vector["mux_sel"],
+            vector["ac_wr"],
+            vector["phase"],
+        )
+
+        def set_283(chip, a_nibble: int, b_nibble: int, cin: int) -> None:
+            for bit, pin in enumerate([5, 3, 14, 12]):
+                chip.set_input(pin, (a_nibble >> bit) & 1)
+            for bit, pin in enumerate([6, 2, 15, 11]):
+                chip.set_input(pin, (b_nibble >> bit) & 1)
+            chip.set_input(7, cin)
+            chip.update()
+            chip.commit()
+
+        set_283(low, int(vector["start_ac"], 16) & 0xF, result["xor"] & 0xF, vector["alu_sub"])
+        set_283(high, int(vector["start_ac"], 16) >> 4, result["xor"] >> 4, low.read(9))
+
+        low_sum = sum(low.read(pin) << bit for bit, pin in enumerate([4, 1, 13, 10]))
+        high_sum = sum(high.read(pin) << bit for bit, pin in enumerate([4, 1, 13, 10]))
+        assert low_sum | (high_sum << 4) == result["sum"], vector
+        assert high.read(9) == result["cout"], vector
+
+
+def test_rv8gr_alu_accumulator_capture_executes_with_component_model():
+    proof = load_json(ALU_ACCUMULATOR / "tests" / "alu_accumulator.json")
+
+    for vector in proof["vectors"]:
+        u9 = create_chip("74HC574", "U9")
+        latch_byte(u9, int(vector["start_ac"], 16))
+        result = alu_datapath(
+            int(vector["start_ac"], 16),
+            int(vector["ibus"], 16),
+            vector["alu_sub"],
+            vector["xor_mode"],
+            vector["mux_sel"],
+            vector["ac_wr"],
+            vector["phase"],
+        )
+        set_byte(u9, BYTE_D_PINS, result["sum"] if vector["mux_sel"] == 0 else result["xor"])
+        if result["acc_clk"]:
+            u9.clock_edge(11)
+        else:
+            u9.update()
+        u9.commit()
+        assert read_byte(u9, BYTE_Q_PINS) == int(vector["expect_ac"], 16), vector
+
+
+def test_rv8gr_alu_ac_buffer_and_z_vectors_execute_with_component_models():
+    proof = load_json(ALU_ACCUMULATOR / "tests" / "alu_accumulator.json")
+
+    for vector in proof["buffer_vectors"]:
+        u14 = create_chip("74HC541", "U14")
+        set_byte(u14, HC541_A_PINS, int(vector["ac"], 16))
+        u14.set_input(1, vector["ac_buf_n"])
+        u14.set_input(19, vector["ac_buf_n"])
+        u14.update()
+        u14.commit()
+        if vector["expect_ibus"] is None:
+            assert all(u14.read(pin) == Z for pin in HC541_Y_PINS), vector
+        else:
+            assert read_byte(u14, HC541_Y_PINS) == int(vector["expect_ibus"], 16), vector
+
+    for vector in proof["z_vectors"]:
+        if "sequence" in vector:
+            assert [int(z_compare_n(int(value, 16)) == 0) for value in vector["sequence"]] == vector["expect_z_sequence"], vector
+            continue
+        comp = create_chip("74HC688", "U22")
+        ac = int(vector["ac"], 16)
+        comp.set_input(1, 0)
+        for bit, pin in enumerate([2, 4, 6, 8, 11, 13, 15, 17]):
+            comp.set_input(pin, (ac >> bit) & 1)
+        for pin in [3, 5, 7, 9, 12, 14, 16, 18]:
+            comp.set_input(pin, 0)
+        comp.update()
+        comp.commit()
+        assert z_compare_n(ac) == vector["expect_compare_n"], vector
+        assert comp.read(19) == vector["expect_compare_n"], vector
+        assert int(comp.read(19) == 0) == vector["expect_z"], vector
+
+
+def test_rv8gr_alu_opcode_sweep_samples_match_verilog_equation():
+    proof = load_json(ALU_ACCUMULATOR / "tests" / "alu_accumulator.json")
+    sample = next(vector for vector in proof["source_vectors"] if vector["name"] == "opcode_sweep_formula_sample")
+    expected = alu_opcode_sweep_expected(int(sample["opcode"], 16), int(sample["start_ac"], 16), int(sample["ibus"], 16), 0)
+    assert expected["ac"] == int(sample["expect_ac"], 16)
+    assert expected["z"] == sample["expect_z"]
+
+    for opcode in range(256):
+        for init_z in (0, 1):
+            expected = alu_opcode_sweep_expected(opcode, 0xA5, 0x5A, init_z)
+            direct = alu_datapath(0xA5, 0x5A, (opcode >> 7) & 1, (opcode >> 6) & 1, (opcode >> 5) & 1, (opcode >> 4) & 1, "T2")
+            assert expected["ac"] == (direct["ac"] if ((opcode >> 4) & 1) else 0xA5), opcode
+
+
+def test_rv8gr_alu_clock_profiles_capture_once_per_push():
+    profiles = load_json(ALU_ACCUMULATOR / "tests" / "alu_accumulator.json")["clock_profiles"]
+    names = {profile["name"] for profile in profiles}
+    assert required_clock_profile_names() <= names
+    random_profile = next(profile for profile in profiles if profile["name"] == "push_switch_random_100")
+    assert random_profile["seed"] == RANDOM_PUSH_SEED
+    intervals = random_push_intervals_ms(random_profile)
+    assert len(intervals) == 100
+    assert all(0 <= interval <= 500 for interval in intervals)
+    assert len(set(intervals)) > 1
+    assert "Functional simulation only" in next(profile for profile in profiles if profile["name"] == "5_mhz")["note"]
+
+    ac = 0
+    for expected, _interval in enumerate(intervals, start=1):
+        result = alu_datapath(ac, 1, 0, 0, 0, 1, "T2")
+        ac = result["ac"]
+        assert ac == expected & 0xFF
+
+
+def test_rv8gr_alu_propagation_delay_checks_are_explicit():
+    proof = load_json(ALU_ACCUMULATOR / "tests" / "alu_accumulator.json")
+    model_delays = {
+        "74HC157": 18,
+        "74HC86": 15,
+        "74HC283": 35,
+        "74HC574": 20,
+        "74HC688": 30,
+        "74HC74": 20,
+        "74HC541": 12,
+    }
+    for check in proof["propagation_checks"]:
+        delay = sum(model_delays[part] for part in check["parts"])
+        assert delay == check["expect_delay_ns"], check
+        assert delay <= check["limit_ns"], check
+
+
 def test_all_started_circuit_packages_have_tests():
     for circuit_path in sorted((ROOT / "Lib" / "Circuits").glob("RV8GR_*/circuit.json")):
         circuit = load_json(circuit_path)
@@ -1342,6 +1576,14 @@ def run_all():
     test_rv8gr_branch_jump_vectors_execute()
     test_rv8gr_branch_jump_opcode_sweep_matches_verilog_bench_equation()
     test_rv8gr_new_control_clock_profiles_exist_and_are_functional()
+    test_rv8gr_alu_accumulator_package_shape()
+    test_rv8gr_alu_accumulator_vectors_execute()
+    test_rv8gr_alu_adder_vectors_execute_with_component_models()
+    test_rv8gr_alu_accumulator_capture_executes_with_component_model()
+    test_rv8gr_alu_ac_buffer_and_z_vectors_execute_with_component_models()
+    test_rv8gr_alu_opcode_sweep_samples_match_verilog_equation()
+    test_rv8gr_alu_clock_profiles_capture_once_per_push()
+    test_rv8gr_alu_propagation_delay_checks_are_explicit()
     test_all_started_circuit_packages_have_tests()
 
 

@@ -68,22 +68,22 @@
     },
     {
       "number": 11,
-      "name": "Y",
-      "direction": "output"
+      "name": "A4",
+      "direction": "input"
     },
     {
       "number": 12,
-      "name": "B7",
+      "name": "B4",
       "direction": "input"
     },
     {
       "number": 13,
-      "name": "A7",
+      "name": "A5",
       "direction": "input"
     },
     {
       "number": 14,
-      "name": "B6",
+      "name": "B5",
       "direction": "input"
     },
     {
@@ -93,23 +93,23 @@
     },
     {
       "number": 16,
-      "name": "B5",
+      "name": "B6",
       "direction": "input"
     },
     {
       "number": 17,
-      "name": "A5",
+      "name": "A7",
       "direction": "input"
     },
     {
       "number": 18,
-      "name": "B4",
+      "name": "B7",
       "direction": "input"
     },
     {
       "number": 19,
-      "name": "A4",
-      "direction": "input"
+      "name": "Y",
+      "direction": "output"
     },
     {
       "number": 20,
@@ -259,22 +259,22 @@
         },
         {
           "number": 11,
-          "name": "Y",
-          "direction": "output"
+          "name": "A4",
+          "direction": "input"
         },
         {
           "number": 12,
-          "name": "B7",
+          "name": "B4",
           "direction": "input"
         },
         {
           "number": 13,
-          "name": "A7",
+          "name": "A5",
           "direction": "input"
         },
         {
           "number": 14,
-          "name": "B6",
+          "name": "B5",
           "direction": "input"
         },
         {
@@ -284,23 +284,23 @@
         },
         {
           "number": 16,
-          "name": "B5",
+          "name": "B6",
           "direction": "input"
         },
         {
           "number": 17,
-          "name": "A5",
+          "name": "A7",
           "direction": "input"
         },
         {
           "number": 18,
-          "name": "B4",
+          "name": "B7",
           "direction": "input"
         },
         {
           "number": 19,
-          "name": "A4",
-          "direction": "input"
+          "name": "Y",
+          "direction": "output"
         },
         {
           "number": 20,

@@ -139,14 +139,24 @@ Current RV8GR circuit-library milestone:
 - `RV8GR_BranchJumpControl` proves `/PC_LD` phase gating, JMP, BEQ, BNE,
   no-load hold cases, JMP+BR overlap, and the Verilog opcode-sweep equation
   for all 256 opcodes with both Z states.
+- `RV8GR_AluAccumulator` proves LI/ADDI/SUBI/XORI datapath equations,
+  accumulator edge capture, no-capture hold cases, U14 store-buffer high-Z and
+  drive behavior, U22 zero compare, Z toggle behavior, live `74HC283` and
+  `74HC574` execution, model-delay propagation checks, and opcode-sweep ALU
+  samples.
+- `74HC688` pin truth is corrected in Components: pin 19 is `Y` output and
+  pins 11-18 are A4/B4 through A7/B7. RV8GR U22 wiring/docs need a follow-up
+  audit in the RV8GR repo.
 - Extra clock-profile tests now cover `RV8GR_InstructionLatch`,
   `RV8GR_DataPageMemory`, `RV8GR_IRQLatch`, `RV8GR_PageDataRegisters`, and
-  `RV8GR_BranchJumpControl` with push-switch, random debounced push up to
-  500 ms for 100 ticks, 50 kHz, 1 MHz, 2 MHz, and 5 MHz functional profiles.
+  `RV8GR_BranchJumpControl`, and `RV8GR_AluAccumulator` with push-switch,
+  random debounced push up to 500 ms for 100 ticks, 50 kHz, 1 MHz, 2 MHz, and
+  5 MHz functional profiles.
 - Virtual helper policy: use virtual clock sources, phase probes, bus monitors,
   or contention detectors when they make tests clearer, but do not replace real
   chip behavior with virtual behavior when the DB has a real model.
-- Next circuit must follow the same quality level: `RV8GR_AluAccumulator`.
+- Next circuit/test lane must follow the same quality level:
+  `RV8GR_FullControlOpcodeSweep` and virtual test helpers.
 
 ## Pim - Coordinator
 

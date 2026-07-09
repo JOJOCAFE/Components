@@ -793,14 +793,14 @@ def _execute_74hc574_truth(record) -> set[str]:
 def _execute_74hc688_truth(record) -> set[str]:
     names = {item["name"] for item in record["vectors"]}
     chip = create_chip("74HC688", "U")
-    p_pins = [2, 4, 6, 8, 19, 17, 15, 13]
-    q_pins = [3, 5, 7, 9, 18, 16, 14, 12]
+    a_pins = [2, 4, 6, 8, 11, 13, 15, 17]
+    b_pins = [3, 5, 7, 9, 12, 14, 16, 18]
     for vector in record["vectors"]:
-        chip.set_input(1, vector["inputs"]["/OE"])
-        set_byte(chip, p_pins, int(vector["inputs"]["P"], 16))
-        set_byte(chip, q_pins, int(vector["inputs"]["Q"], 16))
+        chip.set_input(1, vector["inputs"]["/E"])
+        set_byte(chip, a_pins, int(vector["inputs"]["A"], 16))
+        set_byte(chip, b_pins, int(vector["inputs"]["B"], 16))
         eval_chip(chip)
-        assert chip.read(11) == vector["expect"]["/P=Q"], vector["name"]
+        assert chip.read(19) == vector["expect"]["Y"], vector["name"]
     return names
 
 
