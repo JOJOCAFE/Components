@@ -1,0 +1,15 @@
+{
+  "schema": "db.component.timing",
+  "version": 1,
+  "part": "74HC245",
+  "delay": {
+    "default_ns": 12,
+    "source": "simulation default from Python model"
+  },
+  "propagation": [
+    {"name": "A_to_B", "from": "A", "to": "B", "condition": "DIR=1 and /OE=0", "delay_ns": 12},
+    {"name": "B_to_A", "from": "B", "to": "A", "condition": "DIR=0 and /OE=0", "delay_ns": 12},
+    {"name": "disable_to_Z", "from": "/OE", "to": "A,B", "condition": "/OE rises", "delay_ns": 12}
+  ],
+  "setup_hold": []
+}

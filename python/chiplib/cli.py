@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from .db import audit_db, component_catalog, component_detail, component_summary, db_status_report, load_component, student_component_catalog
+from .db import audit_db, component_catalog, component_detail, component_summary, db_status_report, load_component, load_digital_definition, student_component_catalog
 from .services import DesignCommandService
 
 
@@ -38,6 +38,7 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     db.add_argument("--catalog", action="store_true", help="emit frontend-oriented component catalog metadata")
     db.add_argument("--student", action="store_true", help="emit learner-facing component catalog metadata")
     db.add_argument("--detail", action="store_true", help="emit frontend-oriented metadata for one component")
+    db.add_argument("--digital", action="store_true", help="emit generator-ready definition/digital.json for one component")
     db.add_argument("--group", help="filter --catalog by DB group, such as 74xx or memory")
     db.add_argument("-o", "--output")
 
@@ -63,6 +64,11 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
                 parser.error("db --detail requires a part")
             data = component_detail(part)
             return write_json(data, output=getattr(args, "output", None))
+        if getattr(args, "digital", False):
+            if not part:
+                parser.error("db --digital requires a part")
+            data = load_digital_definition(part)
+            return write_json(data, output=getattr(args, "output", None), status=0 if data["validation"]["ok"] else 2)
         data = load_component(part) if part else component_summary()
         return write_json(data, output=getattr(args, "output", None))
 

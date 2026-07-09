@@ -1,0 +1,18 @@
+{
+  "schema": "db.component.electrical",
+  "version": 1,
+  "part": "74HC245",
+  "logic_family": "74HC",
+  "voltage": {
+    "vcc": {"min_v": null, "typ_v": 5.0, "max_v": null, "status": "datasheet-required"}
+  },
+  "current": {
+    "output_drive": {"status": "datasheet-required"}
+  },
+  "loading": {
+    "input_capacitance": {"status": "datasheet-required"}
+  },
+  "notes": [
+    "Electrical limits are placeholders until extracted from the datasheet source."
+  ]
+}

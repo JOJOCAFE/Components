@@ -718,6 +718,7 @@ Stateful frontend-edit commands operate on the loaded in-memory design:
 - `frontend-snapshot`
 - `component-catalog`
 - `component-detail`
+- `component-digital`
 - `component-metadata`
 - `run`
 - `probe`

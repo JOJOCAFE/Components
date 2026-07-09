@@ -2,7 +2,7 @@
 
 import json
 
-from chiplib.db import audit_db, component_catalog, component_detail, component_ids, component_summary, db_root, db_status_report, legacy_catalog_parts, load_all_components, load_component, student_component_catalog
+from chiplib.db import audit_db, component_catalog, component_detail, component_ids, component_summary, db_root, db_status_report, legacy_catalog_parts, load_all_components, load_component, load_digital_definition, student_component_catalog
 from chiplib.db import _pinout_mismatches
 
 
@@ -42,6 +42,17 @@ GROUPED_PARTS = {
     "Capacitor",
     "NPN",
     "PNP",
+}
+GENERATION_SEED_PARTS = {"74HC161", "74HC157", "74HC245", "74HC574", "AT28C256"}
+GENERATION_TARGETS = {
+    "json",
+    "python_simulator",
+    "verilog_wrapper",
+    "kicad_symbol",
+    "svg_pinout",
+    "documentation",
+    "unit_test",
+    "interactive_demo",
 }
 
 
@@ -209,6 +220,20 @@ def test_db_component_detail_exposes_pins_and_capabilities():
     assert detail["pins"][0] == {"number": 1, "name": "A14", "direction": "input"}
     assert detail["capabilities"]["verilog_model"] is True
     assert detail["capabilities"]["verilog_file"] == "Verilog/Memory/at28c256.v"
+    assert detail["digital_definition"]["path"] == "DB/Memory/AT28C256/definition/digital.json"
+    assert set(detail["digital_definition"]["generation_targets"]) == GENERATION_TARGETS
+
+
+def test_generation_seed_digital_definitions_are_valid_and_generator_ready():
+    for part in GENERATION_SEED_PARTS:
+        definition = load_digital_definition(part)
+        assert definition["schema"] == "db.component.digital"
+        assert definition["part"] == part
+        assert definition["validation"]["ok"] is True, definition["validation"]["errors"]
+        assert set(definition["generation"]["targets"]) == GENERATION_TARGETS
+        assert len(definition["pins"]) == definition["package"]["pins"]
+        assert definition["generation"]["python"]["factory"] == "chiplib.create_chip"
+        assert definition["generation"]["verilog"]["file"].startswith("Verilog/")
 
 
 def test_db_manifests_match_schema_contract():
@@ -230,6 +255,17 @@ def test_db_manifests_match_schema_contract():
             assert isinstance(pin["number"], int)
             assert pin["number"] >= 1
             assert pin["direction"] in ALLOWED_DIRECTIONS
+
+
+def test_ic_manifests_with_python_behavior_paths_are_marked_simulatable():
+    for manifest in load_all_components():
+        if manifest.get("kind") != "ic" and manifest.get("group") not in {"74xx", "memory"}:
+            continue
+        if not manifest.get("legacy_paths", {}).get("python_behavior"):
+            continue
+        assert manifest["status"]["python_behavior"] in {"modeled", "tested"}, manifest["part"]
+        detail = component_detail(manifest["part"])
+        assert detail["capabilities"]["python_behavior"] is True, manifest["part"]
 
 
 def test_db_audit_reports_partial_legacy_coverage_without_hard_errors():
@@ -293,7 +329,9 @@ def run_all():
     test_db_summary_reports_status_and_gaps()
     test_db_component_catalog_is_frontend_ready_and_grouped()
     test_db_component_detail_exposes_pins_and_capabilities()
+    test_generation_seed_digital_definitions_are_valid_and_generator_ready()
     test_db_manifests_match_schema_contract()
+    test_ic_manifests_with_python_behavior_paths_are_marked_simulatable()
     test_db_audit_reports_partial_legacy_coverage_without_hard_errors()
     test_db_legacy_coverage_lists_models_and_pinouts()
     test_db_status_report_checks_chip_status_snapshot()

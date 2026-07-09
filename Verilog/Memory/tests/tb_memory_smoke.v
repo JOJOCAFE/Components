@@ -19,12 +19,18 @@ module tb_memory_smoke;
   wire [7:0] eeprom_dq;
   wire [7:0] flash_dq;
   wire [7:0] ram_dq;
+  wire [7:0] as6c_dq;
+  wire [7:0] cy7c_dq;
   reg [7:0] eeprom_drive;
   reg [7:0] flash_drive;
   reg [7:0] ram_drive;
+  reg [7:0] as6c_drive;
+  reg [7:0] cy7c_drive;
   reg eeprom_drive_en;
   reg flash_drive_en;
   reg ram_drive_en;
+  reg as6c_drive_en;
+  reg cy7c_drive_en;
   reg ce_n;
   reg oe_n;
   reg we_n;
@@ -32,10 +38,14 @@ module tb_memory_smoke;
   assign eeprom_dq = eeprom_drive_en ? eeprom_drive : 8'hzz;
   assign flash_dq = flash_drive_en ? flash_drive : 8'hzz;
   assign ram_dq = ram_drive_en ? ram_drive : 8'hzz;
+  assign as6c_dq = as6c_drive_en ? as6c_drive : 8'hzz;
+  assign cy7c_dq = cy7c_drive_en ? cy7c_drive : 8'hzz;
 
   mem_at28c256 u_eeprom(.A(a15), .DQ(eeprom_dq), .CE_bar(ce_n), .OE_bar(oe_n), .WE_bar(we_n));
   mem_sst39sf010a u_flash(.A(a17), .DQ(flash_dq), .CE_bar(ce_n), .OE_bar(oe_n), .WE_bar(we_n));
   mem_62256 u_ram(.A(a15), .DQ(ram_dq), .CE_bar(ce_n), .OE_bar(oe_n), .WE_bar(we_n));
+  mem_as6c62256 u_as6c(.A(a15), .DQ(as6c_dq), .CE_bar(ce_n), .OE_bar(oe_n), .WE_bar(we_n));
+  mem_cy7c199 u_cy7c(.A(a15), .DQ(cy7c_dq), .CE_bar(ce_n), .OE_bar(oe_n), .WE_bar(we_n));
 
   initial begin
     ce_n = 1'b1;
@@ -44,6 +54,8 @@ module tb_memory_smoke;
     eeprom_drive_en = 1'b0;
     flash_drive_en = 1'b0;
     ram_drive_en = 1'b0;
+    as6c_drive_en = 1'b0;
+    cy7c_drive_en = 1'b0;
     a15 = 15'h0123;
     a17 = 17'h10123;
 
@@ -75,9 +87,31 @@ module tb_memory_smoke;
     #1;
     check(ram_dq == 8'h5a, "62256 write/read");
 
+    oe_n = 1'b1;
+    as6c_drive = 8'hc3;
+    as6c_drive_en = 1'b1;
+    #1 we_n = 1'b0; #1 we_n = 1'b1;
+    as6c_drive_en = 1'b0;
+    oe_n = 1'b0;
+    #1;
+    check(as6c_dq == 8'hc3, "AS6C62256 write/read");
+
+    oe_n = 1'b1;
+    cy7c_drive = 8'h96;
+    cy7c_drive_en = 1'b1;
+    #1 we_n = 1'b0; #1 we_n = 1'b1;
+    cy7c_drive_en = 1'b0;
+    oe_n = 1'b0;
+    #1;
+    check(cy7c_dq == 8'h96, "CY7C199 write/read");
+
     ce_n = 1'b1;
     #1;
-    check(eeprom_dq === 8'hzz && flash_dq === 8'hzz && ram_dq === 8'hzz, "disabled high-Z");
+    check(
+      eeprom_dq === 8'hzz && flash_dq === 8'hzz && ram_dq === 8'hzz &&
+      as6c_dq === 8'hzz && cy7c_dq === 8'hzz,
+      "disabled high-Z"
+    );
 
     if (failures == 0) begin
       $display("MEMORY SMOKE TEST PASSED");

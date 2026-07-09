@@ -1,0 +1,9 @@
+{
+  "schema": "db.component.power",
+  "version": 1,
+  "part": "74HC245",
+  "rails": [
+    {"name": "VCC", "pin": 20, "nominal_logic": 1},
+    {"name": "GND", "pin": 10, "nominal_logic": 0}
+  ]
+}

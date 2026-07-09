@@ -92,6 +92,12 @@ def test_json_api_adapter_exposes_component_metadata_without_design():
     assert detail["result"]["db_path"] == "DB/74xx/74HC00/chip.json"
     assert detail["result"]["capabilities"]["physical_pinout"] is True
 
+    digital = handle_request({"command": "component-digital", "options": {"part": "74HC245"}}, service)
+    assert digital["ok"] is True
+    assert digital["result"]["schema"] == "db.component.digital"
+    assert digital["result"]["validation"]["ok"] is True
+    assert "interactive_demo" in digital["result"]["generation"]["targets"]
+
 
 def run_all():
     test_frontend_design_service_edits_and_exports_design()

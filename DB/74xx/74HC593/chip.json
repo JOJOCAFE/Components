@@ -11,7 +11,7 @@
   "status": {
     "datasheet": "verified",
     "pinout": "verified",
-    "python_behavior": "not_applicable",
+    "python_behavior": "modeled",
     "verilog_model": "modeled",
     "verilog_export": "tested",
     "tests": "tested"

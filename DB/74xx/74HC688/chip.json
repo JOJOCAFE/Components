@@ -71,7 +71,7 @@
     {
       "number": 11,
       "name": "Y",
-      "direction": "input"
+      "direction": "output"
     },
     {
       "number": 12,
@@ -111,7 +111,7 @@
     {
       "number": 19,
       "name": "A4",
-      "direction": "output"
+      "direction": "input"
     },
     {
       "number": 20,
@@ -150,10 +150,10 @@
             4,
             6,
             8,
-            12,
-            14,
-            16,
-            18
+            19,
+            17,
+            15,
+            13
           ],
           "direction": "input"
         },
@@ -164,23 +164,23 @@
             5,
             7,
             9,
-            11,
-            13,
-            15,
-            17
+            18,
+            16,
+            14,
+            12
           ],
           "direction": "input"
         },
         {
           "name": "Equal_bar",
           "pins": [
-            19
+            11
           ],
           "direction": "output"
         }
       ],
       "output_pins": [
-        19
+        11
       ]
     }
   },

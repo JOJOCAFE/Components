@@ -1,0 +1,11 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "74HC245",
+  "applicable": true,
+  "vectors": [
+    {"name": "a_to_b", "inputs": {"DIR": 1, "/OE": 0, "A": "0x5A"}, "expect": {"B": "0x5A", "A": "Z"}},
+    {"name": "b_to_a", "inputs": {"DIR": 0, "/OE": 0, "B": "0xA6"}, "expect": {"A": "0xA6", "B": "Z"}},
+    {"name": "disabled", "inputs": {"/OE": 1}, "expect": {"A": "Z", "B": "Z"}}
+  ]
+}

@@ -106,9 +106,10 @@ Future work for the shared component library.
   teaching circuits.
 - ✅ Add stronger Python-vs-Verilog equivalence tests for selected chips and
   circuits, especially memories, counters, tri-state bus parts, and ALU-like
-  chips. Coverage now includes `74HC00`, `74HC161`, bidirectional/high-Z
-  `74HC245`, high-Z `74HC541`, latch/hold/high-Z `74HC574`, and SRAM
-  write/read/high-Z `62256`.
+  chips. Coverage now includes `74HC00`, mux/disable `74HC157`, count
+  sequence `74HC161`, bidirectional/high-Z `74HC245`, high-Z `74HC541`,
+  latch/hold/high-Z `74HC574`, SRAM write/read/high-Z `62256`, and EEPROM
+  write/read/high-Z `AT28C256`.
 - ✅ Tighten chip status checks so missing-datasheet exclusions such as
   `74HC150` and `74HC260` cannot also appear as verified, modeled, tested, or
   active legacy/DB parts.
@@ -136,6 +137,28 @@ Priority order before visual UI:
 5. Build a visual chip-block editor where users can place DIP chip blocks on
    screen, wire pins/nets, and run either the Python simulator or Verilog
    simulation backend.
+
+## Component Generation Pipeline
+
+- ✅ Define the direction that one canonical component definition file can
+  generate or drive JSON component detail, Python simulator adapters, Verilog
+  wrappers, KiCad symbols, SVG pinouts, documentation, unit tests, and
+  interactive demos.
+- ✅ Start the seed batch with generator-ready `definition/digital.json` files
+  for `74HC161`, `74HC157`, `74HC245`, `74HC574`, and `AT28C256`.
+- ✅ Add an initial split package for `74HC245` with `definition/`,
+  `simulation/`, `tests/`, `symbol/`, and `datasheet/` folders.
+- ⬜ Add schemas and DB validation tests for the new `db.component.digital`
+  package files.
+- ⬜ Add a loader that can read `definition/digital.json` while preserving
+  current `chip.json` compatibility.
+- ⬜ Prototype generation from one file for `74HC245`: normalized JSON,
+  Python simulator report, Verilog wrapper/export metadata, KiCad symbol,
+  SVG pinout, documentation data, unit test vectors, and interactive demo data.
+- ⬜ Expand split test files for the seed batch: truth table, timing,
+  tri-state, bus-fight, and propagation where applicable.
+- ⬜ Add GitHub Actions coverage for package/schema validation once the schemas
+  land.
 
 ## Backend Bus, Probe, And Test Logic
 

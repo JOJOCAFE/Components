@@ -226,6 +226,20 @@ def test_cli_db_summary_and_part_lookup():
     assert detail_data["format"] == "components.db.component"
     assert detail_data["db_path"] == "DB/74xx/74HC00/chip.json"
 
+    digital = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "db", "74HC245", "--digital"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert digital.returncode == 0, digital.stderr
+    digital_data = json.loads(digital.stdout)
+    assert digital_data["schema"] == "db.component.digital"
+    assert digital_data["part"] == "74HC245"
+    assert digital_data["validation"]["ok"] is True
+    assert "svg_pinout" in digital_data["generation"]["targets"]
+
 
 class FakeDesignService:
     def __init__(self):

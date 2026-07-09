@@ -1,0 +1,13 @@
+{
+  "schema": "db.component.datasheet.sources",
+  "version": 1,
+  "part": "74HC245",
+  "sources": [
+    {
+      "label": "Texas Instruments SN74HC245",
+      "url": "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf",
+      "package_evidence": "N, 20-pin PDIP",
+      "used_for": ["pins", "package", "logic", "active_low_controls"]
+    }
+  ]
+}

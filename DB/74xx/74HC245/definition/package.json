@@ -1,0 +1,15 @@
+{
+  "schema": "db.component.package",
+  "version": 1,
+  "part": "74HC245",
+  "packages": [
+    {
+      "id": "N",
+      "kind": "DIP",
+      "pins": 20,
+      "through_hole": true,
+      "evidence": "Texas Instruments SN74HC245, N package, 20-pin PDIP"
+    }
+  ],
+  "default_package": "N"
+}

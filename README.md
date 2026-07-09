@@ -43,6 +43,13 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 - `DB_MIGRATION_PLAN.md` - phased plan for making `DB/` the chip identity
   layer while legacy model files with embedded pinout comments remain active
   during migration.
+- `DB_COMPONENT_PACKAGE_SPEC.md` - layered component package structure for
+  definition, simulation, verification, symbol, and datasheet data.
+- `GENERATION_PIPELINE.md` - one-file `definition/digital.json` flow for
+  generating JSON, simulator adapters, Verilog wrappers, KiCad symbols, SVG
+  pinouts, docs, unit tests, and interactive demos.
+- `COMPONENT_GENERATION_BACKLOG.md` - seed-batch tasks for generator-ready
+  component definitions.
 - `AGENTS.md` - local JOJOCAFE team ownership map for Components work.
 - `TEAM_SKILLS.md` - individual and shared skills for DB, Python, Verilog,
   simulation, verification, and student-facing documentation.
@@ -181,6 +188,10 @@ cd ..
   `Design.to_netlist()` exports consumed by CLI, UI, and HDL tooling.
 - `SERVICE_CONTRACT.md` - shared CLI/API request, response, error, versioning,
   and pluggable-service rules.
+- `DB_COMPONENT_PACKAGE_SPEC.md` and `GENERATION_PIPELINE.md` - next DB
+  package layer where one `definition/digital.json` can drive generated JSON,
+  simulator adapters, Verilog wrappers, KiCad symbols, SVG pinouts,
+  documentation, unit tests, and interactive demos.
 - `BLOCK_UI_CONTRACT.md` - block editor import/export shape for drawable
   chips, buses, rails, wires, and layout metadata over the normalized `Design`
   model.

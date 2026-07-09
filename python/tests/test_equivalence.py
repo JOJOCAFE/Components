@@ -28,7 +28,7 @@ def eval_chip(chip):
     chip.commit()
 
 
-def run_verilog(module_file: str, testbench: str) -> str | None:
+def run_verilog(module_file: str | list[str], testbench: str) -> str | None:
     iverilog = shutil.which("iverilog")
     vvp = shutil.which("vvp")
     if iverilog is None or vvp is None:
@@ -37,8 +37,9 @@ def run_verilog(module_file: str, testbench: str) -> str | None:
         tb = Path(tmp) / "tb_equivalence.v"
         out = Path(tmp) / "tb_equivalence.vvp"
         tb.write_text(testbench, encoding="utf-8")
+        module_files = [module_file] if isinstance(module_file, str) else module_file
         compiled = subprocess.run(
-            [iverilog, "-g2012", "-Wall", "-o", str(out), str(ROOT / module_file), str(tb)],
+            [iverilog, "-g2012", "-Wall", "-o", str(out), *[str(ROOT / item) for item in module_files], str(tb)],
             text=True,
             capture_output=True,
             check=False,
@@ -124,6 +125,48 @@ endmodule
     if output is None:
         return
     assert result_int(output, "COUNT") == ((expected_rco << 4) | expected_q)
+
+
+def test_74hc157_python_matches_verilog_select_and_disable():
+    chip = create_chip("74HC157", "U")
+    set_byte(chip, [2, 5, 11, 14], 0xA)
+    set_byte(chip, [3, 6, 10, 13], 0x5)
+    chip.set_input(15, 0)
+    chip.set_input(1, 0)
+    eval_chip(chip)
+    expected_a = get_byte(chip, [4, 7, 9, 12])
+    chip.set_input(1, 1)
+    eval_chip(chip)
+    expected_b = get_byte(chip, [4, 7, 9, 12])
+    chip.set_input(15, 1)
+    eval_chip(chip)
+    expected_disabled = get_byte(chip, [4, 7, 9, 12])
+
+    output = run_verilog(
+        "Verilog/74xx/74hc157.v",
+        """
+`timescale 1ns/1ps
+module tb;
+  reg enable_bar = 0;
+  reg select = 0;
+  reg [3:0] a = 4'ha;
+  reg [3:0] b = 4'h5;
+  wire [3:0] y;
+  ttl_74hc157 dut(.Enable_bar(enable_bar), .Select(select), .A(a), .B(b), .Y(y));
+  initial begin
+    #1; $display("RESULT MUXA %h", y);
+    select = 1; #1; $display("RESULT MUXB %h", y);
+    enable_bar = 1; #1; $display("RESULT MUXZ %h", y);
+    $finish;
+  end
+endmodule
+""",
+    )
+    if output is None:
+        return
+    assert result_int(output, "MUXA") == expected_a
+    assert result_int(output, "MUXB") == expected_b
+    assert result_int(output, "MUXZ") == expected_disabled == 0
 
 
 def test_74hc245_python_matches_verilog_a_to_b_and_high_z():
@@ -320,13 +363,167 @@ endmodule
     assert result_int(output, "SRAM") == expected_dq
 
 
+def _assert_32k_sram_python_matches_verilog(part: str, module_file: str, module_name: str, key: str, value: int):
+    chip = create_chip(part, "U")
+    addr_pins = [10, 9, 8, 7, 6, 5, 4, 3, 25, 24, 21, 23, 2, 26, 1]
+    dq_pins = [11, 12, 13, 15, 16, 17, 18, 19]
+    set_byte(chip, addr_pins, 0x2345)
+    set_byte(chip, dq_pins, value)
+    chip.set_input(20, 0)
+    chip.set_input(22, 1)
+    chip.set_input(27, 0)
+    eval_chip(chip)
+    chip.set_input(27, 1)
+    chip.set_input(22, 0)
+    eval_chip(chip)
+    expected_dq = get_byte(chip, dq_pins)
+    chip.set_input(20, 1)
+    eval_chip(chip)
+    assert chip.read(11) == Z
+
+    output = run_verilog(
+        ["Verilog/Memory/62256.v", module_file],
+        f"""
+`timescale 1ns/1ps
+module tb;
+  reg [14:0] a = 15'h2345;
+  reg [7:0] dq_drv = 8'h{value:02x};
+  reg drive_dq = 1;
+  wire [7:0] dq;
+  reg ce_bar = 0;
+  reg oe_bar = 1;
+  reg we_bar = 0;
+  assign dq = drive_dq ? dq_drv : 8'hzz;
+  {module_name} dut(.A(a), .DQ(dq), .CE_bar(ce_bar), .OE_bar(oe_bar), .WE_bar(we_bar));
+  initial begin
+    #1; we_bar = 1; drive_dq = 0; oe_bar = 0;
+    #1; $display("RESULT {key} %h", dq);
+    ce_bar = 1; #1; if (dq !== 8'hzz) begin $display("FAIL high-z"); $finish(1); end
+    $finish;
+  end
+endmodule
+""",
+    )
+    if output is None:
+        return
+    assert result_int(output, key) == expected_dq
+
+
+def test_as6c62256_python_matches_verilog_write_read_and_high_z():
+    _assert_32k_sram_python_matches_verilog("AS6C62256", "Verilog/Memory/as6c62256.v", "mem_as6c62256", "AS6C", 0xC3)
+
+
+def test_cy7c199_python_matches_verilog_write_read_and_high_z():
+    _assert_32k_sram_python_matches_verilog("CY7C199", "Verilog/Memory/cy7c199.v", "mem_cy7c199", "CY7C", 0x96)
+
+
+def test_at28c256_python_matches_verilog_write_read_and_high_z():
+    chip = create_chip("AT28C256", "U")
+    addr_pins = [10, 9, 8, 7, 6, 5, 4, 3, 25, 24, 21, 23, 2, 26, 1]
+    dq_pins = [11, 12, 13, 15, 16, 17, 18, 19]
+    set_byte(chip, addr_pins, 0x1234)
+    set_byte(chip, dq_pins, 0xC6)
+    chip.set_input(20, 0)
+    chip.set_input(22, 1)
+    chip.set_input(27, 0)
+    eval_chip(chip)
+    chip.set_input(27, 1)
+    chip.set_input(22, 0)
+    eval_chip(chip)
+    expected_dq = get_byte(chip, dq_pins)
+    chip.set_input(20, 1)
+    eval_chip(chip)
+    assert chip.read(11) == Z
+
+    output = run_verilog(
+        "Verilog/Memory/at28c256.v",
+        """
+`timescale 1ns/1ps
+module tb;
+  reg [14:0] a = 15'h1234;
+  reg [7:0] dq_drv = 8'hc6;
+  reg drive_dq = 1;
+  wire [7:0] dq;
+  reg ce_bar = 0;
+  reg oe_bar = 1;
+  reg we_bar = 0;
+  assign dq = drive_dq ? dq_drv : 8'hzz;
+  mem_at28c256 dut(.A(a), .DQ(dq), .CE_bar(ce_bar), .OE_bar(oe_bar), .WE_bar(we_bar));
+  initial begin
+    #1; we_bar = 1; drive_dq = 0; oe_bar = 0;
+    #1; $display("RESULT EEPROM %h", dq);
+    ce_bar = 1; #1; if (dq !== 8'hzz) begin $display("FAIL high-z"); $finish(1); end
+    $finish;
+  end
+endmodule
+""",
+    )
+    if output is None:
+        return
+    assert result_int(output, "EEPROM") == expected_dq
+
+
+def test_sst39sf010a_python_matches_verilog_write_read_and_high_z():
+    chip = create_chip("SST39SF010A", "U")
+    addr_pins = [12, 11, 10, 9, 8, 7, 6, 5, 27, 26, 23, 25, 4, 28, 29, 3, 2]
+    dq_pins = [13, 14, 15, 17, 18, 19, 20, 21]
+    set_byte(chip, addr_pins, 0x10123)
+    set_byte(chip, dq_pins, 0x3C)
+    chip.set_input(22, 0)
+    chip.set_input(24, 1)
+    chip.set_input(31, 1)
+    eval_chip(chip)
+    set_byte(chip, dq_pins, 0x3C)
+    chip.set_input(31, 0)
+    eval_chip(chip)
+    chip.set_input(31, 1)
+    chip.set_input(24, 0)
+    eval_chip(chip)
+    expected_dq = get_byte(chip, dq_pins)
+    chip.set_input(22, 1)
+    eval_chip(chip)
+    assert chip.read(13) == Z
+
+    output = run_verilog(
+        "Verilog/Memory/sst39sf010a.v",
+        """
+`timescale 1ns/1ps
+module tb;
+  reg [16:0] a = 17'h10123;
+  reg [7:0] dq_drv = 8'h3c;
+  reg drive_dq = 1;
+  wire [7:0] dq;
+  reg ce_bar = 0;
+  reg oe_bar = 1;
+  reg we_bar = 1;
+  assign dq = drive_dq ? dq_drv : 8'hzz;
+  mem_sst39sf010a dut(.A(a), .DQ(dq), .CE_bar(ce_bar), .OE_bar(oe_bar), .WE_bar(we_bar));
+  initial begin
+    #1; we_bar = 0; #1; we_bar = 1; drive_dq = 0; oe_bar = 0;
+    #1; $display("RESULT FLASH %h", dq);
+    ce_bar = 1; #1; if (dq !== 8'hzz) begin $display("FAIL high-z"); $finish(1); end
+    $finish;
+  end
+endmodule
+""",
+    )
+    if output is None:
+        return
+    assert result_int(output, "FLASH") == expected_dq
+
+
 def run_all():
     test_74hc00_python_matches_verilog_vectors()
     test_74hc161_python_matches_verilog_count_sequence()
+    test_74hc157_python_matches_verilog_select_and_disable()
     test_74hc245_python_matches_verilog_a_to_b_and_high_z()
     test_74hc541_python_matches_verilog_enable_and_high_z()
     test_74hc574_python_matches_verilog_latch_hold_and_high_z()
     test_62256_python_matches_verilog_write_read_and_high_z()
+    test_as6c62256_python_matches_verilog_write_read_and_high_z()
+    test_cy7c199_python_matches_verilog_write_read_and_high_z()
+    test_at28c256_python_matches_verilog_write_read_and_high_z()
+    test_sst39sf010a_python_matches_verilog_write_read_and_high_z()
 
 
 if __name__ == "__main__":

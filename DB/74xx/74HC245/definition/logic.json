@@ -1,0 +1,26 @@
+{
+  "schema": "db.component.logic",
+  "version": 1,
+  "part": "74HC245",
+  "functions": [
+    {
+      "name": "octal_bus_transceiver",
+      "type": "bidirectional_buffer",
+      "width": 8,
+      "direction_control": {"pin": "DIR", "active_high_a_to_b": true},
+      "enable": {"pin": "/OE", "active_low": true},
+      "tristate": true,
+      "paths": [
+        {"when": "DIR=1 and /OE=0", "from": "A", "to": "B"},
+        {"when": "DIR=0 and /OE=0", "from": "B", "to": "A"},
+        {"when": "/OE=1", "A": "Z", "B": "Z"}
+      ],
+      "conflict_rule": "external drivers on the driven bus can create a bus fight"
+    }
+  ],
+  "states": {
+    "enabled_a_to_b": {"DIR": 1, "/OE": 0},
+    "enabled_b_to_a": {"DIR": 0, "/OE": 0},
+    "disabled": {"/OE": 1}
+  }
+}

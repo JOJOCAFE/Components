@@ -138,6 +138,14 @@ def component_detail(part: str) -> JsonMap:
         "simulation": deepcopy(manifest.get("simulation", {})),
         "ui": deepcopy(manifest.get("ui", {})),
     })
+    digital = load_digital_definition(part, required=False)
+    if digital is not None:
+        detail["digital_definition"] = {
+            "path": _digital_definition_path(part).relative_to(ROOT).as_posix(),
+            "schema": digital.get("schema"),
+            "version": digital.get("version"),
+            "generation_targets": list(digital.get("generation", {}).get("targets", [])) if isinstance(digital.get("generation"), dict) else [],
+        }
     return detail
 
 
@@ -145,6 +153,79 @@ def component_metadata(part: str) -> JsonMap:
     """Alias for callers that name selected-component detail as metadata."""
 
     return component_detail(part)
+
+
+def load_digital_definition(part: str, *, required: bool = True) -> JsonMap | None:
+    """Load the generator-ready one-file digital definition for a component."""
+
+    path = _digital_definition_path(part)
+    if not path.exists():
+        if required:
+            raise KeyError(f"digital definition not found: {part}")
+        return None
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError(f"digital definition must be an object: {path}")
+    definition = deepcopy(data)
+    definition.setdefault("part", path.parents[1].name)
+    definition["definition_path"] = path.relative_to(ROOT).as_posix()
+    definition["validation"] = validate_digital_definition(definition)
+    return definition
+
+
+def validate_digital_definition(definition: JsonMap) -> JsonMap:
+    """Return structured validation for a generator-ready digital definition."""
+
+    errors: list[JsonMap] = []
+    part = str(definition.get("part", ""))
+    path = str(definition.get("definition_path", f"DB/*/{part}/definition/digital.json"))
+    if definition.get("schema") != "db.component.digital":
+        errors.append(_issue("digital_schema_invalid", part, path, "schema must be db.component.digital"))
+    for key in ("metadata", "package", "pins", "logic", "generation", "verification", "datasheet"):
+        if key not in definition:
+            errors.append(_issue("digital_missing_section", part, path, f"missing section: {key}"))
+    package = definition.get("package", {})
+    pins = definition.get("pins", [])
+    if not isinstance(package, dict):
+        errors.append(_issue("digital_package_invalid", part, path, "package must be an object"))
+    if not isinstance(pins, list) or not pins:
+        errors.append(_issue("digital_pins_invalid", part, path, "pins must be a non-empty list"))
+    elif isinstance(package, dict) and package.get("pins") != len(pins):
+        errors.append(_issue("digital_pin_count_mismatch", part, path, f"package pins={package.get('pins')} but digital definition has {len(pins)} pins"))
+    pin_numbers: set[int] = set()
+    power_rails: set[str] = set()
+    for pin in pins if isinstance(pins, list) else []:
+        if not isinstance(pin, dict):
+            errors.append(_issue("digital_pin_invalid", part, path, "pin entry is not an object"))
+            continue
+        number = pin.get("number")
+        name = pin.get("name")
+        direction = pin.get("direction")
+        if not isinstance(number, int) or number < 1:
+            errors.append(_issue("digital_pin_number_invalid", part, path, f"invalid pin number: {number!r}"))
+        elif number in pin_numbers:
+            errors.append(_issue("digital_duplicate_pin", part, path, f"duplicate pin number: {number}"))
+        else:
+            pin_numbers.add(number)
+        if not isinstance(name, str) or not name:
+            errors.append(_issue("digital_pin_name_invalid", part, path, f"pin {number} has no name"))
+        if direction not in {"input", "output", "bidirectional", "passive", "power", "nc", "unknown"}:
+            errors.append(_issue("digital_pin_direction_invalid", part, path, f"pin {number} has invalid direction: {direction!r}"))
+        if direction == "power" and isinstance(pin.get("rail"), str):
+            power_rails.add(str(pin["rail"]))
+    if "VCC" not in power_rails and "VDD" not in power_rails:
+        errors.append(_issue("digital_missing_positive_rail", part, path, "digital definition has no VCC/VDD rail"))
+    if "GND" not in power_rails and "VSS" not in power_rails:
+        errors.append(_issue("digital_missing_ground_rail", part, path, "digital definition has no GND/VSS rail"))
+    generation = definition.get("generation", {})
+    targets = generation.get("targets", []) if isinstance(generation, dict) else []
+    required_targets = {"json", "python_simulator", "verilog_wrapper", "kicad_symbol", "svg_pinout", "documentation", "unit_test", "interactive_demo"}
+    if not isinstance(targets, list) or not required_targets.issubset(set(str(item) for item in targets)):
+        errors.append(_issue("digital_generation_targets_missing", part, path, f"generation.targets must include {sorted(required_targets)}"))
+    tests = definition.get("verification", {}).get("tests", []) if isinstance(definition.get("verification"), dict) else []
+    if not isinstance(tests, list) or not tests:
+        errors.append(_issue("digital_tests_missing", part, path, "verification.tests must list required test types"))
+    return {"ok": not errors, "errors": errors}
 
 
 def audit_db() -> JsonMap:
@@ -410,6 +491,13 @@ def _manifest_path(part: str) -> Path:
     if matches:
         return sorted(matches)[0]
     return flat
+
+
+def _digital_definition_path(part: str) -> Path:
+    manifest_path = _manifest_path(part)
+    if manifest_path.exists():
+        return manifest_path.parent / "definition" / "digital.json"
+    return manifest_path.parent / "definition" / "digital.json"
 
 
 def _manifest_paths() -> dict[str, Path]:
