@@ -2,7 +2,7 @@
 
 // 74HC74: dual D flip-flop with asynchronous preset and clear
 
-module ttl_74hc74 #(parameter BLOCKS = 2, DELAY_RISE = 0, DELAY_FALL = 0)
+module ttl_74hc74 #(parameter BLOCKS = 2, DELAY_RISE = 0, DELAY_FALL = 0, SAMPLE_DELAY = 0)
 (
   input [BLOCKS-1:0] Preset_bar,
   input [BLOCKS-1:0] Clear_bar,
@@ -21,6 +21,8 @@ generate
   begin: gen_blocks
     always @(posedge Clk[i] or negedge Preset_bar[i] or negedge Clear_bar[i])
     begin
+      if (SAMPLE_DELAY != 0 && Clk[i])
+        #SAMPLE_DELAY;
       if (!Clear_bar[i])
         Q_current[i] <= 1'b0;
       else if (!Preset_bar[i])

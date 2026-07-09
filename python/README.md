@@ -24,6 +24,36 @@ component files because projects can connect chips by real pin number or pin
 name, observe shared nets, catch bus conflicts, and include propagation-delay
 metadata in system timing checks.
 
+Bus tags are the preferred way to describe multi-line CPU wiring. A schematic
+can place any number of bus objects (`b0`, `b1`, `b2`, and so on), and each bus
+can have up to 128 indexed lines such as `bus:b1[0]` through `bus:b1[127]`.
+Any number of chip pins can plug into the same tag to share that connection;
+conflict detection still catches multiple active output drivers.
+
+Pull-up and pull-down helpers define normal/default logic states for floating
+nets, bus tags, or individual chip pins. They behave like weak resistor pulls:
+an active chip output overrides the pull, while conflicting pull directions on
+the same net are rejected.
+
+Power rails, manual logic sources, and stimulus input sets are first-class
+backend objects. Rails can drive schematic tags such as `VCC`, `GND`, or a bus
+line. Logic sources model visible switches, jumpers, or UI-controlled inputs.
+Stimulus can create any number of named 64-channel input sets. `Board.snapshot()`
+returns serializable chip, pin, net, bus, rail, source, pull, and error state
+for UI or API display.
+
+`Design` is the scriptable schematic model above `Board`. It can load the
+readable schematic JSON shape, normalize aliases/endpoints, build a simulator
+`Board`, import a KiCad generic netlist, export a normalized netlist, create
+first-pass structural Verilog for supported parts, and expose stimulus/probe
+controllers and snapshots for CLI or UI use.
+
+Probe sets are available for backend tests and future UI inspection. A board
+can have many probe sets, and each set has up to 64 probe channels. Each
+channel can attach to a chip pin, named net, or bus tag, record logic samples
+over simulated time, serialize its history, and assert expected values,
+transitions, pulse counts, and stable timing windows.
+
 The Verilog component files remain useful for HDL-level comparison and
 FPGA-oriented tests. For normal system behavior checks, run the Python simulator
 first and use Verilog only when the question is specifically about HDL
@@ -72,6 +102,24 @@ on manufacturer, VCC, temperature, and load.
 - Pin names are aliases for readability.
 - Tri-state outputs can drive `Z`.
 - Nets resolve `0`, `1`, `Z`, and `X`.
+- `Bus` groups named net tags up to 128 lines, for example `bus:b1[0]`.
+- Schematics can create any number of buses, such as `b0`, `b1`, `b2`.
+- A physical pin can belong to one net/tag; many pins can share one tag.
+- Pull-up and pull-down helpers provide weak default logic for nets, bus tags,
+  or pins before any active output drives the connection.
+- Power rails and manual logic sources provide visible schematic drivers for
+  UI-controlled state.
+- `StimulusController` manages any number of named input sets; each input set
+  has up to 64 channels.
+- `Board.snapshot()` exposes serializable chips, pins, nets, buses, rails,
+  sources, pulls, and structured errors for frontend/API use.
+- `Design` is the shared backend model for JSON files, Python scripts, CLI
+  commands, and future block UI actions.
+- `Design.to_netlist()` is the bridge format for future UI, netlist, and HDL
+  tools. `Design.to_verilog()` starts from that netlist and only maps parts
+  with explicit pin-number-to-port rules.
+- `Design.from_kicad_netlist()` can smoke-test existing KiCad netlists such as
+  RV8GR-V2 against the same backend.
 - Conflicting active drivers raise `BusConflictError`.
 - `74HC245` follows the real datasheet direction convention: `DIR=1` means
   A-to-B, `DIR=0` means B-to-A.
@@ -80,6 +128,8 @@ on manufacturer, VCC, temperature, and load.
   models.
 - `SST39SF010A` uses a simplified flash write model aligned with Verilog:
   write occurs on the falling edge of `/WE` while `/CE=0` and `/OE=1`.
+- `ProbeController` manages many probe sets; each set has up to 64 channels
+  attached to pins, nets, or bus tags for assertions and frontend/API state.
 
 ## Verify
 
@@ -87,6 +137,9 @@ Run from this folder:
 
 ```bash
 python3 -B -m tests.test_chips
+python3 -B -m tests.test_design
+python3 -B -m tests.test_netlist
+python3 -B -m tests.test_cli
 ```
 
 ## Future Use Guide

@@ -26,8 +26,33 @@ PYTHONPATH=/home/jo/kiro/Components/python python3 your_test.py
 ```
 
 ```python
-from chiplib import Board, BusConflictError, X, Z, create_chip, load_image, load_memory
+from chiplib import Board, BusConflictError, ProbeController, X, Z, create_chip, load_image, load_memory
 ```
+
+## CLI Runner
+
+The same Python backend can be used from the command line with a schematic JSON
+file:
+
+```bash
+cd /home/jo/kiro/Components/python
+
+python3 -B -m chiplib.cli validate rv8gr_lab01.json
+python3 -B -m chiplib.cli snapshot rv8gr_lab01.json
+python3 -B -m chiplib.cli run rv8gr_lab01.json
+python3 -B -m chiplib.cli probe rv8gr_lab01.json
+python3 -B -m chiplib.cli export-json rv8gr_lab01.json -o canonical.json
+python3 -B -m chiplib.cli export-netlist rv8gr_lab01.json -o rv8gr_lab01.net.json
+python3 -B -m chiplib.cli export-verilog rv8gr_lab01.json -o rv8gr_lab01.verilog.json
+python3 -B -m chiplib.cli export-verilog rv8gr_lab01.json --text -o rv8gr_lab01.v
+```
+
+`run` currently supports the first simple step commands: `apply <input-set>`,
+`settle`, `run <duration>`, `clock <name> ...`, `probe`, and recorded
+`expect <name>` entries. Netlist export writes the normalized bridge format used
+by future UI and HDL tools. Verilog export is first-pass and conservative: it
+uses explicit pin-number-to-port maps for supported 74HC parts and reports
+unsupported chips instead of guessing.
 
 ## Create A Chip
 
@@ -121,14 +146,189 @@ bus.settle()
 assert gate.read("1A") == 1
 ```
 
+## Bus Tags
+
+Use `Bus` when a design has grouped lines such as address, data, control, or
+internal CPU buses. A schematic can place any number of bus objects, such as
+`b0`, `b1`, `b2`, or more. Each bus is a group of named net tags up to 128
+lines wide. Line tags use the form `bus:<name>[<index>]`, for example
+`bus:b1[0]` through `bus:b1[127]`.
+
+Any number of chip pins can plug into the same tag to define the same
+connection. One physical pin can belong to one net/tag at a time.
+
+```python
+from chiplib import Board, create_chip
+
+board = Board()
+b0 = board.bus("b0", width=128)
+b1 = board.bus("b1", width=128)
+b2 = board.bus("b2", width=64)
+
+buf = board.add_chip("U1", create_chip("74HC541", "U1"))
+nand_a = board.add_chip("U2", create_chip("74HC00", "U2"))
+nand_b = board.add_chip("U3", create_chip("74HC00", "U3"))
+
+# These three pins are all on the same connection: bus:b1[0].
+board.attach("bus:b1[0]", buf, "Y1")
+board.attach("bus:b1[0]", nand_a, "1A")
+b1.connect(0, nand_b, "1A")
+
+buf.set_input("A1", 1)
+buf.set_input("/OE1", 0)
+buf.set_input("/OE2", 0)
+board.settle()
+
+assert nand_a.read("1A") == 1
+assert nand_b.read("1A") == 1
+assert b0.tag(127) == "bus:b0[127]"
+assert b2.tag(63) == "bus:b2[63]"
+```
+
+`board.attach(tag, chip, pin)` also accepts ordinary non-bus net names, so UI or
+API clients can treat tag connection as one operation.
+
+## Pull-Up And Pull-Down Defaults
+
+Use pull-up and pull-down helpers to define the normal state of a floating
+connection. This models a weak VCC+resistor pull-up or ground pull-down in the
+schematic. Active chip outputs override the pull; conflicting pull directions
+on the same net raise `BusConflictError`.
+
+Pulls can attach to ordinary net names, bus tags, or individual chip pins:
+
+```python
+from chiplib import Board, create_chip
+
+board = Board()
+board.bus("ctrl", width=8)
+
+gate = board.add_chip("U1", create_chip("74HC00", "U1"))
+driver = board.add_chip("U2", create_chip("74HC541", "U2"))
+
+# Default ctrl[0] high unless something actively drives it.
+board.attach("bus:ctrl[0]", gate, "1A")
+board.pullup("bus:ctrl[0]")
+board.settle()
+assert gate.read("1A") == 1
+
+# An enabled output can override the weak pull-up.
+board.attach("bus:ctrl[0]", driver, "Y1")
+driver.set_input("A1", 0)
+driver.set_input("/OE1", 0)
+driver.set_input("/OE2", 0)
+board.settle()
+assert gate.read("1A") == 0
+
+# Pulls can also be placed directly on otherwise unconnected chip pins.
+loose = board.add_chip("U3", create_chip("74HC00", "U3"))
+board.pullup_pin(loose, "1A")
+board.pulldown_pin(loose, "1B")
+assert loose.read("1A") == 1
+assert loose.read("1B") == 0
+```
+
+## Rails, Logic Sources, And Snapshots
+
+Use rails for visible schematic power/ground drivers and logic sources for
+switches, jumpers, buttons, or UI-controlled test inputs. These are strong
+drivers, unlike weak pull-ups/pull-downs.
+
+```python
+from chiplib import Board, create_chip
+
+board = Board()
+board.bus("ctrl", width=4)
+
+gate = board.add_chip("U1", create_chip("74HC00", "U1"))
+board.attach("bus:ctrl[1]", gate, "1A")
+board.attach("bus:ctrl[2]", gate, "1B")
+
+# Rails are visible named drivers.
+board.vcc("bus:ctrl[1]")
+board.ground("GND_NET")
+
+# Logic sources are for visible switches or UI-controlled inputs.
+board.logic_source("SW1", "bus:ctrl[2]", 1)
+board.settle()
+assert gate.read("1A") == 1
+assert gate.read("1B") == 1
+
+board.set_source("SW1", 0)
+assert gate.read("1B") == 0
+
+state = board.snapshot()
+errors = board.errors()
+```
+
+`Board.snapshot()` returns plain dictionaries/lists for frontend/API use:
+
+- `chips`: part/ref and per-pin number/name/direction/value/net metadata
+- `nets`: value, attached pins, pulls, and strong sources
+- `buses`: name, width, line tags, values, and attached pins
+- `rails`: named rail values such as `VCC=1`, `GND=0`
+- `sources`: named logic sources and enabled/value state
+- `errors`: structured conflict records suitable for UI display
+
 `Board.clock_edge()` calls `clock_edge()` on every chip, then settles scheduled
 outputs. For UI and pin-level simulation, prefer explicit stimulus clock
 channels so the backend can apply each part's real rising or falling edge.
 
 For future UI work, `Board` is the natural service boundary. A frontend should
-send operations such as "create chip", "connect net", "drive pin", "clock",
-"settle", and "probe"; the backend should return serializable chip, pin, net,
-logic-value, and timing state for drawing.
+send operations such as "create chip", "create bus", "attach pin to tag",
+"add pull", "add rail", "set source", "clock", "settle", and "probe"; the
+backend should return `Board.snapshot()` plus probe snapshots for drawing.
+
+## Probe Channels And Assertions
+
+Use `ProbeController` to inspect pins, named nets, or bus tags without mixing
+test logic into chip behavior. A board can have any number of named probe sets,
+and each probe set has up to 64 channels. Probes record sampled values with
+`board.time_ns`, expose a serializable snapshot, and provide assertion helpers
+for backend tests.
+
+```python
+from chiplib import Board, ProbeController, StimulusController, create_chip
+
+board = Board()
+stimulus = StimulusController(board)
+probes = ProbeController(board)
+front_panel = probes.set("front_panel")
+debug_bus = probes.set("debug_bus")
+
+inv = board.add_chip("U1", create_chip("74HC04", "U1"))
+stimulus.bind_input(0, inv, "1A", initial=0)
+board.attach("bus:probe[0]", inv, "1Y")
+
+y_pin = front_panel.pin("u1_y", inv, "1Y")
+y_net = debug_bus.net("inv_out", "bus:probe[0]")
+y_bus = debug_bus.tag("inv_out_bus", "bus:probe[0]")
+
+board.settle()
+probes.sample()
+y_pin.expect(1)
+y_net.expect_stable(1)
+y_bus.expect(1)
+
+stimulus.input(0).set(1)
+board.settle()
+probes.sample()
+
+y_pin.expect(0)
+y_pin.expect_transition("falling")
+y_pin.expect_pulses(1, edge="falling")
+state = probes.snapshot()
+```
+
+Probe assertions currently cover:
+
+- current or sampled value: `expect(0)`, `expect(1)`, `expect(Z)`, `expect(X)`
+- stable windows: `expect_stable(value, since_ns=..., until_ns=...)`
+- transitions: `expect_transition("rising"|"falling")`
+- pulse counts: `expect_pulses(count, edge="rising"|"falling")`
+
+The snapshot form groups channels by probe set and uses plain dictionaries/lists
+so a Python UI or API wrapper can return probe state directly to a web frontend.
 
 ## Z, X, And Bus Conflicts
 
@@ -269,13 +469,14 @@ runs the circuit.
 ## External Inputs And Clocks
 
 Use `StimulusController` to create the first input state for a board and to
-drive clocks during simulation. By default it provides:
+drive clocks during simulation. It provides:
 
-- 64 external input channels: `IN0..IN63`
+- any number of named input sets, each with up to 64 external input channels
 - 8 clock channels: `CLK0..CLK7`
 
 Input channels can bind to any chip pin by number or name. This is useful for
-reset lines, DIP switches, bus source values, or UI-controlled pins.
+reset lines, DIP switches, bus source values, or UI-controlled pins. The old
+`stim.input(0)` and `stim.bind_input(...)` helpers use the default input set.
 
 ```python
 from chiplib import Board, StimulusController, create_chip
@@ -283,18 +484,21 @@ from chiplib import Board, StimulusController, create_chip
 board = Board()
 u1 = board.add_chip("U1", create_chip("74HC00", "U1"))
 stim = StimulusController(board)
+panel = stim.input_set("panel")
+tester = stim.input_set("tester")
 
-stim.bind_input(0, u1, "1A", initial=1)
-stim.bind_input(1, u1, "1B", initial=1)
+panel.bind(0, u1, "1A", initial=1)
+tester.bind(0, u1, "1B", initial=1)
 board.settle()
 assert u1.read("1Y") == 0
 
-stim.input(1).set(0)
+tester.input(0).set(0)
 board.settle()
 assert u1.read("1Y") == 1
 ```
 
-Use `set_inputs()` to write many channels from an integer or iterable:
+Use `set_inputs()` to write many channels on the default set from an integer or
+iterable. Use `input_set.set_values()` for named sets:
 
 ```python
 reg = board.add_chip("U2", create_chip("74HC574", "U2"))
@@ -302,6 +506,7 @@ for i, pin in enumerate([2, 3, 4, 5, 6, 7, 8, 9]):
     stim.bind_input(i, reg, pin)
 
 stim.set_inputs(0xA5, width=8)
+panel.set_values(0b11, width=2)
 ```
 
 Clock channels can be one-shot triggered or run as numeric-frequency clocks.
@@ -323,9 +528,10 @@ stim.run_for(2_000_000_000)  # 2 seconds of simulated time
 clk.stop(level=0)
 ```
 
-For a future UI, `stim.snapshot()` returns serializable input/clock state with
-channel numbers, values, timing, and target pins. A web frontend can call this
-through an API wrapper; a Python frontend can import the controller directly.
+For a future UI, `stim.snapshot()` returns serializable input-set and clock
+state with channel numbers, values, timing, and target pins. A web frontend can
+call this through an API wrapper; a Python frontend can import the controller
+directly.
 
 ## Coverage And Caveats
 

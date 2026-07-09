@@ -36,6 +36,43 @@ class InputChannel:
         return self.value
 
 
+class InputSet:
+    """One external input header/set with up to 64 channels."""
+
+    def __init__(self, name: str, *, input_count: int = 64):
+        if input_count <= 0 or input_count > 64:
+            raise StimulusError("input set input_count must be between 1 and 64")
+        self.name = name
+        self.inputs = [InputChannel(i, f"{name}.IN{i}") for i in range(input_count)]
+
+    def input(self, index: int) -> InputChannel:
+        return self.inputs[index]
+
+    def bind(self, index: int, chip: Chip, pin: int | str, *, initial: Logic = 0) -> InputChannel:
+        channel = self.input(index).bind(chip, pin)
+        channel.set(initial, settle=False)
+        return channel
+
+    def set_values(self, values: int | Iterable[Logic], *, width: int | None = None) -> None:
+        if isinstance(values, int):
+            width = len(self.inputs) if width is None else width
+            for i in range(width):
+                self.inputs[i].set((values >> i) & 1, settle=False)
+        else:
+            for channel, value in zip(self.inputs, values):
+                channel.set(value, settle=False)
+
+    def snapshot(self) -> dict:
+        return {
+            "name": self.name,
+            "input_count": len(self.inputs),
+            "inputs": [
+                {"index": ch.index, "name": ch.name, "value": ch.value, "targets": _targets(ch.targets)}
+                for ch in self.inputs
+            ],
+        }
+
+
 @dataclass
 class ClockChannel:
     index: int
@@ -137,25 +174,35 @@ class ClockChannel:
 
 
 class StimulusController:
-    """64 external inputs and 8 clocks for first-state and runtime stimulus."""
+    """External input sets and clocks for first-state and runtime stimulus."""
 
     def __init__(self, board: Board, *, input_count: int = 64, clock_count: int = 8):
         if input_count <= 0 or clock_count <= 0:
             raise StimulusError("input_count and clock_count must be positive")
         self.board = board
-        self.inputs = [InputChannel(i, f"IN{i}") for i in range(input_count)]
+        self.input_sets: dict[str, InputSet] = {}
+        self.default_inputs = self.input_set("default", input_count=input_count)
+        self.inputs = self.default_inputs.inputs
         self.clocks = [ClockChannel(i, f"CLK{i}", self) for i in range(clock_count)]
 
+    def input_set(self, name: str, *, input_count: int = 64) -> InputSet:
+        if name in self.input_sets:
+            input_set = self.input_sets[name]
+            if len(input_set.inputs) != input_count:
+                raise StimulusError(f"input set {name} already exists with {len(input_set.inputs)} channels")
+            return input_set
+        input_set = InputSet(name, input_count=input_count)
+        self.input_sets[name] = input_set
+        return input_set
+
     def input(self, index: int) -> InputChannel:
-        return self.inputs[index]
+        return self.default_inputs.input(index)
 
     def clock(self, index: int) -> ClockChannel:
         return self.clocks[index]
 
     def bind_input(self, index: int, chip: Chip, pin: int | str, *, initial: Logic = 0) -> InputChannel:
-        channel = self.input(index).bind(chip, pin)
-        channel.set(initial, settle=False)
-        return channel
+        return self.default_inputs.bind(index, chip, pin, initial=initial)
 
     def bind_clock(self, index: int, chip: Chip, pin: int | str, *, initial: int = 0) -> ClockChannel:
         channel = self.clock(index).bind(chip, pin)
@@ -164,13 +211,7 @@ class StimulusController:
         return channel
 
     def set_inputs(self, values: int | Iterable[Logic], *, width: int | None = None, settle: bool = True) -> None:
-        if isinstance(values, int):
-            width = len(self.inputs) if width is None else width
-            for i in range(width):
-                self.inputs[i].set((values >> i) & 1, settle=False)
-        else:
-            for channel, value in zip(self.inputs, values):
-                channel.set(value, settle=False)
+        self.default_inputs.set_values(values, width=width)
         if settle:
             self.board.settle()
 
@@ -178,6 +219,7 @@ class StimulusController:
         return {
             "time_ns": self.board.time_ns,
             "inputs": [{"index": ch.index, "name": ch.name, "value": ch.value, "targets": _targets(ch.targets)} for ch in self.inputs],
+            "input_sets": [input_set.snapshot() for input_set in self.input_sets.values()],
             "clocks": [
                 {
                     "index": ch.index,

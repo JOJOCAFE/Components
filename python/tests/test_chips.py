@@ -7,11 +7,15 @@ from chiplib import (
     Board,
     BusConflictError,
     ImageLoadError,
+    ProbeController,
+    ProbeError,
     StimulusController,
+    StimulusError,
     Z,
     create_chip,
     load_image,
     load_memory,
+    parse_bus_tag,
 )
 
 MEMORY_ADDR_PINS = {
@@ -271,6 +275,179 @@ def test_board_delay_and_bus_conflict():
         raise AssertionError("expected bus conflict")
 
 
+def test_board_bus_tags_and_shared_connections():
+    board = Board()
+    bus = board.bus("b1", width=128)
+    assert bus.tag(0) == "bus:b1[0]"
+    assert bus.tag(127) == "bus:b1[127]"
+    assert parse_bus_tag("bus:b1[42]") == ("b1", 42)
+
+    source = board.add_chip("SRC", create_chip("74HC541", "SRC"))
+    sink_a = board.add_chip("A", create_chip("74HC00", "A"))
+    sink_b = board.add_chip("B", create_chip("74HC00", "B"))
+
+    board.attach("bus:b1[0]", source, "Y1")
+    board.attach("bus:b1[0]", sink_a, "1A")
+    bus.connect(0, sink_b, "1A")
+
+    source.set_input("A1", 1)
+    source.set_input("/OE1", 0)
+    source.set_input("/OE2", 0)
+    board.settle()
+
+    assert sink_a.read("1A") == 1
+    assert sink_b.read("1A") == 1
+    snapshot = bus.snapshot()
+    assert snapshot["lines"][0]["tag"] == "bus:b1[0]"
+    assert len(snapshot["lines"][0]["pins"]) == 3
+
+    try:
+        board.connect("OTHER", source, "Y1")
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("expected one-net-per-pin guard")
+
+    try:
+        bus.line(128)
+    except IndexError:
+        pass
+    else:
+        raise AssertionError("expected bus index error")
+
+
+def test_board_supports_multiple_schematic_buses():
+    board = Board()
+    b0 = board.bus("b0", width=128)
+    b1 = board.bus("b1", width=128)
+    b2 = board.bus("b2", width=64)
+
+    assert sorted(board.buses) == ["b0", "b1", "b2"]
+    assert b0.tag(127) == "bus:b0[127]"
+    assert b1.tag(127) == "bus:b1[127]"
+    assert b2.tag(63) == "bus:b2[63]"
+
+    u0 = board.add_chip("U0", create_chip("74HC541", "U0"))
+    u1 = board.add_chip("U1", create_chip("74HC00", "U1"))
+    u2 = board.add_chip("U2", create_chip("74HC00", "U2"))
+
+    board.attach("bus:b0[0]", u0, "Y1")
+    board.attach("bus:b1[0]", u1, "1A")
+    board.attach("bus:b2[0]", u2, "1A")
+
+    assert board.net("bus:b0[0]") is not board.net("bus:b1[0]")
+    assert board.net("bus:b1[0]") is not board.net("bus:b2[0]")
+    assert len(board.buses["b0"].snapshot()["lines"]) == 128
+    assert len(board.buses["b1"].snapshot()["lines"]) == 128
+    assert len(board.buses["b2"].snapshot()["lines"]) == 64
+
+
+def test_board_bus_conflict_from_multiple_plugged_outputs():
+    board = Board()
+    board.bus("data", width=8)
+    a = board.add_chip("A", create_chip("74HC541", "A"))
+    b = board.add_chip("B", create_chip("74HC541", "B"))
+
+    board.attach("bus:data[3]", a, "Y1")
+    board.attach("bus:data[3]", b, "Y1")
+    a.drive_output("Y1", 1)
+    try:
+        b.drive_output("Y1", 0)
+    except BusConflictError:
+        pass
+    else:
+        raise AssertionError("expected bus conflict")
+
+
+def test_pullup_pulldown_defaults_on_bus_and_pins():
+    board = Board()
+    board.bus("ctrl", width=8)
+    gate = board.add_chip("G", create_chip("74HC00", "G"))
+    driver = board.add_chip("D", create_chip("74HC541", "D"))
+
+    board.attach("bus:ctrl[0]", gate, "1A")
+    board.pullup("bus:ctrl[0]")
+    board.settle()
+    assert gate.read("1A") == 1
+    assert board.net("bus:ctrl[0]").value == 1
+
+    board.attach("bus:ctrl[0]", driver, "Y1")
+    driver.set_input("A1", 0)
+    driver.set_input("/OE1", 0)
+    driver.set_input("/OE2", 0)
+    board.settle()
+    assert gate.read("1A") == 0
+    assert board.net("bus:ctrl[0]").value == 0
+
+    loose = board.add_chip("L", create_chip("74HC00", "L"))
+    board.pullup_pin(loose, "1A")
+    assert loose.read("1A") == 1
+    loose.set_input("1A", 0)
+    assert loose.read("1A") == 0
+    board.pulldown_pin(loose, "1B")
+    assert loose.read("1B") == 0
+
+
+def test_conflicting_pulls_are_rejected():
+    board = Board()
+    board.pullup("RESET")
+    try:
+        board.pulldown("RESET")
+    except BusConflictError:
+        pass
+    else:
+        raise AssertionError("expected conflicting pull error")
+
+
+def test_power_rails_logic_sources_and_board_snapshot():
+    board = Board()
+    board.bus("ctrl", width=4)
+    gate = board.add_chip("G", create_chip("74HC00", "G"))
+
+    board.attach("bus:ctrl[1]", gate, "1A")
+    board.vcc("bus:ctrl[1]")
+    board.ground("GND_NET")
+    board.logic_source("SW1", "bus:ctrl[2]", 1)
+    board.attach("bus:ctrl[2]", gate, "1B")
+    board.settle()
+
+    assert gate.read("1A") == 1
+    assert gate.read("1B") == 1
+    board.set_source("SW1", 0)
+    assert gate.read("1B") == 0
+
+    snapshot = board.snapshot()
+    assert snapshot["time_ns"] == board.time_ns
+    assert {rail["name"] for rail in snapshot["rails"]} == {"VCC", "GND"}
+    assert any(source["name"] == "SW1" and source["value"] == 0 for source in snapshot["sources"])
+    assert any(net["name"] == "bus:ctrl[1]" for net in snapshot["nets"])
+    assert snapshot["errors"] == []
+
+
+def test_structured_error_report_for_driver_conflict():
+    board = Board()
+    board.bus("data", width=4)
+    a = board.add_chip("A", create_chip("74HC541", "A"))
+    b = board.add_chip("B", create_chip("74HC541", "B"))
+
+    board.attach("bus:data[0]", a, "Y1")
+    board.attach("bus:data[0]", b, "Y1")
+    a.drive_output("Y1", 1)
+    try:
+        b.drive_output("Y1", 0)
+    except BusConflictError:
+        pass
+    else:
+        raise AssertionError("expected bus conflict")
+
+    errors = board.errors()
+    assert errors[0]["type"] == "driver_conflict"
+    assert errors[0]["net"] == "bus:data[0]"
+    assert "A.Y1:1" in errors[0]["detail"]
+    assert "B.Y1:0" in errors[0]["detail"]
+    assert board.snapshot()["errors"][0]["type"] == "driver_conflict"
+
+
 def test_stimulus_inputs_and_clocks():
     board = Board()
     nand = board.add_chip("U1", create_chip("74HC00", "U1"))
@@ -306,6 +483,44 @@ def test_stimulus_inputs_and_clocks():
     assert board.time_ns >= start + 250
     assert clk1.next_edge_ns is not None
     assert stimulus.snapshot()["clocks"][1]["period_ns"] == 100
+
+
+def test_stimulus_supports_multiple_input_sets():
+    board = Board()
+    stimulus = StimulusController(board)
+    a = stimulus.input_set("A")
+    b = stimulus.input_set("B")
+
+    assert len(stimulus.inputs) == 64
+    assert len(a.inputs) == 64
+    assert len(b.inputs) == 64
+    assert a is stimulus.input_set("A")
+
+    nand_a = board.add_chip("NA", create_chip("74HC00", "NA"))
+    nand_b = board.add_chip("NB", create_chip("74HC00", "NB"))
+    a.bind(0, nand_a, "1A", initial=1)
+    a.bind(1, nand_a, "1B", initial=1)
+    b.bind(0, nand_b, "1A", initial=1)
+    b.bind(1, nand_b, "1B", initial=0)
+    board.settle()
+    assert nand_a.read("1Y") == 0
+    assert nand_b.read("1Y") == 1
+
+    a.set_values(0, width=2)
+    b.set_values(3, width=2)
+    board.settle()
+    assert nand_a.read("1Y") == 1
+    assert nand_b.read("1Y") == 0
+
+    try:
+        stimulus.input_set("small", input_count=65)
+    except StimulusError:
+        pass
+    else:
+        raise AssertionError("expected input-set cap")
+
+    snapshot = stimulus.snapshot()
+    assert {item["name"] for item in snapshot["input_sets"]} == {"default", "A", "B"}
 
 
 def test_datasheet_clock_edges_and_independent_clock_pins():
@@ -354,6 +569,96 @@ def test_datasheet_clock_edges_and_independent_clock_pins():
     assert sr.read("QA") == 0
     rclk.trigger(width_ns=10)
     assert sr.read("QA") == 1
+
+
+def test_probe_channels_and_assertions():
+    board = Board()
+    stimulus = StimulusController(board)
+    probes = ProbeController(board)
+
+    inv = board.add_chip("INV", create_chip("74HC04", "INV"))
+    stimulus.bind_input(0, inv, "1A", initial=0)
+    board.attach("bus:probe[0]", inv, "1Y")
+
+    y_pin = probes.pin("inv_y_pin", inv, "1Y")
+    y_net = probes.net("inv_y_net", "bus:probe[0]")
+    y_bus = probes.tag("inv_y_bus", "bus:probe[0]")
+
+    board.settle()
+    probes.sample()
+    y_pin.expect(1)
+    y_net.expect_stable(1)
+    y_bus.expect(1)
+
+    stimulus.input(0).set(1)
+    board.settle()
+    probes.sample()
+    y_pin.expect(0)
+    y_bus.expect(0)
+    y_pin.expect_transition("falling")
+    y_pin.expect_pulses(1, edge="falling")
+    default_set = probes.snapshot()["sets"][0]
+    assert default_set["name"] == "default"
+    assert default_set["channels"][0]["history"][-1]["value"] == 0
+    assert default_set["channels"][1]["target_kind"] == "net"
+    assert default_set["channels"][2]["target_kind"] == "bus"
+
+    try:
+        y_pin.expect(1)
+    except ProbeError:
+        pass
+    else:
+        raise AssertionError("expected probe assertion failure")
+
+
+def test_probe_sets_have_64_channels_each():
+    board = Board()
+    probes = ProbeController(board)
+    board.bus("sig", width=64)
+
+    a = probes.set("A")
+    b = probes.set("B")
+    assert a is probes.set("A")
+    assert a.channel_count == 64
+    assert b.channel_count == 64
+
+    for i in range(64):
+        a.tag(f"a{i}", f"bus:sig[{i}]")
+        b.tag(f"b{i}", f"bus:sig[{i}]")
+
+    assert len(a.probes) == 64
+    assert len(b.probes) == 64
+    try:
+        a.tag("overflow", "bus:sig[0]")
+    except ProbeError:
+        pass
+    else:
+        raise AssertionError("expected probe-set channel cap")
+
+    probes.sample()
+    snapshot = probes.snapshot()
+    assert {probe_set["name"] for probe_set in snapshot["sets"]} == {"default", "A", "B"}
+    assert len([probe_set for probe_set in snapshot["sets"] if probe_set["name"] == "A"][0]["channels"]) == 64
+
+
+def test_probe_counts_clock_pulses_over_time_window():
+    board = Board()
+    stimulus = StimulusController(board)
+    probes = ProbeController(board)
+
+    inv = board.add_chip("CLKINV", create_chip("74HC04", "CLKINV"))
+    clk = stimulus.bind_clock(0, inv, "1A")
+    clk.configure(period_ns=100, duty=0.5).start(start_high=False)
+    clk_probe = probes.pin("clk_in", inv, "1A")
+
+    probes.sample()
+    for _ in range(4):
+        stimulus.run_for(50)
+        probes.sample()
+
+    assert clk_probe.count_edges() == 4
+    clk_probe.expect_pulses(2, edge="rising", since_ns=0, until_ns=200)
+    clk_probe.expect_transition("falling", since_ns=0, until_ns=200)
 
 
 def test_all_component_parts_instantiate():
@@ -443,8 +748,19 @@ def run_all():
     test_memory()
     test_memory_image_loader()
     test_board_delay_and_bus_conflict()
+    test_board_bus_tags_and_shared_connections()
+    test_board_supports_multiple_schematic_buses()
+    test_board_bus_conflict_from_multiple_plugged_outputs()
+    test_pullup_pulldown_defaults_on_bus_and_pins()
+    test_conflicting_pulls_are_rejected()
+    test_power_rails_logic_sources_and_board_snapshot()
+    test_structured_error_report_for_driver_conflict()
     test_stimulus_inputs_and_clocks()
+    test_stimulus_supports_multiple_input_sets()
     test_datasheet_clock_edges_and_independent_clock_pins()
+    test_probe_channels_and_assertions()
+    test_probe_sets_have_64_channels_each()
+    test_probe_counts_clock_pulses_over_time_window()
     test_all_component_parts_instantiate()
     test_catalog_behavior_smoke()
 
