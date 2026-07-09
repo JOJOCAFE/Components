@@ -166,10 +166,107 @@ def test_design_exposes_power_on_inputs_input_sets_and_named_probe_sets():
     assert logic_channels["data0_bus"]["target"] == "bus:DATA[0]"
 
 
+def test_design_adapts_db_virtual_sources_rails_pulls_and_probes():
+    design = Design.from_dict({
+        "name": "virtual-components",
+        "chips": {
+            "U1": {"part": "74HC00"},
+            "S1": {"part": "InputSource", "initial": 1},
+            "V1": {"part": "VCC"},
+            "G1": {"part": "GND"},
+            "PU1": {"part": "Pullup"},
+            "PD1": {"part": "Pulldown"},
+            "P1": {"part": "Probe"},
+            "BP1": {"part": "BusProbe"},
+        },
+        "buses": {"DATA": {"width": 2}},
+        "connections": [
+            "S1:OUT -> U1:1, P1:IN",
+            "V1:VCC -> U1:2",
+            "VCC -> U1:14",
+            "G1:GND -> U1:7",
+            "PU1:PULL -> DATA:0, BP1:BUS",
+            "PD1:PULL -> DATA:1",
+        ],
+        "inputs": {"toggle": {"S1:OUT": 0}},
+        "steps": ["apply toggle", "probe"],
+    })
+
+    assert design.validate()["ok"]
+
+    board = design.to_board()
+    snapshot = board.snapshot()
+    assert {chip["ref"] for chip in snapshot["chips"]} == {"U1"}
+
+    source_names = {source["name"] for source in snapshot["sources"]}
+    assert "input:S1:OUT->net:0" in source_names
+    assert "rail:VCC->net:1" in source_names
+    assert "rail:GND->net:3" in source_names
+
+    nets = {net["name"]: net for net in snapshot["nets"]}
+    assert nets["net:0"]["value"] == 0
+    assert nets["net:1"]["value"] == 1
+    assert nets["net:3"]["value"] == 0
+    assert nets["bus:DATA[0]"]["pulls"] == [{"source": "bus:DATA[0]", "value": 1}]
+    assert nets["bus:DATA[1]"]["pulls"] == [{"source": "bus:DATA[1]", "value": 0}]
+
+    probe_sets = {item["name"]: item for item in design.to_io()["probes"].snapshot()["sets"]}
+    default_channels = {channel["name"]: channel for channel in probe_sets["default"]["channels"]}
+    assert default_channels["P1"]["target_kind"] == "net"
+    assert default_channels["P1"]["target"] == "net:0"
+    assert default_channels["BP1"]["target_kind"] == "bus"
+    assert default_channels["BP1"]["target"] == "bus:DATA[0]"
+
+    result = design.run()
+    assert result["ok"]
+    run_sources = {
+        source["name"]: source
+        for source in result["snapshot"]["board"]["sources"]
+    }
+    assert run_sources["input:S1:OUT->net:0"]["value"] == 0
+
+
+def test_design_loads_passive_and_discrete_db_components_without_behavior_model():
+    design = Design.from_dict({
+        "name": "passive-discrete-components",
+        "chips": {
+            "LED1": {"part": "LED"},
+            "R1": {"part": "Resistor"},
+            "C1": {"part": "Capacitor"},
+            "Q1": {"part": "NPN"},
+            "Q2": {"part": "PNP"},
+        },
+        "connections": [
+            "LED1:A -> LED_A",
+            "LED1:K -> GND",
+            "R1:1 -> R_A",
+            "R1:2 -> R_B",
+            "C1:1 -> C_A",
+            "C1:2 -> C_B",
+            "Q1:C -> QC",
+            "Q1:B -> QB",
+            "Q1:E -> QE",
+            "Q2:C -> PC",
+            "Q2:B -> PB",
+            "Q2:E -> PE",
+        ],
+        "steps": ["settle"],
+    })
+
+    assert design.validate()["ok"]
+    board = design.to_board()
+    snapshot = board.snapshot()
+    assert snapshot["chips"] == []
+    assert not snapshot["errors"]
+    assert design.run()["ok"]
+
+
 def run_all():
     test_from_dict_to_dict_round_trip_preserves_schematic_contract()
     test_design_to_board_materializes_aliases_buses_connections_power_and_pulls()
     test_design_exposes_power_on_inputs_input_sets_and_named_probe_sets()
+    test_design_adapts_db_virtual_sources_rails_pulls_and_probes()
+    test_design_loads_passive_and_discrete_db_components_without_behavior_model()
 
 
 if __name__ == "__main__":

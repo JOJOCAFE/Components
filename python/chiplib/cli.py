@@ -8,11 +8,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from .design import Design
 from .db import audit_db, component_summary, db_status_report, load_component
+from .services import DesignCommandService
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: list[str] | None = None, *, design_service: DesignCommandService | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python3 -m chiplib.cli")
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -38,6 +38,7 @@ def main(argv: list[str] | None = None) -> int:
     db.add_argument("-o", "--output")
 
     args = parser.parse_args(argv)
+    designs = design_service or DesignCommandService()
 
     if args.command == "db":
         if getattr(args, "audit", False):
@@ -50,26 +51,21 @@ def main(argv: list[str] | None = None) -> int:
         data = load_component(part) if part else component_summary()
         return write_json(data, output=getattr(args, "output", None))
 
-    design = Design.load_json(args.json_file)
     if args.command == "validate":
-        return write_json(design.validate())
+        return write_json(designs.validate(args.json_file))
     if args.command == "snapshot":
-        design.to_board()
-        return write_json(design.snapshot())
+        return write_json(designs.snapshot(args.json_file))
     if args.command == "run":
         steps: str | list[str] = [] if args.steps == "none" else "all"
-        return write_json(design.run(steps=steps))
+        return write_json(designs.run(args.json_file, steps=steps))
     if args.command == "probe":
-        design.to_board()
-        io = design.to_io()
-        io["probes"].sample()
-        return write_json(io["probes"].snapshot())
+        return write_json(designs.probe(args.json_file))
     if args.command == "export-json":
-        return write_json(design.to_dict(), output=getattr(args, "output", None))
+        return write_json(designs.export_json(args.json_file), output=getattr(args, "output", None))
     if args.command == "export-netlist":
-        return write_json(design.to_netlist(), output=getattr(args, "output", None))
+        return write_json(designs.export_netlist(args.json_file), output=getattr(args, "output", None))
     if args.command == "export-verilog":
-        exported = design.to_verilog()
+        exported = designs.export_verilog(args.json_file)
         if getattr(args, "text", False):
             return write_text(exported["verilog"], output=getattr(args, "output", None))
         return write_json(exported, output=getattr(args, "output", None), status=0 if exported["ok"] else 2)

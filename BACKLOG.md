@@ -71,10 +71,14 @@ Future work for the shared component library.
 - ✅ Add grouped DB seed manifests for virtual tools, passive parts, and
   discrete transistors while keeping existing IC manifests in their current
   flat paths during migration.
+- ✅ Add DB-backed adapters so schematic JSON can instantiate virtual sources,
+  rails, probes, passive parts, and discrete parts without forcing those
+  representation-only components through chip behavior factories.
 - ⬜ Follow `SERVICE_ARCHITECTURE_TASKS.md` to split chip behavior, simulation,
   CLI, and future API/UI adapters behind the stable internal service
-  contracts. Verilog export now has an initial internal service boundary.
-- ⬜ Finish production-ready CLI commands around the existing `Design` backend:
+  contracts. Verilog export, simulation, and CLI now have initial internal
+  service boundaries.
+- ✅ Finish production-ready CLI commands around the existing `Design` backend:
   `validate`, `snapshot`, `run`, `probe`, `export-json`, `export-netlist`, and
   `export-verilog`.
 - ✅ Add canonical JSON contract tests using service-ready example schematics:

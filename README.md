@@ -107,6 +107,7 @@ python3 -B -m tests.test_netlist
 python3 -B -m tests.test_cli
 python3 -B -m tests.test_db
 python3 -B -m tests.test_contracts
+python3 -B -m tests.test_simulation_service
 cd ..
 
 iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp verilog/74HC/*.v verilog/74HC/tests/tb_74hc_smoke.v
@@ -124,6 +125,7 @@ Expected pass markers:
 - `Components Python CLI tests passed`
 - `Components DB tests passed`
 - `Components contract tests passed`
+- `Components simulation service tests passed`
 - `74HC SMOKE TEST PASSED`
 - `MEMORY SMOKE TEST PASSED`
 

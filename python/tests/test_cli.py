@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
+from contextlib import redirect_stdout
+import io
 import json
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
+
+from chiplib import cli
 
 
 def small_cli_schematic():
@@ -157,9 +161,73 @@ def test_cli_db_summary_and_part_lookup():
     assert status_data["ok"] is True
 
 
+class FakeDesignService:
+    def __init__(self):
+        self.calls = []
+
+    def validate(self, json_file: str):
+        self.calls.append(("validate", json_file))
+        return {"ok": True, "command": "validate"}
+
+    def snapshot(self, json_file: str):
+        self.calls.append(("snapshot", json_file))
+        return {"command": "snapshot"}
+
+    def run(self, json_file: str, *, steps="all"):
+        self.calls.append(("run", json_file, steps))
+        return {"ok": True, "command": "run"}
+
+    def probe(self, json_file: str):
+        self.calls.append(("probe", json_file))
+        return {"command": "probe"}
+
+    def export_json(self, json_file: str):
+        self.calls.append(("export_json", json_file))
+        return {"command": "export-json"}
+
+    def export_netlist(self, json_file: str):
+        self.calls.append(("export_netlist", json_file))
+        return {"format": "chiplib.netlist"}
+
+    def export_verilog(self, json_file: str):
+        self.calls.append(("export_verilog", json_file))
+        return {"ok": True, "verilog": "module fake();\n"}
+
+
+def run_cli_main(fake: FakeDesignService, *args: str):
+    stdout = io.StringIO()
+    with redirect_stdout(stdout):
+        status = cli.main(list(args), design_service=fake)
+    return status, stdout.getvalue()
+
+
+def test_cli_design_commands_route_through_service_boundary():
+    fake = FakeDesignService()
+    commands = [
+        ("validate", ["validate", "small.json"], ("validate", "small.json")),
+        ("snapshot", ["snapshot", "small.json"], ("snapshot", "small.json")),
+        ("run", ["run", "--steps", "none", "small.json"], ("run", "small.json", [])),
+        ("probe", ["probe", "small.json"], ("probe", "small.json")),
+        ("export-netlist", ["export-netlist", "small.json"], ("export_netlist", "small.json")),
+        ("export-verilog", ["export-verilog", "small.json"], ("export_verilog", "small.json")),
+    ]
+
+    for command, args, expected_call in commands:
+        status, stdout = run_cli_main(fake, *args)
+        assert status == 0, command
+        assert stdout, command
+        assert fake.calls[-1] == expected_call
+
+    status, stdout = run_cli_main(fake, "export-verilog", "small.json", "--text")
+    assert status == 0
+    assert stdout == "module fake();\n"
+    assert fake.calls[-1] == ("export_verilog", "small.json")
+
+
 def run_all():
     test_cli_validate_snapshot_run_probe_and_export_json()
     test_cli_db_summary_and_part_lookup()
+    test_cli_design_commands_route_through_service_boundary()
 
 
 if __name__ == "__main__":

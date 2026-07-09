@@ -10,6 +10,7 @@ from typing import Any
 
 from .chips import create_chip
 from .core import Board, Logic, normalize_logic
+from .db import load_component
 from .loader import load_memory
 from .netlist import design_from_kicad_netlist, design_from_netlist, design_to_netlist
 from .probe import ProbeController
@@ -80,6 +81,7 @@ class Design:
         self._board: Board | None = None
         self.stimulus: StimulusController | None = None
         self.probe_controller: ProbeController | None = None
+        self._component_cache: dict[str, JsonMap | None] = {}
 
     @classmethod
     def from_dict(cls, data: JsonMap) -> "Design":
@@ -185,16 +187,20 @@ class Design:
         for ref, spec in self.chips.items():
             if not isinstance(spec, dict) or "part" not in spec:
                 raise ValueError(f"chip {ref} needs a part")
+            if self._component_manifest(ref) is not None:
+                continue
             board.add_chip(ref, create_chip(str(spec["part"]), ref))
 
+        component_connections: dict[tuple[str, str], list[str]] = {}
         for index, rule in enumerate(self.connections):
-            self._apply_connection(board, rule, index)
+            self._apply_connection(board, rule, index, component_connections)
         for target in self.pullups:
             board.pullup(self._tag(target))
         for target in self.pulldowns:
             board.pulldown(self._tag(target))
 
         stimulus = StimulusController(board)
+        self._apply_component_sources(board, component_connections)
         self._apply_inputs(board)
         self._apply_input_sets(board, stimulus)
         self._apply_clocks(board, stimulus)
@@ -202,6 +208,7 @@ class Design:
 
         probes = ProbeController(board)
         self._apply_probes(board, probes)
+        self._apply_component_probes(board, probes, component_connections)
 
         board.settle()
         self._board = board
@@ -262,6 +269,11 @@ class Design:
         for ref, spec in self.chips.items():
             if not isinstance(spec, dict) or not spec.get("part"):
                 errors.append({"type": "chip_part_missing", "ref": ref})
+                continue
+            try:
+                self._component_manifest(ref)
+            except Exception as exc:
+                errors.append({"type": "component_manifest_invalid", "ref": ref, "detail": str(exc)})
         for name, spec in self.buses.items():
             width = _width(spec)
             max_width = int(self.validate_config.get("max_bus_width", 128))
@@ -356,7 +368,13 @@ class Design:
             ref, value = _split_assignment(rule)
             self._drive_endpoint(board, self._endpoint(ref), value)
 
-    def _apply_connection(self, board: Board, rule: str, index: int) -> None:
+    def _apply_connection(
+        self,
+        board: Board,
+        rule: str,
+        index: int,
+        component_connections: dict[tuple[str, str], list[str]],
+    ) -> None:
         endpoints = self._connection_endpoints(rule)
         rails = [ep for ep in endpoints if ep.kind == "rail"]
         non_rails = [ep for ep in endpoints if ep.kind != "rail"]
@@ -365,12 +383,20 @@ class Design:
                 for endpoint in non_rails:
                     if endpoint.kind == "pin":
                         board.attach(endpoint.target, board.chips[endpoint.chip or ""], endpoint.pin or 0)
-                    board.attach_rail(rail.rail or rail.target, endpoint.target)
+                        board.attach_rail(rail.rail or rail.target, endpoint.target)
+                    elif endpoint.kind == "component_pin":
+                        board.attach_rail(rail.rail or rail.target, rail.target)
+                        self._record_component_connection(component_connections, endpoint, rail.target)
+                    else:
+                        board.attach_rail(rail.rail or rail.target, endpoint.target)
             return
         net_tag = _preferred_tag(endpoints) or f"net:{index}"
         for endpoint in endpoints:
             if endpoint.kind == "pin":
                 board.attach(net_tag, board.chips[endpoint.chip or ""], endpoint.pin or 0)
+            elif endpoint.kind == "component_pin":
+                board.net_for_tag(net_tag)
+                self._record_component_connection(component_connections, endpoint, net_tag)
             elif endpoint.kind in ("bus", "net"):
                 if endpoint.target != net_tag:
                     board.net_for_tag(net_tag).connect_source(board.logic_source(f"link:{index}:{endpoint.target}", endpoint.target, 0, enabled=False))
@@ -440,6 +466,31 @@ class Design:
                 clear=spec.get("clear"),
             )
 
+    def _apply_component_sources(self, board: Board, component_connections: dict[tuple[str, str], list[str]]) -> None:
+        for ref in self.chips:
+            manifest = self._component_manifest(ref)
+            if manifest is None:
+                continue
+            part = str(manifest.get("part", "")).lower()
+            simulation = manifest.get("simulation", {})
+            sim = simulation if isinstance(simulation, dict) else {}
+            for pin_name, tags in self._component_pin_tags(component_connections, ref).items():
+                for tag in tags:
+                    if part == "inputsource":
+                        value = self._component_logic_default(ref, manifest, sim, "default_value", 0)
+                        self._ensure_logic_source(board, f"input:{ref}:{pin_name}->{tag}", tag, value)
+                    elif part == "clocksource":
+                        value = self._component_logic_default(ref, manifest, sim, "initial", 0)
+                        self._ensure_logic_source(board, f"clock:{ref}:{pin_name}->{tag}", tag, value)
+                    elif part == "vcc":
+                        self._ensure_rail_source(board, "VCC", tag)
+                    elif part == "gnd":
+                        self._ensure_rail_source(board, "GND", tag)
+                    elif part == "pullup":
+                        board.pullup(tag)
+                    elif part == "pulldown":
+                        board.pulldown(tag)
+
     def _apply_probes(self, board: Board, probes: ProbeController) -> None:
         for set_name, entries in self.probes.items():
             probe_set = probes.set(set_name)
@@ -460,10 +511,38 @@ class Design:
                 elif endpoint.kind == "net":
                     probe_set.net(probe_name, endpoint.target)
 
+    def _apply_component_probes(
+        self,
+        board: Board,
+        probes: ProbeController,
+        component_connections: dict[tuple[str, str], list[str]],
+    ) -> None:
+        for ref in self.chips:
+            manifest = self._component_manifest(ref)
+            if manifest is None:
+                continue
+            part = str(manifest.get("part", "")).lower()
+            if part not in ("probe", "busprobe"):
+                continue
+            for tags in self._component_pin_tags(component_connections, ref).values():
+                for tag in tags:
+                    probes.default.tag(ref, tag)
+
     def _drive_endpoint(self, board: Board, endpoint: Endpoint, value: Logic) -> None:
         value = normalize_logic(value)
         if endpoint.kind == "pin":
             board.drive(board.chips[endpoint.chip or ""], endpoint.pin or 0, value)
+            return
+        if endpoint.kind == "component_pin":
+            prefixes = (f"input:{endpoint.target}->", f"clock:{endpoint.target}->")
+            matched = False
+            for name in list(board.sources):
+                if name.startswith(prefixes):
+                    board.set_source(name, value)
+                    matched = True
+            if matched:
+                return
+            board.logic_source(f"input:{endpoint.target}", endpoint.target, value)
             return
         source_name = f"input:{endpoint.ref}"
         if source_name in board.sources:
@@ -484,6 +563,10 @@ class Design:
             left = left.strip()
             right = right.strip()
             if left in self.chips:
+                manifest = self._component_manifest(left)
+                if manifest is not None:
+                    pin = self._component_pin_name(left, manifest, right)
+                    return Endpoint(original, "component_pin", f"{left}:{pin}", chip=left, pin=pin)
                 pin: int | str = int(right) if right.isdigit() else right
                 return Endpoint(original, "pin", f"{left}:{pin}", chip=left, pin=pin)
             index = int(right)
@@ -505,6 +588,79 @@ class Design:
         if endpoint.kind == "rail":
             return endpoint.target
         return endpoint.target
+
+    def _component_manifest(self, ref: str) -> JsonMap | None:
+        if ref in self._component_cache:
+            return self._component_cache[ref]
+        spec = self.chips.get(ref)
+        if not isinstance(spec, dict) or not spec.get("part"):
+            self._component_cache[ref] = None
+            return None
+        part = str(spec["part"])
+        try:
+            manifest = load_component(part)
+        except KeyError:
+            manifest = None
+        if manifest is not None and str(manifest.get("group", "")).lower() not in ("virtual", "passive", "discrete"):
+            manifest = None
+        self._component_cache[ref] = manifest
+        return manifest
+
+    def _component_pin_name(self, ref: str, manifest: JsonMap, pin: str) -> str:
+        pins = [item for item in manifest.get("pins", []) if isinstance(item, dict)]
+        by_number = {
+            int(item["number"]): str(item.get("name", item["number"]))
+            for item in pins
+            if isinstance(item.get("number"), int)
+        }
+        by_name = {str(item.get("name", "")): str(item.get("name", "")) for item in pins}
+        if pin.isdigit() and int(pin) in by_number:
+            return by_number[int(pin)]
+        if pin in by_name:
+            return by_name[pin]
+        raise ValueError(f"{ref} has no DB component pin {pin!r}")
+
+    def _record_component_connection(
+        self,
+        component_connections: dict[tuple[str, str], list[str]],
+        endpoint: Endpoint,
+        tag: str,
+    ) -> None:
+        if endpoint.chip is None or endpoint.pin is None:
+            return
+        key = (endpoint.chip, str(endpoint.pin))
+        tags = component_connections.setdefault(key, [])
+        if tag not in tags:
+            tags.append(tag)
+
+    def _component_pin_tags(self, component_connections: dict[tuple[str, str], list[str]], ref: str) -> dict[str, list[str]]:
+        return {
+            pin: list(tags)
+            for (component_ref, pin), tags in component_connections.items()
+            if component_ref == ref
+        }
+
+    def _component_logic_default(self, ref: str, manifest: JsonMap, simulation: JsonMap, key: str, default: Logic) -> Logic:
+        spec = self.chips.get(ref)
+        value: Any = default
+        if isinstance(spec, dict):
+            value = spec.get("initial", spec.get("value", spec.get("default", simulation.get(key, default))))
+        else:
+            value = simulation.get(key, default)
+        return normalize_logic(value)
+
+    def _ensure_logic_source(self, board: Board, name: str, target: str, value: Logic) -> None:
+        if name in board.sources:
+            board.set_source(name, value)
+            return
+        board.logic_source(name, target, value)
+
+    def _ensure_rail_source(self, board: Board, rail: str, target: str) -> None:
+        board.power(rail, 1 if rail.upper() != "GND" else 0)
+        name = f"rail:{rail}->{target}"
+        if name in board.sources:
+            return
+        board.attach_rail(rail, target)
 
 
 def _copy_map(value: Any) -> JsonMap:

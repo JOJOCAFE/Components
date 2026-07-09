@@ -75,15 +75,18 @@ outputs.
    - Return structured export data: `ok`, `verilog`, `testbench`,
      `unsupported`, `warnings`, and `required_files`.
 
-5. ⬜ Refactor simulation behind an internal service interface.
+5. ✅ Refactor simulation behind an internal service interface.
    - Input: normalized `Design` plus run options.
    - Output: serializable snapshot, probe history, display state, warnings,
      errors, and timing metadata.
    - Keep Python `Board` as the reference engine.
+   - Current service boundary: `python/chiplib/services.py`
+     `SimulationService`.
 
-6. ⬜ Make CLI commands call service interfaces only.
+6. ✅ Make CLI commands call service interfaces only.
    - CLI should not know chip internals.
    - CLI should print JSON for machine use and readable summaries for humans.
+   - Current adapter: `DesignCommandService`, used by `python/chiplib/cli.py`.
 
 7. ✅ Add contract tests.
    - Current coverage: `python/tests/test_contracts.py`.
