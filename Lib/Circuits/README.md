@@ -13,7 +13,7 @@ truth when lab wording is simplified.
 | Circuit | RV8GR source | Status | Proof focus |
 |---|---|---|---|
 | `RV8GR_RingCounter` | U8 `74HC164` + U24 `74HC04` feedback | Started | T0/T1/T2 sequence, edge behavior, reset, lower-state recovery |
-| `RV8GR_PC16` | U1-U4 `74HC161` | Next | count/load priority, carry chain, `/PC_LD`, `PC_INC` |
+| `RV8GR_PC16` | U1-U4 `74HC161` | Started | count/load priority, carry chain, `/PC_LD`, `PC_INC` |
 | `RV8GR_AddressMux16` | U15-U20/U29/U30 `74HC157` | Next | PC vs `{DP,IRL}` address selection and A15 decode |
 | `RV8GR_RomDbusRead` | ROM + U7 `74HC245` | Next | DBUS to IBUS read direction and ROM `/OE` safety |
 | `RV8GR_InstructionLatch` | U5/U6 `74HC574` | Next | T0/T1 edge capture and hold |

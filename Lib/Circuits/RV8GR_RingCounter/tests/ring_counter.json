@@ -30,6 +30,13 @@
       {"T0": 1, "T1": 1, "T2": 1}
     ]
   },
+  "clock_profiles": [
+    {"name": "push_switch_single_step", "kind": "manual", "requires": "one clean debounced rising edge per press; bounce can skip phases"},
+    {"name": "50_khz", "frequency_hz": 50000, "period_ns": 20000, "proof": "functional_edge_sequence"},
+    {"name": "1_mhz", "frequency_hz": 1000000, "period_ns": 1000, "proof": "functional_edge_sequence"},
+    {"name": "2_mhz", "frequency_hz": 2000000, "period_ns": 500, "proof": "functional_edge_sequence"},
+    {"name": "5_mhz", "frequency_hz": 5000000, "period_ns": 200, "proof": "functional_edge_sequence", "note": "Functional simulation only; physical 5 MHz requires timing-margin and signal-integrity proof."}
+  ],
   "edge_criteria": {
     "clocking": "edge_sensitive",
     "trigger_edge": "rising",
