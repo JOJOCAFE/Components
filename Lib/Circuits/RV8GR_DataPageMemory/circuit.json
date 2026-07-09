@@ -1,0 +1,78 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_data_page_memory",
+  "title": "RV8GR data page memory path",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/labs/lab12_ram_datapage.md",
+      "/home/jo/kiro/RV8/RV8GR/sim/soft_debug.py",
+      "/home/jo/kiro/RV8/RV8GR/Kicad/gen_kicad.py",
+      "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_chip_level.v"
+    ]
+  },
+  "purpose": "Prove SETDP, data-page addressing, ROM/RAM boundary selection, RAM write/readback, and ROM reads through the data address path.",
+  "chips": [
+    {"ref": "U32", "part": "74HC574", "role": "Data page register"},
+    {"ref": "U33", "part": "74HC21", "role": "SETDP decode: DP_Load"},
+    {"ref": "U29", "part": "74HC157", "role": "Address mux bits 8-11"},
+    {"ref": "U30", "part": "74HC157", "role": "Address mux bits 12-15 and A15"},
+    {"ref": "ROM1", "part": "AT28C256", "role": "ROM read source for A15=0"},
+    {"ref": "RAM1", "part": "62256", "role": "RAM read/write target for A15=1"}
+  ],
+  "ports": [
+    {"name": "T2", "direction": "input"},
+    {"name": "XOR_MODE", "direction": "input"},
+    {"name": "/ADDR_MODE", "direction": "input", "active_low": true},
+    {"name": "/AC_WR", "direction": "input", "active_low": true},
+    {"name": "DP_Load", "direction": "internal"},
+    {"name": "IBUS0..IBUS7", "direction": "input"},
+    {"name": "IRL0..IRL7", "direction": "input"},
+    {"name": "DP0..DP7", "direction": "output"},
+    {"name": "ABUS0..ABUS15", "direction": "output"},
+    {"name": "DBUS0..DBUS7", "direction": "bidirectional"}
+  ],
+  "wiring": [
+    {"net": "DP_Load", "connections": ["U33.6", "U32.11"]},
+    {"net": "IBUS0..IBUS7", "connections": ["U32.2..9"]},
+    {"net": "DP0..DP3", "connections": ["U32.19", "U32.18", "U32.17", "U32.16", "U29.2", "U29.5", "U29.11", "U29.14"]},
+    {"net": "DP4..DP7", "connections": ["U32.15", "U32.14", "U32.13", "U32.12", "U30.2", "U30.5", "U30.11", "U30.14"]},
+    {"net": "ABUS15", "connections": ["U30.12", "ROM1./CE", "U24.5"]},
+    {"net": "/A15", "connections": ["U24.6", "RAM1./CE"]},
+    {"net": "DBUS0..DBUS7", "connections": ["ROM1.D0..D7", "RAM1.D0..D7", "U7.18..11"]},
+    {"net": "RAM_/WE", "connections": ["RAM1.27", "/AC_BUF"]}
+  ],
+  "behavior": {
+    "setdp_decode": "DP_Load = T2 AND XOR_MODE AND /ADDR_MODE AND /AC_WR.",
+    "setdp_capture": "U32 captures IBUS on the rising edge of DP_Load.",
+    "data_address": "When /ADDR_MODE=0, ABUS={DP,IRL}.",
+    "boundary": "A15=0 selects ROM at $0000-$7FFF; A15=1 selects RAM at $8000-$FFFF.",
+    "ram_write": "RAM writes when selected and /WE is LOW.",
+    "ram_read": "RAM drives DBUS when selected, /WE HIGH, and /OE LOW.",
+    "rom_read": "ROM drives DBUS when selected, /OE LOW, and /WE HIGH.",
+    "rom_store_warning": "SETDP<$80 followed by SB is bus-safe but does not behave like RAM storage."
+  },
+  "timing": {
+    "clocking": "mixed_edge_and_combinational",
+    "trigger_edge": "DP_Load rising captures U32",
+    "control_window": "DP must be stable before SRC/STR data-address T2 operations use {DP,IRL}.",
+    "paths": [
+      {"name": "setdp", "from": "IBUS0..IBUS7", "to": "DP0..DP7", "when": "DP_Load rising", "source_part": "74HC574"},
+      {"name": "data_address", "from": "DP0..DP7 and IRL0..IRL7", "to": "ABUS0..ABUS15", "when": "/ADDR_MODE=0", "source_part": "74HC157"},
+      {"name": "memory_select", "from": "ABUS15", "to": "ROM/RAM chip selects", "source_part": "74HC04"}
+    ]
+  },
+  "verification": {
+    "tests": ["tests/data_page_memory.json"],
+    "guarantees": [
+      "SETDP loads U32 only on valid DP_Load",
+      "$7FFF selects ROM and $8000 selects RAM",
+      "RAM write/readback works through {DP,IRL}",
+      "ROM read through DP works for DP<$80",
+      "ROM and RAM chip selects remain exclusive"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

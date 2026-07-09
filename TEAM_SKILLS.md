@@ -119,8 +119,23 @@ Current RV8GR circuit-library milestone:
 - `RV8GR_BusOwnership` proves T0/T1 fetch, T2 immediate, T2 memory load, T2
   store, memory output disable during store, ROM/RAM select exclusivity, and
   forced unsafe bus-fight detection.
-- Next circuits must follow the same quality level: `RV8GR_InstructionLatch`,
-  `RV8GR_StorePath`, `RV8GR_DataPageMemory`, and `RV8GR_IRQLatch`.
+- `RV8GR_InstructionLatch` proves U5 T0 capture, U6 T1 capture, T2 hold,
+  direct-control bit labels, and live `74HC574` component-model execution.
+- `RV8GR_StorePath` proves no-store holdoff, T2 store controls, RAM write,
+  ROM output disable, RAM output disable, and ROM-page store bus safety.
+- `RV8GR_DataPageMemory` proves SETDP decode, U32 load behavior,
+  `$7FFF/$8000` boundary selection, RAM write/readback, ROM read via DP, and
+  ROM/RAM select exclusivity.
+- `RV8GR_IRQLatch` proves reset clear, EI rising-edge IE set, `/IRQ` release
+  latching, sticky IRQ_FF, DI inert behavior, no PC change, no v1.0 vector,
+  and live `74HC74` component-model execution.
+- Extra clock-profile tests now cover `RV8GR_InstructionLatch`,
+  `RV8GR_DataPageMemory`, and `RV8GR_IRQLatch` with push-switch, random
+  debounced push up to 500 ms for 100 ticks, 50 kHz, 1 MHz, 2 MHz, and 5 MHz
+  functional profiles.
+- Next circuits must follow the same quality level: `RV8GR_RomDbusRead`,
+  `RV8GR_AluAccumulator`, `RV8GR_PageDataRegisters`, and
+  `RV8GR_BranchJumpControl`.
 
 ## Pim - Coordinator
 

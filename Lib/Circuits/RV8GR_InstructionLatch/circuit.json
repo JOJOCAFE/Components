@@ -1,0 +1,70 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_instruction_latch",
+  "title": "RV8GR instruction latch",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/labs/lab06_ir_latch.md",
+      "/home/jo/kiro/RV8/RV8GR/Kicad/gen_kicad.py",
+      "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_chip_level.v"
+    ]
+  },
+  "purpose": "Latch the two fetched instruction bytes so control and operand signals stay stable during execute.",
+  "chips": [
+    {"ref": "U5", "part": "74HC574", "role": "IR_HIGH control byte latch, clocked by T0"},
+    {"ref": "U6", "part": "74HC574", "role": "IR_LOW operand byte latch, clocked by T1"}
+  ],
+  "ports": [
+    {"name": "IBUS0..IBUS7", "direction": "input"},
+    {"name": "T0", "direction": "input", "edge": "rising"},
+    {"name": "T1", "direction": "input", "edge": "rising"},
+    {"name": "T2", "direction": "input", "description": "Execute phase; both latches must hold."},
+    {"name": "IR_HIGH0..7", "direction": "output", "description": "U5 outputs: bit7 SUB, bit6 XOR_MODE, bit5 MUX_SEL, bit4 AC_WR, bit3 SRC, bit2 STR, bit1 BR, bit0 JMP."},
+    {"name": "IRL0..IRL7", "direction": "output", "description": "U6 operand outputs to PC load, address mux, and U34 immediate buffer."}
+  ],
+  "wiring": [
+    {"net": "IBUS0..IBUS7", "connections": ["U5.2..9", "U6.2..9"]},
+    {"net": "T0", "connections": ["U5.11"]},
+    {"net": "T1", "connections": ["U6.11"]},
+    {"net": "GND", "connections": ["U5.1", "U5.10", "U6.1", "U6.10"]},
+    {"net": "VCC", "connections": ["U5.20", "U6.20"]},
+    {"net": "ALU_SUB", "connections": ["U5.12"]},
+    {"net": "XOR_MODE", "connections": ["U5.13"]},
+    {"net": "MUX_SEL", "connections": ["U5.14"]},
+    {"net": "AC_WR", "connections": ["U5.15"]},
+    {"net": "SRC", "connections": ["U5.16"]},
+    {"net": "STR", "connections": ["U5.17"]},
+    {"net": "BR", "connections": ["U5.18"]},
+    {"net": "JMP", "connections": ["U5.19"]},
+    {"net": "IRL0..IRL7", "connections": ["U6.19", "U6.18", "U6.17", "U6.16", "U6.15", "U6.14", "U6.13", "U6.12"]}
+  ],
+  "behavior": {
+    "u5_capture": "U5 captures IBUS on the rising edge of T0 only.",
+    "u6_capture": "U6 captures IBUS on the rising edge of T1 only.",
+    "hold": "Both latches hold through T2 and through phases where their own clock does not rise.",
+    "output_enable": "U5 and U6 /OE pins are tied LOW; U34, not U6, controls when IRL drives IBUS."
+  },
+  "timing": {
+    "clocking": "edge_sensitive",
+    "trigger_edges": ["T0 rising for U5", "T1 rising for U6"],
+    "non_trigger_edge": "No rising edge on the owning phase clock holds state.",
+    "paths": [
+      {"name": "ibus_to_ir_high", "from": "IBUS0..IBUS7", "to": "U5 Q outputs", "when": "T0 rising", "source_part": "74HC574"},
+      {"name": "ibus_to_ir_low", "from": "IBUS0..IBUS7", "to": "U6 Q outputs", "when": "T1 rising", "source_part": "74HC574"}
+    ]
+  },
+  "verification": {
+    "tests": ["tests/instruction_latch.json"],
+    "guarantees": [
+      "U5 captures only on T0",
+      "U6 captures only on T1",
+      "both latches hold through T2",
+      "control-bit labels match the direct-control encoding",
+      "vectors execute against live 74HC574 models"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

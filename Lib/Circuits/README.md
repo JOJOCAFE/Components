@@ -16,13 +16,14 @@ truth when lab wording is simplified.
 | `RV8GR_PC16` | U1-U4 `74HC161` | Started | count/load priority, carry chain, `/PC_LD`, `PC_INC` |
 | `RV8GR_AddressMux16` | U15-U16/U29-U30 `74HC157` | Started | PC vs `{DP,IRL}` address selection, `ADDR_REQ`, and A15 decode |
 | `RV8GR_BusOwnership` | U7/U14/U34 plus ROM/RAM bus controls | Started | T0/T1/T2 IBUS/DBUS drivers and bus-fight detection |
+| `RV8GR_InstructionLatch` | U5/U6 `74HC574` | Started | T0/T1 edge capture and T2 hold |
+| `RV8GR_StorePath` | U7/U14/RAM/ROM control | Started | IBUS to DBUS write direction and memory output disable |
+| `RV8GR_DataPageMemory` | U32/U33/RAM/ROM/address mux | Started | SETDP, RAM read/write, ROM read via DP, and `$7FFF/$8000` boundary |
+| `RV8GR_IRQLatch` | U31 `74HC74` + U33 `74HC21` EI decode | Started | IE set, `/IRQ` release latch, sticky IRQ_FF, no v1.0 vector |
 | `RV8GR_RomDbusRead` | ROM + U7 `74HC245` | Next | DBUS to IBUS read direction and ROM `/OE` safety |
-| `RV8GR_InstructionLatch` | U5/U6 `74HC574` | Next | T0/T1 edge capture and hold |
 | `RV8GR_AluAccumulator` | U9-U14/U21/U22/U27/U28 | Next | ALU path timing, AC latch edge, Z flag settle |
-| `RV8GR_StorePath` | U7/U14/RAM/ROM control | Next | IBUS to DBUS write direction and no bus fight |
 | `RV8GR_PageDataRegisters` | U23/U32/U33/U25 | Next | `PG_CLK` and `DP_Load` edge timing |
 | `RV8GR_BranchJumpControl` | U24-U28 control gates | Next | `/PC_LD`, branch condition, no unintended load |
-| `RV8GR_IRQLatch` | U31 `74HC74` | Next | `/IRQ` release edge, IE latch, reset clear |
 
 Each circuit package should include:
 
@@ -33,14 +34,15 @@ Each circuit package should include:
 
 ## Next Tests From RV8GR Debug Plan
 
-1. `RV8GR_InstructionLatch`: prove U5 captures control only on T0, U6 captures
-   operand only on T1, and both hold through T2.
-2. `RV8GR_StorePath`: prove `STR=1` at T2 makes U7 enabled, `WR_DIR=1`, ROM
-   `/OE=HIGH`, and RAM `/WE=LOW` only when selected.
-3. `RV8GR_DataPageMemory`: prove SETDP, RAM/ROM boundary `$7FFF/$8000`, RAM
-   write/readback, ROM read via DP, and ROM/RAM chip-select exclusivity.
-4. `RV8GR_ClockProfiles`: keep push-switch, random debounced push, 50 kHz,
-   1 MHz, 2 MHz, and 5 MHz profiles on every circuit. Mark 5 MHz as functional
-   simulation until timing-margin and hardware signal-integrity proof exist.
-5. `RV8GR_IRQLatch`: prove `/IRQ` low-then-release latches IRQ_FF, reset clears
-   it, and v1.0 does not force PC or auto-vector.
+1. `RV8GR_RomDbusRead`: split the ROM/U7 fetch path out from the broader bus
+   ownership proof and run it against memory bytes.
+2. `RV8GR_AluAccumulator`: prove ALU input muxes, AC latch edge, Z flag path,
+   and immediate vs memory source timing.
+3. `RV8GR_PageDataRegisters`: split the page register U23 proof from U32
+   DataPageMemory and prove `PG_CLK` edge behavior.
+4. `RV8GR_BranchJumpControl`: prove `/PC_LD`, branch condition, and no
+   unintended PC load.
+5. `RV8GR_ClockProfiles`: keep push-switch, random debounced push, 50 kHz,
+   1 MHz, 2 MHz, and 5 MHz profiles on every edge-sensitive circuit. Mark
+   5 MHz as functional simulation until timing-margin and hardware
+   signal-integrity proof exist.

@@ -14,7 +14,15 @@ RING_COUNTER = ROOT / "Lib" / "Circuits" / "RV8GR_RingCounter"
 PC16 = ROOT / "Lib" / "Circuits" / "RV8GR_PC16"
 ADDRESS_MUX16 = ROOT / "Lib" / "Circuits" / "RV8GR_AddressMux16"
 BUS_OWNERSHIP = ROOT / "Lib" / "Circuits" / "RV8GR_BusOwnership"
+INSTRUCTION_LATCH = ROOT / "Lib" / "Circuits" / "RV8GR_InstructionLatch"
+STORE_PATH = ROOT / "Lib" / "Circuits" / "RV8GR_StorePath"
+DATA_PAGE_MEMORY = ROOT / "Lib" / "Circuits" / "RV8GR_DataPageMemory"
+IRQ_LATCH = ROOT / "Lib" / "Circuits" / "RV8GR_IRQLatch"
 RANDOM_PUSH_SEED = 0x8C16
+BYTE_D_PINS = [2, 3, 4, 5, 6, 7, 8, 9]
+BYTE_Q_PINS = [19, 18, 17, 16, 15, 14, 13, 12]
+MEMORY_ADDR_PINS = {0: 10, 1: 9, 2: 8, 3: 7, 4: 6, 5: 5, 6: 4, 7: 3, 8: 25, 9: 24, 10: 21, 11: 23, 12: 2, 13: 26, 14: 1}
+MEMORY_DQ_PINS = [11, 12, 13, 15, 16, 17, 18, 19]
 
 
 def load_json(path: Path):
@@ -70,6 +78,92 @@ def address_mux16(pc: int, dp: int, irl: int, addr_mode_n: int) -> int:
 
 def memory_select_from_a15(a15: int) -> dict[str, int]:
     return {"rom_ce_n": int(bool(a15)), "ram_ce_n": int(not a15)}
+
+
+def set_byte(chip, pins: list[int], value: int) -> None:
+    for bit, pin in enumerate(pins):
+        chip.set_input(pin, (value >> bit) & 1)
+
+
+def read_byte(chip, pins: list[int]) -> int:
+    return sum((1 if chip.read(pin) == 1 else 0) << bit for bit, pin in enumerate(pins))
+
+
+def set_memory_addr(chip, address: int) -> None:
+    for bit, pin in MEMORY_ADDR_PINS.items():
+        chip.set_input(pin, (address >> bit) & 1)
+
+
+def latch_byte(chip, value: int) -> int:
+    chip.set_input(1, 0)
+    set_byte(chip, BYTE_D_PINS, value)
+    chip.clock_edge(11)
+    chip.commit()
+    return read_byte(chip, BYTE_Q_PINS)
+
+
+def instruction_latch_step(ir_high: int, irl: int, ibus: int, phase: str) -> tuple[int, int]:
+    if phase == "T0":
+        return ibus & 0xFF, irl & 0xFF
+    if phase == "T1":
+        return ir_high & 0xFF, ibus & 0xFF
+    return ir_high & 0xFF, irl & 0xFF
+
+
+def control_bits(value: int) -> dict[str, int]:
+    return {
+        "ALU_SUB": (value >> 7) & 1,
+        "XOR_MODE": (value >> 6) & 1,
+        "MUX_SEL": (value >> 5) & 1,
+        "AC_WR": (value >> 4) & 1,
+        "SRC": (value >> 3) & 1,
+        "STR": (value >> 2) & 1,
+        "BR": (value >> 1) & 1,
+        "JMP": value & 1,
+    }
+
+
+def store_path_controls(phase: str, str_: int, a15: int) -> dict[str, int | bool]:
+    ac_buf_n = 0 if (phase_t2(phase) and str_) else 1
+    wr_dir = 1 - ac_buf_n
+    return {
+        "/AC_BUF": ac_buf_n,
+        "WR_DIR": wr_dir,
+        "RAM_WE_N": ac_buf_n,
+        "ROM_OE_N": wr_dir,
+        "ROM_CE_N": int(bool(a15)),
+        "RAM_CE_N": int(not a15),
+        "write": bool(phase_t2(phase) and str_ and a15),
+        "rom_page_store_bus_safe": bool(phase_t2(phase) and str_ and not a15 and wr_dir == 1),
+    }
+
+
+def dp_load_signal(phase: str, xor_mode: int, addr_mode_n: int, ac_wr_n: int) -> int:
+    return int(bool(phase_t2(phase) and xor_mode and addr_mode_n and ac_wr_n))
+
+
+def data_address(dp: int, irl: int) -> int:
+    return ((dp & 0xFF) << 8) | (irl & 0xFF)
+
+
+def irq_latch_step(ie: int, irq_ff: int, event: str, rst: int = 1) -> tuple[int, int, str]:
+    if rst == 0 or event == "reset":
+        return 0, 0, "unchanged"
+    if event == "ei_rising":
+        ie = 1
+    elif event == "irq_low":
+        pass
+    elif event == "irq_release_rising":
+        irq_ff = 1
+    elif event in {"di", "100_cpu_ticks"}:
+        pass
+    else:
+        raise AssertionError(event)
+    return ie, irq_ff, "unchanged"
+
+
+def required_clock_profile_names() -> set[str]:
+    return {"push_switch_single_step", "push_switch_random_100", "50_khz", "1_mhz", "2_mhz", "5_mhz"}
 
 
 def bus_controls(phase: str, src: int, str_: int) -> dict[str, int]:
@@ -574,6 +668,352 @@ def test_rv8gr_bus_ownership_detects_forced_conflicts():
         assert ownership["conflict"] == vector["expect_conflict"], vector
 
 
+def test_rv8gr_instruction_latch_package_shape():
+    circuit = load_json(INSTRUCTION_LATCH / "circuit.json")
+    proof = load_json(INSTRUCTION_LATCH / "tests" / "instruction_latch.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_instruction_latch"
+    assert proof["circuit"] == circuit["id"]
+    assert (INSTRUCTION_LATCH / "README.md").exists()
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips == {"U5": "74HC574", "U6": "74HC574"}
+    assert list((ROOT / "DB").glob("*/74HC574/definition/definition.json"))
+    assert "T0 rising for U5" in circuit["timing"]["trigger_edges"]
+    assert "T1 rising for U6" in circuit["timing"]["trigger_edges"]
+
+
+def test_rv8gr_instruction_latch_vectors_execute():
+    proof = load_json(INSTRUCTION_LATCH / "tests" / "instruction_latch.json")
+
+    for vector in proof["vectors"]:
+        ir_high, irl = instruction_latch_step(
+            int(vector["start_ir_high"], 16),
+            int(vector["start_irl"], 16),
+            int(vector["ibus"], 16),
+            vector["phase"],
+        )
+        assert ir_high == int(vector["expect_ir_high"], 16), vector
+        assert irl == int(vector["expect_irl"], 16), vector
+
+
+def test_rv8gr_instruction_latch_vectors_execute_with_component_models():
+    proof = load_json(INSTRUCTION_LATCH / "tests" / "instruction_latch.json")
+
+    for vector in proof["vectors"]:
+        u5 = create_chip("74HC574", "U5")
+        u6 = create_chip("74HC574", "U6")
+        latch_byte(u5, int(vector["start_ir_high"], 16))
+        latch_byte(u6, int(vector["start_irl"], 16))
+        set_byte(u5, BYTE_D_PINS, int(vector["ibus"], 16))
+        set_byte(u6, BYTE_D_PINS, int(vector["ibus"], 16))
+        if vector["phase"] == "T0":
+            u5.clock_edge(11)
+            u5.commit()
+        elif vector["phase"] == "T1":
+            u6.clock_edge(11)
+            u6.commit()
+        else:
+            u5.update()
+            u6.update()
+            u5.commit()
+            u6.commit()
+        assert read_byte(u5, BYTE_Q_PINS) == int(vector["expect_ir_high"], 16), vector
+        assert read_byte(u6, BYTE_Q_PINS) == int(vector["expect_irl"], 16), vector
+
+
+def test_rv8gr_instruction_latch_control_bit_labels():
+    proof = load_json(INSTRUCTION_LATCH / "tests" / "instruction_latch.json")
+    expected_labels = ["ALU_SUB", "XOR_MODE", "MUX_SEL", "AC_WR", "SRC", "STR", "BR", "JMP"]
+    assert list(proof["control_bits"].values()) == expected_labels
+    assert control_bits(0x10) == {"ALU_SUB": 0, "XOR_MODE": 0, "MUX_SEL": 0, "AC_WR": 1, "SRC": 0, "STR": 0, "BR": 0, "JMP": 0}
+    assert control_bits(0x90)["ALU_SUB"] == 1 and control_bits(0x90)["AC_WR"] == 1
+    assert control_bits(0x04)["STR"] == 1
+
+
+def test_rv8gr_store_path_package_shape():
+    circuit = load_json(STORE_PATH / "circuit.json")
+    proof = load_json(STORE_PATH / "tests" / "store_path.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_store_path"
+    assert proof["circuit"] == circuit["id"]
+    assert (STORE_PATH / "README.md").exists()
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips["U14"] == "74HC541"
+    assert chips["U7"] == "74HC245"
+    assert chips["U26"] == "74HC00"
+    assert chips["U28"] == "74HC86"
+    assert chips["ROM1"] == "AT28C256"
+    assert chips["RAM1"] == "62256"
+    for part in set(chips.values()):
+        assert list((ROOT / "DB").glob(f"*/*{part}/definition/definition.json")), part
+
+
+def test_rv8gr_store_path_vectors_execute():
+    proof = load_json(STORE_PATH / "tests" / "store_path.json")
+
+    for vector in proof["vectors"]:
+        controls = store_path_controls(vector["phase"], vector["str"], vector["a15"])
+        assert controls["/AC_BUF"] == vector["expect_ac_buf_n"], vector
+        assert controls["WR_DIR"] == vector["expect_wr_dir"], vector
+        assert controls["RAM_WE_N"] == vector["expect_ram_we_n"], vector
+        assert controls["ROM_OE_N"] == vector["expect_rom_oe_n"], vector
+        assert controls["write"] == vector["expect_write"], vector
+
+
+def test_rv8gr_store_path_ram_write_and_rom_page_safety():
+    proof = load_json(STORE_PATH / "tests" / "store_path.json")
+    ram = create_chip("62256", "RAM1")
+    set_memory_addr(ram, 0x0003)
+    set_byte(ram, MEMORY_DQ_PINS, 0xAA)
+
+    ram_store = next(vector for vector in proof["vectors"] if vector["name"] == "t2_store_ram")
+    controls = store_path_controls(ram_store["phase"], ram_store["str"], ram_store["a15"])
+    set_byte(ram, MEMORY_DQ_PINS, int(ram_store["ac"], 16))
+    ram.set_input(20, controls["RAM_CE_N"])
+    ram.set_input(22, 0)
+    ram.set_input(27, controls["RAM_WE_N"])
+    ram.update()
+    ram.commit()
+    assert ram.data[0x0003] == int(ram_store["ac"], 16)
+
+    rom = create_chip("AT28C256", "ROM1")
+    rom.data[0x0003] = 0xC3
+    rom_store = next(vector for vector in proof["vectors"] if vector["name"] == "t2_store_rom_page_bus_safe")
+    controls = store_path_controls(rom_store["phase"], rom_store["str"], rom_store["a15"])
+    set_memory_addr(rom, 0x0003)
+    set_byte(rom, MEMORY_DQ_PINS, int(rom_store["ac"], 16))
+    rom.set_input(20, controls["ROM_CE_N"])
+    rom.set_input(22, controls["ROM_OE_N"])
+    rom.set_input(27, 1)
+    rom.update()
+    rom.commit()
+    assert controls["rom_page_store_bus_safe"] is True
+    assert rom.data[0x0003] == 0xC3
+
+
+def test_rv8gr_data_page_memory_package_shape():
+    circuit = load_json(DATA_PAGE_MEMORY / "circuit.json")
+    proof = load_json(DATA_PAGE_MEMORY / "tests" / "data_page_memory.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_data_page_memory"
+    assert proof["circuit"] == circuit["id"]
+    assert (DATA_PAGE_MEMORY / "README.md").exists()
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips == {
+        "U32": "74HC574",
+        "U33": "74HC21",
+        "U29": "74HC157",
+        "U30": "74HC157",
+        "ROM1": "AT28C256",
+        "RAM1": "62256",
+    }
+    for part in set(chips.values()):
+        assert list((ROOT / "DB").glob(f"*/*{part}/definition/definition.json")), part
+
+
+def test_rv8gr_data_page_setdp_vectors_execute():
+    proof = load_json(DATA_PAGE_MEMORY / "tests" / "data_page_memory.json")
+
+    for vector in proof["setdp_vectors"]:
+        load = dp_load_signal(vector["phase"], vector["xor_mode"], vector["addr_mode_n"], vector["ac_wr_n"])
+        dp = int(vector["ibus"], 16) if load else int(vector["start_dp"], 16)
+        assert load == vector["expect_dp_load"], vector
+        assert dp == int(vector["expect_dp"], 16), vector
+
+
+def test_rv8gr_data_page_setdp_executes_with_component_models():
+    proof = load_json(DATA_PAGE_MEMORY / "tests" / "data_page_memory.json")
+    setdp = next(vector for vector in proof["setdp_vectors"] if vector["name"] == "setdp_80")
+    u33 = create_chip("74HC21", "U33")
+    u32 = create_chip("74HC574", "U32")
+
+    latch_byte(u32, int(setdp["start_dp"], 16))
+    set_byte(u32, BYTE_D_PINS, int(setdp["ibus"], 16))
+    for pin, value in ((1, phase_t2(setdp["phase"])), (2, setdp["xor_mode"]), (4, setdp["addr_mode_n"]), (5, setdp["ac_wr_n"])):
+        u33.set_input(pin, value)
+    u33.update()
+    u33.commit()
+    assert u33.read(6) == setdp["expect_dp_load"]
+    if u33.read(6):
+        u32.clock_edge(11)
+        u32.commit()
+    assert read_byte(u32, BYTE_Q_PINS) == int(setdp["expect_dp"], 16)
+
+
+def test_rv8gr_data_page_memory_vectors_execute():
+    proof = load_json(DATA_PAGE_MEMORY / "tests" / "data_page_memory.json")
+    ram = create_chip("62256", "RAM1")
+    rom = create_chip("AT28C256", "ROM1")
+
+    for vector in proof["memory_vectors"]:
+        dp = int(vector["dp"], 16)
+        irl = int(vector["irl"], 16)
+        address = data_address(dp, irl)
+        select = memory_select_from_a15((address >> 15) & 1)
+        if "expect_address" in vector:
+            assert address == int(vector["expect_address"], 16), vector
+            assert select["rom_ce_n"] == vector["expect_rom_ce_n"], vector
+            assert select["ram_ce_n"] == vector["expect_ram_ce_n"], vector
+            assert select["rom_ce_n"] != select["ram_ce_n"], vector
+        if "write" in vector:
+            set_memory_addr(ram, address & 0x7FFF)
+            set_byte(ram, MEMORY_DQ_PINS, int(vector["write"], 16))
+            ram.set_input(20, select["ram_ce_n"])
+            ram.set_input(22, 0)
+            ram.set_input(27, 0)
+            ram.update()
+            ram.commit()
+            ram.set_input(27, 1)
+            ram.update()
+            ram.commit()
+            assert read_byte(ram, MEMORY_DQ_PINS) == int(vector["expect_read"], 16), vector
+        if "rom_value" in vector:
+            rom.data[address & 0x7FFF] = int(vector["rom_value"], 16)
+            set_memory_addr(rom, address & 0x7FFF)
+            rom.set_input(20, select["rom_ce_n"])
+            rom.set_input(22, 0)
+            rom.set_input(27, 1)
+            rom.update()
+            rom.commit()
+            assert read_byte(rom, MEMORY_DQ_PINS) == int(vector["expect_read"], 16), vector
+
+
+def test_rv8gr_clock_profiles_exist_on_edge_sensitive_new_circuits():
+    for tests_path in [
+        INSTRUCTION_LATCH / "tests" / "instruction_latch.json",
+        DATA_PAGE_MEMORY / "tests" / "data_page_memory.json",
+        IRQ_LATCH / "tests" / "irq_latch.json",
+    ]:
+        profiles = load_json(tests_path)["clock_profiles"]
+        names = {profile["name"] for profile in profiles}
+        assert required_clock_profile_names() <= names, tests_path
+        random_profile = next(profile for profile in profiles if profile["name"] == "push_switch_random_100")
+        assert random_profile["seed"] == RANDOM_PUSH_SEED
+        intervals = random_push_intervals_ms(random_profile)
+        assert len(intervals) == 100
+        assert all(0 <= interval <= 500 for interval in intervals)
+        assert len(set(intervals)) > 1
+        five_mhz = next(profile for profile in profiles if profile["name"] == "5_mhz")
+        assert "Functional simulation only" in five_mhz["note"]
+
+
+def test_rv8gr_instruction_latch_clock_profiles_capture_once_per_edge():
+    profile = next(item for item in load_json(INSTRUCTION_LATCH / "tests" / "instruction_latch.json")["clock_profiles"] if item["name"] == "push_switch_random_100")
+    intervals = random_push_intervals_ms(profile)
+    ir_high = 0
+    irl = 0
+    for index, _interval in enumerate(intervals):
+        phase = "T0" if index % 2 == 0 else "T1"
+        value = (index + 1) & 0xFF
+        ir_high, irl = instruction_latch_step(ir_high, irl, value, phase)
+        if phase == "T0":
+            assert ir_high == value
+        else:
+            assert irl == value
+
+
+def test_rv8gr_data_page_clock_profiles_load_once_per_edge():
+    profile = next(item for item in load_json(DATA_PAGE_MEMORY / "tests" / "data_page_memory.json")["clock_profiles"] if item["name"] == "push_switch_random_100")
+    intervals = random_push_intervals_ms(profile)
+    dp = 0
+    for expected, _interval in enumerate(intervals, start=1):
+        value = expected & 0xFF
+        load = dp_load_signal("T2", 1, 1, 1)
+        if load:
+            dp = value
+        assert dp == value
+
+
+def test_rv8gr_irq_latch_package_shape():
+    circuit = load_json(IRQ_LATCH / "circuit.json")
+    proof = load_json(IRQ_LATCH / "tests" / "irq_latch.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_irq_latch"
+    assert proof["circuit"] == circuit["id"]
+    assert (IRQ_LATCH / "README.md").exists()
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips == {"U31": "74HC74", "U33": "74HC21"}
+    for part in set(chips.values()):
+        assert list((ROOT / "DB").glob(f"*/*{part}/definition/definition.json")), part
+    absent_ports = {port["name"] for port in circuit["ports"] if port["direction"] == "absent"}
+    assert {"PC_FORCE", "IRQ_ACK"} <= absent_ports
+
+
+def test_rv8gr_irq_latch_vectors_execute():
+    proof = load_json(IRQ_LATCH / "tests" / "irq_latch.json")
+
+    for vector in proof["vectors"]:
+        ie, irq_ff, pc = irq_latch_step(vector["start_ie"], vector["start_irq_ff"], vector["event"], vector["rst"])
+        assert ie == vector["expect_ie"], vector
+        assert irq_ff == vector["expect_irq_ff"], vector
+        assert pc == vector["expect_pc"], vector
+
+
+def test_rv8gr_irq_latch_vectors_execute_with_component_model():
+    proof = load_json(IRQ_LATCH / "tests" / "irq_latch.json")
+
+    for vector in proof["vectors"]:
+        u31 = create_chip("74HC74", "U31")
+        # Initialize both FFs through their real clock inputs with D=1, then reset as needed.
+        u31.set_input(1, 1)
+        u31.set_input(4, 1)
+        u31.set_input(10, 1)
+        u31.set_input(13, 1)
+        u31.set_input(2, vector["start_ie"])
+        u31.clock_edge(3)
+        u31.set_input(12, vector["start_irq_ff"])
+        u31.clock_edge(11)
+        u31.commit()
+
+        u31.set_input(1, vector["rst"])
+        u31.set_input(13, vector["rst"])
+        if vector["event"] == "reset":
+            u31.update()
+        elif vector["event"] == "ei_rising":
+            u31.set_input(2, 1)
+            u31.clock_edge(3)
+        elif vector["event"] == "irq_low":
+            u31.set_input(12, 1)
+            u31.set_input(11, 0)
+            u31.update()
+        elif vector["event"] == "irq_release_rising":
+            u31.set_input(12, 1)
+            u31.clock_edge(11)
+        elif vector["event"] in {"di", "100_cpu_ticks"}:
+            u31.update()
+        else:
+            raise AssertionError(vector)
+        u31.commit()
+
+        assert u31.read(5) == vector["expect_ie"], vector
+        assert u31.read(9) == vector["expect_irq_ff"], vector
+
+
+def test_rv8gr_irq_latch_random_release_profile_latches_and_stays_sticky():
+    profile = next(item for item in load_json(IRQ_LATCH / "tests" / "irq_latch.json")["clock_profiles"] if item["name"] == "push_switch_random_100")
+    intervals = random_push_intervals_ms(profile)
+    ie = 1
+    irq_ff = 0
+    for _interval in intervals:
+        ie, irq_ff, _pc = irq_latch_step(ie, irq_ff, "irq_low", 1)
+        assert irq_ff == 0
+        ie, irq_ff, _pc = irq_latch_step(ie, irq_ff, "irq_release_rising", 1)
+        assert ie == 1 and irq_ff == 1
+        ie, irq_ff, _pc = irq_latch_step(ie, irq_ff, "100_cpu_ticks", 1)
+        assert irq_ff == 1
+        ie, irq_ff, _pc = irq_latch_step(ie, irq_ff, "reset", 0)
+        assert ie == 0 and irq_ff == 0
+        ie = 1
+
+
 def test_all_started_circuit_packages_have_tests():
     for circuit_path in sorted((ROOT / "Lib" / "Circuits").glob("RV8GR_*/circuit.json")):
         circuit = load_json(circuit_path)
@@ -607,6 +1047,24 @@ def run_all():
     test_rv8gr_bus_ownership_phase_vectors_are_conflict_free()
     test_rv8gr_bus_ownership_store_disables_memory_outputs()
     test_rv8gr_bus_ownership_detects_forced_conflicts()
+    test_rv8gr_instruction_latch_package_shape()
+    test_rv8gr_instruction_latch_vectors_execute()
+    test_rv8gr_instruction_latch_vectors_execute_with_component_models()
+    test_rv8gr_instruction_latch_control_bit_labels()
+    test_rv8gr_store_path_package_shape()
+    test_rv8gr_store_path_vectors_execute()
+    test_rv8gr_store_path_ram_write_and_rom_page_safety()
+    test_rv8gr_data_page_memory_package_shape()
+    test_rv8gr_data_page_setdp_vectors_execute()
+    test_rv8gr_data_page_setdp_executes_with_component_models()
+    test_rv8gr_data_page_memory_vectors_execute()
+    test_rv8gr_clock_profiles_exist_on_edge_sensitive_new_circuits()
+    test_rv8gr_instruction_latch_clock_profiles_capture_once_per_edge()
+    test_rv8gr_data_page_clock_profiles_load_once_per_edge()
+    test_rv8gr_irq_latch_package_shape()
+    test_rv8gr_irq_latch_vectors_execute()
+    test_rv8gr_irq_latch_vectors_execute_with_component_model()
+    test_rv8gr_irq_latch_random_release_profile_latches_and_stays_sticky()
     test_all_started_circuit_packages_have_tests()
 
 

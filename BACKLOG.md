@@ -166,28 +166,44 @@ Done:
   U34, T2 memory load through U7, T2 store through U14 plus U7 write direction,
   memory output disable during store, ROM/RAM select exclusivity, and forced
   unsafe bus-fight detection.
+- ✅ `RV8GR_InstructionLatch`: U5/U6 `74HC574` instruction latch. Tests cover
+  U5 capturing control only on T0, U6 capturing operand only on T1, both
+  latches holding through T2, direct-control bit labels, and live `74HC574`
+  component-model execution.
+- ✅ `RV8GR_StorePath`: U14 `74HC541`, U7 `74HC245`, U26/U28 store controls,
+  ROM, and RAM store proof. Tests cover T0/T1 no-store holdoff, T2 `STR=0`
+  holdoff, T2 `STR=1` enabling U14 and U7 write direction, ROM output disable,
+  RAM `/WE` LOW, RAM write, and ROM-page store bus safety.
+- ✅ `RV8GR_DataPageMemory`: U32 `74HC574`, U33 `74HC21`, address mux, ROM, and
+  RAM data-page memory proof. Tests cover SETDP decode, U32 load behavior,
+  `$7FFF/$8000` boundary, RAM write/readback at `$8003` and `$9000`, ROM read
+  via DP `$00`, and ROM/RAM select exclusivity.
+- ✅ `RV8GR_IRQLatch`: U31 `74HC74` plus U33 `74HC21` EI decode proof. Tests
+  cover reset clearing IE/IRQ_FF, EI rising edge setting IE, `/IRQ` LOW hold,
+  `/IRQ` release rising edge latching IRQ_FF, DI being inert, 100-tick sticky
+  behavior, no PC change, no v1.0 vector/ack/auto-clear path, and live
+  `74HC74` component-model execution.
+- ✅ Extra clock-profile tests for edge-sensitive circuits: `RV8GR_InstructionLatch`,
+  `RV8GR_DataPageMemory`, and `RV8GR_IRQLatch` now declare and execute
+  push-switch, random 100 pushes up to 500 ms, 50 kHz, 1 MHz, 2 MHz, and 5 MHz
+  functional profiles. 5 MHz remains functional simulation only.
 
 Next team tasks:
 
-1. **Mint + Fern: `RV8GR_InstructionLatch`**
-   - Build from U5/U6 `74HC574`.
-   - Prove U5 captures only on T0, U6 captures only on T1, and both hold
-     through T2.
-2. **Ohm + Fern: `RV8GR_StorePath`**
-   - Prove `STR=1` at T2 makes U7 enabled, `WR_DIR=1`, ROM `/OE=HIGH`, and RAM
-     `/WE=LOW` only when selected.
-   - Include current-draw/bus-fight notes for physical debug.
-3. **Bam + Ohm + Fern: `RV8GR_DataPageMemory`**
-   - Prove SETDP, RAM write/readback, ROM read via DP, `$7FFF/$8000` boundary,
-     and ROM/RAM chip-select exclusivity.
-4. **Mint + Fern: Clock profiles**
-   - Keep push-switch, random debounced push up to 500 ms for 100 ticks,
-     50 kHz, 1 MHz, 2 MHz, and 5 MHz profiles on every circuit.
-   - Mark 5 MHz as functional simulation until timing-margin and hardware
-     signal-integrity proof exist.
-5. **Noon + Fern: `RV8GR_IRQLatch`**
-   - Prove `/IRQ` low-then-release latches IRQ_FF, reset clears it, and v1.0
-     does not force PC or auto-vector.
+1. **Bam + Fern: `RV8GR_RomDbusRead`**
+   - Split the ROM/U7 fetch path out from the broader bus ownership proof and
+     run it against memory bytes.
+2. **Mint + Fern: `RV8GR_AluAccumulator`**
+   - Prove ALU input muxes, AC latch edge, Z flag path, and immediate vs memory
+     source timing.
+3. **Mint + Fern: `RV8GR_PageDataRegisters`**
+   - Split U23 page-register behavior from U32 DataPageMemory and prove
+     `PG_CLK` edge behavior.
+4. **Bank + Fern: `RV8GR_BranchJumpControl`**
+   - Prove `/PC_LD`, branch condition, and no unintended PC load.
+5. **Ohm + Fern: hardware timing-margin proof**
+   - Keep 5 MHz marked functional simulation until physical timing and
+     signal-integrity evidence exist.
 
 Pim coordinates this plan and keeps `Lib/Circuits/README.md`, `BACKLOG.md`,
 tests, and pushed commits aligned.
