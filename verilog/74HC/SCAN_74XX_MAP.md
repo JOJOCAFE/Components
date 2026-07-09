@@ -2,7 +2,7 @@
 
 Scan scope: `/home/jo/kiro` text-like documents, KiCad files, and PDFs with extractable text.
 
-The `Components/74HC` library maps `74LSxx`, `74HCTxx`, and bare `74xx` project references to `74HCxx` files when a same-function HC part is used or directly compatible for the project model.
+The `Components/verilog/74HC` library maps `74LSxx`, `74HCTxx`, and bare `74xx` project references to `74HCxx` files when a same-function HC part is used or directly compatible for the project model.
 
 ## Added or already covered
 

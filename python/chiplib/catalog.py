@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def _parse_pinout(folder: str, part: str) -> dict[int, str]:
-    path = ROOT / folder / f"{part.lower()}-pin.md"
+    path = _folder_path(folder) / f"{part.lower()}-pin.md"
     pins: dict[int, str] = {}
     if path.exists():
         for line in path.read_text().splitlines():
@@ -26,6 +26,12 @@ def _parse_pinout(folder: str, part: str) -> dict[int, str]:
             if m:
                 pins[int(m.group(1))] = m.group(2).strip()
     return pins
+
+
+def _folder_path(folder: str) -> Path:
+    if folder == "74HC":
+        return ROOT / "verilog" / "74HC"
+    return ROOT / folder
 
 
 OUTPUT_PATTERNS = (

@@ -2,7 +2,7 @@
 
 - Function: 4-bit magnitude comparator
 - Package verified: DIP16; Motorola MC74HC85N N suffix plastic package / plastic DIP
-- Source: `../source/74HC85_MOTOROLA_4353_MC74HC85N_DIPVERIFY.pdf`
+- Source: `../../source/74HC85_MOTOROLA_4353_MC74HC85N_DIPVERIFY.pdf`
 
 | Pin | Name |
 | --- | --- |

@@ -46,7 +46,7 @@ readable and identifies the part.
 
 The old layout remains active during migration:
 
-- `74HC/`
+- `verilog/74HC/`
 - `Memory/`
 - `python/chiplib/`
 

@@ -77,11 +77,11 @@ the behavior must remain compatible with the Python real-pin model.
 ## Current Coverage
 
 The Python package can instantiate every current Verilog component in
-`Components/74HC` and `Components/Memory` through `create_chip(part, name)`.
+`Components/verilog/74HC` and `Components/Memory` through `create_chip(part, name)`.
 
 Coverage includes:
 
-- all 57 current `74HC/*.v` parts
+- all 57 current `verilog/74HC/*.v` parts
 - all 5 current `Memory/*.v` parts
 - the RV8GR-V2 starter set as hand-written models
 - the remaining Components parts as catalog models loaded from the pinout docs

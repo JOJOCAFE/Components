@@ -2,7 +2,7 @@
 
 - Function: dual JK flip-flop with reset, negative-edge trigger
 - Package verified: DIP14; NXP 74HC73N plastic dual in-line package SOT27-1
-- Source: `../source/74HC73_NXP_344664_DIPCHECK.pdf`
+- Source: `../../source/74HC73_NXP_344664_DIPCHECK.pdf`
 
 | Pin | Name |
 | --- | --- |

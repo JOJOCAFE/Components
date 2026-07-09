@@ -33,19 +33,19 @@
     {"number": 14, "name": "VCC", "direction": "power"}
   ],
   "legacy_paths": {
-    "pinout": "74HC/74hc04-pin.md",
-    "verilog": "74HC/74hc04.v",
+    "pinout": "verilog/74HC/74hc04-pin.md",
+    "verilog": "verilog/74HC/74hc04.v",
     "python_behavior": "python/chiplib/chips.py",
     "verilog_export": "python/chiplib/netlist.py",
     "tests": [
       "python/tests/test_chips.py",
       "python/tests/test_netlist.py",
-      "74HC/tests/tb_74hc_smoke.v"
+      "verilog/74HC/tests/tb_74hc_smoke.v"
     ]
   },
   "verilog": {
     "module": "ttl_74hc04",
-    "file": "74HC/74hc04.v"
+    "file": "verilog/74HC/74hc04.v"
   },
   "python": {
     "factory": "chiplib.create_chip",

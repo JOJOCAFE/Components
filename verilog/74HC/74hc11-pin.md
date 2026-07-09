@@ -2,7 +2,7 @@
 
 - Function: triple 3-input AND gate
 - Package verified: DIP14; NXP 74HC11N plastic dual in-line package SOT27-1
-- Source: `../source/74HC11_NXP_344446_DIPCHECK.pdf`
+- Source: `../../source/74HC11_NXP_344446_DIPCHECK.pdf`
 
 | Pin | Name |
 | --- | --- |

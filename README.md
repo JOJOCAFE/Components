@@ -9,7 +9,7 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 
 ## Layout
 
-- `74HC/` - behavioral Verilog models for 74HC-family logic chips plus per-chip pinout files named `74hcxx-pin.md`.
+- `verilog/74HC/` - behavioral Verilog models for 74HC-family logic chips plus per-chip pinout files named `74hcxx-pin.md`.
 - `Memory/` - behavioral Verilog models and pinout files for EEPROM, flash EEPROM, and SRAM parts.
 - `db/` - chip-centered DB manifests and schema where each component owns
   status, pins, sources, behavior/export references, and visible missing
@@ -84,7 +84,7 @@ catalog.
 
 ## Naming
 
-- Chip model files use lowercase part names, for example `74HC/74hc245.v`.
+- Chip model files use lowercase part names, for example `verilog/74HC/74hc245.v`.
 - 74HC Verilog modules use `ttl_74hcxx` names.
 - Memory Verilog modules use `mem_<part>` names.
 - Pinout files use `<part>-pin.md`, one file per chip.
@@ -102,7 +102,7 @@ python3 -B -m tests.test_cli
 python3 -B -m tests.test_db
 cd ..
 
-iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp 74HC/*.v 74HC/tests/tb_74hc_smoke.v
+iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp verilog/74HC/*.v verilog/74HC/tests/tb_74hc_smoke.v
 vvp /tmp/tb_74hc_smoke.vvp
 
 iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp Memory/*.v Memory/tests/tb_memory_smoke.v
@@ -130,7 +130,7 @@ cd ..
 
 ## Subfolder Docs
 
-- `74HC/README.md` - full 74HC model list, scan notes, and 74xx source coverage.
+- `verilog/74HC/README.md` - full 74HC model list, scan notes, and 74xx source coverage.
 - `Memory/README.md` - memory model list and datasheet sources.
 - `db/README.md` - chip-centered DB migration notes and manifest
   layout.

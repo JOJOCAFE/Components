@@ -2,7 +2,7 @@
 
 - Function: dual 4-input NAND gate
 - Package verified: DIP14 / PDIP14; TI SN74HC20N PDIP N package; pin numbers shared with D/DB/J/N/NS/PW/W packages
-- Source: `../source/74HC20_TI_27902_SN74HC20N_DIPVERIFY.pdf`
+- Source: `../../source/74HC20_TI_27902_SN74HC20N_DIPVERIFY.pdf`
 
 | Pin | Name |
 | --- | --- |

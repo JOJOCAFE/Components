@@ -18,7 +18,7 @@ jobs:
 
       - name: Run 74HC smoke test
         run: |
-          iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp 74HC/*.v 74HC/tests/tb_74hc_smoke.v
+          iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp verilog/74HC/*.v verilog/74HC/tests/tb_74hc_smoke.v
           vvp /tmp/tb_74hc_smoke.vvp
 
       - name: Run memory smoke test

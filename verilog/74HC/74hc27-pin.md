@@ -1,8 +1,8 @@
-# 74HC10 DIP pinout
+# 74HC27 DIP pinout
 
-- Function: triple 3-input NAND gate
-- Package verified: DIP14 / PDIP14; TI SN74HC10N N package, 300-mil DIP; pin numbers shared with D/J/N/W packages
-- Source: `../source/74HC10_TI_27881_SN74HC10N_DIPVERIFY.pdf`
+- Function: triple 3-input NOR gate
+- Package verified: DIP14; NXP 74HC27N plastic dual in-line package SOT27-1
+- Source: `../../source/74HC27_NXP_344450_DIPCHECK.pdf`
 
 | Pin | Name |
 | --- | --- |

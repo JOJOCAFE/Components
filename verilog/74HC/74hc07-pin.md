@@ -2,7 +2,7 @@
 
 - Function: hex buffer with open-drain outputs
 - Package verified: DIP14 / PDIP14
-- Source: `../source/74HC07_STMICROELECTRONICS_23210.pdf`
+- Source: `../../source/74HC07_STMICROELECTRONICS_23210.pdf`
 
 | Pin | Name |
 | --- | --- |
