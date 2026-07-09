@@ -1,432 +1,17 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/74xx/74HC593/definition/definition.json",
-  "part": "74HC593",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/74xx/74HC593/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/74xx/74HC593/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/74xx/74HC593/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "74HC593",
-      "title": "8-Bit Binary Counter With Input Register",
-      "family": "74HC",
-      "group": "74xx",
-      "role": "counter",
-      "package": {
-        "kind": "DIP",
-        "pins": 20,
-        "default": "N"
-      },
-      "pins": [
-        {
-          "number": 1,
-          "name": "A/QA",
-          "direction": "output"
-        },
-        {
-          "number": 2,
-          "name": "B/QB",
-          "direction": "output"
-        },
-        {
-          "number": 3,
-          "name": "C/QC",
-          "direction": "output"
-        },
-        {
-          "number": 4,
-          "name": "D/QD",
-          "direction": "output"
-        },
-        {
-          "number": 5,
-          "name": "E/QE",
-          "direction": "output"
-        },
-        {
-          "number": 6,
-          "name": "F/QF",
-          "direction": "output"
-        },
-        {
-          "number": 7,
-          "name": "G/QG",
-          "direction": "output"
-        },
-        {
-          "number": 8,
-          "name": "H/QH",
-          "direction": "output"
-        },
-        {
-          "number": 9,
-          "name": "CLOAD",
-          "direction": "input"
-        },
-        {
-          "number": 10,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 11,
-          "name": "RCO",
-          "direction": "output"
-        },
-        {
-          "number": 12,
-          "name": "CCLR",
-          "direction": "input"
-        },
-        {
-          "number": 13,
-          "name": "CCK",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "CCKEN",
-          "direction": "input"
-        },
-        {
-          "number": 15,
-          "name": "/CCKEN",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 16,
-          "name": "RCK",
-          "direction": "input"
-        },
-        {
-          "number": 17,
-          "name": "RCKEN",
-          "direction": "input"
-        },
-        {
-          "number": 18,
-          "name": "G",
-          "direction": "input"
-        },
-        {
-          "number": 19,
-          "name": "/G",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 20,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {},
-      "power": [
-        {
-          "name": "GND",
-          "pin": 10,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 20,
-          "nominal_logic": 1
-        }
-      ],
-      "logic": {
-        "type": "8_bit_binary_counter_with_input_register",
-        "description": "8-Bit Binary Counter With Input Register"
-      },
-      "timing": {
-        "delay_ns": 15
-      }
-    },
-    "python_simulator": {
-      "part": "74HC593",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/74xx/74HC593/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/74xx/74HC593/simulation/model.py",
-      "class": "HC593"
-    },
-    "verilog_wrapper": {
-      "part": "74HC593",
-      "module": "ttl_74hc593",
-      "file": "DB/74xx/74HC593/simulation/model.v",
-      "netlist": "DB/74xx/74HC593/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "A_Q",
-            "pins": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8
-            ],
-            "direction": "output"
-          },
-          {
-            "name": "CLOAD",
-            "pins": [
-              9
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "RCO",
-            "pins": [
-              11
-            ],
-            "direction": "output"
-          },
-          {
-            "name": "CCLR",
-            "pins": [
-              12
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "CCK",
-            "pins": [
-              13
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "CCKEN",
-            "pins": [
-              14
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "CCKEN_bar",
-            "pins": [
-              15
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "RCK",
-            "pins": [
-              16
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "RCKEN",
-            "pins": [
-              17
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "G",
-            "pins": [
-              18
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "G_bar",
-            "pins": [
-              19
-            ],
-            "direction": "input"
-          }
-        ],
-        "output_pins": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          11
-        ]
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "74HC593",
-      "module": "ttl_74hc593",
-      "bench_module": "tb_generated_74hc593",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/74xx/74HC593/simulation/model.v"
-        ],
-        "top": "tb_generated_74hc593"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "basic_function"
-          ]
-        }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC593",
-      "shape": "dip",
-      "pins": 20,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ],
-      "right": [
-        20,
-        19,
-        18,
-        17,
-        16,
-        15,
-        14,
-        13,
-        12,
-        11
-      ],
-      "labels": {
-        "9": "CLOAD",
-        "10": "GND",
-        "12": "CCLR",
-        "13": "CCK",
-        "14": "CCKEN",
-        "15": "/CCKEN",
-        "16": "RCK",
-        "17": "RCKEN",
-        "18": "G",
-        "19": "/G",
-        "20": "VCC"
-      },
-      "bus_groups": {}
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC593",
-      "shape": "dip",
-      "pins": 20,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ],
-      "right": [
-        20,
-        19,
-        18,
-        17,
-        16,
-        15,
-        14,
-        13,
-        12,
-        11
-      ],
-      "labels": {
-        "9": "CLOAD",
-        "10": "GND",
-        "12": "CCLR",
-        "13": "CCK",
-        "14": "CCKEN",
-        "15": "/CCKEN",
-        "16": "RCK",
-        "17": "RCKEN",
-        "18": "G",
-        "19": "/G",
-        "20": "VCC"
-      },
-      "bus_groups": {}
-    },
     "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "74HC593",
-      "title": "8-Bit Binary Counter With Input Register",
       "audience": "students ages 10-15, still useful for older learners",
-      "summary": "8-Bit Binary Counter With Input Register.",
-      "overview": "74HC593 is a 20-pin DIP part for counter.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
-      ],
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
         "After an input changes, wait about 15 ns before trusting the output."
       ],
+      "overview": "74HC593 is a 20-pin DIP part for counter.",
+      "part": "74HC593",
       "pin_count": 20,
       "pin_summary": {
         "input": {
@@ -468,43 +53,77 @@
           "note": "Power pins: GND, VCC."
         }
       },
-      "buses": {},
-      "bus_explanations": [],
-      "controls": [],
-      "control_explanations": [],
-      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "74HC593",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "required_vectors": [
-        "basic_function"
-      ]
+      "summary": "8-Bit Binary Counter With Input Register.",
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "title": "8-Bit Binary Counter With Input Register",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "74HC593",
-      "title": "Try 74HC593 in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "CLOAD controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "CLOAD - input",
+          "pin": "CLOAD"
+        },
+        {
+          "explanation": "CCLR controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "CCLR - input",
+          "pin": "CCLR"
+        },
+        {
+          "explanation": "CCK controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "CCK - input",
+          "pin": "CCK"
+        },
+        {
+          "explanation": "CCKEN controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "CCKEN - input",
+          "pin": "CCKEN"
+        },
+        {
+          "explanation": "/CCKEN controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/CCKEN - input",
+          "pin": "/CCKEN"
+        },
+        {
+          "explanation": "RCK controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "RCK - input",
+          "pin": "RCK"
+        },
+        {
+          "explanation": "RCKEN controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "RCKEN - input",
+          "pin": "RCKEN"
+        },
+        {
+          "explanation": "G controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "G - input",
+          "pin": "G"
+        },
+        {
+          "explanation": "/G controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/G - input",
+          "pin": "/G"
+        }
+      ],
       "controls": [
         "CLOAD",
         "CCLR",
@@ -516,60 +135,58 @@
         "G",
         "/G"
       ],
-      "control_labels": [
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC593",
+      "probe_labels": [
         {
-          "pin": "CLOAD",
-          "label": "CLOAD - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "CLOAD controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "A/QA",
+          "name": "A/QA"
         },
         {
-          "pin": "CCLR",
-          "label": "CCLR - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "CCLR controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "B/QB",
+          "name": "B/QB"
         },
         {
-          "pin": "CCK",
-          "label": "CCK - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "CCK controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "C/QC",
+          "name": "C/QC"
         },
         {
-          "pin": "CCKEN",
-          "label": "CCKEN - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "CCKEN controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "D/QD",
+          "name": "D/QD"
         },
         {
-          "pin": "/CCKEN",
-          "label": "/CCKEN - input",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/CCKEN controls input. This is active low, so 0 turns the control on."
+          "hint": "Read this output after the settle step.",
+          "label": "E/QE",
+          "name": "E/QE"
         },
         {
-          "pin": "RCK",
-          "label": "RCK - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "RCK controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "F/QF",
+          "name": "F/QF"
         },
         {
-          "pin": "RCKEN",
-          "label": "RCKEN - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "RCKEN controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "G/QG",
+          "name": "G/QG"
         },
         {
-          "pin": "G",
-          "label": "G - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "G controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "/G",
-          "label": "/G - input",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/G controls input. This is active low, so 0 turns the control on."
+          "hint": "Read this output after the settle step.",
+          "label": "H/QH",
+          "name": "H/QH"
         }
       ],
       "probes": [
@@ -582,63 +199,516 @@
         "G/QG",
         "H/QH"
       ],
-      "probe_labels": [
-        {
-          "name": "A/QA",
-          "label": "A/QA",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "B/QB",
-          "label": "B/QB",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "C/QC",
-          "label": "C/QC",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "D/QD",
-          "label": "D/QD",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "E/QE",
-          "label": "E/QE",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "F/QF",
-          "label": "F/QF",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "G/QG",
-          "label": "G/QG",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "H/QH",
-          "label": "H/QH",
-          "hint": "Read this output after the settle step."
-        }
-      ],
-      "default_steps": [
-        "apply controls",
-        "settle",
-        "probe"
-      ],
-      "guided_steps": [
-        "Set each control to the value you want to test.",
-        "Run one settle step so the simulated signals can update.",
-        "Read the probes and compare them with the truth table."
-      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change CLOAD?",
         "Which truth-table row matches the value on A/QA?"
-      ]
+      ],
+      "title": "Try 74HC593 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "8-Bit Binary Counter With Input Register",
+        "type": "8_bit_binary_counter_with_input_register"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 20
+      },
+      "part": "74HC593",
+      "pins": [
+        {
+          "direction": "output",
+          "name": "A/QA",
+          "number": 1
+        },
+        {
+          "direction": "output",
+          "name": "B/QB",
+          "number": 2
+        },
+        {
+          "direction": "output",
+          "name": "C/QC",
+          "number": 3
+        },
+        {
+          "direction": "output",
+          "name": "D/QD",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "E/QE",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "F/QF",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "G/QG",
+          "number": 7
+        },
+        {
+          "direction": "output",
+          "name": "H/QH",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "CLOAD",
+          "number": 9
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "RCO",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "CCLR",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "CCK",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "CCKEN",
+          "number": 14
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/CCKEN",
+          "number": 15
+        },
+        {
+          "direction": "input",
+          "name": "RCK",
+          "number": 16
+        },
+        {
+          "direction": "input",
+          "name": "RCKEN",
+          "number": 17
+        },
+        {
+          "direction": "input",
+          "name": "G",
+          "number": 18
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/G",
+          "number": 19
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 10
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 20
+        }
+      ],
+      "role": "counter",
+      "timing": {
+        "delay_ns": 15
+      },
+      "title": "8-Bit Binary Counter With Input Register"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "10": "GND",
+        "12": "CCLR",
+        "13": "CCK",
+        "14": "CCKEN",
+        "15": "/CCKEN",
+        "16": "RCK",
+        "17": "RCKEN",
+        "18": "G",
+        "19": "/G",
+        "20": "VCC",
+        "9": "CLOAD"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC593",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC593",
+      "copy_with_chip": [
+        "DB/74xx/74HC593/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC593/simulation/model.py",
+      "part": "74HC593",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "10": "GND",
+        "12": "CCLR",
+        "13": "CCK",
+        "14": "CCKEN",
+        "15": "/CCKEN",
+        "16": "RCK",
+        "17": "RCKEN",
+        "18": "G",
+        "19": "/G",
+        "20": "VCC",
+        "9": "CLOAD"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC593",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC593",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC593",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC593",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc593",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC593/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc593"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc593",
+      "part": "74HC593",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC593",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC593",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          11
+        ],
+        "ports": [
+          {
+            "direction": "output",
+            "name": "A_Q",
+            "pins": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "CLOAD",
+            "pins": [
+              9
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "RCO",
+            "pins": [
+              11
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "CCLR",
+            "pins": [
+              12
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "CCK",
+            "pins": [
+              13
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "CCKEN",
+            "pins": [
+              14
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "CCKEN_bar",
+            "pins": [
+              15
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "RCK",
+            "pins": [
+              16
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "RCKEN",
+            "pins": [
+              17
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "G",
+            "pins": [
+              18
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "G_bar",
+            "pins": [
+              19
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC593/simulation/model.v",
+      "module": "ttl_74hc593",
+      "netlist": "DB/74xx/74HC593/simulation/netlist.json",
+      "part": "74HC593"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "74HC593",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC593/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC593/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC593/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC593/definition/definition.json",
+  "version": 1
 }

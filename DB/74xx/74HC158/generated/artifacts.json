@@ -1,353 +1,17 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/74xx/74HC158/definition/definition.json",
-  "part": "74HC158",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/74xx/74HC158/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/74xx/74HC158/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/74xx/74HC158/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "74HC158",
-      "title": "quad 2-input multiplexer, inverting outputs",
-      "family": "74HC",
-      "group": "74xx",
-      "role": "multiplexer",
-      "package": {
-        "kind": "DIP",
-        "pins": 16,
-        "default": "N"
-      },
-      "pins": [
-        {
-          "number": 1,
-          "name": "S",
-          "direction": "input"
-        },
-        {
-          "number": 2,
-          "name": "1I0",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "1I1",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "1Y",
-          "direction": "output"
-        },
-        {
-          "number": 5,
-          "name": "2I0",
-          "direction": "input"
-        },
-        {
-          "number": 6,
-          "name": "2I1",
-          "direction": "input"
-        },
-        {
-          "number": 7,
-          "name": "2Y",
-          "direction": "output"
-        },
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 9,
-          "name": "3Y",
-          "direction": "output"
-        },
-        {
-          "number": 10,
-          "name": "3I1",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "3I0",
-          "direction": "input"
-        },
-        {
-          "number": 12,
-          "name": "4Y",
-          "direction": "output"
-        },
-        {
-          "number": 13,
-          "name": "4I1",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "4I0",
-          "direction": "input"
-        },
-        {
-          "number": 15,
-          "name": "E",
-          "direction": "input"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {},
-      "power": [
-        {
-          "name": "GND",
-          "pin": 8,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 16,
-          "nominal_logic": 1
-        }
-      ],
-      "logic": {
-        "type": "quad_2_input_multiplexer_inverting_outputs",
-        "description": "quad 2-input multiplexer, inverting outputs"
-      },
-      "timing": {
-        "delay_ns": 15
-      }
-    },
-    "python_simulator": {
-      "part": "74HC158",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/74xx/74HC158/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/74xx/74HC158/simulation/model.py",
-      "class": "HC158"
-    },
-    "verilog_wrapper": {
-      "part": "74HC158",
-      "module": "ttl_74hc158",
-      "file": "DB/74xx/74HC158/simulation/model.v",
-      "netlist": "DB/74xx/74HC158/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "Enable_bar",
-            "pins": [
-              15
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Select",
-            "pins": [
-              1
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "A_2D",
-            "pins": [
-              2,
-              3,
-              5,
-              6,
-              11,
-              10,
-              14,
-              13
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Y_bar",
-            "pins": [
-              4,
-              7,
-              9,
-              12
-            ],
-            "direction": "output"
-          }
-        ],
-        "output_pins": [
-          4,
-          7,
-          9,
-          12
-        ]
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "74HC158",
-      "module": "ttl_74hc158",
-      "bench_module": "tb_generated_74hc158",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/74xx/74HC158/simulation/model.v"
-        ],
-        "top": "tb_generated_74hc158"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "basic_function"
-          ]
-        }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC158",
-      "shape": "dip",
-      "pins": 16,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ],
-      "right": [
-        16,
-        15,
-        14,
-        13,
-        12,
-        11,
-        10,
-        9
-      ],
-      "labels": {
-        "1": "S",
-        "2": "1I0",
-        "3": "1I1",
-        "5": "2I0",
-        "6": "2I1",
-        "8": "GND",
-        "10": "3I1",
-        "11": "3I0",
-        "13": "4I1",
-        "14": "4I0",
-        "15": "E",
-        "16": "VCC"
-      },
-      "bus_groups": {}
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC158",
-      "shape": "dip",
-      "pins": 16,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ],
-      "right": [
-        16,
-        15,
-        14,
-        13,
-        12,
-        11,
-        10,
-        9
-      ],
-      "labels": {
-        "1": "S",
-        "2": "1I0",
-        "3": "1I1",
-        "5": "2I0",
-        "6": "2I1",
-        "8": "GND",
-        "10": "3I1",
-        "11": "3I0",
-        "13": "4I1",
-        "14": "4I0",
-        "15": "E",
-        "16": "VCC"
-      },
-      "bus_groups": {}
-    },
     "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "74HC158",
-      "title": "quad 2-input multiplexer, inverting outputs",
       "audience": "students ages 10-15, still useful for older learners",
-      "summary": "quad 2-input multiplexer, inverting outputs.",
-      "overview": "74HC158 is a 16-pin DIP part for multiplexer.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
-      ],
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
         "After an input changes, wait about 15 ns before trusting the output."
       ],
+      "overview": "74HC158 is a 16-pin DIP part for multiplexer.",
+      "part": "74HC158",
       "pin_count": 16,
       "pin_summary": {
         "input": {
@@ -385,43 +49,83 @@
           "note": "Power pins: GND, VCC."
         }
       },
-      "buses": {},
-      "bus_explanations": [],
-      "controls": [],
-      "control_explanations": [],
-      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "74HC158",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "required_vectors": [
-        "basic_function"
-      ]
+      "summary": "quad 2-input multiplexer, inverting outputs.",
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "title": "quad 2-input multiplexer, inverting outputs",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "74HC158",
-      "title": "Try 74HC158 in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "S controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "S - input",
+          "pin": "S"
+        },
+        {
+          "explanation": "1I0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1I0 - input",
+          "pin": "1I0"
+        },
+        {
+          "explanation": "1I1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1I1 - input",
+          "pin": "1I1"
+        },
+        {
+          "explanation": "2I0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2I0 - input",
+          "pin": "2I0"
+        },
+        {
+          "explanation": "2I1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2I1 - input",
+          "pin": "2I1"
+        },
+        {
+          "explanation": "3I1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3I1 - input",
+          "pin": "3I1"
+        },
+        {
+          "explanation": "3I0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3I0 - input",
+          "pin": "3I0"
+        },
+        {
+          "explanation": "4I1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4I1 - input",
+          "pin": "4I1"
+        },
+        {
+          "explanation": "4I0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4I0 - input",
+          "pin": "4I0"
+        },
+        {
+          "explanation": "E controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "E - input",
+          "pin": "E"
+        }
+      ],
       "controls": [
         "S",
         "1I0",
@@ -434,96 +138,6 @@
         "4I0",
         "E"
       ],
-      "control_labels": [
-        {
-          "pin": "S",
-          "label": "S - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "S controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "1I0",
-          "label": "1I0 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "1I0 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "1I1",
-          "label": "1I1 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "1I1 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "2I0",
-          "label": "2I0 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "2I0 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "2I1",
-          "label": "2I1 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "2I1 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "3I1",
-          "label": "3I1 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "3I1 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "3I0",
-          "label": "3I0 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "3I0 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "4I1",
-          "label": "4I1 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "4I1 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "4I0",
-          "label": "4I0 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "4I0 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "E",
-          "label": "E - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "E controls input. Use 1 to turn this control on."
-        }
-      ],
-      "probes": [
-        "1Y",
-        "2Y",
-        "3Y",
-        "4Y"
-      ],
-      "probe_labels": [
-        {
-          "name": "1Y",
-          "label": "1Y",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "2Y",
-          "label": "2Y",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "3Y",
-          "label": "3Y",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "4Y",
-          "label": "4Y",
-          "hint": "Read this output after the settle step."
-        }
-      ],
       "default_steps": [
         "apply controls",
         "settle",
@@ -534,11 +148,467 @@
         "Run one settle step so the simulated signals can update.",
         "Read the probes and compare them with the truth table."
       ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC158",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y",
+          "name": "1Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y",
+          "name": "2Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "3Y",
+          "name": "3Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "4Y",
+          "name": "4Y"
+        }
+      ],
+      "probes": [
+        "1Y",
+        "2Y",
+        "3Y",
+        "4Y"
+      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change S?",
         "Which truth-table row matches the value on 1Y?"
-      ]
+      ],
+      "title": "Try 74HC158 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "quad 2-input multiplexer, inverting outputs",
+        "type": "quad_2_input_multiplexer_inverting_outputs"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC158",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "S",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1I0",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "1I1",
+          "number": 3
+        },
+        {
+          "direction": "output",
+          "name": "1Y",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "2I0",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "2I1",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "2Y",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "3Y",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "3I1",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "3I0",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "4Y",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "4I1",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "4I0",
+          "number": 14
+        },
+        {
+          "direction": "input",
+          "name": "E",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "multiplexer",
+      "timing": {
+        "delay_ns": 15
+      },
+      "title": "quad 2-input multiplexer, inverting outputs"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "S",
+        "10": "3I1",
+        "11": "3I0",
+        "13": "4I1",
+        "14": "4I0",
+        "15": "E",
+        "16": "VCC",
+        "2": "1I0",
+        "3": "1I1",
+        "5": "2I0",
+        "6": "2I1",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC158",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC158",
+      "copy_with_chip": [
+        "DB/74xx/74HC158/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC158/simulation/model.py",
+      "part": "74HC158",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "S",
+        "10": "3I1",
+        "11": "3I0",
+        "13": "4I1",
+        "14": "4I0",
+        "15": "E",
+        "16": "VCC",
+        "2": "1I0",
+        "3": "1I1",
+        "5": "2I0",
+        "6": "2I1",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC158",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC158",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC158",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC158",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc158",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC158/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc158"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc158",
+      "part": "74HC158",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC158",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC158",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          4,
+          7,
+          9,
+          12
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Enable_bar",
+            "pins": [
+              15
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Select",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "A_2D",
+            "pins": [
+              2,
+              3,
+              5,
+              6,
+              11,
+              10,
+              14,
+              13
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y_bar",
+            "pins": [
+              4,
+              7,
+              9,
+              12
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC158/simulation/model.v",
+      "module": "ttl_74hc158",
+      "netlist": "DB/74xx/74HC158/simulation/netlist.json",
+      "part": "74HC158"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "74HC158",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC158/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC158/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC158/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC158/definition/definition.json",
+  "version": 1
 }

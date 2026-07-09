@@ -1,395 +1,17 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/74xx/74HC541/definition/definition.json",
-  "part": "74HC541",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/74xx/74HC541/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/74xx/74HC541/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/74xx/74HC541/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "74HC541",
-      "title": "Octal Buffer/Line Driver",
-      "family": "74HC",
-      "group": "74xx",
-      "role": "buffer",
-      "package": {
-        "kind": "DIP",
-        "pins": 20,
-        "default": "N"
-      },
-      "pins": [
-        {
-          "number": 1,
-          "name": "/OE1",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 2,
-          "name": "A1",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "A2",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "A3",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "A4",
-          "direction": "input"
-        },
-        {
-          "number": 6,
-          "name": "A5",
-          "direction": "input"
-        },
-        {
-          "number": 7,
-          "name": "A6",
-          "direction": "input"
-        },
-        {
-          "number": 8,
-          "name": "A7",
-          "direction": "input"
-        },
-        {
-          "number": 9,
-          "name": "A8",
-          "direction": "input"
-        },
-        {
-          "number": 10,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 11,
-          "name": "Y8",
-          "direction": "output"
-        },
-        {
-          "number": 12,
-          "name": "Y7",
-          "direction": "output"
-        },
-        {
-          "number": 13,
-          "name": "Y6",
-          "direction": "output"
-        },
-        {
-          "number": 14,
-          "name": "Y5",
-          "direction": "output"
-        },
-        {
-          "number": 15,
-          "name": "Y4",
-          "direction": "output"
-        },
-        {
-          "number": 16,
-          "name": "Y3",
-          "direction": "output"
-        },
-        {
-          "number": 17,
-          "name": "Y2",
-          "direction": "output"
-        },
-        {
-          "number": 18,
-          "name": "Y1",
-          "direction": "output"
-        },
-        {
-          "number": 19,
-          "name": "/OE2",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 20,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {},
-      "power": [
-        {
-          "name": "GND",
-          "pin": 10,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 20,
-          "nominal_logic": 1
-        }
-      ],
-      "logic": {
-        "type": "octal_buffer",
-        "description": "Octal Buffer/Line Driver"
-      },
-      "timing": {
-        "delay_ns": 12
-      }
-    },
-    "python_simulator": {
-      "part": "74HC541",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/74xx/74HC541/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/74xx/74HC541/simulation/model.py",
-      "class": "HC541"
-    },
-    "verilog_wrapper": {
-      "part": "74HC541",
-      "module": "ttl_74hc541",
-      "file": "DB/74xx/74HC541/simulation/model.v",
-      "netlist": "DB/74xx/74HC541/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "OE1_bar",
-            "pins": [
-              1
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "OE2_bar",
-            "pins": [
-              19
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "A",
-            "pins": [
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Y",
-            "pins": [
-              18,
-              17,
-              16,
-              15,
-              14,
-              13,
-              12,
-              11
-            ],
-            "direction": "output"
-          }
-        ],
-        "output_pins": [
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18
-        ]
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "74HC541",
-      "module": "ttl_74hc541",
-      "bench_module": "tb_generated_74hc541",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/74xx/74HC541/simulation/model.v"
-        ],
-        "top": "tb_generated_74hc541"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "enabled_outputs_match_a",
-            "enabled_outputs_match_reverse_pattern",
-            "oe1_high_releases_outputs",
-            "oe2_high_releases_outputs",
-            "both_disabled_releases_outputs"
-          ]
-        }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC541",
-      "shape": "dip",
-      "pins": 20,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ],
-      "right": [
-        20,
-        19,
-        18,
-        17,
-        16,
-        15,
-        14,
-        13,
-        12,
-        11
-      ],
-      "labels": {
-        "1": "/OE1",
-        "2": "A1",
-        "3": "A2",
-        "4": "A3",
-        "5": "A4",
-        "6": "A5",
-        "7": "A6",
-        "8": "A7",
-        "9": "A8",
-        "10": "GND",
-        "19": "/OE2",
-        "20": "VCC"
-      },
-      "bus_groups": {}
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC541",
-      "shape": "dip",
-      "pins": 20,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ],
-      "right": [
-        20,
-        19,
-        18,
-        17,
-        16,
-        15,
-        14,
-        13,
-        12,
-        11
-      ],
-      "labels": {
-        "1": "/OE1",
-        "2": "A1",
-        "3": "A2",
-        "4": "A3",
-        "5": "A4",
-        "6": "A5",
-        "7": "A6",
-        "8": "A7",
-        "9": "A8",
-        "10": "GND",
-        "19": "/OE2",
-        "20": "VCC"
-      },
-      "bus_groups": {}
-    },
     "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "74HC541",
-      "title": "Octal Buffer/Line Driver",
       "audience": "students ages 10-15, still useful for older learners",
-      "summary": "Octal Buffer/Line Driver.",
-      "overview": "74HC541 is a 20-pin DIP part for buffer.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
-      ],
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
         "After an input changes, wait about 12 ns before trusting the output."
       ],
+      "overview": "74HC541 is a 20-pin DIP part for buffer.",
+      "part": "74HC541",
       "pin_count": 20,
       "pin_summary": {
         "input": {
@@ -431,54 +53,83 @@
           "note": "Power pins: GND, VCC."
         }
       },
-      "buses": {},
-      "bus_explanations": [],
-      "controls": [],
-      "control_explanations": [],
-      "timing_note": "After an input changes, wait about 12 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "74HC541",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        },
-        {
-          "type": "tri_state",
-          "source": "tests/tri_state.json",
-          "present": true
-        },
-        {
-          "type": "bus_fight",
-          "source": "tests/bus_fight.json",
-          "present": true
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "required_vectors": [
-        "basic_function",
-        "disabled_or_high_z"
-      ]
+      "summary": "Octal Buffer/Line Driver.",
+      "timing_note": "After an input changes, wait about 12 ns before trusting the output.",
+      "title": "Octal Buffer/Line Driver",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "74HC541",
-      "title": "Try 74HC541 in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "/OE1 controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/OE1 - input",
+          "pin": "/OE1"
+        },
+        {
+          "explanation": "A1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A1 - input",
+          "pin": "A1"
+        },
+        {
+          "explanation": "A2 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A2 - input",
+          "pin": "A2"
+        },
+        {
+          "explanation": "A3 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A3 - input",
+          "pin": "A3"
+        },
+        {
+          "explanation": "A4 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A4 - input",
+          "pin": "A4"
+        },
+        {
+          "explanation": "A5 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A5 - input",
+          "pin": "A5"
+        },
+        {
+          "explanation": "A6 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A6 - input",
+          "pin": "A6"
+        },
+        {
+          "explanation": "A7 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A7 - input",
+          "pin": "A7"
+        },
+        {
+          "explanation": "A8 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A8 - input",
+          "pin": "A8"
+        },
+        {
+          "explanation": "/OE2 controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/OE2 - input",
+          "pin": "/OE2"
+        }
+      ],
       "controls": [
         "/OE1",
         "A1",
@@ -491,66 +142,58 @@
         "A8",
         "/OE2"
       ],
-      "control_labels": [
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC541",
+      "probe_labels": [
         {
-          "pin": "/OE1",
-          "label": "/OE1 - input",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/OE1 controls input. This is active low, so 0 turns the control on."
+          "hint": "Read this output after the settle step.",
+          "label": "Y8",
+          "name": "Y8"
         },
         {
-          "pin": "A1",
-          "label": "A1 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A1 controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "Y7",
+          "name": "Y7"
         },
         {
-          "pin": "A2",
-          "label": "A2 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A2 controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "Y6",
+          "name": "Y6"
         },
         {
-          "pin": "A3",
-          "label": "A3 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A3 controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "Y5",
+          "name": "Y5"
         },
         {
-          "pin": "A4",
-          "label": "A4 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A4 controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "Y4",
+          "name": "Y4"
         },
         {
-          "pin": "A5",
-          "label": "A5 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A5 controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "Y3",
+          "name": "Y3"
         },
         {
-          "pin": "A6",
-          "label": "A6 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A6 controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "Y2",
+          "name": "Y2"
         },
         {
-          "pin": "A7",
-          "label": "A7 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A7 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "A8",
-          "label": "A8 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A8 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "/OE2",
-          "label": "/OE2 - input",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/OE2 controls input. This is active low, so 0 turns the control on."
+          "hint": "Read this output after the settle step.",
+          "label": "Y1",
+          "name": "Y1"
         }
       ],
       "probes": [
@@ -563,63 +206,498 @@
         "Y2",
         "Y1"
       ],
-      "probe_labels": [
-        {
-          "name": "Y8",
-          "label": "Y8",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "Y7",
-          "label": "Y7",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "Y6",
-          "label": "Y6",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "Y5",
-          "label": "Y5",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "Y4",
-          "label": "Y4",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "Y3",
-          "label": "Y3",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "Y2",
-          "label": "Y2",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "Y1",
-          "label": "Y1",
-          "hint": "Read this output after the settle step."
-        }
-      ],
-      "default_steps": [
-        "apply controls",
-        "settle",
-        "probe"
-      ],
-      "guided_steps": [
-        "Set each control to the value you want to test.",
-        "Run one settle step so the simulated signals can update.",
-        "Read the probes and compare them with the truth table."
-      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change /OE1?",
         "Which truth-table row matches the value on Y8?"
-      ]
+      ],
+      "title": "Try 74HC541 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "Octal Buffer/Line Driver",
+        "type": "octal_buffer"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 20
+      },
+      "part": "74HC541",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/OE1",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "A1",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "A2",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "A3",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "A4",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "A5",
+          "number": 6
+        },
+        {
+          "direction": "input",
+          "name": "A6",
+          "number": 7
+        },
+        {
+          "direction": "input",
+          "name": "A7",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "A8",
+          "number": 9
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "Y8",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "Y7",
+          "number": 12
+        },
+        {
+          "direction": "output",
+          "name": "Y6",
+          "number": 13
+        },
+        {
+          "direction": "output",
+          "name": "Y5",
+          "number": 14
+        },
+        {
+          "direction": "output",
+          "name": "Y4",
+          "number": 15
+        },
+        {
+          "direction": "output",
+          "name": "Y3",
+          "number": 16
+        },
+        {
+          "direction": "output",
+          "name": "Y2",
+          "number": 17
+        },
+        {
+          "direction": "output",
+          "name": "Y1",
+          "number": 18
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/OE2",
+          "number": 19
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 10
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 20
+        }
+      ],
+      "role": "buffer",
+      "timing": {
+        "delay_ns": 12
+      },
+      "title": "Octal Buffer/Line Driver"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/OE1",
+        "10": "GND",
+        "19": "/OE2",
+        "2": "A1",
+        "20": "VCC",
+        "3": "A2",
+        "4": "A3",
+        "5": "A4",
+        "6": "A5",
+        "7": "A6",
+        "8": "A7",
+        "9": "A8"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC541",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC541",
+      "copy_with_chip": [
+        "DB/74xx/74HC541/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC541/simulation/model.py",
+      "part": "74HC541",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/OE1",
+        "10": "GND",
+        "19": "/OE2",
+        "2": "A1",
+        "20": "VCC",
+        "3": "A2",
+        "4": "A3",
+        "5": "A4",
+        "6": "A5",
+        "7": "A6",
+        "8": "A7",
+        "9": "A8"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC541",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC541",
+      "required_vectors": [
+        "basic_function",
+        "disabled_or_high_z"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": true,
+          "checks": [
+            "external_driver_conflict_is_detectable"
+          ],
+          "present": true,
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": true,
+          "checks": [
+            "disabled_outputs_release_bus"
+          ],
+          "present": true,
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "enabled_outputs_match_a",
+            "enabled_outputs_match_reverse_pattern",
+            "oe1_high_releases_outputs",
+            "oe2_high_releases_outputs",
+            "both_disabled_releases_outputs"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        },
+        {
+          "present": true,
+          "source": "tests/tri_state.json",
+          "type": "tri_state"
+        },
+        {
+          "present": true,
+          "source": "tests/bus_fight.json",
+          "type": "bus_fight"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc541",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC541/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc541"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc541",
+      "part": "74HC541",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": true,
+          "checks": [
+            "external_driver_conflict_is_detectable"
+          ],
+          "present": true,
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": true,
+          "checks": [
+            "disabled_outputs_release_bus"
+          ],
+          "present": true,
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "enabled_outputs_match_a",
+            "enabled_outputs_match_reverse_pattern",
+            "oe1_high_releases_outputs",
+            "oe2_high_releases_outputs",
+            "both_disabled_releases_outputs"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "OE1_bar",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "OE2_bar",
+            "pins": [
+              19
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y",
+            "pins": [
+              18,
+              17,
+              16,
+              15,
+              14,
+              13,
+              12,
+              11
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC541/simulation/model.v",
+      "module": "ttl_74hc541",
+      "netlist": "DB/74xx/74HC541/simulation/netlist.json",
+      "part": "74HC541"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "74HC541",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC541/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC541/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC541/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC541/definition/definition.json",
+  "version": 1
 }

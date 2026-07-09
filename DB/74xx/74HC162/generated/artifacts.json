@@ -1,376 +1,17 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/74xx/74HC162/definition/definition.json",
-  "part": "74HC162",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/74xx/74HC162/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/74xx/74HC162/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/74xx/74HC162/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "74HC162",
-      "title": "presettable synchronous BCD decade counter, synchronous reset",
-      "family": "74HC",
-      "group": "74xx",
-      "role": "counter",
-      "package": {
-        "kind": "DIP",
-        "pins": 16,
-        "default": "N"
-      },
-      "pins": [
-        {
-          "number": 1,
-          "name": "MR",
-          "direction": "input"
-        },
-        {
-          "number": 2,
-          "name": "CP",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "D0",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "D1",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "D2",
-          "direction": "input"
-        },
-        {
-          "number": 6,
-          "name": "D3",
-          "direction": "input"
-        },
-        {
-          "number": 7,
-          "name": "CEP",
-          "direction": "input"
-        },
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 9,
-          "name": "PE",
-          "direction": "input"
-        },
-        {
-          "number": 10,
-          "name": "CET",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "Q3",
-          "direction": "output"
-        },
-        {
-          "number": 12,
-          "name": "Q2",
-          "direction": "output"
-        },
-        {
-          "number": 13,
-          "name": "Q1",
-          "direction": "output"
-        },
-        {
-          "number": 14,
-          "name": "Q0",
-          "direction": "output"
-        },
-        {
-          "number": 15,
-          "name": "TC",
-          "direction": "output"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {},
-      "power": [
-        {
-          "name": "GND",
-          "pin": 8,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 16,
-          "nominal_logic": 1
-        }
-      ],
-      "logic": {
-        "type": "presettable_synchronous_bcd_decade_counter_synchronous_reset",
-        "description": "presettable synchronous BCD decade counter, synchronous reset"
-      },
-      "timing": {
-        "delay_ns": 15
-      }
-    },
-    "python_simulator": {
-      "part": "74HC162",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/74xx/74HC162/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/74xx/74HC162/simulation/model.py",
-      "class": "HC162"
-    },
-    "verilog_wrapper": {
-      "part": "74HC162",
-      "module": "ttl_74hc162",
-      "file": "DB/74xx/74HC162/simulation/model.v",
-      "netlist": "DB/74xx/74HC162/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "Clear_bar",
-            "pins": [
-              1
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Load_bar",
-            "pins": [
-              9
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "ENT",
-            "pins": [
-              10
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "ENP",
-            "pins": [
-              7
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "D",
-            "pins": [
-              3,
-              4,
-              5,
-              6
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Clk",
-            "pins": [
-              2
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "RCO",
-            "pins": [
-              15
-            ],
-            "direction": "output"
-          },
-          {
-            "name": "Q",
-            "pins": [
-              14,
-              13,
-              12,
-              11
-            ],
-            "direction": "output"
-          }
-        ],
-        "output_pins": [
-          11,
-          12,
-          13,
-          14,
-          15
-        ]
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "74HC162",
-      "module": "ttl_74hc162",
-      "bench_module": "tb_generated_74hc162",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/74xx/74HC162/simulation/model.v"
-        ],
-        "top": "tb_generated_74hc162"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "basic_function"
-          ]
-        }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC162",
-      "shape": "dip",
-      "pins": 16,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ],
-      "right": [
-        16,
-        15,
-        14,
-        13,
-        12,
-        11,
-        10,
-        9
-      ],
-      "labels": {
-        "1": "MR",
-        "2": "CP",
-        "3": "D0",
-        "4": "D1",
-        "5": "D2",
-        "6": "D3",
-        "7": "CEP",
-        "8": "GND",
-        "9": "PE",
-        "10": "CET",
-        "16": "VCC"
-      },
-      "bus_groups": {}
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC162",
-      "shape": "dip",
-      "pins": 16,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ],
-      "right": [
-        16,
-        15,
-        14,
-        13,
-        12,
-        11,
-        10,
-        9
-      ],
-      "labels": {
-        "1": "MR",
-        "2": "CP",
-        "3": "D0",
-        "4": "D1",
-        "5": "D2",
-        "6": "D3",
-        "7": "CEP",
-        "8": "GND",
-        "9": "PE",
-        "10": "CET",
-        "16": "VCC"
-      },
-      "bus_groups": {}
-    },
     "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "74HC162",
-      "title": "presettable synchronous BCD decade counter, synchronous reset",
       "audience": "students ages 10-15, still useful for older learners",
-      "summary": "presettable synchronous BCD decade counter, synchronous reset.",
-      "overview": "74HC162 is a 16-pin DIP part for counter.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
-      ],
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
         "After an input changes, wait about 15 ns before trusting the output."
       ],
+      "overview": "74HC162 is a 16-pin DIP part for counter.",
+      "part": "74HC162",
       "pin_count": 16,
       "pin_summary": {
         "input": {
@@ -408,43 +49,77 @@
           "note": "Power pins: GND, VCC."
         }
       },
-      "buses": {},
-      "bus_explanations": [],
-      "controls": [],
-      "control_explanations": [],
-      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "74HC162",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "required_vectors": [
-        "basic_function"
-      ]
+      "summary": "presettable synchronous BCD decade counter, synchronous reset.",
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "title": "presettable synchronous BCD decade counter, synchronous reset",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "74HC162",
-      "title": "Try 74HC162 in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "MR controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "MR - input",
+          "pin": "MR"
+        },
+        {
+          "explanation": "CP controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "CP - input",
+          "pin": "CP"
+        },
+        {
+          "explanation": "D0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D0 - input",
+          "pin": "D0"
+        },
+        {
+          "explanation": "D1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D1 - input",
+          "pin": "D1"
+        },
+        {
+          "explanation": "D2 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D2 - input",
+          "pin": "D2"
+        },
+        {
+          "explanation": "D3 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D3 - input",
+          "pin": "D3"
+        },
+        {
+          "explanation": "CEP controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "CEP - input",
+          "pin": "CEP"
+        },
+        {
+          "explanation": "PE controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "PE - input",
+          "pin": "PE"
+        },
+        {
+          "explanation": "CET controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "CET - input",
+          "pin": "CET"
+        }
+      ],
       "controls": [
         "MR",
         "CP",
@@ -456,96 +131,6 @@
         "PE",
         "CET"
       ],
-      "control_labels": [
-        {
-          "pin": "MR",
-          "label": "MR - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "MR controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "CP",
-          "label": "CP - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "CP controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "D0",
-          "label": "D0 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "D0 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "D1",
-          "label": "D1 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "D1 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "D2",
-          "label": "D2 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "D2 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "D3",
-          "label": "D3 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "D3 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "CEP",
-          "label": "CEP - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "CEP controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "PE",
-          "label": "PE - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "PE controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "CET",
-          "label": "CET - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "CET controls input. Use 1 to turn this control on."
-        }
-      ],
-      "probes": [
-        "Q3",
-        "Q2",
-        "Q1",
-        "Q0",
-        "TC"
-      ],
-      "probe_labels": [
-        {
-          "name": "Q3",
-          "label": "Q3",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "Q2",
-          "label": "Q2",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "Q1",
-          "label": "Q1",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "Q0",
-          "label": "Q0",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "TC",
-          "label": "TC",
-          "hint": "Read this output after the settle step."
-        }
-      ],
       "default_steps": [
         "apply controls",
         "settle",
@@ -556,11 +141,496 @@
         "Run one settle step so the simulated signals can update.",
         "Read the probes and compare them with the truth table."
       ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC162",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Q3",
+          "name": "Q3"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Q2",
+          "name": "Q2"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Q1",
+          "name": "Q1"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Q0",
+          "name": "Q0"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "TC",
+          "name": "TC"
+        }
+      ],
+      "probes": [
+        "Q3",
+        "Q2",
+        "Q1",
+        "Q0",
+        "TC"
+      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change MR?",
         "Which truth-table row matches the value on Q3?"
-      ]
+      ],
+      "title": "Try 74HC162 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "presettable synchronous BCD decade counter, synchronous reset",
+        "type": "presettable_synchronous_bcd_decade_counter_synchronous_reset"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC162",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "MR",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "CP",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "D0",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "D1",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "D2",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "D3",
+          "number": 6
+        },
+        {
+          "direction": "input",
+          "name": "CEP",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "input",
+          "name": "PE",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "CET",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "Q3",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "Q2",
+          "number": 12
+        },
+        {
+          "direction": "output",
+          "name": "Q1",
+          "number": 13
+        },
+        {
+          "direction": "output",
+          "name": "Q0",
+          "number": 14
+        },
+        {
+          "direction": "output",
+          "name": "TC",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "counter",
+      "timing": {
+        "delay_ns": 15
+      },
+      "title": "presettable synchronous BCD decade counter, synchronous reset"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "MR",
+        "10": "CET",
+        "16": "VCC",
+        "2": "CP",
+        "3": "D0",
+        "4": "D1",
+        "5": "D2",
+        "6": "D3",
+        "7": "CEP",
+        "8": "GND",
+        "9": "PE"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC162",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC162",
+      "copy_with_chip": [
+        "DB/74xx/74HC162/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC162/simulation/model.py",
+      "part": "74HC162",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "MR",
+        "10": "CET",
+        "16": "VCC",
+        "2": "CP",
+        "3": "D0",
+        "4": "D1",
+        "5": "D2",
+        "6": "D3",
+        "7": "CEP",
+        "8": "GND",
+        "9": "PE"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC162",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC162",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC162",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC162",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc162",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC162/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc162"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc162",
+      "part": "74HC162",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC162",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC162",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Clear_bar",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Load_bar",
+            "pins": [
+              9
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "ENT",
+            "pins": [
+              10
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "ENP",
+            "pins": [
+              7
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "D",
+            "pins": [
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Clk",
+            "pins": [
+              2
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "RCO",
+            "pins": [
+              15
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q",
+            "pins": [
+              14,
+              13,
+              12,
+              11
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC162/simulation/model.v",
+      "module": "ttl_74hc162",
+      "netlist": "DB/74xx/74HC162/simulation/netlist.json",
+      "part": "74HC162"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "74HC162",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC162/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC162/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC162/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC162/definition/definition.json",
+  "version": 1
 }

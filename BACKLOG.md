@@ -220,6 +220,10 @@ Done:
   clock edge, one-hot T0/T1/T2 pushes, PC known-state policy, push-switch,
   random 100 pushes up to 500 ms, 50 kHz, 1 MHz, 2 MHz, and 5 MHz
   functional-only profiles.
+- ✅ `RV8GR_FetchCycleTrace`: first fetch/execute regression package from
+  `doc/03_instruction_trace.md` and `tb_rv8gr_tasks.v`. Tests cover T0 control
+  fetch, T1 operand fetch, T2 `LI` execution, golden trace rows through BEQ,
+  PC increment/hold behavior, documented bus-driver roles, and no contention.
 - ✅ `timing_margins.json` source-backed scaffolding: timing-source files must
   exist, AT28C256 physical speed-grade/output-float caveats are explicit,
   62256 physical read/float fields are marked pending, 74HC574 and 74HC161
@@ -255,9 +259,10 @@ Next team tasks:
      surface for placing DIP blocks, wiring nets, and selecting Python or
      Verilog simulation backend.
 3. **Bank + Bam + Noon: continue RV8GR circuit extraction**
-   - Next candidates: full fetch-cycle trace, reset/clock distribution with
-     physical debounce variants, or complete full-system golden trace package
-     from `doc/03_instruction_trace.md` and `tb_rv8gr_tasks.v`.
+   - ✅ `RV8GR_FetchCycleTrace` is now extracted.
+   - Next candidates: reset/clock distribution with physical debounce variants,
+     complete full-system golden trace package, or branch/store/load trace
+     packages from `doc/03_instruction_trace.md`.
 
 Pim coordinates this plan and keeps `Lib/Circuits/README.md`, `BACKLOG.md`,
 tests, and pushed commits aligned.
@@ -284,6 +289,9 @@ tests, and pushed commits aligned.
   tri-state, bus-fight, and propagation where applicable.
 - ✅ Add GitHub Actions coverage for package/schema validation once the schemas
   land.
+- ✅ Refresh all 62 active IC `generated/artifacts.json` files from the current
+  generator and add a strict no-drift gate in
+  `tests.test_generated_split_records`.
 
 ## Backend Bus, Probe, And Test Logic
 

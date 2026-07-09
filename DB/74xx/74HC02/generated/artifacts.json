@@ -1,327 +1,17 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/74xx/74HC02/definition/definition.json",
-  "part": "74HC02",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/74xx/74HC02/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/74xx/74HC02/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/74xx/74HC02/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "74HC02",
-      "title": "Quad 2-Input NOR Gate",
-      "family": "74HC",
-      "group": "74xx",
-      "role": "logic",
-      "package": {
-        "kind": "DIP",
-        "pins": 14,
-        "default": "N"
-      },
-      "pins": [
-        {
-          "number": 1,
-          "name": "1Y",
-          "direction": "output"
-        },
-        {
-          "number": 2,
-          "name": "1A",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "1B",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "2Y",
-          "direction": "output"
-        },
-        {
-          "number": 5,
-          "name": "2A",
-          "direction": "input"
-        },
-        {
-          "number": 6,
-          "name": "2B",
-          "direction": "input"
-        },
-        {
-          "number": 7,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 8,
-          "name": "3A",
-          "direction": "input"
-        },
-        {
-          "number": 9,
-          "name": "3B",
-          "direction": "input"
-        },
-        {
-          "number": 10,
-          "name": "3Y",
-          "direction": "output"
-        },
-        {
-          "number": 11,
-          "name": "4A",
-          "direction": "input"
-        },
-        {
-          "number": 12,
-          "name": "4B",
-          "direction": "input"
-        },
-        {
-          "number": 13,
-          "name": "4Y",
-          "direction": "output"
-        },
-        {
-          "number": 14,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {},
-      "power": [
-        {
-          "name": "GND",
-          "pin": 7,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 14,
-          "nominal_logic": 1
-        }
-      ],
-      "logic": {
-        "type": "quad_2_input_nor_gate",
-        "description": "Quad 2-Input NOR Gate"
-      },
-      "timing": {
-        "delay_ns": 15
-      }
-    },
-    "python_simulator": {
-      "part": "74HC02",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/74xx/74HC02/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/74xx/74HC02/simulation/model.py",
-      "class": "HC02"
-    },
-    "verilog_wrapper": {
-      "part": "74HC02",
-      "module": "ttl_74hc02",
-      "file": "DB/74xx/74HC02/simulation/model.v",
-      "netlist": "DB/74xx/74HC02/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "A",
-            "pins": [
-              2,
-              5,
-              8,
-              11
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "B",
-            "pins": [
-              3,
-              6,
-              9,
-              12
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Y",
-            "pins": [
-              1,
-              4,
-              10,
-              13
-            ],
-            "direction": "output"
-          }
-        ],
-        "output_pins": [
-          1,
-          4,
-          10,
-          13
-        ]
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "74HC02",
-      "module": "ttl_74hc02",
-      "bench_module": "tb_generated_74hc02",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/74xx/74HC02/simulation/model.v"
-        ],
-        "top": "tb_generated_74hc02"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "basic_function"
-          ]
-        }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC02",
-      "shape": "dip",
-      "pins": 14,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ],
-      "right": [
-        14,
-        13,
-        12,
-        11,
-        10,
-        9,
-        8
-      ],
-      "labels": {
-        "2": "1A",
-        "3": "1B",
-        "5": "2A",
-        "6": "2B",
-        "7": "GND",
-        "8": "3A",
-        "9": "3B",
-        "11": "4A",
-        "12": "4B",
-        "14": "VCC"
-      },
-      "bus_groups": {}
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC02",
-      "shape": "dip",
-      "pins": 14,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ],
-      "right": [
-        14,
-        13,
-        12,
-        11,
-        10,
-        9,
-        8
-      ],
-      "labels": {
-        "2": "1A",
-        "3": "1B",
-        "5": "2A",
-        "6": "2B",
-        "7": "GND",
-        "8": "3A",
-        "9": "3B",
-        "11": "4A",
-        "12": "4B",
-        "14": "VCC"
-      },
-      "bus_groups": {}
-    },
     "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "74HC02",
-      "title": "Quad 2-Input NOR Gate",
       "audience": "students ages 10-15, still useful for older learners",
-      "summary": "Quad 2-Input NOR Gate.",
-      "overview": "74HC02 is a 14-pin DIP part for logic.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
-      ],
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
         "After an input changes, wait about 15 ns before trusting the output."
       ],
+      "overview": "74HC02 is a 14-pin DIP part for logic.",
+      "part": "74HC02",
       "pin_count": 14,
       "pin_summary": {
         "input": {
@@ -357,43 +47,71 @@
           "note": "Power pins: GND, VCC."
         }
       },
-      "buses": {},
-      "bus_explanations": [],
-      "controls": [],
-      "control_explanations": [],
-      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "74HC02",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "required_vectors": [
-        "basic_function"
-      ]
+      "summary": "Quad 2-Input NOR Gate.",
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "title": "Quad 2-Input NOR Gate",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "74HC02",
-      "title": "Try 74HC02 in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "1A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1A - input",
+          "pin": "1A"
+        },
+        {
+          "explanation": "1B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1B - input",
+          "pin": "1B"
+        },
+        {
+          "explanation": "2A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2A - input",
+          "pin": "2A"
+        },
+        {
+          "explanation": "2B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2B - input",
+          "pin": "2B"
+        },
+        {
+          "explanation": "3A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3A - input",
+          "pin": "3A"
+        },
+        {
+          "explanation": "3B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3B - input",
+          "pin": "3B"
+        },
+        {
+          "explanation": "4A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4A - input",
+          "pin": "4A"
+        },
+        {
+          "explanation": "4B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4B - input",
+          "pin": "4B"
+        }
+      ],
       "controls": [
         "1A",
         "1B",
@@ -403,84 +121,6 @@
         "3B",
         "4A",
         "4B"
-      ],
-      "control_labels": [
-        {
-          "pin": "1A",
-          "label": "1A - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "1A controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "1B",
-          "label": "1B - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "1B controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "2A",
-          "label": "2A - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "2A controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "2B",
-          "label": "2B - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "2B controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "3A",
-          "label": "3A - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "3A controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "3B",
-          "label": "3B - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "3B controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "4A",
-          "label": "4A - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "4A controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "4B",
-          "label": "4B - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "4B controls input. Use 1 to turn this control on."
-        }
-      ],
-      "probes": [
-        "1Y",
-        "2Y",
-        "3Y",
-        "4Y"
-      ],
-      "probe_labels": [
-        {
-          "name": "1Y",
-          "label": "1Y",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "2Y",
-          "label": "2Y",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "3Y",
-          "label": "3Y",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "4Y",
-          "label": "4Y",
-          "hint": "Read this output after the settle step."
-        }
       ],
       "default_steps": [
         "apply controls",
@@ -492,11 +132,441 @@
         "Run one settle step so the simulated signals can update.",
         "Read the probes and compare them with the truth table."
       ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC02",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y",
+          "name": "1Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y",
+          "name": "2Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "3Y",
+          "name": "3Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "4Y",
+          "name": "4Y"
+        }
+      ],
+      "probes": [
+        "1Y",
+        "2Y",
+        "3Y",
+        "4Y"
+      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change 1A?",
         "Which truth-table row matches the value on 1Y?"
-      ]
+      ],
+      "title": "Try 74HC02 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "Quad 2-Input NOR Gate",
+        "type": "quad_2_input_nor_gate"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 14
+      },
+      "part": "74HC02",
+      "pins": [
+        {
+          "direction": "output",
+          "name": "1Y",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1A",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "1B",
+          "number": 3
+        },
+        {
+          "direction": "output",
+          "name": "2Y",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "2A",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "2B",
+          "number": 6
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "input",
+          "name": "3A",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "3B",
+          "number": 9
+        },
+        {
+          "direction": "output",
+          "name": "3Y",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "4A",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "4B",
+          "number": 12
+        },
+        {
+          "direction": "output",
+          "name": "4Y",
+          "number": 13
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 7
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 14
+        }
+      ],
+      "role": "logic",
+      "timing": {
+        "delay_ns": 15
+      },
+      "title": "Quad 2-Input NOR Gate"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "11": "4A",
+        "12": "4B",
+        "14": "VCC",
+        "2": "1A",
+        "3": "1B",
+        "5": "2A",
+        "6": "2B",
+        "7": "GND",
+        "8": "3A",
+        "9": "3B"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC02",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC02",
+      "copy_with_chip": [
+        "DB/74xx/74HC02/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC02/simulation/model.py",
+      "part": "74HC02",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "11": "4A",
+        "12": "4B",
+        "14": "VCC",
+        "2": "1A",
+        "3": "1B",
+        "5": "2A",
+        "6": "2B",
+        "7": "GND",
+        "8": "3A",
+        "9": "3B"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC02",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC02",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC02",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC02",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc02",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC02/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc02"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc02",
+      "part": "74HC02",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC02",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC02",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          1,
+          4,
+          10,
+          13
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              2,
+              5,
+              8,
+              11
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "B",
+            "pins": [
+              3,
+              6,
+              9,
+              12
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y",
+            "pins": [
+              1,
+              4,
+              10,
+              13
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC02/simulation/model.v",
+      "module": "ttl_74hc02",
+      "netlist": "DB/74xx/74HC02/simulation/netlist.json",
+      "part": "74HC02"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "74HC02",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC02/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC02/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC02/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC02/definition/definition.json",
+  "version": 1
 }

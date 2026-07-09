@@ -1,191 +1,11 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/74xx/74HC245/definition/definition.json",
-  "part": "74HC245",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/74xx/74HC245/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/74xx/74HC245/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/74xx/74HC245/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "74HC245",
-      "title": "Octal bus transceiver with 3-state outputs",
-      "family": "74HC",
-      "group": "74xx",
-      "role": "bus_transceiver",
-      "package": {
-        "kind": "DIP",
-        "pins": 20,
-        "default": "N"
-      },
-      "pins": [
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [
         {
-          "number": 1,
-          "name": "DIR",
-          "direction": "input",
-          "function": "direction_control"
-        },
-        {
-          "number": 2,
-          "name": "A1",
-          "direction": "bidirectional",
-          "bus": "A",
-          "bit": 0
-        },
-        {
-          "number": 3,
-          "name": "A2",
-          "direction": "bidirectional",
-          "bus": "A",
-          "bit": 1
-        },
-        {
-          "number": 4,
-          "name": "A3",
-          "direction": "bidirectional",
-          "bus": "A",
-          "bit": 2
-        },
-        {
-          "number": 5,
-          "name": "A4",
-          "direction": "bidirectional",
-          "bus": "A",
-          "bit": 3
-        },
-        {
-          "number": 6,
-          "name": "A5",
-          "direction": "bidirectional",
-          "bus": "A",
-          "bit": 4
-        },
-        {
-          "number": 7,
-          "name": "A6",
-          "direction": "bidirectional",
-          "bus": "A",
-          "bit": 5
-        },
-        {
-          "number": 8,
-          "name": "A7",
-          "direction": "bidirectional",
-          "bus": "A",
-          "bit": 6
-        },
-        {
-          "number": 9,
-          "name": "A8",
-          "direction": "bidirectional",
-          "bus": "A",
-          "bit": 7
-        },
-        {
-          "number": 10,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 11,
-          "name": "B8",
-          "direction": "bidirectional",
-          "bus": "B",
-          "bit": 7
-        },
-        {
-          "number": 12,
-          "name": "B7",
-          "direction": "bidirectional",
-          "bus": "B",
-          "bit": 6
-        },
-        {
-          "number": 13,
-          "name": "B6",
-          "direction": "bidirectional",
-          "bus": "B",
-          "bit": 5
-        },
-        {
-          "number": 14,
-          "name": "B5",
-          "direction": "bidirectional",
-          "bus": "B",
-          "bit": 4
-        },
-        {
-          "number": 15,
-          "name": "B4",
-          "direction": "bidirectional",
-          "bus": "B",
-          "bit": 3
-        },
-        {
-          "number": 16,
-          "name": "B3",
-          "direction": "bidirectional",
-          "bus": "B",
-          "bit": 2
-        },
-        {
-          "number": 17,
-          "name": "B2",
-          "direction": "bidirectional",
-          "bus": "B",
-          "bit": 1
-        },
-        {
-          "number": 18,
-          "name": "B1",
-          "direction": "bidirectional",
-          "bus": "B",
-          "bit": 0
-        },
-        {
-          "number": 19,
-          "name": "/OE",
-          "direction": "input",
-          "active_low": true,
-          "function": "enable"
-        },
-        {
-          "number": 20,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {
-        "A": {
-          "width": 8,
+          "explanation": "A is an 8-bit signal group. Bit 0 is pin 2 and the highest bit is pin 9.",
+          "name": "A",
           "pins_lsb_first": [
             2,
             3,
@@ -195,10 +15,12 @@
             7,
             8,
             9
-          ]
+          ],
+          "width": 8
         },
-        "B": {
-          "width": 8,
+        {
+          "explanation": "B is an 8-bit signal group. Bit 0 is pin 18 and the highest bit is pin 11.",
+          "name": "B",
           "pins_lsb_first": [
             18,
             17,
@@ -208,305 +30,63 @@
             13,
             12,
             11
-          ]
+          ],
+          "width": 8
+        }
+      ],
+      "buses": {
+        "A": {
+          "pins_lsb_first": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "width": 8
+        },
+        "B": {
+          "pins_lsb_first": [
+            18,
+            17,
+            16,
+            15,
+            14,
+            13,
+            12,
+            11
+          ],
+          "width": 8
         }
       },
-      "power": [
+      "control_explanations": [
         {
-          "name": "GND",
-          "pin": 10,
-          "nominal_logic": 0
+          "explanation": "DIR controls direction control. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "DIR - direction control",
+          "pin": "DIR"
         },
         {
-          "name": "VCC",
-          "pin": 20,
-          "nominal_logic": 1
+          "explanation": "/OE controls enable. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/OE - enable",
+          "pin": "/OE"
         }
       ],
-      "logic": {
-        "type": "octal_bus_transceiver",
-        "width": 8,
-        "direction_control": {
-          "pin": "DIR",
-          "1": "A_to_B",
-          "0": "B_to_A"
+      "controls": [
+        {
+          "active_low": false,
+          "function": "direction_control",
+          "pin": "DIR"
         },
-        "enable": {
-          "pin": "/OE",
-          "active_low": true
-        },
-        "tristate": true,
-        "paths": [
-          {
-            "when": "DIR=1 and /OE=0",
-            "from": "A",
-            "to": "B"
-          },
-          {
-            "when": "DIR=0 and /OE=0",
-            "from": "B",
-            "to": "A"
-          },
-          {
-            "when": "/OE=1",
-            "A": "Z",
-            "B": "Z"
-          }
-        ]
-      },
-      "timing": {
-        "delay_ns": 12
-      }
-    },
-    "python_simulator": {
-      "part": "74HC245",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/74xx/74HC245/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/74xx/74HC245/simulation/model.py",
-      "class": "HC245"
-    },
-    "verilog_wrapper": {
-      "part": "74HC245",
-      "module": "ttl_74hc245",
-      "file": "DB/74xx/74HC245/simulation/model.v",
-      "netlist": "DB/74xx/74HC245/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "OE_bar",
-            "pins": [
-              19
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "DIR",
-            "pins": [
-              1
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "A",
-            "pins": [
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9
-            ],
-            "direction": "output"
-          },
-          {
-            "name": "B",
-            "pins": [
-              18,
-              17,
-              16,
-              15,
-              14,
-              13,
-              12,
-              11
-            ],
-            "direction": "output"
-          }
-        ],
-        "output_pins": [
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18
-        ]
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "74HC245",
-      "module": "ttl_74hc245",
-      "bench_module": "tb_generated_74hc245",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/74xx/74HC245/simulation/model.v"
-        ],
-        "top": "tb_generated_74hc245"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "dir_high_a_to_b",
-            "dir_high_a_to_b_reverse_pattern",
-            "dir_low_b_to_a",
-            "dir_low_b_to_a_reverse_pattern",
-            "disabled_oe_high_releases_a_and_b",
-            "disabled_oe_high_reverse_releases_a_and_b"
-          ]
+        {
+          "active_low": true,
+          "function": "enable",
+          "pin": "/OE"
         }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "bidirectional or tri-state pins need a sequenced bench"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC245",
-      "shape": "dip",
-      "pins": 20,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ],
-      "right": [
-        20,
-        19,
-        18,
-        17,
-        16,
-        15,
-        14,
-        13,
-        12,
-        11
-      ],
-      "labels": {
-        "1": "DIR",
-        "10": "GND",
-        "19": "/OE",
-        "20": "VCC"
-      },
-      "bus_groups": {
-        "A": [
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9
-        ],
-        "B": [
-          18,
-          17,
-          16,
-          15,
-          14,
-          13,
-          12,
-          11
-        ]
-      }
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC245",
-      "shape": "dip",
-      "pins": 20,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ],
-      "right": [
-        20,
-        19,
-        18,
-        17,
-        16,
-        15,
-        14,
-        13,
-        12,
-        11
-      ],
-      "labels": {
-        "1": "DIR",
-        "10": "GND",
-        "19": "/OE",
-        "20": "VCC"
-      },
-      "bus_groups": {
-        "A": [
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9
-        ],
-        "B": [
-          18,
-          17,
-          16,
-          15,
-          14,
-          13,
-          12,
-          11
-        ]
-      }
-    },
-    "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "74HC245",
-      "title": "Octal bus transceiver with 3-state outputs",
-      "audience": "students ages 10-15, still useful for older learners",
-      "summary": "Octal bus transceiver with 3-state outputs.",
-      "overview": "74HC245 is a 20-pin DIP part for bus transceiver.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
       ],
       "key_points": [
         "Connect power before testing signal pins.",
@@ -514,16 +94,10 @@
         "Check the control pins first: DIR, /OE.",
         "Treat these as grouped signals in the UI: A, B."
       ],
+      "overview": "74HC245 is a 20-pin DIP part for bus transceiver.",
+      "part": "74HC245",
       "pin_count": 20,
       "pin_summary": {
-        "input": {
-          "count": 2,
-          "names": [
-            "DIR",
-            "/OE"
-          ],
-          "note": "Input pins: DIR, /OE."
-        },
         "bidirectional": {
           "count": 16,
           "names": [
@@ -546,6 +120,14 @@
           ],
           "note": "Bidirectional pins: A1, A2, A3, A4, A5, A6, and 10 more."
         },
+        "input": {
+          "count": 2,
+          "names": [
+            "DIR",
+            "/OE"
+          ],
+          "note": "Input pins: DIR, /OE."
+        },
         "power": {
           "count": 2,
           "names": [
@@ -555,171 +137,38 @@
           "note": "Power pins: GND, VCC."
         }
       },
-      "buses": {
-        "A": {
-          "width": 8,
-          "pins_lsb_first": [
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
-          ]
-        },
-        "B": {
-          "width": 8,
-          "pins_lsb_first": [
-            18,
-            17,
-            16,
-            15,
-            14,
-            13,
-            12,
-            11
-          ]
-        }
-      },
-      "bus_explanations": [
-        {
-          "name": "A",
-          "width": 8,
-          "pins_lsb_first": [
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
-          ],
-          "explanation": "A is an 8-bit signal group. Bit 0 is pin 2 and the highest bit is pin 9."
-        },
-        {
-          "name": "B",
-          "width": 8,
-          "pins_lsb_first": [
-            18,
-            17,
-            16,
-            15,
-            14,
-            13,
-            12,
-            11
-          ],
-          "explanation": "B is an 8-bit signal group. Bit 0 is pin 18 and the highest bit is pin 11."
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "controls": [
-        {
-          "pin": "DIR",
-          "function": "direction_control",
-          "active_low": false
-        },
-        {
-          "pin": "/OE",
-          "function": "enable",
-          "active_low": true
-        }
-      ],
-      "control_explanations": [
-        {
-          "pin": "DIR",
-          "label": "DIR - direction control",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "DIR controls direction control. Use 1 to turn this control on."
-        },
-        {
-          "pin": "/OE",
-          "label": "/OE - enable",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/OE controls enable. This is active low, so 0 turns the control on."
-        }
-      ],
-      "timing_note": "After an input changes, wait about 12 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "74HC245",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "tri_state",
-          "source": "tests/tri_state.json",
-          "present": true
-        },
-        {
-          "type": "bus_fight",
-          "source": "tests/bus_fight.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        }
-      ],
-      "required_vectors": [
-        "a_to_b",
-        "b_to_a",
-        "disabled_high_z",
-        "bus_conflict"
-      ]
+      "summary": "Octal bus transceiver with 3-state outputs.",
+      "timing_note": "After an input changes, wait about 12 ns before trusting the output.",
+      "title": "Octal bus transceiver with 3-state outputs",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "74HC245",
-      "title": "Try 74HC245 in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "DIR controls direction control. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "DIR - direction control",
+          "pin": "DIR"
+        },
+        {
+          "explanation": "/OE controls enable. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/OE - enable",
+          "pin": "/OE"
+        }
+      ],
       "controls": [
         "DIR",
         "/OE"
-      ],
-      "control_labels": [
-        {
-          "pin": "DIR",
-          "label": "DIR - direction control",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "DIR controls direction control. Use 1 to turn this control on."
-        },
-        {
-          "pin": "/OE",
-          "label": "/OE - enable",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/OE controls enable. This is active low, so 0 turns the control on."
-        }
-      ],
-      "probes": [
-        "A",
-        "B"
-      ],
-      "probe_labels": [
-        {
-          "name": "A",
-          "label": "A bus",
-          "hint": "Read all 8 bits together."
-        },
-        {
-          "name": "B",
-          "label": "B bus",
-          "hint": "Read all 8 bits together."
-        }
       ],
       "default_steps": [
         "apply controls",
@@ -731,11 +180,661 @@
         "Run one settle step so the simulated signals can update.",
         "Read the probes and compare them with the truth table."
       ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC245",
+      "probe_labels": [
+        {
+          "hint": "Read all 8 bits together.",
+          "label": "A bus",
+          "name": "A"
+        },
+        {
+          "hint": "Read all 8 bits together.",
+          "label": "B bus",
+          "name": "B"
+        }
+      ],
+      "probes": [
+        "A",
+        "B"
+      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change DIR?",
         "Which truth-table row matches the value on A?"
-      ]
+      ],
+      "title": "Try 74HC245 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {
+        "A": {
+          "pins_lsb_first": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "width": 8
+        },
+        "B": {
+          "pins_lsb_first": [
+            18,
+            17,
+            16,
+            15,
+            14,
+            13,
+            12,
+            11
+          ],
+          "width": 8
+        }
+      },
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "direction_control": {
+          "0": "B_to_A",
+          "1": "A_to_B",
+          "pin": "DIR"
+        },
+        "enable": {
+          "active_low": true,
+          "pin": "/OE"
+        },
+        "paths": [
+          {
+            "from": "A",
+            "to": "B",
+            "when": "DIR=1 and /OE=0"
+          },
+          {
+            "from": "B",
+            "to": "A",
+            "when": "DIR=0 and /OE=0"
+          },
+          {
+            "A": "Z",
+            "B": "Z",
+            "when": "/OE=1"
+          }
+        ],
+        "tristate": true,
+        "type": "octal_bus_transceiver",
+        "width": 8
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 20
+      },
+      "part": "74HC245",
+      "pins": [
+        {
+          "direction": "input",
+          "function": "direction_control",
+          "name": "DIR",
+          "number": 1
+        },
+        {
+          "bit": 0,
+          "bus": "A",
+          "direction": "bidirectional",
+          "name": "A1",
+          "number": 2
+        },
+        {
+          "bit": 1,
+          "bus": "A",
+          "direction": "bidirectional",
+          "name": "A2",
+          "number": 3
+        },
+        {
+          "bit": 2,
+          "bus": "A",
+          "direction": "bidirectional",
+          "name": "A3",
+          "number": 4
+        },
+        {
+          "bit": 3,
+          "bus": "A",
+          "direction": "bidirectional",
+          "name": "A4",
+          "number": 5
+        },
+        {
+          "bit": 4,
+          "bus": "A",
+          "direction": "bidirectional",
+          "name": "A5",
+          "number": 6
+        },
+        {
+          "bit": 5,
+          "bus": "A",
+          "direction": "bidirectional",
+          "name": "A6",
+          "number": 7
+        },
+        {
+          "bit": 6,
+          "bus": "A",
+          "direction": "bidirectional",
+          "name": "A7",
+          "number": 8
+        },
+        {
+          "bit": 7,
+          "bus": "A",
+          "direction": "bidirectional",
+          "name": "A8",
+          "number": 9
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "bit": 7,
+          "bus": "B",
+          "direction": "bidirectional",
+          "name": "B8",
+          "number": 11
+        },
+        {
+          "bit": 6,
+          "bus": "B",
+          "direction": "bidirectional",
+          "name": "B7",
+          "number": 12
+        },
+        {
+          "bit": 5,
+          "bus": "B",
+          "direction": "bidirectional",
+          "name": "B6",
+          "number": 13
+        },
+        {
+          "bit": 4,
+          "bus": "B",
+          "direction": "bidirectional",
+          "name": "B5",
+          "number": 14
+        },
+        {
+          "bit": 3,
+          "bus": "B",
+          "direction": "bidirectional",
+          "name": "B4",
+          "number": 15
+        },
+        {
+          "bit": 2,
+          "bus": "B",
+          "direction": "bidirectional",
+          "name": "B3",
+          "number": 16
+        },
+        {
+          "bit": 1,
+          "bus": "B",
+          "direction": "bidirectional",
+          "name": "B2",
+          "number": 17
+        },
+        {
+          "bit": 0,
+          "bus": "B",
+          "direction": "bidirectional",
+          "name": "B1",
+          "number": 18
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "function": "enable",
+          "name": "/OE",
+          "number": 19
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 10
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 20
+        }
+      ],
+      "role": "bus_transceiver",
+      "timing": {
+        "delay_ns": 12
+      },
+      "title": "Octal bus transceiver with 3-state outputs"
+    },
+    "kicad_symbol": {
+      "bus_groups": {
+        "A": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "B": [
+          18,
+          17,
+          16,
+          15,
+          14,
+          13,
+          12,
+          11
+        ]
+      },
+      "labels": {
+        "1": "DIR",
+        "10": "GND",
+        "19": "/OE",
+        "20": "VCC"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC245",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC245",
+      "copy_with_chip": [
+        "DB/74xx/74HC245/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC245/simulation/model.py",
+      "part": "74HC245",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {
+        "A": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "B": [
+          18,
+          17,
+          16,
+          15,
+          14,
+          13,
+          12,
+          11
+        ]
+      },
+      "labels": {
+        "1": "DIR",
+        "10": "GND",
+        "19": "/OE",
+        "20": "VCC"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC245",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC245",
+      "required_vectors": [
+        "a_to_b",
+        "b_to_a",
+        "disabled_high_z",
+        "bus_conflict"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": true,
+          "checks": [
+            "external_b_driver_conflicts_with_a_to_b",
+            "external_a_driver_conflicts_with_b_to_a",
+            "oe_high_prevents_conflict_with_external_drivers"
+          ],
+          "present": true,
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "a_to_b_delay_metadata",
+            "b_to_a_delay_metadata",
+            "disable_to_z_delay_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "direction_control_no_clock",
+            "enable_control_no_clock"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": true,
+          "checks": [
+            "disabled_releases_a",
+            "disabled_releases_b",
+            "a_released_when_driving_b",
+            "b_released_when_driving_a"
+          ],
+          "present": true,
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "dir_high_a_to_b",
+            "dir_high_a_to_b_reverse_pattern",
+            "dir_low_b_to_a",
+            "dir_low_b_to_a_reverse_pattern",
+            "disabled_oe_high_releases_a_and_b",
+            "disabled_oe_high_reverse_releases_a_and_b",
+            "reenabled_a_to_b_after_high_z",
+            "direction_reversal_back_to_b_to_a"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/tri_state.json",
+          "type": "tri_state"
+        },
+        {
+          "present": true,
+          "source": "tests/bus_fight.json",
+          "type": "bus_fight"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc245",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC245/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc245"
+      },
+      "emitted": {
+        "reason": "bidirectional or tri-state pins need a sequenced bench",
+        "supported": false
+      },
+      "module": "ttl_74hc245",
+      "part": "74HC245",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": true,
+          "checks": [
+            "external_b_driver_conflicts_with_a_to_b",
+            "external_a_driver_conflicts_with_b_to_a",
+            "oe_high_prevents_conflict_with_external_drivers"
+          ],
+          "present": true,
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "a_to_b_delay_metadata",
+            "b_to_a_delay_metadata",
+            "disable_to_z_delay_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "direction_control_no_clock",
+            "enable_control_no_clock"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": true,
+          "checks": [
+            "disabled_releases_a",
+            "disabled_releases_b",
+            "a_released_when_driving_b",
+            "b_released_when_driving_a"
+          ],
+          "present": true,
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "dir_high_a_to_b",
+            "dir_high_a_to_b_reverse_pattern",
+            "dir_low_b_to_a",
+            "dir_low_b_to_a_reverse_pattern",
+            "disabled_oe_high_releases_a_and_b",
+            "disabled_oe_high_reverse_releases_a_and_b",
+            "reenabled_a_to_b_after_high_z",
+            "direction_reversal_back_to_b_to_a"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "OE_bar",
+            "pins": [
+              19
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "DIR",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "A",
+            "pins": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "B",
+            "pins": [
+              18,
+              17,
+              16,
+              15,
+              14,
+              13,
+              12,
+              11
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC245/simulation/model.v",
+      "module": "ttl_74hc245",
+      "netlist": "DB/74xx/74HC245/simulation/netlist.json",
+      "part": "74HC245"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "74HC245",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC245/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC245/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC245/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC245/definition/definition.json",
+  "version": 1
 }

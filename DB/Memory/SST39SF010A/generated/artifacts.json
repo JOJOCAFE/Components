@@ -1,521 +1,33 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/Memory/SST39SF010A/definition/definition.json",
-  "part": "SST39SF010A",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/Memory/SST39SF010A/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/Memory/SST39SF010A/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/Memory/SST39SF010A/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "SST39SF010A",
-      "title": "128K x 8 flash EEPROM",
-      "family": "Memory",
-      "group": "memory",
-      "role": "flash",
-      "package": {
-        "kind": "DIP",
-        "pins": 32,
-        "default": "DIP"
-      },
-      "pins": [
-        {
-          "number": 1,
-          "name": "NC",
-          "direction": "nc"
-        },
-        {
-          "number": 2,
-          "name": "A16",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "A15",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "A12",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "A7",
-          "direction": "input"
-        },
-        {
-          "number": 6,
-          "name": "A6",
-          "direction": "input"
-        },
-        {
-          "number": 7,
-          "name": "A5",
-          "direction": "input"
-        },
-        {
-          "number": 8,
-          "name": "A4",
-          "direction": "input"
-        },
-        {
-          "number": 9,
-          "name": "A3",
-          "direction": "input"
-        },
-        {
-          "number": 10,
-          "name": "A2",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "A1",
-          "direction": "input"
-        },
-        {
-          "number": 12,
-          "name": "A0",
-          "direction": "input"
-        },
-        {
-          "number": 13,
-          "name": "DQ0",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 14,
-          "name": "DQ1",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 15,
-          "name": "DQ2",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 16,
-          "name": "VSS",
-          "direction": "power",
-          "rail": "VSS"
-        },
-        {
-          "number": 17,
-          "name": "DQ3",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 18,
-          "name": "DQ4",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 19,
-          "name": "DQ5",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 20,
-          "name": "DQ6",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 21,
-          "name": "DQ7",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 22,
-          "name": "/CE",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 23,
-          "name": "A10",
-          "direction": "input"
-        },
-        {
-          "number": 24,
-          "name": "/OE",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 25,
-          "name": "A11",
-          "direction": "input"
-        },
-        {
-          "number": 26,
-          "name": "A9",
-          "direction": "input"
-        },
-        {
-          "number": 27,
-          "name": "A8",
-          "direction": "input"
-        },
-        {
-          "number": 28,
-          "name": "A13",
-          "direction": "input"
-        },
-        {
-          "number": 29,
-          "name": "A14",
-          "direction": "input"
-        },
-        {
-          "number": 30,
-          "name": "NC",
-          "direction": "nc"
-        },
-        {
-          "number": 31,
-          "name": "/WE",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 32,
-          "name": "VDD",
-          "direction": "power",
-          "rail": "VDD"
-        }
-      ],
-      "buses": {},
-      "power": [
-        {
-          "name": "VSS",
-          "pin": 16,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VDD",
-          "pin": 32,
-          "nominal_logic": 1
-        }
-      ],
-      "logic": {
-        "type": "128k_x_8_flash",
-        "description": "128K x 8 flash EEPROM"
-      },
-      "timing": {
-        "delay_ns": 70
-      }
-    },
-    "python_simulator": {
-      "part": "SST39SF010A",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/Memory/SST39SF010A/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/Memory/SST39SF010A/simulation/model.py",
-      "class": "SST39SF010A"
-    },
-    "verilog_wrapper": {
-      "part": "SST39SF010A",
-      "module": "mem_sst39sf010a",
-      "file": "DB/Memory/SST39SF010A/simulation/model.v",
-      "netlist": "DB/Memory/SST39SF010A/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "A",
-            "pins": [
-              12,
-              11,
-              10,
-              9,
-              8,
-              7,
-              6,
-              5,
-              27,
-              26,
-              23,
-              25,
-              4,
-              28,
-              29,
-              3,
-              2
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "DQ",
-            "pins": [
-              13,
-              14,
-              15,
-              17,
-              18,
-              19,
-              20,
-              21
-            ],
-            "direction": "output"
-          },
-          {
-            "name": "CE_bar",
-            "pins": [
-              22
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "OE_bar",
-            "pins": [
-              24
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "WE_bar",
-            "pins": [
-              31
-            ],
-            "direction": "input",
-            "fallback": "1'b1"
-          }
-        ],
-        "output_pins": [
-          13,
-          14,
-          15,
-          17,
-          18,
-          19,
-          20,
-          21
-        ]
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "SST39SF010A",
-      "module": "mem_sst39sf010a",
-      "bench_module": "tb_generated_sst39sf010a",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/Memory/SST39SF010A/simulation/model.v"
-        ],
-        "top": "tb_generated_sst39sf010a"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "write_3c",
-            "read_3c",
-            "write_a5",
-            "read_a5",
-            "chip_disabled_high_z",
-            "output_disabled_high_z",
-            "write_mode_high_z"
-          ]
-        }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "bidirectional or tri-state pins need a sequenced bench"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "SST39SF010A",
-      "shape": "dip",
-      "pins": 32,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16
-      ],
-      "right": [
-        32,
-        31,
-        30,
-        29,
-        28,
-        27,
-        26,
-        25,
-        24,
-        23,
-        22,
-        21,
-        20,
-        19,
-        18,
-        17
-      ],
-      "labels": {
-        "2": "A16",
-        "3": "A15",
-        "4": "A12",
-        "5": "A7",
-        "6": "A6",
-        "7": "A5",
-        "8": "A4",
-        "9": "A3",
-        "10": "A2",
-        "11": "A1",
-        "12": "A0",
-        "16": "VSS",
-        "22": "/CE",
-        "23": "A10",
-        "24": "/OE",
-        "25": "A11",
-        "26": "A9",
-        "27": "A8",
-        "28": "A13",
-        "29": "A14",
-        "31": "/WE",
-        "32": "VDD"
-      },
-      "bus_groups": {}
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "SST39SF010A",
-      "shape": "dip",
-      "pins": 32,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16
-      ],
-      "right": [
-        32,
-        31,
-        30,
-        29,
-        28,
-        27,
-        26,
-        25,
-        24,
-        23,
-        22,
-        21,
-        20,
-        19,
-        18,
-        17
-      ],
-      "labels": {
-        "2": "A16",
-        "3": "A15",
-        "4": "A12",
-        "5": "A7",
-        "6": "A6",
-        "7": "A5",
-        "8": "A4",
-        "9": "A3",
-        "10": "A2",
-        "11": "A1",
-        "12": "A0",
-        "16": "VSS",
-        "22": "/CE",
-        "23": "A10",
-        "24": "/OE",
-        "25": "A11",
-        "26": "A9",
-        "27": "A8",
-        "28": "A13",
-        "29": "A14",
-        "31": "/WE",
-        "32": "VDD"
-      },
-      "bus_groups": {}
-    },
     "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "SST39SF010A",
-      "title": "128K x 8 flash EEPROM",
       "audience": "students ages 10-15, still useful for older learners",
-      "summary": "128K x 8 flash EEPROM.",
-      "overview": "SST39SF010A is a 32-pin DIP part for flash.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
-      ],
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
         "After an input changes, wait about 70 ns before trusting the output."
       ],
+      "overview": "SST39SF010A is a 32-pin DIP part for flash.",
+      "part": "SST39SF010A",
       "pin_count": 32,
       "pin_summary": {
+        "bidirectional": {
+          "count": 8,
+          "names": [
+            "DQ0",
+            "DQ1",
+            "DQ2",
+            "DQ3",
+            "DQ4",
+            "DQ5",
+            "DQ6",
+            "DQ7"
+          ],
+          "note": "Bidirectional pins: DQ0, DQ1, DQ2, DQ3, DQ4, DQ5, and 2 more."
+        },
         "input": {
           "count": 20,
           "names": [
@@ -542,20 +54,6 @@
           ],
           "note": "Input pins: A16, A15, A12, A7, A6, A5, and 14 more."
         },
-        "bidirectional": {
-          "count": 8,
-          "names": [
-            "DQ0",
-            "DQ1",
-            "DQ2",
-            "DQ3",
-            "DQ4",
-            "DQ5",
-            "DQ6",
-            "DQ7"
-          ],
-          "note": "Bidirectional pins: DQ0, DQ1, DQ2, DQ3, DQ4, DQ5, and 2 more."
-        },
         "power": {
           "count": 2,
           "names": [
@@ -565,54 +63,143 @@
           "note": "Power pins: VSS, VDD."
         }
       },
-      "buses": {},
-      "bus_explanations": [],
-      "controls": [],
-      "control_explanations": [],
-      "timing_note": "After an input changes, wait about 70 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "SST39SF010A",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        },
-        {
-          "type": "tri_state",
-          "source": "tests/tri_state.json",
-          "present": true
-        },
-        {
-          "type": "bus_fight",
-          "source": "tests/bus_fight.json",
-          "present": true
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "required_vectors": [
-        "basic_function",
-        "disabled_or_high_z"
-      ]
+      "summary": "128K x 8 flash EEPROM.",
+      "timing_note": "After an input changes, wait about 70 ns before trusting the output.",
+      "title": "128K x 8 flash EEPROM",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "SST39SF010A",
-      "title": "Try SST39SF010A in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "A16 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A16 - input",
+          "pin": "A16"
+        },
+        {
+          "explanation": "A15 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A15 - input",
+          "pin": "A15"
+        },
+        {
+          "explanation": "A12 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A12 - input",
+          "pin": "A12"
+        },
+        {
+          "explanation": "A7 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A7 - input",
+          "pin": "A7"
+        },
+        {
+          "explanation": "A6 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A6 - input",
+          "pin": "A6"
+        },
+        {
+          "explanation": "A5 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A5 - input",
+          "pin": "A5"
+        },
+        {
+          "explanation": "A4 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A4 - input",
+          "pin": "A4"
+        },
+        {
+          "explanation": "A3 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A3 - input",
+          "pin": "A3"
+        },
+        {
+          "explanation": "A2 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A2 - input",
+          "pin": "A2"
+        },
+        {
+          "explanation": "A1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A1 - input",
+          "pin": "A1"
+        },
+        {
+          "explanation": "A0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A0 - input",
+          "pin": "A0"
+        },
+        {
+          "explanation": "/CE controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/CE - input",
+          "pin": "/CE"
+        },
+        {
+          "explanation": "A10 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A10 - input",
+          "pin": "A10"
+        },
+        {
+          "explanation": "/OE controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/OE - input",
+          "pin": "/OE"
+        },
+        {
+          "explanation": "A11 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A11 - input",
+          "pin": "A11"
+        },
+        {
+          "explanation": "A9 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A9 - input",
+          "pin": "A9"
+        },
+        {
+          "explanation": "A8 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A8 - input",
+          "pin": "A8"
+        },
+        {
+          "explanation": "A13 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A13 - input",
+          "pin": "A13"
+        },
+        {
+          "explanation": "A14 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A14 - input",
+          "pin": "A14"
+        },
+        {
+          "explanation": "/WE controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/WE - input",
+          "pin": "/WE"
+        }
+      ],
       "controls": [
         "A16",
         "A15",
@@ -635,126 +222,58 @@
         "A14",
         "/WE"
       ],
-      "control_labels": [
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "SST39SF010A",
+      "probe_labels": [
         {
-          "pin": "A16",
-          "label": "A16 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A16 controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "DQ0",
+          "name": "DQ0"
         },
         {
-          "pin": "A15",
-          "label": "A15 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A15 controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "DQ1",
+          "name": "DQ1"
         },
         {
-          "pin": "A12",
-          "label": "A12 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A12 controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "DQ2",
+          "name": "DQ2"
         },
         {
-          "pin": "A7",
-          "label": "A7 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A7 controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "DQ3",
+          "name": "DQ3"
         },
         {
-          "pin": "A6",
-          "label": "A6 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A6 controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "DQ4",
+          "name": "DQ4"
         },
         {
-          "pin": "A5",
-          "label": "A5 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A5 controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "DQ5",
+          "name": "DQ5"
         },
         {
-          "pin": "A4",
-          "label": "A4 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A4 controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "DQ6",
+          "name": "DQ6"
         },
         {
-          "pin": "A3",
-          "label": "A3 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A3 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "A2",
-          "label": "A2 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A2 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "A1",
-          "label": "A1 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A1 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "A0",
-          "label": "A0 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A0 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "/CE",
-          "label": "/CE - input",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/CE controls input. This is active low, so 0 turns the control on."
-        },
-        {
-          "pin": "A10",
-          "label": "A10 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A10 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "/OE",
-          "label": "/OE - input",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/OE controls input. This is active low, so 0 turns the control on."
-        },
-        {
-          "pin": "A11",
-          "label": "A11 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A11 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "A9",
-          "label": "A9 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A9 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "A8",
-          "label": "A8 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A8 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "A13",
-          "label": "A13 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A13 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "A14",
-          "label": "A14 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A14 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "/WE",
-          "label": "/WE - input",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/WE controls input. This is active low, so 0 turns the control on."
+          "hint": "Read this output after the settle step.",
+          "label": "DQ7",
+          "name": "DQ7"
         }
       ],
       "probes": [
@@ -767,63 +286,626 @@
         "DQ6",
         "DQ7"
       ],
-      "probe_labels": [
-        {
-          "name": "DQ0",
-          "label": "DQ0",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "DQ1",
-          "label": "DQ1",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "DQ2",
-          "label": "DQ2",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "DQ3",
-          "label": "DQ3",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "DQ4",
-          "label": "DQ4",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "DQ5",
-          "label": "DQ5",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "DQ6",
-          "label": "DQ6",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "DQ7",
-          "label": "DQ7",
-          "hint": "Read this output after the settle step."
-        }
-      ],
-      "default_steps": [
-        "apply controls",
-        "settle",
-        "probe"
-      ],
-      "guided_steps": [
-        "Set each control to the value you want to test.",
-        "Run one settle step so the simulated signals can update.",
-        "Read the probes and compare them with the truth table."
-      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change A16?",
         "Which truth-table row matches the value on DQ0?"
-      ]
+      ],
+      "title": "Try SST39SF010A in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "Memory",
+      "format": "components.generated.detail",
+      "group": "memory",
+      "logic": {
+        "description": "128K x 8 flash EEPROM",
+        "type": "128k_x_8_flash"
+      },
+      "package": {
+        "default": "DIP",
+        "kind": "DIP",
+        "pins": 32
+      },
+      "part": "SST39SF010A",
+      "pins": [
+        {
+          "direction": "nc",
+          "name": "NC",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "A16",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "A15",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "A12",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "A7",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "A6",
+          "number": 6
+        },
+        {
+          "direction": "input",
+          "name": "A5",
+          "number": 7
+        },
+        {
+          "direction": "input",
+          "name": "A4",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "A3",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "A2",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "A1",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "A0",
+          "number": 12
+        },
+        {
+          "direction": "bidirectional",
+          "name": "DQ0",
+          "number": 13
+        },
+        {
+          "direction": "bidirectional",
+          "name": "DQ1",
+          "number": 14
+        },
+        {
+          "direction": "bidirectional",
+          "name": "DQ2",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VSS",
+          "number": 16,
+          "rail": "VSS"
+        },
+        {
+          "direction": "bidirectional",
+          "name": "DQ3",
+          "number": 17
+        },
+        {
+          "direction": "bidirectional",
+          "name": "DQ4",
+          "number": 18
+        },
+        {
+          "direction": "bidirectional",
+          "name": "DQ5",
+          "number": 19
+        },
+        {
+          "direction": "bidirectional",
+          "name": "DQ6",
+          "number": 20
+        },
+        {
+          "direction": "bidirectional",
+          "name": "DQ7",
+          "number": 21
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/CE",
+          "number": 22
+        },
+        {
+          "direction": "input",
+          "name": "A10",
+          "number": 23
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/OE",
+          "number": 24
+        },
+        {
+          "direction": "input",
+          "name": "A11",
+          "number": 25
+        },
+        {
+          "direction": "input",
+          "name": "A9",
+          "number": 26
+        },
+        {
+          "direction": "input",
+          "name": "A8",
+          "number": 27
+        },
+        {
+          "direction": "input",
+          "name": "A13",
+          "number": 28
+        },
+        {
+          "direction": "input",
+          "name": "A14",
+          "number": 29
+        },
+        {
+          "direction": "nc",
+          "name": "NC",
+          "number": 30
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/WE",
+          "number": 31
+        },
+        {
+          "direction": "power",
+          "name": "VDD",
+          "number": 32,
+          "rail": "VDD"
+        }
+      ],
+      "power": [
+        {
+          "name": "VSS",
+          "nominal_logic": 0,
+          "pin": 16
+        },
+        {
+          "name": "VDD",
+          "nominal_logic": 1,
+          "pin": 32
+        }
+      ],
+      "role": "flash",
+      "timing": {
+        "delay_ns": 70
+      },
+      "title": "128K x 8 flash EEPROM"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "10": "A2",
+        "11": "A1",
+        "12": "A0",
+        "16": "VSS",
+        "2": "A16",
+        "22": "/CE",
+        "23": "A10",
+        "24": "/OE",
+        "25": "A11",
+        "26": "A9",
+        "27": "A8",
+        "28": "A13",
+        "29": "A14",
+        "3": "A15",
+        "31": "/WE",
+        "32": "VDD",
+        "4": "A12",
+        "5": "A7",
+        "6": "A6",
+        "7": "A5",
+        "8": "A4",
+        "9": "A3"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "part": "SST39SF010A",
+      "pins": 32,
+      "right": [
+        32,
+        31,
+        30,
+        29,
+        28,
+        27,
+        26,
+        25,
+        24,
+        23,
+        22,
+        21,
+        20,
+        19,
+        18,
+        17
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "SST39SF010A",
+      "copy_with_chip": [
+        "DB/Memory/SST39SF010A/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/Memory/SST39SF010A/simulation/model.py",
+      "part": "SST39SF010A",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "10": "A2",
+        "11": "A1",
+        "12": "A0",
+        "16": "VSS",
+        "2": "A16",
+        "22": "/CE",
+        "23": "A10",
+        "24": "/OE",
+        "25": "A11",
+        "26": "A9",
+        "27": "A8",
+        "28": "A13",
+        "29": "A14",
+        "3": "A15",
+        "31": "/WE",
+        "32": "VDD",
+        "4": "A12",
+        "5": "A7",
+        "6": "A6",
+        "7": "A5",
+        "8": "A4",
+        "9": "A3"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "part": "SST39SF010A",
+      "pins": 32,
+      "right": [
+        32,
+        31,
+        30,
+        29,
+        28,
+        27,
+        26,
+        25,
+        24,
+        23,
+        22,
+        21,
+        20,
+        19,
+        18,
+        17
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "SST39SF010A",
+      "required_vectors": [
+        "basic_function",
+        "disabled_or_high_z"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": true,
+          "checks": [
+            "external_driver_conflict_is_detectable"
+          ],
+          "present": true,
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": true,
+          "checks": [
+            "disabled_outputs_release_bus"
+          ],
+          "present": true,
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "write_3c",
+            "read_3c",
+            "write_a5",
+            "read_a5",
+            "read_3c_after_second_write",
+            "chip_disabled_high_z",
+            "output_disabled_high_z",
+            "write_mode_high_z"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        },
+        {
+          "present": true,
+          "source": "tests/tri_state.json",
+          "type": "tri_state"
+        },
+        {
+          "present": true,
+          "source": "tests/bus_fight.json",
+          "type": "bus_fight"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_sst39sf010a",
+      "compile": {
+        "sources": [
+          "DB/Memory/SST39SF010A/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_sst39sf010a"
+      },
+      "emitted": {
+        "reason": "bidirectional or tri-state pins need a sequenced bench",
+        "supported": false
+      },
+      "module": "mem_sst39sf010a",
+      "part": "SST39SF010A",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": true,
+          "checks": [
+            "external_driver_conflict_is_detectable"
+          ],
+          "present": true,
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": true,
+          "checks": [
+            "disabled_outputs_release_bus"
+          ],
+          "present": true,
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "write_3c",
+            "read_3c",
+            "write_a5",
+            "read_a5",
+            "read_3c_after_second_write",
+            "chip_disabled_high_z",
+            "output_disabled_high_z",
+            "write_mode_high_z"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          13,
+          14,
+          15,
+          17,
+          18,
+          19,
+          20,
+          21
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              12,
+              11,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              27,
+              26,
+              23,
+              25,
+              4,
+              28,
+              29,
+              3,
+              2
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "DQ",
+            "pins": [
+              13,
+              14,
+              15,
+              17,
+              18,
+              19,
+              20,
+              21
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "CE_bar",
+            "pins": [
+              22
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "OE_bar",
+            "pins": [
+              24
+            ]
+          },
+          {
+            "direction": "input",
+            "fallback": "1'b1",
+            "name": "WE_bar",
+            "pins": [
+              31
+            ]
+          }
+        ]
+      },
+      "file": "DB/Memory/SST39SF010A/simulation/model.v",
+      "module": "mem_sst39sf010a",
+      "netlist": "DB/Memory/SST39SF010A/simulation/netlist.json",
+      "part": "SST39SF010A"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "SST39SF010A",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/Memory/SST39SF010A/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/Memory/SST39SF010A/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/Memory/SST39SF010A/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/Memory/SST39SF010A/definition/definition.json",
+  "version": 1
 }

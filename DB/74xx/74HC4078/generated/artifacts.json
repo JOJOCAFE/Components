@@ -1,323 +1,17 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/74xx/74HC4078/definition/definition.json",
-  "part": "74HC4078",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/74xx/74HC4078/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/74xx/74HC4078/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/74xx/74HC4078/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "74HC4078",
-      "title": "8-Input NOR/OR Gate",
-      "family": "74HC",
-      "group": "74xx",
-      "role": "logic",
-      "package": {
-        "kind": "DIP",
-        "pins": 14,
-        "default": "N"
-      },
-      "pins": [
-        {
-          "number": 1,
-          "name": "Y",
-          "direction": "output"
-        },
-        {
-          "number": 2,
-          "name": "A",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "B",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "C",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "D",
-          "direction": "input"
-        },
-        {
-          "number": 6,
-          "name": "NC",
-          "direction": "nc"
-        },
-        {
-          "number": 7,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 8,
-          "name": "NC",
-          "direction": "nc"
-        },
-        {
-          "number": 9,
-          "name": "E",
-          "direction": "input"
-        },
-        {
-          "number": 10,
-          "name": "F",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "G",
-          "direction": "input"
-        },
-        {
-          "number": 12,
-          "name": "H",
-          "direction": "input"
-        },
-        {
-          "number": 13,
-          "name": "X",
-          "direction": "output"
-        },
-        {
-          "number": 14,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {},
-      "power": [
-        {
-          "name": "GND",
-          "pin": 7,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 14,
-          "nominal_logic": 1
-        }
-      ],
-      "logic": {
-        "type": "8_input_nor_or_gate",
-        "description": "8-Input NOR/OR Gate"
-      },
-      "timing": {
-        "delay_ns": 15
-      }
-    },
-    "python_simulator": {
-      "part": "74HC4078",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/74xx/74HC4078/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/74xx/74HC4078/simulation/model.py",
-      "class": "HC4078"
-    },
-    "verilog_wrapper": {
-      "part": "74HC4078",
-      "module": "ttl_74hc4078",
-      "file": "DB/74xx/74HC4078/simulation/model.v",
-      "netlist": "DB/74xx/74HC4078/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "A",
-            "pins": [
-              2,
-              3,
-              4,
-              5,
-              9,
-              10,
-              11,
-              12
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "X",
-            "pins": [
-              13
-            ],
-            "direction": "output"
-          },
-          {
-            "name": "Y",
-            "pins": [
-              1
-            ],
-            "direction": "output"
-          }
-        ],
-        "output_pins": [
-          1,
-          13
-        ]
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "74HC4078",
-      "module": "ttl_74hc4078",
-      "bench_module": "tb_generated_74hc4078",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/74xx/74HC4078/simulation/model.v"
-        ],
-        "top": "tb_generated_74hc4078"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "basic_function"
-          ]
-        }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC4078",
-      "shape": "dip",
-      "pins": 14,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ],
-      "right": [
-        14,
-        13,
-        12,
-        11,
-        10,
-        9,
-        8
-      ],
-      "labels": {
-        "2": "A",
-        "3": "B",
-        "4": "C",
-        "5": "D",
-        "7": "GND",
-        "9": "E",
-        "10": "F",
-        "11": "G",
-        "12": "H",
-        "14": "VCC"
-      },
-      "bus_groups": {}
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC4078",
-      "shape": "dip",
-      "pins": 14,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ],
-      "right": [
-        14,
-        13,
-        12,
-        11,
-        10,
-        9,
-        8
-      ],
-      "labels": {
-        "2": "A",
-        "3": "B",
-        "4": "C",
-        "5": "D",
-        "7": "GND",
-        "9": "E",
-        "10": "F",
-        "11": "G",
-        "12": "H",
-        "14": "VCC"
-      },
-      "bus_groups": {}
-    },
     "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "74HC4078",
-      "title": "8-Input NOR/OR Gate",
       "audience": "students ages 10-15, still useful for older learners",
-      "summary": "8-Input NOR/OR Gate.",
-      "overview": "74HC4078 is a 14-pin DIP part for logic.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
-      ],
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
         "After an input changes, wait about 15 ns before trusting the output."
       ],
+      "overview": "74HC4078 is a 14-pin DIP part for logic.",
+      "part": "74HC4078",
       "pin_count": 14,
       "pin_summary": {
         "input": {
@@ -351,43 +45,71 @@
           "note": "Power pins: GND, VCC."
         }
       },
-      "buses": {},
-      "bus_explanations": [],
-      "controls": [],
-      "control_explanations": [],
-      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "74HC4078",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "required_vectors": [
-        "basic_function"
-      ]
+      "summary": "8-Input NOR/OR Gate.",
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "title": "8-Input NOR/OR Gate",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "74HC4078",
-      "title": "Try 74HC4078 in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A - input",
+          "pin": "A"
+        },
+        {
+          "explanation": "B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "B - input",
+          "pin": "B"
+        },
+        {
+          "explanation": "C controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "C - input",
+          "pin": "C"
+        },
+        {
+          "explanation": "D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D - input",
+          "pin": "D"
+        },
+        {
+          "explanation": "E controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "E - input",
+          "pin": "E"
+        },
+        {
+          "explanation": "F controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "F - input",
+          "pin": "F"
+        },
+        {
+          "explanation": "G controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "G - input",
+          "pin": "G"
+        },
+        {
+          "explanation": "H controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "H - input",
+          "pin": "H"
+        }
+      ],
       "controls": [
         "A",
         "B",
@@ -397,72 +119,6 @@
         "F",
         "G",
         "H"
-      ],
-      "control_labels": [
-        {
-          "pin": "A",
-          "label": "A - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "B",
-          "label": "B - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "B controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "C",
-          "label": "C - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "C controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "D",
-          "label": "D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "D controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "E",
-          "label": "E - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "E controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "F",
-          "label": "F - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "F controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "G",
-          "label": "G - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "G controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "H",
-          "label": "H - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "H controls input. Use 1 to turn this control on."
-        }
-      ],
-      "probes": [
-        "Y",
-        "X"
-      ],
-      "probe_labels": [
-        {
-          "name": "Y",
-          "label": "Y",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "X",
-          "label": "X",
-          "hint": "Read this output after the settle step."
-        }
       ],
       "default_steps": [
         "apply controls",
@@ -474,11 +130,425 @@
         "Run one settle step so the simulated signals can update.",
         "Read the probes and compare them with the truth table."
       ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC4078",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Y",
+          "name": "Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "X",
+          "name": "X"
+        }
+      ],
+      "probes": [
+        "Y",
+        "X"
+      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change A?",
         "Which truth-table row matches the value on Y?"
-      ]
+      ],
+      "title": "Try 74HC4078 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "8-Input NOR/OR Gate",
+        "type": "8_input_nor_or_gate"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 14
+      },
+      "part": "74HC4078",
+      "pins": [
+        {
+          "direction": "output",
+          "name": "Y",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "A",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "B",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "C",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "D",
+          "number": 5
+        },
+        {
+          "direction": "nc",
+          "name": "NC",
+          "number": 6
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "nc",
+          "name": "NC",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "E",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "F",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "G",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "H",
+          "number": 12
+        },
+        {
+          "direction": "output",
+          "name": "X",
+          "number": 13
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 7
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 14
+        }
+      ],
+      "role": "logic",
+      "timing": {
+        "delay_ns": 15
+      },
+      "title": "8-Input NOR/OR Gate"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "10": "F",
+        "11": "G",
+        "12": "H",
+        "14": "VCC",
+        "2": "A",
+        "3": "B",
+        "4": "C",
+        "5": "D",
+        "7": "GND",
+        "9": "E"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC4078",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC4078",
+      "copy_with_chip": [
+        "DB/74xx/74HC4078/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC4078/simulation/model.py",
+      "part": "74HC4078",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "10": "F",
+        "11": "G",
+        "12": "H",
+        "14": "VCC",
+        "2": "A",
+        "3": "B",
+        "4": "C",
+        "5": "D",
+        "7": "GND",
+        "9": "E"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC4078",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC4078",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC4078",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC4078",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc4078",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC4078/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc4078"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc4078",
+      "part": "74HC4078",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC4078",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC4078",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          1,
+          13
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              2,
+              3,
+              4,
+              5,
+              9,
+              10,
+              11,
+              12
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "X",
+            "pins": [
+              13
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y",
+            "pins": [
+              1
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC4078/simulation/model.v",
+      "module": "ttl_74hc4078",
+      "netlist": "DB/74xx/74HC4078/simulation/netlist.json",
+      "part": "74HC4078"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "74HC4078",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC4078/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC4078/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC4078/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC4078/definition/definition.json",
+  "version": 1
 }

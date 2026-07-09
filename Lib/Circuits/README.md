@@ -27,6 +27,7 @@ truth when lab wording is simplified.
 | `RV8GR_VirtualTestHelpers` | `ClockSource`, `Probe`, `BusProbe` virtual helpers | Started | clock profiles, phase probes, bus contention observation |
 | `RV8GR_FullControlOpcodeSweep` | T2 horizontal-control equation proof | Started | all opcode/Z cases, reserved mixes, side-effect drift |
 | `RV8GR_ResetClockBringup` | `lab01_power_clock` + `tb_rv8gr_chip_level` reset/ring sanity | Started | reset idle/release, one-hot phase pushes, PC known-state policy, clock profiles |
+| `RV8GR_FetchCycleTrace` | `doc/03_instruction_trace.md` + `tb_rv8gr_tasks.v` basic fetch | Started | T0 control fetch, T1 operand fetch, T2 LI execute, PC motion, bus owners |
 
 Each circuit package should include:
 

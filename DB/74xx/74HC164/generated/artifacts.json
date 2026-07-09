@@ -1,341 +1,17 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/74xx/74HC164/definition/definition.json",
-  "part": "74HC164",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/74xx/74HC164/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/74xx/74HC164/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/74xx/74HC164/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "74HC164",
-      "title": "8-Bit Serial-In Parallel-Out Shift Register",
-      "family": "74HC",
-      "group": "74xx",
-      "role": "shift_register",
-      "package": {
-        "kind": "DIP",
-        "pins": 14,
-        "default": "N"
-      },
-      "pins": [
-        {
-          "number": 1,
-          "name": "A",
-          "direction": "input"
-        },
-        {
-          "number": 2,
-          "name": "B",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "QA",
-          "direction": "output"
-        },
-        {
-          "number": 4,
-          "name": "QB",
-          "direction": "output"
-        },
-        {
-          "number": 5,
-          "name": "QC",
-          "direction": "output"
-        },
-        {
-          "number": 6,
-          "name": "QD",
-          "direction": "output"
-        },
-        {
-          "number": 7,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 8,
-          "name": "CLK",
-          "direction": "input"
-        },
-        {
-          "number": 9,
-          "name": "/CLR",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 10,
-          "name": "QE",
-          "direction": "output"
-        },
-        {
-          "number": 11,
-          "name": "QF",
-          "direction": "output"
-        },
-        {
-          "number": 12,
-          "name": "QG",
-          "direction": "output"
-        },
-        {
-          "number": 13,
-          "name": "QH",
-          "direction": "output"
-        },
-        {
-          "number": 14,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {},
-      "power": [
-        {
-          "name": "GND",
-          "pin": 7,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 14,
-          "nominal_logic": 1
-        }
-      ],
-      "logic": {
-        "type": "serial_in_parallel_out_shift_register",
-        "description": "8-Bit Serial-In Parallel-Out Shift Register"
-      },
-      "timing": {
-        "delay_ns": 20
-      }
-    },
-    "python_simulator": {
-      "part": "74HC164",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/74xx/74HC164/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/74xx/74HC164/simulation/model.py",
-      "class": "HC164"
-    },
-    "verilog_wrapper": {
-      "part": "74HC164",
-      "module": "ttl_74hc164",
-      "file": "DB/74xx/74HC164/simulation/model.v",
-      "netlist": "DB/74xx/74HC164/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "Clear_bar",
-            "pins": [
-              9
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Clk",
-            "pins": [
-              8
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "A",
-            "pins": [
-              1
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "B",
-            "pins": [
-              2
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Q",
-            "pins": [
-              3,
-              4,
-              5,
-              6,
-              10,
-              11,
-              12,
-              13
-            ],
-            "direction": "output"
-          }
-        ],
-        "output_pins": [
-          3,
-          4,
-          5,
-          6,
-          10,
-          11,
-          12,
-          13
-        ],
-        "delay_ns": 4
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "74HC164",
-      "module": "ttl_74hc164",
-      "bench_module": "tb_generated_74hc164",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/74xx/74HC164/simulation/model.v"
-        ],
-        "top": "tb_generated_74hc164"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "clear_forces_all_low",
-            "shift_in_one_when_a_and_b_high",
-            "shift_in_zero_when_a_low",
-            "shift_second_one",
-            "clear_after_shift"
-          ]
-        }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC164",
-      "shape": "dip",
-      "pins": 14,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ],
-      "right": [
-        14,
-        13,
-        12,
-        11,
-        10,
-        9,
-        8
-      ],
-      "labels": {
-        "1": "A",
-        "2": "B",
-        "7": "GND",
-        "8": "CLK",
-        "9": "/CLR",
-        "14": "VCC"
-      },
-      "bus_groups": {}
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC164",
-      "shape": "dip",
-      "pins": 14,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ],
-      "right": [
-        14,
-        13,
-        12,
-        11,
-        10,
-        9,
-        8
-      ],
-      "labels": {
-        "1": "A",
-        "2": "B",
-        "7": "GND",
-        "8": "CLK",
-        "9": "/CLR",
-        "14": "VCC"
-      },
-      "bus_groups": {}
-    },
     "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "74HC164",
-      "title": "8-Bit Serial-In Parallel-Out Shift Register",
       "audience": "students ages 10-15, still useful for older learners",
-      "summary": "8-Bit Serial-In Parallel-Out Shift Register.",
-      "overview": "74HC164 is a 14-pin DIP part for shift register.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
-      ],
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
         "After an input changes, wait about 20 ns before trusting the output."
       ],
+      "overview": "74HC164 is a 14-pin DIP part for shift register.",
+      "part": "74HC164",
       "pin_count": 14,
       "pin_summary": {
         "input": {
@@ -371,73 +47,105 @@
           "note": "Power pins: GND, VCC."
         }
       },
-      "buses": {},
-      "bus_explanations": [],
-      "controls": [],
-      "control_explanations": [],
-      "timing_note": "After an input changes, wait about 20 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "74HC164",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "required_vectors": [
-        "basic_function"
-      ]
+      "summary": "8-Bit Serial-In Parallel-Out Shift Register.",
+      "timing_note": "After an input changes, wait about 20 ns before trusting the output.",
+      "title": "8-Bit Serial-In Parallel-Out Shift Register",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "74HC164",
-      "title": "Try 74HC164 in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A - input",
+          "pin": "A"
+        },
+        {
+          "explanation": "B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "B - input",
+          "pin": "B"
+        },
+        {
+          "explanation": "CLK controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "CLK - input",
+          "pin": "CLK"
+        },
+        {
+          "explanation": "/CLR controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/CLR - input",
+          "pin": "/CLR"
+        }
+      ],
       "controls": [
         "A",
         "B",
         "CLK",
         "/CLR"
       ],
-      "control_labels": [
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC164",
+      "probe_labels": [
         {
-          "pin": "A",
-          "label": "A - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "QA",
+          "name": "QA"
         },
         {
-          "pin": "B",
-          "label": "B - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "B controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "QB",
+          "name": "QB"
         },
         {
-          "pin": "CLK",
-          "label": "CLK - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "CLK controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "QC",
+          "name": "QC"
         },
         {
-          "pin": "/CLR",
-          "label": "/CLR - input",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/CLR controls input. This is active low, so 0 turns the control on."
+          "hint": "Read this output after the settle step.",
+          "label": "QD",
+          "name": "QD"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "QE",
+          "name": "QE"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "QF",
+          "name": "QF"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "QG",
+          "name": "QG"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "QH",
+          "name": "QH"
         }
       ],
       "probes": [
@@ -450,63 +158,429 @@
         "QG",
         "QH"
       ],
-      "probe_labels": [
-        {
-          "name": "QA",
-          "label": "QA",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "QB",
-          "label": "QB",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "QC",
-          "label": "QC",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "QD",
-          "label": "QD",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "QE",
-          "label": "QE",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "QF",
-          "label": "QF",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "QG",
-          "label": "QG",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "QH",
-          "label": "QH",
-          "hint": "Read this output after the settle step."
-        }
-      ],
-      "default_steps": [
-        "apply controls",
-        "settle",
-        "probe"
-      ],
-      "guided_steps": [
-        "Set each control to the value you want to test.",
-        "Run one settle step so the simulated signals can update.",
-        "Read the probes and compare them with the truth table."
-      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change A?",
         "Which truth-table row matches the value on QA?"
-      ]
+      ],
+      "title": "Try 74HC164 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "8-Bit Serial-In Parallel-Out Shift Register",
+        "type": "serial_in_parallel_out_shift_register"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 14
+      },
+      "part": "74HC164",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "A",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "B",
+          "number": 2
+        },
+        {
+          "direction": "output",
+          "name": "QA",
+          "number": 3
+        },
+        {
+          "direction": "output",
+          "name": "QB",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "QC",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "QD",
+          "number": 6
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "input",
+          "name": "CLK",
+          "number": 8
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/CLR",
+          "number": 9
+        },
+        {
+          "direction": "output",
+          "name": "QE",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "QF",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "QG",
+          "number": 12
+        },
+        {
+          "direction": "output",
+          "name": "QH",
+          "number": 13
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 7
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 14
+        }
+      ],
+      "role": "shift_register",
+      "timing": {
+        "delay_ns": 20
+      },
+      "title": "8-Bit Serial-In Parallel-Out Shift Register"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "A",
+        "14": "VCC",
+        "2": "B",
+        "7": "GND",
+        "8": "CLK",
+        "9": "/CLR"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC164",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC164",
+      "copy_with_chip": [
+        "DB/74xx/74HC164/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC164/simulation/model.py",
+      "part": "74HC164",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "A",
+        "14": "VCC",
+        "2": "B",
+        "7": "GND",
+        "8": "CLK",
+        "9": "/CLR"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC164",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC164",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC164",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC164",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "clear_forces_all_low",
+            "shift_in_one_when_a_and_b_high",
+            "shift_in_zero_when_a_low",
+            "shift_second_one",
+            "clear_after_shift"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc164",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC164/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc164"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc164",
+      "part": "74HC164",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC164",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC164",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "clear_forces_all_low",
+            "shift_in_one_when_a_and_b_high",
+            "shift_in_zero_when_a_low",
+            "shift_second_one",
+            "clear_after_shift"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "delay_ns": 4,
+        "kind": "structural_port_map",
+        "output_pins": [
+          3,
+          4,
+          5,
+          6,
+          10,
+          11,
+          12,
+          13
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Clear_bar",
+            "pins": [
+              9
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Clk",
+            "pins": [
+              8
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "B",
+            "pins": [
+              2
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q",
+            "pins": [
+              3,
+              4,
+              5,
+              6,
+              10,
+              11,
+              12,
+              13
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC164/simulation/model.v",
+      "module": "ttl_74hc164",
+      "netlist": "DB/74xx/74HC164/simulation/netlist.json",
+      "part": "74HC164"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "74HC164",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC164/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC164/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC164/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC164/definition/definition.json",
+  "version": 1
 }

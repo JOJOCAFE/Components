@@ -1,371 +1,17 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/74xx/74HC112/definition/definition.json",
-  "part": "74HC112",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/74xx/74HC112/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/74xx/74HC112/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/74xx/74HC112/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "74HC112",
-      "title": "dual JK flip-flop with set and reset, negative-edge trigger",
-      "family": "74HC",
-      "group": "74xx",
-      "role": "register",
-      "package": {
-        "kind": "DIP",
-        "pins": 16,
-        "default": "N"
-      },
-      "pins": [
-        {
-          "number": 1,
-          "name": "1CP",
-          "direction": "input"
-        },
-        {
-          "number": 2,
-          "name": "1K",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "1J",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "1SD",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "1Q",
-          "direction": "output"
-        },
-        {
-          "number": 6,
-          "name": "1Q_bar",
-          "direction": "output"
-        },
-        {
-          "number": 7,
-          "name": "2Q_bar",
-          "direction": "output"
-        },
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 9,
-          "name": "2Q",
-          "direction": "output"
-        },
-        {
-          "number": 10,
-          "name": "2SD",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "2J",
-          "direction": "input"
-        },
-        {
-          "number": 12,
-          "name": "2K",
-          "direction": "input"
-        },
-        {
-          "number": 13,
-          "name": "2CP",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "2RD",
-          "direction": "input"
-        },
-        {
-          "number": 15,
-          "name": "1RD",
-          "direction": "input"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {},
-      "power": [
-        {
-          "name": "GND",
-          "pin": 8,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 16,
-          "nominal_logic": 1
-        }
-      ],
-      "logic": {
-        "type": "dual_jk_flip_flop_with_set_and_reset",
-        "description": "dual JK flip-flop with set and reset, negative-edge trigger"
-      },
-      "timing": {
-        "delay_ns": 15
-      }
-    },
-    "python_simulator": {
-      "part": "74HC112",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/74xx/74HC112/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/74xx/74HC112/simulation/model.py",
-      "class": "HC112"
-    },
-    "verilog_wrapper": {
-      "part": "74HC112",
-      "module": "ttl_74hc112",
-      "file": "DB/74xx/74HC112/simulation/model.v",
-      "netlist": "DB/74xx/74HC112/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "Preset_bar",
-            "pins": [
-              4,
-              10
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Clear_bar",
-            "pins": [
-              15,
-              14
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "J",
-            "pins": [
-              3,
-              11
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "K",
-            "pins": [
-              2,
-              12
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Clk",
-            "pins": [
-              1,
-              13
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Q",
-            "pins": [
-              5,
-              9
-            ],
-            "direction": "output"
-          },
-          {
-            "name": "Q_bar",
-            "pins": [
-              6,
-              7
-            ],
-            "direction": "output"
-          }
-        ],
-        "output_pins": [
-          5,
-          6,
-          7,
-          9
-        ]
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "74HC112",
-      "module": "ttl_74hc112",
-      "bench_module": "tb_generated_74hc112",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/74xx/74HC112/simulation/model.v"
-        ],
-        "top": "tb_generated_74hc112"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "basic_function"
-          ]
-        }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC112",
-      "shape": "dip",
-      "pins": 16,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ],
-      "right": [
-        16,
-        15,
-        14,
-        13,
-        12,
-        11,
-        10,
-        9
-      ],
-      "labels": {
-        "1": "1CP",
-        "2": "1K",
-        "3": "1J",
-        "4": "1SD",
-        "8": "GND",
-        "10": "2SD",
-        "11": "2J",
-        "12": "2K",
-        "13": "2CP",
-        "14": "2RD",
-        "15": "1RD",
-        "16": "VCC"
-      },
-      "bus_groups": {}
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC112",
-      "shape": "dip",
-      "pins": 16,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ],
-      "right": [
-        16,
-        15,
-        14,
-        13,
-        12,
-        11,
-        10,
-        9
-      ],
-      "labels": {
-        "1": "1CP",
-        "2": "1K",
-        "3": "1J",
-        "4": "1SD",
-        "8": "GND",
-        "10": "2SD",
-        "11": "2J",
-        "12": "2K",
-        "13": "2CP",
-        "14": "2RD",
-        "15": "1RD",
-        "16": "VCC"
-      },
-      "bus_groups": {}
-    },
     "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "74HC112",
-      "title": "dual JK flip-flop with set and reset, negative-edge trigger",
       "audience": "students ages 10-15, still useful for older learners",
-      "summary": "dual JK flip-flop with set and reset, negative-edge trigger.",
-      "overview": "74HC112 is a 16-pin DIP part for register.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
-      ],
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
         "After an input changes, wait about 15 ns before trusting the output."
       ],
+      "overview": "74HC112 is a 16-pin DIP part for register.",
+      "part": "74HC112",
       "pin_count": 16,
       "pin_summary": {
         "input": {
@@ -403,43 +49,83 @@
           "note": "Power pins: GND, VCC."
         }
       },
-      "buses": {},
-      "bus_explanations": [],
-      "controls": [],
-      "control_explanations": [],
-      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "74HC112",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "required_vectors": [
-        "basic_function"
-      ]
+      "summary": "dual JK flip-flop with set and reset, negative-edge trigger.",
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "title": "dual JK flip-flop with set and reset, negative-edge trigger",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "74HC112",
-      "title": "Try 74HC112 in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "1CP controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1CP - input",
+          "pin": "1CP"
+        },
+        {
+          "explanation": "1K controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1K - input",
+          "pin": "1K"
+        },
+        {
+          "explanation": "1J controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1J - input",
+          "pin": "1J"
+        },
+        {
+          "explanation": "1SD controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1SD - input",
+          "pin": "1SD"
+        },
+        {
+          "explanation": "2SD controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2SD - input",
+          "pin": "2SD"
+        },
+        {
+          "explanation": "2J controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2J - input",
+          "pin": "2J"
+        },
+        {
+          "explanation": "2K controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2K - input",
+          "pin": "2K"
+        },
+        {
+          "explanation": "2CP controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2CP - input",
+          "pin": "2CP"
+        },
+        {
+          "explanation": "2RD controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2RD - input",
+          "pin": "2RD"
+        },
+        {
+          "explanation": "1RD controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1RD - input",
+          "pin": "1RD"
+        }
+      ],
       "controls": [
         "1CP",
         "1K",
@@ -452,96 +138,6 @@
         "2RD",
         "1RD"
       ],
-      "control_labels": [
-        {
-          "pin": "1CP",
-          "label": "1CP - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "1CP controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "1K",
-          "label": "1K - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "1K controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "1J",
-          "label": "1J - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "1J controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "1SD",
-          "label": "1SD - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "1SD controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "2SD",
-          "label": "2SD - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "2SD controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "2J",
-          "label": "2J - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "2J controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "2K",
-          "label": "2K - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "2K controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "2CP",
-          "label": "2CP - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "2CP controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "2RD",
-          "label": "2RD - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "2RD controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "1RD",
-          "label": "1RD - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "1RD controls input. Use 1 to turn this control on."
-        }
-      ],
-      "probes": [
-        "1Q",
-        "1Q_bar",
-        "2Q_bar",
-        "2Q"
-      ],
-      "probe_labels": [
-        {
-          "name": "1Q",
-          "label": "1Q",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "1Q_bar",
-          "label": "1Q_bar",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "2Q_bar",
-          "label": "2Q_bar",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "2Q",
-          "label": "2Q",
-          "hint": "Read this output after the settle step."
-        }
-      ],
       "default_steps": [
         "apply controls",
         "settle",
@@ -552,11 +148,485 @@
         "Run one settle step so the simulated signals can update.",
         "Read the probes and compare them with the truth table."
       ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC112",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Q",
+          "name": "1Q"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Q_bar",
+          "name": "1Q_bar"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Q_bar",
+          "name": "2Q_bar"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Q",
+          "name": "2Q"
+        }
+      ],
+      "probes": [
+        "1Q",
+        "1Q_bar",
+        "2Q_bar",
+        "2Q"
+      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change 1CP?",
         "Which truth-table row matches the value on 1Q?"
-      ]
+      ],
+      "title": "Try 74HC112 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "dual JK flip-flop with set and reset, negative-edge trigger",
+        "type": "dual_jk_flip_flop_with_set_and_reset"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC112",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "1CP",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1K",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "1J",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "1SD",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "1Q",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "1Q_bar",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "2Q_bar",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "2Q",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "2SD",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "2J",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "2K",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "2CP",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "2RD",
+          "number": 14
+        },
+        {
+          "direction": "input",
+          "name": "1RD",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "register",
+      "timing": {
+        "delay_ns": 15
+      },
+      "title": "dual JK flip-flop with set and reset, negative-edge trigger"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "1CP",
+        "10": "2SD",
+        "11": "2J",
+        "12": "2K",
+        "13": "2CP",
+        "14": "2RD",
+        "15": "1RD",
+        "16": "VCC",
+        "2": "1K",
+        "3": "1J",
+        "4": "1SD",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC112",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC112",
+      "copy_with_chip": [
+        "DB/74xx/74HC112/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC112/simulation/model.py",
+      "part": "74HC112",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "1CP",
+        "10": "2SD",
+        "11": "2J",
+        "12": "2K",
+        "13": "2CP",
+        "14": "2RD",
+        "15": "1RD",
+        "16": "VCC",
+        "2": "1K",
+        "3": "1J",
+        "4": "1SD",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC112",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC112",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC112",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC112",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc112",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC112/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc112"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc112",
+      "part": "74HC112",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC112",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC112",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          5,
+          6,
+          7,
+          9
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Preset_bar",
+            "pins": [
+              4,
+              10
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Clear_bar",
+            "pins": [
+              15,
+              14
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "J",
+            "pins": [
+              3,
+              11
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "K",
+            "pins": [
+              2,
+              12
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Clk",
+            "pins": [
+              1,
+              13
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q",
+            "pins": [
+              5,
+              9
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q_bar",
+            "pins": [
+              6,
+              7
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC112/simulation/model.v",
+      "module": "ttl_74hc112",
+      "netlist": "DB/74xx/74HC112/simulation/netlist.json",
+      "part": "74HC112"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "74HC112",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC112/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC112/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC112/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC112/definition/definition.json",
+  "version": 1
 }

@@ -1,0 +1,72 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_fetch_cycle_trace",
+  "title": "RV8GR fetch-cycle trace",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md",
+      "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_tasks.v",
+      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md"
+    ]
+  },
+  "purpose": "Package the first full fetch/execute trace so T0 control fetch, T1 operand fetch, T2 LI execution, PC motion, and bus ownership stay testable outside the full CPU.",
+  "chips": [
+    {"ref": "U1_U4", "part": "74HC161", "role": "16-bit program counter chain"},
+    {"ref": "U5", "part": "74HC574", "role": "T0 control-byte latch"},
+    {"ref": "U6", "part": "74HC574", "role": "T1 operand-byte latch"},
+    {"ref": "U7", "part": "74HC245", "role": "DBUS to IBUS fetch bridge"},
+    {"ref": "U34", "part": "74HC541", "role": "T2 immediate operand driver"},
+    {"ref": "ROM1", "part": "AT28C256", "role": "ROM bytes for the golden trace"},
+    {"ref": "IBUSMON", "part": "BusProbe", "role": "IBUS owner monitor"},
+    {"ref": "DBUSMON", "part": "BusProbe", "role": "DBUS owner monitor"}
+  ],
+  "ports": [
+    {"name": "CLK", "direction": "input", "edge": "rising"},
+    {"name": "T0", "direction": "input"},
+    {"name": "T1", "direction": "input"},
+    {"name": "T2", "direction": "input"},
+    {"name": "PC0..PC15", "direction": "output"},
+    {"name": "ABUS0..ABUS15", "direction": "output"},
+    {"name": "IBUS0..IBUS7", "direction": "bidirectional"},
+    {"name": "DBUS0..DBUS7", "direction": "bidirectional"},
+    {"name": "IRH0..IRH7", "direction": "output"},
+    {"name": "IRL0..IRL7", "direction": "output"},
+    {"name": "AC0..AC7", "direction": "output"}
+  ],
+  "wiring": [
+    {"net": "PC0..PC15", "connections": ["U1_U4.Q", "ABUS0..ABUS15"]},
+    {"net": "DBUS0..DBUS7", "connections": ["ROM1.D0..D7", "U7.B0..B7", "DBUSMON.1"]},
+    {"net": "IBUS0..IBUS7", "connections": ["U7.A0..A7", "U34.Y0..Y7", "U5.D0..D7", "U6.D0..D7", "IBUSMON.1"]},
+    {"net": "T0", "connections": ["U5.CLK", "PC_INC control"]},
+    {"net": "T1", "connections": ["U6.CLK", "PC_INC control"]},
+    {"net": "T2", "connections": ["execute control"]},
+    {"net": "PC_INC", "connections": ["U1_U4.ENP/ENT"], "rule": "PC_INC = T0 OR T1"},
+    {"net": "/IRL_OE", "connections": ["U34./OE"], "rule": "U34 drives immediate only during T2 immediate execution"},
+    {"net": "BUF_OE_N", "connections": ["U7./OE"], "rule": "U7 bridges DBUS to IBUS during T0/T1 fetch"}
+  ],
+  "behavior": {
+    "t0": "ROM byte at PC drives DBUS, U7 drives IBUS, U5 captures IRH, and PC increments.",
+    "t1": "ROM byte at PC drives DBUS, U7 drives IBUS, U6 captures IRL, and PC increments.",
+    "t2_li": "U34 drives IRL onto IBUS, LI writes AC, Z updates, and PC holds.",
+    "bus_policy": "Every trace row has at most one active IBUS driver and at most one active DBUS driver."
+  },
+  "timing": {
+    "clocking": "three_phase_fetch_execute",
+    "phase_order": ["T0", "T1", "T2"],
+    "pc_increment": "PC increments only on T0 and T1; T2 holds unless branch/jump loads PC.",
+    "frequency_boundary": "Functional trace proof only; physical timing is owned by timing_margins.json."
+  },
+  "verification": {
+    "tests": ["tests/fetch_cycle_trace.json"],
+    "guarantees": [
+      "basic fetch matches tb_rv8gr_tasks.v for LI $42",
+      "golden trace rows match doc/03_instruction_trace.md",
+      "PC increments on T0/T1 and holds on LI T2",
+      "bus-driver roles match the documented trace",
+      "no IBUS or DBUS contention is accepted"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

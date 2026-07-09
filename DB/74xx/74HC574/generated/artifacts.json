@@ -1,191 +1,11 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/74xx/74HC574/definition/definition.json",
-  "part": "74HC574",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/74xx/74HC574/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/74xx/74HC574/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/74xx/74HC574/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "74HC574",
-      "title": "Octal D-type flip-flop with 3-state outputs",
-      "family": "74HC",
-      "group": "74xx",
-      "role": "register",
-      "package": {
-        "kind": "DIP",
-        "pins": 20,
-        "default": "N"
-      },
-      "pins": [
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [
         {
-          "number": 1,
-          "name": "/OE",
-          "direction": "input",
-          "active_low": true,
-          "function": "enable"
-        },
-        {
-          "number": 2,
-          "name": "1D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 0
-        },
-        {
-          "number": 3,
-          "name": "2D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 1
-        },
-        {
-          "number": 4,
-          "name": "3D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 2
-        },
-        {
-          "number": 5,
-          "name": "4D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 3
-        },
-        {
-          "number": 6,
-          "name": "5D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 4
-        },
-        {
-          "number": 7,
-          "name": "6D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 5
-        },
-        {
-          "number": 8,
-          "name": "7D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 6
-        },
-        {
-          "number": 9,
-          "name": "8D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 7
-        },
-        {
-          "number": 10,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 11,
-          "name": "CLK",
-          "direction": "input",
-          "clock": true
-        },
-        {
-          "number": 12,
-          "name": "8Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 7
-        },
-        {
-          "number": 13,
-          "name": "7Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 6
-        },
-        {
-          "number": 14,
-          "name": "6Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 5
-        },
-        {
-          "number": 15,
-          "name": "5Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 4
-        },
-        {
-          "number": 16,
-          "name": "4Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 3
-        },
-        {
-          "number": 17,
-          "name": "3Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 2
-        },
-        {
-          "number": 18,
-          "name": "2Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 1
-        },
-        {
-          "number": 19,
-          "name": "1Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 0
-        },
-        {
-          "number": 20,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {
-        "D": {
-          "width": 8,
+          "explanation": "D is an 8-bit signal group. Bit 0 is pin 2 and the highest bit is pin 9.",
+          "name": "D",
           "pins_lsb_first": [
             2,
             3,
@@ -195,10 +15,12 @@
             7,
             8,
             9
-          ]
+          ],
+          "width": 8
         },
-        "Q": {
-          "width": 8,
+        {
+          "explanation": "Q is an 8-bit signal group. Bit 0 is pin 19 and the highest bit is pin 12.",
+          "name": "Q",
           "pins_lsb_first": [
             19,
             18,
@@ -208,301 +30,52 @@
             14,
             13,
             12
-          ]
+          ],
+          "width": 8
+        }
+      ],
+      "buses": {
+        "D": {
+          "pins_lsb_first": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "width": 8
+        },
+        "Q": {
+          "pins_lsb_first": [
+            19,
+            18,
+            17,
+            16,
+            15,
+            14,
+            13,
+            12
+          ],
+          "width": 8
         }
       },
-      "power": [
+      "control_explanations": [
         {
-          "name": "GND",
-          "pin": 10,
-          "nominal_logic": 0
-        },
+          "explanation": "/OE controls enable. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/OE - enable",
+          "pin": "/OE"
+        }
+      ],
+      "controls": [
         {
-          "name": "VCC",
-          "pin": 20,
-          "nominal_logic": 1
+          "active_low": true,
+          "function": "enable",
+          "pin": "/OE"
         }
-      ],
-      "logic": {
-        "type": "octal_d_register",
-        "width": 8,
-        "clock": {
-          "pin": "CLK",
-          "edge": "rising"
-        },
-        "enable": {
-          "pin": "/OE",
-          "active_low": true
-        },
-        "tristate": true,
-        "disabled_output": "Z"
-      },
-      "timing": {
-        "delay_ns": 20,
-        "clock_edge": "rising"
-      }
-    },
-    "python_simulator": {
-      "part": "74HC574",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/74xx/74HC574/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/74xx/74HC574/simulation/model.py",
-      "class": "HC574"
-    },
-    "verilog_wrapper": {
-      "part": "74HC574",
-      "module": "ttl_74hc574",
-      "file": "DB/74xx/74HC574/simulation/model.v",
-      "netlist": "DB/74xx/74HC574/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "OE_bar",
-            "pins": [
-              1
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Clk",
-            "pins": [
-              11
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "D",
-            "pins": [
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Q",
-            "pins": [
-              19,
-              18,
-              17,
-              16,
-              15,
-              14,
-              13,
-              12
-            ],
-            "direction": "output"
-          }
-        ],
-        "output_pins": [
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18,
-          19
-        ],
-        "sample_delay_ns": {
-          "U5": 40,
-          "U6": 40
-        }
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "74HC574",
-      "module": "ttl_74hc574",
-      "bench_module": "tb_generated_74hc574",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/74xx/74HC574/simulation/model.v"
-        ],
-        "top": "tb_generated_74hc574"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "rising_edge_latch_a5",
-            "hold_after_d_change",
-            "rising_edge_latch_3c",
-            "disabled_high_z",
-            "clock_while_outputs_disabled_captures_5a",
-            "reenabled_outputs_last_latched_value"
-          ]
-        }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC574",
-      "shape": "dip",
-      "pins": 20,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ],
-      "right": [
-        20,
-        19,
-        18,
-        17,
-        16,
-        15,
-        14,
-        13,
-        12,
-        11
-      ],
-      "labels": {
-        "1": "/OE",
-        "2": "1D",
-        "3": "2D",
-        "4": "3D",
-        "5": "4D",
-        "6": "5D",
-        "7": "6D",
-        "8": "7D",
-        "9": "8D",
-        "10": "GND",
-        "11": "CLK",
-        "20": "VCC"
-      },
-      "bus_groups": {
-        "D": [
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9
-        ],
-        "Q": [
-          19,
-          18,
-          17,
-          16,
-          15,
-          14,
-          13,
-          12
-        ]
-      }
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC574",
-      "shape": "dip",
-      "pins": 20,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ],
-      "right": [
-        20,
-        19,
-        18,
-        17,
-        16,
-        15,
-        14,
-        13,
-        12,
-        11
-      ],
-      "labels": {
-        "1": "/OE",
-        "2": "1D",
-        "3": "2D",
-        "4": "3D",
-        "5": "4D",
-        "6": "5D",
-        "7": "6D",
-        "8": "7D",
-        "9": "8D",
-        "10": "GND",
-        "11": "CLK",
-        "20": "VCC"
-      },
-      "bus_groups": {
-        "D": [
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9
-        ],
-        "Q": [
-          19,
-          18,
-          17,
-          16,
-          15,
-          14,
-          13,
-          12
-        ]
-      }
-    },
-    "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "74HC574",
-      "title": "Octal D-type flip-flop with 3-state outputs",
-      "audience": "students ages 10-15, still useful for older learners",
-      "summary": "Octal D-type flip-flop with 3-state outputs.",
-      "overview": "74HC574 is a 20-pin DIP part for register.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
       ],
       "key_points": [
         "Connect power before testing signal pins.",
@@ -510,6 +83,8 @@
         "Check the control pins first: /OE.",
         "Treat these as grouped signals in the UI: D, Q."
       ],
+      "overview": "74HC574 is a 20-pin DIP part for register.",
+      "part": "74HC574",
       "pin_count": 20,
       "pin_summary": {
         "input": {
@@ -551,121 +126,83 @@
           "note": "Power pins: GND, VCC."
         }
       },
-      "buses": {
-        "D": {
-          "width": 8,
-          "pins_lsb_first": [
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
-          ]
-        },
-        "Q": {
-          "width": 8,
-          "pins_lsb_first": [
-            19,
-            18,
-            17,
-            16,
-            15,
-            14,
-            13,
-            12
-          ]
-        }
-      },
-      "bus_explanations": [
-        {
-          "name": "D",
-          "width": 8,
-          "pins_lsb_first": [
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
-          ],
-          "explanation": "D is an 8-bit signal group. Bit 0 is pin 2 and the highest bit is pin 9."
-        },
-        {
-          "name": "Q",
-          "width": 8,
-          "pins_lsb_first": [
-            19,
-            18,
-            17,
-            16,
-            15,
-            14,
-            13,
-            12
-          ],
-          "explanation": "Q is an 8-bit signal group. Bit 0 is pin 19 and the highest bit is pin 12."
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "controls": [
-        {
-          "pin": "/OE",
-          "function": "enable",
-          "active_low": true
-        }
-      ],
-      "control_explanations": [
-        {
-          "pin": "/OE",
-          "label": "/OE - enable",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/OE controls enable. This is active low, so 0 turns the control on."
-        }
-      ],
-      "timing_note": "After an input changes, wait about 20 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "74HC574",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "tri_state",
-          "source": "tests/tri_state.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        }
-      ],
-      "required_vectors": [
-        "rising_edge_latch",
-        "hold_after_d_change",
-        "disabled_high_z"
-      ]
+      "summary": "Octal D-type flip-flop with 3-state outputs.",
+      "timing_note": "After an input changes, wait about 20 ns before trusting the output.",
+      "title": "Octal D-type flip-flop with 3-state outputs",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "74HC574",
-      "title": "Try 74HC574 in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "/OE controls enable. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/OE - enable",
+          "pin": "/OE"
+        },
+        {
+          "explanation": "1D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1D - input",
+          "pin": "1D"
+        },
+        {
+          "explanation": "2D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2D - input",
+          "pin": "2D"
+        },
+        {
+          "explanation": "3D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3D - input",
+          "pin": "3D"
+        },
+        {
+          "explanation": "4D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4D - input",
+          "pin": "4D"
+        },
+        {
+          "explanation": "5D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "5D - input",
+          "pin": "5D"
+        },
+        {
+          "explanation": "6D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "6D - input",
+          "pin": "6D"
+        },
+        {
+          "explanation": "7D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "7D - input",
+          "pin": "7D"
+        },
+        {
+          "explanation": "8D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "8D - input",
+          "pin": "8D"
+        },
+        {
+          "explanation": "CLK controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "CLK - input",
+          "pin": "CLK"
+        }
+      ],
       "controls": [
         "/OE",
         "1D",
@@ -678,84 +215,6 @@
         "8D",
         "CLK"
       ],
-      "control_labels": [
-        {
-          "pin": "/OE",
-          "label": "/OE - enable",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/OE controls enable. This is active low, so 0 turns the control on."
-        },
-        {
-          "pin": "1D",
-          "label": "1D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "1D controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "2D",
-          "label": "2D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "2D controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "3D",
-          "label": "3D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "3D controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "4D",
-          "label": "4D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "4D controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "5D",
-          "label": "5D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "5D controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "6D",
-          "label": "6D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "6D controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "7D",
-          "label": "7D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "7D controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "8D",
-          "label": "8D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "8D controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "CLK",
-          "label": "CLK - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "CLK controls input. Use 1 to turn this control on."
-        }
-      ],
-      "probes": [
-        "D",
-        "Q"
-      ],
-      "probe_labels": [
-        {
-          "name": "D",
-          "label": "D bus",
-          "hint": "Read all 8 bits together."
-        },
-        {
-          "name": "Q",
-          "label": "Q bus",
-          "hint": "Read all 8 bits together."
-        }
-      ],
       "default_steps": [
         "apply controls",
         "settle",
@@ -766,11 +225,639 @@
         "Run one settle step so the simulated signals can update.",
         "Read the probes and compare them with the truth table."
       ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC574",
+      "probe_labels": [
+        {
+          "hint": "Read all 8 bits together.",
+          "label": "D bus",
+          "name": "D"
+        },
+        {
+          "hint": "Read all 8 bits together.",
+          "label": "Q bus",
+          "name": "Q"
+        }
+      ],
+      "probes": [
+        "D",
+        "Q"
+      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change /OE?",
         "Which truth-table row matches the value on D?"
-      ]
+      ],
+      "title": "Try 74HC574 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {
+        "D": {
+          "pins_lsb_first": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "width": 8
+        },
+        "Q": {
+          "pins_lsb_first": [
+            19,
+            18,
+            17,
+            16,
+            15,
+            14,
+            13,
+            12
+          ],
+          "width": 8
+        }
+      },
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "clock": {
+          "edge": "rising",
+          "pin": "CLK"
+        },
+        "disabled_output": "Z",
+        "enable": {
+          "active_low": true,
+          "pin": "/OE"
+        },
+        "tristate": true,
+        "type": "octal_d_register",
+        "width": 8
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 20
+      },
+      "part": "74HC574",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "function": "enable",
+          "name": "/OE",
+          "number": 1
+        },
+        {
+          "bit": 0,
+          "bus": "D",
+          "direction": "input",
+          "name": "1D",
+          "number": 2
+        },
+        {
+          "bit": 1,
+          "bus": "D",
+          "direction": "input",
+          "name": "2D",
+          "number": 3
+        },
+        {
+          "bit": 2,
+          "bus": "D",
+          "direction": "input",
+          "name": "3D",
+          "number": 4
+        },
+        {
+          "bit": 3,
+          "bus": "D",
+          "direction": "input",
+          "name": "4D",
+          "number": 5
+        },
+        {
+          "bit": 4,
+          "bus": "D",
+          "direction": "input",
+          "name": "5D",
+          "number": 6
+        },
+        {
+          "bit": 5,
+          "bus": "D",
+          "direction": "input",
+          "name": "6D",
+          "number": 7
+        },
+        {
+          "bit": 6,
+          "bus": "D",
+          "direction": "input",
+          "name": "7D",
+          "number": 8
+        },
+        {
+          "bit": 7,
+          "bus": "D",
+          "direction": "input",
+          "name": "8D",
+          "number": 9
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "clock": true,
+          "direction": "input",
+          "name": "CLK",
+          "number": 11
+        },
+        {
+          "bit": 7,
+          "bus": "Q",
+          "direction": "output",
+          "name": "8Q",
+          "number": 12
+        },
+        {
+          "bit": 6,
+          "bus": "Q",
+          "direction": "output",
+          "name": "7Q",
+          "number": 13
+        },
+        {
+          "bit": 5,
+          "bus": "Q",
+          "direction": "output",
+          "name": "6Q",
+          "number": 14
+        },
+        {
+          "bit": 4,
+          "bus": "Q",
+          "direction": "output",
+          "name": "5Q",
+          "number": 15
+        },
+        {
+          "bit": 3,
+          "bus": "Q",
+          "direction": "output",
+          "name": "4Q",
+          "number": 16
+        },
+        {
+          "bit": 2,
+          "bus": "Q",
+          "direction": "output",
+          "name": "3Q",
+          "number": 17
+        },
+        {
+          "bit": 1,
+          "bus": "Q",
+          "direction": "output",
+          "name": "2Q",
+          "number": 18
+        },
+        {
+          "bit": 0,
+          "bus": "Q",
+          "direction": "output",
+          "name": "1Q",
+          "number": 19
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 10
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 20
+        }
+      ],
+      "role": "register",
+      "timing": {
+        "clock_edge": "rising",
+        "delay_ns": 20
+      },
+      "title": "Octal D-type flip-flop with 3-state outputs"
+    },
+    "kicad_symbol": {
+      "bus_groups": {
+        "D": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "Q": [
+          19,
+          18,
+          17,
+          16,
+          15,
+          14,
+          13,
+          12
+        ]
+      },
+      "labels": {
+        "1": "/OE",
+        "10": "GND",
+        "11": "CLK",
+        "2": "1D",
+        "20": "VCC",
+        "3": "2D",
+        "4": "3D",
+        "5": "4D",
+        "6": "5D",
+        "7": "6D",
+        "8": "7D",
+        "9": "8D"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC574",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC574",
+      "copy_with_chip": [
+        "DB/74xx/74HC574/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC574/simulation/model.py",
+      "part": "74HC574",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {
+        "D": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "Q": [
+          19,
+          18,
+          17,
+          16,
+          15,
+          14,
+          13,
+          12
+        ]
+      },
+      "labels": {
+        "1": "/OE",
+        "10": "GND",
+        "11": "CLK",
+        "2": "1D",
+        "20": "VCC",
+        "3": "2D",
+        "4": "3D",
+        "5": "4D",
+        "6": "5D",
+        "7": "6D",
+        "8": "7D",
+        "9": "8D"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC574",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC574",
+      "required_vectors": [
+        "rising_edge_latch",
+        "hold_after_d_change",
+        "disabled_high_z"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": true,
+          "checks": [
+            "external_q_driver_conflicts_when_enabled"
+          ],
+          "present": true,
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "clock_to_q_delay_metadata",
+            "disable_to_z_delay_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "rising_clock",
+            "output_enable_no_clock"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": true,
+          "checks": [
+            "disabled_releases_q",
+            "enabled_drives_q"
+          ],
+          "present": true,
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "rising_edge_latch_a5",
+            "hold_after_d_change",
+            "rising_edge_latch_3c",
+            "disabled_high_z",
+            "clock_while_outputs_disabled_captures_5a",
+            "reenabled_outputs_last_latched_value",
+            "reenabled_rising_edge_latch_c3"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/tri_state.json",
+          "type": "tri_state"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc574",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC574/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc574"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc574",
+      "part": "74HC574",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": true,
+          "checks": [
+            "external_q_driver_conflicts_when_enabled"
+          ],
+          "present": true,
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "clock_to_q_delay_metadata",
+            "disable_to_z_delay_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "rising_clock",
+            "output_enable_no_clock"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": true,
+          "checks": [
+            "disabled_releases_q",
+            "enabled_drives_q"
+          ],
+          "present": true,
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "rising_edge_latch_a5",
+            "hold_after_d_change",
+            "rising_edge_latch_3c",
+            "disabled_high_z",
+            "clock_while_outputs_disabled_captures_5a",
+            "reenabled_outputs_last_latched_value",
+            "reenabled_rising_edge_latch_c3"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "OE_bar",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Clk",
+            "pins": [
+              11
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "D",
+            "pins": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q",
+            "pins": [
+              19,
+              18,
+              17,
+              16,
+              15,
+              14,
+              13,
+              12
+            ]
+          }
+        ],
+        "sample_delay_ns": {
+          "U5": 40,
+          "U6": 40
+        }
+      },
+      "file": "DB/74xx/74HC574/simulation/model.v",
+      "module": "ttl_74hc574",
+      "netlist": "DB/74xx/74HC574/simulation/netlist.json",
+      "part": "74HC574"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "74HC574",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC574/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC574/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC574/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC574/definition/definition.json",
+  "version": 1
 }

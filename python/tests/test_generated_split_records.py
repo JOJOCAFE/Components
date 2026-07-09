@@ -156,6 +156,14 @@ def load_active_record(part: str, test_type: str):
     return json.loads((active_ic_test_roots()[part] / f"{test_type}.json").read_text(encoding="utf-8"))
 
 
+def generated_artifact_path(part: str) -> Path:
+    return active_ic_test_roots()[part].parent / "generated" / "artifacts.json"
+
+
+def generated_artifact_text(part: str) -> str:
+    return json.dumps(generate_component_artifacts(part), indent=2, sort_keys=True) + "\n"
+
+
 def expected_split_record_metadata(part: str, test_type: str):
     record = load_active_record(part, test_type)
     expected = {
@@ -571,6 +579,12 @@ def test_generated_artifacts_report_split_record_metadata_without_drift():
         assert set(artifacts["unit_test"]["split_records"]) == set(SPLIT_TEST_TYPES)
         for test_type in SPLIT_TEST_TYPES:
             assert artifacts["unit_test"]["split_records"][test_type] == expected_split_record_metadata(part, test_type), (part, test_type)
+
+
+def test_checked_in_generated_artifacts_match_current_generator():
+    for part in active_ic_test_roots():
+        path = generated_artifact_path(part)
+        assert path.read_text(encoding="utf-8") == generated_artifact_text(part), part
 
 
 def test_generated_simple_gate_verilog_testbench_metadata():
@@ -1098,6 +1112,7 @@ def run_all():
     test_verilog_smoke_workflow_keeps_broad_compile_scope()
     test_split_records_generate_verilog_testbench_metadata()
     test_generated_artifacts_report_split_record_metadata_without_drift()
+    test_checked_in_generated_artifacts_match_current_generator()
     test_generated_simple_gate_verilog_testbench_metadata()
     test_generated_74hc157_verilog_testbench_compiles_when_iverilog_is_available()
     test_generated_simple_gate_verilog_testbenches_compile_when_iverilog_is_available()

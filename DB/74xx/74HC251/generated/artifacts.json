@@ -1,363 +1,17 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/74xx/74HC251/definition/definition.json",
-  "part": "74HC251",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/74xx/74HC251/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/74xx/74HC251/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/74xx/74HC251/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "74HC251",
-      "title": "8-Line to 1-Line Data Selector/Multiplexer",
-      "family": "74HC",
-      "group": "74xx",
-      "role": "multiplexer",
-      "package": {
-        "kind": "DIP",
-        "pins": 16,
-        "default": "N"
-      },
-      "pins": [
-        {
-          "number": 1,
-          "name": "D3",
-          "direction": "input"
-        },
-        {
-          "number": 2,
-          "name": "D2",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "D1",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "D0",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "Y",
-          "direction": "output"
-        },
-        {
-          "number": 6,
-          "name": "/Y",
-          "direction": "output",
-          "active_low": true
-        },
-        {
-          "number": 7,
-          "name": "/OE",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 9,
-          "name": "C",
-          "direction": "input"
-        },
-        {
-          "number": 10,
-          "name": "B",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "A",
-          "direction": "input"
-        },
-        {
-          "number": 12,
-          "name": "D7",
-          "direction": "input"
-        },
-        {
-          "number": 13,
-          "name": "D6",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "D5",
-          "direction": "input"
-        },
-        {
-          "number": 15,
-          "name": "D4",
-          "direction": "input"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {},
-      "power": [
-        {
-          "name": "GND",
-          "pin": 8,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 16,
-          "nominal_logic": 1
-        }
-      ],
-      "logic": {
-        "type": "8_line_to_1_line_data_selector_multiplexer",
-        "description": "8-Line to 1-Line Data Selector/Multiplexer"
-      },
-      "timing": {
-        "delay_ns": 15
-      }
-    },
-    "python_simulator": {
-      "part": "74HC251",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/74xx/74HC251/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/74xx/74HC251/simulation/model.py",
-      "class": "HC251"
-    },
-    "verilog_wrapper": {
-      "part": "74HC251",
-      "module": "ttl_74hc251",
-      "file": "DB/74xx/74HC251/simulation/model.v",
-      "netlist": "DB/74xx/74HC251/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "OE_bar",
-            "pins": [
-              7
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Select",
-            "pins": [
-              11,
-              10,
-              9
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "D",
-            "pins": [
-              4,
-              3,
-              2,
-              1,
-              15,
-              14,
-              13,
-              12
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Y",
-            "pins": [
-              5
-            ],
-            "direction": "output"
-          },
-          {
-            "name": "Y_bar",
-            "pins": [
-              6
-            ],
-            "direction": "output"
-          }
-        ],
-        "output_pins": [
-          5,
-          6
-        ]
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "74HC251",
-      "module": "ttl_74hc251",
-      "bench_module": "tb_generated_74hc251",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/74xx/74HC251/simulation/model.v"
-        ],
-        "top": "tb_generated_74hc251"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "basic_function"
-          ]
-        }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC251",
-      "shape": "dip",
-      "pins": 16,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ],
-      "right": [
-        16,
-        15,
-        14,
-        13,
-        12,
-        11,
-        10,
-        9
-      ],
-      "labels": {
-        "1": "D3",
-        "2": "D2",
-        "3": "D1",
-        "4": "D0",
-        "7": "/OE",
-        "8": "GND",
-        "9": "C",
-        "10": "B",
-        "11": "A",
-        "12": "D7",
-        "13": "D6",
-        "14": "D5",
-        "15": "D4",
-        "16": "VCC"
-      },
-      "bus_groups": {}
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC251",
-      "shape": "dip",
-      "pins": 16,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ],
-      "right": [
-        16,
-        15,
-        14,
-        13,
-        12,
-        11,
-        10,
-        9
-      ],
-      "labels": {
-        "1": "D3",
-        "2": "D2",
-        "3": "D1",
-        "4": "D0",
-        "7": "/OE",
-        "8": "GND",
-        "9": "C",
-        "10": "B",
-        "11": "A",
-        "12": "D7",
-        "13": "D6",
-        "14": "D5",
-        "15": "D4",
-        "16": "VCC"
-      },
-      "bus_groups": {}
-    },
     "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "74HC251",
-      "title": "8-Line to 1-Line Data Selector/Multiplexer",
       "audience": "students ages 10-15, still useful for older learners",
-      "summary": "8-Line to 1-Line Data Selector/Multiplexer.",
-      "overview": "74HC251 is a 16-pin DIP part for multiplexer.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
-      ],
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
         "After an input changes, wait about 15 ns before trusting the output."
       ],
+      "overview": "74HC251 is a 16-pin DIP part for multiplexer.",
+      "part": "74HC251",
       "pin_count": 16,
       "pin_summary": {
         "input": {
@@ -395,54 +49,95 @@
           "note": "Power pins: GND, VCC."
         }
       },
-      "buses": {},
-      "bus_explanations": [],
-      "controls": [],
-      "control_explanations": [],
-      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "74HC251",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        },
-        {
-          "type": "tri_state",
-          "source": "tests/tri_state.json",
-          "present": true
-        },
-        {
-          "type": "bus_fight",
-          "source": "tests/bus_fight.json",
-          "present": true
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "required_vectors": [
-        "basic_function",
-        "disabled_or_high_z"
-      ]
+      "summary": "8-Line to 1-Line Data Selector/Multiplexer.",
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "title": "8-Line to 1-Line Data Selector/Multiplexer",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "74HC251",
-      "title": "Try 74HC251 in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "D3 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D3 - input",
+          "pin": "D3"
+        },
+        {
+          "explanation": "D2 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D2 - input",
+          "pin": "D2"
+        },
+        {
+          "explanation": "D1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D1 - input",
+          "pin": "D1"
+        },
+        {
+          "explanation": "D0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D0 - input",
+          "pin": "D0"
+        },
+        {
+          "explanation": "/OE controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/OE - input",
+          "pin": "/OE"
+        },
+        {
+          "explanation": "C controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "C - input",
+          "pin": "C"
+        },
+        {
+          "explanation": "B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "B - input",
+          "pin": "B"
+        },
+        {
+          "explanation": "A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A - input",
+          "pin": "A"
+        },
+        {
+          "explanation": "D7 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D7 - input",
+          "pin": "D7"
+        },
+        {
+          "explanation": "D6 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D6 - input",
+          "pin": "D6"
+        },
+        {
+          "explanation": "D5 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D5 - input",
+          "pin": "D5"
+        },
+        {
+          "explanation": "D4 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D4 - input",
+          "pin": "D4"
+        }
+      ],
       "controls": [
         "D3",
         "D2",
@@ -457,96 +152,6 @@
         "D5",
         "D4"
       ],
-      "control_labels": [
-        {
-          "pin": "D3",
-          "label": "D3 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "D3 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "D2",
-          "label": "D2 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "D2 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "D1",
-          "label": "D1 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "D1 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "D0",
-          "label": "D0 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "D0 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "/OE",
-          "label": "/OE - input",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/OE controls input. This is active low, so 0 turns the control on."
-        },
-        {
-          "pin": "C",
-          "label": "C - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "C controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "B",
-          "label": "B - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "B controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "A",
-          "label": "A - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "A controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "D7",
-          "label": "D7 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "D7 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "D6",
-          "label": "D6 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "D6 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "D5",
-          "label": "D5 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "D5 controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "D4",
-          "label": "D4 - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "D4 controls input. Use 1 to turn this control on."
-        }
-      ],
-      "probes": [
-        "Y",
-        "/Y"
-      ],
-      "probe_labels": [
-        {
-          "name": "Y",
-          "label": "Y",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "/Y",
-          "label": "/Y",
-          "hint": "Read this output after the settle step."
-        }
-      ],
       "default_steps": [
         "apply controls",
         "settle",
@@ -557,11 +162,480 @@
         "Run one settle step so the simulated signals can update.",
         "Read the probes and compare them with the truth table."
       ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC251",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Y",
+          "name": "Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/Y",
+          "name": "/Y"
+        }
+      ],
+      "probes": [
+        "Y",
+        "/Y"
+      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change D3?",
         "Which truth-table row matches the value on Y?"
-      ]
+      ],
+      "title": "Try 74HC251 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "8-Line to 1-Line Data Selector/Multiplexer",
+        "type": "8_line_to_1_line_data_selector_multiplexer"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC251",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "D3",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "D2",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "D1",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "D0",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "Y",
+          "number": 5
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y",
+          "number": 6
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/OE",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "input",
+          "name": "C",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "B",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "A",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "D7",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "D6",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "D5",
+          "number": 14
+        },
+        {
+          "direction": "input",
+          "name": "D4",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "multiplexer",
+      "timing": {
+        "delay_ns": 15
+      },
+      "title": "8-Line to 1-Line Data Selector/Multiplexer"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "D3",
+        "10": "B",
+        "11": "A",
+        "12": "D7",
+        "13": "D6",
+        "14": "D5",
+        "15": "D4",
+        "16": "VCC",
+        "2": "D2",
+        "3": "D1",
+        "4": "D0",
+        "7": "/OE",
+        "8": "GND",
+        "9": "C"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC251",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC251",
+      "copy_with_chip": [
+        "DB/74xx/74HC251/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC251/simulation/model.py",
+      "part": "74HC251",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "D3",
+        "10": "B",
+        "11": "A",
+        "12": "D7",
+        "13": "D6",
+        "14": "D5",
+        "15": "D4",
+        "16": "VCC",
+        "2": "D2",
+        "3": "D1",
+        "4": "D0",
+        "7": "/OE",
+        "8": "GND",
+        "9": "C"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC251",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC251",
+      "required_vectors": [
+        "basic_function",
+        "disabled_or_high_z"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": true,
+          "checks": [
+            "external_driver_conflict_is_detectable"
+          ],
+          "present": true,
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": true,
+          "checks": [
+            "disabled_outputs_release_bus"
+          ],
+          "present": true,
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        },
+        {
+          "present": true,
+          "source": "tests/tri_state.json",
+          "type": "tri_state"
+        },
+        {
+          "present": true,
+          "source": "tests/bus_fight.json",
+          "type": "bus_fight"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc251",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC251/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc251"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc251",
+      "part": "74HC251",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": true,
+          "checks": [
+            "external_driver_conflict_is_detectable"
+          ],
+          "present": true,
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": true,
+          "checks": [
+            "disabled_outputs_release_bus"
+          ],
+          "present": true,
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          5,
+          6
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "OE_bar",
+            "pins": [
+              7
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Select",
+            "pins": [
+              11,
+              10,
+              9
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "D",
+            "pins": [
+              4,
+              3,
+              2,
+              1,
+              15,
+              14,
+              13,
+              12
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y",
+            "pins": [
+              5
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y_bar",
+            "pins": [
+              6
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC251/simulation/model.v",
+      "module": "ttl_74hc251",
+      "netlist": "DB/74xx/74HC251/simulation/netlist.json",
+      "part": "74HC251"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "74HC251",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC251/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC251/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC251/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC251/definition/definition.json",
+  "version": 1
 }

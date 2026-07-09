@@ -1,365 +1,17 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/74xx/74HC139/definition/definition.json",
-  "part": "74HC139",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/74xx/74HC139/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/74xx/74HC139/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/74xx/74HC139/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "74HC139",
-      "title": "Dual 2-Line to 4-Line Decoder/Demultiplexer",
-      "family": "74HC",
-      "group": "74xx",
-      "role": "decoder",
-      "package": {
-        "kind": "DIP",
-        "pins": 16,
-        "default": "N"
-      },
-      "pins": [
-        {
-          "number": 1,
-          "name": "/1G",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 2,
-          "name": "1A",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "1B",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "/1Y0",
-          "direction": "output",
-          "active_low": true
-        },
-        {
-          "number": 5,
-          "name": "/1Y1",
-          "direction": "output",
-          "active_low": true
-        },
-        {
-          "number": 6,
-          "name": "/1Y2",
-          "direction": "output",
-          "active_low": true
-        },
-        {
-          "number": 7,
-          "name": "/1Y3",
-          "direction": "output",
-          "active_low": true
-        },
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 9,
-          "name": "/2Y3",
-          "direction": "output",
-          "active_low": true
-        },
-        {
-          "number": 10,
-          "name": "/2Y2",
-          "direction": "output",
-          "active_low": true
-        },
-        {
-          "number": 11,
-          "name": "/2Y1",
-          "direction": "output",
-          "active_low": true
-        },
-        {
-          "number": 12,
-          "name": "/2Y0",
-          "direction": "output",
-          "active_low": true
-        },
-        {
-          "number": 13,
-          "name": "2B",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "2A",
-          "direction": "input"
-        },
-        {
-          "number": 15,
-          "name": "/2G",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {},
-      "power": [
-        {
-          "name": "GND",
-          "pin": 8,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 16,
-          "nominal_logic": 1
-        }
-      ],
-      "logic": {
-        "type": "dual_2_line_to_4_line_decoder_demultiplexer",
-        "description": "Dual 2-Line to 4-Line Decoder/Demultiplexer"
-      },
-      "timing": {
-        "delay_ns": 15
-      }
-    },
-    "python_simulator": {
-      "part": "74HC139",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/74xx/74HC139/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/74xx/74HC139/simulation/model.py",
-      "class": "HC139"
-    },
-    "verilog_wrapper": {
-      "part": "74HC139",
-      "module": "ttl_74hc139",
-      "file": "DB/74xx/74HC139/simulation/model.v",
-      "netlist": "DB/74xx/74HC139/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "Enable_bar",
-            "pins": [
-              1,
-              15
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "A",
-            "pins": [
-              2,
-              14
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "B",
-            "pins": [
-              3,
-              13
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Y1_bar",
-            "pins": [
-              4,
-              5,
-              6,
-              7
-            ],
-            "direction": "output"
-          },
-          {
-            "name": "Y2_bar",
-            "pins": [
-              12,
-              11,
-              10,
-              9
-            ],
-            "direction": "output"
-          }
-        ],
-        "output_pins": [
-          4,
-          5,
-          6,
-          7,
-          9,
-          10,
-          11,
-          12
-        ]
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "74HC139",
-      "module": "ttl_74hc139",
-      "bench_module": "tb_generated_74hc139",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/74xx/74HC139/simulation/model.v"
-        ],
-        "top": "tb_generated_74hc139"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "basic_function"
-          ]
-        }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC139",
-      "shape": "dip",
-      "pins": 16,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ],
-      "right": [
-        16,
-        15,
-        14,
-        13,
-        12,
-        11,
-        10,
-        9
-      ],
-      "labels": {
-        "1": "/1G",
-        "2": "1A",
-        "3": "1B",
-        "8": "GND",
-        "13": "2B",
-        "14": "2A",
-        "15": "/2G",
-        "16": "VCC"
-      },
-      "bus_groups": {}
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC139",
-      "shape": "dip",
-      "pins": 16,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ],
-      "right": [
-        16,
-        15,
-        14,
-        13,
-        12,
-        11,
-        10,
-        9
-      ],
-      "labels": {
-        "1": "/1G",
-        "2": "1A",
-        "3": "1B",
-        "8": "GND",
-        "13": "2B",
-        "14": "2A",
-        "15": "/2G",
-        "16": "VCC"
-      },
-      "bus_groups": {}
-    },
     "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "74HC139",
-      "title": "Dual 2-Line to 4-Line Decoder/Demultiplexer",
       "audience": "students ages 10-15, still useful for older learners",
-      "summary": "Dual 2-Line to 4-Line Decoder/Demultiplexer.",
-      "overview": "74HC139 is a 16-pin DIP part for decoder.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
-      ],
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
         "After an input changes, wait about 15 ns before trusting the output."
       ],
+      "overview": "74HC139 is a 16-pin DIP part for decoder.",
+      "part": "74HC139",
       "pin_count": 16,
       "pin_summary": {
         "input": {
@@ -397,43 +49,59 @@
           "note": "Power pins: GND, VCC."
         }
       },
-      "buses": {},
-      "bus_explanations": [],
-      "controls": [],
-      "control_explanations": [],
-      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "74HC139",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "required_vectors": [
-        "basic_function"
-      ]
+      "summary": "Dual 2-Line to 4-Line Decoder/Demultiplexer.",
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "title": "Dual 2-Line to 4-Line Decoder/Demultiplexer",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "74HC139",
-      "title": "Try 74HC139 in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "/1G controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/1G - input",
+          "pin": "/1G"
+        },
+        {
+          "explanation": "1A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1A - input",
+          "pin": "1A"
+        },
+        {
+          "explanation": "1B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1B - input",
+          "pin": "1B"
+        },
+        {
+          "explanation": "2B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2B - input",
+          "pin": "2B"
+        },
+        {
+          "explanation": "2A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2A - input",
+          "pin": "2A"
+        },
+        {
+          "explanation": "/2G controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/2G - input",
+          "pin": "/2G"
+        }
+      ],
       "controls": [
         "/1G",
         "1A",
@@ -442,42 +110,58 @@
         "2A",
         "/2G"
       ],
-      "control_labels": [
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC139",
+      "probe_labels": [
         {
-          "pin": "/1G",
-          "label": "/1G - input",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/1G controls input. This is active low, so 0 turns the control on."
+          "hint": "Read this output after the settle step.",
+          "label": "/1Y0",
+          "name": "/1Y0"
         },
         {
-          "pin": "1A",
-          "label": "1A - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "1A controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "/1Y1",
+          "name": "/1Y1"
         },
         {
-          "pin": "1B",
-          "label": "1B - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "1B controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "/1Y2",
+          "name": "/1Y2"
         },
         {
-          "pin": "2B",
-          "label": "2B - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "2B controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "/1Y3",
+          "name": "/1Y3"
         },
         {
-          "pin": "2A",
-          "label": "2A - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "2A controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "/2Y3",
+          "name": "/2Y3"
         },
         {
-          "pin": "/2G",
-          "label": "/2G - input",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/2G controls input. This is active low, so 0 turns the control on."
+          "hint": "Read this output after the settle step.",
+          "label": "/2Y2",
+          "name": "/2Y2"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/2Y1",
+          "name": "/2Y1"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/2Y0",
+          "name": "/2Y0"
         }
       ],
       "probes": [
@@ -490,63 +174,449 @@
         "/2Y1",
         "/2Y0"
       ],
-      "probe_labels": [
-        {
-          "name": "/1Y0",
-          "label": "/1Y0",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "/1Y1",
-          "label": "/1Y1",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "/1Y2",
-          "label": "/1Y2",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "/1Y3",
-          "label": "/1Y3",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "/2Y3",
-          "label": "/2Y3",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "/2Y2",
-          "label": "/2Y2",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "/2Y1",
-          "label": "/2Y1",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "/2Y0",
-          "label": "/2Y0",
-          "hint": "Read this output after the settle step."
-        }
-      ],
-      "default_steps": [
-        "apply controls",
-        "settle",
-        "probe"
-      ],
-      "guided_steps": [
-        "Set each control to the value you want to test.",
-        "Run one settle step so the simulated signals can update.",
-        "Read the probes and compare them with the truth table."
-      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change /1G?",
         "Which truth-table row matches the value on /1Y0?"
-      ]
+      ],
+      "title": "Try 74HC139 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "Dual 2-Line to 4-Line Decoder/Demultiplexer",
+        "type": "dual_2_line_to_4_line_decoder_demultiplexer"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC139",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/1G",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1A",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "1B",
+          "number": 3
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/1Y0",
+          "number": 4
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/1Y1",
+          "number": 5
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/1Y2",
+          "number": 6
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/1Y3",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/2Y3",
+          "number": 9
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/2Y2",
+          "number": 10
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/2Y1",
+          "number": 11
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/2Y0",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "2B",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "2A",
+          "number": 14
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/2G",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "decoder",
+      "timing": {
+        "delay_ns": 15
+      },
+      "title": "Dual 2-Line to 4-Line Decoder/Demultiplexer"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/1G",
+        "13": "2B",
+        "14": "2A",
+        "15": "/2G",
+        "16": "VCC",
+        "2": "1A",
+        "3": "1B",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC139",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC139",
+      "copy_with_chip": [
+        "DB/74xx/74HC139/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC139/simulation/model.py",
+      "part": "74HC139",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/1G",
+        "13": "2B",
+        "14": "2A",
+        "15": "/2G",
+        "16": "VCC",
+        "2": "1A",
+        "3": "1B",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC139",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC139",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC139",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC139",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc139",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC139/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc139"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc139",
+      "part": "74HC139",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC139",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC139",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11,
+          12
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Enable_bar",
+            "pins": [
+              1,
+              15
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              2,
+              14
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "B",
+            "pins": [
+              3,
+              13
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y1_bar",
+            "pins": [
+              4,
+              5,
+              6,
+              7
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y2_bar",
+            "pins": [
+              12,
+              11,
+              10,
+              9
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC139/simulation/model.v",
+      "module": "ttl_74hc139",
+      "netlist": "DB/74xx/74HC139/simulation/netlist.json",
+      "part": "74HC139"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "74HC139",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC139/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC139/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC139/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC139/definition/definition.json",
+  "version": 1
 }

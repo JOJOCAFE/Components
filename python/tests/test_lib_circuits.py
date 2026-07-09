@@ -25,6 +25,7 @@ ALU_ACCUMULATOR = ROOT / "Lib" / "Circuits" / "RV8GR_AluAccumulator"
 VIRTUAL_TEST_HELPERS = ROOT / "Lib" / "Circuits" / "RV8GR_VirtualTestHelpers"
 FULL_CONTROL_OPCODE_SWEEP = ROOT / "Lib" / "Circuits" / "RV8GR_FullControlOpcodeSweep"
 RESET_CLOCK_BRINGUP = ROOT / "Lib" / "Circuits" / "RV8GR_ResetClockBringup"
+FETCH_CYCLE_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_FetchCycleTrace"
 TIMING_MARGINS = ROOT / "Lib" / "Circuits" / "timing_margins.json"
 RANDOM_PUSH_SEED = 0x8C16
 BYTE_D_PINS = [2, 3, 4, 5, 6, 7, 8, 9]
@@ -317,6 +318,98 @@ def full_control_opcode_expected(opcode: int, init_z: int, constants: dict[str, 
         "ram": init_ac if bits["STR"] else ram_value,
         "conflict": bus_ownership("T2", bits["SRC"], bits["STR"], 1)["conflict"],
     }
+
+
+def fetch_cycle_instruction(opcode: int) -> str | None:
+    return {
+        0x30: "LI",
+        0x10: "ADDI",
+        0x90: "SUBI",
+        0x02: "BEQ",
+    }.get(opcode)
+
+
+def fetch_cycle_execute(opcode: int, operand: int, ac: int, z: int, pc: int, pg: int) -> tuple[int, int, int]:
+    if opcode == 0x30:
+        ac = operand & 0xFF
+    elif opcode == 0x10:
+        ac = (ac + operand) & 0xFF
+    elif opcode == 0x90:
+        ac = (ac - operand) & 0xFF
+    elif opcode == 0x02 and z:
+        pc = ((pg & 0xFF) << 8) | (operand & 0xFF)
+    return ac, int(ac == 0), pc & 0xFFFF
+
+
+def fetch_cycle_golden_rows(proof: dict) -> list[dict[str, object]]:
+    rom = {int(address, 16): int(value, 16) for address, value in proof["rom_image"].items()}
+    state: dict[str, object] = {
+        "pc": int(proof["initial_state"]["PC"], 16),
+        "ac": int(proof["initial_state"]["AC"], 16),
+        "z": proof["initial_state"]["Z"],
+        "pg": int(proof["initial_state"]["PG"], 16),
+        "dp": int(proof["initial_state"]["DP"], 16),
+        "irh": None,
+        "irl": None,
+    }
+    rows: list[dict[str, object]] = []
+    for cycle in range(1, 13):
+        phase = ("T0", "T1", "T2")[(cycle - 1) % 3]
+        if phase == "T0":
+            state["irh"] = rom[int(state["pc"])]
+            state["irl"] = None
+            rows.append({**state, "cycle": cycle, "phase": phase, "abus": state["pc"], "mnemonic": None})
+            state["pc"] = (int(state["pc"]) + 1) & 0xFFFF
+        elif phase == "T1":
+            state["irl"] = rom[int(state["pc"])]
+            rows.append({**state, "cycle": cycle, "phase": phase, "abus": state["pc"], "mnemonic": None})
+            state["pc"] = (int(state["pc"]) + 1) & 0xFFFF
+        else:
+            opcode = int(state["irh"])
+            operand = int(state["irl"])
+            ac, z, pc = fetch_cycle_execute(opcode, operand, int(state["ac"]), int(state["z"]), int(state["pc"]), int(state["pg"]))
+            state["ac"], state["z"], state["pc"] = ac, z, pc
+            rows.append({**state, "cycle": cycle, "phase": phase, "abus": state["pc"], "mnemonic": fetch_cycle_instruction(opcode)})
+    return rows
+
+
+def fetch_cycle_basic_after_edges(proof: dict) -> list[dict[str, object]]:
+    rows = fetch_cycle_golden_rows(proof)[:3]
+    return [
+        {
+            "cycle": 1,
+            "phase": "T0",
+            "pc": rows[1]["pc"],
+            "irh": rows[0]["irh"],
+            "irl": None,
+            "ac": rows[0]["ac"],
+            "z": rows[0]["z"],
+            "ibus_drivers": ["U7"],
+            "dbus_drivers": ["ROM1"],
+        },
+        {
+            "cycle": 2,
+            "phase": "T1",
+            "pc": rows[2]["pc"],
+            "irh": rows[1]["irh"],
+            "irl": rows[1]["irl"],
+            "ac": rows[1]["ac"],
+            "z": rows[1]["z"],
+            "ibus_drivers": ["U7"],
+            "dbus_drivers": ["ROM1"],
+        },
+        {
+            "cycle": 3,
+            "phase": "T2",
+            "pc": rows[2]["pc"],
+            "irh": rows[2]["irh"],
+            "irl": rows[2]["irl"],
+            "ac": rows[2]["ac"],
+            "z": rows[2]["z"],
+            "ibus_drivers": ["U34"],
+            "dbus_drivers": ["ROM1"],
+        },
+    ]
 
 
 def z_compare_n(ac: int) -> int:
@@ -1860,6 +1953,83 @@ def test_rv8gr_reset_clock_bringup_clock_profiles_are_functional():
     assert "Functional simulation only" in next(profile for profile in profiles if profile["name"] == "5_mhz")["note"]
 
 
+def test_rv8gr_fetch_cycle_trace_package_shape():
+    circuit = load_json(FETCH_CYCLE_TRACE / "circuit.json")
+    proof = load_json(FETCH_CYCLE_TRACE / "tests" / "fetch_cycle_trace.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_fetch_cycle_trace"
+    assert proof["circuit"] == circuit["id"]
+    assert (FETCH_CYCLE_TRACE / "README.md").exists()
+    assert "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md" in circuit["source_project"]["paths"]
+    assert "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_tasks.v" in circuit["source_project"]["paths"]
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips["U5"] == "74HC574"
+    assert chips["U6"] == "74HC574"
+    assert chips["U7"] == "74HC245"
+    assert chips["U34"] == "74HC541"
+    assert chips["ROM1"] == "AT28C256"
+
+
+def test_rv8gr_fetch_cycle_basic_fetch_matches_verilog_task():
+    proof = load_json(FETCH_CYCLE_TRACE / "tests" / "fetch_cycle_trace.json")
+    actual = fetch_cycle_basic_after_edges(proof)
+    for expected, row in zip(proof["basic_fetch"], actual):
+        assert row["cycle"] == expected["cycle"], expected
+        assert row["phase"] == expected["phase"], expected
+        assert row["pc"] == int(expected["expect_pc"], 16), expected
+        assert row["irh"] == int(expected["expect_irh"], 16), expected
+        assert row["irl"] == (None if expected["expect_irl"] is None else int(expected["expect_irl"], 16)), expected
+        assert row["ac"] == int(expected["expect_ac"], 16), expected
+        assert row["z"] == expected["expect_z"], expected
+        assert row["ibus_drivers"] == [expected["ibus_driver"]], expected
+        assert row["dbus_drivers"] == [expected["dbus_driver"]], expected
+
+
+def test_rv8gr_fetch_cycle_golden_trace_matches_doc_rows():
+    proof = load_json(FETCH_CYCLE_TRACE / "tests" / "fetch_cycle_trace.json")
+    actual = fetch_cycle_golden_rows(proof)
+    assert len(actual) == len(proof["golden_trace"]) == 12
+
+    for expected, row in zip(proof["golden_trace"], actual):
+        assert row["cycle"] == expected["cycle"], expected
+        assert row["phase"] == expected["phase"], expected
+        assert row["pc"] == int(expected["pc"], 16), expected
+        assert row["abus"] == int(expected["abus"], 16), expected
+        assert row["irh"] == int(expected["irh"], 16), expected
+        assert row["irl"] == (None if expected["irl"] is None else int(expected["irl"], 16)), expected
+        assert row["mnemonic"] == expected["mnemonic"], expected
+        assert row["ac"] == int(expected["ac"], 16), expected
+        assert row["z"] == expected["z"], expected
+        assert row["pg"] == int(expected["pg"], 16), expected
+        assert row["dp"] == int(expected["dp"], 16), expected
+
+    final = proof["final_state"]
+    assert actual[-1]["pc"] == int(final["PC"], 16)
+    assert actual[-1]["ac"] == int(final["AC"], 16)
+    assert actual[-1]["z"] == final["Z"]
+    assert actual[-1]["pg"] == int(final["PG"], 16)
+    assert actual[-1]["dp"] == int(final["DP"], 16)
+
+
+def test_rv8gr_fetch_cycle_bus_driver_policy_is_conflict_free():
+    proof = load_json(FETCH_CYCLE_TRACE / "tests" / "fetch_cycle_trace.json")
+    policy = proof["bus_driver_policy"]
+    for phase_name, src, str_, key in (
+        ("T0", 0, 0, "T0"),
+        ("T1", 0, 0, "T1"),
+        ("T2", 0, 0, "T2_immediate"),
+    ):
+        ownership = bus_ownership(phase_name, src, str_, 0)
+        assert ownership["ibus_drivers"] == policy[key]["ibus"], key
+        assert ownership["dbus_drivers"] == policy[key]["dbus"], key
+        assert ownership["conflict"] is False, key
+
+    rejects = set(policy["reject"])
+    assert {"ibus_multi_driver", "dbus_multi_driver", "rom_ram_dual_select"} <= rejects
+
+
 def test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary():
     timing = load_json(TIMING_MARGINS)
     assert timing["schema"] == "components.lib.circuit.timing_margins"
@@ -2132,6 +2302,10 @@ def run_all():
     test_rv8gr_reset_clock_bringup_push_vectors_are_one_hot_and_pc_known()
     test_rv8gr_reset_clock_bringup_pc_no_unknown_policy_is_data()
     test_rv8gr_reset_clock_bringup_clock_profiles_are_functional()
+    test_rv8gr_fetch_cycle_trace_package_shape()
+    test_rv8gr_fetch_cycle_basic_fetch_matches_verilog_task()
+    test_rv8gr_fetch_cycle_golden_trace_matches_doc_rows()
+    test_rv8gr_fetch_cycle_bus_driver_policy_is_conflict_free()
     test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary()
     test_rv8gr_timing_setup_hold_requirements_cover_edge_sensitive_paths()
     test_rv8gr_timing_physical_assumptions_are_source_backed_and_not_proven()

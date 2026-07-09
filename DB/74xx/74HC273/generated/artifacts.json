@@ -1,390 +1,17 @@
 {
-  "format": "db.component.generated",
-  "version": 1,
-  "source": "DB/74xx/74HC273/definition/definition.json",
-  "part": "74HC273",
-  "portable_files": [
-    {
-      "kind": "python_model",
-      "runtime": "python",
-      "source": "DB/74xx/74HC273/simulation/model.py",
-      "copy_as": "model.py"
-    },
-    {
-      "kind": "python_runtime",
-      "runtime": "python",
-      "source": "python/chiplib/core.py",
-      "copy_as": "chiplib/core.py",
-      "shared": true,
-      "copy_once": true
-    },
-    {
-      "kind": "verilog_model",
-      "runtime": "verilog",
-      "source": "DB/74xx/74HC273/simulation/model.v",
-      "copy_as": "model.v"
-    },
-    {
-      "kind": "netlist",
-      "runtime": "metadata",
-      "source": "DB/74xx/74HC273/simulation/netlist.json",
-      "copy_as": "netlist.json"
-    }
-  ],
   "artifacts": {
-    "json": {
-      "format": "components.generated.detail",
-      "part": "74HC273",
-      "title": "Octal D-Type Flip-Flop With Clear",
-      "family": "74HC",
-      "group": "74xx",
-      "role": "register",
-      "package": {
-        "kind": "DIP",
-        "pins": 20,
-        "default": "N"
-      },
-      "pins": [
-        {
-          "number": 1,
-          "name": "/CLR",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 2,
-          "name": "1Q",
-          "direction": "output"
-        },
-        {
-          "number": 3,
-          "name": "1D",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "2D",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "2Q",
-          "direction": "output"
-        },
-        {
-          "number": 6,
-          "name": "3Q",
-          "direction": "output"
-        },
-        {
-          "number": 7,
-          "name": "3D",
-          "direction": "input"
-        },
-        {
-          "number": 8,
-          "name": "4D",
-          "direction": "input"
-        },
-        {
-          "number": 9,
-          "name": "4Q",
-          "direction": "output"
-        },
-        {
-          "number": 10,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 11,
-          "name": "CLK",
-          "direction": "input"
-        },
-        {
-          "number": 12,
-          "name": "5Q",
-          "direction": "output"
-        },
-        {
-          "number": 13,
-          "name": "5D",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "6D",
-          "direction": "input"
-        },
-        {
-          "number": 15,
-          "name": "6Q",
-          "direction": "output"
-        },
-        {
-          "number": 16,
-          "name": "7Q",
-          "direction": "output"
-        },
-        {
-          "number": 17,
-          "name": "7D",
-          "direction": "input"
-        },
-        {
-          "number": 18,
-          "name": "8D",
-          "direction": "input"
-        },
-        {
-          "number": 19,
-          "name": "8Q",
-          "direction": "output"
-        },
-        {
-          "number": 20,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {},
-      "power": [
-        {
-          "name": "GND",
-          "pin": 10,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 20,
-          "nominal_logic": 1
-        }
-      ],
-      "logic": {
-        "type": "octal_d_type_flip_flop_with_clear",
-        "description": "Octal D-Type Flip-Flop With Clear"
-      },
-      "timing": {
-        "delay_ns": 15
-      }
-    },
-    "python_simulator": {
-      "part": "74HC273",
-      "portable": true,
-      "copy_with_chip": [
-        "DB/74xx/74HC273/simulation/model.py",
-        "python/chiplib/core.py"
-      ],
-      "factory": "create",
-      "file": "DB/74xx/74HC273/simulation/model.py",
-      "class": "HC273"
-    },
-    "verilog_wrapper": {
-      "part": "74HC273",
-      "module": "ttl_74hc273",
-      "file": "DB/74xx/74HC273/simulation/model.v",
-      "netlist": "DB/74xx/74HC273/simulation/netlist.json",
-      "export": {
-        "kind": "structural_port_map",
-        "ports": [
-          {
-            "name": "Clear_bar",
-            "pins": [
-              1
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Clk",
-            "pins": [
-              11
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "D",
-            "pins": [
-              3,
-              4,
-              7,
-              8,
-              13,
-              14,
-              17,
-              18
-            ],
-            "direction": "input"
-          },
-          {
-            "name": "Q",
-            "pins": [
-              2,
-              5,
-              6,
-              9,
-              12,
-              15,
-              16,
-              19
-            ],
-            "direction": "output"
-          }
-        ],
-        "output_pins": [
-          2,
-          5,
-          6,
-          9,
-          12,
-          15,
-          16,
-          19
-        ]
-      }
-    },
-    "verilog_testbench": {
-      "schema": "db.component.generated.verilog_testbench",
-      "version": 1,
-      "part": "74HC273",
-      "module": "ttl_74hc273",
-      "bench_module": "tb_generated_74hc273",
-      "compile": {
-        "tool": "iverilog",
-        "standard": "g2012",
-        "sources": [
-          "DB/74xx/74HC273/simulation/model.v"
-        ],
-        "top": "tb_generated_74hc273"
-      },
-      "split_records": {
-        "truth_table": {
-          "source": "tests/truth_table.json",
-          "present": true,
-          "applicable": true,
-          "vectors": [
-            "basic_function"
-          ]
-        }
-      },
-      "emitted": {
-        "supported": false,
-        "reason": "simple emitted bench currently supports quad_2_to_1_mux only"
-      }
-    },
-    "kicad_symbol": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC273",
-      "shape": "dip",
-      "pins": 20,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ],
-      "right": [
-        20,
-        19,
-        18,
-        17,
-        16,
-        15,
-        14,
-        13,
-        12,
-        11
-      ],
-      "labels": {
-        "1": "/CLR",
-        "3": "1D",
-        "4": "2D",
-        "7": "3D",
-        "8": "4D",
-        "10": "GND",
-        "11": "CLK",
-        "13": "5D",
-        "14": "6D",
-        "17": "7D",
-        "18": "8D",
-        "20": "VCC"
-      },
-      "bus_groups": {}
-    },
-    "svg_pinout": {
-      "schema": "db.component.symbol.dip",
-      "version": 1,
-      "part": "74HC273",
-      "shape": "dip",
-      "pins": 20,
-      "left": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ],
-      "right": [
-        20,
-        19,
-        18,
-        17,
-        16,
-        15,
-        14,
-        13,
-        12,
-        11
-      ],
-      "labels": {
-        "1": "/CLR",
-        "3": "1D",
-        "4": "2D",
-        "7": "3D",
-        "8": "4D",
-        "10": "GND",
-        "11": "CLK",
-        "13": "5D",
-        "14": "6D",
-        "17": "7D",
-        "18": "8D",
-        "20": "VCC"
-      },
-      "bus_groups": {}
-    },
     "documentation": {
-      "schema": "db.component.generated.documentation",
-      "version": 1,
-      "part": "74HC273",
-      "title": "Octal D-Type Flip-Flop With Clear",
       "audience": "students ages 10-15, still useful for older learners",
-      "summary": "Octal D-Type Flip-Flop With Clear.",
-      "overview": "74HC273 is a 20-pin DIP part for register.",
-      "sections": [
-        "overview",
-        "pins",
-        "controls",
-        "truth_table",
-        "timing",
-        "try_it"
-      ],
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
         "After an input changes, wait about 15 ns before trusting the output."
       ],
+      "overview": "74HC273 is a 20-pin DIP part for register.",
+      "part": "74HC273",
       "pin_count": 20,
       "pin_summary": {
         "input": {
@@ -426,43 +53,83 @@
           "note": "Power pins: GND, VCC."
         }
       },
-      "buses": {},
-      "bus_explanations": [],
-      "controls": [],
-      "control_explanations": [],
-      "timing_note": "After an input changes, wait about 15 ns before trusting the output."
-    },
-    "unit_test": {
-      "schema": "db.component.generated.tests",
-      "version": 1,
-      "part": "74HC273",
-      "tests": [
-        {
-          "type": "truth_table",
-          "source": "tests/truth_table.json",
-          "present": true
-        },
-        {
-          "type": "timing",
-          "source": "tests/timing.json",
-          "present": true
-        },
-        {
-          "type": "propagation",
-          "source": "tests/propagation.json",
-          "present": true
-        }
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
       ],
-      "required_vectors": [
-        "basic_function"
-      ]
+      "summary": "Octal D-Type Flip-Flop With Clear.",
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "title": "Octal D-Type Flip-Flop With Clear",
+      "version": 1
     },
     "interactive_demo": {
-      "schema": "db.component.generated.interactive_demo",
-      "version": 1,
-      "part": "74HC273",
-      "title": "Try 74HC273 in the simulator",
-      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "control_labels": [
+        {
+          "explanation": "/CLR controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/CLR - input",
+          "pin": "/CLR"
+        },
+        {
+          "explanation": "1D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1D - input",
+          "pin": "1D"
+        },
+        {
+          "explanation": "2D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2D - input",
+          "pin": "2D"
+        },
+        {
+          "explanation": "3D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3D - input",
+          "pin": "3D"
+        },
+        {
+          "explanation": "4D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4D - input",
+          "pin": "4D"
+        },
+        {
+          "explanation": "CLK controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "CLK - input",
+          "pin": "CLK"
+        },
+        {
+          "explanation": "5D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "5D - input",
+          "pin": "5D"
+        },
+        {
+          "explanation": "6D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "6D - input",
+          "pin": "6D"
+        },
+        {
+          "explanation": "7D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "7D - input",
+          "pin": "7D"
+        },
+        {
+          "explanation": "8D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "8D - input",
+          "pin": "8D"
+        }
+      ],
       "controls": [
         "/CLR",
         "1D",
@@ -475,66 +142,58 @@
         "7D",
         "8D"
       ],
-      "control_labels": [
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC273",
+      "probe_labels": [
         {
-          "pin": "/CLR",
-          "label": "/CLR - input",
-          "hint": "This is active low, so 0 turns the control on.",
-          "explanation": "/CLR controls input. This is active low, so 0 turns the control on."
+          "hint": "Read this output after the settle step.",
+          "label": "1Q",
+          "name": "1Q"
         },
         {
-          "pin": "1D",
-          "label": "1D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "1D controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "2Q",
+          "name": "2Q"
         },
         {
-          "pin": "2D",
-          "label": "2D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "2D controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "3Q",
+          "name": "3Q"
         },
         {
-          "pin": "3D",
-          "label": "3D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "3D controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "4Q",
+          "name": "4Q"
         },
         {
-          "pin": "4D",
-          "label": "4D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "4D controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "5Q",
+          "name": "5Q"
         },
         {
-          "pin": "CLK",
-          "label": "CLK - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "CLK controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "6Q",
+          "name": "6Q"
         },
         {
-          "pin": "5D",
-          "label": "5D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "5D controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "7Q",
+          "name": "7Q"
         },
         {
-          "pin": "6D",
-          "label": "6D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "6D controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "7D",
-          "label": "7D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "7D controls input. Use 1 to turn this control on."
-        },
-        {
-          "pin": "8D",
-          "label": "8D - input",
-          "hint": "Use 1 to turn this control on.",
-          "explanation": "8D controls input. Use 1 to turn this control on."
+          "hint": "Read this output after the settle step.",
+          "label": "8Q",
+          "name": "8Q"
         }
       ],
       "probes": [
@@ -547,63 +206,474 @@
         "7Q",
         "8Q"
       ],
-      "probe_labels": [
-        {
-          "name": "1Q",
-          "label": "1Q",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "2Q",
-          "label": "2Q",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "3Q",
-          "label": "3Q",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "4Q",
-          "label": "4Q",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "5Q",
-          "label": "5Q",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "6Q",
-          "label": "6Q",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "7Q",
-          "label": "7Q",
-          "hint": "Read this output after the settle step."
-        },
-        {
-          "name": "8Q",
-          "label": "8Q",
-          "hint": "Read this output after the settle step."
-        }
-      ],
-      "default_steps": [
-        "apply controls",
-        "settle",
-        "probe"
-      ],
-      "guided_steps": [
-        "Set each control to the value you want to test.",
-        "Run one settle step so the simulated signals can update.",
-        "Read the probes and compare them with the truth table."
-      ],
+      "schema": "db.component.generated.interactive_demo",
       "student_questions": [
         "What changes on the probes when you flip one input?",
         "What happens when you change /CLR?",
         "Which truth-table row matches the value on 1Q?"
-      ]
+      ],
+      "title": "Try 74HC273 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "Octal D-Type Flip-Flop With Clear",
+        "type": "octal_d_type_flip_flop_with_clear"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 20
+      },
+      "part": "74HC273",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/CLR",
+          "number": 1
+        },
+        {
+          "direction": "output",
+          "name": "1Q",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "1D",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "2D",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "2Q",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "3Q",
+          "number": 6
+        },
+        {
+          "direction": "input",
+          "name": "3D",
+          "number": 7
+        },
+        {
+          "direction": "input",
+          "name": "4D",
+          "number": 8
+        },
+        {
+          "direction": "output",
+          "name": "4Q",
+          "number": 9
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "direction": "input",
+          "name": "CLK",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "5Q",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "5D",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "6D",
+          "number": 14
+        },
+        {
+          "direction": "output",
+          "name": "6Q",
+          "number": 15
+        },
+        {
+          "direction": "output",
+          "name": "7Q",
+          "number": 16
+        },
+        {
+          "direction": "input",
+          "name": "7D",
+          "number": 17
+        },
+        {
+          "direction": "input",
+          "name": "8D",
+          "number": 18
+        },
+        {
+          "direction": "output",
+          "name": "8Q",
+          "number": 19
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 10
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 20
+        }
+      ],
+      "role": "register",
+      "timing": {
+        "delay_ns": 15
+      },
+      "title": "Octal D-Type Flip-Flop With Clear"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/CLR",
+        "10": "GND",
+        "11": "CLK",
+        "13": "5D",
+        "14": "6D",
+        "17": "7D",
+        "18": "8D",
+        "20": "VCC",
+        "3": "1D",
+        "4": "2D",
+        "7": "3D",
+        "8": "4D"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC273",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC273",
+      "copy_with_chip": [
+        "DB/74xx/74HC273/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC273/simulation/model.py",
+      "part": "74HC273",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/CLR",
+        "10": "GND",
+        "11": "CLK",
+        "13": "5D",
+        "14": "6D",
+        "17": "7D",
+        "18": "8D",
+        "20": "VCC",
+        "3": "1D",
+        "4": "2D",
+        "7": "3D",
+        "8": "4D"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC273",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC273",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC273",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC273",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc273",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC273/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc273"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc273",
+      "part": "74HC273",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC273",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC273",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "basic_function"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          2,
+          5,
+          6,
+          9,
+          12,
+          15,
+          16,
+          19
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Clear_bar",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Clk",
+            "pins": [
+              11
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "D",
+            "pins": [
+              3,
+              4,
+              7,
+              8,
+              13,
+              14,
+              17,
+              18
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q",
+            "pins": [
+              2,
+              5,
+              6,
+              9,
+              12,
+              15,
+              16,
+              19
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC273/simulation/model.v",
+      "module": "ttl_74hc273",
+      "netlist": "DB/74xx/74HC273/simulation/netlist.json",
+      "part": "74HC273"
     }
-  }
+  },
+  "format": "db.component.generated",
+  "part": "74HC273",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC273/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC273/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC273/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC273/definition/definition.json",
+  "version": 1
 }
