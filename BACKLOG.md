@@ -8,6 +8,8 @@ Future work for the shared component library.
   and CPU simulation projects in `SCHEMATIC_JSON_SPEC.md`.
 - ✅ Record the core UI goal: JSON and visual block UI must round-trip 1-to-1,
   including probes/displays, so students can edit either side.
+- ✅ Record the primary learner audience: students around `10-15` years old,
+  with the same tools still usable by older learners up to about `24`.
 - ✅ Record backend-first architecture in `PYTHON_BACKEND_ARCHITECTURE.md`: UI,
   JSON, netlist, and Verilog should talk through one Python design model.
 - ✅ Record CLI/backend contract: UI, CLI, and direct Python scripts must all

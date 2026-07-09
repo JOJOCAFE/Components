@@ -59,6 +59,11 @@ calls Python backend commands and renders the returned design/simulation state.
 The same backend must also be callable by CLI and by direct Python scripts, all
 using the same JSON schematic file.
 
+Primary users are students from roughly primary to secondary school age
+(`10-15` years old), with the same tools still usable by older learners up to
+about `24`. Keep examples, labels, errors, and UI/API affordances clear enough
+for beginners while preserving real pin-level behavior and datasheet accuracy.
+
 Use the Verilog files when a project needs HDL-level comparison, FPGA-oriented
 tests, or a second independent implementation. Do not prefer Verilog over the
 Python simulator for RV8/RV8GR system behavior checks unless the task is

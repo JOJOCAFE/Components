@@ -4,6 +4,11 @@ This is the student-readable source format for digital logic and TTL CPU
 simulation. It is easier to read than a raw netlist or Verilog, but it can be
 normalized into both.
 
+The primary learner is expected to be around `10-15` years old, with the same
+format still useful for older students up to about `24`. Names, examples,
+validation messages, and UI-facing metadata should therefore be readable for
+beginners without hiding real pins, buses, rails, and logic behavior.
+
 The format is pin-level: `U1:1` means chip `U1`, physical DIP pin `1`.
 `DATA:0` means bus `DATA`, line `0`.
 
