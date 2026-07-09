@@ -25,17 +25,33 @@ outputs.
 
 ## Task List
 
-1. ⬜ Define package boundaries without moving code yet.
-   - `db`: per-chip manifests used as the chip identity DB during
-     migration.
-   - `chipdb`: chip metadata, pinout evidence, package/pin descriptions.
-   - `behavior`: Python physical pin-level chip behavior.
-   - `design`: schematic JSON parsing and normalized `Design`.
-   - `sim`: board/net/bus/probe/clock simulation runtime.
-   - `exporters.verilog`: structural Verilog/testbench export.
-   - `exporters.netlist`: normalized netlist import/export.
-   - `cli`: command-line adapter over the same APIs.
-   - `api`: future HTTP/RPC/service wrapper.
+1. ✅ Define package boundaries without moving code yet.
+   - `db/`: canonical per-chip manifests, schema, status, source evidence,
+     legacy implementation references, and DB-owned export metadata.
+   - `chipdb`: Python DB access layer over `db/`; owns chip metadata,
+     package/pin descriptions, status reports, audit checks, and capability
+     queries. Current implementation: `python/chiplib/db.py`.
+   - `behavior`: Python physical pin-level chip behavior and catalog-backed
+     chip construction. Current implementation: `python/chiplib/chips.py` and
+     `python/chiplib/catalog.py`.
+   - `design`: schematic JSON parsing, normalized `Design`, round-trip JSON,
+     and conversion into runtime boards. Current implementation:
+     `python/chiplib/design.py`.
+   - `sim`: board/net/bus/source/probe/clock simulation runtime. Current
+     implementation: `python/chiplib/core.py` plus stimulus/probe helpers.
+   - `exporters.verilog`: structural Verilog/testbench export and DB-backed
+     pin-to-port mapping. Current implementation: `python/chiplib/netlist.py`.
+   - `exporters.netlist`: normalized netlist import/export using
+     `schemas/normalized-netlist.schema.json`. Current implementation:
+     `python/chiplib/netlist.py`.
+   - `cli`: command-line adapter over service-style APIs; it may format human
+     output but should not own chip behavior, schema rules, or exporter logic.
+     Current implementation: `python/chiplib/cli.py`.
+   - `api`: future HTTP, stdio JSON-RPC, or frontend adapter that exposes the
+     same contracts as `SERVICE_CONTRACT.md` without creating a second backend.
+   - Boundary rule: these are ownership boundaries first. Do not move files
+     into new packages until service interfaces and contract tests prove public
+     behavior did not change.
 
 2. ✅ Write the service contract document.
    - See `SERVICE_CONTRACT.md`.

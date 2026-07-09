@@ -59,7 +59,7 @@ This keeps the current implementation working while the DB becomes complete.
 
 ### Phase 1: DB Seed
 
-Status: started.
+Status: complete.
 
 - ✅ Add `db/chip.schema.json`.
 - ✅ Add seed manifests for simple gates and memory.
@@ -70,13 +70,13 @@ Status: started.
 
 Exit criteria:
 
-- `python3 -B -m tests.test_db` validates all DB manifests.
-- `python3 -m chiplib.cli db` lists the current DB.
-- No DB manifest has hidden missing file references.
+- ✅ `python3 -B -m tests.test_db` validates all DB manifests.
+- ✅ `python3 -m chiplib.cli db` lists the current DB.
+- ✅ No DB manifest has hidden missing file references.
 
 ### Phase 2: DB Audit
 
-Status: started.
+Status: complete.
 
 Add audit tooling that compares DB state against the legacy catalog.
 
@@ -100,6 +100,8 @@ Exit criteria:
 
 ### Phase 3: DB-Backed Metadata
 
+Status: started.
+
 Move read-only metadata consumers to the DB first.
 
 Candidates:
@@ -114,7 +116,8 @@ Do not move behavior execution yet.
 
 Exit criteria:
 
-- `CHIP_STATUS.md` can be generated or checked from DB data.
+- ✅ `CHIP_STATUS.md` can be checked from DB data with
+  `python3 -m chiplib.cli db --status`.
 - UI/API-facing chip metadata comes from DB manifests.
 
 ### Phase 4: DB-Backed Export Metadata
@@ -210,8 +213,14 @@ Exit criteria:
 
 ## Recommended Next Tasks
 
-1. Add `db --audit`.
-2. Add more representative DB manifests.
-3. Add a DB-vs-legacy coverage test.
-4. Generate or check `CHIP_STATUS.md` from DB data.
-5. Move Verilog export metadata for one simple chip to prove the pattern.
+1. Finish DB-backed UI/API metadata accessors so frontends can read chip
+   status, pins, package, evidence, and export capability without scanning
+   `verilog/74HC/`, `verilog/Memory/`, or `python/chiplib/catalog.py`.
+2. Continue Phase 4 by moving more safe `Design.to_verilog()` pin-to-port
+   mappings into `db/<part>/chip.json` export metadata.
+3. Add a generated/check mode for `CHIP_STATUS.md` so documentation drift is
+   caught in tests or CI instead of only through manual review.
+4. Start Phase 5 with one low-risk pinout migration proof, keeping a legacy
+   compatibility path until tests prove DB pinout loading is stable.
+5. Defer DB-owned model moves until service interfaces and contract tests are
+   in place.
