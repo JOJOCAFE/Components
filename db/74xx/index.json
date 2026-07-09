@@ -3,6 +3,6 @@
   "version": 1,
   "id": "74xx",
   "title": "74xx and 74HC logic ICs",
-  "migration_status": "flat_manifests_active",
-  "manifest_note": "Existing 74HC IC manifests remain in db/<part>/chip.json until grouped IC migration is tested."
+  "migration_status": "grouped_manifests_active",
+  "manifest_note": "74HC IC manifests live in db/74xx/<part>/chip.json."
 }

@@ -8,9 +8,8 @@ loaders and tests prove the replacement path is equivalent.
 
 ## Target Shape
 
-The DB is becoming a grouped component catalog. Existing flat chip folders stay
-active during migration, while new component classes can already live in group
-folders:
+The DB is now a grouped component catalog. IC manifests live with their family,
+and non-IC component manifests live with their component class:
 
 ```text
 db/
@@ -54,7 +53,8 @@ and references to active legacy files when any exist.
 
 ## Current Transitional Shape
 
-During migration, `chip.json` may point to legacy files:
+During migration, grouped `chip.json` manifests may point to legacy
+implementation files:
 
 ```text
 verilog/74xx/74hc245.v
@@ -67,9 +67,11 @@ python/chiplib/netlist.py
 ```
 
 This keeps the current implementation working while the DB becomes complete.
-New grouped component manifests may live under:
+Grouped component manifests live under:
 
 ```text
+db/74xx/<part>/chip.json
+db/memory/<part>/chip.json
 db/virtual/<component>/component.json
 db/passive/<component>/component.json
 db/discrete/<component>/component.json
@@ -92,9 +94,9 @@ db/discrete/<component>/component.json
 8. Grouped virtual/passive/discrete manifests are allowed before behavior is
    executable, but they must declare `group`, `kind`, `role`, `pins`, `status`,
    and their intended `simulation.service`.
-9. Do not move existing flat IC DB folders into `db/74xx/` or `db/memory/`
-   until the grouped lookup path has contract tests and no downstream code
-   assumes `db/<part>/chip.json`.
+9. Direct `db/<part>/chip.json` lookups are deprecated. New code must use the
+   DB loader or grouped lookup path so `db/74xx/<part>/chip.json` and
+   `db/memory/<part>/chip.json` both work.
 
 ## Phases
 
@@ -159,7 +161,7 @@ Exit criteria:
 
 - ✅ `CHIP_STATUS.md` can be checked from DB data with
   `python3 -m chiplib.cli db --status`.
-- ✅ DB loader can read both flat IC manifests and grouped
+- ✅ DB loader can read grouped IC `chip.json` manifests and grouped
   `component.json` manifests.
 - ✅ Seed grouped manifests exist for virtual, passive, and discrete schematic
   components.
@@ -175,7 +177,8 @@ DB-owned export metadata.
 Target:
 
 ```text
-db/<part>/chip.json
+db/74xx/<part>/chip.json
+db/memory/<part>/chip.json
   verilog:
     module
     file
@@ -208,13 +211,13 @@ Current proof point:
 
 ### Phase 5: DB-Backed Pinout Documentation
 
-Move pinout docs from legacy Verilog comments comments into
-chip folders only after references are DB-backed.
+Move pinout docs from legacy Verilog comments into chip folders only after
+references are DB-backed.
 
 Example future move:
 
 ```text
-verilog/74xx/74hc245.v embedded comments -> db/74HC245/pinout.md
+verilog/74xx/74hc245.v embedded comments -> db/74xx/74HC245/pinout.md
 ```
 
 Temporary compatibility options:
@@ -232,8 +235,8 @@ Exit criteria:
 Only after metadata and export paths are stable, consider moving model files:
 
 ```text
-verilog/74xx/74hc245.v -> db/74HC245/model.v
-verilog/Memory/at28c256.v -> db/AT28C256/model.v
+verilog/74xx/74hc245.v -> db/74xx/74HC245/model.v
+verilog/Memory/at28c256.v -> db/memory/AT28C256/model.v
 ```
 
 This is optional. It may be better to keep implementation models in family
@@ -262,13 +265,13 @@ Exit criteria:
    group, kind, role, status, pins, package, evidence, UI hints, simulation
    service, and export capability without scanning implementation folders.
 2. Continue Phase 4 by moving more safe `Design.to_verilog()` pin-to-port
-   mappings into `db/<part>/chip.json` export metadata.
+   mappings into grouped `chip.json` export metadata.
 3. Add a generated/check mode for `CHIP_STATUS.md` so documentation drift is
    caught in tests or CI instead of only through manual review.
 4. Add virtual/passive/discrete behavior adapters so schematic JSON can
    instantiate DB-backed InputSource, Probe, LED, Resistor, Capacitor, and
    transistor components.
-5. Start Phase 5 with one low-risk pinout migration proof, keeping a legacy
-   compatibility path until tests prove DB pinout loading is stable.
+5. Replace remaining direct `db/<part>/chip.json` assumptions in docs,
+   examples, and downstream projects with DB-loader access.
 6. Defer DB-owned model moves until service interfaces and contract tests are
    in place.

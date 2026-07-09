@@ -71,8 +71,9 @@ Future work for the shared component library.
 - ✅ Freeze the normalized netlist schema in
   `schemas/normalized-netlist.schema.json` as the first plugin boundary.
 - ✅ Add grouped DB seed manifests for virtual tools, passive parts, and
-  discrete transistors while keeping existing IC manifests in their current
-  flat paths during migration.
+  discrete transistors.
+- ✅ Move IC DB manifests into grouped folders: 74HC parts under `db/74xx/`
+  and memory parts under `db/memory/`.
 - ✅ Add DB-backed adapters so schematic JSON can instantiate virtual sources,
   rails, probes, passive parts, and discrete parts without forcing those
   representation-only components through chip behavior factories.

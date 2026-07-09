@@ -373,7 +373,8 @@ def _verilog_mapping(part: str) -> JsonMap | None:
 
 
 def _db_verilog_mapping(part: str) -> JsonMap | None:
-    manifest_path = Path(__file__).resolve().parents[2] / "db" / part / "chip.json"
+    root = Path(__file__).resolve().parents[2]
+    manifest_path = _db_manifest_path(root, part)
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
@@ -396,6 +397,18 @@ def _db_verilog_mapping(part: str) -> JsonMap | None:
         "output_pins": [int(pin) for pin in export.get("output_pins", [])],
         "delay_ns": deepcopy(export.get("delay_ns", 1)),
     }
+
+
+def _db_manifest_path(root: Path, part: str) -> Path:
+    db_root = root / "db"
+    flat = db_root / part / "chip.json"
+    if flat.exists():
+        return flat
+    part_key = str(part).upper()
+    for path in sorted(db_root.glob("*/*/chip.json")):
+        if path.parent.name.upper() == part_key:
+            return path
+    return flat
 
 
 def _ports_from_db_export(

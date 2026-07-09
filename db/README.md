@@ -2,15 +2,16 @@
 
 Component database for the shared Components library.
 
-The current migration-safe structure supports both the original flat chip
-folders and grouped component folders:
+The current migration-safe structure is grouped by component family:
 
 ```text
 db/
-  74HC00/
-    chip.json              # legacy flat path, still active
-  62256/
-    chip.json              # legacy flat path, still active
+  74xx/
+    74HC00/
+      chip.json
+  memory/
+    62256/
+      chip.json
   virtual/
     InputSource/
       component.json
@@ -46,11 +47,11 @@ The manifest shape is defined by `chip.schema.json`. The schema now includes
 - `discrete`: NPN and PNP transistors
 
 Missing properties are allowed, but they must be visible through manifest
-status and loader reports. A flat chip folder is valid when `chip.json` is
-readable and identifies the part. A grouped component folder is valid when
+status and loader reports. A grouped IC folder is valid when `chip.json` is
+readable and identifies the part. A grouped non-IC folder is valid when
 `component.json` is readable and identifies the part.
 
-The old layout remains active during migration:
+Implementation files remain active in their legacy locations during migration:
 
 - `verilog/74xx/`
 - `verilog/Memory/`

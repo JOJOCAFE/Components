@@ -513,7 +513,7 @@ def _frontend_snapshot(snapshot: JsonMap) -> JsonMap:
 
 
 def _verilog_file_for_part(part: str, module: str) -> str | None:
-    db_file = ROOT / "db" / part / "chip.json"
+    db_file = _db_manifest_path(part)
     if db_file.exists():
         try:
             import json
@@ -529,3 +529,15 @@ def _verilog_file_for_part(part: str, module: str) -> str | None:
     if module.startswith("mem_"):
         return f"verilog/Memory/{module[4:]}.v"
     return None
+
+
+def _db_manifest_path(part: str) -> Path:
+    db_root = ROOT / "db"
+    flat = db_root / part / "chip.json"
+    if flat.exists():
+        return flat
+    part_key = str(part).upper()
+    for path in sorted(db_root.glob("*/*/chip.json")):
+        if path.parent.name.upper() == part_key:
+            return path
+    return flat
