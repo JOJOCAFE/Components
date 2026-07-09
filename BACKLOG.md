@@ -156,37 +156,36 @@ Done:
   rising-edge count, no-edge hold, `PC_INC`, `/PC_LD`, RCO carry chain,
   load-priority-over-count, component-model execution, push-switch, random
   debounced push, 50 kHz, 1 MHz, 2 MHz, and 5 MHz functional profiles.
+- ✅ `RV8GR_AddressMux16`: U15-U16/U29-U30 `74HC157` address mux. Tests cover
+  `/ADDR_MODE=1` selecting PC, `/ADDR_MODE=0` selecting `{DP,IRL}`, T0/T1
+  staying on PC even when `SRC` or `STR` is latched, T2 data access using
+  `ADDR_REQ=SRC OR STR` rather than raw `T2`, component-model execution, and
+  complementary A15 ROM/RAM decode.
+- ✅ `RV8GR_BusOwnership`: U7 `74HC245`, U14/U34 `74HC541`, ROM, and RAM bus
+  ownership proof. Tests cover T0/T1 DBUS-to-IBUS fetch, T2 immediate through
+  U34, T2 memory load through U7, T2 store through U14 plus U7 write direction,
+  memory output disable during store, ROM/RAM select exclusivity, and forced
+  unsafe bus-fight detection.
 
 Next team tasks:
 
-1. **Bank + Bam: `RV8GR_AddressMux16`**
-   - Build from U15-U20/U29/U30 `74HC157`.
-   - Prove `/ADDR_MODE=1` selects PC for fetch and `/ADDR_MODE=0` selects
-     `{DP,IRL}` for data access.
-   - Include the lab warning that real RV8GR uses `ADDR_REQ=SRC OR STR`, not
-     raw `T2`.
-2. **Fern + Mint: `RV8GR_BusOwnership`**
-   - Prove the phase table from `06_debug_plan.md`: T0/T1 use U7
-     DBUS-to-IBUS, T2 immediate uses U34, T2 store uses U14 plus U7 write
-     direction.
-   - This is the main bus-race/bus-fight proof.
-3. **Mint + Fern: `RV8GR_InstructionLatch`**
+1. **Mint + Fern: `RV8GR_InstructionLatch`**
    - Build from U5/U6 `74HC574`.
    - Prove U5 captures only on T0, U6 captures only on T1, and both hold
      through T2.
-4. **Ohm + Fern: `RV8GR_StorePath`**
+2. **Ohm + Fern: `RV8GR_StorePath`**
    - Prove `STR=1` at T2 makes U7 enabled, `WR_DIR=1`, ROM `/OE=HIGH`, and RAM
      `/WE=LOW` only when selected.
    - Include current-draw/bus-fight notes for physical debug.
-5. **Bam + Ohm + Fern: `RV8GR_DataPageMemory`**
+3. **Bam + Ohm + Fern: `RV8GR_DataPageMemory`**
    - Prove SETDP, RAM write/readback, ROM read via DP, `$7FFF/$8000` boundary,
      and ROM/RAM chip-select exclusivity.
-6. **Mint + Fern: Clock profiles**
+4. **Mint + Fern: Clock profiles**
    - Keep push-switch, random debounced push up to 500 ms for 100 ticks,
      50 kHz, 1 MHz, 2 MHz, and 5 MHz profiles on every circuit.
    - Mark 5 MHz as functional simulation until timing-margin and hardware
      signal-integrity proof exist.
-7. **Noon + Fern: `RV8GR_IRQLatch`**
+5. **Noon + Fern: `RV8GR_IRQLatch`**
    - Prove `/IRQ` low-then-release latches IRQ_FF, reset clears it, and v1.0
      does not force PC or auto-vector.
 

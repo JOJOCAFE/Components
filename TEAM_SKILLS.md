@@ -113,9 +113,14 @@ Current RV8GR circuit-library milestone:
   async reset, rising-edge count, no-edge hold, `PC_INC`, `/PC_LD`, RCO carry,
   load priority, component-model execution, push-switch operation, random
   debounced pushes, and 50 kHz through 5 MHz functional profiles.
-- Next circuits must follow the same quality level: `RV8GR_AddressMux16`,
-  `RV8GR_BusOwnership`, `RV8GR_InstructionLatch`, `RV8GR_StorePath`,
-  `RV8GR_DataPageMemory`, and `RV8GR_IRQLatch`.
+- `RV8GR_AddressMux16` proves PC vs `{DP,IRL}` address selection,
+  `ADDR_REQ=SRC OR STR` gating, no raw-`T2` data-address selection, A15
+  ROM/RAM decode, and live `74HC157` component-model execution.
+- `RV8GR_BusOwnership` proves T0/T1 fetch, T2 immediate, T2 memory load, T2
+  store, memory output disable during store, ROM/RAM select exclusivity, and
+  forced unsafe bus-fight detection.
+- Next circuits must follow the same quality level: `RV8GR_InstructionLatch`,
+  `RV8GR_StorePath`, `RV8GR_DataPageMemory`, and `RV8GR_IRQLatch`.
 
 ## Pim - Coordinator
 

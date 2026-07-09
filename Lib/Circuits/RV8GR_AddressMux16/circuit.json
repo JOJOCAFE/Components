@@ -1,0 +1,77 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_address_mux16",
+  "title": "RV8GR 16-bit address mux",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/labs/lab04_address_mux.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/06_debug_plan.md",
+      "/home/jo/kiro/RV8/RV8GR/Kicad/gen_kicad.py",
+      "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_chip_level.v"
+    ]
+  },
+  "purpose": "Select the memory address source for fetch cycles or data-access execute cycles.",
+  "chips": [
+    {"ref": "U15", "part": "74HC157", "role": "ABUS bits 0-3, IRL low nibble vs PC low nibble"},
+    {"ref": "U16", "part": "74HC157", "role": "ABUS bits 4-7, IRL high nibble vs PC high nibble"},
+    {"ref": "U29", "part": "74HC157", "role": "ABUS bits 8-11, DP low nibble vs PC high byte low nibble"},
+    {"ref": "U30", "part": "74HC157", "role": "ABUS bits 12-15, DP high nibble vs PC high byte high nibble"}
+  ],
+  "ports": [
+    {"name": "/ADDR_MODE", "direction": "input", "active_low": true, "description": "74HC157 select input; HIGH selects PC, LOW selects {DP,IRL}."},
+    {"name": "ADDR_REQ", "direction": "input", "description": "SRC OR STR; requests data address during T2."},
+    {"name": "T2", "direction": "input", "description": "Execute phase; gates ADDR_REQ into /ADDR_MODE."},
+    {"name": "PC0..PC15", "direction": "input"},
+    {"name": "IRL0..IRL7", "direction": "input", "description": "Low byte of data address."},
+    {"name": "DP0..DP7", "direction": "input", "description": "High byte of data address."},
+    {"name": "ABUS0..ABUS15", "direction": "output"},
+    {"name": "A15", "direction": "output", "description": "Same as ABUS15; ROM /CE uses A15 and RAM /CE uses /A15."}
+  ],
+  "wiring": [
+    {"net": "/ADDR_MODE", "connections": ["U15.1", "U16.1", "U29.1", "U30.1"]},
+    {"net": "GND", "connections": ["U15.8", "U15.15", "U16.8", "U16.15", "U29.8", "U29.15", "U30.8", "U30.15"]},
+    {"net": "VCC", "connections": ["U15.16", "U16.16", "U29.16", "U30.16"]},
+    {"net": "IRL0..IRL3", "connections": ["U15.2", "U15.5", "U15.11", "U15.14"]},
+    {"net": "PC0..PC3", "connections": ["U15.3", "U15.6", "U15.10", "U15.13"]},
+    {"net": "ABUS0..ABUS3", "connections": ["U15.4", "U15.7", "U15.9", "U15.12"]},
+    {"net": "IRL4..IRL7", "connections": ["U16.2", "U16.5", "U16.11", "U16.14"]},
+    {"net": "PC4..PC7", "connections": ["U16.3", "U16.6", "U16.10", "U16.13"]},
+    {"net": "ABUS4..ABUS7", "connections": ["U16.4", "U16.7", "U16.9", "U16.12"]},
+    {"net": "DP0..DP3", "connections": ["U29.2", "U29.5", "U29.11", "U29.14"]},
+    {"net": "PC8..PC11", "connections": ["U29.3", "U29.6", "U29.10", "U29.13"]},
+    {"net": "ABUS8..ABUS11", "connections": ["U29.4", "U29.7", "U29.9", "U29.12"]},
+    {"net": "DP4..DP7", "connections": ["U30.2", "U30.5", "U30.11", "U30.14"]},
+    {"net": "PC12..PC15", "connections": ["U30.3", "U30.6", "U30.10", "U30.13"]},
+    {"net": "ABUS12..ABUS15", "connections": ["U30.4", "U30.7", "U30.9", "U30.12"]}
+  ],
+  "behavior": {
+    "select": "The physical select net is /ADDR_MODE. /ADDR_MODE=1 selects PC; /ADDR_MODE=0 selects {DP,IRL}.",
+    "fetch_address": "During T0 and T1, /ADDR_MODE remains HIGH, so ABUS=PC.",
+    "data_address": "During T2 with ADDR_REQ=SRC OR STR, /ADDR_MODE goes LOW, so ABUS={DP,IRL}.",
+    "warning": "Do not drive address mode from raw T2. Real RV8GR uses ADDR_REQ=SRC OR STR, then /ADDR_MODE=NAND(ADDR_REQ,T2).",
+    "a15_decode": "ABUS15 selects the memory half: A15=0 enables ROM, A15=1 enables RAM through the inverted /A15 path."
+  },
+  "timing": {
+    "clocking": "combinational",
+    "control_window": "ADDR_REQ must be stable before T2 data-access use; T0/T1 fetches ignore SRC/STR because T2=0 keeps /ADDR_MODE HIGH.",
+    "paths": [
+      {"name": "pc_to_abus", "from": "PC0..PC15", "to": "ABUS0..ABUS15", "when": "/ADDR_MODE=1", "source_part": "74HC157"},
+      {"name": "data_to_abus", "from": "DP0..DP7 and IRL0..IRL7", "to": "ABUS0..ABUS15", "when": "/ADDR_MODE=0", "source_part": "74HC157"},
+      {"name": "a15_decode", "from": "ABUS15", "to": "ROM /CE and RAM /CE complement", "source_part": "74HC04"}
+    ]
+  },
+  "verification": {
+    "tests": ["tests/address_mux16.json"],
+    "guarantees": [
+      "/ADDR_MODE=1 selects PC",
+      "/ADDR_MODE=0 selects {DP,IRL}",
+      "T0 and T1 stay on PC even when SRC or STR is set",
+      "T2 data access uses ADDR_REQ=SRC OR STR, not raw T2",
+      "A15 decode is complementary for ROM and RAM"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "components.lib.circuit.test.address_mux16",
+  "version": 1,
+  "circuit": "rv8gr_address_mux16",
+  "source": "Lib/Circuits/RV8GR_AddressMux16/circuit.json",
+  "vectors": [
+    {"name": "fetch_t0_selects_pc_even_when_src_set", "phase": "T0", "src": 1, "str": 0, "pc": "0x1234", "dp": "0x80", "irl": "0x56", "expect_abus": "0x1234", "expect_addr_mode_n": 1},
+    {"name": "fetch_t1_selects_pc_even_when_str_set", "phase": "T1", "src": 0, "str": 1, "pc": "0x4567", "dp": "0x90", "irl": "0xAB", "expect_abus": "0x4567", "expect_addr_mode_n": 1},
+    {"name": "t2_no_addr_req_selects_pc_for_immediate", "phase": "T2", "src": 0, "str": 0, "pc": "0x2000", "dp": "0x80", "irl": "0x42", "expect_abus": "0x2000", "expect_addr_mode_n": 1},
+    {"name": "t2_src_selects_data_address", "phase": "T2", "src": 1, "str": 0, "pc": "0x2002", "dp": "0x7F", "irl": "0x10", "expect_abus": "0x7F10", "expect_addr_mode_n": 0},
+    {"name": "t2_str_selects_data_address", "phase": "T2", "src": 0, "str": 1, "pc": "0x2004", "dp": "0x80", "irl": "0x20", "expect_abus": "0x8020", "expect_addr_mode_n": 0},
+    {"name": "t2_src_and_str_store_dominant_still_data_address", "phase": "T2", "src": 1, "str": 1, "pc": "0x2FFE", "dp": "0xFF", "irl": "0xEE", "expect_abus": "0xFFEE", "expect_addr_mode_n": 0}
+  ],
+  "decode": {
+    "addr_req": "SRC OR STR",
+    "addr_mode_n": "NAND(ADDR_REQ,T2)",
+    "warning": "Raw T2 must not directly select the data address; T2 with SRC=0 and STR=0 remains PC/immediate mode."
+  },
+  "memory_select_vectors": [
+    {"abus": "0x7FFF", "a15": 0, "rom_ce_n": 0, "ram_ce_n": 1},
+    {"abus": "0x8000", "a15": 1, "rom_ce_n": 1, "ram_ce_n": 0},
+    {"abus": "0xFFEE", "a15": 1, "rom_ce_n": 1, "ram_ce_n": 0}
+  ]
+}

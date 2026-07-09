@@ -1,0 +1,30 @@
+{
+  "schema": "components.lib.circuit.test.bus_ownership",
+  "version": 1,
+  "circuit": "rv8gr_bus_ownership",
+  "source": "Lib/Circuits/RV8GR_BusOwnership/circuit.json",
+  "vectors": [
+    {"name": "t0_fetch_rom", "phase": "T0", "src": 0, "str": 0, "a15": 0, "expect_ibus_drivers": ["U7"], "expect_dbus_drivers": ["ROM1"], "u7_direction": "DBUS_TO_IBUS", "expect_conflict": false},
+    {"name": "t1_fetch_rom", "phase": "T1", "src": 0, "str": 0, "a15": 0, "expect_ibus_drivers": ["U7"], "expect_dbus_drivers": ["ROM1"], "u7_direction": "DBUS_TO_IBUS", "expect_conflict": false},
+    {"name": "t2_immediate", "phase": "T2", "src": 0, "str": 0, "a15": 0, "expect_ibus_drivers": ["U34"], "expect_dbus_drivers": ["ROM1"], "u7_direction": "DISABLED", "expect_conflict": false},
+    {"name": "t2_load_rom", "phase": "T2", "src": 1, "str": 0, "a15": 0, "expect_ibus_drivers": ["U7"], "expect_dbus_drivers": ["ROM1"], "u7_direction": "DBUS_TO_IBUS", "expect_conflict": false},
+    {"name": "t2_load_ram", "phase": "T2", "src": 1, "str": 0, "a15": 1, "expect_ibus_drivers": ["U7"], "expect_dbus_drivers": ["RAM1"], "u7_direction": "DBUS_TO_IBUS", "expect_conflict": false},
+    {"name": "t2_store_ram", "phase": "T2", "src": 0, "str": 1, "a15": 1, "expect_ibus_drivers": ["U14"], "expect_dbus_drivers": ["U7"], "u7_direction": "IBUS_TO_DBUS", "expect_conflict": false},
+    {"name": "t2_reserved_src_str_store_dominant", "phase": "T2", "src": 1, "str": 1, "a15": 1, "expect_ibus_drivers": ["U14"], "expect_dbus_drivers": ["U7"], "u7_direction": "IBUS_TO_DBUS", "expect_conflict": false}
+  ],
+  "derived_signals": {
+    "ADDR_REQ": "SRC OR STR",
+    "/ADDR_MODE": "NAND(ADDR_REQ,T2)",
+    "/IRL_OE": "NAND(T2,/ADDR_MODE)",
+    "BUF_OE_N": "NOT(/IRL_OE)",
+    "/AC_BUF": "NAND(T2,STR)",
+    "WR_DIR": "NOT(/AC_BUF)"
+  },
+  "unsafe_control_vectors": [
+    {"name": "forced_u34_and_u14_ibus_conflict", "override": {"/IRL_OE": 0, "/AC_BUF": 0}, "expect_conflict": true},
+    {"name": "forced_u34_and_u7_ibus_conflict", "override": {"/IRL_OE": 0, "BUF_OE_N": 0, "WR_DIR": 0}, "expect_conflict": true},
+    {"name": "forced_rom_and_u7_dbus_conflict", "override": {"A15": 0, "BUF_OE_N": 0, "WR_DIR": 1, "ROM_OE_N": 0}, "expect_conflict": true},
+    {"name": "forced_ram_and_u7_dbus_conflict", "override": {"A15": 1, "BUF_OE_N": 0, "WR_DIR": 1, "RAM_WE_N": 1}, "expect_conflict": true},
+    {"name": "forced_rom_ram_select_conflict", "override": {"ROM_CE_N": 0, "RAM_CE_N": 0}, "expect_conflict": true}
+  ]
+}
