@@ -1,5 +1,8 @@
 # Shared Component Library
 
+[![Python tests](https://github.com/JOJOCAFE/Components/actions/workflows/python-tests.yml/badge.svg)](https://github.com/JOJOCAFE/Components/actions/workflows/python-tests.yml)
+[![Verilog smoke](https://github.com/JOJOCAFE/Components/actions/workflows/verilog-smoke.yml/badge.svg)](https://github.com/JOJOCAFE/Components/actions/workflows/verilog-smoke.yml)
+
 Reusable component models, DIP pinout notes, and datasheet evidence for RV8, RV8GR, and future `/home/jo/kiro` hardware projects.
 
 This folder is shared project infrastructure. Keep reusable chip models here instead of copying them into one CPU project unless a project needs a frozen local snapshot.
@@ -16,6 +19,8 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 - `PYTHON_BACKEND_ARCHITECTURE.md` - backend-first architecture where JSON,
   UI blocks, CLI commands, Python scripts, netlists, and Verilog all talk
   through one Python design model.
+- `CHIP_STATUS.md` - chip status split by datasheet verification, models,
+  test coverage, netlist export support, and missing-datasheet exclusions.
 
 ## Verification Rule
 
@@ -78,19 +83,20 @@ catalog.
 
 ## Tests
 
-Run from `/home/jo/kiro`:
+Run from the Components repo root:
 
 ```sh
-cd Components/python
+cd python
 python3 -B -m tests.test_chips
 python3 -B -m tests.test_design
 python3 -B -m tests.test_netlist
 python3 -B -m tests.test_cli
+cd ..
 
-iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp Components/74HC/*.v Components/74HC/tests/tb_74hc_smoke.v
+iverilog -g2012 -Wall -o /tmp/tb_74hc_smoke.vvp 74HC/*.v 74HC/tests/tb_74hc_smoke.v
 vvp /tmp/tb_74hc_smoke.vvp
 
-iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp Components/Memory/*.v Components/Memory/tests/tb_memory_smoke.v
+iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp Memory/*.v Memory/tests/tb_memory_smoke.v
 vvp /tmp/tb_memory_smoke.vvp
 ```
 
@@ -108,6 +114,8 @@ Expected pass markers:
 - `74HC/README.md` - full 74HC model list, scan notes, and 74xx source coverage.
 - `Memory/README.md` - memory model list and datasheet sources.
 - `python/README.md` - Python chip-library coverage and usage.
+- `CHIP_STATUS.md` - verified/modeled/tested/missing-datasheet status split
+  for the active chip library.
 - `SCHEMATIC_JSON_SPEC.md` - complete JSON schematic-script shape for digital
   and CPU simulation projects.
 - `PYTHON_BACKEND_ARCHITECTURE.md` - Python command/API model for the future

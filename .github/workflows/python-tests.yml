@@ -1,0 +1,25 @@
+name: Python tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Run Python tests
+        working-directory: python
+        run: |
+          python3 -B -m tests.test_chips
+          python3 -B -m tests.test_design
+          python3 -B -m tests.test_netlist
+          python3 -B -m tests.test_cli

@@ -470,6 +470,16 @@ def _hc155(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str,
     ]
 
 
+def _hc148(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("EI_bar", _pin(ref, 5, net_for_pin)),
+        ("A_bar", _vec(ref, [11, 12, 13, 1, 2, 3, 4, 10], net_for_pin)),
+        ("EO_bar", _pin(ref, 15, net_for_pin, fallback=_open_wire(ref, 15))),
+        ("GS_bar", _pin(ref, 14, net_for_pin, fallback=_open_wire(ref, 14))),
+        ("Y_bar", _vec(ref, [9, 7, 6], net_for_pin, output=True)),
+    ]
+
+
 def _hc157(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
     return [
         ("Enable_bar", _pin(ref, 15, net_for_pin)),
@@ -520,6 +530,21 @@ def _hc160_family(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tup
         ("Clk", _pin(ref, 2, net_for_pin)),
         ("RCO", _pin(ref, 15, net_for_pin, fallback=_open_wire(ref, 15))),
         ("Q", _vec(ref, [14, 13, 12, 11], net_for_pin, output=True)),
+    ]
+
+
+def _hc181(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("Select", _vec(ref, [6, 5, 4, 3], net_for_pin)),
+        ("Mode", _pin(ref, 8, net_for_pin)),
+        ("C_in", _pin(ref, 7, net_for_pin)),
+        ("A_bar", _vec(ref, [2, 23, 21, 19], net_for_pin)),
+        ("B_bar", _vec(ref, [1, 22, 20, 18], net_for_pin)),
+        ("CP_bar", _pin(ref, 15, net_for_pin, fallback=_open_wire(ref, 15))),
+        ("CG_bar", _pin(ref, 17, net_for_pin, fallback=_open_wire(ref, 17))),
+        ("Equal", _pin(ref, 14, net_for_pin, fallback=_open_wire(ref, 14))),
+        ("C_out", _pin(ref, 16, net_for_pin, fallback=_open_wire(ref, 16))),
+        ("F_bar", _vec(ref, [9, 10, 11, 13], net_for_pin, output=True)),
     ]
 
 
@@ -761,6 +786,22 @@ def _hc595(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str,
     ]
 
 
+def _hc593(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("A_Q", _vec(ref, [1, 2, 3, 4, 5, 6, 7, 8], net_for_pin, output=True)),
+        ("CLOAD", _pin(ref, 9, net_for_pin)),
+        ("RCO", _pin(ref, 11, net_for_pin, fallback=_open_wire(ref, 11))),
+        ("CCLR", _pin(ref, 12, net_for_pin)),
+        ("CCK", _pin(ref, 13, net_for_pin)),
+        ("CCKEN", _pin(ref, 14, net_for_pin)),
+        ("CCKEN_bar", _pin(ref, 15, net_for_pin)),
+        ("RCK", _pin(ref, 16, net_for_pin)),
+        ("RCKEN", _pin(ref, 17, net_for_pin)),
+        ("G", _pin(ref, 18, net_for_pin)),
+        ("G_bar", _pin(ref, 19, net_for_pin)),
+    ]
+
+
 def _hc4078(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
     return [
         ("A", _vec(ref, [2, 3, 4, 5, 9, 10, 11, 12], net_for_pin)),
@@ -804,6 +845,18 @@ def _hc85(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, 
     ]
 
 
+def _hc922(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("RowY", _vec(ref, [1, 2, 3, 4], net_for_pin)),
+        ("ColumnX", _vec(ref, [11, 10, 8, 7], net_for_pin, output=True)),
+        ("Oscillator", _pin(ref, 5, net_for_pin)),
+        ("KeybounceMask", _pin(ref, 6, net_for_pin)),
+        ("OutputEnable", _pin(ref, 13, net_for_pin)),
+        ("DataOut", _vec(ref, [17, 16, 15, 14], net_for_pin, output=True)),
+        ("DataAvailable", _pin(ref, 12, net_for_pin, fallback=_open_wire(ref, 12))),
+    ]
+
+
 def _memory_28(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
     return [
         ("A", _vec(ref, [10, 9, 8, 7, 6, 5, 4, 3, 25, 24, 21, 23, 2, 26, 1], net_for_pin)),
@@ -811,6 +864,16 @@ def _memory_28(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[
         ("CE_bar", _pin(ref, 20, net_for_pin)),
         ("OE_bar", _pin(ref, 22, net_for_pin)),
         ("WE_bar", _pin(ref, 27, net_for_pin, fallback="1'b1")),
+    ]
+
+
+def _memory_sst39sf010a(ref: str, net_for_pin: dict[tuple[str, int], str]) -> list[tuple[str, str]]:
+    return [
+        ("A", _vec(ref, [12, 11, 10, 9, 8, 7, 6, 5, 27, 26, 23, 25, 4, 28, 29, 3, 2], net_for_pin)),
+        ("DQ", _vec(ref, [13, 14, 15, 17, 18, 19, 20, 21], net_for_pin, output=True)),
+        ("CE_bar", _pin(ref, 22, net_for_pin)),
+        ("OE_bar", _pin(ref, 24, net_for_pin)),
+        ("WE_bar", _pin(ref, 31, net_for_pin, fallback="1'b1")),
     ]
 
 
@@ -830,6 +893,7 @@ VERILOG_MAPPINGS = {
     "74HC30": {"module": "ttl_74hc30", "ports": _hc30, "output_pins": [8]},
     "74HC138": {"module": "ttl_74hc138", "ports": _hc138, "output_pins": [7, 9, 10, 11, 12, 13, 14, 15]},
     "74HC139": {"module": "ttl_74hc139", "ports": _hc139, "output_pins": [4, 5, 6, 7, 9, 10, 11, 12]},
+    "74HC148": {"module": "ttl_74hc148", "ports": _hc148, "output_pins": [6, 7, 9, 14, 15]},
     "74HC154": {"module": "ttl_74hc154", "ports": _hc154, "output_pins": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17]},
     "74HC155": {"module": "ttl_74hc155", "ports": _hc155, "output_pins": [4, 5, 6, 7, 9, 10, 11, 12]},
     "74HC151": {"module": "ttl_74hc151", "ports": _hc151, "output_pins": [5, 6]},
@@ -837,6 +901,7 @@ VERILOG_MAPPINGS = {
     "74HC157": {"module": "ttl_74hc157", "ports": _hc157, "output_pins": [4, 7, 9, 12]},
     "74HC158": {"module": "ttl_74hc158", "ports": _hc158, "output_pins": [4, 7, 9, 12]},
     "74HC160": {"module": "ttl_74hc160", "ports": _hc160_family, "output_pins": [11, 12, 13, 14, 15]},
+    "74HC181": {"module": "ttl_74hc181", "ports": _hc181, "output_pins": [9, 10, 11, 13, 14, 15, 16, 17]},
     "74HC161": {"module": "ttl_74hc161", "ports": _hc161, "output_pins": [11, 12, 13, 14, 15]},
     "74HC162": {"module": "ttl_74hc162", "ports": _hc160_family, "output_pins": [11, 12, 13, 14, 15]},
     "74HC163": {"module": "ttl_74hc163", "ports": _hc160_family, "output_pins": [11, 12, 13, 14, 15]},
@@ -866,6 +931,7 @@ VERILOG_MAPPINGS = {
         "output_pins": [12, 13, 14, 15, 16, 17, 18, 19],
         "sample_delay_ns": {"U5": 40, "U6": 40},
     },
+    "74HC593": {"module": "ttl_74hc593", "ports": _hc593, "output_pins": [1, 2, 3, 4, 5, 6, 7, 8, 11]},
     "74HC595": {"module": "ttl_74hc595", "ports": _hc595, "output_pins": [1, 2, 3, 4, 5, 6, 7, 9, 15]},
     "74HC688": {"module": "ttl_74hc688", "ports": _hc688, "output_pins": [19]},
     "74HC4078": {"module": "ttl_74hc4078", "ports": _hc4078, "output_pins": [1, 13]},
@@ -877,6 +943,10 @@ VERILOG_MAPPINGS = {
         "sample_delay_ns": {"U21": 20},
     },
     "74HC85": {"module": "ttl_74hc85", "ports": _hc85, "output_pins": [5, 6, 7]},
+    "74HC922": {"module": "ttl_74hc922", "ports": _hc922, "output_pins": [7, 8, 10, 11, 12, 14, 15, 16, 17]},
     "62256": {"module": "mem_62256", "ports": _memory_28, "output_pins": [11, 12, 13, 15, 16, 17, 18, 19]},
+    "AS6C62256": {"module": "mem_as6c62256", "ports": _memory_28, "output_pins": [11, 12, 13, 15, 16, 17, 18, 19]},
     "AT28C256": {"module": "mem_at28c256", "ports": _memory_28, "output_pins": [11, 12, 13, 15, 16, 17, 18, 19]},
+    "CY7C199": {"module": "mem_cy7c199", "ports": _memory_28, "output_pins": [11, 12, 13, 15, 16, 17, 18, 19]},
+    "SST39SF010A": {"module": "mem_sst39sf010a", "ports": _memory_sst39sf010a, "output_pins": [13, 14, 15, 17, 18, 19, 20, 21]},
 }

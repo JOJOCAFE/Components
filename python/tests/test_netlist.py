@@ -262,6 +262,58 @@ def test_design_to_verilog_exports_decoder_counter_and_gate_74hc_mappings():
         assert compiled.returncode == 0, compiled.stderr
 
 
+def test_design_to_verilog_exports_specialized_74hc_and_memory_mappings():
+    parts = [
+        "74HC148",
+        "74HC181",
+        "74HC593",
+        "74HC922",
+        "AS6C62256",
+        "CY7C199",
+        "SST39SF010A",
+    ]
+    design = Design.from_dict({
+        "name": "specialized-mappings",
+        "chips": {
+            f"U{index + 1}": {"part": part}
+            for index, part in enumerate(parts)
+        },
+    })
+
+    exported = design.to_verilog()
+    verilog = exported["verilog"]
+
+    assert exported["ok"] is True
+    assert exported["unsupported"] == []
+    for part in ("74HC148", "74HC181", "74HC593", "74HC922"):
+        assert f"ttl_{part.lower()}" in verilog
+    for module in ("mem_as6c62256", "mem_cy7c199", "mem_sst39sf010a"):
+        assert module in verilog
+
+    iverilog = shutil.which("iverilog")
+    if iverilog is None:
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        top = Path(tmp) / "specialized_mappings.v"
+        top.write_text(verilog + "\n" + exported["testbench"], encoding="utf-8")
+        root = Path(__file__).resolve().parents[2]
+        cmd = [
+            iverilog,
+            "-g2012",
+            "-Wall",
+            "-o",
+            str(Path(tmp) / "specialized_mappings.vvp"),
+            *[str(root / "74HC" / f"{part.lower()}.v") for part in ("74HC148", "74HC181", "74HC593", "74HC922")],
+            str(root / "Memory" / "62256.v"),
+            str(root / "Memory" / "as6c62256.v"),
+            str(root / "Memory" / "cy7c199.v"),
+            str(root / "Memory" / "sst39sf010a.v"),
+            str(top),
+        ]
+        compiled = subprocess.run(cmd, text=True, capture_output=True, check=False)
+        assert compiled.returncode == 0, compiled.stderr
+
+
 def test_design_from_kicad_netlist_imports_chip_values_and_connection_rules():
     text = """(export (version "E")
   (components
@@ -372,6 +424,7 @@ def run_all():
     test_design_to_verilog_exports_expanded_common_74hc_mappings()
     test_design_to_verilog_exports_mux_shift_and_counter_74hc_mappings()
     test_design_to_verilog_exports_decoder_counter_and_gate_74hc_mappings()
+    test_design_to_verilog_exports_specialized_74hc_and_memory_mappings()
     test_design_from_kicad_netlist_imports_chip_values_and_connection_rules()
     test_rv8gr_v2_kicad_netlist_smoke_when_available()
 
