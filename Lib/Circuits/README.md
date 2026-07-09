@@ -29,3 +29,23 @@ Each circuit package should include:
 - `tests/*.json`: proof vectors or timing/bus checks.
 - `README.md`: student-readable explanation and debug checklist.
 - Python tests under `python/tests/` that fail loudly when the proof breaks.
+
+## Next Tests From RV8GR Debug Plan
+
+1. `RV8GR_AddressMux16`: prove `/ADDR_MODE=1` selects PC for fetch and
+   `/ADDR_MODE=0` selects `{DP,IRL}` for data access. Include the lab warning
+   that real RV8GR uses `ADDR_REQ=SRC OR STR`, not raw `T2`.
+2. `RV8GR_BusOwnership`: prove the phase table from `06_debug_plan.md`: T0/T1
+   use U7 DBUS-to-IBUS, T2 immediate uses U34, T2 store uses U14 plus U7
+   write direction. This is the main bus-race proof.
+3. `RV8GR_InstructionLatch`: prove U5 captures control only on T0, U6 captures
+   operand only on T1, and both hold through T2.
+4. `RV8GR_StorePath`: prove `STR=1` at T2 makes U7 enabled, `WR_DIR=1`, ROM
+   `/OE=HIGH`, and RAM `/WE=LOW` only when selected.
+5. `RV8GR_DataPageMemory`: prove SETDP, RAM/ROM boundary `$7FFF/$8000`, RAM
+   write/readback, ROM read via DP, and ROM/RAM chip-select exclusivity.
+6. `RV8GR_ClockProfiles`: keep push-switch, random debounced push, 50 kHz,
+   1 MHz, 2 MHz, and 5 MHz profiles on every circuit. Mark 5 MHz as functional
+   simulation until timing-margin and hardware signal-integrity proof exist.
+7. `RV8GR_IRQLatch`: prove `/IRQ` low-then-release latches IRQ_FF, reset clears
+   it, and v1.0 does not force PC or auto-vector.

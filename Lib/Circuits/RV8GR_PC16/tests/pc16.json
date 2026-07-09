@@ -20,6 +20,7 @@
   ],
   "clock_profiles": [
     {"name": "push_switch_single_step", "kind": "manual", "requires": "one clean debounced rising edge per press"},
+    {"name": "push_switch_random_100", "kind": "manual", "ticks": 100, "max_interval_ms": 500, "seed": 35862, "requires": "one clean debounced rising edge per press; interval jitter must not add extra edges"},
     {"name": "50_khz", "frequency_hz": 50000, "period_ns": 20000, "proof": "functional_edge_sequence"},
     {"name": "1_mhz", "frequency_hz": 1000000, "period_ns": 1000, "proof": "functional_edge_sequence"},
     {"name": "2_mhz", "frequency_hz": 2000000, "period_ns": 500, "proof": "functional_edge_sequence"},

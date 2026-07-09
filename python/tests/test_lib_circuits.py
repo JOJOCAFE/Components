@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import random
 
 from chiplib import create_chip
 
@@ -11,10 +12,16 @@ from chiplib import create_chip
 ROOT = Path(__file__).resolve().parents[2]
 RING_COUNTER = ROOT / "Lib" / "Circuits" / "RV8GR_RingCounter"
 PC16 = ROOT / "Lib" / "Circuits" / "RV8GR_PC16"
+RANDOM_PUSH_SEED = 0x8C16
 
 
 def load_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def random_push_intervals_ms(profile: dict) -> list[int]:
+    rng = random.Random(profile["seed"])
+    return [rng.randint(0, profile["max_interval_ms"]) for _ in range(profile["ticks"])]
 
 
 def ring_outputs(state: int) -> dict[str, int]:
@@ -266,6 +273,22 @@ def test_rv8gr_pc16_clock_profiles_are_functionally_stable():
             assert circuit.read_pc() == expected, profile
 
 
+def test_rv8gr_pc16_random_push_switch_profile_counts_one_per_press():
+    profile = next(item for item in load_json(PC16 / "tests" / "pc16.json")["clock_profiles"] if item["name"] == "push_switch_random_100")
+    assert profile["seed"] == RANDOM_PUSH_SEED
+    intervals = random_push_intervals_ms(profile)
+    assert len(intervals) == 100
+    assert all(0 <= interval <= 500 for interval in intervals)
+    assert len(set(intervals)) > 1
+
+    circuit = PC16Components()
+    circuit.set_controls(rst=0)
+    circuit.set_controls(rst=1, pc_ld=1, pc_inc=1)
+    for expected, _interval_ms in enumerate(intervals, start=1):
+        circuit.clock()
+        assert circuit.read_pc() == expected, profile
+
+
 def test_rv8gr_ring_counter_clock_profiles_are_functionally_stable():
     profiles = load_json(RING_COUNTER / "tests" / "ring_counter.json")["clock_profiles"]
     expected_sequence = [
@@ -279,6 +302,25 @@ def test_rv8gr_ring_counter_clock_profiles_are_functionally_stable():
         for index in range(steps):
             state = ring_clock(state)
             assert ring_outputs(state) == expected_sequence[index % 3], profile
+
+
+def test_rv8gr_ring_counter_random_push_switch_profile_advances_one_phase_per_press():
+    profile = next(item for item in load_json(RING_COUNTER / "tests" / "ring_counter.json")["clock_profiles"] if item["name"] == "push_switch_random_100")
+    assert profile["seed"] == RANDOM_PUSH_SEED
+    intervals = random_push_intervals_ms(profile)
+    assert len(intervals) == 100
+    assert all(0 <= interval <= 500 for interval in intervals)
+    assert len(set(intervals)) > 1
+
+    expected_sequence = [
+        {"T0": 1, "T1": 0, "T2": 0},
+        {"T0": 0, "T1": 1, "T2": 0},
+        {"T0": 0, "T1": 0, "T2": 1},
+    ]
+    state = 0
+    for index, _interval_ms in enumerate(intervals):
+        state = ring_clock(state)
+        assert ring_outputs(state) == expected_sequence[index % 3], profile
 
 
 def test_all_started_circuit_packages_have_tests():
@@ -302,7 +344,9 @@ def run_all():
     test_rv8gr_pc16_vectors_execute_with_component_models()
     test_rv8gr_pc16_phase_gating_matches_t0_t1_only()
     test_rv8gr_pc16_clock_profiles_are_functionally_stable()
+    test_rv8gr_pc16_random_push_switch_profile_counts_one_per_press()
     test_rv8gr_ring_counter_clock_profiles_are_functionally_stable()
+    test_rv8gr_ring_counter_random_push_switch_profile_advances_one_phase_per_press()
     test_all_started_circuit_packages_have_tests()
 
 
