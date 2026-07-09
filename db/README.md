@@ -33,7 +33,7 @@ files while the repo migrates gradually:
 - pinout evidence docs
 - Verilog model
 - Python behavior provider
-- Verilog export mapping status
+- DB-owned Verilog export metadata
 - tests
 - datasheet/source evidence
 
@@ -57,9 +57,9 @@ Implementation files remain active in their legacy locations during migration:
 - `verilog/Memory/`
 - `python/chiplib/`
 
-The DB is the new component identity layer. Simulators, exporters, CLI tools,
-and future UI/API code should eventually ask the DB what properties a component
-has instead of scattering component facts across unrelated files.
+The DB is the component identity layer. Simulators, exporters, CLI tools, and
+future UI/API code should ask the DB what properties a component has instead of
+scattering component facts across unrelated files.
 
 The first seed set intentionally covers simple gates, a sequential counter, a
 bidirectional bus transceiver, SRAM, and EEPROM:
@@ -81,6 +81,11 @@ The next useful set adds flip-flop, register, decoder, and flash coverage:
 The DB now has one manifest for every active legacy Verilog model and pinout
 entry: 62 DB IC parts for 62 legacy model parts. It also has grouped seed
 manifests for virtual, passive, and discrete schematic components.
+
+All 62 active IC parts with `verilog_export=tested` now own their structural
+Verilog export metadata in DB manifests. `Design.to_verilog()` reads those
+`verilog.export` blocks through `chiplib.db`; there is no separate runtime
+mapping table to keep in sync.
 
 Grouped seed manifests currently cover:
 

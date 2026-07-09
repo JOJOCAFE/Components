@@ -113,7 +113,71 @@
   },
   "verilog": {
     "module": "ttl_74hc166",
-    "file": "verilog/74xx/74hc166.v"
+    "file": "verilog/74xx/74hc166.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "Clear_bar",
+          "pins": [
+            9
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "ShiftLoad_bar",
+          "pins": [
+            14
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Clk",
+          "pins": [
+            7
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "ClkInhibit",
+          "pins": [
+            6
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Serial",
+          "pins": [
+            1
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "D",
+          "pins": [
+            2,
+            3,
+            4,
+            5,
+            13,
+            12,
+            11,
+            10
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "QH",
+          "pins": [
+            15
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        15
+      ]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

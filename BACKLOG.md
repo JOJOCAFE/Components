@@ -115,12 +115,18 @@ Future work for the shared component library.
 - ✅ Add embedded pinout-comment vs DB-manifest pin consistency checks so
   physical pin labels cannot silently drift between Verilog comments and DB
   metadata.
+- ✅ Finish DB-backed Verilog export migration: all 62 active
+  `verilog_export=tested` IC parts now own structural export metadata in
+  grouped `chip.json` manifests, and runtime export no longer uses a legacy
+  mapping table.
 
 ## Deferred UI Work
 
 - Build a visual chip-block editor where users can place DIP chip blocks on
   screen, wire pins/nets, and run either the Python simulator or Verilog
   simulation backend.
+- Add student-facing DB catalog views and examples for component status,
+  missing properties, pins, and export/simulation capability.
 
 ## Backend Bus, Probe, And Test Logic
 

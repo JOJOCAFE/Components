@@ -101,7 +101,66 @@
   },
   "verilog": {
     "module": "ttl_74hc73",
-    "file": "verilog/74xx/74hc73.v"
+    "file": "verilog/74xx/74hc73.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "Clear_bar",
+          "pins": [
+            2,
+            6
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "J",
+          "pins": [
+            14,
+            7
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "K",
+          "pins": [
+            3,
+            10
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Clk",
+          "pins": [
+            1,
+            5
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Q",
+          "pins": [
+            13,
+            9
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "Q_bar",
+          "pins": [
+            12,
+            8
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        8,
+        9,
+        12,
+        13
+      ]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

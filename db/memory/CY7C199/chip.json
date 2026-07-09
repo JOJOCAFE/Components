@@ -174,7 +174,79 @@
   },
   "verilog": {
     "module": "mem_cy7c199",
-    "file": "verilog/Memory/cy7c199.v"
+    "file": "verilog/Memory/cy7c199.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "A",
+          "pins": [
+            10,
+            9,
+            8,
+            7,
+            6,
+            5,
+            4,
+            3,
+            25,
+            24,
+            21,
+            23,
+            2,
+            26,
+            1
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "DQ",
+          "pins": [
+            11,
+            12,
+            13,
+            15,
+            16,
+            17,
+            18,
+            19
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "CE_bar",
+          "pins": [
+            20
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "OE_bar",
+          "pins": [
+            22
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "WE_bar",
+          "pins": [
+            27
+          ],
+          "direction": "input",
+          "fallback": "1'b1"
+        }
+      ],
+      "output_pins": [
+        11,
+        12,
+        13,
+        15,
+        16,
+        17,
+        18,
+        19
+      ]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

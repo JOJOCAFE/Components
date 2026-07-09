@@ -124,7 +124,49 @@
       "additionalProperties": true,
       "properties": {
         "module": {"type": "string"},
-        "file": {"type": "string"}
+        "file": {"type": "string"},
+        "export": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": ["kind", "ports", "output_pins"],
+          "properties": {
+            "kind": {"const": "structural_port_map"},
+            "ports": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": true,
+                "required": ["name", "pins", "direction"],
+                "properties": {
+                  "name": {"type": "string"},
+                  "pins": {
+                    "type": "array",
+                    "items": {"type": "integer"}
+                  },
+                  "direction": {"enum": ["input", "output"]},
+                  "fallback": {"type": "string"}
+                }
+              }
+            },
+            "output_pins": {
+              "type": "array",
+              "items": {"type": "integer"}
+            },
+            "delay_ns": {
+              "anyOf": [
+                {"type": "integer"},
+                {
+                  "type": "object",
+                  "additionalProperties": {"type": "integer"}
+                }
+              ]
+            },
+            "sample_delay_ns": {
+              "type": "object",
+              "additionalProperties": {"type": "integer"}
+            }
+          }
+        }
       }
     },
     "python": {

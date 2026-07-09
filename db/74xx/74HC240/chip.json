@@ -133,7 +133,64 @@
   },
   "verilog": {
     "module": "ttl_74hc240",
-    "file": "verilog/74xx/74hc240.v"
+    "file": "verilog/74xx/74hc240.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "OE1_bar",
+          "pins": [
+            1
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "OE2_bar",
+          "pins": [
+            19
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "A",
+          "pins": [
+            2,
+            4,
+            6,
+            8,
+            11,
+            13,
+            15,
+            17
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Y",
+          "pins": [
+            18,
+            16,
+            14,
+            12,
+            9,
+            7,
+            5,
+            3
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        3,
+        5,
+        7,
+        9,
+        12,
+        14,
+        16,
+        18
+      ]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

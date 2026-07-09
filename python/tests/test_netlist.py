@@ -5,8 +5,9 @@ import shutil
 import subprocess
 import tempfile
 
+from chiplib.db import load_all_components, load_component
 from chiplib.design import Design
-from chiplib.netlist import VERILOG_MAPPINGS, _verilog_mapping
+from chiplib.netlist import _verilog_mapping
 
 
 def netlist_schematic():
@@ -97,23 +98,61 @@ def test_design_to_verilog_exports_known_gate_instances_and_testbench():
     assert "module tb_netlist_small();" in exported["testbench"]
 
 
-def test_db_verilog_export_metadata_matches_legacy_mappings():
+def test_db_verilog_export_metadata_is_complete_for_tested_exports():
     design = Design.from_dict(netlist_schematic())
 
     exported = design.to_verilog()
-    for part in ["74HC00", "74HC04", "74HC161", "74HC245", "74HC541", "74HC574"]:
+    tested_parts = [
+        str(item["part"])
+        for item in load_all_components()
+        if item.get("status", {}).get("verilog_export") == "tested"
+    ]
+    db_export_parts = [
+        str(item["part"])
+        for item in load_all_components()
+        if item.get("verilog", {}).get("export")
+    ]
+
+    assert sorted(db_export_parts) == sorted(tested_parts)
+    assert len(db_export_parts) == 62
+
+    for part in tested_parts:
+        manifest = load_component(part)
+        export = manifest["verilog"]["export"]
         db_mapping = _verilog_mapping(part)
-        legacy_mapping = VERILOG_MAPPINGS[part]
 
         assert db_mapping is not None
-        assert db_mapping is not legacy_mapping
-        assert db_mapping["module"] == legacy_mapping["module"]
-        assert db_mapping["output_pins"] == legacy_mapping["output_pins"]
-        assert db_mapping["delay_ns"] == legacy_mapping.get("delay_ns", 1)
-        assert db_mapping.get("sample_delay_ns") == legacy_mapping.get("sample_delay_ns")
-        assert db_mapping["ports"]("U1", {}) == legacy_mapping["ports"]("U1", {})
+        assert db_mapping["module"] == manifest["verilog"]["module"]
+        assert db_mapping["output_pins"] == export["output_pins"]
+        assert db_mapping["delay_ns"] == export.get("delay_ns", 1)
+        assert db_mapping.get("sample_delay_ns") == export.get("sample_delay_ns")
+
+    assert _verilog_mapping("74HC00")["ports"]("U1", {}) == [
+        ("A", "{1'bz, 1'bz, 1'bz, 1'bz}"),
+        ("B", "{1'bz, 1'bz, 1'bz, 1'bz}"),
+        ("Y", "{open_U1_11, open_U1_8, open_U1_6, open_U1_3}"),
+    ]
+    assert _verilog_mapping("74HC574").get("sample_delay_ns") == {"U5": 40, "U6": 40}
     assert exported["ok"] is True
     assert "ttl_74hc00 #(.DELAY_RISE(1), .DELAY_FALL(1)) U1 (.A({" in exported["verilog"]
+    assert "VERILOG_MAPPINGS" not in Path(__file__).resolve().parents[1].joinpath("chiplib", "netlist.py").read_text(encoding="utf-8")
+
+
+def test_design_to_verilog_uses_db_input_fallbacks_for_memory_control_pins():
+    design = Design.from_dict({
+        "name": "memory-default-write-disable",
+        "chips": {"U1": {"part": "AT28C256"}},
+        "connect": [
+            "A0 -> U1:10",
+            "D0 -> U1:11",
+            "CE -> U1:20",
+            "OE -> U1:22",
+        ],
+    })
+
+    exported = design.to_verilog()
+    assert exported["ok"] is True
+    assert ".WE_bar(1'b1)" in exported["verilog"]
 
 
 def test_design_to_verilog_reports_unsupported_parts():
@@ -484,7 +523,8 @@ def run_all():
     test_design_to_netlist_exports_chips_nets_buses_metadata_and_validation()
     test_design_from_netlist_round_trips_canonical_design_json()
     test_design_to_verilog_exports_known_gate_instances_and_testbench()
-    test_db_verilog_export_metadata_matches_legacy_mappings()
+    test_db_verilog_export_metadata_is_complete_for_tested_exports()
+    test_design_to_verilog_uses_db_input_fallbacks_for_memory_control_pins()
     test_design_to_verilog_reports_unsupported_parts()
     test_design_to_verilog_exports_74hc147_i0_pin_contract()
     test_design_to_verilog_exports_expanded_common_74hc_mappings()

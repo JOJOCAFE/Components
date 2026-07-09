@@ -121,7 +121,81 @@
   },
   "verilog": {
     "module": "ttl_74hc922",
-    "file": "verilog/74xx/74hc922.v"
+    "file": "verilog/74xx/74hc922.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "RowY",
+          "pins": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "ColumnX",
+          "pins": [
+            11,
+            10,
+            8,
+            7
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "Oscillator",
+          "pins": [
+            5
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "KeybounceMask",
+          "pins": [
+            6
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "OutputEnable",
+          "pins": [
+            13
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "DataOut",
+          "pins": [
+            17,
+            16,
+            15,
+            14
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "DataAvailable",
+          "pins": [
+            12
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        7,
+        8,
+        10,
+        11,
+        12,
+        14,
+        15,
+        16,
+        17
+      ]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

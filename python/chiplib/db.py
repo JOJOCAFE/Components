@@ -8,8 +8,6 @@ from pathlib import Path
 import re
 from typing import Any
 
-from .netlist import VERILOG_MAPPINGS
-
 
 JsonMap = dict[str, Any]
 ROOT = Path(__file__).resolve().parents[2]
@@ -197,11 +195,11 @@ def audit_db() -> JsonMap:
 
         status = manifest.get("status", {})
         export_status = status.get("verilog_export") if isinstance(status, dict) else None
-        has_export_mapping = part.upper() in VERILOG_MAPPINGS
+        has_export_mapping = _has_db_export(manifest)
         if _has_legacy_catalog_contract(manifest) and export_status == "tested" and not has_export_mapping:
-            errors.append(_issue("export_status_without_mapping", part, location, "status says verilog_export=tested but no mapping exists"))
+            errors.append(_issue("export_status_without_mapping", part, location, "status says verilog_export=tested but no DB export metadata exists"))
         if _has_legacy_catalog_contract(manifest) and has_export_mapping and export_status in (None, "", "missing", "unknown"):
-            warnings.append(_issue("export_mapping_without_status", part, location, "Verilog mapping exists but export status is not set"))
+            warnings.append(_issue("export_mapping_without_status", part, location, "DB export metadata exists but export status is not set"))
 
         if _has_legacy_catalog_contract(manifest) and part.upper() not in legacy_parts:
             warnings.append(_issue("db_part_missing_legacy_model", part, location, "DB part has no legacy Verilog model file"))
@@ -524,6 +522,14 @@ def _referenced_paths(manifest: JsonMap) -> list[str]:
     if isinstance(verilog, dict) and isinstance(verilog.get("file"), str):
         paths.append(str(verilog["file"]))
     return sorted(set(paths))
+
+
+def _has_db_export(manifest: JsonMap) -> bool:
+    verilog = manifest.get("verilog", {})
+    export = verilog.get("export", {}) if isinstance(verilog, dict) else {}
+    ports = export.get("ports", []) if isinstance(export, dict) else []
+    output_pins = export.get("output_pins", []) if isinstance(export, dict) else []
+    return isinstance(ports, list) and bool(ports) and isinstance(output_pins, list)
 
 
 def _pinout_mismatches(manifest: JsonMap) -> list[JsonMap]:

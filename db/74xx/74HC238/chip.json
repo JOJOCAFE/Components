@@ -111,7 +111,66 @@
   },
   "verilog": {
     "module": "ttl_74hc238",
-    "file": "verilog/74xx/74hc238.v"
+    "file": "verilog/74xx/74hc238.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "Enable1_bar",
+          "pins": [
+            4
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Enable2_bar",
+          "pins": [
+            5
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Enable3",
+          "pins": [
+            6
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "A",
+          "pins": [
+            1,
+            2,
+            3
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Y",
+          "pins": [
+            15,
+            14,
+            13,
+            12,
+            11,
+            10,
+            9,
+            7
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

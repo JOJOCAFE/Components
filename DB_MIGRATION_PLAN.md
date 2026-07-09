@@ -53,20 +53,18 @@ and references to active legacy files when any exist.
 
 ## Current Transitional Shape
 
-During migration, grouped `chip.json` manifests may point to legacy
-implementation files:
+Grouped `chip.json` manifests may still point to family-level implementation
+files:
 
 ```text
 verilog/74xx/74hc245.v
-verilog/74xx/74hc245.v
-verilog/Memory/at28c256.v
 verilog/Memory/at28c256.v
 python/chiplib/chips.py
 python/chiplib/catalog.py
-python/chiplib/netlist.py
 ```
 
-This keeps the current implementation working while the DB becomes complete.
+This keeps HDL tools and student browsing simple while the DB owns identity,
+status, pins, and exporter metadata.
 Grouped component manifests live under:
 
 ```text
@@ -94,9 +92,9 @@ db/discrete/<component>/component.json
 8. Grouped virtual/passive/discrete manifests are allowed before behavior is
    executable, but they must declare `group`, `kind`, `role`, `pins`, `status`,
    and their intended `simulation.service`.
-9. Direct `db/<part>/chip.json` lookups are deprecated. New code must use the
-   DB loader or grouped lookup path so `db/74xx/<part>/chip.json` and
-   `db/memory/<part>/chip.json` both work.
+9. Direct flat `db/<part>/chip.json` lookups are retired in runtime code. New
+   code must use the DB loader so grouped IC and non-IC manifests resolve
+   through one path.
 
 ## Phases
 
@@ -147,7 +145,7 @@ Exit criteria:
 
 ### Phase 3: DB-Backed Metadata
 
-Status: started.
+Status: complete.
 
 Move read-only metadata consumers to the DB first.
 
@@ -169,11 +167,11 @@ Exit criteria:
   `component.json` manifests.
 - ✅ Seed grouped manifests exist for virtual, passive, and discrete schematic
   components.
-- UI/API-facing chip metadata comes from DB manifests.
+- ✅ UI/API-facing chip metadata comes from DB manifests.
 
 ### Phase 4: DB-Backed Export Metadata
 
-Status: started.
+Status: complete.
 
 Move Verilog export mappings out of the large shared mapping table and into
 DB-owned export metadata.
@@ -203,19 +201,21 @@ Exit criteria:
 
 - Existing `Design.to_verilog()` tests pass.
 - DB can explain why a chip is or is not exportable.
+- Runtime export uses DB metadata only, with no legacy `VERILOG_MAPPINGS`
+  fallback table.
 
 Current proof point:
 
-- ✅ `74HC00`, `74HC04`, `74HC161`, `74HC245`, and `74HC147` have DB-owned
-  Verilog export metadata.
-- ✅ `74HC541` and `74HC574` also have DB-owned Verilog export metadata,
-  including `74HC574` sample delay metadata.
-- ✅ `Design.to_verilog()` uses DB metadata when present and falls back to the
-  legacy mapping table for the rest.
+- ✅ All 62 active `verilog_export=tested` IC manifests have DB-owned Verilog
+  export metadata.
+- ✅ `Design.to_verilog()` uses DB metadata through `chiplib.db.load_component`
+  and has no legacy mapping-table fallback.
 - ✅ `74HC147` has an explicit DB-owned `/I0` export contract and keeps the
   unbonded low output bit as an internal open placeholder.
+- ✅ Memory exports can declare DB-owned input fallbacks such as unconnected
+  `/WE` defaulting to `1'b1`.
 
-### Phase 5: DB-Backed Pinout Documentation
+### Phase 5: Optional DB-Backed Pinout Documentation
 
 Move pinout docs from legacy Verilog comments into chip folders only after
 references are DB-backed.
@@ -231,7 +231,7 @@ Temporary compatibility options:
 - Keep a legacy stub that points to the DB file.
 - Add loader fallback for both old and new paths.
 
-Exit criteria:
+Exit criteria if chosen:
 
 - Pinout readers use DB paths.
 - Existing docs/tests still pass.
@@ -267,14 +267,12 @@ Exit criteria:
 
 ## Recommended Next Tasks
 
-1. Continue Phase 4 by moving more safe `Design.to_verilog()` pin-to-port
-   mappings into grouped `chip.json` export metadata.
-2. Add a generated/check mode for `CHIP_STATUS.md` so documentation drift is
-   caught in tests or CI instead of only through manual review.
-3. Add virtual/passive/discrete behavior adapters so schematic JSON can
-   instantiate DB-backed InputSource, Probe, LED, Resistor, Capacitor, and
-   transistor components.
-4. Replace remaining direct `db/<part>/chip.json` assumptions in docs,
-   examples, and downstream projects with DB-loader access.
-5. Defer DB-owned model moves until service interfaces and contract tests are
-   in place.
+1. Keep DB migration frozen at the manifest/service boundary unless a concrete
+   UI or downstream project needs pinout/model files physically moved.
+2. Build block-UI import/export against the normalized `Design` model and DB
+   component catalog.
+3. Add student-facing DB catalog views/examples that make status, missing
+   properties, and unsupported exports obvious.
+4. Defer DB-owned pinout/model moves until they improve student browsing or HDL
+   tooling; current family-level model folders remain the active implementation
+   location.

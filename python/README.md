@@ -94,12 +94,14 @@ absent from the Python catalog.
 
 `Components/db` is the new chip-centered DB layer. Each chip folder
 owns a `chip.json` manifest with status, pins, source evidence, behavior
-references, Verilog references, tests, and visible missing-property reports.
+references, Verilog references, DB-owned structural export metadata, tests, and
+visible missing-property reports.
 
 The DB seed covers representative gates, sequential parts, bus parts, decoders,
 SRAM, EEPROM, and flash: `74HC00`, `74HC04`, `74HC74`, `74HC138`, `74HC161`,
 `74HC245`, `74HC574`, `62256`, `AT28C256`, and `SST39SF010A`. Existing legacy
-files remain the active model implementations during migration.
+files remain the active model implementations, while DB manifests own the
+metadata and export contracts.
 
 CLI/API access:
 

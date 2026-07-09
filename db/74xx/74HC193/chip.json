@@ -114,7 +114,82 @@
   },
   "verilog": {
     "module": "ttl_74hc193",
-    "file": "verilog/74xx/74hc193.v"
+    "file": "verilog/74xx/74hc193.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "Clear",
+          "pins": [
+            14
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Load_bar",
+          "pins": [
+            11
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Up",
+          "pins": [
+            5
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Down",
+          "pins": [
+            4
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "D",
+          "pins": [
+            15,
+            1,
+            10,
+            9
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Q",
+          "pins": [
+            3,
+            2,
+            6,
+            7
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "Carry_bar",
+          "pins": [
+            12
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "Borrow_bar",
+          "pins": [
+            13
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        2,
+        3,
+        6,
+        7,
+        12,
+        13
+      ]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

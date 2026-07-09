@@ -133,7 +133,107 @@
   },
   "verilog": {
     "module": "ttl_74hc593",
-    "file": "verilog/74xx/74hc593.v"
+    "file": "verilog/74xx/74hc593.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "A_Q",
+          "pins": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "CLOAD",
+          "pins": [
+            9
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "RCO",
+          "pins": [
+            11
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "CCLR",
+          "pins": [
+            12
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "CCK",
+          "pins": [
+            13
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "CCKEN",
+          "pins": [
+            14
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "CCKEN_bar",
+          "pins": [
+            15
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "RCK",
+          "pins": [
+            16
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "RCKEN",
+          "pins": [
+            17
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "G",
+          "pins": [
+            18
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "G_bar",
+          "pins": [
+            19
+          ],
+          "direction": "input"
+        }
+      ],
+      "output_pins": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        11
+      ]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

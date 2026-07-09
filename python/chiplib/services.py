@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from time import perf_counter
 from typing import Any
 
@@ -11,7 +10,6 @@ from .netlist import _verilog_mapping, design_to_verilog
 
 
 JsonMap = dict[str, Any]
-ROOT = Path(__file__).resolve().parents[2]
 CONTRACT = "components.service.v1"
 
 
@@ -523,31 +521,15 @@ def _frontend_snapshot(snapshot: JsonMap) -> JsonMap:
 
 
 def _verilog_file_for_part(part: str, module: str) -> str | None:
-    db_file = _db_manifest_path(part)
-    if db_file.exists():
-        try:
-            import json
-
-            manifest = json.loads(db_file.read_text(encoding="utf-8"))
-            verilog = manifest.get("verilog", {})
-            if isinstance(verilog, dict) and isinstance(verilog.get("file"), str):
-                return str(verilog["file"])
-        except (OSError, ValueError):
-            pass
+    try:
+        manifest = component_detail(part)
+        verilog = manifest.get("verilog", {})
+        if isinstance(verilog, dict) and isinstance(verilog.get("file"), str):
+            return str(verilog["file"])
+    except (KeyError, ValueError):
+        pass
     if module.startswith("ttl_"):
         return f"verilog/74xx/{part.lower()}.v"
     if module.startswith("mem_"):
         return f"verilog/Memory/{module[4:]}.v"
     return None
-
-
-def _db_manifest_path(part: str) -> Path:
-    db_root = ROOT / "db"
-    flat = db_root / part / "chip.json"
-    if flat.exists():
-        return flat
-    part_key = str(part).upper()
-    for path in sorted(db_root.glob("*/*/chip.json")):
-        if path.parent.name.upper() == part_key:
-            return path
-    return flat

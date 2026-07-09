@@ -17,20 +17,82 @@
     "tests": "tested"
   },
   "pins": [
-    {"number": 1, "name": "/1CLR", "direction": "input", "active_low": true},
-    {"number": 2, "name": "1D", "direction": "input"},
-    {"number": 3, "name": "1CLK", "direction": "input"},
-    {"number": 4, "name": "/1PRE", "direction": "input", "active_low": true},
-    {"number": 5, "name": "1Q", "direction": "output"},
-    {"number": 6, "name": "/1Q", "direction": "output", "active_low": true},
-    {"number": 7, "name": "GND", "direction": "power"},
-    {"number": 8, "name": "/2Q", "direction": "output", "active_low": true},
-    {"number": 9, "name": "2Q", "direction": "output"},
-    {"number": 10, "name": "/2PRE", "direction": "input", "active_low": true},
-    {"number": 11, "name": "2CLK", "direction": "input"},
-    {"number": 12, "name": "2D", "direction": "input"},
-    {"number": 13, "name": "/2CLR", "direction": "input", "active_low": true},
-    {"number": 14, "name": "VCC", "direction": "power"}
+    {
+      "number": 1,
+      "name": "/1CLR",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 2,
+      "name": "1D",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "1CLK",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "/1PRE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 5,
+      "name": "1Q",
+      "direction": "output"
+    },
+    {
+      "number": 6,
+      "name": "/1Q",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 7,
+      "name": "GND",
+      "direction": "power"
+    },
+    {
+      "number": 8,
+      "name": "/2Q",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 9,
+      "name": "2Q",
+      "direction": "output"
+    },
+    {
+      "number": 10,
+      "name": "/2PRE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 11,
+      "name": "2CLK",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "2D",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "/2CLR",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 14,
+      "name": "VCC",
+      "direction": "power"
+    }
   ],
   "legacy_paths": {
     "pinout": "verilog/74xx/74hc74.v",
@@ -45,7 +107,69 @@
   },
   "verilog": {
     "module": "ttl_74hc74",
-    "file": "verilog/74xx/74hc74.v"
+    "file": "verilog/74xx/74hc74.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "Preset_bar",
+          "pins": [
+            4,
+            10
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Clear_bar",
+          "pins": [
+            1,
+            13
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "D",
+          "pins": [
+            2,
+            12
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Clk",
+          "pins": [
+            3,
+            11
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Q",
+          "pins": [
+            5,
+            9
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "Q_bar",
+          "pins": [
+            6,
+            8
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        5,
+        6,
+        8,
+        9
+      ],
+      "sample_delay_ns": {
+        "U21": 20
+      }
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

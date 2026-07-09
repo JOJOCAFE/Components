@@ -113,7 +113,79 @@
   },
   "verilog": {
     "module": "ttl_74hc595",
-    "file": "verilog/74xx/74hc595.v"
+    "file": "verilog/74xx/74hc595.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "SER",
+          "pins": [
+            14
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "SRCLK",
+          "pins": [
+            11
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "RCLK",
+          "pins": [
+            12
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "SRCLR_bar",
+          "pins": [
+            10
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "OE_bar",
+          "pins": [
+            13
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Q",
+          "pins": [
+            15,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "QH_prime",
+          "pins": [
+            9
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        15
+      ]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

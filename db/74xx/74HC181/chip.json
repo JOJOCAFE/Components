@@ -151,7 +151,104 @@
   },
   "verilog": {
     "module": "ttl_74hc181",
-    "file": "verilog/74xx/74hc181.v"
+    "file": "verilog/74xx/74hc181.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "Select",
+          "pins": [
+            6,
+            5,
+            4,
+            3
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Mode",
+          "pins": [
+            8
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "C_in",
+          "pins": [
+            7
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "A_bar",
+          "pins": [
+            2,
+            23,
+            21,
+            19
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "B_bar",
+          "pins": [
+            1,
+            22,
+            20,
+            18
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "CP_bar",
+          "pins": [
+            15
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "CG_bar",
+          "pins": [
+            17
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "Equal",
+          "pins": [
+            14
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "C_out",
+          "pins": [
+            16
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "F_bar",
+          "pins": [
+            9,
+            10,
+            11,
+            13
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        9,
+        10,
+        11,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",

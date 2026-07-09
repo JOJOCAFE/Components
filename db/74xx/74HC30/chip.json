@@ -101,7 +101,36 @@
   },
   "verilog": {
     "module": "ttl_74hc30",
-    "file": "verilog/74xx/74hc30.v"
+    "file": "verilog/74xx/74hc30.v",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "A",
+          "pins": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            11,
+            12
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Y",
+          "pins": [
+            8
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        8
+      ]
+    }
   },
   "python": {
     "factory": "chiplib.create_chip",
