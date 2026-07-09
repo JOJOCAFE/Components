@@ -215,6 +215,16 @@ Done:
   Tests execute all 512 opcode/Z cases against the same equations as
   `tb_rv8gr_opcode_sweep.v`, with named vectors for LI, SETPG, SETDP, EI,
   store, BEQ, BNE, and reserved overlap behavior.
+- ✅ `RV8GR_ResetClockBringup`: Lab 01 push-button clock/reset plus
+  chip-level bring-up sanity. Tests cover reset idle, reset release without a
+  clock edge, one-hot T0/T1/T2 pushes, PC known-state policy, push-switch,
+  random 100 pushes up to 500 ms, 50 kHz, 1 MHz, 2 MHz, and 5 MHz
+  functional-only profiles.
+- ✅ `timing_margins.json` source-backed scaffolding: timing-source files must
+  exist, AT28C256 physical speed-grade/output-float caveats are explicit,
+  62256 physical read/float fields are marked pending, 74HC574 and 74HC161
+  setup/hold fields are checked against DB definitions, bus turnaround
+  deadband remains not proven, and 5 MHz is not promoted to hardware proof.
 - ✅ Extra clock-profile tests for edge-sensitive circuits: `RV8GR_InstructionLatch`,
   `RV8GR_DataPageMemory`, `RV8GR_IRQLatch`, `RV8GR_PageDataRegisters`, and
   `RV8GR_BranchJumpControl` now declare and execute
@@ -226,14 +236,21 @@ Next team tasks:
 1. **Ohm + Fern: hardware timing-margin proof**
    - ✅ Initial machine-readable timing-margin artifact added at
      `Lib/Circuits/timing_margins.json`.
+   - ✅ Tests now consume propagation-delay paths, setup/hold values,
+     source-file requirements, physical timing caveats, and bus-race notes.
    - Keep 5 MHz marked functional simulation until physical timing and
      signal-integrity evidence exist.
-   - Next: wire tests to consume propagation-delay paths, setup/hold values,
-     and bus-race notes without touching the opcode-sweep package.
+   - Next: add measured or source-backed physical memory speed grade,
+     output-disable timing, clock-phase deadband, and breadboard/PCB
+     signal-integrity evidence.
 2. **Bam + Noon + Bank: visual chip-block editor**
    - Turn the current block-UI import/export contracts into a practical editor
      surface for placing DIP blocks, wiring nets, and selecting Python or
      Verilog simulation backend.
+3. **Bank + Bam + Noon: continue RV8GR circuit extraction**
+   - Next candidates: full fetch-cycle trace, reset/clock distribution with
+     physical debounce variants, or complete full-system golden trace package
+     from `doc/03_instruction_trace.md` and `tb_rv8gr_tasks.v`.
 
 Pim coordinates this plan and keeps `Lib/Circuits/README.md`, `BACKLOG.md`,
 tests, and pushed commits aligned.

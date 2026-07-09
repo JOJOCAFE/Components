@@ -24,6 +24,7 @@ BRANCH_JUMP_CONTROL = ROOT / "Lib" / "Circuits" / "RV8GR_BranchJumpControl"
 ALU_ACCUMULATOR = ROOT / "Lib" / "Circuits" / "RV8GR_AluAccumulator"
 VIRTUAL_TEST_HELPERS = ROOT / "Lib" / "Circuits" / "RV8GR_VirtualTestHelpers"
 FULL_CONTROL_OPCODE_SWEEP = ROOT / "Lib" / "Circuits" / "RV8GR_FullControlOpcodeSweep"
+RESET_CLOCK_BRINGUP = ROOT / "Lib" / "Circuits" / "RV8GR_ResetClockBringup"
 TIMING_MARGINS = ROOT / "Lib" / "Circuits" / "timing_margins.json"
 RANDOM_PUSH_SEED = 0x8C16
 BYTE_D_PINS = [2, 3, 4, 5, 6, 7, 8, 9]
@@ -38,6 +39,13 @@ MEMORY_DQ_PINS = [11, 12, 13, 15, 16, 17, 18, 19]
 
 def load_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def nested_value(data: dict, dotted_path: str):
+    value = data
+    for key in dotted_path.split("."):
+        value = value[key]
+    return value
 
 
 def random_push_intervals_ms(profile: dict) -> list[int]:
@@ -429,6 +437,21 @@ def bus_ownership(phase: str, src: int, str_: int, a15: int, override: dict | No
         "dbus_drivers": dbus_drivers,
         "conflict": conflict,
     }
+
+
+def reset_clock_step(ring_state: int, pc: int, *, rst: int = 1, clock: bool = True) -> tuple[int, int]:
+    if rst == 0:
+        return 0, 0
+    if not clock:
+        return ring_state, pc
+    pc_inc = int(bool(ring_outputs(ring_state)["T0"] or ring_outputs(ring_state)["T1"]))
+    return ring_clock(ring_state), pc16_step(pc, rst=rst, pc_ld=1, pc_inc=pc_inc, clock=True)
+
+
+def pc_known(value: object) -> bool:
+    if not isinstance(value, int):
+        return False
+    return 0 <= value <= 0xFFFF
 
 
 def mux157_set_nibble(chip, a_value: int, b_value: int, select: int) -> None:
@@ -1741,15 +1764,113 @@ def test_rv8gr_full_control_named_vectors_and_reserved_mixes_are_visible():
     assert "writes AC to RAM" in rules
 
 
+def test_rv8gr_reset_clock_bringup_package_shape():
+    circuit = load_json(RESET_CLOCK_BRINGUP / "circuit.json")
+    proof = load_json(RESET_CLOCK_BRINGUP / "tests" / "reset_clock_bringup.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_reset_clock_bringup"
+    assert proof["circuit"] == circuit["id"]
+    assert (RESET_CLOCK_BRINGUP / "README.md").exists()
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    expected_chips = {"U8": "74HC164", "U24": "74HC04", "U1": "74HC161", "U2": "74HC161", "U3": "74HC161", "U4": "74HC161"}
+    assert expected_chips.items() <= chips.items()
+    for part in ("74HC164", "74HC04", "74HC161"):
+        assert list((ROOT / "DB").glob(f"*/*{part}/definition/definition.json")), part
+
+    assert "/home/jo/kiro/RV8/RV8GR/doc/labs/lab01_power_clock.md" in circuit["source_project"]["paths"]
+    assert "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_chip_level.v" in circuit["source_project"]["paths"]
+    assert circuit["behavior"]["pc_increment_rule"] == "PC increments on edges that start while old T0 or old T1 is high; it holds on reset and old T2."
+
+
+def test_rv8gr_reset_clock_bringup_reset_idle_and_release():
+    proof = load_json(RESET_CLOCK_BRINGUP / "tests" / "reset_clock_bringup.json")
+    ring_state, pc = reset_clock_step(0x07, 0xBEEF, rst=0, clock=False)
+    assert ring_outputs(ring_state) == {key: proof["reset_idle"]["expect"][key] for key in ("T0", "T1", "T2")}
+    assert pc == int(proof["reset_idle"]["expect"]["PC"], 16)
+    assert pc_known(pc) is proof["reset_idle"]["expect"]["pc_known"]
+
+    ring_state, pc = reset_clock_step(ring_state, pc, rst=1, clock=False)
+    assert ring_outputs(ring_state) == {key: proof["reset_release"]["expect"][key] for key in ("T0", "T1", "T2")}
+    assert pc == int(proof["reset_release"]["expect"]["PC"], 16)
+    assert pc_known(pc) is proof["reset_release"]["expect"]["pc_known"]
+
+
+def test_rv8gr_reset_clock_bringup_push_vectors_are_one_hot_and_pc_known():
+    proof = load_json(RESET_CLOCK_BRINGUP / "tests" / "reset_clock_bringup.json")
+    ring_state, pc = reset_clock_step(0, 0, rst=0, clock=False)
+    ring_state, pc = reset_clock_step(ring_state, pc, rst=1, clock=False)
+
+    for vector in proof["push_vectors"]:
+        ring_state, pc = reset_clock_step(ring_state, pc, rst=1, clock=True)
+        expect = vector["expect"]
+        outputs = ring_outputs(ring_state)
+        assert outputs == {key: expect[key] for key in ("T0", "T1", "T2")}, vector
+        assert sum(outputs.values()) == 1, vector
+        assert phase_probe(outputs["T0"], outputs["T1"], outputs["T2"])["valid"] is True
+        assert pc == int(expect["PC"], 16), vector
+        assert pc_known(pc) is expect["pc_known"]
+
+
+def test_rv8gr_reset_clock_bringup_pc_no_unknown_policy_is_data():
+    proof = load_json(RESET_CLOCK_BRINGUP / "tests" / "reset_clock_bringup.json")
+    policy = proof["pc_no_unknown_policy"]
+    assert len(policy["signals"]) == 16
+    assert policy["signals"][0] == "PC0"
+    assert policy["signals"][-1] == "PC15"
+    assert {"X", "Z", "unknown", None} == set(policy["reject_values"])
+    assert "tb_rv8gr_chip_level.v" in policy["source_bench_rule"]
+    assert set(policy["applies_during"]) == {"reset_idle", "reset_release", "push_vectors", "clock_profiles"}
+
+    for bad in policy["reject_values"]:
+        assert not pc_known(bad)
+    for vector in [proof["reset_idle"], proof["reset_release"], *proof["push_vectors"]]:
+        pc = int(vector["expect"]["PC"], 16)
+        assert pc_known(pc)
+
+
+def test_rv8gr_reset_clock_bringup_clock_profiles_are_functional():
+    proof = load_json(RESET_CLOCK_BRINGUP / "tests" / "reset_clock_bringup.json")
+    profiles = proof["clock_profiles"]
+    names = {profile["name"] for profile in profiles}
+    assert required_clock_profile_names() <= names
+
+    random_profile = next(profile for profile in profiles if profile["name"] == "push_switch_random_100")
+    assert random_profile["seed"] == RANDOM_PUSH_SEED
+    intervals = random_push_intervals_ms(random_profile)
+    assert len(intervals) == 100
+    assert all(0 <= interval <= 500 for interval in intervals)
+    assert len(set(intervals)) > 1
+
+    for profile in profiles:
+        if "frequency_hz" in profile:
+            period_ns = int(round(1_000_000_000 / int(profile["frequency_hz"])))
+            assert profile["period_ns"] == period_ns, profile
+
+        ring_state, pc = reset_clock_step(0, 0, rst=0, clock=False)
+        ring_state, pc = reset_clock_step(ring_state, pc, rst=1, clock=False)
+        steps = 1 if profile["name"] == "push_switch_single_step" else 18
+        for _ in range(steps):
+            ring_state, pc = reset_clock_step(ring_state, pc, rst=1, clock=True)
+            outputs = ring_outputs(ring_state)
+            assert sum(outputs.values()) == 1, profile
+            assert pc_known(pc), profile
+
+    assert "Functional simulation only" in next(profile for profile in profiles if profile["name"] == "5_mhz")["note"]
+
+
 def test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary():
     timing = load_json(TIMING_MARGINS)
     assert timing["schema"] == "components.lib.circuit.timing_margins"
+    assert timing["status"]["physical_status"] == "not_proven"
     assert timing["status"]["physical_5mhz_timing"] == "not_proven"
     assert timing["status"]["physical_signal_integrity"] == "not_proven"
     assert "functional simulation only" in timing["status"]["boundary_rule"]
     profiles = {profile["name"]: profile for profile in timing["clock_profiles"]}
     assert set(profiles) == {"50_khz", "1_mhz", "2_mhz", "5_mhz"}
-    assert profiles["5_mhz"]["physical_status"] == "functional_simulation_only"
+    assert profiles["5_mhz"]["physical_status"] == "not_proven"
+    assert profiles["5_mhz"]["claim_boundary"] == "functional_simulation_only"
 
     circuit_paths = {
         path.parent.name
@@ -1758,6 +1879,7 @@ def test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary():
     part_sources = {entry["part"]: entry for entry in timing["part_timing_sources"]}
     assert {"74HC574", "74HC161", "AT28C256", "62256"} <= set(part_sources)
     for entry in part_sources.values():
+        assert entry["source_file_required"] is True, entry
         assert (ROOT / entry["source"]).exists(), entry
 
     for path in timing["propagation_paths"]:
@@ -1802,6 +1924,72 @@ def test_rv8gr_timing_setup_hold_requirements_cover_edge_sensitive_paths():
     summary = " ".join(timing["student_summary"])
     assert "Setup means data is ready before a clock edge" in summary
     assert "bus race means two chips might briefly try to drive the same wire" in summary
+
+
+def test_rv8gr_timing_physical_assumptions_are_source_backed_and_not_proven():
+    timing = load_json(TIMING_MARGINS)
+    assumptions = {item["id"]: item for item in timing["physical_timing_assumptions"]}
+    assert {
+        "at28c256_read_speed_grade_caveat",
+        "sram_read_and_float_pending",
+        "edge_register_setup_hold",
+        "counter_setup_hold",
+        "bus_turnaround_deadband",
+    } <= set(assumptions)
+
+    for item in assumptions.values():
+        assert item["physical_status"] == "not_proven", item
+        assert item["requirement"], item
+        if item["source"] != "Lib/Circuits/timing_margins.json":
+            assert (ROOT / item["source"]).exists(), item
+
+    at28 = assumptions["at28c256_read_speed_grade_caveat"]
+    at28_source = load_json(ROOT / at28["source"])
+    assert at28["model_read_delay_ns"] == nested_value(at28_source, "definition_layers.timing.delay.default_ns")
+    assert at28["datasheet_read_ns"] == nested_value(
+        at28_source,
+        "definition_layers.timing.delay.datasheet_read_ns.tacc_address_to_output",
+    )
+    assert at28["output_float_ns"] == nested_value(
+        at28_source,
+        "definition_layers.timing.delay.datasheet_read_ns.tdf_ce_or_oe_to_float",
+    )
+    assert at28["datasheet_read_ns"]["at28c256_15"] > at28["model_read_delay_ns"]
+
+    sram = assumptions["sram_read_and_float_pending"]
+    sram_source = load_json(ROOT / sram["source"])
+    assert sram["model_read_delay_ns"] == nested_value(sram_source, "definition_layers.timing.delay.model_delay_ns")
+    assert nested_value(sram_source, "definition_layers.timing.delay.status") == "model-derived"
+    assert {"selected_speed_grade", "read_access_ns", "output_disable_to_float_ns"} <= set(sram["missing_physical_fields"])
+
+    edge = assumptions["edge_register_setup_hold"]
+    edge_source = load_json(ROOT / edge["source"])
+    assert edge["setup_before_clock_ns"] == nested_value(
+        edge_source,
+        "definition_layers.timing.timing_requirements.setup_before_clock_ns.data.vcc_4_5_v",
+    )
+    assert edge["hold_after_clock_ns"] == nested_value(
+        edge_source,
+        "definition_layers.timing.timing_requirements.hold_after_clock_ns.vcc_4_5_v",
+    )
+
+    counter = assumptions["counter_setup_hold"]
+    counter_source = load_json(ROOT / counter["source"])
+    assert counter["setup_before_clock_ns"] == {
+        name: values["vcc_4_5_v"]
+        for name, values in nested_value(
+            counter_source,
+            "definition_layers.timing.timing_requirements.setup_before_clock_ns",
+        ).items()
+    }
+    assert counter["hold_after_clock_ns"] == nested_value(
+        counter_source,
+        "definition_layers.timing.timing_requirements.hold_after_clock_ns.vcc_4_5_v",
+    )
+
+    deadband = assumptions["bus_turnaround_deadband"]
+    assert "output-float time" in deadband["required_deadband"]
+    assert "clock_phase_deadband_ns" in deadband["missing_physical_fields"]
 
 
 def test_all_started_circuit_packages_have_tests():
@@ -1882,8 +2070,14 @@ def run_all():
     test_rv8gr_full_control_opcode_sweep_package_shape()
     test_rv8gr_full_control_opcode_sweep_all_512_cases_match_verilog_equation()
     test_rv8gr_full_control_named_vectors_and_reserved_mixes_are_visible()
+    test_rv8gr_reset_clock_bringup_package_shape()
+    test_rv8gr_reset_clock_bringup_reset_idle_and_release()
+    test_rv8gr_reset_clock_bringup_push_vectors_are_one_hot_and_pc_known()
+    test_rv8gr_reset_clock_bringup_pc_no_unknown_policy_is_data()
+    test_rv8gr_reset_clock_bringup_clock_profiles_are_functional()
     test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary()
     test_rv8gr_timing_setup_hold_requirements_cover_edge_sensitive_paths()
+    test_rv8gr_timing_physical_assumptions_are_source_backed_and_not_proven()
     test_all_started_circuit_packages_have_tests()
 
 

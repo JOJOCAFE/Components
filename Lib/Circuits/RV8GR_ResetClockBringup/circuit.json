@@ -1,0 +1,91 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_reset_clock_bringup",
+  "title": "RV8GR reset and clock bring-up",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/labs/lab01_power_clock.md",
+      "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_chip_level.v",
+      "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_chip_level.v"
+    ]
+  },
+  "purpose": "Package the first RV8GR bring-up proof: manual clock release, active-low reset, T0/T1/T2 sanity, and PC known-state policy.",
+  "chips": [
+    {"ref": "SW_CLK", "part": "Switch", "role": "Lab 01 normally-high push button clock; release creates the rising edge"},
+    {"ref": "SW_RST", "part": "Switch", "role": "Lab 01 normally-high reset button; press drives /RST low"},
+    {"ref": "U8", "part": "74HC164", "role": "Three-phase ring shift register"},
+    {"ref": "U24", "part": "74HC04", "role": "Ring feedback inverters for NOT(T0) and NOT(T1)"},
+    {"ref": "U1", "part": "74HC161", "role": "PC bits 0-3"},
+    {"ref": "U2", "part": "74HC161", "role": "PC bits 4-7"},
+    {"ref": "U3", "part": "74HC161", "role": "PC bits 8-11"},
+    {"ref": "U4", "part": "74HC161", "role": "PC bits 12-15"},
+    {"ref": "PHASE_MON", "part": "Probe", "role": "Virtual one-hot phase observer"},
+    {"ref": "PC_MON", "part": "Probe", "role": "Virtual PC X/Z policy observer"}
+  ],
+  "ports": [
+    {"name": "CLK", "direction": "input", "edge": "rising", "description": "Manual or generated clock; Lab 01 creates the rising edge when the button is released."},
+    {"name": "/RST", "direction": "input", "active_low": true, "description": "Reset button net; LOW asynchronously clears U8 and U1-U4."},
+    {"name": "T0", "direction": "output", "source": "U8.Q0"},
+    {"name": "T1", "direction": "output", "source": "U8.Q1"},
+    {"name": "T2", "direction": "output", "source": "U8.Q2"},
+    {"name": "PC0..PC15", "direction": "output", "source": "U1-U4.Q"},
+    {"name": "PC_INC", "direction": "internal", "description": "Integrated RV8GR bring-up count enable: T0 OR T1."}
+  ],
+  "wiring": [
+    {"net": "CLK", "connections": ["SW_CLK.1", "U8.8", "U1.2", "U2.2", "U3.2", "U4.2"]},
+    {"net": "/RST", "connections": ["SW_RST.1", "U8.9", "U1.1", "U2.1", "U3.1", "U4.1"]},
+    {"net": "T0", "connections": ["U8.3", "U24.1", "PHASE_MON.T0"]},
+    {"net": "NOT_T0", "connections": ["U24.2", "U8.1"]},
+    {"net": "T1", "connections": ["U8.4", "U24.3", "PHASE_MON.T1"]},
+    {"net": "NOT_T1", "connections": ["U24.4", "U8.2"]},
+    {"net": "T2", "connections": ["U8.5", "PHASE_MON.T2"]},
+    {"net": "PC_INC", "connections": ["U1.7", "U1.10", "U2.7", "U3.7", "U4.7"], "rule": "PC_INC = T0 OR T1"},
+    {"net": "RCO0", "connections": ["U1.15", "U2.10"]},
+    {"net": "RCO1", "connections": ["U2.15", "U3.10"]},
+    {"net": "RCO2", "connections": ["U3.15", "U4.10"]},
+    {"net": "PC0..PC15", "connections": ["U1.Q", "U2.Q", "U3.Q", "U4.Q", "PC_MON.1"]}
+  ],
+  "behavior": {
+    "reset_idle_state": {
+      "/RST": 0,
+      "T0": 0,
+      "T1": 0,
+      "T2": 0,
+      "PC": "0x0000",
+      "pc_known": true
+    },
+    "reset_release": "Releasing /RST high does not advance state until the next clean rising CLK edge.",
+    "first_usable_phase": "The first clean rising clock after reset enters T0 while PC remains 0x0000 because PC_INC was low before that edge.",
+    "phase_loop": "Later clean rising edges repeat T0 -> T1 -> T2 with exactly one phase high.",
+    "pc_increment_rule": "PC increments on edges that start while old T0 or old T1 is high; it holds on reset and old T2.",
+    "pc_unknown_policy": "PC0..PC15 must never be X, Z, or unknown in reset idle, reset release, or post-clock bring-up observations."
+  },
+  "timing": {
+    "clocking": "edge_sensitive",
+    "trigger_edge": "rising",
+    "lab01_clock": {
+      "not_pressed": "CLK high through 10k pull-up",
+      "pressed": "CLK low through normally-open push button",
+      "release": "LOW-to-HIGH rising edge",
+      "debounce_note": "10k plus 100nF is a beginner RC debounce; tests require one clean logical edge per push."
+    },
+    "reset": {
+      "type": "active_low_asynchronous_clear",
+      "applies_to": ["U8", "U1", "U2", "U3", "U4"]
+    },
+    "frequency_boundary": "5 MHz is functional simulation only; this package does not promote physical timing proof."
+  },
+  "verification": {
+    "tests": ["tests/reset_clock_bringup.json"],
+    "guarantees": [
+      "reset idle state clears ring and PC",
+      "reset release alone does not create a clock step",
+      "T0/T1/T2 are one-hot after clean pushes",
+      "PC has no X/Z/unknown values in bring-up observations",
+      "push switch, random 100 up to 500 ms, 50 kHz, 1 MHz, 2 MHz, and 5 MHz functional-only profiles are represented"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

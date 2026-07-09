@@ -26,6 +26,7 @@ truth when lab wording is simplified.
 | `RV8GR_BranchJumpControl` | U24-U28 control gates | Started | `/PC_LD`, branch condition, no unintended load |
 | `RV8GR_VirtualTestHelpers` | `ClockSource`, `Probe`, `BusProbe` virtual helpers | Started | clock profiles, phase probes, bus contention observation |
 | `RV8GR_FullControlOpcodeSweep` | T2 horizontal-control equation proof | Started | all opcode/Z cases, reserved mixes, side-effect drift |
+| `RV8GR_ResetClockBringup` | `lab01_power_clock` + `tb_rv8gr_chip_level` reset/ring sanity | Started | reset idle/release, one-hot phase pushes, PC known-state policy, clock profiles |
 
 Each circuit package should include:
 
@@ -43,6 +44,10 @@ Each circuit package should include:
    1 MHz, 2 MHz, and 5 MHz profiles on every edge-sensitive circuit. Mark
    5 MHz as functional simulation until timing-margin and hardware
    signal-integrity proof exist.
-2. `RV8GR_TimingMargins`: consume `timing_margins.json` in future tests so
-   model-delay slack, setup/hold requirements, and bus-race notes stay visible
-   without promoting 5 MHz to physically proven.
+2. `RV8GR_TimingMargins`: keep `timing_margins.json` consumed by tests so
+   model-delay slack, setup/hold requirements, source-backed physical
+   assumptions, and bus-race notes stay visible without promoting 5 MHz to
+   physically proven.
+3. `RV8GR_PhysicalEvidence`: add selected memory speed grade, output-disable
+   timing, clock-phase deadband, and measured wiring/signal-integrity evidence
+   before any hardware-speed claim.

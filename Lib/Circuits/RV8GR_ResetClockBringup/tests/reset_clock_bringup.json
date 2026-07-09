@@ -1,0 +1,47 @@
+{
+  "schema": "components.lib.circuit.test.reset_clock_bringup",
+  "version": 1,
+  "circuit": "rv8gr_reset_clock_bringup",
+  "source": "Lib/Circuits/RV8GR_ResetClockBringup/circuit.json",
+  "reset_idle": {
+    "input": {"/RST": 0, "CLK": 0},
+    "expect": {"T0": 0, "T1": 0, "T2": 0, "PC": "0x0000", "pc_known": true}
+  },
+  "reset_release": {
+    "input": {"/RST": 1, "CLK": "no_rising_edge"},
+    "expect": {"T0": 0, "T1": 0, "T2": 0, "PC": "0x0000", "pc_known": true}
+  },
+  "push_vectors": [
+    {"push": 1, "expect": {"T0": 1, "T1": 0, "T2": 0, "PC": "0x0000", "pc_known": true}},
+    {"push": 2, "expect": {"T0": 0, "T1": 1, "T2": 0, "PC": "0x0001", "pc_known": true}},
+    {"push": 3, "expect": {"T0": 0, "T1": 0, "T2": 1, "PC": "0x0002", "pc_known": true}},
+    {"push": 4, "expect": {"T0": 1, "T1": 0, "T2": 0, "PC": "0x0002", "pc_known": true}},
+    {"push": 5, "expect": {"T0": 0, "T1": 1, "T2": 0, "PC": "0x0003", "pc_known": true}},
+    {"push": 6, "expect": {"T0": 0, "T1": 0, "T2": 1, "PC": "0x0004", "pc_known": true}}
+  ],
+  "pc_no_unknown_policy": {
+    "signals": ["PC0", "PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10", "PC11", "PC12", "PC13", "PC14", "PC15"],
+    "reject_values": ["X", "Z", "unknown", null],
+    "source_bench_rule": "tb_rv8gr_chip_level.v fatal-checks ^pc === 1'bx after reset release.",
+    "applies_during": ["reset_idle", "reset_release", "push_vectors", "clock_profiles"]
+  },
+  "phase_policy": {
+    "normal_one_hot_after_push": ["T0", "T1", "T2"],
+    "reset_zero_hot_allowed_only_while_reset_asserted": true,
+    "reject_after_push": ["zero_hot", "multi_hot", "unknown"]
+  },
+  "clock_profiles": [
+    {"name": "push_switch_single_step", "kind": "manual", "ticks": 1, "requires": "one clean debounced release edge per push; press prepares, release clocks"},
+    {"name": "push_switch_random_100", "kind": "manual", "ticks": 100, "max_interval_ms": 500, "seed": 35862, "requires": "one clean debounced release edge per push; interval jitter must not add extra edges"},
+    {"name": "50_khz", "frequency_hz": 50000, "period_ns": 20000, "proof": "functional_reset_ring_pc_sequence"},
+    {"name": "1_mhz", "frequency_hz": 1000000, "period_ns": 1000, "proof": "functional_reset_ring_pc_sequence"},
+    {"name": "2_mhz", "frequency_hz": 2000000, "period_ns": 500, "proof": "functional_reset_ring_pc_sequence"},
+    {"name": "5_mhz", "frequency_hz": 5000000, "period_ns": 200, "proof": "functional_reset_ring_pc_sequence", "note": "Functional simulation only; physical 5 MHz requires timing-margin and signal-integrity proof."}
+  ],
+  "edge_criteria": {
+    "clocking": "edge_sensitive",
+    "trigger_edge": "rising",
+    "non_trigger_edge": "falling_or_no_rising_edge_holds_state",
+    "notes": "The lab01 push clock creates the logical rising edge on button release. Reset is active-low and asynchronous."
+  }
+}
