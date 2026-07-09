@@ -513,6 +513,46 @@ Result:
 }
 ```
 
+### frontend-snapshot
+
+Purpose: return the stable UI/API drawing snapshot described in
+`FRONTEND_SNAPSHOT_CONTRACT.md`.
+
+Python:
+
+```python
+SimulationService().frontend_snapshot(design)
+```
+
+Result:
+
+```json
+{
+  "format": "components.frontend.snapshot",
+  "version": 1,
+  "design": {
+    "name": "nand",
+    "description": "",
+    "modules": {},
+    "groups": {}
+  },
+  "time_ns": 0,
+  "chips": [],
+  "buses": [],
+  "nets": [],
+  "rails": [],
+  "sources": [],
+  "stimulus": {},
+  "probes": {},
+  "displays": {},
+  "validation": {},
+  "errors": [],
+  "warnings": [],
+  "layout": {},
+  "labels": {}
+}
+```
+
 ## Pluggable Service Rules
 
 - The canonical chip identity DB is `db/` and is read through Components DB
@@ -521,6 +561,7 @@ Result:
 - A plugin may implement simulation, netlist export, Verilog export, or API
   transport, but it must consume canonical `Design` or normalized netlist JSON.
 - A plugin must return the response shapes in this document.
+- External simulation engines must follow `EXTERNAL_ENGINE_ADAPTER_PLAN.md`.
 - A plugin must report unsupported parts, missing DB metadata, and unsupported
   export features as structured errors or `unsupported` entries.
 - A plugin must not silently infer pin mappings or chip behavior from names

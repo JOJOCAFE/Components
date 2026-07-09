@@ -101,12 +101,13 @@ outputs.
    - `examples/memory_read.json`
    - `examples/tiny_cpu_slice.json`
 
-9. ⬜ Add a future external-engine adapter plan.
+9. ✅ Add a future external-engine adapter plan.
    - Define how a Rust/C/C++ simulator would be invoked.
    - It must accept normalized netlist/design JSON and return the same
      simulation-result JSON shape.
    - Keep this as a plan until Python performance or correctness limits are
      proven.
+   - See `EXTERNAL_ENGINE_ADAPTER_PLAN.md`.
 
 10. ⬜ Add an API wrapper only after CLI contracts are stable.
     - Candidate: local HTTP server or stdio JSON-RPC.

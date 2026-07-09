@@ -261,12 +261,52 @@ def test_design_loads_passive_and_discrete_db_components_without_behavior_model(
     assert design.run()["ok"]
 
 
+def test_design_runner_evaluates_expectations_and_probe_history():
+    design = Design.from_dict({
+        "name": "expectations",
+        "chips": {"U1": {"part": "74HC00"}},
+        "aliases": {"A": "U1:1", "B": "U1:2", "Y": "U1:3"},
+        "connections": ["VCC -> U1:14", "GND -> U1:7"],
+        "inputs": {
+            "both_high": ["A = 1", "B = 1"],
+            "a_low": ["A = 0", "B = 1"],
+        },
+        "probes": {"logic": ["Y"]},
+        "expect": {
+            "nand_low": ["Y = 0"],
+            "nand_changed": ["Y has rising"],
+            "wrong": ["Y = 1"],
+        },
+        "steps": [
+            "apply both_high",
+            "settle",
+            "probe",
+            "expect nand_low",
+            "apply a_low",
+            "probe",
+            "expect nand_changed",
+        ],
+    })
+
+    passed = design.run()
+    assert passed["ok"] is True
+    assert [item["name"] for item in passed["expectations"]["passed"]] == ["nand_low", "nand_changed"]
+    assert passed["expectations"]["failed"] == []
+    assert passed["timing"]["steps"] == 7
+
+    failed = Design.from_dict({**design.to_dict(), "steps": ["apply both_high", "expect wrong"]}).run()
+    assert failed["ok"] is False
+    assert failed["expectations"]["failed"][0]["name"] == "wrong"
+    assert failed["expectations"]["failed"][0]["checks"][0]["actual"] == 0
+
+
 def run_all():
     test_from_dict_to_dict_round_trip_preserves_schematic_contract()
     test_design_to_board_materializes_aliases_buses_connections_power_and_pulls()
     test_design_exposes_power_on_inputs_input_sets_and_named_probe_sets()
     test_design_adapts_db_virtual_sources_rails_pulls_and_probes()
     test_design_loads_passive_and_discrete_db_components_without_behavior_model()
+    test_design_runner_evaluates_expectations_and_probe_history()
 
 
 if __name__ == "__main__":

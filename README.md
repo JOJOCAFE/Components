@@ -33,6 +33,11 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 - `SERVICE_ARCHITECTURE_TASKS.md` - task plan for splitting behavior,
   simulation, exporters, CLI, and future API/UI work behind stable internal
   service contracts.
+- `EXTERNAL_ENGINE_ADAPTER_PLAN.md` - contract plan for future Rust, C, or C++
+  simulation engines that plug into the same normalized JSON service boundary.
+- `FRONTEND_SNAPSHOT_CONTRACT.md` - UI/API snapshot shape for drawing chips,
+  nets, buses, probes, displays, errors, and warnings without scraping backend
+  internals.
 - `DB_MIGRATION_PLAN.md` - phased plan for making `db/` the chip identity
   layer while legacy model and pinout files remain active during migration.
 

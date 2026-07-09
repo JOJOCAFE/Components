@@ -76,22 +76,23 @@ Future work for the shared component library.
 - ✅ Add DB-backed adapters so schematic JSON can instantiate virtual sources,
   rails, probes, passive parts, and discrete parts without forcing those
   representation-only components through chip behavior factories.
-- ⬜ Follow `SERVICE_ARCHITECTURE_TASKS.md` to split chip behavior, simulation,
+- ✅ Follow `SERVICE_ARCHITECTURE_TASKS.md` to split chip behavior, simulation,
   CLI, and future API/UI adapters behind the stable internal service
   contracts. Verilog export, simulation, and CLI now have initial internal
-  service boundaries.
+  service boundaries, with future external-engine and API/UI contracts
+  documented.
 - ✅ Finish production-ready CLI commands around the existing `Design` backend:
   `validate`, `snapshot`, `run`, `probe`, `export-json`, `export-netlist`, and
   `export-verilog`.
 - ✅ Add canonical JSON contract tests using service-ready example schematics:
   load schematic JSON, validate, snapshot, run, export netlist, and export
   Verilog when supported.
-- ⬜ Build a full simulation runner from JSON that applies clocks, inputs,
+- ✅ Build a full simulation runner from JSON that applies clocks, inputs,
   probes, expectations, and memory images, then returns structured results.
 - ⬜ Stabilize the Python API boundary for frontends: create/delete chips,
   connect/disconnect endpoints, add buses, set inputs, step clocks, read
   probes, validate, snapshot, and export.
-- ⬜ Define the frontend snapshot contract for UI/API clients, including chip
+- ✅ Define the frontend snapshot contract for UI/API clients, including chip
   layout, pin states, net values, bus values, warnings/errors, probe history,
   and display state.
 - ✅ Repair the `74HC147` Verilog model/export contract so the model exposes

@@ -13,7 +13,7 @@ from .core import Board, Logic, normalize_logic
 from .db import load_component
 from .loader import load_memory
 from .netlist import design_from_kicad_netlist, design_from_netlist, design_to_netlist
-from .probe import ProbeController
+from .probe import ProbeChannel, ProbeController
 from .services import export_verilog
 from .stimulus import StimulusController
 
@@ -253,14 +253,29 @@ class Design:
             board = self._board
         selected_steps = self.steps if steps == "all" else steps if isinstance(steps, list) else []
         log: list[JsonMap] = []
+        expectations: JsonMap = {"passed": [], "failed": []}
         for step in selected_steps:
-            log.append(self._run_step(board, str(step)))
+            entry = self._run_step(board, str(step))
+            log.append(entry)
+            result = entry.get("expectation")
+            if isinstance(result, dict):
+                bucket = "passed" if result.get("ok") else "failed"
+                expectations[bucket].append(result)
         if self.probe_controller is not None:
             self.probe_controller.sample()
+        board_errors = board.errors() if board is not None else []
         return {
-            "ok": not board.errors(),
+            "ok": not board_errors and not expectations["failed"],
             "log": log,
             "snapshot": self.snapshot(),
+            "probes": self.probe_controller.snapshot() if self.probe_controller is not None else None,
+            "displays": deepcopy(self.displays),
+            "expectations": expectations,
+            "timing": {
+                "time_ns": board.time_ns if board is not None else 0,
+                "steps": len(selected_steps),
+                "events": len(log),
+            },
         }
 
     def validate(self) -> JsonMap:
@@ -333,7 +348,15 @@ class Design:
                 self.probe_controller.sample()
             return {"step": step, "action": "probe", "time_ns": board.time_ns}
         if lower.startswith("expect "):
-            return {"step": step, "action": "expect", "name": text.split(None, 1)[1].strip(), "status": "recorded"}
+            name = text.split(None, 1)[1].strip()
+            result = self._evaluate_expectation(board, name)
+            return {
+                "step": step,
+                "action": "expect",
+                "name": name,
+                "status": "passed" if result["ok"] else "failed",
+                "expectation": result,
+            }
         return {"step": step, "action": "unknown", "warning": "step not implemented"}
 
     def _run_clock_step(self, board: Board, text: str) -> JsonMap:
@@ -661,6 +684,155 @@ class Design:
         if name in board.sources:
             return
         board.attach_rail(rail, target)
+
+    def _evaluate_expectation(self, board: Board, name: str) -> JsonMap:
+        rules = self.expect.get(name)
+        if rules is None:
+            return {
+                "name": name,
+                "ok": False,
+                "checks": [],
+                "errors": [{"type": "expectation_missing", "name": name}],
+            }
+        if isinstance(rules, str):
+            checks = [rules]
+        elif isinstance(rules, list):
+            checks = [str(rule) for rule in rules]
+        else:
+            return {
+                "name": name,
+                "ok": False,
+                "checks": [],
+                "errors": [{"type": "expectation_invalid", "name": name, "detail": "expectation must be a string or list"}],
+            }
+        results = [self._evaluate_expectation_rule(board, rule) for rule in checks]
+        return {
+            "name": name,
+            "ok": all(item.get("ok") for item in results),
+            "checks": results,
+            "errors": [item for item in results if not item.get("ok")],
+        }
+
+    def _evaluate_expectation_rule(self, board: Board, rule: str) -> JsonMap:
+        text = str(rule).strip()
+        if not text:
+            return {"rule": rule, "ok": True, "type": "noop"}
+        lowered = text.lower()
+        if "=" in text:
+            ref, expected_text = text.split("=", 1)
+            return self._expect_current_value(board, text, ref.strip(), _logic_text(expected_text.strip()))
+        if " is " in lowered:
+            before, _, after = text.partition(" is ")
+            return self._expect_current_value(board, text, before.strip(), _logic_text(after.strip()))
+        if lowered.endswith(" changes"):
+            ref = text[: -len(" changes")].strip()
+            return self._expect_history_edge(text, ref, None)
+        if " has " in lowered:
+            ref, _, edge = text.partition(" has ")
+            return self._expect_history_edge(text, ref.strip(), edge.strip().lower())
+        if " stable " in lowered:
+            ref, _, expected = text.partition(" stable ")
+            return self._expect_stable(text, ref.strip(), _logic_text(expected.strip()))
+        return {
+            "rule": rule,
+            "ok": False,
+            "type": "unsupported_expectation",
+            "message": "Use forms like 'Y = 1', 'CLK has rising', 'DATA:0 changes', or 'READY stable 0'.",
+        }
+
+    def _expect_current_value(self, board: Board, rule: str, ref: str, expected: Logic) -> JsonMap:
+        actual = self._read_endpoint_value(board, ref)
+        ok = actual == expected
+        return {
+            "rule": rule,
+            "ok": ok,
+            "type": "value",
+            "target": ref,
+            "expected": expected,
+            "actual": actual,
+            "message": "" if ok else f"{ref} expected {expected!r}, got {actual!r}",
+        }
+
+    def _expect_history_edge(self, rule: str, ref: str, edge: str | None) -> JsonMap:
+        channel = self._find_probe_channel(ref)
+        if channel is None:
+            return {
+                "rule": rule,
+                "ok": False,
+                "type": "transition",
+                "target": ref,
+                "edge": edge or "change",
+                "message": f"{ref} has no probe history; add it to probes and run a probe step first.",
+            }
+        expected_edge = None if edge in (None, "", "change", "changes") else edge
+        count = channel.count_edges(expected_edge)
+        ok = count > 0
+        return {
+            "rule": rule,
+            "ok": ok,
+            "type": "transition",
+            "target": ref,
+            "edge": edge or "change",
+            "count": count,
+            "message": "" if ok else f"{ref} expected {edge or 'change'} transition",
+        }
+
+    def _expect_stable(self, rule: str, ref: str, expected: Logic) -> JsonMap:
+        channel = self._find_probe_channel(ref)
+        if channel is None:
+            return {
+                "rule": rule,
+                "ok": False,
+                "type": "stable",
+                "target": ref,
+                "expected": expected,
+                "message": f"{ref} has no probe history; add it to probes and run a probe step first.",
+            }
+        samples = channel.values()
+        bad = [sample for sample in samples if sample.value != expected]
+        ok = bool(samples) and not bad
+        return {
+            "rule": rule,
+            "ok": ok,
+            "type": "stable",
+            "target": ref,
+            "expected": expected,
+            "samples": len(samples),
+            "message": "" if ok else f"{ref} was not stable at {expected!r}",
+        }
+
+    def _read_endpoint_value(self, board: Board, ref: str) -> Logic:
+        endpoint = self._endpoint(ref)
+        if endpoint.kind == "pin":
+            return board.chips[endpoint.chip or ""].pin(endpoint.pin or 0).sample()
+        if endpoint.kind in ("bus", "net", "component_pin"):
+            return board.net_for_tag(endpoint.target).value
+        if endpoint.kind == "rail":
+            return self.rails[endpoint.rail or endpoint.target]
+        raise ValueError(f"unsupported expectation endpoint {ref!r}")
+
+    def _find_probe_channel(self, ref: str) -> ProbeChannel | None:
+        if self.probe_controller is None:
+            return None
+        try:
+            endpoint = self._endpoint(ref)
+        except Exception:
+            endpoint = None
+        targets = {ref}
+        if endpoint is not None:
+            targets.add(endpoint.target)
+            if endpoint.kind == "pin" and endpoint.chip is not None:
+                chip = self._board.chips.get(endpoint.chip) if self._board is not None else None
+                if chip is not None:
+                    try:
+                        targets.add(f"{endpoint.chip}.{chip.pin(endpoint.pin or 0).name}")
+                    except Exception:
+                        pass
+        for probe_set in self.probe_controller.sets.values():
+            for channel in probe_set.probes:
+                if channel.name == ref or channel.target_name in targets:
+                    return channel
+        return None
 
 
 def _copy_map(value: Any) -> JsonMap:

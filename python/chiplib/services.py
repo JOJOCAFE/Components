@@ -70,7 +70,7 @@ class SimulationService:
         try:
             payload = design.run(steps)
             warnings = _warnings_from_run(payload)
-            errors = _board_errors(payload)
+            errors = _board_errors(payload) + _expectation_errors(payload)
             return self._response(
                 "run",
                 bool(payload.get("ok")) and not errors,
@@ -141,6 +141,15 @@ class SimulationService:
             return self._response("probe", True, result, started=started)
         except Exception as exc:  # pragma: no cover - defensive service boundary
             return self._exception("probe", exc, code="simulation.failed", started=started)
+
+    def frontend_snapshot(self, design: Any) -> JsonMap:
+        started = perf_counter()
+        try:
+            if getattr(design, "_board", None) is None:
+                design.to_board()
+            return self._response("frontend-snapshot", True, _frontend_snapshot(design.snapshot()), started=started)
+        except Exception as exc:  # pragma: no cover - defensive service boundary
+            return self._exception("frontend-snapshot", exc, started=started)
 
     def _summary(self, design: Any) -> JsonMap:
         probes = getattr(design, "probes", {})
@@ -309,6 +318,49 @@ def _board_errors(payload: JsonMap) -> list[Any]:
         return []
     errors = board.get("errors", [])
     return errors if isinstance(errors, list) else []
+
+
+def _expectation_errors(payload: JsonMap) -> list[Any]:
+    expectations = payload.get("expectations", {})
+    if not isinstance(expectations, dict):
+        return []
+    failed = expectations.get("failed", [])
+    if not isinstance(failed, list):
+        return []
+    return [
+        {"type": "expectation_failed", "name": item.get("name"), "checks": item.get("checks", [])}
+        for item in failed
+        if isinstance(item, dict)
+    ]
+
+
+def _frontend_snapshot(snapshot: JsonMap) -> JsonMap:
+    design = snapshot.get("design", {})
+    board = snapshot.get("board", {}) or {}
+    return {
+        "format": "components.frontend.snapshot",
+        "version": 1,
+        "design": {
+            "name": design.get("name"),
+            "description": design.get("description", ""),
+            "modules": design.get("modules", {}),
+            "groups": design.get("groups", {}),
+        },
+        "time_ns": board.get("time_ns", 0),
+        "chips": board.get("chips", []),
+        "buses": board.get("buses", []),
+        "nets": board.get("nets", []),
+        "rails": board.get("rails", []),
+        "sources": board.get("sources", []),
+        "stimulus": snapshot.get("stimulus"),
+        "probes": snapshot.get("probes"),
+        "displays": snapshot.get("displays", {}),
+        "validation": snapshot.get("validate", {}),
+        "errors": board.get("errors", []),
+        "warnings": snapshot.get("validate", {}).get("warnings", []) if isinstance(snapshot.get("validate"), dict) else [],
+        "layout": design.get("layout", {}),
+        "labels": design.get("aliases", {}),
+    }
 
 
 def _verilog_file_for_part(part: str, module: str) -> str | None:
