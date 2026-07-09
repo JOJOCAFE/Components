@@ -27,6 +27,8 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 - `SERVICE_ARCHITECTURE_TASKS.md` - task plan for splitting behavior,
   simulation, exporters, CLI, and future API/UI work behind stable internal
   service contracts.
+- `DB_MIGRATION_PLAN.md` - phased plan for making `db/` the chip identity
+  layer while legacy model and pinout files remain active during migration.
 
 ## Verification Rule
 
@@ -133,4 +135,6 @@ Expected pass markers:
   exporter.
 - `SERVICE_ARCHITECTURE_TASKS.md` - service-boundary task plan for keeping the
   component library modular before it grows too large.
+- `DB_MIGRATION_PLAN.md` - DB migration plan for moving chip facts under
+  per-chip ownership without breaking existing tools.
 - `BACKLOG.md` - deferred future work, including the visual chip-block UI idea.

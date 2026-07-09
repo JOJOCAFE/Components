@@ -47,6 +47,8 @@ Future work for the shared component library.
   manifests for easy test parts: `74HC00`, `74HC04`, and `62256`.
 - ✅ Expand the DB seed set with representative sequential, bus, and EEPROM
   parts: `74HC161`, `74HC245`, and `AT28C256`.
+- ✅ Add `DB_MIGRATION_PLAN.md` to define the phased transition from scattered
+  legacy chip files to DB-owned chip identity and metadata.
 - ⬜ Follow `SERVICE_ARCHITECTURE_TASKS.md` to split chip behavior, simulation,
   exporters, CLI, and future API/UI adapters behind stable internal service
   contracts before the repo grows too large.
