@@ -58,6 +58,13 @@ def handle_request(request: JsonMap, service: FrontendDesignService | None = Non
             return service.snapshot()
         if command == "frontend-snapshot":
             return service.frontend_snapshot()
+        if command == "component-catalog":
+            group = options.get("group", input_data.get("group"))
+            return service.component_catalog(group=str(group) if group is not None else None)
+        if command == "component-detail":
+            return service.component_detail(str(options.get("part", input_data.get("part"))))
+        if command == "component-metadata":
+            return service.component_metadata(str(options.get("part", input_data.get("part"))))
         if command == "run":
             return service.run(options.get("steps", input_data.get("steps", "all")))
         if command == "probe":

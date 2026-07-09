@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from .db import audit_db, component_summary, db_status_report, load_component
+from .db import audit_db, component_catalog, component_detail, component_summary, db_status_report, load_component
 from .services import DesignCommandService
 
 
@@ -35,6 +35,9 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     db.add_argument("part", nargs="?", help="optional component part, such as 74HC00")
     db.add_argument("--audit", action="store_true", help="audit DB manifests against legacy catalog files")
     db.add_argument("--status", action="store_true", help="compare DB status categories with CHIP_STATUS.md")
+    db.add_argument("--catalog", action="store_true", help="emit frontend-oriented component catalog metadata")
+    db.add_argument("--detail", action="store_true", help="emit frontend-oriented metadata for one component")
+    db.add_argument("--group", help="filter --catalog by DB group, such as 74xx or memory")
     db.add_argument("-o", "--output")
 
     args = parser.parse_args(argv)
@@ -48,6 +51,14 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
             data = db_status_report()
             return write_json(data, output=getattr(args, "output", None), status=0 if data["ok"] else 2)
         part = getattr(args, "part", None)
+        if getattr(args, "catalog", False):
+            data = component_catalog(group=getattr(args, "group", None))
+            return write_json(data, output=getattr(args, "output", None))
+        if getattr(args, "detail", False):
+            if not part:
+                parser.error("db --detail requires a part")
+            data = component_detail(part)
+            return write_json(data, output=getattr(args, "output", None))
         data = load_component(part) if part else component_summary()
         return write_json(data, output=getattr(args, "output", None))
 

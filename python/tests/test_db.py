@@ -2,7 +2,7 @@
 
 import json
 
-from chiplib.db import audit_db, component_ids, component_summary, db_root, db_status_report, legacy_catalog_parts, load_all_components, load_component
+from chiplib.db import audit_db, component_catalog, component_detail, component_ids, component_summary, db_root, db_status_report, legacy_catalog_parts, load_all_components, load_component
 
 
 ALLOWED_STATUS = {
@@ -160,6 +160,38 @@ def test_db_summary_reports_status_and_gaps():
     assert all(item["missing_files"] == [] for item in summary["components"])
 
 
+def test_db_component_catalog_is_frontend_ready_and_grouped():
+    catalog = component_catalog()
+    assert catalog["format"] == "components.db.catalog"
+    assert catalog["count"] >= 75
+    groups = {item["id"]: item for item in catalog["groups"]}
+    assert groups["74xx"]["count"] >= 57
+    assert groups["memory"]["count"] == 5
+    assert groups["virtual"]["count"] >= 8
+
+    hc00 = next(item for item in catalog["components"] if item["part"] == "74HC00")
+    assert hc00["group"] == "74xx"
+    assert hc00["db_path"] == "db/74xx/74HC00/chip.json"
+    assert hc00["capabilities"]["physical_pinout"] is True
+    assert hc00["capabilities"]["verilog_file"] == "verilog/74xx/74hc00.v"
+    assert hc00["warnings"] == []
+
+    memory = component_catalog(group="memory")
+    assert memory["group"] == "memory"
+    assert {item["part"] for item in memory["components"]} == {"62256", "AS6C62256", "AT28C256", "CY7C199", "SST39SF010A"}
+
+
+def test_db_component_detail_exposes_pins_and_capabilities():
+    detail = component_detail("AT28C256")
+    assert detail["format"] == "components.db.component"
+    assert detail["part"] == "AT28C256"
+    assert detail["group"] == "memory"
+    assert detail["db_path"] == "db/memory/AT28C256/chip.json"
+    assert detail["pins"][0] == {"number": 1, "name": "A14", "direction": "input"}
+    assert detail["capabilities"]["verilog_model"] is True
+    assert detail["capabilities"]["verilog_file"] == "verilog/Memory/at28c256.v"
+
+
 def test_db_manifests_match_schema_contract():
     schema = json.loads((db_root() / "chip.schema.json").read_text(encoding="utf-8"))
     assert schema["properties"]["schema"]["const"] == "db.chip"
@@ -225,6 +257,8 @@ def test_db_status_report_checks_chip_status_snapshot():
 def run_all():
     test_db_seed_entries_are_loadable()
     test_db_summary_reports_status_and_gaps()
+    test_db_component_catalog_is_frontend_ready_and_grouped()
+    test_db_component_detail_exposes_pins_and_capabilities()
     test_db_manifests_match_schema_contract()
     test_db_audit_reports_partial_legacy_coverage_without_hard_errors()
     test_db_legacy_coverage_lists_models_and_pinouts()

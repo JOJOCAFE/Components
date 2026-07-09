@@ -56,9 +56,26 @@ def test_json_api_adapter_dispatches_stateful_frontend_commands():
     assert unknown["error"]["code"] == "api.unknown_command"
 
 
+def test_json_api_adapter_exposes_component_metadata_without_design():
+    service = FrontendDesignService()
+
+    catalog = handle_request({"command": "component-catalog", "options": {"group": "memory"}}, service)
+    assert catalog["ok"] is True
+    assert catalog["result"]["format"] == "components.db.catalog"
+    assert catalog["result"]["group"] == "memory"
+    assert {item["part"] for item in catalog["result"]["components"]} == {"62256", "AS6C62256", "AT28C256", "CY7C199", "SST39SF010A"}
+
+    detail = handle_request({"command": "component-detail", "options": {"part": "74HC00"}}, service)
+    assert detail["ok"] is True
+    assert detail["result"]["format"] == "components.db.component"
+    assert detail["result"]["db_path"] == "db/74xx/74HC00/chip.json"
+    assert detail["result"]["capabilities"]["physical_pinout"] is True
+
+
 def run_all():
     test_frontend_design_service_edits_and_exports_design()
     test_json_api_adapter_dispatches_stateful_frontend_commands()
+    test_json_api_adapter_exposes_component_metadata_without_design()
 
 
 if __name__ == "__main__":

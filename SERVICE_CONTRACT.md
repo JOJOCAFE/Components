@@ -513,6 +513,81 @@ Result:
 }
 ```
 
+### db --catalog
+
+Purpose: return frontend-oriented component palette metadata from grouped DB
+manifests without exposing raw migration internals.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli db --catalog
+python3 -m chiplib.cli db --catalog --group virtual
+python3 -m chiplib.cli db 74HC00 --detail
+```
+
+API commands:
+
+- `component-catalog`
+- `component-detail`
+- `component-metadata`
+
+Result shapes:
+
+```json
+{
+  "format": "components.db.catalog",
+  "version": 1,
+  "root": "db",
+  "group": "virtual",
+  "groups": [
+    {
+      "id": "virtual",
+      "title": "Virtual simulation components",
+      "path": "db/virtual",
+      "count": 8
+    }
+  ],
+  "components": [
+    {
+      "part": "Probe",
+      "group": "virtual",
+      "kind": "virtual",
+      "role": "measurement",
+      "package": {"kind": "virtual", "pins": 1},
+      "status": {},
+      "capabilities": {
+        "physical_pinout": false,
+        "python_behavior": false,
+        "simulation_service": "sim.probe"
+      },
+      "warnings": []
+    }
+  ]
+}
+```
+
+```json
+{
+  "format": "components.db.component",
+  "version": 1,
+  "part": "74HC00",
+  "group": "74xx",
+  "db_path": "db/74xx/74HC00/chip.json",
+  "pins": [
+    {"number": 1, "name": "1A", "direction": "input"}
+  ],
+  "capabilities": {
+    "physical_pinout": true,
+    "datasheet_verified": true,
+    "python_behavior": true,
+    "verilog_model": true,
+    "verilog_export": true
+  },
+  "warnings": []
+}
+```
+
 ### frontend-snapshot
 
 Purpose: return the stable UI/API drawing snapshot described in
@@ -580,6 +655,9 @@ Stateful frontend-edit commands operate on the loaded in-memory design:
 - `validate`
 - `snapshot`
 - `frontend-snapshot`
+- `component-catalog`
+- `component-detail`
+- `component-metadata`
 - `run`
 - `probe`
 - `export-json`

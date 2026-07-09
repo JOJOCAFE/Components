@@ -93,6 +93,9 @@ Future work for the shared component library.
 - ✅ Stabilize the Python API boundary for frontends: create/delete chips,
   connect/disconnect endpoints, add buses, set inputs, step clocks, read
   probes, validate, snapshot, and export.
+- ✅ Add DB-backed UI/API metadata accessors so frontends can read component
+  group, kind, role, status, pins, package, UI hints, simulation service, and
+  export capability without scanning implementation folders.
 - ✅ Define the frontend snapshot contract for UI/API clients, including chip
   layout, pin states, net values, bus values, warnings/errors, probe history,
   and display state.

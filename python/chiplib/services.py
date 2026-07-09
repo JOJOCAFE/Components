@@ -6,6 +6,7 @@ from pathlib import Path
 from time import perf_counter
 from typing import Any
 
+from .db import component_catalog, component_detail
 from .netlist import _verilog_mapping, design_to_verilog
 
 
@@ -359,6 +360,15 @@ class FrontendDesignService:
 
     def export_verilog(self) -> JsonMap:
         return self._ok("export-verilog", self.verilog.export(self._require_design()))
+
+    def component_catalog(self, *, group: str | None = None) -> JsonMap:
+        return self._ok("component-catalog", component_catalog(group=group))
+
+    def component_detail(self, part: str) -> JsonMap:
+        return self._ok("component-detail", component_detail(part))
+
+    def component_metadata(self, part: str) -> JsonMap:
+        return self._ok("component-metadata", component_detail(part))
 
     def _require_design(self) -> Any:
         if self.design is None:

@@ -261,17 +261,14 @@ Exit criteria:
 
 ## Recommended Next Tasks
 
-1. Finish DB-backed UI/API metadata accessors so frontends can read component
-   group, kind, role, status, pins, package, evidence, UI hints, simulation
-   service, and export capability without scanning implementation folders.
-2. Continue Phase 4 by moving more safe `Design.to_verilog()` pin-to-port
+1. Continue Phase 4 by moving more safe `Design.to_verilog()` pin-to-port
    mappings into grouped `chip.json` export metadata.
-3. Add a generated/check mode for `CHIP_STATUS.md` so documentation drift is
+2. Add a generated/check mode for `CHIP_STATUS.md` so documentation drift is
    caught in tests or CI instead of only through manual review.
-4. Add virtual/passive/discrete behavior adapters so schematic JSON can
+3. Add virtual/passive/discrete behavior adapters so schematic JSON can
    instantiate DB-backed InputSource, Probe, LED, Resistor, Capacitor, and
    transistor components.
-5. Replace remaining direct `db/<part>/chip.json` assumptions in docs,
+4. Replace remaining direct `db/<part>/chip.json` assumptions in docs,
    examples, and downstream projects with DB-loader access.
-6. Defer DB-owned model moves until service interfaces and contract tests are
+5. Defer DB-owned model moves until service interfaces and contract tests are
    in place.

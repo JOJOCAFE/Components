@@ -49,6 +49,7 @@ def load_component(part: str) -> JsonMap:
     manifest.setdefault("part", path.parent.name)
     manifest.setdefault("id", manifest["part"])
     manifest["db_path"] = str(path.relative_to(ROOT))
+    _apply_path_defaults(manifest, path)
     manifest["missing_properties"] = missing_properties(manifest)
     manifest["missing_files"] = missing_files(manifest)
     return manifest
@@ -81,6 +82,49 @@ def component_summary() -> JsonMap:
             for item in components
         ],
     }
+
+
+def component_catalog(*, group: str | None = None) -> JsonMap:
+    """Return frontend-oriented component catalog metadata."""
+
+    components = load_all_components()
+    group_filter = str(group).strip() if group else None
+    if group_filter:
+        components = [item for item in components if str(item.get("group", "")) == group_filter]
+    groups = _group_summaries(load_all_components())
+    return {
+        "format": "components.db.catalog",
+        "version": 1,
+        "root": str(DB_ROOT.relative_to(ROOT)),
+        "group": group_filter,
+        "count": len(components),
+        "groups": groups,
+        "components": [_component_card(item) for item in components],
+    }
+
+
+def component_detail(part: str) -> JsonMap:
+    """Return frontend-oriented metadata for one component."""
+
+    manifest = load_component(part)
+    detail = _component_card(manifest)
+    detail.update({
+        "format": "components.db.component",
+        "version": 1,
+        "pins": deepcopy(manifest.get("pins", [])),
+        "sources": deepcopy(manifest.get("sources", [])),
+        "legacy_paths": deepcopy(manifest.get("legacy_paths", {})),
+        "verilog": deepcopy(manifest.get("verilog", {})),
+        "simulation": deepcopy(manifest.get("simulation", {})),
+        "ui": deepcopy(manifest.get("ui", {})),
+    })
+    return detail
+
+
+def component_metadata(part: str) -> JsonMap:
+    """Alias for callers that name selected-component detail as metadata."""
+
+    return component_detail(part)
 
 
 def audit_db() -> JsonMap:
@@ -329,6 +373,113 @@ def _manifest_paths() -> dict[str, Path]:
         for path in DB_ROOT.glob(f"*/*/{name}"):
             result[path.parent.name] = path
     return result
+
+
+def _apply_path_defaults(manifest: JsonMap, path: Path) -> None:
+    group = _manifest_group_from_path(path)
+    if group and not manifest.get("group"):
+        manifest["group"] = group
+    if path.name == "chip.json" and group in {"74xx", "memory"}:
+        manifest.setdefault("kind", "ic")
+        manifest.setdefault("role", "logic" if group == "74xx" else "memory")
+
+
+def _manifest_group_from_path(path: Path) -> str:
+    try:
+        rel = path.relative_to(DB_ROOT)
+    except ValueError:
+        return ""
+    parts = rel.parts
+    if len(parts) >= 3:
+        return parts[0]
+    return ""
+
+
+def _group_summaries(components: list[JsonMap]) -> list[JsonMap]:
+    counts: dict[str, int] = {}
+    for item in components:
+        group = str(item.get("group", ""))
+        if group:
+            counts[group] = counts.get(group, 0) + 1
+    indexes = _db_group_indexes()
+    result: list[JsonMap] = []
+    for group_id in sorted(counts):
+        index = indexes.get(group_id, {})
+        result.append({
+            "id": group_id,
+            "title": index.get("title", group_id),
+            "path": f"db/{group_id}",
+            "count": counts[group_id],
+            "migration_status": index.get("migration_status", ""),
+        })
+    return result
+
+
+def _db_group_indexes() -> dict[str, JsonMap]:
+    indexes: dict[str, JsonMap] = {}
+    if not DB_ROOT.exists():
+        return indexes
+    for path in sorted(DB_ROOT.glob("*/index.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if isinstance(data, dict):
+            group_id = str(data.get("id", path.parent.name))
+            indexes[group_id] = data
+    return indexes
+
+
+def _component_card(manifest: JsonMap) -> JsonMap:
+    package = manifest.get("package", {})
+    status = manifest.get("status", {})
+    pins = manifest.get("pins", [])
+    return {
+        "id": manifest.get("id", manifest.get("part", "")),
+        "part": manifest.get("part", manifest.get("id", "")),
+        "title": manifest.get("title", manifest.get("part", "")),
+        "group": manifest.get("group", ""),
+        "kind": manifest.get("kind", ""),
+        "role": manifest.get("role", ""),
+        "family": manifest.get("family", ""),
+        "db_path": manifest.get("db_path", ""),
+        "package": deepcopy(package) if isinstance(package, dict) else {},
+        "pin_count": len(pins) if isinstance(pins, list) else 0,
+        "status": deepcopy(status) if isinstance(status, dict) else {},
+        "capabilities": _component_capabilities(manifest),
+        "warnings": _component_warnings(manifest),
+    }
+
+
+def _component_capabilities(manifest: JsonMap) -> JsonMap:
+    status = manifest.get("status", {})
+    simulation = manifest.get("simulation", {})
+    verilog = manifest.get("verilog", {})
+    legacy_paths = manifest.get("legacy_paths", {})
+    status_map = status if isinstance(status, dict) else {}
+    return {
+        "physical_pinout": status_map.get("pinout") == "verified",
+        "datasheet_verified": status_map.get("datasheet") == "verified",
+        "python_behavior": status_map.get("python_behavior") in ("modeled", "tested"),
+        "verilog_model": status_map.get("verilog_model") == "modeled",
+        "verilog_export": status_map.get("verilog_export") == "tested",
+        "simulation_service": simulation.get("service", "") if isinstance(simulation, dict) else "",
+        "verilog_file": verilog.get("file", "") if isinstance(verilog, dict) else "",
+        "legacy_files": bool(legacy_paths) if isinstance(legacy_paths, dict) else False,
+    }
+
+
+def _component_warnings(manifest: JsonMap) -> list[JsonMap]:
+    warnings: list[JsonMap] = []
+    part = str(manifest.get("part", manifest.get("id", "")))
+    for key in manifest.get("missing_properties", []):
+        warnings.append({"code": "missing_property", "part": part, "property": key})
+    for path in manifest.get("missing_files", []):
+        warnings.append({"code": "missing_file", "part": part, "path": path})
+    status = manifest.get("status", {})
+    if isinstance(status, dict) and status.get("datasheet") in ("missing", "unknown"):
+        warnings.append({"code": "missing_datasheet", "part": part})
+    return warnings
 
 
 def _referenced_paths(manifest: JsonMap) -> list[str]:

@@ -160,6 +160,31 @@ def test_cli_db_summary_and_part_lookup():
     assert status_data["format"] == "db.status"
     assert status_data["ok"] is True
 
+    catalog = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "db", "--catalog", "--group", "virtual"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert catalog.returncode == 0, catalog.stderr
+    catalog_data = json.loads(catalog.stdout)
+    assert catalog_data["format"] == "components.db.catalog"
+    assert catalog_data["group"] == "virtual"
+    assert "Probe" in {item["part"] for item in catalog_data["components"]}
+
+    detail = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "db", "74HC00", "--detail"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert detail.returncode == 0, detail.stderr
+    detail_data = json.loads(detail.stdout)
+    assert detail_data["format"] == "components.db.component"
+    assert detail_data["db_path"] == "db/74xx/74HC00/chip.json"
+
 
 class FakeDesignService:
     def __init__(self):
