@@ -73,6 +73,53 @@ RV8GR_REQUIRED_PACKAGE_FILES = (
     "tests/bus_fight.json",
     "tests/propagation.json",
 )
+GENERATED_SIMPLE_GATE_BENCH_PARTS = ("74HC00", "74HC04", "74HC32", "74HC86")
+EXPECTED_BASIC_FUNCTION_PLACEHOLDERS = {
+    "74HC02",
+    "74HC07",
+    "74HC08",
+    "74HC10",
+    "74HC11",
+    "74HC112",
+    "74HC138",
+    "74HC139",
+    "74HC14",
+    "74HC147",
+    "74HC148",
+    "74HC151",
+    "74HC153",
+    "74HC154",
+    "74HC155",
+    "74HC158",
+    "74HC160",
+    "74HC162",
+    "74HC163",
+    "74HC165",
+    "74HC166",
+    "74HC181",
+    "74HC193",
+    "74HC20",
+    "74HC238",
+    "74HC240",
+    "74HC244",
+    "74HC251",
+    "74HC257",
+    "74HC266",
+    "74HC27",
+    "74HC273",
+    "74HC30",
+    "74HC352",
+    "74HC374",
+    "74HC377",
+    "74HC4078",
+    "74HC42",
+    "74HC593",
+    "74HC595",
+    "74HC73",
+    "74HC85",
+    "74HC922",
+    "CY7C199",
+}
 MEMORY_ADDR_PINS = {
     0: 10,
     1: 9,
@@ -103,6 +150,14 @@ def load_batch2_record(part: str, test_type: str):
 
 def load_targeted_record(part: str, test_type: str):
     return json.loads((TARGETED_TRUTH_TEST_ROOTS[part] / f"{test_type}.json").read_text(encoding="utf-8"))
+
+
+def active_ic_test_roots() -> dict[str, Path]:
+    roots: dict[str, Path] = {}
+    for group in ("74xx", "Memory"):
+        for path in sorted((ROOT / "DB" / group).glob("*/tests")):
+            roots[path.parent.name] = path
+    return roots
 
 
 def load_definition(part: str):
@@ -190,6 +245,44 @@ def test_all_truth_records_declare_edge_criteria():
         assert criteria.get("trigger_edge") in {"none", "rising", "falling", "WE_control"}, path
         assert isinstance(criteria.get("non_trigger_edge"), str) and criteria["non_trigger_edge"], path
         assert isinstance(criteria.get("notes"), str) and criteria["notes"], path
+
+
+def test_active_ic_catalog_has_structural_package_gate():
+    roots = active_ic_test_roots()
+    assert len(roots) == 62
+    for part, test_root in roots.items():
+        package_root = test_root.parent
+        for required in RV8GR_REQUIRED_PACKAGE_FILES:
+            assert (package_root / required).exists(), (part, required)
+
+        truth = json.loads((test_root / "truth_table.json").read_text(encoding="utf-8"))
+        assert truth["part"] == part
+        assert truth["applicable"] is True
+        assert truth.get("vectors"), part
+        assert isinstance(truth.get("edge_criteria"), dict), part
+
+        for test_type in ("timing", "tri_state", "bus_fight", "propagation"):
+            record = json.loads((test_root / f"{test_type}.json").read_text(encoding="utf-8"))
+            assert record["part"] == part
+            assert isinstance(record.get("applicable"), bool), (part, test_type)
+            if record["applicable"]:
+                assert record.get("checks"), (part, test_type)
+            else:
+                assert record.get("reason"), (part, test_type)
+
+
+def test_active_ic_truth_placeholder_inventory_is_explicit():
+    placeholder_parts = set()
+    for part, test_root in active_ic_test_roots().items():
+        truth = json.loads((test_root / "truth_table.json").read_text(encoding="utf-8"))
+        vectors = truth.get("vectors", [])
+        if any(
+            isinstance(vector, dict)
+            and (vector.get("name") == "basic_function" or "inputs" not in vector or "expect" not in vector)
+            for vector in vectors
+        ):
+            placeholder_parts.add(part)
+    assert placeholder_parts == EXPECTED_BASIC_FUNCTION_PLACEHOLDERS
 
 
 def test_task3_representative_batch2_truth_records_execute_against_python_models():
@@ -450,6 +543,19 @@ def test_split_records_generate_verilog_testbench_metadata():
             assert emitted["reason"]
 
 
+def test_generated_simple_gate_verilog_testbench_metadata():
+    for part in GENERATED_SIMPLE_GATE_BENCH_PARTS:
+        truth = load_batch2_record(part, "truth_table")
+        artifact = generate_component_artifacts(part)["artifacts"]["verilog_testbench"]
+        emitted = artifact["emitted"]
+        assert emitted["supported"] is True
+        assert emitted["kind"] == "simple_scalar_vector_truth_table"
+        assert f"module tb_generated_{part.lower()};" in emitted["text"]
+        assert f"ttl_{part.lower()} dut" in emitted["text"]
+        for vector in truth["vectors"]:
+            assert f"\"{vector['name']}: Y\"" in emitted["text"]
+
+
 def test_generated_74hc157_verilog_testbench_compiles_when_iverilog_is_available():
     if shutil.which("iverilog") is None:
         return
@@ -475,6 +581,34 @@ def test_generated_74hc157_verilog_testbench_compiles_when_iverilog_is_available
         )
         if shutil.which("vvp") is not None:
             subprocess.run(["vvp", str(output)], cwd=ROOT, check=True)
+
+
+def test_generated_simple_gate_verilog_testbenches_compile_when_iverilog_is_available():
+    if shutil.which("iverilog") is None:
+        return
+
+    for part in GENERATED_SIMPLE_GATE_BENCH_PARTS:
+        artifact = generate_component_artifacts(part)["artifacts"]["verilog_testbench"]
+        assert artifact["emitted"]["supported"] is True
+        with tempfile.TemporaryDirectory() as tmpdir:
+            bench = Path(tmpdir) / f"tb_generated_{part.lower()}.v"
+            output = Path(tmpdir) / f"tb_generated_{part.lower()}.vvp"
+            bench.write_text(artifact["emitted"]["text"], encoding="utf-8")
+            subprocess.run(
+                [
+                    "iverilog",
+                    "-g2012",
+                    "-Wall",
+                    "-o",
+                    str(output),
+                    *artifact["compile"]["sources"],
+                    str(bench),
+                ],
+                cwd=ROOT,
+                check=True,
+            )
+            if shutil.which("vvp") is not None:
+                subprocess.run(["vvp", str(output)], cwd=ROOT, check=True)
 
 
 def _execute_74hc157_truth(record) -> set[str]:
@@ -919,6 +1053,8 @@ def run_all():
     test_seed_timing_and_propagation_records_match_definition_metadata()
     test_seed_tristate_and_bus_fight_records_are_explicit()
     test_all_truth_records_declare_edge_criteria()
+    test_active_ic_catalog_has_structural_package_gate()
+    test_active_ic_truth_placeholder_inventory_is_explicit()
     test_task3_representative_batch2_truth_records_execute_against_python_models()
     test_targeted_truth_records_are_explicit_and_execute_against_python_models()
     test_74hc245_direction_high_z_and_bus_fight_records_are_explicit()
@@ -931,7 +1067,9 @@ def run_all():
     test_rv8gr_audit_report_declares_complete_set()
     test_verilog_smoke_workflow_keeps_broad_compile_scope()
     test_split_records_generate_verilog_testbench_metadata()
+    test_generated_simple_gate_verilog_testbench_metadata()
     test_generated_74hc157_verilog_testbench_compiles_when_iverilog_is_available()
+    test_generated_simple_gate_verilog_testbenches_compile_when_iverilog_is_available()
 
 
 if __name__ == "__main__":

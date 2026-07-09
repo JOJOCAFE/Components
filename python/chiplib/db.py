@@ -1405,8 +1405,13 @@ def _simple_verilog_truth_bench(definition: JsonMap, package: JsonMap, truth: Js
     if _has_tristate(definition.get("pins", [])):
         return {"supported": False, "reason": "bidirectional or tri-state pins need a sequenced bench"}
     logic = definition.get("logic", {})
-    if not isinstance(logic, dict) or logic.get("type") != "quad_2_to_1_mux":
-        return {"supported": False, "reason": "simple emitted bench currently supports quad_2_to_1_mux only"}
+    if not isinstance(logic, dict):
+        return {"supported": False, "reason": "logic metadata is incomplete"}
+    if logic.get("type") != "quad_2_to_1_mux":
+        scalar_bench = _simple_scalar_vector_logic_bench(definition, package, truth, bench_module)
+        if scalar_bench.get("supported") is True:
+            return scalar_bench
+        return scalar_bench
 
     verilog = package.get("manifest", {}).get("verilog", {})
     export = verilog.get("export", {}) if isinstance(verilog, dict) else {}
@@ -1487,11 +1492,153 @@ def _simple_verilog_truth_bench(definition: JsonMap, package: JsonMap, truth: Js
     }
 
 
+def _simple_scalar_vector_logic_bench(definition: JsonMap, package: JsonMap, truth: JsonMap, bench_module: str) -> JsonMap:
+    supported_logic = {
+        "quad_2_input_nand",
+        "quad_2_input_or",
+        "quad_2_input_xor",
+        "hex_inverter",
+    }
+    logic = definition.get("logic", {})
+    if not isinstance(logic, dict) or logic.get("type") not in supported_logic:
+        return {"supported": False, "reason": "simple emitted bench currently supports mux and scalar vector gate records only"}
+
+    edge_criteria = truth.get("edge_criteria", {})
+    if (
+        not isinstance(edge_criteria, dict)
+        or edge_criteria.get("clocking") != "level_sensitive"
+        or edge_criteria.get("trigger_edge") != "none"
+    ):
+        return {"supported": False, "reason": "scalar vector gate bench requires level-sensitive truth vectors"}
+
+    verilog = package.get("manifest", {}).get("verilog", {})
+    export = verilog.get("export", {}) if isinstance(verilog, dict) else {}
+    ports = export.get("ports", []) if isinstance(export, dict) else []
+    module = str(verilog.get("module", ""))
+    port_metadata = _verilog_port_metadata(ports)
+    if not module or not port_metadata:
+        return {"supported": False, "reason": "verilog port metadata is incomplete"}
+
+    vectors = [vector for vector in truth.get("vectors", []) if isinstance(vector, dict)]
+    used_inputs: set[str] = set()
+    used_outputs: set[str] = set()
+    for vector in vectors:
+        name = str(vector.get("name", "vector"))
+        inputs = vector.get("inputs", {}) if isinstance(vector.get("inputs"), dict) else {}
+        expect = vector.get("expect", {}) if isinstance(vector.get("expect"), dict) else {}
+        if not inputs or not expect:
+            return {"supported": False, "reason": f"vector {name} is missing inputs or expect"}
+        for key, value in inputs.items():
+            if not _is_scalar_bit(value):
+                return {"supported": False, "reason": f"unsupported input value in vector {name}"}
+            if key not in port_metadata or port_metadata[key]["direction"] != "input":
+                return {"supported": False, "reason": f"input {key} in vector {name} is not a verilog input port"}
+            used_inputs.add(str(key))
+        for key, value in expect.items():
+            if not _is_scalar_bit(value):
+                return {"supported": False, "reason": f"unsupported expected value in vector {name}"}
+            if key not in port_metadata or port_metadata[key]["direction"] != "output":
+                return {"supported": False, "reason": f"expect {key} in vector {name} is not a verilog output port"}
+            used_outputs.add(str(key))
+
+    if not used_inputs or not used_outputs:
+        return {"supported": False, "reason": "truth vectors do not drive inputs and check outputs"}
+
+    ordered_ports = [port["name"] for port in port_metadata.values()]
+    input_ports = [name for name in ordered_ports if name in used_inputs]
+    output_ports = [name for name in ordered_ports if name in used_outputs]
+    lines = [
+        "`timescale 1ns/1ps",
+        "",
+        f"module {bench_module};",
+        "  integer failures = 0;",
+    ]
+    for port in input_ports:
+        lines.append(f"  reg {_verilog_range(port_metadata[port]['width'])}{port};")
+    for port in output_ports:
+        lines.append(f"  wire {_verilog_range(port_metadata[port]['width'])}{port};")
+    lines.extend([
+        "",
+        f"  {module} dut({', '.join(f'.{port}({port})' for port in ordered_ports if port in used_inputs or port in used_outputs)});",
+        "",
+        "  task check;",
+        "    input condition;",
+        "    input [255:0] message;",
+        "    begin",
+        "      if (!condition) begin",
+        "        $display(\"FAIL: %0s\", message);",
+        "        failures = failures + 1;",
+        "      end",
+        "    end",
+        "  endtask",
+        "",
+        "  initial begin",
+    ])
+    for vector in vectors:
+        name = str(vector.get("name", "vector"))
+        inputs = vector.get("inputs", {}) if isinstance(vector.get("inputs"), dict) else {}
+        expect = vector.get("expect", {}) if isinstance(vector.get("expect"), dict) else {}
+        for port in input_ports:
+            if port in inputs:
+                lines.append(f"    {port} = {_verilog_scalar_literal(port_metadata[port]['width'], int(inputs[port]))};")
+        lines.append("    #1;")
+        for port in output_ports:
+            if port in expect:
+                expected = _verilog_scalar_literal(port_metadata[port]["width"], int(expect[port]))
+                lines.append(f"    check({port} === {expected}, \"{name}: {port}\");")
+    lines.extend([
+        "    if (failures == 0) begin",
+        f"      $display(\"{bench_module} PASSED\");",
+        "      $finish;",
+        "    end",
+        f"    $display(\"{bench_module} FAILED: %0d failures\", failures);",
+        "    $fatal(1);",
+        "  end",
+        "endmodule",
+        "",
+    ])
+    return {
+        "supported": True,
+        "language": "verilog",
+        "kind": "simple_scalar_vector_truth_table",
+        "text": "\n".join(lines),
+    }
+
+
 def _has_tristate(pins: Any) -> bool:
     return any(
         isinstance(pin, dict) and pin.get("direction") == "bidirectional"
         for pin in pins if isinstance(pins, list)
     )
+
+
+def _verilog_port_metadata(ports: Any) -> dict[str, JsonMap]:
+    result: dict[str, JsonMap] = {}
+    for port in ports if isinstance(ports, list) else []:
+        if not isinstance(port, dict) or not isinstance(port.get("name"), str):
+            continue
+        pins = port.get("pins", [])
+        direction = port.get("direction")
+        if direction not in {"input", "output"} or not isinstance(pins, list) or not pins:
+            continue
+        result[str(port["name"])] = {
+            "name": str(port["name"]),
+            "direction": str(direction),
+            "width": len(pins),
+        }
+    return result
+
+
+def _is_scalar_bit(value: Any) -> bool:
+    return isinstance(value, int) and value in {0, 1}
+
+
+def _verilog_range(width: int) -> str:
+    return f"[{width - 1}:0] " if width > 1 else ""
+
+
+def _verilog_scalar_literal(width: int, value: int) -> str:
+    return f"{width}'b" + ("1" if value else "0") * width
 
 
 def _verilog_ports_by_pin_name(ports: Any, pins: Any) -> dict[str, str]:

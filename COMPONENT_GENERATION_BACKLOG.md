@@ -399,9 +399,13 @@ Done:
 - Added `edge_criteria` to every active IC truth-table record.
 - Added a hard RV8GR complete-set test gate in
   `python/tests/test_generated_split_records.py`.
-- Added generated `verilog_testbench` artifact metadata and first emitted
-  generated bench support.
+- Added a structural all-active IC package gate for the 62 active 74xx/memory
+  package folders.
+- Added generated `verilog_testbench` artifact metadata and emitted generated
+  bench support for `74HC157`, `74HC00`, `74HC04`, `74HC32`, and `74HC86`.
 - Added CI/workflow guard to compile package-local `simulation/model.v` files.
+- Locked the remaining truth-placeholder inventory to 44 active non-RV8GR
+  parts so future work can shrink the list without hiding gaps.
 
 Acceptance for each migrated Batch 2 chip:
 
@@ -430,7 +434,11 @@ Next CI tasks:
 
 - Keep Verilog smoke compiling all 74xx and memory models.
 - Keep memory smoke instantiating each memory module directly.
-- Grow generated Verilog bench emission beyond the first simple supported
-  truth-table shape.
-- Extend RV8GR-grade executable edge/enable/bus/memory checks to the rest of
-  the migrated IC catalog.
+- Grow generated Verilog bench emission to decoder, tri-state, sequential,
+  arithmetic, and memory-specific shapes after their truth records are explicit.
+- Replace the remaining 44 `basic_function` truth placeholders with
+  chip-specific vectors, then extend executable edge/enable/bus/memory checks to
+  the rest of the migrated IC catalog.
+- Extract datasheet-backed timing/electrical fields for the 44 non-RV8GR active
+  ICs that still carry `model-derived` timing and `datasheet-required`
+  electrical placeholders.

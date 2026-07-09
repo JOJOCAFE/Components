@@ -107,8 +107,9 @@ PYTHONPATH=python python3 -B -m tests.test_generated_split_records
 ```
 
 The current generated Verilog testbench artifact records Icarus compile
-metadata for every seed package and emits a simple generated bench where the
-split-record shape is already supported.
+metadata for every seed package and emits simple generated benches for supported
+split-record shapes: the `74HC157` mux bench and scalar vector gate benches for
+`74HC00`, `74HC04`, `74HC32`, and `74HC86`.
 
 ## First Seed Parts
 
