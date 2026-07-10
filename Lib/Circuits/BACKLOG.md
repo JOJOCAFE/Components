@@ -142,7 +142,7 @@ Status: complete. Package files live under
 
 ## Waiting Items
 
-- Commit current checkpoint: RV8GR virtual fault protocol pushed as `8bb462b`;
-  reusable checker checkpoint is next to commit and push.
+- Commit current checkpoint: complete. RV8GR virtual fault protocol pushed as
+  `8bb462b`; reusable checker pushed as `49ed732`.
 - Visual chip-block editor implementation: waiting by user request.
 - MCP adapter implementation: waiting until service/editor names settle.
