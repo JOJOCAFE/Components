@@ -7,6 +7,22 @@
     {
       "name": "model_delay",
       "expect_delay_ns": 30
+    },
+    {
+      "name": "input_to_output_metadata",
+      "type": "conservative_timing_path",
+      "path": "input_to_output_ns",
+      "parameter": "tpd",
+      "expect_delay_ns": 30,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    },
+    {
+      "name": "transition_time_metadata",
+      "type": "conservative_timing_path",
+      "path": "transition_time_ns",
+      "parameter": "tt",
+      "expect_delay_ns": 30,
+      "expect_source": "conservative_default_from_existing_model_delay"
     }
   ]
 }

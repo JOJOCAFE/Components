@@ -200,7 +200,13 @@ def test_memory():
     set_byte(rom, MEMORY_DQ_PINS, 0x56)
     set_pins(rom, [20, 22, 27], [0, 1, 0])
     eval_chip(rom)
-    set_pins(rom, [22, 27], [0, 1])
+    assert rom.data[0x1235] == 0x00
+    rom.set_input(27, 1)
+    eval_chip(rom)
+    assert rom.data[0x1235] == 0x56
+    rom.set_input(22, 0)
+    eval_chip(rom)
+    assert rom.read(11) == Z
     eval_chip(rom)
     assert get_byte(rom, MEMORY_DQ_PINS) == 0x56
     rom.set_input(20, 1)
@@ -305,14 +311,18 @@ def test_seed_split_records_execute_against_python_models():
 
     at28 = json.loads((ROOT / "DB/Memory/AT28C256/tests/truth_table.json").read_text(encoding="utf-8"))
     assert {item["name"] for item in at28["vectors"]} >= {
-        "write_c6",
+        "write_c6_window",
+        "write_c6_latch_we_rising",
+        "write_c6_busy_read_high_z",
         "read_c6",
-        "write_3c",
+        "write_3c_window",
+        "write_3c_latch_we_rising",
+        "write_3c_busy_read_high_z",
         "read_3c",
         "read_c6_after_second_write",
         "chip_disabled_high_z",
         "output_disabled_high_z",
-        "write_mode_high_z",
+        "write_window_high_z_before_latch",
         "ce_high_prevents_write",
         "ce_high_read_keeps_previous_data",
         "we_high_prevents_write",
@@ -323,14 +333,23 @@ def test_seed_split_records_execute_against_python_models():
     set_byte(rom, MEMORY_DQ_PINS, 0xC6)
     set_pins(rom, [20, 22, 27], [0, 1, 0])
     eval_chip(rom)
-    set_pins(rom, [22, 27], [0, 1])
+    assert rom.read(11) == Z
+    rom.set_input(27, 1)
+    eval_chip(rom)
+    rom.set_input(22, 0)
+    eval_chip(rom)
+    assert rom.read(11) == Z
     eval_chip(rom)
     assert get_byte(rom, MEMORY_DQ_PINS) == 0xC6
     set_memory_addr(rom, 0x0123)
     set_byte(rom, MEMORY_DQ_PINS, 0x3C)
     set_pins(rom, [22, 27], [1, 0])
     eval_chip(rom)
-    set_pins(rom, [22, 27], [0, 1])
+    rom.set_input(27, 1)
+    eval_chip(rom)
+    rom.set_input(22, 0)
+    eval_chip(rom)
+    assert rom.read(11) == Z
     eval_chip(rom)
     assert get_byte(rom, MEMORY_DQ_PINS) == 0x3C
     set_memory_addr(rom, 0x002A)

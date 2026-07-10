@@ -5,8 +5,109 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "all_inputs_low",
+      "fresh": true,
+      "inputs": {
+        "/CLR": 0,
+        "1D": 0,
+        "2D": 0,
+        "3D": 0,
+        "4D": 0,
+        "CLK": 0,
+        "5D": 0,
+        "6D": 0,
+        "7D": 0,
+        "8D": 0
+      },
+      "expect": {
+        "1Q": 0,
+        "2Q": 0,
+        "3Q": 0,
+        "4Q": 0,
+        "5Q": 0,
+        "6Q": 0,
+        "7Q": 0,
+        "8Q": 0
+      }
+    },
+    {
+      "name": "all_inputs_high",
+      "fresh": true,
+      "inputs": {
+        "/CLR": 1,
+        "1D": 1,
+        "2D": 1,
+        "3D": 1,
+        "4D": 1,
+        "CLK": 1,
+        "5D": 1,
+        "6D": 1,
+        "7D": 1,
+        "8D": 1
+      },
+      "expect": {
+        "1Q": 0,
+        "2Q": 0,
+        "3Q": 0,
+        "4Q": 0,
+        "5Q": 0,
+        "6Q": 0,
+        "7Q": 0,
+        "8Q": 0
+      }
+    },
+    {
+      "name": "alternating_inputs",
+      "fresh": true,
+      "inputs": {
+        "/CLR": 0,
+        "1D": 1,
+        "2D": 0,
+        "3D": 1,
+        "4D": 0,
+        "CLK": 1,
+        "5D": 0,
+        "6D": 1,
+        "7D": 0,
+        "8D": 1
+      },
+      "expect": {
+        "1Q": 0,
+        "2Q": 0,
+        "3Q": 0,
+        "4Q": 0,
+        "5Q": 0,
+        "6Q": 0,
+        "7Q": 0,
+        "8Q": 0
+      }
+    },
+    {
+      "name": "clocked_alternating_inputs",
+      "fresh": true,
+      "clock": true,
+      "inputs": {
+        "/CLR": 0,
+        "1D": 1,
+        "2D": 0,
+        "3D": 1,
+        "4D": 0,
+        "CLK": 1,
+        "5D": 0,
+        "6D": 1,
+        "7D": 0,
+        "8D": 1
+      },
+      "expect": {
+        "1Q": 0,
+        "2Q": 0,
+        "3Q": 0,
+        "4Q": 0,
+        "5Q": 0,
+        "6Q": 0,
+        "7Q": 0,
+        "8Q": 0
+      }
     }
   ],
   "edge_criteria": {

@@ -8,7 +8,7 @@
       "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
-        "After an input changes, wait about 15 ns before trusting the output."
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
       ],
       "overview": "74HC595 is a 16-pin DIP part for register.",
       "part": "74HC595",
@@ -59,7 +59,7 @@
         "try_it"
       ],
       "summary": "8-Bit Serial-In Shift Register With Output Register.",
-      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
       "title": "8-Bit Serial-In Shift Register With Output Register",
       "version": 1
     },
@@ -291,7 +291,72 @@
       ],
       "role": "register",
       "timing": {
-        "delay_ns": 15
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "async_control_to_output_ns": {
+              "condition": "async control asserted or released",
+              "from": "asynchronous control",
+              "parameter": "tremap",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "Q/output"
+            },
+            "clock_to_output_ns": {
+              "condition": "active clock edge",
+              "from": "CLK/clock control",
+              "parameter": "tco",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "Q/output"
+            },
+            "input_setup_margin_ns": {
+              "condition": "conservative setup placeholder from model delay",
+              "from": "D/input",
+              "parameter": "tsu",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "CLK/clock control"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        }
       },
       "title": "8-Bit Serial-In Shift Register With Output Register"
     },
@@ -399,7 +464,11 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "model_propagation",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -407,7 +476,11 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "model_delay",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -425,7 +498,10 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs",
+            "clocked_alternating_inputs"
           ]
         }
       },
@@ -487,7 +563,11 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "model_propagation",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -495,7 +575,11 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "model_delay",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -513,7 +597,10 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs",
+            "clocked_alternating_inputs"
           ]
         }
       },

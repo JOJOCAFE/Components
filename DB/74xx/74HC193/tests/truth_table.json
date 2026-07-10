@@ -5,8 +5,93 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "all_inputs_low",
+      "fresh": true,
+      "inputs": {
+        "B": 0,
+        "DOWN": 0,
+        "UP": 0,
+        "D": 0,
+        "C": 0,
+        "/LOAD": 0,
+        "CLR": 0,
+        "A": 0
+      },
+      "expect": {
+        "QB": 0,
+        "QA": 0,
+        "QC": 0,
+        "QD": 0,
+        "/CO": 1,
+        "/BO": 0
+      }
+    },
+    {
+      "name": "all_inputs_high",
+      "fresh": true,
+      "inputs": {
+        "B": 1,
+        "DOWN": 1,
+        "UP": 1,
+        "D": 1,
+        "C": 1,
+        "/LOAD": 1,
+        "CLR": 1,
+        "A": 1
+      },
+      "expect": {
+        "QB": 0,
+        "QA": 0,
+        "QC": 0,
+        "QD": 0,
+        "/CO": 1,
+        "/BO": 0
+      }
+    },
+    {
+      "name": "alternating_inputs",
+      "fresh": true,
+      "inputs": {
+        "B": 0,
+        "DOWN": 1,
+        "UP": 0,
+        "D": 1,
+        "C": 0,
+        "/LOAD": 1,
+        "CLR": 0,
+        "A": 1
+      },
+      "expect": {
+        "QB": 0,
+        "QA": 0,
+        "QC": 0,
+        "QD": 0,
+        "/CO": 1,
+        "/BO": 0
+      }
+    },
+    {
+      "name": "clocked_alternating_inputs",
+      "fresh": true,
+      "clock": true,
+      "inputs": {
+        "B": 0,
+        "DOWN": 1,
+        "UP": 0,
+        "D": 1,
+        "C": 0,
+        "/LOAD": 1,
+        "CLR": 0,
+        "A": 1
+      },
+      "expect": {
+        "QB": 1,
+        "QA": 1,
+        "QC": 1,
+        "QD": 1,
+        "/CO": 0,
+        "/BO": 1
+      }
     }
   ],
   "edge_criteria": {

@@ -11,7 +11,9 @@
       "parallel_write",
       "bidirectional_data",
       "tristate",
-      "memory_image"
+      "memory_image",
+      "we_rising_edge_write_latch",
+      "timed_functional_write_cycle"
     ]
   },
   "verilog": {
@@ -21,7 +23,9 @@
       "parallel_read",
       "parallel_write",
       "bidirectional_data",
-      "tristate"
+      "tristate",
+      "we_rising_edge_write_latch",
+      "timed_functional_write_cycle"
     ]
   },
   "netlist_generation": {

@@ -8,7 +8,7 @@
       "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
-        "After an input changes, wait about 70 ns before trusting the output."
+        "Address-to-data valid timing is 55 ns for the selected memory variant."
       ],
       "overview": "AS6C62256 is a 28-pin DIP part for sram.",
       "part": "AS6C62256",
@@ -71,7 +71,7 @@
         "try_it"
       ],
       "summary": "32K x 8 static RAM wrapper.",
-      "timing_note": "After an input changes, wait about 70 ns before trusting the output.",
+      "timing_note": "Address-to-data valid timing is 55 ns for the selected memory variant.",
       "title": "32K x 8 static RAM wrapper",
       "version": 1
     },
@@ -455,7 +455,18 @@
       ],
       "role": "sram",
       "timing": {
-        "delay_ns": 70
+        "paths": {
+          "address_to_data_valid_ns": 55,
+          "ce_or_oe_to_high_z_ns": 20,
+          "ce_to_data_valid_ns": 55,
+          "oe_to_data_valid_ns": 30
+        },
+        "variant": "AS6C62256-55",
+        "write": {
+          "address_hold_min_ns": 0,
+          "data_setup_min_ns": 25,
+          "pulse_min_ns": 45
+        }
       },
       "title": "32K x 8 static RAM wrapper"
     },
@@ -613,7 +624,10 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -621,7 +635,13 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata",
+            "pulse_min_metadata",
+            "data_setup_min_metadata",
+            "address_hold_min_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -708,7 +728,10 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -716,7 +739,13 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata",
+            "pulse_min_metadata",
+            "data_setup_min_metadata",
+            "address_hold_min_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"

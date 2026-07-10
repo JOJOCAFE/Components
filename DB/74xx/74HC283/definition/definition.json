@@ -102,7 +102,44 @@
     "description": "4-Bit Binary Full Adder"
   },
   "timing": {
-    "delay_ns": 35
+    "delay_ns": 35,
+    "simple": {
+      "default_delay_ns": 35,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+      "paths": {
+        "input_to_output_ns": {
+          "parameter": "tpd",
+          "from": "input",
+          "to": "output",
+          "condition": "input or select changes",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 35,
+              "max_ns": 35,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "transition_time_ns": {
+          "parameter": "tt",
+          "from": "output transition",
+          "to": "output transition",
+          "condition": "enabled output switches",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 35,
+              "max_ns": 35,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        }
+      }
+    }
   },
   "generation": {
     "targets": [
@@ -156,29 +193,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "74HC283",
-      "title": "4-Bit Binary Full Adder",
-      "family": "74HC",
-      "group": "74xx",
-      "kind": "ic",
-      "role": "adder"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "74HC283",
-      "packages": [
-        {
-          "id": "N",
-          "kind": "DIP",
-          "pins": 16
-        }
-      ],
-      "default_package": "N"
-    },
     "pins": {
       "schema": "db.component.pins",
       "version": 1,
@@ -287,15 +301,6 @@
         }
       ]
     },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "74HC283",
-      "logic": {
-        "type": "four_bit_binary_adder",
-        "description": "4-Bit Binary Full Adder"
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
@@ -331,6 +336,50 @@
           "load_pf": 15,
           "path": "adder_input_to_sum_or_carry",
           "section": "5.5 Switching Characteristics"
+        },
+        "public_timing": {
+          "delay_ns": 35,
+          "simple": {
+            "default_delay_ns": 35,
+            "source": "legacy functional simulator default"
+          },
+          "timed": {
+            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+            "paths": {
+              "input_to_output_ns": {
+                "parameter": "tpd",
+                "from": "input",
+                "to": "output",
+                "condition": "input or select changes",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 35,
+                    "max_ns": 35,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "transition_time_ns": {
+                "parameter": "tt",
+                "from": "output transition",
+                "to": "output transition",
+                "condition": "enabled output switches",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 35,
+                    "max_ns": 35,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "conservative_defaults": {
+          "input_to_output_ns": "conservative_default_from_existing_model_delay",
+          "transition_time_ns": "conservative_default_from_existing_model_delay"
         }
       },
       "evidence": {

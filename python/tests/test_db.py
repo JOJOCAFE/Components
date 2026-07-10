@@ -3,9 +3,12 @@
 import importlib.util
 import json
 from pathlib import Path
+import re
 
 from chiplib.db import audit_db, component_catalog, component_detail, component_ids, component_summary, db_root, db_status_report, generate_component_artifacts, legacy_catalog_parts, load_all_components, load_component, load_component_package, load_digital_definition, load_digital_package, load_package_definition, student_component_catalog
+from chiplib.db import _derived_package_layers
 from chiplib.db import _pinout_mismatches
+from chiplib.chips import create_chip
 
 
 ALLOWED_STATUS = {
@@ -55,6 +58,8 @@ GROUPED_PARTS = {
     "BC559",
 }
 GENERATION_SEED_PARTS = {"74HC161", "74HC157", "74HC245", "74HC574", "AT28C256"}
+
+
 def generation_package_parts() -> set[str]:
     return {
         path.parents[1].name
@@ -81,6 +86,12 @@ GENERATION_TARGETS = {
     "documentation",
     "unit_test",
     "interactive_demo",
+}
+
+LOCAL_DATASHEET_FILE_OVERRIDES = {
+    "62256": "KM62256C.PDF",
+    "74HC593": "M54HC593.PDF",
+    "74HC922": "MM74C922.PDF",
 }
 
 
@@ -584,9 +595,11 @@ def test_generation_seed_packages_have_required_layers():
         digital = package["definition"]
         simulation = package["layers"]["simulation"]
         assert package["definition"]["validation"]["ok"] is True, part
-        assert set(digital["definition_layers"]) >= set(required_definition_layers), part
+        assert isinstance(digital.get("definition_layers"), dict), part
         for layer_name in required_definition_layers:
-            assert definition[layer_name] == digital["definition_layers"][layer_name], (part, layer_name)
+            assert definition[layer_name] is not None, (part, layer_name)
+            if layer_name in digital["definition_layers"]:
+                assert definition[layer_name] == digital["definition_layers"][layer_name], (part, layer_name)
             assert definition[layer_name]["part"] == part, (part, layer_name)
         assert simulation["model"] is not None, part
         assert simulation["netlist"] is not None, part
@@ -614,6 +627,42 @@ def test_generation_seed_packages_have_required_layers():
             for item in portable
         )
         assert simulation["model"]["python"]["file"] in {item["source"] for item in portable}
+
+
+def test_physical_digital_definitions_omit_exact_duplicate_layers():
+    duplicates: list[tuple[str, str]] = []
+    for part in generation_package_parts():
+        definition = load_digital_definition(part)
+        derived = _derived_package_layers(definition, load_component(part))
+        layers = definition.get("definition_layers", {})
+        for layer_name, layer in layers.items():
+            if layer == derived.get(layer_name):
+                duplicates.append((part, layer_name))
+
+    assert duplicates == []
+
+
+def test_python_chip_factory_delay_matches_public_timing_default():
+    mismatches: list[tuple[str, int, int]] = []
+    for part in generation_package_parts():
+        definition = load_digital_definition(part)
+        timing = definition.get("timing", {})
+        expected = None
+        if isinstance(timing.get("simple"), dict):
+            expected = timing["simple"].get("default_delay_ns")
+        elif isinstance(timing.get("paths"), dict):
+            expected = timing["paths"].get("address_to_data_valid_ns")
+        elif isinstance(timing.get("delay_ns"), int):
+            expected = timing["delay_ns"]
+        if not isinstance(expected, int):
+            continue
+
+        chip = create_chip(part, "U")
+        actual = chip.delay.rise_ns
+        if actual != expected:
+            mismatches.append((part, actual, expected))
+
+    assert mismatches == []
 
 
 def test_generation_seed_simulation_sources_are_local_and_importable():
@@ -662,10 +711,37 @@ def test_74hc245_split_tests_and_evidence_are_loaded():
         "external_a_driver_conflicts_with_b_to_a",
         "oe_high_prevents_conflict_with_external_drivers",
     }
-    assert {item["control"] for item in tests["timing"]["checks"]} == {"DIR", "/OE"}
-    assert {item["expect_delay_ns"] for item in tests["propagation"]["checks"]} == {12}
+    assert {item["control"] for item in tests["timing"]["checks"] if "control" in item} == {"DIR", "/OE"}
+    assert {item["parameter"] for item in tests["timing"]["checks"] if "parameter" in item} == {
+        "tpd",
+        "ten",
+        "tdis",
+        "tt",
+    }
+    assert {item["path"] for item in tests["propagation"]["checks"]} == {
+        "A_to_B",
+        "B_to_A",
+        "OE_to_output_enable",
+        "OE_to_high_Z",
+        "transition_time",
+    }
+    assert {item["expect_default_delay_ns"] for item in tests["propagation"]["checks"]} == {12}
+    assert next(
+        item for item in tests["propagation"]["checks"] if item["path"] == "OE_to_high_Z"
+    )["expect_typ_ns"]["vcc_6_v"] == 21
 
     timing = package["layers"]["definition"]["timing"]
+    assert timing["delay"]["simple"]["default_delay_ns"] == 12
+    assert timing["delay"]["timed"]["paths"]["A_to_B"]["ranges_ns"]["vcc_4_5_v"] == {
+        "min_ns": None,
+        "typ_ns": 15,
+        "max_ns_25c": 21,
+        "max_ns_sn54": 32,
+        "max_ns_sn74": 26,
+    }
+    assert timing["delay"]["timed"]["paths"]["OE_to_output_enable"]["ranges_ns"]["vcc_6_v"]["typ_ns"] == 20
+    assert timing["delay"]["timed"]["paths"]["OE_to_high_Z"]["ranges_ns"]["vcc_6_v"]["max_ns_25c"] == 34
+    assert timing["delay"]["timed"]["paths"]["transition_time"]["ranges_ns"]["vcc_4_5_v"]["max_ns_sn74"] == 15
     assert timing["delay"]["datasheet_typical_ns"]["tpd_a_b_to_b_a"]["vcc_4_5_v"] == 15
     assert timing["delay"]["datasheet_typical_ns"]["tdis_oe_to_a_b"]["vcc_6_v"] == 21
     electrical = package["layers"]["definition"]["electrical"]
@@ -702,7 +778,10 @@ def test_component_generation_artifacts_cover_declared_targets():
     assert "Connect power before testing signal pins." in hc245["artifacts"]["documentation"]["key_points"]
     assert hc245["artifacts"]["documentation"]["control_explanations"][1]["hint"] == "This is active low, so 0 turns the control on."
     assert hc245["artifacts"]["documentation"]["bus_explanations"][0]["explanation"] == "A is an 8-bit signal group. Bit 0 is pin 2 and the highest bit is pin 9."
-    assert hc245["artifacts"]["documentation"]["timing_note"] == "After an input changes, wait about 12 ns before trusting the output."
+    assert (
+        hc245["artifacts"]["documentation"]["timing_note"]
+        == "Default simulator delay is 12 ns; timed mode uses path-specific datasheet delays."
+    )
     assert hc245["artifacts"]["interactive_demo"]["probes"] == ["A", "B"]
     assert hc245["artifacts"]["interactive_demo"]["title"] == "Try 74HC245 in the simulator"
     assert hc245["artifacts"]["interactive_demo"]["guided_steps"] == [
@@ -751,6 +830,30 @@ def test_remaining_seed_timing_and_electrical_evidence_is_extracted():
         timing_name, key, value = expected["timing"]
         if part == "AT28C256":
             assert timing["delay"]["datasheet_read_ns"][timing_name][key] == value
+            definition = load_digital_definition("AT28C256")
+            top_timing = definition["timing"]
+            assert top_timing == {
+                "variant": "AT28C256-15",
+                "paths": {
+                    "address_to_data_valid_ns": 150,
+                    "ce_to_data_valid_ns": 150,
+                    "oe_to_data_valid_ns": 70,
+                    "ce_or_oe_to_high_z_ns": 50,
+                },
+                "write": {
+                    "pulse_min_ns": 100,
+                    "data_setup_min_ns": 50,
+                    "address_hold_min_ns": 50,
+                },
+            }
+            layer_delay = timing["delay"]
+            assert layer_delay["selected_variant"] == "at28c256_15"
+            assert "do_not_assume_70ns" in layer_delay["variant_policy"]["unselected_variant_policy"]
+            write_detail = layer_delay["datasheet_write_ns"]
+            assert write_detail["latch_edge"] == "/WE rising"
+            assert write_detail["write_cycle_us"] == 10000
+            assert write_detail["write_cycle_updates_default"] == 1
+            assert "high-Z" in write_detail["busy_behavior"]
             assert electrical["voltage"]["vcc"] == expected["vcc"]
             assert electrical["loading"]["input_capacitance"]["max_pf"] == 6
         else:
@@ -859,6 +962,41 @@ def test_embedded_pinout_matches_grouped_db_manifest_pins():
     }]
 
 
+def test_physical_chip_definitions_have_local_source_datasheets():
+    root = db_root().parent
+    source_dir = root / "Source"
+    source_pdfs = sorted(path for path in source_dir.iterdir() if path.is_file() and path.suffix.lower() == ".pdf")
+    missing: list[str] = []
+
+    for part in generation_package_parts():
+        definition = load_digital_definition(part)
+        sources = definition.get("datasheet", {}).get("sources", [])
+        local_files: list[Path] = []
+        for source in sources:
+            if not isinstance(source, dict):
+                continue
+            file_name = source.get("file")
+            if isinstance(file_name, str):
+                local_files.append(root / file_name)
+            for key in ("url", "source", "source_note"):
+                value = str(source.get(key, ""))
+                match = re.search(r"(?:Components/)?(Source/[^\s`]+\.pdf|Source/[^\s`]+\.PDF)", value)
+                if match:
+                    local_files.append(root / match.group(1))
+
+        override = LOCAL_DATASHEET_FILE_OVERRIDES.get(part)
+        if override:
+            local_files.append(source_dir / override)
+
+        exact_part = re.compile(rf"(^|[^A-Za-z0-9]){re.escape(part)}([^A-Za-z0-9]|$)", re.IGNORECASE)
+        local_files.extend(path for path in source_pdfs if exact_part.search(path.stem))
+
+        if not any(path.exists() for path in local_files):
+            missing.append(part)
+
+    assert missing == []
+
+
 def run_all():
     test_db_seed_entries_are_loadable()
     test_db_summary_reports_status_and_gaps()
@@ -875,6 +1013,8 @@ def run_all():
     test_generation_seed_digital_definitions_match_chip_manifests()
     test_generation_seed_digital_packages_load_split_tests()
     test_generation_seed_packages_have_required_layers()
+    test_physical_digital_definitions_omit_exact_duplicate_layers()
+    test_python_chip_factory_delay_matches_public_timing_default()
     test_74hc245_split_tests_and_evidence_are_loaded()
     test_component_generation_artifacts_cover_declared_targets()
     test_generated_artifact_files_exist_for_seed_batch()
@@ -885,6 +1025,7 @@ def run_all():
     test_db_legacy_coverage_lists_models_and_pinouts()
     test_db_status_report_checks_chip_status_snapshot()
     test_embedded_pinout_matches_grouped_db_manifest_pins()
+    test_physical_chip_definitions_have_local_source_datasheets()
 
 
 if __name__ == "__main__":

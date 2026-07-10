@@ -423,12 +423,21 @@ Work completed in the latest pushed commit:
     `/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md`.
   - Tests recompute expected ABUS, IBUS, DBUS, PC, AC, Z, RAM state, U7
     direction, and bus-owner/no-contention policy.
-- Task 4, chip-specific truth vectors:
-  - Replaced `basic_function` for `74HC02`, `74HC10`, `74HC11`, `74HC20`,
-    `74HC27`, and `74HC30`.
-  - Updated each part's `verification.required_vectors`, regenerated
-    `generated/artifacts.json`, and added live Python-model execution coverage
-    in `python/tests/test_generated_split_records.py`.
+- Task 4, chip-specific truth vectors and active-catalog completion:
+  - Replaced the remaining active 74xx/memory `basic_function` truth
+    placeholders with explicit executable records.
+  - Added generic fresh-chip pin-vector execution coverage for the catalog
+    records that do not yet need deeper hand-authored control-edge scenarios.
+  - Added SRAM-family write/read/high-Z truth coverage for `CY7C199`.
+  - Regenerated affected `generated/artifacts.json` files and made the
+    placeholder inventory gate empty in `python/tests/test_generated_split_records.py`.
+- Structural Verilog export hardening:
+  - `Design.to_verilog()` now emits embedded pinout documentation comments
+    beside each chip instance, matching the package-local model style.
+  - One-chip structural wrappers for all 62 active `DB/74xx` and `DB/Memory`
+    parts export with pinout comments and compile with `iverilog`.
+  - Fixed `AS6C62256` and `CY7C199` required-file metadata so their exports
+    include `DB/Memory/62256/simulation/model.v`, which provides `mem_62256`.
 - Task 5, datasheet timing/electrical extraction:
   - Filled source-backed timing/electrical fields for `74HC138`, `74HC139`, and
     `74HC151`.
@@ -445,7 +454,10 @@ Verification run for that commit:
 - `PYTHONPATH=python python3 -B -m tests.test_db`
 - `python3 -m py_compile python/tests/test_lib_circuits.py python/tests/test_generated_split_records.py`
 - JSON parser check over the edited truth/circuit/definition files
-- `rg -n 'basic_function'` over the six task-4 chips returned no matches
+- Active IC placeholder inventory is now gated to an empty set by
+  `tests.test_generated_split_records`.
+- Full 62-part structural Verilog export/compile smoke passed and wrote
+  generated wrappers under `/tmp/components-all-chip-verilog-export`.
 - `git diff --check`
 
 Team/skill updates from this handoff:
@@ -462,12 +474,13 @@ Team/skill updates from this handoff:
 
 Recommended next tasks:
 
-1. Add `RV8GR_SetPageJumpTrace` for SETDP, SETPG, and J from
-   `doc/03_instruction_trace.md`, proving page-register state and PC page-load
-   behavior together.
-2. Continue task-4 truth-vector batches for placeholder parts such as `74HC138`,
-   `74HC139`, `74HC151`, `74HC153`, `74HC154`, `74HC155`, and `74HC158`.
-3. Continue task-5 datasheet extraction for the next decoder/mux batch, keeping
+1. Commit the current Components checkpoint after reviewing the large dirty
+   worktree: datasheets, pin/model fixes, AT28C256 timing/write behavior,
+   active-catalog truth vectors, structural export pinout comments, and
+   SRAM-wrapper Verilog dependencies.
+2. Continue task-5 datasheet extraction for the next decoder/mux batch, keeping
    timing/electrical source names inside `definition/definition.json`.
-4. Add real bench-evidence fields for selected memory markings, SRAM
+3. Add real bench-evidence fields for selected memory markings, SRAM
    output-disable/read timing, DBUS deadband, and 5 MHz signal-integrity proof.
+4. Start the visual chip-block editor lane against `components.block_ui` when
+   the user wants UI implementation.

@@ -165,7 +165,18 @@
     "description": "32K x 8 static RAM"
   },
   "timing": {
-    "delay_ns": 70
+    "variant": "KM62256C-70",
+    "paths": {
+      "address_to_data_valid_ns": 70,
+      "ce_to_data_valid_ns": 70,
+      "oe_to_data_valid_ns": 35,
+      "ce_or_oe_to_high_z_ns": 30
+    },
+    "write": {
+      "pulse_min_ns": 50,
+      "data_setup_min_ns": 30,
+      "address_hold_min_ns": 0
+    }
   },
   "generation": {
     "targets": [
@@ -222,29 +233,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "62256",
-      "title": "32K x 8 static RAM",
-      "family": "Memory",
-      "group": "memory",
-      "kind": "ic",
-      "role": "sram"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "62256",
-      "packages": [
-        {
-          "id": "DIP",
-          "kind": "DIP",
-          "pins": 28
-        }
-      ],
-      "default_package": "DIP"
-    },
     "pins": {
       "schema": "db.component.pins",
       "version": 1,
@@ -416,15 +404,6 @@
         }
       ]
     },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "62256",
-      "logic": {
-        "type": "32k_x_8_sram",
-        "description": "32K x 8 static RAM"
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
@@ -483,6 +462,20 @@
           "load": "100 pF + 1 TTL",
           "path": "address_ce_oe_we_to_io_or_high_z",
           "section": "AC Characteristics"
+        },
+        "public_timing": {
+          "variant": "KM62256C-70",
+          "paths": {
+            "address_to_data_valid_ns": 70,
+            "ce_to_data_valid_ns": 70,
+            "oe_to_data_valid_ns": 35,
+            "ce_or_oe_to_high_z_ns": 30
+          },
+          "write": {
+            "pulse_min_ns": 50,
+            "data_setup_min_ns": 30,
+            "address_hold_min_ns": 0
+          }
         }
       },
       "evidence": {

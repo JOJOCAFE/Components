@@ -49,7 +49,7 @@
     {"part": "74HC541", "model_delay_ns": 12, "source": "DB/74xx/74HC541/definition/definition.json", "source_file_required": true},
     {"part": "74HC574", "model_delay_ns": 20, "setup_before_clock_ns": 20, "hold_after_clock_ns": 5, "source": "DB/74xx/74HC574/definition/definition.json", "source_file_required": true},
     {"part": "74HC688", "model_delay_ns": 30, "source": "DB/74xx/74HC688/definition/definition.json", "source_file_required": true},
-    {"part": "AT28C256", "model_read_delay_ns": 70, "datasheet_read_ns": {"at28c256_15": 150, "at28c256_20": 200, "at28c256_25": 250, "at28c256_35": 350}, "output_float_ns": {"at28c256_15": 50, "at28c256_20": 55, "at28c256_25": 60, "at28c256_35": 70}, "source": "DB/Memory/AT28C256/definition/definition.json", "source_file_required": true, "physical_caveat": "The 70 ns model read delay is not a selected physical speed grade."},
+    {"part": "AT28C256", "model_read_delay_ns": 150, "datasheet_read_ns": {"at28c256_15": 150, "at28c256_20": 200, "at28c256_25": 250, "at28c256_35": 350}, "output_float_ns": {"at28c256_15": 50, "at28c256_20": 55, "at28c256_25": 60, "at28c256_35": 70}, "source": "DB/Memory/AT28C256/definition/definition.json", "source_file_required": true, "physical_caveat": "Model read delay uses the AT28C256-15 tACC address-to-output path; slower EEPROM speed grades still require project-specific timing selection."},
     {"part": "62256", "model_read_delay_ns": 70, "datasheet_read_ns": {"km62256c_55": 55, "km62256c_70": 70}, "output_float_ns": {"km62256c_55": 20, "km62256c_70": 30}, "source": "DB/Memory/62256/definition/definition.json", "source_file_required": true, "physical_caveat": "DB source is datasheet-backed; selected physical SRAM marking and measured access/output-disable timing remain required."},
     {"part": "AS6C62256", "model_read_delay_ns": 70, "datasheet_read_ns": {"as6c62256_55": 55}, "output_float_ns": {"as6c62256_55": 20}, "source": "DB/Memory/AS6C62256/definition/definition.json", "source_file_required": true, "physical_caveat": "DB source is datasheet-backed; selected physical SRAM marking and measured access/output-disable timing remain required."}
   ],
@@ -64,7 +64,7 @@
         "definition_layers.timing.delay.datasheet_read_ns.tacc_address_to_output",
         "definition_layers.timing.delay.datasheet_read_ns.tdf_ce_or_oe_to_float"
       ],
-      "model_read_delay_ns": 70,
+      "model_read_delay_ns": 150,
       "datasheet_read_ns": {"at28c256_15": 150, "at28c256_20": 200, "at28c256_25": 250, "at28c256_35": 350},
       "output_float_ns": {"at28c256_15": 50, "at28c256_20": 55, "at28c256_25": 60, "at28c256_35": 70},
       "requirement": "Choose and record the actual EEPROM speed grade before any physical 5 MHz claim."
@@ -584,7 +584,7 @@
       "required_setup_ns": 20,
       "total_budget_ns": 102,
       "slack_ns": {"50_khz": 19898, "1_mhz": 898, "2_mhz": 398, "5_mhz": 98},
-      "notes": ["AT28C256 speed grade can be 150 ns or slower in the datasheet table, so the 70 ns model read is not enough to prove physical 5 MHz."]
+      "notes": ["AT28C256 model read uses the AT28C256-15 tACC path; slower speed grades are not enough to prove physical 5 MHz."]
     },
     {
       "id": "ram_or_rom_data_read_to_ibus_setup",

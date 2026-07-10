@@ -28,16 +28,25 @@ simulation services, and student-facing documentation.
 - Package separation discipline: definition, simulation, schematic/symbol,
   verification, generation, datasheet evidence, and project use must stay as
   separate layers even when one file can generate outputs.
-- One-file definition discipline: component/package/pins/power/logic/timing/
-  electrical definition sublayers live inside `definition/definition.json` as
-  `definition_layers`; datasheet sources live inside the same file as
-  `datasheet.sources`; split definition and datasheet files are compatibility
-  fallback only.
+- Compact one-file definition discipline: `definition/definition.json` is the
+  source file, but `definition_layers` should embed only sublayers that carry
+  information not derivable from top-level fields. Loaders must expose the full
+  layer view by deriving component/package/pins/power/logic/timing records when
+  compact files omit them; exact duplicate embedded layers are a regression.
+- Timing-model discipline: every active physical IC keeps a beginner-facing
+  default delay and a path-specific timing contract. Memory parts use compact
+  `variant`, `paths`, and `write` timing; 74xx parts use `simple` plus
+  `timed.paths`. Missing datasheet timing values must be visible conservative
+  defaults, not silent blanks.
 - Standalone package discipline: chip-local `simulation/model.py`,
   `simulation/model.v`, `simulation/model.json`, `simulation/netlist.json`,
   `symbol/dip.json`, `tests/*.json`, and `generated/artifacts.json` travel
   with the chip folder; exported projects copy shared `python/chiplib/core.py`
   once as the runtime primitive layer.
+- Standalone Python model discipline: every active chip-local `model.py` must
+  import only `chiplib.core`, expose `create(name)`, and run when copied with
+  only `chiplib/core.py`. Full Components app services are optional consumers,
+  not runtime dependencies for chip behavior.
 - Verification-record discipline: active IC truth records must declare
   `edge_criteria`; clocked chips prove active-edge behavior and no-edge hold,
   tri-state/bus chips prove high-Z and bus-fight/no-conflict behavior, and
@@ -80,6 +89,9 @@ Shared team rule:
   `definition/definition.json` plus datasheet evidence; generated Python,
   Verilog, KiCad, SVG, docs, tests, and demos must be reproducible from that
   layer.
+- Compact DB source files are intentional. Do not re-add component/package/
+  pins/power/logic layers when they exactly match loader-derived records; add a
+  layer only when it carries extra evidence or non-derivable details.
 - No circuit/system virtual proof may ignore the four physical-system fault
   traps: wrong pin truth, invalid output-output wiring, wrong trigger edge, and
   propagation-delay/deadband risk. Bank and Bam build the checker, Fern owns the
@@ -115,8 +127,20 @@ Current seed-batch milestone:
   all local chip models in that exported project.
 - `load_digital_package(part)` and `generate_component_artifacts(part)` are the
   current loader/generator entry points. Definition sublayers are read from
-  `definition_layers` first; `load_component(part)` remains the compatibility
-  manifest path.
+  `definition_layers` when present and otherwise derived from top-level compact
+  source fields; `load_component(part)` remains the compatibility manifest path.
+- All 62 active chip-local Python models are standalone-portable with only
+  copied `model.py` plus `chiplib/core.py`. The app catalog, DB loader,
+  `Design`, CLI, netlist export, and docs remain full Components features.
+- Active memory top-level timing is compact and uniform:
+  `variant`, `paths.address_to_data_valid_ns`, `paths.ce_to_data_valid_ns`,
+  `paths.oe_to_data_valid_ns`, `paths.ce_or_oe_to_high_z_ns`, and
+  `write.pulse_min_ns`, `write.data_setup_min_ns`,
+  `write.address_hold_min_ns`.
+- Active 74xx top-level timing now exposes `simple.default_delay_ns` and
+  `timed.paths` for every active part. Many paths are conservative defaults
+  from the existing model delay until Ohm extracts part-specific datasheet
+  timing.
 - `python/tests/test_chips.py` now executes selected split test records against
   live Python chip models; broader generated Python/Verilog test generation is
   the next verification step.
@@ -224,6 +248,8 @@ Core skills:
   real repo state.
 - Watch for cross-file drift between DB manifests, Python models, Verilog
   models, exporter mappings, CLI/API contracts, and docs.
+- Keep compact-definition, timing-model, standalone-model, and Verilog-export
+  audits visible in handoffs after broad DB changes.
 - Surface concerns directly when a task risks confusing students or hiding
   technical debt.
 
@@ -269,6 +295,12 @@ Components focus:
   Python/DB path is proven.
 - Owns the long-term architecture of the definition/simulation/schematic/
   verification/generation layer split.
+- Owns compact-definition policy: derivable layers are loader output, not
+  duplicated source data, and schema/tests must prevent exact duplicate layers
+  from returning.
+- Owns timing schema boundaries: memory timing uses compact `variant/paths/write`
+  fields, while 74xx timing uses `simple/timed.paths` with conservative defaults
+  until datasheet extraction upgrades them.
 - Owns the boundary between DB component packages and reusable circuit-library
   packages so circuits prove behavior without becoming hidden chip-model forks.
 - Defines RV8GR circuit decomposition order and confirms address, bus, memory,
@@ -320,6 +352,10 @@ Components focus:
   a current Components package, and each board-used part must keep definition,
   simulation, Verilog, symbol, generated artifact, and split-record files
   present.
+- Owns active-catalog quality audits for 62 chips: validation/generation
+  errors, missing package files, missing split tests, placeholder truth records,
+  duplicate compact layers, memory timing shape, Python factory-delay drift,
+  standalone model imports, and all-chip Verilog compile smoke.
 
 ## Mint - RTL Coder
 
@@ -351,6 +387,12 @@ Components focus:
 - Confirms board-used Verilog models remain present for the RV8GR 16 part
   types and that generated/smoke benches stay aligned with package-local
   `simulation/model.v` files.
+- Owns Verilog timing honesty: package-local models and generated wrappers may
+  keep functional scalar delays, but comments/parameters must not imply that one
+  scalar covers distinct datasheet paths such as enable, disable, clock-to-Q, or
+  memory turnaround.
+- Maintains the 62-part structural Verilog export/compile smoke as the broad
+  HDL readiness check after DB or timing metadata changes.
 
 ## Ohm - HW Coder
 
@@ -383,6 +425,11 @@ Components focus:
   5 MHz physical-readiness claims.
 - Owns datasheet-backed timing/electrical extraction batches and must keep
   source-named timing values separate from simulator defaults.
+- Owns replacement of conservative timing defaults with datasheet-backed
+  min/typ/max values. If a datasheet omits a path, the default must stay
+  visibly conservative and marked as such.
+- Owns physical review of memory timing fields: address-to-data, CE-to-data,
+  OE-to-data, CE/OE-to-high-Z, write pulse, data setup, and address hold.
 - Owns the physical interpretation of the 36-package RV8GR audit: every
   instance must use the real DIP/PDIP pin map and the physical speed claim
   remains blocked until voltage, clock, bus-deadband, and scope evidence exist.
@@ -425,6 +472,13 @@ Components focus:
 - Owns scriptable count and readiness checks that can prove the RV8GR board
   instances resolve to current DB packages without duplicating chip behavior in
   a project-specific list.
+- Owns standalone Python model portability: chip-local `model.py` files import
+  only `chiplib.core`, central `create_chip()` factory delays match public
+  timing defaults, and package `portable_files` always includes model plus core
+  runtime.
+- Owns compact-definition loader behavior: omitted derivable layers must still
+  appear in `load_digital_package(part)["layers"]["definition"]` for UI/API and
+  generator consumers.
 
 ## Noon - Docs Writer
 
@@ -447,6 +501,12 @@ Components focus:
   display.
 - Owns generated documentation and interactive demo wording from
   `definition/definition.json`.
+- Owns beginner wording for timing models: distinguish default simulator delay,
+  conservative default timing, datasheet-backed timing, and physical signoff
+  without implying that functional simulation proves hardware speed.
+- Keeps standalone-package docs clear: a chip model can run with `model.py` and
+  `chiplib/core.py`, while catalog lookup, circuit design, CLI/API, netlist,
+  and documentation require the full Components app.
 - Owns RV8GR circuit READMEs and lab wording: explain the circuit purpose,
   signals, expected tick-by-tick behavior, and what each proof means for
   students without overselling functional simulation as hardware timing proof.

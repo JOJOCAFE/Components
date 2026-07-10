@@ -58,15 +58,13 @@ module mem_at28c256 #(parameter ADDR_WIDTH = 15, DATA_WIDTH = 8, INIT_FILE = "")
 
   reg [DATA_WIDTH-1:0] memory [0:(1 << ADDR_WIDTH)-1];
   wire read_enable;
-  wire write_enable;
 
   assign read_enable = !CE_bar && !OE_bar && WE_bar;
-  assign write_enable = !CE_bar && OE_bar && !WE_bar;
   assign DQ = read_enable ? memory[A] : {DATA_WIDTH{1'bz}};
 
-  always @(*) begin
-    if (write_enable)
-      memory[A] = DQ;
+  always @(posedge WE_bar) begin
+    if (!CE_bar && OE_bar)
+      memory[A] <= DQ;
   end
 
   initial begin

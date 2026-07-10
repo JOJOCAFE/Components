@@ -4,7 +4,29 @@
   "part": "74HC157",
   "applicable": true,
   "checks": [
-    {"name": "data_to_y_delay_metadata", "expect_delay_ns": 18},
-    {"name": "select_to_y_delay_metadata", "expect_delay_ns": 18}
+    {
+      "name": "data_to_y_delay_metadata",
+      "expect_delay_ns": 18
+    },
+    {
+      "name": "select_to_y_delay_metadata",
+      "expect_delay_ns": 18
+    },
+    {
+      "name": "input_to_output_metadata",
+      "type": "conservative_timing_path",
+      "path": "input_to_output_ns",
+      "parameter": "tpd",
+      "expect_delay_ns": 18,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    },
+    {
+      "name": "transition_time_metadata",
+      "type": "conservative_timing_path",
+      "path": "transition_time_ns",
+      "parameter": "tt",
+      "expect_delay_ns": 18,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    }
   ]
 }

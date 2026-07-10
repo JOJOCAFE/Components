@@ -165,7 +165,18 @@
     "description": "32K x 8 static RAM wrapper"
   },
   "timing": {
-    "delay_ns": 70
+    "variant": "CY7C199-model-70ns",
+    "paths": {
+      "address_to_data_valid_ns": 70,
+      "ce_to_data_valid_ns": 70,
+      "oe_to_data_valid_ns": 70,
+      "ce_or_oe_to_high_z_ns": 70
+    },
+    "write": {
+      "pulse_min_ns": 70,
+      "data_setup_min_ns": 70,
+      "address_hold_min_ns": 0
+    }
   },
   "generation": {
     "targets": [
@@ -222,29 +233,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "CY7C199",
-      "title": "32K x 8 static RAM wrapper",
-      "family": "Memory",
-      "group": "memory",
-      "kind": "ic",
-      "role": "memory"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "CY7C199",
-      "packages": [
-        {
-          "id": "DIP",
-          "kind": "DIP",
-          "pins": 28
-        }
-      ],
-      "default_package": "DIP"
-    },
     "pins": {
       "schema": "db.component.pins",
       "version": 1,
@@ -416,22 +404,36 @@
         }
       ]
     },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "CY7C199",
-      "logic": {
-        "type": "32k_x_8_static_ram_wrapper",
-        "description": "32K x 8 static RAM wrapper"
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
       "part": "CY7C199",
       "delay": {
         "model_delay_ns": 70,
-        "status": "model-derived"
+        "status": "model-derived",
+        "public_timing": {
+          "variant": "CY7C199-model-70ns",
+          "paths": {
+            "address_to_data_valid_ns": 70,
+            "ce_to_data_valid_ns": 70,
+            "oe_to_data_valid_ns": 70,
+            "ce_or_oe_to_high_z_ns": 70
+          },
+          "write": {
+            "pulse_min_ns": 70,
+            "data_setup_min_ns": 70,
+            "address_hold_min_ns": 0
+          }
+        },
+        "conservative_defaults": {
+          "address_to_data_valid_ns": "conservative_default",
+          "ce_to_data_valid_ns": "conservative_default",
+          "oe_to_data_valid_ns": "conservative_default",
+          "ce_or_oe_to_high_z_ns": "conservative_default",
+          "pulse_min_ns": "conservative_default",
+          "data_setup_min_ns": "conservative_default",
+          "address_hold_min_ns": "conservative_default"
+        }
       },
       "evidence": {
         "label": "Infineon/Cypress CY7C199 datasheet",

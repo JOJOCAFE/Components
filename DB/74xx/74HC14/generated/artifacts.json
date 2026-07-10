@@ -8,7 +8,7 @@
       "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
-        "After an input changes, wait about 15 ns before trusting the output."
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
       ],
       "overview": "74HC14 is a 14-pin DIP part for logic.",
       "part": "74HC14",
@@ -57,7 +57,7 @@
         "try_it"
       ],
       "summary": "Hex Schmitt-Trigger Inverter.",
-      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
       "title": "Hex Schmitt-Trigger Inverter",
       "version": 1
     },
@@ -272,7 +272,44 @@
       ],
       "role": "logic",
       "timing": {
-        "delay_ns": 15
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        }
       },
       "title": "Hex Schmitt-Trigger Inverter"
     },
@@ -376,7 +413,9 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -384,7 +423,9 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -401,7 +442,9 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
           ]
         }
       },
@@ -452,7 +495,9 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -460,7 +505,9 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -477,7 +524,9 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
           ]
         }
       },

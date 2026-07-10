@@ -108,8 +108,9 @@
     },
     {
       "number": 19,
-      "name": "Y",
-      "direction": "output"
+      "name": "/Y",
+      "direction": "output",
+      "active_low": true
     },
     {
       "number": 20,
@@ -123,7 +124,44 @@
     "description": "8-Bit Identity Comparator"
   },
   "timing": {
-    "delay_ns": 30
+    "delay_ns": 30,
+    "simple": {
+      "default_delay_ns": 30,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+      "paths": {
+        "input_to_output_ns": {
+          "parameter": "tpd",
+          "from": "input",
+          "to": "output",
+          "condition": "input or select changes",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 30,
+              "max_ns": 30,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "transition_time_ns": {
+          "parameter": "tt",
+          "from": "output transition",
+          "to": "output transition",
+          "condition": "enabled output switches",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 30,
+              "max_ns": 30,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        }
+      }
+    }
   },
   "generation": {
     "targets": [
@@ -177,29 +215,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "74HC688",
-      "title": "8-Bit Identity Comparator",
-      "family": "74HC",
-      "group": "74xx",
-      "kind": "ic",
-      "role": "comparator"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "74HC688",
-      "packages": [
-        {
-          "id": "N",
-          "kind": "DIP",
-          "pins": 20
-        }
-      ],
-      "default_package": "N"
-    },
     "pins": {
       "schema": "db.component.pins",
       "version": 1,
@@ -299,8 +314,9 @@
         },
         {
           "number": 19,
-          "name": "Y",
-          "direction": "output"
+          "name": "/Y",
+          "direction": "output",
+          "active_low": true
         },
         {
           "number": 20,
@@ -328,15 +344,6 @@
           "rail": "VCC"
         }
       ]
-    },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "74HC688",
-      "logic": {
-        "type": "eight_bit_identity_comparator",
-        "description": "8-Bit Identity Comparator"
-      }
     },
     "timing": {
       "schema": "db.component.timing",
@@ -370,6 +377,50 @@
           "load_pf": 15,
           "path": "A_B_or_E_to_P_equals_Q_output",
           "section": "5.5 Switching Characteristics"
+        },
+        "public_timing": {
+          "delay_ns": 30,
+          "simple": {
+            "default_delay_ns": 30,
+            "source": "legacy functional simulator default"
+          },
+          "timed": {
+            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+            "paths": {
+              "input_to_output_ns": {
+                "parameter": "tpd",
+                "from": "input",
+                "to": "output",
+                "condition": "input or select changes",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 30,
+                    "max_ns": 30,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "transition_time_ns": {
+                "parameter": "tt",
+                "from": "output transition",
+                "to": "output transition",
+                "condition": "enabled output switches",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 30,
+                    "max_ns": 30,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "conservative_defaults": {
+          "input_to_output_ns": "conservative_default_from_existing_model_delay",
+          "transition_time_ns": "conservative_default_from_existing_model_delay"
         }
       },
       "evidence": {

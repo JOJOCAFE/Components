@@ -50,7 +50,7 @@
       "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
-        "After an input changes, wait about 22 ns before trusting the output.",
+        "Default simulator delay is 22 ns; timed mode uses path-specific datasheet delays.",
         "Treat these as grouped signals in the UI: D, Q."
       ],
       "overview": "74HC161 is a 16-pin DIP part for counter.",
@@ -102,7 +102,7 @@
         "try_it"
       ],
       "summary": "4-bit binary counter with parallel load and asynchronous clear.",
-      "timing_note": "After an input changes, wait about 22 ns before trusting the output.",
+      "timing_note": "Default simulator delay is 22 ns; timed mode uses path-specific datasheet delays.",
       "title": "4-bit binary counter with parallel load and asynchronous clear",
       "version": 1
     },
@@ -380,7 +380,72 @@
       "role": "counter",
       "timing": {
         "clock_edge": "rising",
-        "delay_ns": 22
+        "delay_ns": 22,
+        "simple": {
+          "default_delay_ns": 22,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "async_control_to_output_ns": {
+              "condition": "async control asserted or released",
+              "from": "asynchronous control",
+              "parameter": "tremap",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 22,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 22
+                }
+              },
+              "to": "Q/output"
+            },
+            "clock_to_output_ns": {
+              "condition": "active clock edge",
+              "from": "CLK/clock control",
+              "parameter": "tco",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 22,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 22
+                }
+              },
+              "to": "Q/output"
+            },
+            "input_setup_margin_ns": {
+              "condition": "conservative setup placeholder from model delay",
+              "from": "D/input",
+              "parameter": "tsu",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 22,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 22
+                }
+              },
+              "to": "CLK/clock control"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 22,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 22
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        }
       },
       "title": "4-bit binary counter with parallel load and asynchronous clear"
     },
@@ -525,7 +590,11 @@
           "applicable": true,
           "checks": [
             "counter_delay_metadata",
-            "rco_delay_metadata"
+            "rco_delay_metadata",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -534,7 +603,11 @@
           "applicable": true,
           "checks": [
             "rising_clock",
-            "async_clear"
+            "async_clear",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -614,7 +687,11 @@
           "applicable": true,
           "checks": [
             "counter_delay_metadata",
-            "rco_delay_metadata"
+            "rco_delay_metadata",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -623,7 +700,11 @@
           "applicable": true,
           "checks": [
             "rising_clock",
-            "async_clear"
+            "async_clear",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"

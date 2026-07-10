@@ -10,7 +10,7 @@ class AS6C62256(Chip):
 
     def __init__(self, name: str):
         pins = {1: ("A14", "in"), 2: ("A12", "in"), 3: ("A7", "in"), 4: ("A6", "in"), 5: ("A5", "in"), 6: ("A4", "in"), 7: ("A3", "in"), 8: ("A2", "in"), 9: ("A1", "in"), 10: ("A0", "in"), 11: ("I/O0", "bidir"), 12: ("I/O1", "bidir"), 13: ("I/O2", "bidir"), 14: ("GND", "power"), 15: ("I/O3", "bidir"), 16: ("I/O4", "bidir"), 17: ("I/O5", "bidir"), 18: ("I/O6", "bidir"), 19: ("I/O7", "bidir"), 20: ("/CE", "in"), 21: ("A10", "in"), 22: ("/OE", "in"), 23: ("A11", "in"), 24: ("A9", "in"), 25: ("A8", "in"), 26: ("A13", "in"), 27: ("/WE", "in"), 28: ("VCC", "power")}
-        super().__init__(name, pins_from(pins), Delay(70))
+        super().__init__(name, pins_from(pins), Delay(55))
 
         self.data = bytearray(32768)
 

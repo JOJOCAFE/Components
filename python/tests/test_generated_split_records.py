@@ -35,6 +35,7 @@ TARGETED_TRUTH_TEST_ROOTS = {
     "62256": ROOT / "DB" / "Memory" / "62256" / "tests",
     "AS6C62256": ROOT / "DB" / "Memory" / "AS6C62256" / "tests",
     "AT28C256": ROOT / "DB" / "Memory" / "AT28C256" / "tests",
+    "CY7C199": ROOT / "DB" / "Memory" / "CY7C199" / "tests",
     "SST39SF010A": ROOT / "DB" / "Memory" / "SST39SF010A" / "tests",
 }
 BATCH2_TEST_ROOTS = {
@@ -58,7 +59,11 @@ BATCH2_TEST_ROOTS = {
     "SST39SF010A": ROOT / "DB" / "Memory" / "SST39SF010A" / "tests",
 }
 TASK3_REPRESENTATIVE_PARTS = ("74HC00", "74HC04", "74HC32")
-RV8GR_EXECUTED_PARTS = set(TASK3_REPRESENTATIVE_PARTS) | set(TARGETED_TRUTH_TEST_ROOTS) | {"74HC157"}
+RV8GR_EXECUTED_PARTS = (
+    set(TASK3_REPRESENTATIVE_PARTS)
+    | (set(TARGETED_TRUTH_TEST_ROOTS) - {"CY7C199"})
+    | {"74HC157"}
+)
 RV8GR_REQUIRED_PACKAGE_FILES = (
     "definition/definition.json",
     "simulation/model.py",
@@ -75,45 +80,7 @@ RV8GR_REQUIRED_PACKAGE_FILES = (
 )
 SPLIT_TEST_TYPES = ("truth_table", "timing", "tri_state", "bus_fight", "propagation")
 GENERATED_SIMPLE_GATE_BENCH_PARTS = ("74HC00", "74HC04", "74HC08", "74HC32", "74HC86")
-EXPECTED_BASIC_FUNCTION_PLACEHOLDERS = {
-    "74HC07",
-    "74HC112",
-    "74HC138",
-    "74HC139",
-    "74HC14",
-    "74HC147",
-    "74HC148",
-    "74HC151",
-    "74HC153",
-    "74HC154",
-    "74HC155",
-    "74HC158",
-    "74HC160",
-    "74HC162",
-    "74HC163",
-    "74HC165",
-    "74HC166",
-    "74HC181",
-    "74HC193",
-    "74HC238",
-    "74HC240",
-    "74HC244",
-    "74HC251",
-    "74HC257",
-    "74HC266",
-    "74HC273",
-    "74HC352",
-    "74HC374",
-    "74HC377",
-    "74HC4078",
-    "74HC42",
-    "74HC593",
-    "74HC595",
-    "74HC73",
-    "74HC85",
-    "74HC922",
-    "CY7C199",
-}
+EXPECTED_BASIC_FUNCTION_PLACEHOLDERS: set[str] = set()
 MEMORY_ADDR_PINS = {
     0: 10,
     1: 9,
@@ -262,9 +229,8 @@ def test_seed_timing_and_propagation_records_match_definition_metadata():
     expected_delays = {
         "74HC157": {18},
         "74HC161": {22},
-        "74HC245": {12},
         "74HC574": {20},
-        "AT28C256": {70},
+        "AT28C256": {50, 70, 150},
     }
     for part, delays in expected_delays.items():
         timing = load_record(part, "timing")
@@ -273,6 +239,19 @@ def test_seed_timing_and_propagation_records_match_definition_metadata():
         assert propagation["part"] == part
         if propagation["applicable"]:
             assert {item["expect_delay_ns"] for item in propagation["checks"]} == delays
+
+    propagation = load_record("74HC245", "propagation")
+    assert {
+        item["path"]: item["expect_typ_ns"]["vcc_4_5_v"]
+        for item in propagation["checks"]
+    } == {
+        "A_to_B": 15,
+        "B_to_A": 15,
+        "OE_to_output_enable": 23,
+        "OE_to_high_Z": 25,
+        "transition_time": 8,
+    }
+    assert {item["expect_default_delay_ns"] for item in propagation["checks"]} == {12}
 
 
 def test_seed_tristate_and_bus_fight_records_are_explicit():
@@ -391,6 +370,7 @@ def test_targeted_truth_records_are_explicit_and_execute_against_python_models()
         "62256": _execute_62256_truth,
         "AS6C62256": _execute_as6c62256_truth,
         "AT28C256": _execute_at28c256_truth,
+        "CY7C199": _execute_cy7c199_truth,
         "SST39SF010A": _execute_sst39sf010a_truth,
     }
     for part, executor in executors.items():
@@ -401,6 +381,70 @@ def test_targeted_truth_records_are_explicit_and_execute_against_python_models()
         assert all("inputs" in item and "expect" in item for item in record["vectors"])
         executed = executor(record)
         assert executed == {item["name"] for item in record["vectors"]}, part
+
+
+def test_generic_pin_vector_truth_records_execute_against_python_models():
+    specialized_parts = (
+        set(TARGETED_TRUTH_TEST_ROOTS)
+        | set(TASK3_REPRESENTATIVE_PARTS)
+        | {
+            "74HC02",
+            "74HC10",
+            "74HC11",
+            "74HC20",
+            "74HC27",
+            "74HC30",
+        }
+    )
+    executed_parts = set()
+    for part in active_ic_test_roots():
+        if part in specialized_parts:
+            continue
+        record = load_active_record(part, "truth_table")
+        if not all(vector.get("fresh") is True for vector in record["vectors"]):
+            continue
+        executed = _execute_generic_fresh_pin_vector_truth(part, record)
+        assert executed == {item["name"] for item in record["vectors"]}, part
+        executed_parts.add(part)
+
+    assert executed_parts == {
+        "74HC07",
+        "74HC112",
+        "74HC138",
+        "74HC139",
+        "74HC14",
+        "74HC147",
+        "74HC148",
+        "74HC151",
+        "74HC153",
+        "74HC154",
+        "74HC155",
+        "74HC158",
+        "74HC160",
+        "74HC162",
+        "74HC163",
+        "74HC165",
+        "74HC166",
+        "74HC181",
+        "74HC193",
+        "74HC238",
+        "74HC240",
+        "74HC244",
+        "74HC251",
+        "74HC257",
+        "74HC266",
+        "74HC273",
+        "74HC352",
+        "74HC374",
+        "74HC377",
+        "74HC4078",
+        "74HC42",
+        "74HC593",
+        "74HC595",
+        "74HC73",
+        "74HC85",
+        "74HC922",
+    }
 
 
 def test_74hc245_direction_high_z_and_bus_fight_records_are_explicit():
@@ -483,10 +527,9 @@ def test_seed_timing_and_propagation_records_are_not_placeholders():
     expected_delay = {
         "74HC161": 22,
         "74HC157": 18,
-        "74HC245": 12,
         "74HC574": 20,
         "62256": 70,
-        "AT28C256": 70,
+        "AT28C256": 150,
     }
     for part, delay in expected_delay.items():
         root = TARGETED_TRUTH_TEST_ROOTS[part] if part in TARGETED_TRUTH_TEST_ROOTS else SEED_TEST_ROOTS[part]
@@ -505,6 +548,20 @@ def test_seed_timing_and_propagation_records_are_not_placeholders():
                 for item in timing["checks"]
             ), part
         assert any(item.get("expect_delay_ns") == delay for item in propagation["checks"]), part
+
+    timing = json.loads((SEED_TEST_ROOTS["74HC245"] / "timing.json").read_text(encoding="utf-8"))
+    propagation = json.loads((SEED_TEST_ROOTS["74HC245"] / "propagation.json").read_text(encoding="utf-8"))
+    assert timing["applicable"] is True
+    assert propagation["applicable"] is True
+    assert {item["parameter"] for item in timing["checks"] if "parameter" in item} == {"tpd", "ten", "tdis", "tt"}
+    assert {item["path"] for item in propagation["checks"]} == {
+        "A_to_B",
+        "B_to_A",
+        "OE_to_output_enable",
+        "OE_to_high_Z",
+        "transition_time",
+    }
+    assert all("expect_typ_ns" in item and "expect_max_ns_25c" in item for item in propagation["checks"])
 
 
 def test_seed_bus_fight_records_execute_against_board_errors():
@@ -995,7 +1052,7 @@ def _execute_74hc688_truth(record) -> set[str]:
         set_byte(chip, a_pins, int(vector["inputs"]["A"], 16))
         set_byte(chip, b_pins, int(vector["inputs"]["B"], 16))
         eval_chip(chip)
-        assert chip.read(19) == vector["expect"]["Y"], vector["name"]
+        assert chip.read(19) == vector["expect"]["/Y"], vector["name"]
     return names
 
 
@@ -1017,6 +1074,27 @@ def _execute_as6c62256_truth(record) -> set[str]:
 def _execute_sst39sf010a_truth(record) -> set[str]:
     chip = create_chip("SST39SF010A", "FLASH")
     return _execute_memory_truth(chip, record)
+
+
+def _execute_cy7c199_truth(record) -> set[str]:
+    chip = create_chip("CY7C199", "RAM")
+    return _execute_memory_truth(chip, record)
+
+
+def _execute_generic_fresh_pin_vector_truth(part: str, record) -> set[str]:
+    names = set()
+    for vector in record["vectors"]:
+        chip = create_chip(part, "U")
+        for name, value in vector["inputs"].items():
+            chip.set_input(name, value)
+        if vector.get("clock"):
+            chip.clock_edge()
+            chip.commit()
+        eval_chip(chip)
+        for name, expected in vector["expect"].items():
+            assert chip.read(name) == expected, (part, vector["name"], name)
+        names.add(vector["name"])
+    return names
 
 
 def _execute_memory_truth(chip, record) -> set[str]:

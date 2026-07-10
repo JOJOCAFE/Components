@@ -328,7 +328,9 @@ def test_62256_python_matches_verilog_write_read_and_high_z():
     chip.set_input(27, 0)
     eval_chip(chip)
     chip.set_input(27, 1)
+    eval_chip(chip)
     chip.set_input(22, 0)
+    eval_chip(chip)
     eval_chip(chip)
     expected_dq = get_byte(chip, [11, 12, 13, 15, 16, 17, 18, 19])
     chip.set_input(20, 1)
@@ -374,7 +376,9 @@ def _assert_32k_sram_python_matches_verilog(part: str, module_file: str, module_
     chip.set_input(27, 0)
     eval_chip(chip)
     chip.set_input(27, 1)
+    eval_chip(chip)
     chip.set_input(22, 0)
+    eval_chip(chip)
     eval_chip(chip)
     expected_dq = get_byte(chip, dq_pins)
     chip.set_input(20, 1)
@@ -428,7 +432,9 @@ def test_at28c256_python_matches_verilog_write_read_and_high_z():
     chip.set_input(27, 0)
     eval_chip(chip)
     chip.set_input(27, 1)
+    eval_chip(chip)
     chip.set_input(22, 0)
+    eval_chip(chip)
     eval_chip(chip)
     expected_dq = get_byte(chip, dq_pins)
     chip.set_input(20, 1)
@@ -450,7 +456,8 @@ module tb;
   assign dq = drive_dq ? dq_drv : 8'hzz;
   mem_at28c256 dut(.A(a), .DQ(dq), .CE_bar(ce_bar), .OE_bar(oe_bar), .WE_bar(we_bar));
   initial begin
-    #1; we_bar = 1; drive_dq = 0; oe_bar = 0;
+    #1; we_bar = 1;
+    #1; drive_dq = 0; oe_bar = 0;
     #1; $display("RESULT EEPROM %h", dq);
     ce_bar = 1; #1; if (dq !== 8'hzz) begin $display("FAIL high-z"); $finish(1); end
     $finish;

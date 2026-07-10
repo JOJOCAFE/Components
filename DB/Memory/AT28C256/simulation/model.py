@@ -61,20 +61,36 @@ def write_pins(chip: Chip, pins: list[int], value: int) -> None:
 class AT28C256(Chip):
     part = "AT28C256"
 
-    def __init__(self, name: str = "U"):
-        super().__init__(name, pins_from(memory_28_pin_defs("bidir")), Delay(70))
+    def __init__(self, name: str = "U", write_cycle_updates: int = 1):
+        super().__init__(name, pins_from(memory_28_pin_defs("bidir")), Delay(150))
         self.data = bytearray(32768)
+        self.write_cycle_updates = max(0, int(write_cycle_updates))
+        self.write_busy_updates_remaining = 0
+        self._last_we_bar = 1
+        self._pending_write: tuple[int, int] | None = None
 
     def update(self) -> None:
         selected = not bit(self.read("/CE"))
-        if selected and bit(self.read("/OE")) and not bit(self.read("/WE")):
-            self.data[memory_address(self)] = byte_from_pins(self, MEMORY_DQ_PINS)
-        read_enabled = selected and not bit(self.read("/OE")) and bit(self.read("/WE"))
-        if not read_enabled:
+        oe_bar = bit(self.read("/OE"))
+        we_bar = bit(self.read("/WE"))
+        address = memory_address(self)
+        if selected and oe_bar and not we_bar:
+            self._pending_write = (address, byte_from_pins(self, MEMORY_DQ_PINS))
+        if selected and oe_bar and self._last_we_bar == 0 and we_bar == 1 and self._pending_write is not None:
+            write_address, write_data = self._pending_write
+            self.data[write_address] = write_data
+            self._pending_write = None
+            self.write_busy_updates_remaining = self.write_cycle_updates
+        self._last_we_bar = we_bar
+
+        read_enabled = selected and not oe_bar and we_bar
+        if not read_enabled or self.write_busy_updates_remaining > 0:
             for pin in MEMORY_DQ_PINS:
                 self.output(pin, Z)
+            if read_enabled and self.write_busy_updates_remaining > 0:
+                self.write_busy_updates_remaining -= 1
             return
-        write_pins(self, MEMORY_DQ_PINS, self.data[memory_address(self)])
+        write_pins(self, MEMORY_DQ_PINS, self.data[address])
 
 
 def create(name: str = "U") -> AT28C256:

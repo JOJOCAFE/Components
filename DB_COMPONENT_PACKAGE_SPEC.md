@@ -70,8 +70,10 @@ package. It must contain:
 - `verification`: required test types and required vector names.
 - `datasheet.sources`: manufacturer/source evidence used for package, pins,
   logic, timing, and electrical claims.
-- `definition_layers`: embedded component/package/pins/power/logic/timing/
-  electrical sublayers for tools that want layer-specific records.
+- `definition_layers`: embedded sublayers only when they carry information not
+  already derivable from the top-level fields. Loaders expose a complete
+  layer-specific view by deriving component/package/pins/power/logic/timing
+  records from the top-level definition when those records are omitted.
 
 Do not move behavior code, generated prose, or UI-only state into
 `definition.json`. It describes source facts and generator contracts; it does

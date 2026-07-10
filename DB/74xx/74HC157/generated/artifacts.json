@@ -94,7 +94,7 @@
       ],
       "key_points": [
         "Connect power before testing signal pins.",
-        "After an input changes, wait about 18 ns before trusting the output.",
+        "Default simulator delay is 18 ns; timed mode uses path-specific datasheet delays.",
         "Check the control pins first: A/B, /G.",
         "Treat these as grouped signals in the UI: A, B, Y."
       ],
@@ -147,7 +147,7 @@
         "try_it"
       ],
       "summary": "Quad 2-Line to 1-Line Multiplexer.",
-      "timing_note": "After an input changes, wait about 18 ns before trusting the output.",
+      "timing_note": "Default simulator delay is 18 ns; timed mode uses path-specific datasheet delays.",
       "title": "Quad 2-Line to 1-Line Multiplexer",
       "version": 1
     },
@@ -447,7 +447,44 @@
       ],
       "role": "multiplexer",
       "timing": {
-        "delay_ns": 18
+        "delay_ns": 18,
+        "simple": {
+          "default_delay_ns": 18,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 18,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 18
+                }
+              },
+              "to": "output"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 18,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 18
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        }
       },
       "title": "Quad 2-Line to 1-Line Multiplexer"
     },
@@ -604,7 +641,9 @@
           "applicable": true,
           "checks": [
             "data_to_y_delay_metadata",
-            "select_to_y_delay_metadata"
+            "select_to_y_delay_metadata",
+            "input_to_output_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -613,7 +652,9 @@
           "applicable": true,
           "checks": [
             "select_control_no_clock",
-            "enable_control_no_clock"
+            "enable_control_no_clock",
+            "input_to_output_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -686,7 +727,9 @@
           "applicable": true,
           "checks": [
             "data_to_y_delay_metadata",
-            "select_to_y_delay_metadata"
+            "select_to_y_delay_metadata",
+            "input_to_output_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -695,7 +738,9 @@
           "applicable": true,
           "checks": [
             "select_control_no_clock",
-            "enable_control_no_clock"
+            "enable_control_no_clock",
+            "input_to_output_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"

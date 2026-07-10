@@ -90,9 +90,16 @@ def test_design_to_verilog_exports_known_gate_instances_and_testbench():
     assert exported["ok"] is True
     assert exported["unsupported"] == []
     assert "module netlist_small();" in verilog
+    assert "// Embedded pinout documentation." in verilog
+    assert "// # U1 74HC00 DIP Pinout" in verilog
+    assert "// | Pin | Name |" in verilog
+    assert "// | 1 | 1A |" in verilog
+    assert "// | 14 | VCC |" in verilog
     assert "ttl_74hc00" in verilog
     assert " U1 (" in verilog
     assert ".A({" in verilog
+    assert "// # U2 74HC04 DIP Pinout" in verilog
+    assert "// | 13 | 6A |" in verilog
     assert "ttl_74hc04" in verilog
     assert " U2 (" in verilog
     assert "module tb_netlist_small();" in exported["testbench"]

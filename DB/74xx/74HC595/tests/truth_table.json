@@ -5,8 +5,93 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "all_inputs_low",
+      "fresh": true,
+      "inputs": {
+        "/SRCLR": 0,
+        "SRCLK": 0,
+        "RCLK": 0,
+        "/OE": 0,
+        "SER": 0
+      },
+      "expect": {
+        "QB": 0,
+        "QC": 0,
+        "QD": 0,
+        "QE": 0,
+        "QF": 0,
+        "QG": 0,
+        "QH": 0,
+        "QH'": 0,
+        "QA": 0
+      }
+    },
+    {
+      "name": "all_inputs_high",
+      "fresh": true,
+      "inputs": {
+        "/SRCLR": 1,
+        "SRCLK": 1,
+        "RCLK": 1,
+        "/OE": 1,
+        "SER": 1
+      },
+      "expect": {
+        "QB": "Z",
+        "QC": "Z",
+        "QD": "Z",
+        "QE": "Z",
+        "QF": "Z",
+        "QG": "Z",
+        "QH": "Z",
+        "QH'": 0,
+        "QA": "Z"
+      }
+    },
+    {
+      "name": "alternating_inputs",
+      "fresh": true,
+      "inputs": {
+        "/SRCLR": 0,
+        "SRCLK": 1,
+        "RCLK": 0,
+        "/OE": 1,
+        "SER": 0
+      },
+      "expect": {
+        "QB": "Z",
+        "QC": "Z",
+        "QD": "Z",
+        "QE": "Z",
+        "QF": "Z",
+        "QG": "Z",
+        "QH": "Z",
+        "QH'": 0,
+        "QA": "Z"
+      }
+    },
+    {
+      "name": "clocked_alternating_inputs",
+      "fresh": true,
+      "clock": true,
+      "inputs": {
+        "/SRCLR": 0,
+        "SRCLK": 1,
+        "RCLK": 0,
+        "/OE": 1,
+        "SER": 0
+      },
+      "expect": {
+        "QB": "Z",
+        "QC": "Z",
+        "QD": "Z",
+        "QE": "Z",
+        "QF": "Z",
+        "QG": "Z",
+        "QH": "Z",
+        "QH'": 0,
+        "QA": "Z"
+      }
     }
   ],
   "edge_criteria": {

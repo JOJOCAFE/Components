@@ -93,7 +93,72 @@
     "description": "8-Bit Serial-In Parallel-Out Shift Register"
   },
   "timing": {
-    "delay_ns": 20
+    "delay_ns": 20,
+    "simple": {
+      "default_delay_ns": 20,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+      "paths": {
+        "clock_to_output_ns": {
+          "parameter": "tco",
+          "from": "CLK/clock control",
+          "to": "Q/output",
+          "condition": "active clock edge",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 20,
+              "max_ns": 20,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "async_control_to_output_ns": {
+          "parameter": "tremap",
+          "from": "asynchronous control",
+          "to": "Q/output",
+          "condition": "async control asserted or released",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 20,
+              "max_ns": 20,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "input_setup_margin_ns": {
+          "parameter": "tsu",
+          "from": "D/input",
+          "to": "CLK/clock control",
+          "condition": "conservative setup placeholder from model delay",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 20,
+              "max_ns": 20,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "transition_time_ns": {
+          "parameter": "tt",
+          "from": "output transition",
+          "to": "output transition",
+          "condition": "enabled output switches",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 20,
+              "max_ns": 20,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        }
+      }
+    }
   },
   "generation": {
     "targets": [
@@ -147,29 +212,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "74HC164",
-      "title": "8-Bit Serial-In Parallel-Out Shift Register",
-      "family": "74HC",
-      "group": "74xx",
-      "kind": "ic",
-      "role": "shift_register"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "74HC164",
-      "packages": [
-        {
-          "id": "N",
-          "kind": "DIP",
-          "pins": 14
-        }
-      ],
-      "default_package": "N"
-    },
     "pins": {
       "schema": "db.component.pins",
       "version": 1,
@@ -269,15 +311,6 @@
         }
       ]
     },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "74HC164",
-      "logic": {
-        "type": "serial_in_parallel_out_shift_register",
-        "description": "8-Bit Serial-In Parallel-Out Shift Register"
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
@@ -303,6 +336,80 @@
           "load_pf": 50,
           "path": "CLK_or_CLR_to_Q",
           "section": "7.11 Switching Characteristics, TA = 25 C"
+        },
+        "public_timing": {
+          "delay_ns": 20,
+          "simple": {
+            "default_delay_ns": 20,
+            "source": "legacy functional simulator default"
+          },
+          "timed": {
+            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+            "paths": {
+              "clock_to_output_ns": {
+                "parameter": "tco",
+                "from": "CLK/clock control",
+                "to": "Q/output",
+                "condition": "active clock edge",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 20,
+                    "max_ns": 20,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "async_control_to_output_ns": {
+                "parameter": "tremap",
+                "from": "asynchronous control",
+                "to": "Q/output",
+                "condition": "async control asserted or released",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 20,
+                    "max_ns": 20,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "input_setup_margin_ns": {
+                "parameter": "tsu",
+                "from": "D/input",
+                "to": "CLK/clock control",
+                "condition": "conservative setup placeholder from model delay",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 20,
+                    "max_ns": 20,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "transition_time_ns": {
+                "parameter": "tt",
+                "from": "output transition",
+                "to": "output transition",
+                "condition": "enabled output switches",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 20,
+                    "max_ns": 20,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "conservative_defaults": {
+          "clock_to_output_ns": "conservative_default_from_existing_model_delay",
+          "async_control_to_output_ns": "conservative_default_from_existing_model_delay",
+          "input_setup_margin_ns": "conservative_default_from_existing_model_delay",
+          "transition_time_ns": "conservative_default_from_existing_model_delay"
         }
       },
       "timing_requirements": {

@@ -5,8 +5,85 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "all_inputs_low",
+      "fresh": true,
+      "inputs": {
+        "1CP": 0,
+        "1R": 0,
+        "1K": 0,
+        "2CP": 0,
+        "2R": 0,
+        "2J": 0,
+        "2K": 0,
+        "1J": 0
+      },
+      "expect": {
+        "2Q_bar": 1,
+        "2Q": 0,
+        "1Q_bar": 1,
+        "1Q": 0
+      }
+    },
+    {
+      "name": "all_inputs_high",
+      "fresh": true,
+      "inputs": {
+        "1CP": 1,
+        "1R": 1,
+        "1K": 1,
+        "2CP": 1,
+        "2R": 1,
+        "2J": 1,
+        "2K": 1,
+        "1J": 1
+      },
+      "expect": {
+        "2Q_bar": 1,
+        "2Q": 0,
+        "1Q_bar": 1,
+        "1Q": 0
+      }
+    },
+    {
+      "name": "alternating_inputs",
+      "fresh": true,
+      "inputs": {
+        "1CP": 0,
+        "1R": 1,
+        "1K": 0,
+        "2CP": 1,
+        "2R": 0,
+        "2J": 1,
+        "2K": 0,
+        "1J": 1
+      },
+      "expect": {
+        "2Q_bar": 1,
+        "2Q": 0,
+        "1Q_bar": 1,
+        "1Q": 0
+      }
+    },
+    {
+      "name": "clocked_alternating_inputs",
+      "fresh": true,
+      "clock": true,
+      "inputs": {
+        "1CP": 0,
+        "1R": 1,
+        "1K": 0,
+        "2CP": 1,
+        "2R": 0,
+        "2J": 1,
+        "2K": 0,
+        "1J": 1
+      },
+      "expect": {
+        "2Q_bar": 1,
+        "2Q": 0,
+        "1Q_bar": 0,
+        "1Q": 1
+      }
     }
   ],
   "edge_criteria": {

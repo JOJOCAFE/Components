@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import re
 from time import perf_counter
 from typing import Any
 
@@ -465,6 +466,7 @@ class VerilogExportService:
             path = _verilog_file_for_part(part, str(mapping.get("module", "")))
             if path is not None:
                 files.add(path)
+                files.update(_verilog_dependencies_for_file(path))
             for required in _portable_files_for_part(part):
                 files.add(required)
         return sorted(files)
@@ -570,6 +572,18 @@ def _verilog_file_for_part(part: str, module: str) -> str | None:
     if module.startswith("mem_"):
         return f"Verilog/Memory/{module[4:]}.v"
     return None
+
+
+def _verilog_dependencies_for_file(path: str) -> set[str]:
+    source = Path(path)
+    try:
+        text = source.read_text(encoding="utf-8")
+    except OSError:
+        return set()
+    dependencies: set[str] = set()
+    if re.search(r"\bmem_62256\b", text) and source.as_posix() != "DB/Memory/62256/simulation/model.v":
+        dependencies.add("DB/Memory/62256/simulation/model.v")
+    return dependencies
 
 
 def _portable_files_for_part(part: str) -> list[str]:

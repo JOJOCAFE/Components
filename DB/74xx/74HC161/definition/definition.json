@@ -139,7 +139,72 @@
   },
   "timing": {
     "delay_ns": 22,
-    "clock_edge": "rising"
+    "clock_edge": "rising",
+    "simple": {
+      "default_delay_ns": 22,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+      "paths": {
+        "clock_to_output_ns": {
+          "parameter": "tco",
+          "from": "CLK/clock control",
+          "to": "Q/output",
+          "condition": "active clock edge",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 22,
+              "max_ns": 22,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "async_control_to_output_ns": {
+          "parameter": "tremap",
+          "from": "asynchronous control",
+          "to": "Q/output",
+          "condition": "async control asserted or released",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 22,
+              "max_ns": 22,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "input_setup_margin_ns": {
+          "parameter": "tsu",
+          "from": "D/input",
+          "to": "CLK/clock control",
+          "condition": "conservative setup placeholder from model delay",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 22,
+              "max_ns": 22,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "transition_time_ns": {
+          "parameter": "tt",
+          "from": "output transition",
+          "to": "output transition",
+          "condition": "enabled output switches",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 22,
+              "max_ns": 22,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        }
+      }
+    }
   },
   "generation": {
     "targets": [
@@ -200,200 +265,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "74HC161",
-      "title": "4-bit binary counter with parallel load and asynchronous clear",
-      "family": "74HC",
-      "group": "74xx",
-      "kind": "ic",
-      "role": "counter"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "74HC161",
-      "packages": [
-        {
-          "id": "N",
-          "kind": "DIP",
-          "pins": 16
-        }
-      ],
-      "default_package": "N"
-    },
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "74HC161",
-      "pins": [
-        {
-          "number": 1,
-          "name": "/CLR",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 2,
-          "name": "CLK",
-          "direction": "input",
-          "clock": true
-        },
-        {
-          "number": 3,
-          "name": "A",
-          "direction": "input",
-          "bus": "D",
-          "bit": 0
-        },
-        {
-          "number": 4,
-          "name": "B",
-          "direction": "input",
-          "bus": "D",
-          "bit": 1
-        },
-        {
-          "number": 5,
-          "name": "C",
-          "direction": "input",
-          "bus": "D",
-          "bit": 2
-        },
-        {
-          "number": 6,
-          "name": "D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 3
-        },
-        {
-          "number": 7,
-          "name": "ENP",
-          "direction": "input"
-        },
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 9,
-          "name": "/LOAD",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 10,
-          "name": "ENT",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "QD",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 3
-        },
-        {
-          "number": 12,
-          "name": "QC",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 2
-        },
-        {
-          "number": 13,
-          "name": "QB",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 1
-        },
-        {
-          "number": 14,
-          "name": "QA",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 0
-        },
-        {
-          "number": 15,
-          "name": "RCO",
-          "direction": "output"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {
-        "D": {
-          "width": 4,
-          "pins_lsb_first": [
-            3,
-            4,
-            5,
-            6
-          ]
-        },
-        "Q": {
-          "width": 4,
-          "pins_lsb_first": [
-            14,
-            13,
-            12,
-            11
-          ]
-        }
-      }
-    },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "74HC161",
-      "rails": [
-        {
-          "name": "GND",
-          "pin": 8,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 16,
-          "nominal_logic": 1
-        }
-      ]
-    },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "74HC161",
-      "logic": {
-        "type": "sync_binary_counter",
-        "width": 4,
-        "async_clear": {
-          "pin": "/CLR",
-          "active_low": true
-        },
-        "parallel_load": {
-          "pin": "/LOAD",
-          "active_low": true,
-          "input_bus": "D"
-        },
-        "count_enable": [
-          "ENP",
-          "ENT"
-        ],
-        "terminal_count": {
-          "output": "RCO",
-          "condition": "Q=15 and ENT=1"
-        }
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
@@ -423,6 +294,81 @@
             "vcc_4_5_v": 8,
             "vcc_6_v": 6
           }
+        },
+        "public_timing": {
+          "delay_ns": 22,
+          "clock_edge": "rising",
+          "simple": {
+            "default_delay_ns": 22,
+            "source": "legacy functional simulator default"
+          },
+          "timed": {
+            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+            "paths": {
+              "clock_to_output_ns": {
+                "parameter": "tco",
+                "from": "CLK/clock control",
+                "to": "Q/output",
+                "condition": "active clock edge",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 22,
+                    "max_ns": 22,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "async_control_to_output_ns": {
+                "parameter": "tremap",
+                "from": "asynchronous control",
+                "to": "Q/output",
+                "condition": "async control asserted or released",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 22,
+                    "max_ns": 22,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "input_setup_margin_ns": {
+                "parameter": "tsu",
+                "from": "D/input",
+                "to": "CLK/clock control",
+                "condition": "conservative setup placeholder from model delay",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 22,
+                    "max_ns": 22,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "transition_time_ns": {
+                "parameter": "tt",
+                "from": "output transition",
+                "to": "output transition",
+                "condition": "enabled output switches",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 22,
+                    "max_ns": 22,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "conservative_defaults": {
+          "clock_to_output_ns": "conservative_default_from_existing_model_delay",
+          "async_control_to_output_ns": "conservative_default_from_existing_model_delay",
+          "input_setup_margin_ns": "conservative_default_from_existing_model_delay",
+          "transition_time_ns": "conservative_default_from_existing_model_delay"
         }
       },
       "timing_requirements": {

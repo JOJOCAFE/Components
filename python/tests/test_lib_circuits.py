@@ -3119,7 +3119,7 @@ def test_rv8gr_timing_physical_assumptions_are_source_backed_and_not_proven():
         at28_source,
         "definition_layers.timing.delay.datasheet_read_ns.tdf_ce_or_oe_to_float",
     )
-    assert at28["datasheet_read_ns"]["at28c256_15"] > at28["model_read_delay_ns"]
+    assert at28["datasheet_read_ns"]["at28c256_15"] == at28["model_read_delay_ns"]
 
     sram = assumptions["sram_read_and_float_pending"]
     sram_source = load_json(ROOT / sram["source"])

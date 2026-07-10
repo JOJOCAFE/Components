@@ -5,7 +5,7 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "write_c6",
+      "name": "write_c6_window",
       "inputs": {
         "A": "0x002A",
         "/CE": 0,
@@ -14,7 +14,29 @@
         "DQ": "0xC6"
       },
       "expect": {
-        "write": true
+        "write_pending": true,
+        "DQ": "Z"
+      }
+    },
+    {
+      "name": "write_c6_latch_we_rising",
+      "inputs": {
+        "/WE": 1,
+        "/OE": 1
+      },
+      "expect": {
+        "write": true,
+        "busy_updates": 1
+      }
+    },
+    {
+      "name": "write_c6_busy_read_high_z",
+      "inputs": {
+        "/OE": 0,
+        "/WE": 1
+      },
+      "expect": {
+        "DQ": "Z"
       }
     },
     {
@@ -30,7 +52,7 @@
       }
     },
     {
-      "name": "write_3c",
+      "name": "write_3c_window",
       "inputs": {
         "A": "0x0123",
         "/CE": 0,
@@ -39,7 +61,29 @@
         "DQ": "0x3C"
       },
       "expect": {
-        "write": true
+        "write_pending": true,
+        "DQ": "Z"
+      }
+    },
+    {
+      "name": "write_3c_latch_we_rising",
+      "inputs": {
+        "/WE": 1,
+        "/OE": 1
+      },
+      "expect": {
+        "write": true,
+        "busy_updates": 1
+      }
+    },
+    {
+      "name": "write_3c_busy_read_high_z",
+      "inputs": {
+        "/OE": 0,
+        "/WE": 1
+      },
+      "expect": {
+        "DQ": "Z"
       }
     },
     {
@@ -89,7 +133,7 @@
       }
     },
     {
-      "name": "write_mode_high_z",
+      "name": "write_window_high_z_before_latch",
       "inputs": {
         "A": "0x3456",
         "/CE": 0,
@@ -98,6 +142,7 @@
         "DQ": "0xAA"
       },
       "expect": {
+        "write_pending": true,
         "DQ": "Z"
       }
     },
@@ -156,6 +201,6 @@
     "clocking": "control_edge_or_level_sensitive",
     "trigger_edge": "WE_control",
     "non_trigger_edge": "CE_or_OE_disabled_outputs_high_z_and_no_unexpected_write",
-    "notes": "Memory truth tests must state write/read control transitions or level windows and high-Z behavior."
+    "notes": "AT28C256 writes are collected during a valid /WE-low window and committed on /WE rising while /CE is low and /OE remains high. Functional busy is represented by write_cycle_updates before normal readback."
   }
 }

@@ -165,7 +165,18 @@
     "description": "32K x 8 static RAM wrapper"
   },
   "timing": {
-    "delay_ns": 70
+    "variant": "AS6C62256-55",
+    "paths": {
+      "address_to_data_valid_ns": 55,
+      "ce_to_data_valid_ns": 55,
+      "oe_to_data_valid_ns": 30,
+      "ce_or_oe_to_high_z_ns": 20
+    },
+    "write": {
+      "pulse_min_ns": 45,
+      "data_setup_min_ns": 25,
+      "address_hold_min_ns": 0
+    }
   },
   "generation": {
     "targets": [
@@ -222,29 +233,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "AS6C62256",
-      "title": "32K x 8 static RAM wrapper",
-      "family": "Memory",
-      "group": "memory",
-      "kind": "ic",
-      "role": "sram"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "AS6C62256",
-      "packages": [
-        {
-          "id": "DIP",
-          "kind": "DIP",
-          "pins": 28
-        }
-      ],
-      "default_package": "DIP"
-    },
     "pins": {
       "schema": "db.component.pins",
       "version": 1,
@@ -416,15 +404,6 @@
         }
       ]
     },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "AS6C62256",
-      "logic": {
-        "type": "32k_x_8_sram",
-        "description": "32K x 8 static RAM wrapper"
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
@@ -465,6 +444,20 @@
           "high_z_test_load_pf": 5,
           "path": "address_ce_oe_we_to_dq_or_high_z",
           "section": "AC Electrical Characteristics"
+        },
+        "public_timing": {
+          "variant": "AS6C62256-55",
+          "paths": {
+            "address_to_data_valid_ns": 55,
+            "ce_to_data_valid_ns": 55,
+            "oe_to_data_valid_ns": 30,
+            "ce_or_oe_to_high_z_ns": 20
+          },
+          "write": {
+            "pulse_min_ns": 45,
+            "data_setup_min_ns": 25,
+            "address_hold_min_ns": 0
+          }
         }
       },
       "evidence": {

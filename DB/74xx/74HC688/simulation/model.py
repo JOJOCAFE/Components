@@ -9,7 +9,7 @@ class HC688(Chip):
     part = "74HC688"
 
     def __init__(self, name: str):
-        pins = {1: ("/E", "in"), 2: ("A0", "in"), 3: ("B0", "in"), 4: ("A1", "in"), 5: ("B1", "in"), 6: ("A2", "in"), 7: ("B2", "in"), 8: ("A3", "in"), 9: ("B3", "in"), 10: ("GND", "power"), 11: ("A4", "in"), 12: ("B4", "in"), 13: ("A5", "in"), 14: ("B5", "in"), 15: ("A6", "in"), 16: ("B6", "in"), 17: ("A7", "in"), 18: ("B7", "in"), 19: ("Y", "out"), 20: ("VCC", "power")}
+        pins = {1: ("/E", "in"), 2: ("A0", "in"), 3: ("B0", "in"), 4: ("A1", "in"), 5: ("B1", "in"), 6: ("A2", "in"), 7: ("B2", "in"), 8: ("A3", "in"), 9: ("B3", "in"), 10: ("GND", "power"), 11: ("A4", "in"), 12: ("B4", "in"), 13: ("A5", "in"), 14: ("B5", "in"), 15: ("A6", "in"), 16: ("B6", "in"), 17: ("A7", "in"), 18: ("B7", "in"), 19: ("/Y", "out"), 20: ("VCC", "power")}
         super().__init__(name, pins_from(pins), Delay(30))
 
     def update(self) -> None:

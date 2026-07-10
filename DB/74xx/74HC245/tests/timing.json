@@ -4,7 +4,120 @@
   "part": "74HC245",
   "applicable": true,
   "checks": [
-    {"name": "direction_control_no_clock", "type": "combinational", "control": "DIR"},
-    {"name": "enable_control_no_clock", "type": "combinational", "control": "/OE"}
+    {
+      "name": "direction_control_no_clock",
+      "type": "combinational",
+      "control": "DIR"
+    },
+    {
+      "name": "enable_control_no_clock",
+      "type": "combinational",
+      "control": "/OE"
+    },
+    {
+      "name": "a_to_b_tpd_path",
+      "type": "propagation_path",
+      "path": "A_to_B",
+      "parameter": "tpd",
+      "expect_typ_ns": {
+        "vcc_2_v": 40,
+        "vcc_4_5_v": 15,
+        "vcc_6_v": 12
+      },
+      "expect_max_ns_25c": {
+        "vcc_2_v": 105,
+        "vcc_4_5_v": 21,
+        "vcc_6_v": 18
+      },
+      "expect_max_ns_sn74": {
+        "vcc_2_v": 130,
+        "vcc_4_5_v": 26,
+        "vcc_6_v": 22
+      }
+    },
+    {
+      "name": "b_to_a_tpd_path",
+      "type": "propagation_path",
+      "path": "B_to_A",
+      "parameter": "tpd",
+      "expect_typ_ns": {
+        "vcc_2_v": 40,
+        "vcc_4_5_v": 15,
+        "vcc_6_v": 12
+      },
+      "expect_max_ns_25c": {
+        "vcc_2_v": 105,
+        "vcc_4_5_v": 21,
+        "vcc_6_v": 18
+      },
+      "expect_max_ns_sn74": {
+        "vcc_2_v": 130,
+        "vcc_4_5_v": 26,
+        "vcc_6_v": 22
+      }
+    },
+    {
+      "name": "oe_to_output_enable_ten_path",
+      "type": "propagation_path",
+      "path": "OE_to_output_enable",
+      "parameter": "ten",
+      "expect_typ_ns": {
+        "vcc_2_v": 125,
+        "vcc_4_5_v": 23,
+        "vcc_6_v": 20
+      },
+      "expect_max_ns_25c": {
+        "vcc_2_v": 230,
+        "vcc_4_5_v": 46,
+        "vcc_6_v": 39
+      },
+      "expect_max_ns_sn74": {
+        "vcc_2_v": 290,
+        "vcc_4_5_v": 58,
+        "vcc_6_v": 49
+      }
+    },
+    {
+      "name": "oe_to_high_z_tdis_path",
+      "type": "propagation_path",
+      "path": "OE_to_high_Z",
+      "parameter": "tdis",
+      "expect_typ_ns": {
+        "vcc_2_v": 74,
+        "vcc_4_5_v": 25,
+        "vcc_6_v": 21
+      },
+      "expect_max_ns_25c": {
+        "vcc_2_v": 200,
+        "vcc_4_5_v": 40,
+        "vcc_6_v": 34
+      },
+      "expect_max_ns_sn74": {
+        "vcc_2_v": 250,
+        "vcc_4_5_v": 50,
+        "vcc_6_v": 43
+      }
+    },
+    {
+      "name": "transition_time_tt_path",
+      "type": "propagation_path",
+      "path": "transition_time",
+      "parameter": "tt",
+      "expect_typ_ns": {
+        "vcc_2_v": 20,
+        "vcc_4_5_v": 8,
+        "vcc_6_v": 6
+      },
+      "expect_max_ns_25c": {
+        "vcc_2_v": 60,
+        "vcc_4_5_v": 12,
+        "vcc_6_v": 10
+      },
+      "expect_max_ns_sn74": {
+        "vcc_2_v": 75,
+        "vcc_4_5_v": 15,
+        "vcc_6_v": 13
+      }
+    }
   ]
 }

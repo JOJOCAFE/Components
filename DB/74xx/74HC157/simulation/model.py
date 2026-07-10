@@ -10,10 +10,10 @@ class HC157(Chip):
 
     def __init__(self, name: str = "U"):
         pins = {
-            1: ("SEL", "in"), 2: ("1A", "in"), 3: ("1B", "in"), 4: ("1Y", "out"),
+            1: ("A/B", "in"), 2: ("1A", "in"), 3: ("1B", "in"), 4: ("1Y", "out"),
             5: ("2A", "in"), 6: ("2B", "in"), 7: ("2Y", "out"), 8: ("GND", "power"),
             9: ("3Y", "out"), 10: ("3B", "in"), 11: ("3A", "in"), 12: ("4Y", "out"),
-            13: ("4B", "in"), 14: ("4A", "in"), 15: ("/E", "in"), 16: ("VCC", "power"),
+            13: ("4B", "in"), 14: ("4A", "in"), 15: ("/G", "in"), 16: ("VCC", "power"),
         }
         super().__init__(name, pins_from(pins), Delay(18))
 

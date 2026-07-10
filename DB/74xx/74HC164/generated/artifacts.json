@@ -8,7 +8,7 @@
       "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
-        "After an input changes, wait about 20 ns before trusting the output."
+        "Default simulator delay is 20 ns; timed mode uses path-specific datasheet delays."
       ],
       "overview": "74HC164 is a 14-pin DIP part for shift register.",
       "part": "74HC164",
@@ -57,7 +57,7 @@
         "try_it"
       ],
       "summary": "8-Bit Serial-In Parallel-Out Shift Register.",
-      "timing_note": "After an input changes, wait about 20 ns before trusting the output.",
+      "timing_note": "Default simulator delay is 20 ns; timed mode uses path-specific datasheet delays.",
       "title": "8-Bit Serial-In Parallel-Out Shift Register",
       "version": 1
     },
@@ -271,7 +271,72 @@
       ],
       "role": "shift_register",
       "timing": {
-        "delay_ns": 20
+        "delay_ns": 20,
+        "simple": {
+          "default_delay_ns": 20,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "async_control_to_output_ns": {
+              "condition": "async control asserted or released",
+              "from": "asynchronous control",
+              "parameter": "tremap",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 20,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 20
+                }
+              },
+              "to": "Q/output"
+            },
+            "clock_to_output_ns": {
+              "condition": "active clock edge",
+              "from": "CLK/clock control",
+              "parameter": "tco",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 20,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 20
+                }
+              },
+              "to": "Q/output"
+            },
+            "input_setup_margin_ns": {
+              "condition": "conservative setup placeholder from model delay",
+              "from": "D/input",
+              "parameter": "tsu",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 20,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 20
+                }
+              },
+              "to": "CLK/clock control"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 20,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 20
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        }
       },
       "title": "8-Bit Serial-In Parallel-Out Shift Register"
     },
@@ -371,7 +436,11 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "model_propagation",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -379,7 +448,11 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "model_delay",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -451,7 +524,11 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "model_propagation",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -459,7 +536,11 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "model_delay",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"

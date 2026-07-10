@@ -8,7 +8,7 @@
       "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
-        "After an input changes, wait about 15 ns before trusting the output."
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
       ],
       "overview": "74HC10 is a 14-pin DIP part for nand gate.",
       "part": "74HC10",
@@ -57,7 +57,7 @@
         "try_it"
       ],
       "summary": "Triple 3-input NAND gate.",
-      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
       "title": "Triple 3-input NAND gate",
       "version": 1
     },
@@ -284,7 +284,44 @@
           "typical_ns": 10,
           "vcc_v": 4.5
         },
-        "delay_ns": 15
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        }
       },
       "title": "Triple 3-input NAND gate"
     },
@@ -399,7 +436,9 @@
           "applicable": true,
           "checks": [
             "model_propagation",
-            "datasheet_a_b_or_c_to_y_4v5"
+            "datasheet_a_b_or_c_to_y_4v5",
+            "input_to_output_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -408,7 +447,9 @@
           "applicable": true,
           "checks": [
             "model_delay",
-            "datasheet_tpd_a_b_or_c_to_y_4v5"
+            "datasheet_tpd_a_b_or_c_to_y_4v5",
+            "input_to_output_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -481,7 +522,9 @@
           "applicable": true,
           "checks": [
             "model_propagation",
-            "datasheet_a_b_or_c_to_y_4v5"
+            "datasheet_a_b_or_c_to_y_4v5",
+            "input_to_output_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -490,7 +533,9 @@
           "applicable": true,
           "checks": [
             "model_delay",
-            "datasheet_tpd_a_b_or_c_to_y_4v5"
+            "datasheet_tpd_a_b_or_c_to_y_4v5",
+            "input_to_output_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"

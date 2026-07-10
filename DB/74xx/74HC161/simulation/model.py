@@ -22,9 +22,9 @@ class HC161(Chip):
 
     def __init__(self, name: str = "U"):
         pins = {
-            1: ("/CLR", "in"), 2: ("CLK", "in"), 3: ("D0", "in"), 4: ("D1", "in"),
-            5: ("D2", "in"), 6: ("D3", "in"), 7: ("ENP", "in"), 8: ("GND", "power"),
-            9: ("/LD", "in"), 10: ("ENT", "in"), 11: ("QD", "out"), 12: ("QC", "out"),
+            1: ("/CLR", "in"), 2: ("CLK", "in"), 3: ("A", "in"), 4: ("B", "in"),
+            5: ("C", "in"), 6: ("D", "in"), 7: ("ENP", "in"), 8: ("GND", "power"),
+            9: ("/LOAD", "in"), 10: ("ENT", "in"), 11: ("QD", "out"), 12: ("QC", "out"),
             13: ("QB", "out"), 14: ("QA", "out"), 15: ("RCO", "out"), 16: ("VCC", "power"),
         }
         super().__init__(name, pins_from(pins), Delay(22))

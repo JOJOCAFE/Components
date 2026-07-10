@@ -8,7 +8,7 @@
       "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
-        "After an input changes, wait about 70 ns before trusting the output."
+        "Address-to-data valid timing is 70 ns for the selected memory variant."
       ],
       "overview": "CY7C199 is a 28-pin DIP part for memory.",
       "part": "CY7C199",
@@ -71,7 +71,7 @@
         "try_it"
       ],
       "summary": "32K x 8 static RAM wrapper.",
-      "timing_note": "After an input changes, wait about 70 ns before trusting the output.",
+      "timing_note": "Address-to-data valid timing is 70 ns for the selected memory variant.",
       "title": "32K x 8 static RAM wrapper",
       "version": 1
     },
@@ -455,7 +455,18 @@
       ],
       "role": "memory",
       "timing": {
-        "delay_ns": 70
+        "paths": {
+          "address_to_data_valid_ns": 70,
+          "ce_or_oe_to_high_z_ns": 70,
+          "ce_to_data_valid_ns": 70,
+          "oe_to_data_valid_ns": 70
+        },
+        "variant": "CY7C199-model-70ns",
+        "write": {
+          "address_hold_min_ns": 0,
+          "data_setup_min_ns": 70,
+          "pulse_min_ns": 70
+        }
       },
       "title": "32K x 8 static RAM wrapper"
     },
@@ -613,7 +624,10 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -621,7 +635,13 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata",
+            "pulse_min_metadata",
+            "data_setup_min_metadata",
+            "address_hold_min_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -639,7 +659,18 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "write_5a_read_5a",
+            "read_5a",
+            "write_c3_read_c3",
+            "read_c3",
+            "read_5a_after_second_write",
+            "chip_disabled_high_z",
+            "output_disabled_high_z",
+            "write_mode_high_z",
+            "ce_high_prevents_write",
+            "ce_high_read_keeps_previous_data",
+            "we_high_prevents_write",
+            "we_high_read_keeps_previous_data"
           ]
         }
       },
@@ -701,7 +732,10 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -709,7 +743,13 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata",
+            "pulse_min_metadata",
+            "data_setup_min_metadata",
+            "address_hold_min_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -727,7 +767,18 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "write_5a_read_5a",
+            "read_5a",
+            "write_c3_read_c3",
+            "read_c3",
+            "read_5a_after_second_write",
+            "chip_disabled_high_z",
+            "output_disabled_high_z",
+            "write_mode_high_z",
+            "ce_high_prevents_write",
+            "ce_high_read_keeps_previous_data",
+            "we_high_prevents_write",
+            "we_high_read_keeps_previous_data"
           ]
         }
       },

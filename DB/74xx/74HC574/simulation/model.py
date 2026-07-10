@@ -11,8 +11,8 @@ class HC574(Chip):
     def __init__(self, name: str = "U"):
         pins = {1: ("/OE", "in"), 11: ("CLK", "in"), 10: ("GND", "power"), 20: ("VCC", "power")}
         for index in range(8):
-            pins[2 + index] = (f"D{index + 1}", "in")
-            pins[19 - index] = (f"Q{index + 1}", "out")
+            pins[2 + index] = (f"{index + 1}D", "in")
+            pins[19 - index] = (f"{index + 1}Q", "out")
         super().__init__(name, pins_from(pins), Delay(20))
         self._reg = [0] * 8
 

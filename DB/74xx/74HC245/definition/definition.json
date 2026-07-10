@@ -184,7 +184,165 @@
     ]
   },
   "timing": {
-    "delay_ns": 12
+    "simple": {
+      "default_delay_ns": 12,
+      "source": "functional simulator default; timed mode uses path-specific datasheet values"
+    },
+    "timed": {
+      "conditions": {
+        "device": "SN74HC245",
+        "load_capacitance_pf": 50,
+        "temperature_note": "TA = 25 C typical/max_25c; SN54/SN74 max columns cover full rated ranges",
+        "source": "Texas Instruments SN74HC245 datasheet section 6.6 Switching Characteristics"
+      },
+      "paths": {
+        "A_to_B": {
+          "parameter": "tpd",
+          "from": "A",
+          "to": "B",
+          "condition": "DIR=1 and /OE=0",
+          "ranges_ns": {
+            "vcc_2_v": {
+              "min_ns": null,
+              "typ_ns": 40,
+              "max_ns_25c": 105,
+              "max_ns_sn54": 160,
+              "max_ns_sn74": 130
+            },
+            "vcc_4_5_v": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns_25c": 21,
+              "max_ns_sn54": 32,
+              "max_ns_sn74": 26
+            },
+            "vcc_6_v": {
+              "min_ns": null,
+              "typ_ns": 12,
+              "max_ns_25c": 18,
+              "max_ns_sn54": 27,
+              "max_ns_sn74": 22
+            }
+          }
+        },
+        "B_to_A": {
+          "parameter": "tpd",
+          "from": "B",
+          "to": "A",
+          "condition": "DIR=0 and /OE=0",
+          "ranges_ns": {
+            "vcc_2_v": {
+              "min_ns": null,
+              "typ_ns": 40,
+              "max_ns_25c": 105,
+              "max_ns_sn54": 160,
+              "max_ns_sn74": 130
+            },
+            "vcc_4_5_v": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns_25c": 21,
+              "max_ns_sn54": 32,
+              "max_ns_sn74": 26
+            },
+            "vcc_6_v": {
+              "min_ns": null,
+              "typ_ns": 12,
+              "max_ns_25c": 18,
+              "max_ns_sn54": 27,
+              "max_ns_sn74": 22
+            }
+          }
+        },
+        "OE_to_output_enable": {
+          "parameter": "ten",
+          "from": "/OE",
+          "to": "A,B enabled outputs",
+          "condition": "/OE falls",
+          "ranges_ns": {
+            "vcc_2_v": {
+              "min_ns": null,
+              "typ_ns": 125,
+              "max_ns_25c": 230,
+              "max_ns_sn54": 340,
+              "max_ns_sn74": 290
+            },
+            "vcc_4_5_v": {
+              "min_ns": null,
+              "typ_ns": 23,
+              "max_ns_25c": 46,
+              "max_ns_sn54": 68,
+              "max_ns_sn74": 58
+            },
+            "vcc_6_v": {
+              "min_ns": null,
+              "typ_ns": 20,
+              "max_ns_25c": 39,
+              "max_ns_sn54": 58,
+              "max_ns_sn74": 49
+            }
+          }
+        },
+        "OE_to_high_Z": {
+          "parameter": "tdis",
+          "from": "/OE",
+          "to": "A,B high-Z",
+          "condition": "/OE rises",
+          "ranges_ns": {
+            "vcc_2_v": {
+              "min_ns": null,
+              "typ_ns": 74,
+              "max_ns_25c": 200,
+              "max_ns_sn54": 300,
+              "max_ns_sn74": 250
+            },
+            "vcc_4_5_v": {
+              "min_ns": null,
+              "typ_ns": 25,
+              "max_ns_25c": 40,
+              "max_ns_sn54": 60,
+              "max_ns_sn74": 50
+            },
+            "vcc_6_v": {
+              "min_ns": null,
+              "typ_ns": 21,
+              "max_ns_25c": 34,
+              "max_ns_sn54": 51,
+              "max_ns_sn74": 43
+            }
+          }
+        },
+        "transition_time": {
+          "parameter": "tt",
+          "from": "A or B output transition",
+          "to": "A or B output transition",
+          "condition": "enabled output switches",
+          "ranges_ns": {
+            "vcc_2_v": {
+              "min_ns": null,
+              "typ_ns": 20,
+              "max_ns_25c": 60,
+              "max_ns_sn54": 90,
+              "max_ns_sn74": 75
+            },
+            "vcc_4_5_v": {
+              "min_ns": null,
+              "typ_ns": 8,
+              "max_ns_25c": 12,
+              "max_ns_sn54": 18,
+              "max_ns_sn74": 15
+            },
+            "vcc_6_v": {
+              "min_ns": null,
+              "typ_ns": 6,
+              "max_ns_25c": 10,
+              "max_ns_sn54": 15,
+              "max_ns_sn74": 13
+            }
+          }
+        }
+      }
+    }
   },
   "generation": {
     "targets": [
@@ -531,24 +689,233 @@
       "part": "74HC245",
       "delay": {
         "default_ns": 12,
-        "source": "simulation default from Python model",
+        "source": "functional simulator default; timed mode uses path-specific datasheet values",
+        "simple": {
+          "default_delay_ns": 12,
+          "source": "functional simulator default; timed mode uses path-specific datasheet values"
+        },
+        "timed": {
+          "conditions": {
+            "device": "SN74HC245",
+            "load_capacitance_pf": 50,
+            "temperature_note": "TA = 25 C typical/max_25c; SN54/SN74 max columns cover full rated ranges",
+            "source": "Texas Instruments SN74HC245 datasheet section 6.6 Switching Characteristics"
+          },
+          "paths": {
+            "A_to_B": {
+              "parameter": "tpd",
+              "from": "A",
+              "to": "B",
+              "condition": "DIR=1 and /OE=0",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "min_ns": null,
+                  "typ_ns": 40,
+                  "max_ns_25c": 105,
+                  "max_ns_sn54": 160,
+                  "max_ns_sn74": 130
+                },
+                "vcc_4_5_v": {
+                  "min_ns": null,
+                  "typ_ns": 15,
+                  "max_ns_25c": 21,
+                  "max_ns_sn54": 32,
+                  "max_ns_sn74": 26
+                },
+                "vcc_6_v": {
+                  "min_ns": null,
+                  "typ_ns": 12,
+                  "max_ns_25c": 18,
+                  "max_ns_sn54": 27,
+                  "max_ns_sn74": 22
+                }
+              }
+            },
+            "B_to_A": {
+              "parameter": "tpd",
+              "from": "B",
+              "to": "A",
+              "condition": "DIR=0 and /OE=0",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "min_ns": null,
+                  "typ_ns": 40,
+                  "max_ns_25c": 105,
+                  "max_ns_sn54": 160,
+                  "max_ns_sn74": 130
+                },
+                "vcc_4_5_v": {
+                  "min_ns": null,
+                  "typ_ns": 15,
+                  "max_ns_25c": 21,
+                  "max_ns_sn54": 32,
+                  "max_ns_sn74": 26
+                },
+                "vcc_6_v": {
+                  "min_ns": null,
+                  "typ_ns": 12,
+                  "max_ns_25c": 18,
+                  "max_ns_sn54": 27,
+                  "max_ns_sn74": 22
+                }
+              }
+            },
+            "OE_to_output_enable": {
+              "parameter": "ten",
+              "from": "/OE",
+              "to": "A,B enabled outputs",
+              "condition": "/OE falls",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "min_ns": null,
+                  "typ_ns": 125,
+                  "max_ns_25c": 230,
+                  "max_ns_sn54": 340,
+                  "max_ns_sn74": 290
+                },
+                "vcc_4_5_v": {
+                  "min_ns": null,
+                  "typ_ns": 23,
+                  "max_ns_25c": 46,
+                  "max_ns_sn54": 68,
+                  "max_ns_sn74": 58
+                },
+                "vcc_6_v": {
+                  "min_ns": null,
+                  "typ_ns": 20,
+                  "max_ns_25c": 39,
+                  "max_ns_sn54": 58,
+                  "max_ns_sn74": 49
+                }
+              }
+            },
+            "OE_to_high_Z": {
+              "parameter": "tdis",
+              "from": "/OE",
+              "to": "A,B high-Z",
+              "condition": "/OE rises",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "min_ns": null,
+                  "typ_ns": 74,
+                  "max_ns_25c": 200,
+                  "max_ns_sn54": 300,
+                  "max_ns_sn74": 250
+                },
+                "vcc_4_5_v": {
+                  "min_ns": null,
+                  "typ_ns": 25,
+                  "max_ns_25c": 40,
+                  "max_ns_sn54": 60,
+                  "max_ns_sn74": 50
+                },
+                "vcc_6_v": {
+                  "min_ns": null,
+                  "typ_ns": 21,
+                  "max_ns_25c": 34,
+                  "max_ns_sn54": 51,
+                  "max_ns_sn74": 43
+                }
+              }
+            },
+            "transition_time": {
+              "parameter": "tt",
+              "from": "A or B output transition",
+              "to": "A or B output transition",
+              "condition": "enabled output switches",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "min_ns": null,
+                  "typ_ns": 20,
+                  "max_ns_25c": 60,
+                  "max_ns_sn54": 90,
+                  "max_ns_sn74": 75
+                },
+                "vcc_4_5_v": {
+                  "min_ns": null,
+                  "typ_ns": 8,
+                  "max_ns_25c": 12,
+                  "max_ns_sn54": 18,
+                  "max_ns_sn74": 15
+                },
+                "vcc_6_v": {
+                  "min_ns": null,
+                  "typ_ns": 6,
+                  "max_ns_25c": 10,
+                  "max_ns_sn54": 15,
+                  "max_ns_sn74": 13
+                }
+              }
+            }
+          }
+        },
         "datasheet_typical_ns": {
           "condition": "SN74HC245, CL=50 pF, TA=25 C",
           "tpd_a_b_to_b_a": {
+            "vcc_2_v": 40,
             "vcc_4_5_v": 15,
             "vcc_6_v": 12
           },
           "ten_oe_to_a_b": {
+            "vcc_2_v": 125,
             "vcc_4_5_v": 23,
             "vcc_6_v": 20
           },
           "tdis_oe_to_a_b": {
+            "vcc_2_v": 74,
             "vcc_4_5_v": 25,
             "vcc_6_v": 21
           },
           "transition_a_b": {
+            "vcc_2_v": 20,
             "vcc_4_5_v": 8,
             "vcc_6_v": 6
+          }
+        },
+        "datasheet_max_ns_25c": {
+          "condition": "SN74HC245, CL=50 pF, TA=25 C",
+          "tpd_a_b_to_b_a": {
+            "vcc_2_v": 105,
+            "vcc_4_5_v": 21,
+            "vcc_6_v": 18
+          },
+          "ten_oe_to_a_b": {
+            "vcc_2_v": 230,
+            "vcc_4_5_v": 46,
+            "vcc_6_v": 39
+          },
+          "tdis_oe_to_a_b": {
+            "vcc_2_v": 200,
+            "vcc_4_5_v": 40,
+            "vcc_6_v": 34
+          },
+          "transition_a_b": {
+            "vcc_2_v": 60,
+            "vcc_4_5_v": 12,
+            "vcc_6_v": 10
+          }
+        },
+        "datasheet_max_ns_sn74": {
+          "condition": "SN74HC245 commercial temperature range",
+          "tpd_a_b_to_b_a": {
+            "vcc_2_v": 130,
+            "vcc_4_5_v": 26,
+            "vcc_6_v": 22
+          },
+          "ten_oe_to_a_b": {
+            "vcc_2_v": 290,
+            "vcc_4_5_v": 58,
+            "vcc_6_v": 49
+          },
+          "tdis_oe_to_a_b": {
+            "vcc_2_v": 250,
+            "vcc_4_5_v": 50,
+            "vcc_6_v": 43
+          },
+          "transition_a_b": {
+            "vcc_2_v": 75,
+            "vcc_4_5_v": 15,
+            "vcc_6_v": 13
           }
         }
       },
@@ -558,21 +925,120 @@
           "from": "A",
           "to": "B",
           "condition": "DIR=1 and /OE=0",
-          "delay_ns": 12
+          "parameter": "tpd",
+          "timed_path": "A_to_B",
+          "simple_default_delay_ns": 12,
+          "typ_ns": {
+            "vcc_2_v": 40,
+            "vcc_4_5_v": 15,
+            "vcc_6_v": 12
+          },
+          "max_ns_25c": {
+            "vcc_2_v": 105,
+            "vcc_4_5_v": 21,
+            "vcc_6_v": 18
+          },
+          "max_ns_sn74": {
+            "vcc_2_v": 130,
+            "vcc_4_5_v": 26,
+            "vcc_6_v": 22
+          }
         },
         {
           "name": "B_to_A",
           "from": "B",
           "to": "A",
           "condition": "DIR=0 and /OE=0",
-          "delay_ns": 12
+          "parameter": "tpd",
+          "timed_path": "B_to_A",
+          "simple_default_delay_ns": 12,
+          "typ_ns": {
+            "vcc_2_v": 40,
+            "vcc_4_5_v": 15,
+            "vcc_6_v": 12
+          },
+          "max_ns_25c": {
+            "vcc_2_v": 105,
+            "vcc_4_5_v": 21,
+            "vcc_6_v": 18
+          },
+          "max_ns_sn74": {
+            "vcc_2_v": 130,
+            "vcc_4_5_v": 26,
+            "vcc_6_v": 22
+          }
         },
         {
-          "name": "disable_to_Z",
+          "name": "OE_to_output_enable",
+          "from": "/OE",
+          "to": "A,B",
+          "condition": "/OE falls",
+          "parameter": "ten",
+          "timed_path": "OE_to_output_enable",
+          "simple_default_delay_ns": 12,
+          "typ_ns": {
+            "vcc_2_v": 125,
+            "vcc_4_5_v": 23,
+            "vcc_6_v": 20
+          },
+          "max_ns_25c": {
+            "vcc_2_v": 230,
+            "vcc_4_5_v": 46,
+            "vcc_6_v": 39
+          },
+          "max_ns_sn74": {
+            "vcc_2_v": 290,
+            "vcc_4_5_v": 58,
+            "vcc_6_v": 49
+          }
+        },
+        {
+          "name": "OE_to_high_Z",
           "from": "/OE",
           "to": "A,B",
           "condition": "/OE rises",
-          "delay_ns": 12
+          "parameter": "tdis",
+          "timed_path": "OE_to_high_Z",
+          "simple_default_delay_ns": 12,
+          "typ_ns": {
+            "vcc_2_v": 74,
+            "vcc_4_5_v": 25,
+            "vcc_6_v": 21
+          },
+          "max_ns_25c": {
+            "vcc_2_v": 200,
+            "vcc_4_5_v": 40,
+            "vcc_6_v": 34
+          },
+          "max_ns_sn74": {
+            "vcc_2_v": 250,
+            "vcc_4_5_v": 50,
+            "vcc_6_v": 43
+          }
+        },
+        {
+          "name": "transition_time",
+          "from": "A or B output",
+          "to": "A or B output",
+          "condition": "enabled output switches",
+          "parameter": "tt",
+          "timed_path": "transition_time",
+          "simple_default_delay_ns": 12,
+          "typ_ns": {
+            "vcc_2_v": 20,
+            "vcc_4_5_v": 8,
+            "vcc_6_v": 6
+          },
+          "max_ns_25c": {
+            "vcc_2_v": 60,
+            "vcc_4_5_v": 12,
+            "vcc_6_v": 10
+          },
+          "max_ns_sn74": {
+            "vcc_2_v": 75,
+            "vcc_4_5_v": 15,
+            "vcc_6_v": 13
+          }
         }
       ],
       "setup_hold": [],

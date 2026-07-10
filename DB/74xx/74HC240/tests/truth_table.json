@@ -5,8 +5,82 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "all_inputs_low",
+      "fresh": true,
+      "inputs": {
+        "/1OE": 0,
+        "1A1": 0,
+        "1A2": 0,
+        "1A3": 0,
+        "1A4": 0,
+        "2A1": 0,
+        "2A2": 0,
+        "2A3": 0,
+        "2A4": 0,
+        "/2OE": 0
+      },
+      "expect": {
+        "2Y4": 1,
+        "2Y3": 1,
+        "2Y2": 1,
+        "2Y1": 1,
+        "1Y4": 1,
+        "1Y3": 1,
+        "1Y2": 1,
+        "1Y1": 1
+      }
+    },
+    {
+      "name": "all_inputs_high",
+      "fresh": true,
+      "inputs": {
+        "/1OE": 1,
+        "1A1": 1,
+        "1A2": 1,
+        "1A3": 1,
+        "1A4": 1,
+        "2A1": 1,
+        "2A2": 1,
+        "2A3": 1,
+        "2A4": 1,
+        "/2OE": 1
+      },
+      "expect": {
+        "2Y4": "Z",
+        "2Y3": "Z",
+        "2Y2": "Z",
+        "2Y1": "Z",
+        "1Y4": "Z",
+        "1Y3": "Z",
+        "1Y2": "Z",
+        "1Y1": "Z"
+      }
+    },
+    {
+      "name": "alternating_inputs",
+      "fresh": true,
+      "inputs": {
+        "/1OE": 0,
+        "1A1": 1,
+        "1A2": 0,
+        "1A3": 1,
+        "1A4": 0,
+        "2A1": 1,
+        "2A2": 0,
+        "2A3": 1,
+        "2A4": 0,
+        "/2OE": 1
+      },
+      "expect": {
+        "2Y4": "Z",
+        "2Y3": "Z",
+        "2Y2": "Z",
+        "2Y1": "Z",
+        "1Y4": 1,
+        "1Y3": 0,
+        "1Y2": 1,
+        "1Y1": 0
+      }
     }
   ],
   "edge_criteria": {

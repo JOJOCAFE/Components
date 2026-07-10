@@ -104,7 +104,44 @@
     "description": "Dual 4-Line to 1-Line Data Selector/Multiplexer"
   },
   "timing": {
-    "delay_ns": 15
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+      "paths": {
+        "input_to_output_ns": {
+          "parameter": "tpd",
+          "from": "input",
+          "to": "output",
+          "condition": "input or select changes",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns": 15,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "transition_time_ns": {
+          "parameter": "tt",
+          "from": "output transition",
+          "to": "output transition",
+          "condition": "enabled output switches",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns": 15,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        }
+      }
+    }
   },
   "generation": {
     "targets": [
@@ -152,35 +189,14 @@
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "74HC153",
-      "title": "Dual 4-Line to 1-Line Data Selector/Multiplexer",
-      "family": "74HC",
-      "group": "74xx",
-      "kind": "ic",
-      "role": "multiplexer"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "74HC153",
-      "packages": [
-        {
-          "id": "N",
-          "kind": "DIP",
-          "pins": 16
-        }
-      ],
-      "default_package": "N"
-    },
     "pins": {
       "schema": "db.component.pins",
       "version": 1,
@@ -291,31 +307,133 @@
         }
       ]
     },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "74HC153",
-      "logic": {
-        "type": "dual_4_line_to_1_line_data_selector",
-        "description": "Dual 4-Line to 1-Line Data Selector/Multiplexer"
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
       "part": "74HC153",
       "delay": {
-        "model_delay_ns": 15,
-        "status": "model-derived"
+        "default_ns": 15,
+        "source": "simulation default from Python model",
+        "status": "datasheet-backed",
+        "conditions": {
+          "load_capacitance_pf": 50,
+          "device": "SN74HC153",
+          "paths": [
+            "select_to_y",
+            "data_to_y",
+            "enable_to_y",
+            "transition_y"
+          ]
+        },
+        "datasheet_typical_ns": {
+          "select_to_y": {
+            "vcc_4_5_v": 21,
+            "vcc_6_v": 17
+          },
+          "data_to_y": {
+            "vcc_4_5_v": 17,
+            "vcc_6_v": 14
+          },
+          "enable_to_y": {
+            "vcc_4_5_v": 11,
+            "vcc_6_v": 9
+          },
+          "transition_y": {
+            "vcc_4_5_v": 8,
+            "vcc_6_v": 6
+          }
+        },
+        "datasheet_max_ns_25c": {
+          "select_to_y": {
+            "vcc_4_5_v": 30,
+            "vcc_6_v": 26
+          },
+          "data_to_y": {
+            "vcc_4_5_v": 28,
+            "vcc_6_v": 23
+          },
+          "enable_to_y": {
+            "vcc_4_5_v": 19,
+            "vcc_6_v": 16
+          },
+          "transition_y": {
+            "vcc_4_5_v": 12,
+            "vcc_6_v": 10
+          }
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "select_to_y": {
+            "vcc_4_5_v": 38,
+            "vcc_6_v": 32
+          },
+          "data_to_y": {
+            "vcc_4_5_v": 35,
+            "vcc_6_v": 29
+          },
+          "enable_to_y": {
+            "vcc_4_5_v": 24,
+            "vcc_6_v": 20
+          },
+          "transition_y": {
+            "vcc_4_5_v": 15,
+            "vcc_6_v": 13
+          }
+        },
+        "public_timing": {
+          "delay_ns": 15,
+          "simple": {
+            "default_delay_ns": 15,
+            "source": "legacy functional simulator default"
+          },
+          "timed": {
+            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+            "paths": {
+              "input_to_output_ns": {
+                "parameter": "tpd",
+                "from": "input",
+                "to": "output",
+                "condition": "input or select changes",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 15,
+                    "max_ns": 15,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "transition_time_ns": {
+                "parameter": "tt",
+                "from": "output transition",
+                "to": "output transition",
+                "condition": "enabled output switches",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 15,
+                    "max_ns": 15,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "conservative_defaults": {
+          "input_to_output_ns": "conservative_default_from_existing_model_delay",
+          "transition_time_ns": "conservative_default_from_existing_model_delay"
+        }
       },
       "evidence": {
         "label": "Texas Instruments SN74HC153",
+        "file": "Source/74HC153_TI_SN74HC153.pdf",
         "url": "https://www.ti.com/lit/ds/symlink/sn74hc153.pdf",
         "package_evidence": "N, 16-pin PDIP",
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing"
         ]
       }
     },
@@ -325,23 +443,46 @@
       "part": "74HC153",
       "voltage": {
         "vcc": {
-          "status": "datasheet-required"
+          "min_v": 2.0,
+          "typ_v": 5.0,
+          "max_v": 6.0,
+          "status": "extracted"
         }
       },
       "current": {
-        "status": "datasheet-required"
+        "output_drive": {
+          "vcc_4_5_v": {
+            "ioh_ma": -6,
+            "iol_ma": 6
+          },
+          "vcc_6_v": {
+            "ioh_ma": -7.8,
+            "iol_ma": 7.8
+          },
+          "status": "extracted"
+        },
+        "supply_current": {
+          "vcc_6_v_max_ua": 80,
+          "status": "extracted"
+        }
       },
       "loading": {
-        "status": "datasheet-required"
+        "input_capacitance": {
+          "typ_pf": 3,
+          "max_pf": 10,
+          "status": "extracted"
+        }
       },
       "evidence": {
         "label": "Texas Instruments SN74HC153",
+        "file": "Source/74HC153_TI_SN74HC153.pdf",
         "url": "https://www.ti.com/lit/ds/symlink/sn74hc153.pdf",
         "package_evidence": "N, 16-pin PDIP",
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "electrical"
         ]
       }
     }

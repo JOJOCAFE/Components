@@ -5,8 +5,70 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "all_inputs_low",
+      "fresh": true,
+      "inputs": {
+        "I3": 0,
+        "I4": 0,
+        "I5": 0,
+        "I6": 0,
+        "EI": 0,
+        "I7": 0,
+        "I0": 0,
+        "I1": 0,
+        "I2": 0
+      },
+      "expect": {
+        "A2": 0,
+        "A1": 0,
+        "A0": 0,
+        "GS": 1,
+        "EO": 0
+      }
+    },
+    {
+      "name": "all_inputs_high",
+      "fresh": true,
+      "inputs": {
+        "I3": 1,
+        "I4": 1,
+        "I5": 1,
+        "I6": 1,
+        "EI": 1,
+        "I7": 1,
+        "I0": 1,
+        "I1": 1,
+        "I2": 1
+      },
+      "expect": {
+        "A2": 1,
+        "A1": 1,
+        "A0": 1,
+        "GS": 0,
+        "EO": 0
+      }
+    },
+    {
+      "name": "alternating_inputs",
+      "fresh": true,
+      "inputs": {
+        "I3": 0,
+        "I4": 1,
+        "I5": 0,
+        "I6": 1,
+        "EI": 0,
+        "I7": 1,
+        "I0": 0,
+        "I1": 1,
+        "I2": 0
+      },
+      "expect": {
+        "A2": 0,
+        "A1": 1,
+        "A0": 0,
+        "GS": 1,
+        "EO": 0
+      }
     }
   ],
   "edge_criteria": {

@@ -130,8 +130,9 @@ Done:
 ### 3. Halley - Verification Matrix
 
 Status: generated split-record Python checks wired; first generated Verilog
-bench artifact exists; RV8GR Batch 2 is now a complete seed-style set with
-package-layer, truth-vector, edge-criteria, and split-record gates.
+bench artifact exists; the full active IC catalog now has seed-style package
+layers, explicit truth vectors, edge criteria, generated artifacts, and
+executable regression gates.
 
 Owns:
 
@@ -155,10 +156,10 @@ Acceptance:
   first 74xx seed parts.
 - Verilog smoke instantiates every memory module directly.
 - Every active IC truth-table record declares `edge_criteria`.
-- RV8GR-used truth records do not use `basic_function` placeholders or
+- Active IC truth records do not use `basic_function` placeholders or
   intent-only vectors.
-- The RV8GR Batch 2 complete set has the same required package/test layers as
-  the seed chips.
+- The full active 74xx/memory catalog has the same required package/test layers
+  as the seed chips.
 
 Done:
 
@@ -178,9 +179,15 @@ Done:
   protection, and propagation/timing metadata.
 - RV8GR-used chips now have explicit per-chip truth vectors for logic, clocked
   controls, bus parts, and ROM/RAM options.
+- The remaining active 74xx/memory truth placeholders were replaced with
+  explicit executable records. Generic fresh-chip pin-vector records now replay
+  through the Python model for each catalog chip, and `CY7C199` has
+  SRAM-family write/read/high-Z vectors.
 - `python/tests/test_generated_split_records.py` now enforces the RV8GR
   complete-set gate: package files, non-placeholder truth vectors, declared
   edge criteria, split test records, and executable truth coverage.
+- `python/tests/test_generated_split_records.py` now also gates the active IC
+  placeholder inventory to an empty set.
 - `DB/RV8GR_BATCH2_VERIFICATION_AUDIT.md` records the RV8GR complete-set
   verification state.
 
@@ -404,8 +411,15 @@ Done:
 - Added generated `verilog_testbench` artifact metadata and emitted generated
   bench support for `74HC157`, `74HC00`, `74HC04`, `74HC32`, and `74HC86`.
 - Added CI/workflow guard to compile package-local `simulation/model.v` files.
-- Locked the remaining truth-placeholder inventory to 44 active non-RV8GR
-  parts so future work can shrink the list without hiding gaps.
+- Replaced the remaining active-catalog truth-placeholder inventory with
+  explicit pin-vector or SRAM-family truth records, regenerated each affected
+  `generated/artifacts.json`, and made the placeholder inventory gate empty.
+- Added structural Verilog export pinout comments from `Design.to_verilog()`
+  so exported circuit wrappers carry a physical pin table beside each chip
+  instance.
+- Proved all 62 active ICs export to structural Verilog and compile with
+  `iverilog`; `AS6C62256` and `CY7C199` now include the base 62256 Verilog
+  dependency in `required_files`.
 
 Acceptance for each migrated Batch 2 chip:
 
@@ -419,9 +433,11 @@ Acceptance for each migrated Batch 2 chip:
   also require shared `python/chiplib/core.py`, copied once for chip/circuit/
   system exports.
 - ✅ Focused Python DB/generation tests and Verilog smoke/equivalence checks pass.
-- ✅ RV8GR-used truth records are explicit and executable through
+- ✅ Active IC truth records are explicit and executable through
   `tests.test_generated_split_records`.
-- ✅ RV8GR Batch 2 parts are now checked as a complete seed-style set.
+- ✅ All 62 active 74xx/memory packages are now checked as a complete
+  seed-style set for package layers, generated artifacts, truth coverage, and
+  structural Verilog export dependencies.
 
 ## GitHub Actions
 
@@ -439,11 +455,14 @@ Next CI tasks:
   and `tests.test_generated_split_records` now has a strict no-drift gate that
   compares each checked-in generated artifact file with
   `generate_component_artifacts(part)`.
+- Full active IC structural export smoke complete: one-chip wrappers for all
+  62 active parts export with embedded pinout comments and compile against the
+  package-local Verilog files listed by `required_files`.
 - Grow generated Verilog bench emission to decoder, tri-state, sequential,
   arithmetic, and memory-specific shapes after their truth records are explicit.
-- Replace the remaining 44 `basic_function` truth placeholders with
-  chip-specific vectors, then extend executable edge/enable/bus/memory checks to
-  the rest of the migrated IC catalog.
-- Extract datasheet-backed timing/electrical fields for the 44 non-RV8GR active
+- Extend executable edge/enable/bus/memory checks beyond the generic
+  fresh-chip truth vectors where individual chips need deeper seed-style
+  behavioral scenarios.
+- Extract datasheet-backed timing/electrical fields for the non-RV8GR active
   ICs that still carry `model-derived` timing and `datasheet-required`
   electrical placeholders.

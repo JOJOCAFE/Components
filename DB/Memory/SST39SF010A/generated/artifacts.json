@@ -8,7 +8,7 @@
       "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
-        "After an input changes, wait about 70 ns before trusting the output."
+        "Address-to-data valid timing is 70 ns for the selected memory variant."
       ],
       "overview": "SST39SF010A is a 32-pin DIP part for flash.",
       "part": "SST39SF010A",
@@ -73,7 +73,7 @@
         "try_it"
       ],
       "summary": "128K x 8 flash EEPROM.",
-      "timing_note": "After an input changes, wait about 70 ns before trusting the output.",
+      "timing_note": "Address-to-data valid timing is 70 ns for the selected memory variant.",
       "title": "128K x 8 flash EEPROM",
       "version": 1
     },
@@ -491,7 +491,18 @@
       ],
       "role": "flash",
       "timing": {
-        "delay_ns": 70
+        "paths": {
+          "address_to_data_valid_ns": 70,
+          "ce_or_oe_to_high_z_ns": 25,
+          "ce_to_data_valid_ns": 70,
+          "oe_to_data_valid_ns": 35
+        },
+        "variant": "SST39SF010A-70",
+        "write": {
+          "address_hold_min_ns": 0,
+          "data_setup_min_ns": 70,
+          "pulse_min_ns": 70
+        }
       },
       "title": "128K x 8 flash EEPROM"
     },
@@ -661,7 +672,10 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -669,7 +683,13 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata",
+            "pulse_min_metadata",
+            "data_setup_min_metadata",
+            "address_hold_min_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -756,7 +776,10 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -764,7 +787,13 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata",
+            "pulse_min_metadata",
+            "data_setup_min_metadata",
+            "address_hold_min_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"

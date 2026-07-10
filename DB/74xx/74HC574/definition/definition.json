@@ -168,7 +168,72 @@
   },
   "timing": {
     "delay_ns": 20,
-    "clock_edge": "rising"
+    "clock_edge": "rising",
+    "simple": {
+      "default_delay_ns": 20,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+      "paths": {
+        "clock_to_output_ns": {
+          "parameter": "tco",
+          "from": "CLK/clock control",
+          "to": "Q/output",
+          "condition": "active clock edge",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 20,
+              "max_ns": 20,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "async_control_to_output_ns": {
+          "parameter": "tremap",
+          "from": "asynchronous control",
+          "to": "Q/output",
+          "condition": "async control asserted or released",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 20,
+              "max_ns": 20,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "input_setup_margin_ns": {
+          "parameter": "tsu",
+          "from": "D/input",
+          "to": "CLK/clock control",
+          "condition": "conservative setup placeholder from model delay",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 20,
+              "max_ns": 20,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "transition_time_ns": {
+          "parameter": "tt",
+          "from": "output transition",
+          "to": "output transition",
+          "condition": "enabled output switches",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 20,
+              "max_ns": 20,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        }
+      }
+    }
   },
   "generation": {
     "targets": [
@@ -228,237 +293,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "74HC574",
-      "title": "Octal D-type flip-flop with 3-state outputs",
-      "family": "74HC",
-      "group": "74xx",
-      "kind": "ic",
-      "role": "register"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "74HC574",
-      "packages": [
-        {
-          "id": "N",
-          "kind": "DIP",
-          "pins": 20
-        }
-      ],
-      "default_package": "N"
-    },
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "74HC574",
-      "pins": [
-        {
-          "number": 1,
-          "name": "/OE",
-          "direction": "input",
-          "active_low": true,
-          "function": "enable"
-        },
-        {
-          "number": 2,
-          "name": "1D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 0
-        },
-        {
-          "number": 3,
-          "name": "2D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 1
-        },
-        {
-          "number": 4,
-          "name": "3D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 2
-        },
-        {
-          "number": 5,
-          "name": "4D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 3
-        },
-        {
-          "number": 6,
-          "name": "5D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 4
-        },
-        {
-          "number": 7,
-          "name": "6D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 5
-        },
-        {
-          "number": 8,
-          "name": "7D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 6
-        },
-        {
-          "number": 9,
-          "name": "8D",
-          "direction": "input",
-          "bus": "D",
-          "bit": 7
-        },
-        {
-          "number": 10,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 11,
-          "name": "CLK",
-          "direction": "input",
-          "clock": true
-        },
-        {
-          "number": 12,
-          "name": "8Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 7
-        },
-        {
-          "number": 13,
-          "name": "7Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 6
-        },
-        {
-          "number": 14,
-          "name": "6Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 5
-        },
-        {
-          "number": 15,
-          "name": "5Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 4
-        },
-        {
-          "number": 16,
-          "name": "4Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 3
-        },
-        {
-          "number": 17,
-          "name": "3Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 2
-        },
-        {
-          "number": 18,
-          "name": "2Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 1
-        },
-        {
-          "number": 19,
-          "name": "1Q",
-          "direction": "output",
-          "bus": "Q",
-          "bit": 0
-        },
-        {
-          "number": 20,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {
-        "D": {
-          "width": 8,
-          "pins_lsb_first": [
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
-          ]
-        },
-        "Q": {
-          "width": 8,
-          "pins_lsb_first": [
-            19,
-            18,
-            17,
-            16,
-            15,
-            14,
-            13,
-            12
-          ]
-        }
-      }
-    },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "74HC574",
-      "rails": [
-        {
-          "name": "GND",
-          "pin": 10,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 20,
-          "nominal_logic": 1
-        }
-      ]
-    },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "74HC574",
-      "logic": {
-        "type": "octal_d_register",
-        "width": 8,
-        "clock": {
-          "pin": "CLK",
-          "edge": "rising"
-        },
-        "enable": {
-          "pin": "/OE",
-          "active_low": true
-        },
-        "tristate": true,
-        "disabled_output": "Z"
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
@@ -484,6 +318,81 @@
             "vcc_4_5_v": 8,
             "vcc_6_v": 6
           }
+        },
+        "public_timing": {
+          "delay_ns": 20,
+          "clock_edge": "rising",
+          "simple": {
+            "default_delay_ns": 20,
+            "source": "legacy functional simulator default"
+          },
+          "timed": {
+            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+            "paths": {
+              "clock_to_output_ns": {
+                "parameter": "tco",
+                "from": "CLK/clock control",
+                "to": "Q/output",
+                "condition": "active clock edge",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 20,
+                    "max_ns": 20,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "async_control_to_output_ns": {
+                "parameter": "tremap",
+                "from": "asynchronous control",
+                "to": "Q/output",
+                "condition": "async control asserted or released",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 20,
+                    "max_ns": 20,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "input_setup_margin_ns": {
+                "parameter": "tsu",
+                "from": "D/input",
+                "to": "CLK/clock control",
+                "condition": "conservative setup placeholder from model delay",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 20,
+                    "max_ns": 20,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "transition_time_ns": {
+                "parameter": "tt",
+                "from": "output transition",
+                "to": "output transition",
+                "condition": "enabled output switches",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 20,
+                    "max_ns": 20,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "conservative_defaults": {
+          "clock_to_output_ns": "conservative_default_from_existing_model_delay",
+          "async_control_to_output_ns": "conservative_default_from_existing_model_delay",
+          "input_setup_margin_ns": "conservative_default_from_existing_model_delay",
+          "transition_time_ns": "conservative_default_from_existing_model_delay"
         }
       },
       "timing_requirements": {

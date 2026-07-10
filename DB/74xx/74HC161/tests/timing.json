@@ -4,7 +4,48 @@
   "part": "74HC161",
   "applicable": true,
   "checks": [
-    {"name": "rising_clock", "type": "clocked", "clock": "CLK", "edge": "rising"},
-    {"name": "async_clear", "type": "asynchronous_control", "control": "/CLR"}
+    {
+      "name": "rising_clock",
+      "type": "clocked",
+      "clock": "CLK",
+      "edge": "rising"
+    },
+    {
+      "name": "async_clear",
+      "type": "asynchronous_control",
+      "control": "/CLR"
+    },
+    {
+      "name": "clock_to_output_metadata",
+      "type": "conservative_timing_path",
+      "path": "clock_to_output_ns",
+      "parameter": "tco",
+      "expect_delay_ns": 22,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    },
+    {
+      "name": "async_control_to_output_metadata",
+      "type": "conservative_timing_path",
+      "path": "async_control_to_output_ns",
+      "parameter": "tremap",
+      "expect_delay_ns": 22,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    },
+    {
+      "name": "input_setup_margin_metadata",
+      "type": "conservative_timing_path",
+      "path": "input_setup_margin_ns",
+      "parameter": "tsu",
+      "expect_delay_ns": 22,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    },
+    {
+      "name": "transition_time_metadata",
+      "type": "conservative_timing_path",
+      "path": "transition_time_ns",
+      "parameter": "tt",
+      "expect_delay_ns": 22,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    }
   ]
 }

@@ -8,7 +8,7 @@
       "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
-        "After an input changes, wait about 15 ns before trusting the output."
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
       ],
       "overview": "74HC251 is a 16-pin DIP part for multiplexer.",
       "part": "74HC251",
@@ -59,7 +59,7 @@
         "try_it"
       ],
       "summary": "8-Line to 1-Line Data Selector/Multiplexer.",
-      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
       "title": "8-Line to 1-Line Data Selector/Multiplexer",
       "version": 1
     },
@@ -304,7 +304,72 @@
       ],
       "role": "multiplexer",
       "timing": {
-        "delay_ns": 15
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output"
+            },
+            "output_disable_to_high_z_ns": {
+              "condition": "enable control released",
+              "from": "output-enable control",
+              "parameter": "tdis",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output high-Z"
+            },
+            "output_enable_to_output_ns": {
+              "condition": "enable control asserted",
+              "from": "output-enable control",
+              "parameter": "ten",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output driven"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        }
       },
       "title": "8-Line to 1-Line Data Selector/Multiplexer"
     },
@@ -426,7 +491,11 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "model_propagation",
+            "input_to_output_metadata",
+            "output_enable_to_output_metadata",
+            "output_disable_to_high_z_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -434,7 +503,11 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "model_delay",
+            "input_to_output_metadata",
+            "output_enable_to_output_metadata",
+            "output_disable_to_high_z_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -452,7 +525,9 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
           ]
         }
       },
@@ -514,7 +589,11 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "model_propagation"
+            "model_propagation",
+            "input_to_output_metadata",
+            "output_enable_to_output_metadata",
+            "output_disable_to_high_z_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -522,7 +601,11 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "model_delay"
+            "model_delay",
+            "input_to_output_metadata",
+            "output_enable_to_output_metadata",
+            "output_disable_to_high_z_metadata",
+            "transition_time_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -540,7 +623,9 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "basic_function"
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
           ]
         }
       },

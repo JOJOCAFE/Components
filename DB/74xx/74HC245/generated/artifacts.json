@@ -90,7 +90,7 @@
       ],
       "key_points": [
         "Connect power before testing signal pins.",
-        "After an input changes, wait about 12 ns before trusting the output.",
+        "Default simulator delay is 12 ns; timed mode uses path-specific datasheet delays.",
         "Check the control pins first: DIR, /OE.",
         "Treat these as grouped signals in the UI: A, B."
       ],
@@ -147,7 +147,7 @@
         "try_it"
       ],
       "summary": "Octal bus transceiver with 3-state outputs.",
-      "timing_note": "After an input changes, wait about 12 ns before trusting the output.",
+      "timing_note": "Default simulator delay is 12 ns; timed mode uses path-specific datasheet delays.",
       "title": "Octal bus transceiver with 3-state outputs",
       "version": 1
     },
@@ -429,7 +429,165 @@
       ],
       "role": "bus_transceiver",
       "timing": {
-        "delay_ns": 12
+        "simple": {
+          "default_delay_ns": 12,
+          "source": "functional simulator default; timed mode uses path-specific datasheet values"
+        },
+        "timed": {
+          "conditions": {
+            "device": "SN74HC245",
+            "load_capacitance_pf": 50,
+            "source": "Texas Instruments SN74HC245 datasheet section 6.6 Switching Characteristics",
+            "temperature_note": "TA = 25 C typical/max_25c; SN54/SN74 max columns cover full rated ranges"
+          },
+          "paths": {
+            "A_to_B": {
+              "condition": "DIR=1 and /OE=0",
+              "from": "A",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "max_ns_25c": 105,
+                  "max_ns_sn54": 160,
+                  "max_ns_sn74": 130,
+                  "min_ns": null,
+                  "typ_ns": 40
+                },
+                "vcc_4_5_v": {
+                  "max_ns_25c": 21,
+                  "max_ns_sn54": 32,
+                  "max_ns_sn74": 26,
+                  "min_ns": null,
+                  "typ_ns": 15
+                },
+                "vcc_6_v": {
+                  "max_ns_25c": 18,
+                  "max_ns_sn54": 27,
+                  "max_ns_sn74": 22,
+                  "min_ns": null,
+                  "typ_ns": 12
+                }
+              },
+              "to": "B"
+            },
+            "B_to_A": {
+              "condition": "DIR=0 and /OE=0",
+              "from": "B",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "max_ns_25c": 105,
+                  "max_ns_sn54": 160,
+                  "max_ns_sn74": 130,
+                  "min_ns": null,
+                  "typ_ns": 40
+                },
+                "vcc_4_5_v": {
+                  "max_ns_25c": 21,
+                  "max_ns_sn54": 32,
+                  "max_ns_sn74": 26,
+                  "min_ns": null,
+                  "typ_ns": 15
+                },
+                "vcc_6_v": {
+                  "max_ns_25c": 18,
+                  "max_ns_sn54": 27,
+                  "max_ns_sn74": 22,
+                  "min_ns": null,
+                  "typ_ns": 12
+                }
+              },
+              "to": "A"
+            },
+            "OE_to_high_Z": {
+              "condition": "/OE rises",
+              "from": "/OE",
+              "parameter": "tdis",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "max_ns_25c": 200,
+                  "max_ns_sn54": 300,
+                  "max_ns_sn74": 250,
+                  "min_ns": null,
+                  "typ_ns": 74
+                },
+                "vcc_4_5_v": {
+                  "max_ns_25c": 40,
+                  "max_ns_sn54": 60,
+                  "max_ns_sn74": 50,
+                  "min_ns": null,
+                  "typ_ns": 25
+                },
+                "vcc_6_v": {
+                  "max_ns_25c": 34,
+                  "max_ns_sn54": 51,
+                  "max_ns_sn74": 43,
+                  "min_ns": null,
+                  "typ_ns": 21
+                }
+              },
+              "to": "A,B high-Z"
+            },
+            "OE_to_output_enable": {
+              "condition": "/OE falls",
+              "from": "/OE",
+              "parameter": "ten",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "max_ns_25c": 230,
+                  "max_ns_sn54": 340,
+                  "max_ns_sn74": 290,
+                  "min_ns": null,
+                  "typ_ns": 125
+                },
+                "vcc_4_5_v": {
+                  "max_ns_25c": 46,
+                  "max_ns_sn54": 68,
+                  "max_ns_sn74": 58,
+                  "min_ns": null,
+                  "typ_ns": 23
+                },
+                "vcc_6_v": {
+                  "max_ns_25c": 39,
+                  "max_ns_sn54": 58,
+                  "max_ns_sn74": 49,
+                  "min_ns": null,
+                  "typ_ns": 20
+                }
+              },
+              "to": "A,B enabled outputs"
+            },
+            "transition_time": {
+              "condition": "enabled output switches",
+              "from": "A or B output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "max_ns_25c": 60,
+                  "max_ns_sn54": 90,
+                  "max_ns_sn74": 75,
+                  "min_ns": null,
+                  "typ_ns": 20
+                },
+                "vcc_4_5_v": {
+                  "max_ns_25c": 12,
+                  "max_ns_sn54": 18,
+                  "max_ns_sn74": 15,
+                  "min_ns": null,
+                  "typ_ns": 8
+                },
+                "vcc_6_v": {
+                  "max_ns_25c": 10,
+                  "max_ns_sn54": 15,
+                  "max_ns_sn74": 13,
+                  "min_ns": null,
+                  "typ_ns": 6
+                }
+              },
+              "to": "A or B output transition"
+            }
+          }
+        }
       },
       "title": "Octal bus transceiver with 3-state outputs"
     },
@@ -585,9 +743,11 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "a_to_b_delay_metadata",
-            "b_to_a_delay_metadata",
-            "disable_to_z_delay_metadata"
+            "a_to_b_tpd_metadata",
+            "b_to_a_tpd_metadata",
+            "oe_to_output_enable_ten_metadata",
+            "oe_to_high_z_tdis_metadata",
+            "transition_time_tt_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -596,7 +756,12 @@
           "applicable": true,
           "checks": [
             "direction_control_no_clock",
-            "enable_control_no_clock"
+            "enable_control_no_clock",
+            "a_to_b_tpd_path",
+            "b_to_a_tpd_path",
+            "oe_to_output_enable_ten_path",
+            "oe_to_high_z_tdis_path",
+            "transition_time_tt_path"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -688,9 +853,11 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "a_to_b_delay_metadata",
-            "b_to_a_delay_metadata",
-            "disable_to_z_delay_metadata"
+            "a_to_b_tpd_metadata",
+            "b_to_a_tpd_metadata",
+            "oe_to_output_enable_ten_metadata",
+            "oe_to_high_z_tdis_metadata",
+            "transition_time_tt_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -699,7 +866,12 @@
           "applicable": true,
           "checks": [
             "direction_control_no_clock",
-            "enable_control_no_clock"
+            "enable_control_no_clock",
+            "a_to_b_tpd_path",
+            "b_to_a_tpd_path",
+            "oe_to_output_enable_ten_path",
+            "oe_to_high_z_tdis_path",
+            "transition_time_tt_path"
           ],
           "present": true,
           "source": "tests/timing.json"

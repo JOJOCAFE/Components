@@ -80,7 +80,7 @@
       "controls": [],
       "key_points": [
         "Connect power before testing signal pins.",
-        "After an input changes, wait about 70 ns before trusting the output.",
+        "Address-to-data valid timing is 150 ns for the selected memory variant.",
         "Treat these as grouped signals in the UI: A, DQ."
       ],
       "overview": "AT28C256 is a 28-pin DIP part for eeprom.",
@@ -144,7 +144,7 @@
         "try_it"
       ],
       "summary": "32K x 8 parallel EEPROM.",
-      "timing_note": "After an input changes, wait about 70 ns before trusting the output.",
+      "timing_note": "Address-to-data valid timing is 150 ns for the selected memory variant.",
       "title": "32K x 8 parallel EEPROM",
       "version": 1
     },
@@ -368,8 +368,12 @@
         },
         "type": "parallel_eeprom",
         "write": {
+          "address_sample": "A",
+          "busy_behavior": "write_cycle_updates blocks functional readback for the configured simulator update count; full data polling is not modeled in v0.1",
+          "fidelity_level": "timed_functional",
+          "latch": "/WE rising edge",
           "sample": "DQ",
-          "when": "/CE=0 and /OE=1 and /WE=0"
+          "when": "/CE=0 and /OE=1 during a valid /WE-low write window"
         }
       },
       "package": {
@@ -585,7 +589,18 @@
       ],
       "role": "eeprom",
       "timing": {
-        "delay_ns": 70
+        "paths": {
+          "address_to_data_valid_ns": 150,
+          "ce_or_oe_to_high_z_ns": 50,
+          "ce_to_data_valid_ns": 150,
+          "oe_to_data_valid_ns": 70
+        },
+        "variant": "AT28C256-15",
+        "write": {
+          "address_hold_min_ns": 50,
+          "data_setup_min_ns": 50,
+          "pulse_min_ns": 100
+        }
       },
       "title": "32K x 8 parallel EEPROM"
     },
@@ -800,8 +815,10 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "address_to_dq_delay_metadata",
-            "output_enable_to_dq_delay_metadata"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -809,8 +826,13 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "read_access_delay_metadata",
-            "write_enable_control"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata",
+            "pulse_min_metadata",
+            "data_setup_min_metadata",
+            "address_hold_min_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -829,14 +851,18 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "write_c6",
+            "write_c6_window",
+            "write_c6_latch_we_rising",
+            "write_c6_busy_read_high_z",
             "read_c6",
-            "write_3c",
+            "write_3c_window",
+            "write_3c_latch_we_rising",
+            "write_3c_busy_read_high_z",
             "read_3c",
             "read_c6_after_second_write",
             "chip_disabled_high_z",
             "output_disabled_high_z",
-            "write_mode_high_z",
+            "write_window_high_z_before_latch",
             "ce_high_prevents_write",
             "ce_high_read_keeps_previous_data",
             "we_high_prevents_write",
@@ -897,8 +923,10 @@
         "propagation": {
           "applicable": true,
           "checks": [
-            "address_to_dq_delay_metadata",
-            "output_enable_to_dq_delay_metadata"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata"
           ],
           "present": true,
           "source": "tests/propagation.json"
@@ -906,8 +934,13 @@
         "timing": {
           "applicable": true,
           "checks": [
-            "read_access_delay_metadata",
-            "write_enable_control"
+            "address_to_data_valid_metadata",
+            "ce_to_data_valid_metadata",
+            "oe_to_data_valid_metadata",
+            "ce_or_oe_to_high_z_metadata",
+            "pulse_min_metadata",
+            "data_setup_min_metadata",
+            "address_hold_min_metadata"
           ],
           "present": true,
           "source": "tests/timing.json"
@@ -926,14 +959,18 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "write_c6",
+            "write_c6_window",
+            "write_c6_latch_we_rising",
+            "write_c6_busy_read_high_z",
             "read_c6",
-            "write_3c",
+            "write_3c_window",
+            "write_3c_latch_we_rising",
+            "write_3c_busy_read_high_z",
             "read_3c",
             "read_c6_after_second_write",
             "chip_disabled_high_z",
             "output_disabled_high_z",
-            "write_mode_high_z",
+            "write_window_high_z_before_latch",
             "ce_high_prevents_write",
             "ce_high_read_keeps_previous_data",
             "we_high_prevents_write",

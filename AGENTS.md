@@ -31,5 +31,9 @@ enough for beginners.
 6. RV8GR-derived circuits in `Lib/Circuits/` must carry wiring data, proof
    vectors, Python tests, and student docs together; timing, synchronous edge
    behavior, and bus ownership concerns must be explicit tasks, not assumptions.
+7. Active chip packages use compact `definition/definition.json` source files:
+   derivable layers should not be duplicated, timing defaults and path timing
+   must stay visible, and chip-local Python models must run standalone with only
+   `chiplib/core.py`.
 
 See `TEAM_SKILLS.md` for detailed individual and shared skills.

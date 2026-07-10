@@ -55,6 +55,8 @@ def test_service_ready_examples_validate_snapshot_run_netlist_and_export_verilog
         assert exported["required_files"], name
         assert exported["verilog"].startswith("`timescale 1ns/1ps"), name
         assert f"module {name}();" in exported["verilog"], name
+        assert "// Embedded pinout documentation." in exported["verilog"], name
+        assert "// | Pin | Name |" in exported["verilog"], name
         assert exported["testbench"].startswith("`timescale 1ns/1ps"), name
 
 
@@ -92,6 +94,17 @@ def test_system_exports_share_one_python_core_runtime():
     assert "DB/74xx/74HC161/simulation/model.py" in exported["required_files"]
     assert "DB/74xx/74HC00/simulation/model.py" in exported["required_files"]
     assert "DB/Memory/62256/simulation/model.py" in exported["required_files"]
+
+
+def test_sram_wrapper_exports_include_base_memory_verilog_dependency():
+    for part in ("AS6C62256", "CY7C199"):
+        exported = VerilogExportService().export(Design.from_dict({
+            "name": f"{part.lower()}-wrapper",
+            "chips": {"U1": {"part": part}},
+        }))
+        assert exported["ok"] is True, part
+        assert f"DB/Memory/{part}/simulation/model.v" in exported["required_files"], part
+        assert "DB/Memory/62256/simulation/model.v" in exported["required_files"], part
 
 
 def test_seed_verilog_mapping_comes_from_simulation_netlist_shape():

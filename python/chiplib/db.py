@@ -435,10 +435,13 @@ def validate_digital_definition(definition: JsonMap) -> JsonMap:
         if not isinstance(layers, dict):
             errors.append(_issue("digital_definition_layers_invalid", part, path, "definition_layers must be an object"))
         else:
+            derivable_layers = {"component", "package", "pins", "power", "logic", "timing"}
             for key in ("component", "package", "pins", "power", "logic", "timing", "electrical"):
                 layer = layers.get(key)
                 if not isinstance(layer, dict):
-                    errors.append(_issue("digital_definition_layer_missing", part, path, f"definition_layers.{key} must be an object"))
+                    if key in derivable_layers:
+                        continue
+                    errors.append(_issue("digital_definition_layer_missing", part, path, f"definition_layers.{key} must be an object or derivable from top-level fields"))
                     continue
                 if not isinstance(layer.get("schema"), str) or not layer.get("schema"):
                     errors.append(_issue("digital_definition_layer_schema_missing", part, path, f"definition_layers.{key}.schema must be a non-empty string"))
@@ -1807,9 +1810,21 @@ def _control_explanation(control: JsonMap) -> JsonMap:
 
 
 def _timing_note(definition: JsonMap) -> str:
-    delay = definition.get("timing", {}).get("delay_ns")
+    timing = definition.get("timing", {})
+    simple = timing.get("simple")
+    timed = timing.get("timed")
+    if isinstance(simple, dict) and isinstance(simple.get("default_delay_ns"), (int, float)):
+        delay = simple["default_delay_ns"]
+        if isinstance(timed, dict) and isinstance(timed.get("paths"), dict) and timed["paths"]:
+            return f"Default simulator delay is {delay:g} ns; timed mode uses path-specific datasheet delays."
+        return f"After an input changes, wait about {delay:g} ns before trusting the output."
+    delay = timing.get("delay_ns")
     if isinstance(delay, (int, float)):
         return f"After an input changes, wait about {delay:g} ns before trusting the output."
+    paths = timing.get("paths")
+    if isinstance(paths, dict) and isinstance(paths.get("address_to_data_valid_ns"), (int, float)):
+        delay = paths["address_to_data_valid_ns"]
+        return f"Address-to-data valid timing is {delay:g} ns for the selected memory variant."
     return "After changing an input, let the simulator settle before reading the output."
 
 

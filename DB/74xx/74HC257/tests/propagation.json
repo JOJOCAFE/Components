@@ -7,6 +7,38 @@
     {
       "name": "model_propagation",
       "expect_delay_ns": 15
+    },
+    {
+      "name": "input_to_output_metadata",
+      "type": "conservative_timing_path",
+      "path": "input_to_output_ns",
+      "parameter": "tpd",
+      "expect_delay_ns": 15,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    },
+    {
+      "name": "output_enable_to_output_metadata",
+      "type": "conservative_timing_path",
+      "path": "output_enable_to_output_ns",
+      "parameter": "ten",
+      "expect_delay_ns": 15,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    },
+    {
+      "name": "output_disable_to_high_z_metadata",
+      "type": "conservative_timing_path",
+      "path": "output_disable_to_high_z_ns",
+      "parameter": "tdis",
+      "expect_delay_ns": 15,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    },
+    {
+      "name": "transition_time_metadata",
+      "type": "conservative_timing_path",
+      "path": "transition_time_ns",
+      "parameter": "tt",
+      "expect_delay_ns": 15,
+      "expect_source": "conservative_default_from_existing_model_delay"
     }
   ]
 }

@@ -4,14 +4,37 @@
   "part": "74HC04",
   "applicable": true,
   "checks": [
-    {"name": "model_propagation", "expect_delay_ns": 12},
+    {
+      "name": "model_propagation",
+      "expect_delay_ns": 12
+    },
     {
       "name": "datasheet_a_to_y_4v5",
       "path": "A_to_Y",
       "expect_delay_ns": 19,
       "datasheet_typical_ns": 9,
       "datasheet_max_ns": 19,
-      "conditions": {"vcc_v": 4.5, "load_pf": 50, "temperature_c": 25}
+      "conditions": {
+        "vcc_v": 4.5,
+        "load_pf": 50,
+        "temperature_c": 25
+      }
+    },
+    {
+      "name": "input_to_output_metadata",
+      "type": "conservative_timing_path",
+      "path": "input_to_output_ns",
+      "parameter": "tpd",
+      "expect_delay_ns": 12,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    },
+    {
+      "name": "transition_time_metadata",
+      "type": "conservative_timing_path",
+      "path": "transition_time_ns",
+      "parameter": "tt",
+      "expect_delay_ns": 12,
+      "expect_source": "conservative_default_from_existing_model_delay"
     }
   ]
 }

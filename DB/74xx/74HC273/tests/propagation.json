@@ -7,6 +7,38 @@
     {
       "name": "model_propagation",
       "expect_delay_ns": 15
+    },
+    {
+      "name": "clock_to_output_metadata",
+      "type": "conservative_timing_path",
+      "path": "clock_to_output_ns",
+      "parameter": "tco",
+      "expect_delay_ns": 15,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    },
+    {
+      "name": "async_control_to_output_metadata",
+      "type": "conservative_timing_path",
+      "path": "async_control_to_output_ns",
+      "parameter": "tremap",
+      "expect_delay_ns": 15,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    },
+    {
+      "name": "input_setup_margin_metadata",
+      "type": "conservative_timing_path",
+      "path": "input_setup_margin_ns",
+      "parameter": "tsu",
+      "expect_delay_ns": 15,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    },
+    {
+      "name": "transition_time_metadata",
+      "type": "conservative_timing_path",
+      "path": "transition_time_ns",
+      "parameter": "tt",
+      "expect_delay_ns": 15,
+      "expect_source": "conservative_default_from_existing_model_delay"
     }
   ]
 }

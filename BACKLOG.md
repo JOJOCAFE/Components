@@ -121,6 +121,85 @@ Future work for the shared component library.
   `verilog_export=tested` IC parts now own structural export metadata in
   package `simulation/netlist.json` files, and runtime export no longer uses a
   legacy mapping table.
+- ✅ Add embedded pinout documentation to structural Verilog exports from
+  `Design.to_verilog()`. Exported circuit wrappers now show the same
+  pin-number/name table style used by package-local `simulation/model.v` files,
+  so students can inspect physical DIP pins next to each instantiated chip.
+- ✅ Prove structural Verilog export for the full active IC catalog: all 62
+  active `DB/74xx` and `DB/Memory` parts export as one-chip wrappers, include
+  embedded pinout comments, list required Verilog model files, and compile with
+  `iverilog`.
+- ✅ Fix SRAM-wrapper export dependencies: `AS6C62256` and `CY7C199` now include
+  `DB/Memory/62256/simulation/model.v` in `required_files` because their
+  package-local wrappers instantiate `mem_62256`.
+
+## Timing Model Hardening
+
+Goal: remove scalar-only timing from active physical IC definitions. Every
+active `74xx` and `Memory` chip must keep a beginner-friendly simple delay while
+also exposing datasheet-backed path-specific timing for timed simulation,
+bus-handover checks, memory turnaround, and physical-readiness review.
+
+Done:
+
+- ✅ Convert `74HC245` from top-level scalar `timing.delay_ns` to two-level
+  timing: `simple.default_delay_ns` plus `timed.paths` for `tpd`, `ten`,
+  `tdis`, and `tt`; update timing/propagation records, generated artifacts, and
+  regression tests.
+
+Assigned:
+
+- Bank: define the common two-level timing schema rules for all remaining
+  active ICs: keep compatibility simple delay visible, add path-specific
+  `min/typ/max` records, record missing datasheet minimums as `null`, and keep
+  generated documentation wording student-readable.
+- Ohm: extract datasheet timing/electrical path data for simple logic and
+  output-control families: `74HC00`, `74HC02`, `74HC04`, `74HC07`, `74HC08`,
+  `74HC10`, `74HC11`, `74HC14`, `74HC20`, `74HC21`, `74HC27`, `74HC30`,
+  `74HC32`, `74HC86`, `74HC266`, and `74HC4078`.
+- Mint: convert sequential/register/counter timing models and ensure Verilog
+  model comments/export expectations do not imply a single scalar delay:
+  `74HC73`, `74HC74`, `74HC112`, `74HC160`, `74HC161`, `74HC162`, `74HC163`,
+  `74HC164`, `74HC165`, `74HC166`, `74HC193`, `74HC273`, `74HC374`,
+  `74HC377`, `74HC574`, `74HC593`, and `74HC595`.
+- Ohm + Mint: convert decoder, mux, buffer, comparator, ALU, and special-control
+  families where enable/disable and select-to-output paths matter:
+  `74HC42`, `74HC85`, `74HC138`, `74HC139`, `74HC147`, `74HC148`, `74HC151`,
+  `74HC153`, `74HC154`, `74HC155`, `74HC157`, `74HC158`, `74HC181`,
+  `74HC238`, `74HC240`, `74HC244`, `74HC251`, `74HC257`, `74HC283`,
+  `74HC352`, `74HC541`, `74HC688`, and `74HC922`.
+- Bam: convert memory timing models so read, output-enable, high-Z, write,
+  busy/programming, and data-retention paths are explicit: `62256`,
+  `AS6C62256`, `CY7C199`, `SST39SF010A`, and compatibility cleanup for
+  `AT28C256`.
+- Fern: add/maintain a regression gate that fails active physical IC packages
+  which still have scalar-only timing, and review each batch against
+  definition, split test records, generated artifacts, Python behavior,
+  Verilog/export expectations, and datasheet evidence.
+- Noon: update generated/student-facing timing wording so learners see the
+  difference between simple simulation delay and datasheet path timing without
+  treating functional simulation as physical sign-off.
+
+Acceptance for each chip:
+
+- `definition/definition.json` has `timing.simple.default_delay_ns` and
+  `timing.timed.paths`; scalar `timing.delay_ns` is kept only when documented as
+  compatibility with richer timing present.
+- `definition_layers.timing` mirrors the same simple/timed contract and names
+  timing paths in hardware language such as input-to-output, clock-to-Q,
+  output-enable, output-disable, address-to-data, write-pulse, or transition
+  time.
+- `tests/timing.json` and `tests/propagation.json` check path-specific metadata
+  rather than only `expect_delay_ns`.
+- Package-local Verilog models and structural export metadata stay compatible
+  with existing smoke tests, but chips with distinct datasheet paths add named
+  timing parameters or comments for paths such as `TPD`, `TEN`, `TDIS`,
+  `TCO`, `TOE`, and `TDF` instead of implying one scalar delay covers every
+  transition.
+- `generated/artifacts.json` is regenerated from the package source.
+- Focused tests pass: `python3 -B -m tests.test_db`,
+  `python3 -B -m tests.test_generated_split_records`, and relevant chip,
+  equivalence, or export smoke tests for the batch.
 
 ## Deferred UI Work
 
@@ -300,6 +379,11 @@ tests, and pushed commits aligned.
 - ✅ Task 4 chip-specific truth-vector batch: `74HC02`, `74HC10`, `74HC11`,
   `74HC20`, `74HC27`, and `74HC30` now have explicit gate vectors, generated
   artifacts, and executable Python-model regression coverage.
+- ✅ Active-catalog truth-vector completion: the remaining active 74xx and
+  memory `basic_function` truth placeholders were replaced with explicit
+  executable vectors. Generic fresh-chip pin-vector records are replayed
+  through Python models, and `CY7C199` now uses SRAM-style write/read/high-Z
+  vectors like the 62256 seed family.
 
 ## Backend Bus, Probe, And Test Logic
 

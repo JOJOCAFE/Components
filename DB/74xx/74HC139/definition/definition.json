@@ -112,7 +112,72 @@
     "description": "Dual 2-Line to 4-Line Decoder/Demultiplexer"
   },
   "timing": {
-    "delay_ns": 15
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+      "paths": {
+        "input_to_output_ns": {
+          "parameter": "tpd",
+          "from": "input",
+          "to": "output",
+          "condition": "input or select changes",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns": 15,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "output_enable_to_output_ns": {
+          "parameter": "ten",
+          "from": "output-enable control",
+          "to": "output driven",
+          "condition": "enable control asserted",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns": 15,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "output_disable_to_high_z_ns": {
+          "parameter": "tdis",
+          "from": "output-enable control",
+          "to": "output high-Z",
+          "condition": "enable control released",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns": 15,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "transition_time_ns": {
+          "parameter": "tt",
+          "from": "output transition",
+          "to": "output transition",
+          "condition": "enabled output switches",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns": 15,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        }
+      }
+    }
   },
   "generation": {
     "targets": [
@@ -168,29 +233,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "74HC139",
-      "title": "Dual 2-Line to 4-Line Decoder/Demultiplexer",
-      "family": "74HC",
-      "group": "74xx",
-      "kind": "ic",
-      "role": "decoder"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "74HC139",
-      "packages": [
-        {
-          "id": "N",
-          "kind": "DIP",
-          "pins": 16
-        }
-      ],
-      "default_package": "N"
-    },
     "pins": {
       "schema": "db.component.pins",
       "version": 1,
@@ -309,15 +351,6 @@
         }
       ]
     },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "74HC139",
-      "logic": {
-        "type": "dual_2_line_to_4_line_decoder_demultiplexer",
-        "description": "Dual 2-Line to 4-Line Decoder/Demultiplexer"
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
@@ -376,6 +409,80 @@
             "vcc_4_5_v": 19,
             "vcc_6_v": 16
           }
+        },
+        "public_timing": {
+          "delay_ns": 15,
+          "simple": {
+            "default_delay_ns": 15,
+            "source": "legacy functional simulator default"
+          },
+          "timed": {
+            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+            "paths": {
+              "input_to_output_ns": {
+                "parameter": "tpd",
+                "from": "input",
+                "to": "output",
+                "condition": "input or select changes",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 15,
+                    "max_ns": 15,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "output_enable_to_output_ns": {
+                "parameter": "ten",
+                "from": "output-enable control",
+                "to": "output driven",
+                "condition": "enable control asserted",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 15,
+                    "max_ns": 15,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "output_disable_to_high_z_ns": {
+                "parameter": "tdis",
+                "from": "output-enable control",
+                "to": "output high-Z",
+                "condition": "enable control released",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 15,
+                    "max_ns": 15,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "transition_time_ns": {
+                "parameter": "tt",
+                "from": "output transition",
+                "to": "output transition",
+                "condition": "enabled output switches",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 15,
+                    "max_ns": 15,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "conservative_defaults": {
+          "input_to_output_ns": "conservative_default_from_existing_model_delay",
+          "output_enable_to_output_ns": "conservative_default_from_existing_model_delay",
+          "output_disable_to_high_z_ns": "conservative_default_from_existing_model_delay",
+          "transition_time_ns": "conservative_default_from_existing_model_delay"
         }
       },
       "evidence": {

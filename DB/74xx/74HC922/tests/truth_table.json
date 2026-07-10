@@ -5,8 +5,76 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "all_inputs_low",
+      "fresh": true,
+      "inputs": {
+        "ROW Y1": 0,
+        "ROW Y2": 0,
+        "ROW Y3": 0,
+        "ROW Y4": 0,
+        "OSCILLATOR": 0,
+        "KEYBOUNCE MASK": 0,
+        "OUTPUT ENABLE": 0
+      },
+      "expect": {
+        "COLUMN X4": 1,
+        "COLUMN X3": 1,
+        "COLUMN X2": 1,
+        "COLUMN X1": 0,
+        "DATA AVAILABLE": 0,
+        "DATA OUT D": 1,
+        "DATA OUT C": 1,
+        "DATA OUT B": 0,
+        "DATA OUT A": 0
+      }
+    },
+    {
+      "name": "all_inputs_high",
+      "fresh": true,
+      "inputs": {
+        "ROW Y1": 1,
+        "ROW Y2": 1,
+        "ROW Y3": 1,
+        "ROW Y4": 1,
+        "OSCILLATOR": 1,
+        "KEYBOUNCE MASK": 1,
+        "OUTPUT ENABLE": 1
+      },
+      "expect": {
+        "COLUMN X4": 1,
+        "COLUMN X3": 1,
+        "COLUMN X2": 1,
+        "COLUMN X1": 0,
+        "DATA AVAILABLE": 0,
+        "DATA OUT D": "Z",
+        "DATA OUT C": "Z",
+        "DATA OUT B": "Z",
+        "DATA OUT A": "Z"
+      }
+    },
+    {
+      "name": "alternating_inputs",
+      "fresh": true,
+      "inputs": {
+        "ROW Y1": 0,
+        "ROW Y2": 1,
+        "ROW Y3": 0,
+        "ROW Y4": 1,
+        "OSCILLATOR": 0,
+        "KEYBOUNCE MASK": 1,
+        "OUTPUT ENABLE": 0
+      },
+      "expect": {
+        "COLUMN X4": 1,
+        "COLUMN X3": 1,
+        "COLUMN X2": 1,
+        "COLUMN X1": 0,
+        "DATA AVAILABLE": 1,
+        "DATA OUT D": 1,
+        "DATA OUT C": 0,
+        "DATA OUT B": 0,
+        "DATA OUT A": 0
+      }
     }
   ],
   "edge_criteria": {

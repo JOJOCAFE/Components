@@ -101,6 +101,43 @@
       "max_ns_25c": 20,
       "max_ns_minus40_to_85c": 25,
       "load_pf": 50
+    },
+    "simple": {
+      "default_delay_ns": 12,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+      "paths": {
+        "input_to_output_ns": {
+          "parameter": "tpd",
+          "from": "input",
+          "to": "output",
+          "condition": "input or select changes",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 12,
+              "max_ns": 12,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "transition_time_ns": {
+          "parameter": "tt",
+          "from": "output transition",
+          "to": "output transition",
+          "condition": "enabled output switches",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 12,
+              "max_ns": 12,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        }
+      }
     }
   },
   "generation": {
@@ -157,29 +194,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "74HC32",
-      "title": "Quad 2-Input OR Gate",
-      "family": "74HC",
-      "group": "74xx",
-      "kind": "ic",
-      "role": "or_gate"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "74HC32",
-      "packages": [
-        {
-          "id": "N",
-          "kind": "DIP",
-          "pins": 14
-        }
-      ],
-      "default_package": "N"
-    },
     "pins": {
       "schema": "db.component.pins",
       "version": 1,
@@ -278,15 +292,6 @@
         }
       ]
     },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "74HC32",
-      "logic": {
-        "type": "quad_2_input_or",
-        "description": "Quad 2-Input OR Gate"
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
@@ -306,6 +311,59 @@
         "conditions": {
           "load_pf": 50,
           "path": "A_or_B_to_Y"
+        },
+        "public_timing": {
+          "delay_ns": 12,
+          "datasheet": {
+            "source": "TI SN74HC32 datasheet, section 6.8 Switching Characteristics - 74, CL = 50 pF",
+            "path": "A_or_B_to_Y",
+            "vcc_v": 4.5,
+            "typical_ns": 10,
+            "max_ns_25c": 20,
+            "max_ns_minus40_to_85c": 25,
+            "load_pf": 50
+          },
+          "simple": {
+            "default_delay_ns": 12,
+            "source": "legacy functional simulator default"
+          },
+          "timed": {
+            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+            "paths": {
+              "input_to_output_ns": {
+                "parameter": "tpd",
+                "from": "input",
+                "to": "output",
+                "condition": "input or select changes",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 12,
+                    "max_ns": 12,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "transition_time_ns": {
+                "parameter": "tt",
+                "from": "output transition",
+                "to": "output transition",
+                "condition": "enabled output switches",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 12,
+                    "max_ns": 12,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "conservative_defaults": {
+          "input_to_output_ns": "conservative_default_from_existing_model_delay",
+          "transition_time_ns": "conservative_default_from_existing_model_delay"
         }
       },
       "evidence": {

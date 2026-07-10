@@ -185,7 +185,18 @@
     "description": "128K x 8 flash EEPROM"
   },
   "timing": {
-    "delay_ns": 70
+    "variant": "SST39SF010A-70",
+    "paths": {
+      "address_to_data_valid_ns": 70,
+      "ce_to_data_valid_ns": 70,
+      "oe_to_data_valid_ns": 35,
+      "ce_or_oe_to_high_z_ns": 25
+    },
+    "write": {
+      "pulse_min_ns": 70,
+      "data_setup_min_ns": 70,
+      "address_hold_min_ns": 0
+    }
   },
   "generation": {
     "targets": [
@@ -242,29 +253,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "SST39SF010A",
-      "title": "128K x 8 flash EEPROM",
-      "family": "Memory",
-      "group": "memory",
-      "kind": "ic",
-      "role": "flash"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "SST39SF010A",
-      "packages": [
-        {
-          "id": "DIP",
-          "kind": "DIP",
-          "pins": 32
-        }
-      ],
-      "default_package": "DIP"
-    },
     "pins": {
       "schema": "db.component.pins",
       "version": 1,
@@ -456,15 +444,6 @@
         }
       ]
     },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "SST39SF010A",
-      "logic": {
-        "type": "128k_x_8_flash",
-        "description": "128K x 8 flash EEPROM"
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
@@ -500,6 +479,25 @@
           },
           "path": "address_ce_oe_to_dq_or_high_z",
           "section": "Table 7-1 Read Cycle Timing Parameters"
+        },
+        "public_timing": {
+          "variant": "SST39SF010A-70",
+          "paths": {
+            "address_to_data_valid_ns": 70,
+            "ce_to_data_valid_ns": 70,
+            "oe_to_data_valid_ns": 35,
+            "ce_or_oe_to_high_z_ns": 25
+          },
+          "write": {
+            "pulse_min_ns": 70,
+            "data_setup_min_ns": 70,
+            "address_hold_min_ns": 0
+          }
+        },
+        "conservative_defaults": {
+          "pulse_min_ns": "conservative_default",
+          "data_setup_min_ns": "conservative_default",
+          "address_hold_min_ns": "conservative_default"
         }
       },
       "evidence": {

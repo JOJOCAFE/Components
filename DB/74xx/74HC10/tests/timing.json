@@ -16,6 +16,22 @@
       "typical_ns": 10,
       "max_ns_25c": 19,
       "max_ns_minus40_to_85c": 24
+    },
+    {
+      "name": "input_to_output_metadata",
+      "type": "conservative_timing_path",
+      "path": "input_to_output_ns",
+      "parameter": "tpd",
+      "expect_delay_ns": 15,
+      "expect_source": "conservative_default_from_existing_model_delay"
+    },
+    {
+      "name": "transition_time_metadata",
+      "type": "conservative_timing_path",
+      "path": "transition_time_ns",
+      "parameter": "tt",
+      "expect_delay_ns": 15,
+      "expect_source": "conservative_default_from_existing_model_delay"
     }
   ]
 }

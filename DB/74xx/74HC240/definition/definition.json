@@ -124,7 +124,72 @@
     "description": "Octal Inverting Buffer/Line Driver"
   },
   "timing": {
-    "delay_ns": 15
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+      "paths": {
+        "input_to_output_ns": {
+          "parameter": "tpd",
+          "from": "input",
+          "to": "output",
+          "condition": "input or select changes",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns": 15,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "output_enable_to_output_ns": {
+          "parameter": "ten",
+          "from": "output-enable control",
+          "to": "output driven",
+          "condition": "enable control asserted",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns": 15,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "output_disable_to_high_z_ns": {
+          "parameter": "tdis",
+          "from": "output-enable control",
+          "to": "output high-Z",
+          "condition": "enable control released",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns": 15,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "transition_time_ns": {
+          "parameter": "tt",
+          "from": "output transition",
+          "to": "output transition",
+          "condition": "enabled output switches",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns": 15,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        }
+      }
+    }
   },
   "generation": {
     "targets": [
@@ -178,29 +243,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "74HC240",
-      "title": "Octal Inverting Buffer/Line Driver",
-      "family": "74HC",
-      "group": "74xx",
-      "kind": "ic",
-      "role": "buffer"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "74HC240",
-      "packages": [
-        {
-          "id": "N",
-          "kind": "DIP",
-          "pins": 20
-        }
-      ],
-      "default_package": "N"
-    },
     "pins": {
       "schema": "db.component.pins",
       "version": 1,
@@ -331,22 +373,87 @@
         }
       ]
     },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "74HC240",
-      "logic": {
-        "type": "octal_inverting_buffer_line_driver",
-        "description": "Octal Inverting Buffer/Line Driver"
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
       "part": "74HC240",
       "delay": {
         "model_delay_ns": 15,
-        "status": "model-derived"
+        "status": "model-derived",
+        "public_timing": {
+          "delay_ns": 15,
+          "simple": {
+            "default_delay_ns": 15,
+            "source": "legacy functional simulator default"
+          },
+          "timed": {
+            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+            "paths": {
+              "input_to_output_ns": {
+                "parameter": "tpd",
+                "from": "input",
+                "to": "output",
+                "condition": "input or select changes",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 15,
+                    "max_ns": 15,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "output_enable_to_output_ns": {
+                "parameter": "ten",
+                "from": "output-enable control",
+                "to": "output driven",
+                "condition": "enable control asserted",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 15,
+                    "max_ns": 15,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "output_disable_to_high_z_ns": {
+                "parameter": "tdis",
+                "from": "output-enable control",
+                "to": "output high-Z",
+                "condition": "enable control released",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 15,
+                    "max_ns": 15,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "transition_time_ns": {
+                "parameter": "tt",
+                "from": "output transition",
+                "to": "output transition",
+                "condition": "enabled output switches",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 15,
+                    "max_ns": 15,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "conservative_defaults": {
+          "input_to_output_ns": "conservative_default_from_existing_model_delay",
+          "output_enable_to_output_ns": "conservative_default_from_existing_model_delay",
+          "output_disable_to_high_z_ns": "conservative_default_from_existing_model_delay",
+          "transition_time_ns": "conservative_default_from_existing_model_delay"
+        }
       },
       "evidence": {
         "label": "Texas Instruments SN74HC240",

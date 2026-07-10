@@ -5,8 +5,70 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "basic_function",
-      "description": "Covered by Python model and Verilog smoke tests"
+      "name": "all_inputs_low",
+      "fresh": true,
+      "inputs": {
+        "B3": 0,
+        "IA_LT_B": 0,
+        "IA_EQ_B": 0,
+        "IA_GT_B": 0,
+        "B0": 0,
+        "A0": 0,
+        "B1": 0,
+        "A1": 0,
+        "A2": 0,
+        "B2": 0,
+        "A3": 0
+      },
+      "expect": {
+        "QA_GT_B": 0,
+        "QA_EQ_B": 0,
+        "QA_LT_B": 0
+      }
+    },
+    {
+      "name": "all_inputs_high",
+      "fresh": true,
+      "inputs": {
+        "B3": 1,
+        "IA_LT_B": 1,
+        "IA_EQ_B": 1,
+        "IA_GT_B": 1,
+        "B0": 1,
+        "A0": 1,
+        "B1": 1,
+        "A1": 1,
+        "A2": 1,
+        "B2": 1,
+        "A3": 1
+      },
+      "expect": {
+        "QA_GT_B": 0,
+        "QA_EQ_B": 1,
+        "QA_LT_B": 0
+      }
+    },
+    {
+      "name": "alternating_inputs",
+      "fresh": true,
+      "inputs": {
+        "B3": 0,
+        "IA_LT_B": 1,
+        "IA_EQ_B": 0,
+        "IA_GT_B": 1,
+        "B0": 0,
+        "A0": 1,
+        "B1": 0,
+        "A1": 1,
+        "A2": 0,
+        "B2": 1,
+        "A3": 0
+      },
+      "expect": {
+        "QA_GT_B": 0,
+        "QA_EQ_B": 0,
+        "QA_LT_B": 1
+      }
     }
   ],
   "edge_criteria": {

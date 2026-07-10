@@ -4,7 +4,33 @@
   "part": "AT28C256",
   "applicable": true,
   "checks": [
-    {"name": "address_to_dq_delay_metadata", "expect_delay_ns": 70},
-    {"name": "output_enable_to_dq_delay_metadata", "expect_delay_ns": 70}
+    {
+      "name": "address_to_data_valid_metadata",
+      "type": "memory_access",
+      "path": "address_to_data_valid_ns",
+      "expect_delay_ns": 150,
+      "variant": "AT28C256-15"
+    },
+    {
+      "name": "ce_to_data_valid_metadata",
+      "type": "memory_access",
+      "path": "ce_to_data_valid_ns",
+      "expect_delay_ns": 150,
+      "variant": "AT28C256-15"
+    },
+    {
+      "name": "oe_to_data_valid_metadata",
+      "type": "memory_access",
+      "path": "oe_to_data_valid_ns",
+      "expect_delay_ns": 70,
+      "variant": "AT28C256-15"
+    },
+    {
+      "name": "ce_or_oe_to_high_z_metadata",
+      "type": "output_disable",
+      "path": "ce_or_oe_to_high_z_ns",
+      "expect_delay_ns": 50,
+      "variant": "AT28C256-15"
+    }
   ]
 }

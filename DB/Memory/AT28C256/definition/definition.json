@@ -215,8 +215,12 @@
       "drive": "DQ"
     },
     "write": {
-      "when": "/CE=0 and /OE=1 and /WE=0",
-      "sample": "DQ"
+      "when": "/CE=0 and /OE=1 during a valid /WE-low write window",
+      "latch": "/WE rising edge",
+      "sample": "DQ",
+      "address_sample": "A",
+      "fidelity_level": "timed_functional",
+      "busy_behavior": "write_cycle_updates blocks functional readback for the configured simulator update count; full data polling is not modeled in v0.1"
     },
     "tristate": {
       "when": "not read",
@@ -224,7 +228,18 @@
     }
   },
   "timing": {
-    "delay_ns": 70
+    "variant": "AT28C256-15",
+    "paths": {
+      "address_to_data_valid_ns": 150,
+      "ce_to_data_valid_ns": 150,
+      "oe_to_data_valid_ns": 70,
+      "ce_or_oe_to_high_z_ns": 50
+    },
+    "write": {
+      "pulse_min_ns": 100,
+      "data_setup_min_ns": 50,
+      "address_hold_min_ns": 50
+    }
   },
   "generation": {
     "targets": [
@@ -286,308 +301,13 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "AT28C256",
-      "title": "32K x 8 parallel EEPROM",
-      "family": "Memory",
-      "group": "memory",
-      "kind": "ic",
-      "role": "eeprom"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "AT28C256",
-      "packages": [
-        {
-          "id": "PDIP",
-          "kind": "DIP",
-          "pins": 28
-        }
-      ],
-      "default_package": "PDIP"
-    },
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "AT28C256",
-      "pins": [
-        {
-          "number": 1,
-          "name": "A14",
-          "direction": "input",
-          "bus": "A",
-          "bit": 14
-        },
-        {
-          "number": 2,
-          "name": "A12",
-          "direction": "input",
-          "bus": "A",
-          "bit": 12
-        },
-        {
-          "number": 3,
-          "name": "A7",
-          "direction": "input",
-          "bus": "A",
-          "bit": 7
-        },
-        {
-          "number": 4,
-          "name": "A6",
-          "direction": "input",
-          "bus": "A",
-          "bit": 6
-        },
-        {
-          "number": 5,
-          "name": "A5",
-          "direction": "input",
-          "bus": "A",
-          "bit": 5
-        },
-        {
-          "number": 6,
-          "name": "A4",
-          "direction": "input",
-          "bus": "A",
-          "bit": 4
-        },
-        {
-          "number": 7,
-          "name": "A3",
-          "direction": "input",
-          "bus": "A",
-          "bit": 3
-        },
-        {
-          "number": 8,
-          "name": "A2",
-          "direction": "input",
-          "bus": "A",
-          "bit": 2
-        },
-        {
-          "number": 9,
-          "name": "A1",
-          "direction": "input",
-          "bus": "A",
-          "bit": 1
-        },
-        {
-          "number": 10,
-          "name": "A0",
-          "direction": "input",
-          "bus": "A",
-          "bit": 0
-        },
-        {
-          "number": 11,
-          "name": "I/O0",
-          "direction": "bidirectional",
-          "bus": "DQ",
-          "bit": 0
-        },
-        {
-          "number": 12,
-          "name": "I/O1",
-          "direction": "bidirectional",
-          "bus": "DQ",
-          "bit": 1
-        },
-        {
-          "number": 13,
-          "name": "I/O2",
-          "direction": "bidirectional",
-          "bus": "DQ",
-          "bit": 2
-        },
-        {
-          "number": 14,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 15,
-          "name": "I/O3",
-          "direction": "bidirectional",
-          "bus": "DQ",
-          "bit": 3
-        },
-        {
-          "number": 16,
-          "name": "I/O4",
-          "direction": "bidirectional",
-          "bus": "DQ",
-          "bit": 4
-        },
-        {
-          "number": 17,
-          "name": "I/O5",
-          "direction": "bidirectional",
-          "bus": "DQ",
-          "bit": 5
-        },
-        {
-          "number": 18,
-          "name": "I/O6",
-          "direction": "bidirectional",
-          "bus": "DQ",
-          "bit": 6
-        },
-        {
-          "number": 19,
-          "name": "I/O7",
-          "direction": "bidirectional",
-          "bus": "DQ",
-          "bit": 7
-        },
-        {
-          "number": 20,
-          "name": "/CE",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 21,
-          "name": "A10",
-          "direction": "input",
-          "bus": "A",
-          "bit": 10
-        },
-        {
-          "number": 22,
-          "name": "/OE",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 23,
-          "name": "A11",
-          "direction": "input",
-          "bus": "A",
-          "bit": 11
-        },
-        {
-          "number": 24,
-          "name": "A9",
-          "direction": "input",
-          "bus": "A",
-          "bit": 9
-        },
-        {
-          "number": 25,
-          "name": "A8",
-          "direction": "input",
-          "bus": "A",
-          "bit": 8
-        },
-        {
-          "number": 26,
-          "name": "A13",
-          "direction": "input",
-          "bus": "A",
-          "bit": 13
-        },
-        {
-          "number": 27,
-          "name": "/WE",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 28,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {
-        "A": {
-          "width": 15,
-          "pins_lsb_first": [
-            10,
-            9,
-            8,
-            7,
-            6,
-            5,
-            4,
-            3,
-            25,
-            24,
-            21,
-            23,
-            2,
-            26,
-            1
-          ]
-        },
-        "DQ": {
-          "width": 8,
-          "pins_lsb_first": [
-            11,
-            12,
-            13,
-            15,
-            16,
-            17,
-            18,
-            19
-          ]
-        }
-      }
-    },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "AT28C256",
-      "rails": [
-        {
-          "name": "GND",
-          "pin": 14,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 28,
-          "nominal_logic": 1
-        }
-      ]
-    },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "AT28C256",
-      "logic": {
-        "type": "parallel_eeprom",
-        "address_width": 15,
-        "data_width": 8,
-        "read": {
-          "when": "/CE=0 and /OE=0 and /WE=1",
-          "drive": "DQ"
-        },
-        "write": {
-          "when": "/CE=0 and /OE=1 and /WE=0",
-          "sample": "DQ"
-        },
-        "tristate": {
-          "when": "not read",
-          "DQ": "Z"
-        }
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
       "part": "AT28C256",
       "delay": {
-        "default_ns": 70,
-        "source": "simulation default from Python model",
+        "default_ns": 150,
+        "source": "AT28C256-15 tACC address-to-output datasheet path, not tOE",
         "datasheet_read_ns": {
           "tacc_address_to_output": {
             "at28c256_15": 150,
@@ -618,7 +338,52 @@
           "address_hold": 50,
           "write_pulse_width": 100,
           "data_setup": 50,
-          "data_hold": 0
+          "data_hold": 0,
+          "write_cycle_us": 10000,
+          "latch_edge": "/WE rising",
+          "write_cycle_updates_default": 1,
+          "busy_behavior": "after /WE rising commit, reads return high-Z for write_cycle_updates before normal readback",
+          "programming_fidelity": "single-byte timed functional write-cycle model"
+        },
+        "model_delay_ns": 150,
+        "selected_variant": "at28c256_15",
+        "variant_policy": {
+          "available_variants": [
+            "at28c256_15",
+            "at28c256_20",
+            "at28c256_25",
+            "at28c256_35"
+          ],
+          "default_variant": "at28c256_15",
+          "unselected_variant_policy": "do_not_assume_70ns; choose a marked speed grade or use the conservative at28c256_35 row",
+          "physical_signoff_requires": "installed package marking must match the selected speed-grade row"
+        },
+        "paths": {
+          "address_to_data_valid_ns": 150,
+          "ce_to_data_valid_ns": 150,
+          "oe_to_data_valid_ns": 70,
+          "ce_or_oe_to_high_z_ns": 50
+        },
+        "fidelity_level": "timed_functional",
+        "unsupported_programming_features": [
+          "DQ7 data polling",
+          "DQ6 toggle bit",
+          "software data protection",
+          "page write window"
+        ],
+        "public_timing": {
+          "variant": "AT28C256-15",
+          "paths": {
+            "address_to_data_valid_ns": 150,
+            "ce_to_data_valid_ns": 150,
+            "oe_to_data_valid_ns": 70,
+            "ce_or_oe_to_high_z_ns": 50
+          },
+          "write": {
+            "pulse_min_ns": 100,
+            "data_setup_min_ns": 50,
+            "address_hold_min_ns": 50
+          }
         }
       },
       "evidence": {

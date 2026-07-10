@@ -122,7 +122,58 @@
     "description": "octal D-type flip-flop with data enable, positive-edge trigger"
   },
   "timing": {
-    "delay_ns": 15
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+      "paths": {
+        "clock_to_output_ns": {
+          "parameter": "tco",
+          "from": "CLK/clock control",
+          "to": "Q/output",
+          "condition": "active clock edge",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns": 15,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "input_setup_margin_ns": {
+          "parameter": "tsu",
+          "from": "D/input",
+          "to": "CLK/clock control",
+          "condition": "conservative setup placeholder from model delay",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns": 15,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "transition_time_ns": {
+          "parameter": "tt",
+          "from": "output transition",
+          "to": "output transition",
+          "condition": "enabled output switches",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 15,
+              "max_ns": 15,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        }
+      }
+    }
   },
   "generation": {
     "targets": [
@@ -176,29 +227,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "74HC377",
-      "title": "octal D-type flip-flop with data enable, positive-edge trigger",
-      "family": "74HC",
-      "group": "74xx",
-      "kind": "ic",
-      "role": "register"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "74HC377",
-      "packages": [
-        {
-          "id": "N",
-          "kind": "DIP",
-          "pins": 20
-        }
-      ],
-      "default_package": "N"
-    },
     "pins": {
       "schema": "db.component.pins",
       "version": 1,
@@ -327,22 +355,72 @@
         }
       ]
     },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "74HC377",
-      "logic": {
-        "type": "octal_d_type_flip_flop_with_data_enable",
-        "description": "octal D-type flip-flop with data enable, positive-edge trigger"
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
       "part": "74HC377",
       "delay": {
         "model_delay_ns": 15,
-        "status": "model-derived"
+        "status": "model-derived",
+        "public_timing": {
+          "delay_ns": 15,
+          "simple": {
+            "default_delay_ns": 15,
+            "source": "legacy functional simulator default"
+          },
+          "timed": {
+            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+            "paths": {
+              "clock_to_output_ns": {
+                "parameter": "tco",
+                "from": "CLK/clock control",
+                "to": "Q/output",
+                "condition": "active clock edge",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 15,
+                    "max_ns": 15,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "input_setup_margin_ns": {
+                "parameter": "tsu",
+                "from": "D/input",
+                "to": "CLK/clock control",
+                "condition": "conservative setup placeholder from model delay",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 15,
+                    "max_ns": 15,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "transition_time_ns": {
+                "parameter": "tt",
+                "from": "output transition",
+                "to": "output transition",
+                "condition": "enabled output switches",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 15,
+                    "max_ns": 15,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "conservative_defaults": {
+          "clock_to_output_ns": "conservative_default_from_existing_model_delay",
+          "input_setup_margin_ns": "conservative_default_from_existing_model_delay",
+          "transition_time_ns": "conservative_default_from_existing_model_delay"
+        }
       },
       "evidence": {
         "label": "Legacy pinout datasheet source",

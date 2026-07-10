@@ -139,7 +139,44 @@
     "disabled_output": 0
   },
   "timing": {
-    "delay_ns": 18
+    "delay_ns": 18,
+    "simple": {
+      "default_delay_ns": 18,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+      "paths": {
+        "input_to_output_ns": {
+          "parameter": "tpd",
+          "from": "input",
+          "to": "output",
+          "condition": "input or select changes",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 18,
+              "max_ns": 18,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        },
+        "transition_time_ns": {
+          "parameter": "tt",
+          "from": "output transition",
+          "to": "output transition",
+          "condition": "enabled output switches",
+          "ranges_ns": {
+            "conservative_default": {
+              "min_ns": null,
+              "typ_ns": 18,
+              "max_ns": 18,
+              "source": "conservative_default_from_existing_model_delay"
+            }
+          }
+        }
+      }
+    }
   },
   "generation": {
     "targets": [
@@ -197,210 +234,6 @@
     ]
   },
   "definition_layers": {
-    "component": {
-      "schema": "db.component.definition",
-      "version": 1,
-      "part": "74HC157",
-      "title": "Quad 2-Line to 1-Line Multiplexer",
-      "family": "74HC",
-      "group": "74xx",
-      "kind": "ic",
-      "role": "multiplexer"
-    },
-    "package": {
-      "schema": "db.component.package",
-      "version": 1,
-      "part": "74HC157",
-      "packages": [
-        {
-          "id": "N",
-          "kind": "DIP",
-          "pins": 16
-        }
-      ],
-      "default_package": "N"
-    },
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "74HC157",
-      "pins": [
-        {
-          "number": 1,
-          "name": "A/B",
-          "direction": "input",
-          "function": "select"
-        },
-        {
-          "number": 2,
-          "name": "1A",
-          "direction": "input",
-          "bus": "A",
-          "bit": 0
-        },
-        {
-          "number": 3,
-          "name": "1B",
-          "direction": "input",
-          "bus": "B",
-          "bit": 0
-        },
-        {
-          "number": 4,
-          "name": "1Y",
-          "direction": "output",
-          "bus": "Y",
-          "bit": 0
-        },
-        {
-          "number": 5,
-          "name": "2A",
-          "direction": "input",
-          "bus": "A",
-          "bit": 1
-        },
-        {
-          "number": 6,
-          "name": "2B",
-          "direction": "input",
-          "bus": "B",
-          "bit": 1
-        },
-        {
-          "number": 7,
-          "name": "2Y",
-          "direction": "output",
-          "bus": "Y",
-          "bit": 1
-        },
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 9,
-          "name": "3Y",
-          "direction": "output",
-          "bus": "Y",
-          "bit": 2
-        },
-        {
-          "number": 10,
-          "name": "3B",
-          "direction": "input",
-          "bus": "B",
-          "bit": 2
-        },
-        {
-          "number": 11,
-          "name": "3A",
-          "direction": "input",
-          "bus": "A",
-          "bit": 2
-        },
-        {
-          "number": 12,
-          "name": "4Y",
-          "direction": "output",
-          "bus": "Y",
-          "bit": 3
-        },
-        {
-          "number": 13,
-          "name": "4B",
-          "direction": "input",
-          "bus": "B",
-          "bit": 3
-        },
-        {
-          "number": 14,
-          "name": "4A",
-          "direction": "input",
-          "bus": "A",
-          "bit": 3
-        },
-        {
-          "number": 15,
-          "name": "/G",
-          "direction": "input",
-          "active_low": true,
-          "function": "enable"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ],
-      "buses": {
-        "A": {
-          "width": 4,
-          "pins_lsb_first": [
-            2,
-            5,
-            11,
-            14
-          ]
-        },
-        "B": {
-          "width": 4,
-          "pins_lsb_first": [
-            3,
-            6,
-            10,
-            13
-          ]
-        },
-        "Y": {
-          "width": 4,
-          "pins_lsb_first": [
-            4,
-            7,
-            9,
-            12
-          ]
-        }
-      }
-    },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "74HC157",
-      "rails": [
-        {
-          "name": "GND",
-          "pin": 8,
-          "nominal_logic": 0
-        },
-        {
-          "name": "VCC",
-          "pin": 16,
-          "nominal_logic": 1
-        }
-      ]
-    },
-    "logic": {
-      "schema": "db.component.logic",
-      "version": 1,
-      "part": "74HC157",
-      "logic": {
-        "type": "quad_2_to_1_mux",
-        "width": 4,
-        "select": {
-          "pin": "A/B",
-          "0": "A",
-          "1": "B"
-        },
-        "enable": {
-          "pin": "/G",
-          "active_low": true
-        },
-        "disabled_output": 0
-      }
-    },
     "timing": {
       "schema": "db.component.timing",
       "version": 1,
@@ -426,6 +259,50 @@
             "vcc_4_5_v": 8,
             "vcc_6_v": 6
           }
+        },
+        "public_timing": {
+          "delay_ns": 18,
+          "simple": {
+            "default_delay_ns": 18,
+            "source": "legacy functional simulator default"
+          },
+          "timed": {
+            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
+            "paths": {
+              "input_to_output_ns": {
+                "parameter": "tpd",
+                "from": "input",
+                "to": "output",
+                "condition": "input or select changes",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 18,
+                    "max_ns": 18,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              },
+              "transition_time_ns": {
+                "parameter": "tt",
+                "from": "output transition",
+                "to": "output transition",
+                "condition": "enabled output switches",
+                "ranges_ns": {
+                  "conservative_default": {
+                    "min_ns": null,
+                    "typ_ns": 18,
+                    "max_ns": 18,
+                    "source": "conservative_default_from_existing_model_delay"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "conservative_defaults": {
+          "input_to_output_ns": "conservative_default_from_existing_model_delay",
+          "transition_time_ns": "conservative_default_from_existing_model_delay"
         }
       },
       "evidence": {

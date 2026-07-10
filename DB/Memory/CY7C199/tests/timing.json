@@ -5,8 +5,60 @@
   "applicable": true,
   "checks": [
     {
-      "name": "model_delay",
-      "expect_delay_ns": 70
+      "name": "address_to_data_valid_metadata",
+      "type": "memory_access",
+      "path": "address_to_data_valid_ns",
+      "expect_delay_ns": 70,
+      "variant": "CY7C199-model-70ns",
+      "source": "conservative_default"
+    },
+    {
+      "name": "ce_to_data_valid_metadata",
+      "type": "memory_access",
+      "path": "ce_to_data_valid_ns",
+      "expect_delay_ns": 70,
+      "variant": "CY7C199-model-70ns",
+      "source": "conservative_default"
+    },
+    {
+      "name": "oe_to_data_valid_metadata",
+      "type": "memory_access",
+      "path": "oe_to_data_valid_ns",
+      "expect_delay_ns": 70,
+      "variant": "CY7C199-model-70ns",
+      "source": "conservative_default"
+    },
+    {
+      "name": "ce_or_oe_to_high_z_metadata",
+      "type": "output_disable",
+      "path": "ce_or_oe_to_high_z_ns",
+      "expect_delay_ns": 70,
+      "variant": "CY7C199-model-70ns",
+      "source": "conservative_default"
+    },
+    {
+      "name": "pulse_min_metadata",
+      "type": "write_timing",
+      "path": "pulse_min_ns",
+      "expect_delay_ns": 70,
+      "variant": "CY7C199-model-70ns",
+      "source": "conservative_default"
+    },
+    {
+      "name": "data_setup_min_metadata",
+      "type": "write_timing",
+      "path": "data_setup_min_ns",
+      "expect_delay_ns": 70,
+      "variant": "CY7C199-model-70ns",
+      "source": "conservative_default"
+    },
+    {
+      "name": "address_hold_min_metadata",
+      "type": "write_timing",
+      "path": "address_hold_min_ns",
+      "expect_delay_ns": 0,
+      "variant": "CY7C199-model-70ns",
+      "source": "conservative_default"
     }
   ]
 }

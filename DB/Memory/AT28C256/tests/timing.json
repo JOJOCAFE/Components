@@ -4,7 +4,54 @@
   "part": "AT28C256",
   "applicable": true,
   "checks": [
-    {"name": "read_access_delay_metadata", "type": "memory_access", "expect_delay_ns": 70},
-    {"name": "write_enable_control", "type": "write_control", "control": "/WE"}
+    {
+      "name": "address_to_data_valid_metadata",
+      "type": "memory_access",
+      "path": "address_to_data_valid_ns",
+      "expect_delay_ns": 150,
+      "variant": "AT28C256-15"
+    },
+    {
+      "name": "ce_to_data_valid_metadata",
+      "type": "memory_access",
+      "path": "ce_to_data_valid_ns",
+      "expect_delay_ns": 150,
+      "variant": "AT28C256-15"
+    },
+    {
+      "name": "oe_to_data_valid_metadata",
+      "type": "memory_access",
+      "path": "oe_to_data_valid_ns",
+      "expect_delay_ns": 70,
+      "variant": "AT28C256-15"
+    },
+    {
+      "name": "ce_or_oe_to_high_z_metadata",
+      "type": "output_disable",
+      "path": "ce_or_oe_to_high_z_ns",
+      "expect_delay_ns": 50,
+      "variant": "AT28C256-15"
+    },
+    {
+      "name": "pulse_min_metadata",
+      "type": "write_timing",
+      "path": "pulse_min_ns",
+      "expect_delay_ns": 100,
+      "variant": "AT28C256-15"
+    },
+    {
+      "name": "data_setup_min_metadata",
+      "type": "write_timing",
+      "path": "data_setup_min_ns",
+      "expect_delay_ns": 50,
+      "variant": "AT28C256-15"
+    },
+    {
+      "name": "address_hold_min_metadata",
+      "type": "write_timing",
+      "path": "address_hold_min_ns",
+      "expect_delay_ns": 50,
+      "variant": "AT28C256-15"
+    }
   ]
 }

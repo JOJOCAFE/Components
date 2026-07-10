@@ -203,6 +203,7 @@ def design_to_verilog(design: Any, *, include_testbench: bool = True) -> JsonMap
             if sample_delay is not None:
                 parameter_items.append(f".SAMPLE_DELAY({int(sample_delay)})")
             parameters = " #(" + ", ".join(parameter_items) + ")"
+        lines.extend(_verilog_pinout_comment(chip))
         lines.append(f"  {mapping['module']}{parameters} {chip['ref']} ({joined});")
     lines.append("endmodule")
 
@@ -291,6 +292,35 @@ def _pin_endpoint(pin: JsonMap) -> JsonMap:
         "direction": pin["direction"],
         "ref": f"{pin['chip']}:{pin['number']}",
     }
+
+
+def _verilog_pinout_comment(chip: JsonMap) -> list[str]:
+    pins = [
+        pin for pin in chip.get("pins", [])
+        if isinstance(pin, dict) and "number" in pin and "name" in pin
+    ]
+    if not pins:
+        return []
+    ref = _comment_text(str(chip.get("ref", "")))
+    part = _comment_text(str(chip.get("part", "")))
+    result = [
+        "  //",
+        "  // Embedded pinout documentation.",
+        f"  // # {ref} {part} DIP Pinout",
+        "  //",
+        "  // Active-low pins are written with a leading slash, for example `/OE`.",
+        "  //",
+        "  // | Pin | Name |",
+        "  // |---:|---|",
+    ]
+    for pin in sorted(pins, key=lambda item: int(item["number"])):
+        result.append(f"  // | {int(pin['number'])} | {_comment_text(str(pin['name']))} |")
+    result.extend(["  //", ""])
+    return result
+
+
+def _comment_text(text: str) -> str:
+    return text.replace("|", "\\|")
 
 
 def _bus_line(name: str) -> JsonMap | None:

@@ -103,8 +103,9 @@
     },
     {
       "number": 19,
-      "name": "Y",
-      "direction": "output"
+      "name": "/Y",
+      "direction": "output",
+      "active_low": true
     },
     {
       "number": 20,

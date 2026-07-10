@@ -103,6 +103,9 @@ class CatalogChip(Chip):
         self._state_by_block: dict[int, int] = {}
         self._scan_col = 0
         self._prev_we = 1
+        self._pending_write: tuple[int, int] | None = None
+        self.write_cycle_updates = 1 if part == "AT28C256" else 0
+        self.write_busy_updates_remaining = 0
         self.data = bytearray(1 << (17 if part == "SST39SF010A" else 15))
 
     def has(self, name: str) -> bool:
@@ -302,7 +305,7 @@ class CatalogChip(Chip):
         elif p == "74HC688":
             a = self._read_names(["A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7"])
             b = self._read_names(["B0", "B1", "B2", "B3", "B4", "B5", "B6", "B7"])
-            self.o("Y", 1 if self.r("/E") or a != b else 0)
+            self.o("/Y", 1 if self.r("/E") or a != b else 0)
         elif p == "74HC85":
             a = self._read_names(["A0", "A1", "A2", "A3"]); b = self._read_names(["B0", "B1", "B2", "B3"])
             eq = a == b and self.r("IA_EQ_B")
@@ -415,13 +418,23 @@ class CatalogChip(Chip):
         if self.part == "SST39SF010A":
             if selected and oe and self._prev_we and not we:
                 self.data[addr] = self._read_names(dq_names)
+        elif self.part == "AT28C256":
+            if selected and oe and not we:
+                self._pending_write = (addr, self._read_names(dq_names))
+            if selected and oe and not self._prev_we and we and self._pending_write is not None:
+                write_addr, write_data = self._pending_write
+                self.data[write_addr] = write_data
+                self._pending_write = None
+                self.write_busy_updates_remaining = self.write_cycle_updates
         elif selected and not we:
             self.data[addr] = self._read_names(dq_names)
         self._prev_we = we
         read_enabled = selected and we and not oe
-        if read_enabled: self._write_names(dq_names, self.data[addr])
+        if read_enabled and self.write_busy_updates_remaining == 0: self._write_names(dq_names, self.data[addr])
         else:
             for n in dq_names: self.o(n, Z)
+            if read_enabled and self.write_busy_updates_remaining > 0:
+                self.write_busy_updates_remaining -= 1
 
 
 def _natural_key(name: str):
@@ -456,6 +469,11 @@ CATALOG_PARTS = {
     "74HC593", "74HC595", "74HC73", "74HC85", "74HC922",
 }
 MEMORY_CATALOG_PARTS = {"AS6C62256", "CY7C199", "SST39SF010A"}
+MEMORY_CATALOG_DELAYS_NS = {
+    "AS6C62256": 55,
+    "CY7C199": 70,
+    "SST39SF010A": 70,
+}
 
 
 def create_catalog_chip(part: str, name: str) -> Chip:
@@ -463,5 +481,5 @@ def create_catalog_chip(part: str, name: str) -> Chip:
     if key in CATALOG_PARTS:
         return CatalogChip(key, name, "74HC")
     if key in MEMORY_CATALOG_PARTS:
-        return CatalogChip(key, name, "Memory", delay_ns=70)
+        return CatalogChip(key, name, "Memory", delay_ns=MEMORY_CATALOG_DELAYS_NS.get(key, 70))
     raise KeyError(part)
