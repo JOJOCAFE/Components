@@ -1,15 +1,16 @@
 # Components Session Handoff
 
 Date: 2026-07-09
-Last updated: 2026-07-09, after RV8GR complete-set and v0.1 DB checkpoint
+Last updated: 2026-07-10, after RV8GR virtual physical-system fault checker
 
 ## Current State
 
 - Repo: `/home/jo/kiro/Components`
 - Branch: `main`
-- Status at handoff: DB/package migration checkpoint verified and committed
-  locally; push remains the next repository hygiene step if not already done.
-- Latest pushed commit: `fcaf1f4 Harden IC package verification records`
+- Status at handoff: RV8GR virtual fault protocol is pushed; reusable checker,
+  CLI, tests, and handoff updates are included in the current checker
+  checkpoint.
+- Latest pushed protocol commit: `8bb462b Add RV8GR virtual fault protocol`
 
 ## Completed This Session
 
@@ -42,12 +43,14 @@ Last updated: 2026-07-09, after RV8GR complete-set and v0.1 DB checkpoint
   - `simulation/`
   - `tests/`
   - `symbol/`
-- Saved current specialist-agent skills in `TEAM_SKILLS.md`:
-  - Arendt: specs and schemas
-  - Feynman: docs and demos
-  - Halley: verification matrix
-  - Ohm: datasheet/pin/timing/electrical evidence
-  - Leibniz: loaders, generators, CLI/API integration
+- Saved current Components team skills in `TEAM_SKILLS.md`:
+  - Pim: coordination and task routing
+  - Bank: architecture, schemas, and service boundaries
+  - Fern: verification matrix and release confidence
+  - Mint: RTL models, export contracts, and HDL benches
+  - Ohm: datasheet, pin, timing, and electrical evidence
+  - Bam: Python behavior, circuit simulation, CLI/API workflows
+  - Noon: student docs, examples, and lab wording
 
 ## Architecture Direction
 
@@ -91,11 +94,15 @@ windows and high-Z/write-protection behavior.
 
 ## Team Task Assignments
 
-- Arendt: spec and schemas for component packages.
-- Feynman: generated docs and interactive demos for students.
-- Halley: truth table, timing, tri-state, bus-fight, and propagation tests.
+- Pim: coordinate backlog, handoff, commits, and cross-file consistency.
+- Bank: spec and schemas for component packages and circuit-checker contracts.
+- Fern: truth table, timing, tri-state, bus-fight, propagation, and virtual
+  physical-system fault tests.
+- Mint: Verilog models, export contracts, and edge/timing RTL alignment.
 - Ohm: datasheet evidence, package evidence, timing, and electrical data.
-- Leibniz: loader compatibility, generators, and CLI/API generation command.
+- Bam: loader compatibility, generators, CLI/API commands, and Python checker
+  implementation.
+- Noon: generated docs, interactive demos, and student-readable fix methods.
 
 ## Next Safe Tasks
 
@@ -126,6 +133,39 @@ and memory cross-address persistence.
 
 When adding future checks, keep the package standalone: test files should call
 the chip-local `simulation/model.py`, not a shared model folder.
+
+## 2026-07-10 RV8GR Virtual Physical-System Fault Checker
+
+Protocol checkpoint pushed:
+
+- `8bb462b Add RV8GR virtual fault protocol`
+
+Completed checker work ready for commit/push:
+
+- Added `python/chiplib/virtual_faults.py`.
+- Added `python3 -m chiplib.cli circuit-faults <circuit.json>`.
+- Checker reads `components.lib.circuit` JSON and reports the four required
+  virtual physical-system fault classes:
+  - wrong pin number/name or active-low marker
+  - output-output wiring without explicit bus/enable proof
+  - missing positive/negative or rising/falling edge statement for
+    edge-sensitive chips
+  - shared bus or stress-net timing without R/C, DelayNoise, setup/hold, float,
+    or deadband coverage
+- Added regression coverage in `python/tests/test_lib_circuits.py` for good
+  RV8GR packages and deliberately bad mini-circuits.
+- Added CLI coverage in `python/tests/test_cli.py`; bad circuit reports exit
+  status `2`.
+
+Team ownership:
+
+- Bank owns checker architecture and circuit JSON contract boundaries.
+- Bam owns Python/CLI implementation.
+- Fern owns failing gates and CI confidence.
+- Ohm owns pin truth, active-low markers, and timing/deadband interpretation.
+- Mint owns edge/RTL alignment.
+- Noon owns student-readable fault and fix wording.
+- Pim keeps this handoff, backlog, tests, commit, and push aligned.
 
 ## Completed Since Last Handoff
 

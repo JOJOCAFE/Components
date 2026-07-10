@@ -24,6 +24,7 @@ from .netlist import design_from_kicad_netlist, design_from_netlist, design_to_n
 from .probe import ProbeChannel, ProbeController, ProbeError, ProbeSample, ProbeSet
 from .services import DesignCommandService, FrontendDesignService, SimulationService, VerilogExportService, export_verilog
 from .stimulus import ClockChannel, InputChannel, InputSet, StimulusController, StimulusError
+from .virtual_faults import check_virtual_physical_faults, load_circuit_fault_report
 
 __all__ = [
     "Board",
@@ -84,4 +85,6 @@ __all__ = [
     "InputSet",
     "StimulusController",
     "StimulusError",
+    "check_virtual_physical_faults",
+    "load_circuit_fault_report",
 ]

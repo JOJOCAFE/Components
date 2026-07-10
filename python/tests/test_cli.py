@@ -31,6 +31,15 @@ def small_cli_schematic():
     }
 
 
+def small_circuit_package():
+    return {
+        "schema": "components.lib.circuit",
+        "id": "cli-circuit",
+        "chips": [{"ref": "U1", "part": "74HC04"}],
+        "wiring": [{"net": "Y", "connections": ["U1.1", "U1.2"]}],
+    }
+
+
 def run_cli(path: Path, *args: str):
     return subprocess.run(
         [sys.executable, "-B", "-m", "chiplib.cli", *args, str(path)],
@@ -133,6 +142,27 @@ def test_cli_validate_snapshot_run_probe_and_export_json():
         )
         assert export_verilog_text.returncode == 0, export_verilog_text.stderr
         assert "module cli_small();" in verilog_text_out.read_text(encoding="utf-8")
+
+
+def test_cli_circuit_faults_reports_good_and_bad_circuits():
+    with tempfile.TemporaryDirectory() as tmp:
+        good = Path(tmp) / "good.circuit.json"
+        good.write_text(json.dumps(small_circuit_package()), encoding="utf-8")
+        result = run_cli(good, "circuit-faults")
+        assert result.returncode == 0, result.stderr
+        data = json.loads(result.stdout)
+        assert data["ok"] is True
+        assert data["checks"]["pin_number_truth"]["status"] == "pass"
+
+        bad = Path(tmp) / "bad.circuit.json"
+        circuit = small_circuit_package()
+        circuit["wiring"][0]["connections"] = ["U1.99"]
+        bad.write_text(json.dumps(circuit), encoding="utf-8")
+        result = run_cli(bad, "circuit-faults")
+        assert result.returncode == 2
+        data = json.loads(result.stdout)
+        assert data["ok"] is False
+        assert data["checks"]["pin_number_truth"]["status"] == "fail"
 
 
 def test_cli_db_summary_and_part_lookup():

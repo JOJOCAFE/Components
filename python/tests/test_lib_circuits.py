@@ -8,6 +8,7 @@ import random
 import re
 
 from chiplib import Z, create_chip
+from chiplib.virtual_faults import check_virtual_physical_faults
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -2890,6 +2891,59 @@ def test_rv8gr_whole_system_chip_level_virtual_catches_ai_fault_patterns():
         assert len(trap["fix_method"].split()) >= 8, trap
 
 
+def test_virtual_physical_fault_checker_accepts_good_rv8gr_packages():
+    for package in (WHOLE_SYSTEM_CHIP_LEVEL_VIRTUAL, PC16, RING_COUNTER):
+        report = check_virtual_physical_faults(load_json(package / "circuit.json"))
+        assert report["ok"], report
+        assert set(report["checks"]) == {
+            "pin_number_truth",
+            "output_output_bus_contention",
+            "edge_polarity",
+            "propagation_delay_deadband",
+        }
+
+
+def test_virtual_physical_fault_checker_rejects_ai_pin_bus_edge_and_delay_mistakes():
+    bad_pin = {
+        "id": "bad_pin",
+        "chips": [{"ref": "U1", "part": "74HC04"}],
+        "wiring": [{"net": "Y", "connections": ["U1.99"]}],
+    }
+    report = check_virtual_physical_faults(bad_pin)
+    assert not report["ok"]
+    assert report["checks"]["pin_number_truth"]["status"] == "fail"
+    assert "U1.99" in report["findings"][0]["message"]
+
+    output_output = {
+        "id": "bad_output_output",
+        "chips": [{"ref": "U1", "part": "74HC04"}, {"ref": "U2", "part": "74HC04"}],
+        "wiring": [{"net": "BAD_NET", "connections": ["U1.2", "U2.2"]}],
+    }
+    report = check_virtual_physical_faults(output_output)
+    assert not report["ok"]
+    assert report["checks"]["output_output_bus_contention"]["status"] == "fail"
+
+    bad_edge = {
+        "id": "bad_edge",
+        "chips": [{"ref": "U1", "part": "74HC574"}],
+        "wiring": [{"net": "CLK", "connections": ["U1.11"]}],
+        "timing": {"clocking": "edge_sensitive"},
+    }
+    report = check_virtual_physical_faults(bad_edge)
+    assert not report["ok"]
+    assert report["checks"]["edge_polarity"]["status"] == "fail"
+
+    bad_delay = {
+        "id": "bad_delay",
+        "chips": [{"ref": "U1", "part": "74HC541"}, {"ref": "U2", "part": "74HC541"}],
+        "wiring": [{"net": "IBUS0", "connections": ["U1.18", "U2.18"], "rule": "Exactly one active driver."}],
+        "behavior": {"bus": "Bus owner proof exists but timing margin is not described."},
+    }
+    report = check_virtual_physical_faults(bad_delay)
+    assert not report["ok"]
+    assert report["checks"]["propagation_delay_deadband"]["status"] == "fail"
+
+
 def test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary():
     timing = load_json(TIMING_MARGINS)
     assert timing["schema"] == "components.lib.circuit.timing_margins"
@@ -3406,6 +3460,8 @@ def run_all():
     test_rv8gr_whole_system_chip_level_virtual_includes_required_gates()
     test_rv8gr_whole_system_chip_level_virtual_stress_nets_are_virtual_only()
     test_rv8gr_whole_system_chip_level_virtual_catches_ai_fault_patterns()
+    test_virtual_physical_fault_checker_accepts_good_rv8gr_packages()
+    test_virtual_physical_fault_checker_rejects_ai_pin_bus_edge_and_delay_mistakes()
     test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary()
     test_rv8gr_timing_coverage_matrix_accounts_for_every_circuit_package()
     test_rv8gr_system_hazard_gates_cover_timing_bus_edges_and_propagation()

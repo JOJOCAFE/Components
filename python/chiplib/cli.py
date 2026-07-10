@@ -10,6 +10,7 @@ from typing import Any
 
 from .db import audit_db, component_catalog, component_detail, component_summary, db_status_report, generate_component_artifacts, load_component, load_component_package, load_digital_definition, student_component_catalog
 from .services import DesignCommandService
+from .virtual_faults import load_circuit_fault_report
 
 
 def main(argv: list[str] | None = None, *, design_service: DesignCommandService | None = None) -> int:
@@ -30,6 +31,10 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
         cmd.add_argument("-o", "--output")
         if name == "export-verilog":
             cmd.add_argument("--text", action="store_true", help="write only Verilog source text")
+
+    fault = sub.add_parser("circuit-faults")
+    fault.add_argument("json_file")
+    fault.add_argument("-o", "--output")
 
     db = sub.add_parser("db")
     db.add_argument("part", nargs="?", help="optional component part, such as 74HC00")
@@ -84,6 +89,9 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
         data = load_component(part) if part else component_summary()
         return write_json(data, output=getattr(args, "output", None))
 
+    if args.command == "circuit-faults":
+        data = load_circuit_fault_report(args.json_file)
+        return write_json(data, output=getattr(args, "output", None), status=0 if data["ok"] else 2)
     if args.command == "validate":
         return write_json(designs.validate(args.json_file))
     if args.command == "snapshot":

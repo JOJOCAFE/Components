@@ -124,6 +124,9 @@ Status: complete. Package files live under
   3. Done: add `RV8GR_Lab13MarkerTrace` for the Lab 13 `$AA` pass program.
   4. Done: add `RV8GR_WholeSystemChipLevelVirtual` for the full chip-level
      virtual system gate with R/C and delay-noise stress nets.
+  5. Done: add reusable virtual physical-system fault checker and
+     `chiplib.cli circuit-faults` for wrong pins, invalid output-output wiring,
+     edge-polarity omissions, and delay/deadband omissions.
 - Next RV8GR hardware tasks:
   1. Single-step the boot sequence on the physical build.
   2. Single-step Lab 13 full-system marker program.
@@ -139,6 +142,7 @@ Status: complete. Package files live under
 
 ## Waiting Items
 
-- Commit current checkpoint: waiting by user request.
+- Commit current checkpoint: RV8GR virtual fault protocol pushed as `8bb462b`;
+  reusable checker checkpoint is next to commit and push.
 - Visual chip-block editor implementation: waiting by user request.
 - MCP adapter implementation: waiting until service/editor names settle.
