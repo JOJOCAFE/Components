@@ -1,16 +1,56 @@
 # Components Session Handoff
 
 Date: 2026-07-09
-Last updated: 2026-07-10, after RV8GR virtual physical-system fault checker
+Last updated: 2026-07-10, after student CLI/API guide and save-session handoff
 
 ## Current State
 
 - Repo: `/home/jo/kiro/Components`
 - Branch: `main`
-- Status at handoff: RV8GR virtual fault protocol is pushed; reusable checker,
-  CLI, tests, and handoff updates are included in the current checker
-  checkpoint.
-- Latest pushed protocol commit: `8bb462b Add RV8GR virtual fault protocol`
+- Status at handoff: clean and pushed; `main` matches `origin/main`.
+- Latest pushed commit: `20b8b13 Add student CLI API guide`
+- Latest pushed RV8GR virtual-check commits:
+  - `8bb462b Add RV8GR virtual fault protocol`
+  - `49ed732 Add circuit virtual fault checker`
+  - `b8719bc Update circuit backlog checkpoint status`
+
+## Latest Save: 2026-07-10 Student Guide And Handoff
+
+Completed since the previous checker handoff:
+
+- Added `STUDENT_GUIDE.md` as the beginner-first Components guide for CLI and
+  local API use before the visual editor exists.
+- Linked `STUDENT_GUIDE.md` from root `README.md` and `python/README.md`.
+- Cleaned `SERVICE_CONTRACT.md` so documented CLI examples match the current
+  CLI behavior: JSON output by default, no fake `--json` option.
+- Added `circuit-faults` to the service contract and kept the RV8GR
+  virtual-vs-hardware boundary explicit.
+- Saved a persistent future-task note to review chip JSON/component definition
+  output for student-friendliness and document the system wiring commands used
+  in Components.
+
+Verified for the student-guide checkpoint:
+
+```sh
+PYTHONPATH=python python3 -B -m chiplib.cli validate Examples/nand.json
+PYTHONPATH=python python3 -B -m chiplib.cli run Examples/nand.json
+PYTHONPATH=python python3 -B -m chiplib.cli circuit-faults Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json
+PYTHONPATH=python python3 -B -m chiplib.api --stdio
+PYTHONPATH=python python3 -B -m tests.test_cli
+PYTHONPATH=python python3 -B -m tests.test_api
+PYTHONPATH=python python3 -B -m tests.test_contracts
+git diff --check
+```
+
+Current remaining lanes:
+
+1. Build the first visual chip-block editor screen on top of
+   `components.block_ui`.
+2. Add an MCP adapter after editor/service names settle.
+3. Collect physical RV8GR evidence before any hardware-ready claim.
+4. Continue broader non-RV8GR component catalog hardening.
+5. Later: review chip JSON/component definition output for student clarity and
+   document system wiring commands used in Components.
 
 ## Completed This Session
 

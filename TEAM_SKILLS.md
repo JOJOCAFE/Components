@@ -19,6 +19,9 @@ simulation services, and student-facing documentation.
   change needs focused tests plus smoke coverage.
 - Beginner-readable failure messages and examples: errors must point to the
   chip, pin, net, source, or missing property that the learner can fix.
+- Student-reference discipline: when adding CLI/API/service behavior, keep a
+  student-facing path in `STUDENT_GUIDE.md`, `README.md`, or package READMEs so
+  learners can discover the command without reading code.
 - Layered component generation: one canonical `definition/definition.json` should
   drive normalized JSON, Python simulator adapters, Verilog wrappers/export,
   KiCad symbols, SVG pinouts, documentation, unit tests, and interactive demos.
@@ -77,6 +80,10 @@ Shared team rule:
   propagation-delay/deadband risk. Bank and Bam build the checker, Fern owns the
   failing gates, Ohm owns pin/timing truth, Mint reviews edge/RTL alignment, and
   Noon keeps the fix method understandable for students.
+- Future student cleanup lane: review chip JSON/component definition output for
+  learner readability and document the system wiring commands Components
+  actually uses. Do this without weakening datasheet truth, pin numbers,
+  active-low labels, edge behavior, tri-state rules, or timing limits.
 
 Current seed-batch milestone:
 
@@ -180,6 +187,10 @@ Current RV8GR circuit-library milestone:
 - `BLOCK_UI_CONTRACT.md` and `python/chiplib/block_ui.py` are the current
   visual chip-block editor foundation: DIP placement metadata, real pin lists,
   net/wire endpoint details, and Python/Verilog run configuration.
+- `STUDENT_GUIDE.md` is the current student-first CLI/API guide. It covers the
+  student catalog, `Examples/nand.json`, `circuit-faults`, local stdio/HTTP API
+  use, the `ok` response rule, and the boundary between virtual checks and
+  physical hardware signoff.
 - Extra clock-profile tests now cover `RV8GR_InstructionLatch`,
   `RV8GR_DataPageMemory`, `RV8GR_IRQLatch`, `RV8GR_PageDataRegisters`, and
   `RV8GR_BranchJumpControl`, and `RV8GR_AluAccumulator` with push-switch,
@@ -218,6 +229,9 @@ Components focus:
 - Keep virtual stimulus, circuit packages, tests, and team task lists moving
   together; `Switch` pulse behavior must be reflected in DB, circuit tests, and
   beginner docs.
+- Keep save-session work explicit: update `TEAM_SKILLS.md`, update
+  `SESSION_HANDOFF.md`, add a compact persistent note when requested, and push
+  the repo checkpoint when files changed.
 
 ## Bank - Architect
 
@@ -378,6 +392,8 @@ Components focus:
 - Owns `Switch` service semantics in Python-facing contracts and future block
   editor use: stable states, one-shot events, and preset pulse trains.
 - Owns block-UI import/export implementation for visual editor workflows.
+- Owns the future wiring-command documentation with Noon: the documented command
+  flow must match the actual CLI/API/service behavior.
 
 ## Noon - Docs Writer
 
@@ -411,6 +427,9 @@ Components focus:
 - Explains switch modes in beginner terms and distinguishes virtual switch
   stimulus from real push-button hardware.
 - Keeps 5 MHz wording conservative: functional simulation is not hardware proof.
+- Owns `STUDENT_GUIDE.md` and the future pass that makes chip JSON/component
+  definition output easier for students to read while preserving the real
+  engineering facts.
 
 ## Natural Pairings
 
