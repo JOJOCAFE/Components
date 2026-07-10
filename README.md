@@ -20,6 +20,8 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 - `Schemas/` - machine-readable schemas for exported interchange artifacts,
   including the normalized netlist contract.
 - `Source/` - manufacturer datasheet PDFs used as local evidence for pinout documentation; see `Source/README.md` for the retained evidence list.
+- `STUDENT_GUIDE.md` - beginner-first guide for using Components from the CLI
+  and local API before the visual editor exists.
 - `SCHEMATIC_JSON_SPEC.md` - readable JSON schematic script contract for
   digital simulation, CPU labs, netlist export, Verilog/testbench generation,
   and future UI display.
@@ -229,8 +231,23 @@ python3 -m chiplib.cli db --status
 cd ..
 ```
 
+## Student CLI/API Start
+
+For the shortest learner-facing path, start with `STUDENT_GUIDE.md`. It shows:
+
+- how to inspect the student component catalog
+- how to run `Examples/nand.json`
+- how to use `circuit-faults` for RV8GR virtual physical-system checks
+- how to call the local stdio or HTTP API
+
+The important boundary is unchanged: virtual checks can catch wiring, bus,
+edge, and timing-risk mistakes, but they do not replace physical voltage,
+frequency, or oscilloscope evidence.
+
 ## Subfolder Docs
 
+- `STUDENT_GUIDE.md` - student-first CLI/API guide with safe virtual-vs-hardware
+  boundaries.
 - `Verilog/74xx/README.md` - full 74xx logic model list, scan notes, and 74xx source coverage.
 - `Verilog/Memory/README.md` - memory model list and datasheet sources.
 - `DB/README.md` - chip-centered DB package layout and migration notes.

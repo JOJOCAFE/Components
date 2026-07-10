@@ -75,8 +75,8 @@ Input precedence:
 CLI file arguments are paths to these same JSON payloads. For example:
 
 ```sh
-python3 -m chiplib.cli validate rv8gr_lab01.json --json
-python3 -m chiplib.cli run rv8gr_lab01.json --json
+python3 -m chiplib.cli validate rv8gr_lab01.json
+python3 -m chiplib.cli run rv8gr_lab01.json
 ```
 
 ## Shared Success Response
@@ -158,7 +158,7 @@ connection shape, and report warnings/errors without running simulation.
 CLI:
 
 ```sh
-python3 -m chiplib.cli validate design.json --json
+python3 -m chiplib.cli validate design.json
 ```
 
 Request:
@@ -201,7 +201,7 @@ for UI/debug display.
 CLI:
 
 ```sh
-python3 -m chiplib.cli snapshot design.json --json
+python3 -m chiplib.cli snapshot design.json
 ```
 
 Request:
@@ -246,7 +246,7 @@ expectations, and return serializable simulation state.
 CLI:
 
 ```sh
-python3 -m chiplib.cli run design.json --json
+python3 -m chiplib.cli run design.json
 ```
 
 Request:
@@ -297,7 +297,7 @@ Purpose: sample named probe sets from a design after optional run steps.
 CLI:
 
 ```sh
-python3 -m chiplib.cli probe design.json --set front_panel --json
+python3 -m chiplib.cli probe design.json
 ```
 
 Request:
@@ -477,7 +477,7 @@ legacy coverage, export metadata, and visible missing-property reports.
 CLI:
 
 ```sh
-python3 -m chiplib.cli db --audit --json
+python3 -m chiplib.cli db --audit
 ```
 
 Request:
@@ -524,7 +524,7 @@ metadata panels.
 CLI:
 
 ```sh
-python3 -m chiplib.cli db --status --json
+python3 -m chiplib.cli db --status
 ```
 
 Request:
@@ -634,7 +634,7 @@ around ages 10-15 while still remaining machine-readable for frontend clients.
   "version": 1,
   "part": "74HC00",
   "group": "74xx",
-  "db_path": "DB/74xx/74HC00/chip.json",
+  "db_path": "DB/74xx/74HC00/definition/definition.json",
   "pins": [
     {"number": 1, "name": "1A", "direction": "input"}
   ],
@@ -648,6 +648,38 @@ around ages 10-15 while still remaining machine-readable for frontend clients.
   "warnings": []
 }
 ```
+
+### circuit-faults
+
+Purpose: run the virtual physical-system fault checker on a circuit-package
+JSON file before students trust a virtual circuit.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli circuit-faults Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json
+```
+
+Result:
+
+```json
+{
+  "schema": "components.virtual_physical_fault_report",
+  "version": 1,
+  "circuit": "rv8gr_whole_system_chip_level_virtual",
+  "ok": true,
+  "checks": {
+    "pin_number_truth": {"status": "pass", "finding_count": 0},
+    "output_output_bus_contention": {"status": "pass", "finding_count": 0},
+    "edge_polarity": {"status": "pass", "finding_count": 0},
+    "propagation_delay_deadband": {"status": "pass", "finding_count": 0}
+  },
+  "findings": []
+}
+```
+
+This checker is a virtual gate. It catches common pin, bus, edge, and
+delay/deadband mistakes, but it is not hardware signoff.
 
 ### frontend-snapshot
 
@@ -717,16 +749,19 @@ Stateful frontend-edit commands operate on the loaded in-memory design:
 - `snapshot`
 - `frontend-snapshot`
 - `component-catalog`
+- `student-component-catalog`
 - `component-detail`
-- `component-digital`
 - `component-metadata`
+- `component-digital`
+- `component-package`
+- `component-generate`
 - `run`
 - `probe`
 - `export-json`
-- `export-block-ui`
-- `import-block-ui`
 - `export-netlist`
 - `export-verilog`
+- `export-block-ui`
+- `import-block-ui`
 
 Example:
 
@@ -760,10 +795,9 @@ Example:
 
 ## CLI Output Modes
 
-CLI commands should support two audiences:
-
-- Default mode may print concise readable summaries for humans.
-- `--json` must print the service response object without extra text.
+Current CLI commands print JSON without extra text. Future readable summaries
+may be added only if they do not break automation; JSON must remain available
+for every command.
 
 Nonzero exit rules:
 
