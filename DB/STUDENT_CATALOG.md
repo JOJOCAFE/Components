@@ -1,34 +1,34 @@
 # Student Catalog View
 
-The student catalog is a smaller DB view for learner-facing tools. It keeps the
-same component facts as the main DB catalog, but shows the fields a student or
-teacher needs first:
+Learner-facing DB view for tools, examples, and classroom UIs.
 
-- what the component is
-- whether it can simulate
-- whether it can export to Verilog
-- whether the pinout and datasheet are verified
-- a short pin preview
-- visible warnings for missing information
+The student catalog does not create a second source of truth. It is a smaller
+view synthesized from package definitions so students see the useful fields
+first: what the part is, whether it can simulate, whether it can export to
+Verilog, which pins matter first, and what warnings should be shown before
+building.
 
-The main audience is students around ages 10-15, while still being useful for
-older learners.
+Audience: students around ages 10-15, still useful for older learners.
+
+## Groups
+
+Valid group filters:
+
+- `74xx`
+- `memory`
+- `virtual`
+- `passive`
+- `discrete`
 
 ## CLI
 
-List all components in the student view:
+Run from the repo root:
 
 ```sh
-cd python
-python3 -m chiplib.cli db --student
-```
-
-List one group:
-
-```sh
-python3 -m chiplib.cli db --student --group virtual
-python3 -m chiplib.cli db --student --group 74xx
-python3 -m chiplib.cli db --student --group memory
+PYTHONPATH=python python3 -m chiplib.cli db --student
+PYTHONPATH=python python3 -m chiplib.cli db --student --group 74xx
+PYTHONPATH=python python3 -m chiplib.cli db --student --group virtual
+PYTHONPATH=python python3 -m chiplib.cli db --student --group discrete
 ```
 
 ## Python
@@ -37,26 +37,35 @@ python3 -m chiplib.cli db --student --group memory
 from chiplib.db import student_component_catalog
 
 catalog = student_component_catalog(group="74xx")
-first = catalog["components"][0]
-print(first["part"], first["readiness"], first["capabilities"])
+card = catalog["components"][0]
+print(card["part"], card["readiness"], card["student_note"])
 ```
 
-## Frontend API
+## Service Command
 
-HTTP and stdio adapters use the same service command:
+HTTP and stdio adapters use the same command:
 
 ```json
 {"command": "student-component-catalog", "options": {"group": "virtual"}}
 ```
 
-The response has `format: components.db.student_catalog` and component cards
-like:
+The response uses:
+
+```json
+{"format": "components.db.student_catalog"}
+```
+
+## Component Card
+
+Example shape:
 
 ```json
 {
   "part": "Probe",
   "title": "Single logic probe",
   "group": "virtual",
+  "kind": "virtual",
+  "role": "probe",
   "readiness": "usable",
   "capabilities": {
     "can_simulate": true,
@@ -66,22 +75,37 @@ like:
   },
   "pins": {
     "count": 1,
-    "preview": [{"number": 1, "name": "IN", "direction": "input"}]
+    "preview": [
+      {"number": 1, "name": "IN", "direction": "input"}
+    ]
   },
+  "files": {
+    "db": "DB/Virtual/Probe/definition/definition.json",
+    "verilog": ""
+  },
+  "status": {
+    "datasheet": "not_applicable",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "verilog_model": "not_applicable",
+    "verilog_export": "not_applicable",
+    "tests": "modeled"
+  },
+  "student_note": "Usable as a probe; check the status fields before using advanced outputs.",
   "warnings": []
 }
 ```
 
 ## Readiness
 
-- `ready`: good for building and simulation examples.
-- `usable`: usable, but some advanced output or evidence may be missing.
-- `needs_info`: visible in the catalog, but show what is missing before
-  students build with it.
+- `ready`: good for examples and simulations.
+- `usable`: usable, but advanced output or evidence may be missing.
+- `needs_info`: visible in the catalog, but tools should show missing data
+  before students build with it.
 
 ## Boundary
 
-This is only a view of DB metadata. It does not move chip behavior, Verilog
-models, or pinout documentation into new places. Those implementation files stay
-behind the existing service boundaries until a real UI or downstream project
-needs a physical move.
+This is a view only. Behavior models, Verilog models, pin evidence, tests, and
+package definitions stay in their package folders. UI code should display the
+student catalog, then link back to the package definition when a learner needs
+the full evidence.

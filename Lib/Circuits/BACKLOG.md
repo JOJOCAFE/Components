@@ -2,12 +2,8 @@
 
 ## RV8GR Chip-Level Gate
 
-- Done: `DB/RV8GR_CHIP_LEVEL_READINESS.json` now records all 18 RV8GR chips,
-  their role, datasheet timing/electrical status, chip-level gate, physical
-  timing allowance, and next datasheet action.
-- Done: `DB/RV8GR_CHIP_LEVEL_TEST_PLAN.md` defines the required order:
-  datasheet definition evidence, chip-level split records, circuit packages,
-  whole-system benches, then physical build measurements.
+- Done: RV8GR chip readiness and virtual bench artifacts were moved out of
+  `DB/` and into the RV8GR repo. Components DB should stay project-neutral.
 - Done: `python/tests/test_generated_split_records.py` now checks the
   readiness matrix against actual definitions and the five split-record files.
 - Done: all 18 RV8GR chips now have datasheet-backed timing/electrical

@@ -1,8 +1,8 @@
 # Components Session Handoff
 
 Date: 2026-07-09
-Last updated: 2026-07-10, after student readability, RV8GR 36-package audit,
-and team-skill refresh
+Last updated: 2026-07-11, after DB cleanup, Discrete package migration, and
+RV8GR artifact relocation
 
 ## Current State
 
@@ -15,6 +15,55 @@ and team-skill refresh
   - `8bb462b Add RV8GR virtual fault protocol`
   - `49ed732 Add circuit virtual fault checker`
   - `b8719bc Update circuit backlog checkpoint status`
+
+## Latest Save: 2026-07-11 DB Cleanup And Package Contract
+
+Completed in this checkpoint:
+
+- Components DB is package-definition only:
+  - active ICs use `schema: db.component.digital`
+  - Virtual, Passive, and Discrete use `schema: db.component.definition`
+  - `load_component(part)` returns a synthesized `db.component.manifest`
+    catalog view for callers that still need flat component cards
+- Retired active-tree legacy artifacts:
+  - `DB/chip.schema.json`
+  - all `DB/**/chip.json`
+  - all `DB/**/component.json`
+- Migrated Discrete entries to package definitions:
+  - `DB/Discrete/NPN/definition/definition.json`
+  - `DB/Discrete/PNP/definition/definition.json`
+  - `DB/Discrete/BC549/definition/definition.json`
+  - `DB/Discrete/BC559/definition/definition.json`
+- Removed RV8GR-specific Markdown/JSON artifacts from `DB/`; valued RV8GR
+  protocol/readiness/bench artifacts were moved to `/home/jo/kiro/RV8/RV8GR/doc/`.
+- Compacted DB docs:
+  - `DB/README.md`
+  - `DB/COMPONENT_TEST_PROTOCOL.md`
+  - `DB/STUDENT_CATALOG.md`
+- Kept virtual-test information at DB root because it is DB-level information,
+  not a Virtual device package:
+  - `DB/VIRTUAL_TEST_INSTRUMENTS.json`
+  - `DB/VIRTUAL_TEST_GENERATOR_CONTRACT.json`
+  - matching `.md` guides
+
+Verification for this checkpoint:
+
+- `PYTHONPATH=python python3 -B -m tests.test_db`
+- `PYTHONPATH=python python3 -B -m tests.test_generated_split_records`
+- `PYTHONPATH=python python3 -B -m tests.test_lib_circuits`
+- `PYTHONPATH=python python3 -B -m tests.test_cli`
+- `PYTHONPATH=python python3 -B -m tests.test_api`
+- `PYTHONPATH=python python3 -B -m tests.test_block_ui`
+- `git diff --check`
+
+Current remaining lanes:
+
+1. Continue non-RV8GR datasheet timing/electrical extraction for active ICs
+   that still rely on simulator-default timing rows.
+2. Keep virtual-test contracts at DB root unless they become real component
+   packages with their own `definition/definition.json`.
+3. Push both repos together when RV8GR doc artifacts and Components DB cleanup
+   are reviewed together.
 
 ## Latest Save: 2026-07-10 Student Readability And RV8GR Count Audit
 
@@ -348,7 +397,8 @@ Team ownership:
 - Seed and RV8GR verification now covers rising/no-edge behavior, enable/hold,
   async priority, bus-fight/no-conflict cases, memory write protection,
   propagation/timing metadata, and Python-vs-Verilog coverage guards.
-- Added `DB/RV8GR_BATCH2_VERIFICATION_AUDIT.md`.
+- RV8GR complete-set readiness and virtual bench artifacts were moved out of
+  `DB/` and into the RV8GR repo; Components DB stays project-neutral.
 - `.github/workflows/verilog-smoke.yml` now also compiles package-local
   `DB/74xx` and `DB/Memory` `simulation/model.v` files.
 - Updated docs for chip definition and verification contracts:
@@ -364,17 +414,17 @@ Team ownership:
   legacy compatibility notes.
 - Updated `TEAM_SKILLS.md` broad health gates to include `test_block_ui`,
   `test_generated_split_records`, `db --audit`, and `db --status`.
-- Migrated `DB/Virtual` and `DB/Passive` from compact `component.json`
-  manifests to generic `definition/definition.json` packages with embedded
-  component/package/pins/simulation/UI definition layers. `load_component()`
-  still returns the compatibility manifest shape, while `load_component_package()`
-  and CLI/API `component-package` now support both digital IC packages and
-  generic Virtual/Passive packages. `DB/Discrete` remains on compact
-  `component.json`.
+- Migrated `DB/Virtual`, `DB/Passive`, and `DB/Discrete` from compact
+  `component.json` manifests to generic `definition/definition.json` packages
+  with embedded component/package/pins/simulation/UI definition layers.
+  `load_component()` now returns the synthesized `db.component.manifest` view,
+  while `load_component_package()` and CLI/API `component-package` support
+  digital IC and generic component packages.
 - Added `BC549` and `BC559` discrete component entries, red/blue/yellow LED
   passive packages, and explicit group migration-status notes.
 - Froze the DB chip model as `v0.1` on `2026-07-09` in `DB/index.json`,
-  `DB/chip.schema.json`, `DB/digital.schema.json`, and `DB/README.md`.
+  `DB/digital.schema.json` and `DB/README.md`; `DB/chip.schema.json` is now
+  retired.
 - Promoted RV8GR Batch 2 from migrated records to a complete seed-style set:
   every RV8GR part is hard-gated for package layers, non-placeholder truth
   vectors, declared edge criteria, split test records, and executable truth

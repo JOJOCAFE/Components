@@ -573,7 +573,7 @@ def audit_db() -> JsonMap:
 
     for manifest in components:
         part = str(manifest.get("part", ""))
-        location = str(manifest.get("db_path", f"DB/{part}/chip.json"))
+        location = str(manifest.get("db_path", f"DB/*/{part}/definition/definition.json"))
         for key in manifest.get("missing_properties", []):
             errors.append(_issue("missing_property", part, location, f"missing status/property: {key}"))
         for path in manifest.get("missing_files", []):
@@ -869,7 +869,7 @@ def _definition_manifest_path(part: str) -> Path:
 def _manifest_from_definition(definition: JsonMap, path: Path) -> JsonMap:
     if definition.get("schema") != "db.component.digital":
         manifest = deepcopy(definition)
-        manifest["schema"] = "db.chip"
+        manifest["schema"] = "db.component.manifest"
         manifest["version"] = 1
         manifest.setdefault("id", manifest.get("part", path.parents[1].name))
         manifest.setdefault("part", path.parents[1].name)
@@ -890,7 +890,7 @@ def _manifest_from_definition(definition: JsonMap, path: Path) -> JsonMap:
     if verilog_generation.get("netlist"):
         verilog["netlist"] = verilog_generation["netlist"]
     return {
-        "schema": "db.chip",
+        "schema": "db.component.manifest",
         "version": 1,
         "part": definition.get("part", base.name),
         "title": metadata.get("title", definition.get("part", base.name)),

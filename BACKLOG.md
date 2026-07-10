@@ -72,7 +72,7 @@ Future work for the shared component library.
   `Schemas/normalized-netlist.schema.json` as the first plugin boundary.
 - ✅ Add grouped DB entries for Virtual, Passive, and Discrete components.
   Virtual and Passive now use layered `definition/definition.json` packages;
-  Discrete remains compact `component.json`.
+  Discrete is migrated to package-local `definition/definition.json`.
 - ✅ Move IC DB manifests into grouped folders: 74HC parts under `DB/74xx/`
   and memory parts under `DB/Memory/`.
 - ✅ Add DB-backed adapters so schematic JSON can instantiate virtual sources,
@@ -364,8 +364,10 @@ tests, and pushed commits aligned.
   `generated/` layers.
 - ✅ Add schemas and DB validation tests for the new `db.component.digital`
   package files.
-- ✅ Add a loader that can read `definition/definition.json` while preserving
-  legacy `chip.json` compatibility.
+- ✅ Add a loader that reads package-local `definition/definition.json` for all
+  active DB components. `load_component(part)` now synthesizes the catalog
+  manifest view as `db.component.manifest`; no active package uses `chip.json`,
+  `component.json`, or `chip.schema.json`.
 - ✅ Prototype generation from one file for `74HC245`: normalized JSON,
   Python simulator report, Verilog wrapper/export metadata, KiCad symbol,
   SVG pinout, documentation data, unit test vectors, and interactive demo data.

@@ -1,0 +1,88 @@
+{
+  "schema": "db.component.definition",
+  "version": 1,
+  "id": "PNP",
+  "part": "PNP",
+  "group": "discrete",
+  "kind": "physical",
+  "role": "discrete",
+  "title": "PNP bipolar transistor",
+  "family": "Discrete",
+  "package": {
+    "kind": "generic_three_terminal",
+    "pins": 3
+  },
+  "status": {
+    "datasheet": "not_applicable",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "verilog_model": "not_applicable",
+    "verilog_export": "not_applicable",
+    "tests": "modeled"
+  },
+  "pins": [
+    {"number": 1, "name": "C", "direction": "passive"},
+    {"number": 2, "name": "B", "direction": "passive"},
+    {"number": 3, "name": "E", "direction": "passive"}
+  ],
+  "simulation": {
+    "service": "sim.transistor.pnp"
+  },
+  "ui": {
+    "widget": "transistor",
+    "symbol": "pnp"
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "PNP",
+      "title": "PNP bipolar transistor",
+      "family": "Discrete",
+      "group": "discrete",
+      "kind": "physical",
+      "role": "discrete"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "PNP",
+      "packages": [
+        {
+          "id": "generic_three_terminal",
+          "kind": "generic_three_terminal",
+          "pins": 3
+        }
+      ],
+      "default_package": "generic_three_terminal"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "PNP",
+      "pins": [
+        {"number": 1, "name": "C", "direction": "passive"},
+        {"number": 2, "name": "B", "direction": "passive"},
+        {"number": 3, "name": "E", "direction": "passive"}
+      ],
+      "buses": {}
+    },
+    "simulation": {
+      "schema": "db.component.simulation",
+      "version": 1,
+      "part": "PNP",
+      "simulation": {
+        "service": "sim.transistor.pnp"
+      }
+    },
+    "ui": {
+      "schema": "db.component.ui",
+      "version": 1,
+      "part": "PNP",
+      "ui": {
+        "widget": "transistor",
+        "symbol": "pnp"
+      }
+    }
+  }
+}

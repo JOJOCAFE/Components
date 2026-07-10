@@ -126,7 +126,7 @@ registers, and EEPROM memory.
 
 ## RV8GR Batch 2 Direction
 
-The RV8GR-used chip set now follows the seed-package verification shape. See
-`DB/RV8GR_BATCH2_VERIFICATION_AUDIT.md` for the current per-chip truth coverage
-and the edge-criteria policy. The same standard should be applied to the rest
-of the migrated IC catalog before a part is called fully verified.
+The RV8GR-used chip set now follows the seed-package verification shape.
+RV8GR-specific readiness reports belong in the RV8GR repo, while Components DB
+keeps generic chip/package records. The same standard should be applied to the
+rest of the migrated IC catalog before a part is called fully verified.

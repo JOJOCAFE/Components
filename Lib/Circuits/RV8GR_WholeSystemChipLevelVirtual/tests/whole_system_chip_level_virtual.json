@@ -4,7 +4,7 @@
   "circuit": "rv8gr_whole_system_chip_level_virtual",
   "source": "Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json",
   "chip_bench_plan": {
-    "source": "DB/RV8GR_VIRTUAL_BENCH_PLAN.json",
+    "source": "../RV8/RV8GR/doc/rv8gr_virtual_bench_plan.json",
     "expect_chip_count": 18,
     "expect_split_records_per_chip": 5,
     "expect_total_split_record_mappings": 90,

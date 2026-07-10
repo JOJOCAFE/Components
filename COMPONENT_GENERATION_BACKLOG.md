@@ -41,10 +41,10 @@ Definition sublayers are embedded in `definition/definition.json` under
 `definition_layers`, and datasheet sources are embedded under
 `datasheet.sources`. Legacy split definition or datasheet files are
 compatibility fallback inputs, not required seed-package source files.
-Seed packages no longer need `chip.json`; `load_component(part)` can synthesize
-the compatibility manifest from `definition/definition.json` and
-`simulation/netlist.json`. Legacy `chip.json` files remain supported for older
-components.
+Packages no longer need `chip.json` or `component.json`; `load_component(part)`
+synthesizes the catalog manifest from `definition/definition.json` and package
+metadata. Runtime compatibility paths still exist for external older data, but
+the active DB tree is package-definition only.
 
 ## Pim's Comments
 
@@ -188,8 +188,8 @@ Done:
   edge criteria, split test records, and executable truth coverage.
 - `python/tests/test_generated_split_records.py` now also gates the active IC
   placeholder inventory to an empty set.
-- `DB/RV8GR_BATCH2_VERIFICATION_AUDIT.md` records the RV8GR complete-set
-  verification state.
+- RV8GR complete-set readiness artifacts have been moved out of `DB/` and into
+  the RV8GR repo so Components DB stays project-neutral.
 
 ### 4. Ohm - Electrical, Timing, And Datasheet Evidence
 
@@ -235,8 +235,8 @@ Owns:
 Tasks:
 
 - Add a loader that can read `definition/definition.json`.
-- Keep `load_component(part)` backward-compatible with legacy `chip.json` while
-  supporting seed chips without `chip.json`.
+- Keep `load_component(part)` compatible with callers that need a flat catalog
+  view while sourcing active data from package definitions.
 - Prototype generators for:
   - normalized JSON detail
   - Python simulator adapter report
@@ -250,8 +250,8 @@ Tasks:
 
 Acceptance:
 
-- Seed, RV8GR Batch 2, and active IC packages load through the current DB API
-  from `definition/definition.json`.
+- Seed, RV8GR Batch 2, active IC, Virtual, Passive, and Discrete packages load
+  through the current DB API from `definition/definition.json`.
 - Package definitions emit generator-ready artifact reports from one file.
 
 Done:

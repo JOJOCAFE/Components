@@ -2161,21 +2161,17 @@ def test_components_test_protocol_names_required_gates_and_references():
     component_protocol = COMPONENT_TEST_PROTOCOL.read_text(encoding="utf-8")
     rv8gr_protocol = RV8GR_TEST_PROTOCOL.read_text(encoding="utf-8")
     instruments = load_json(ROOT / "DB" / "VIRTUAL_TEST_INSTRUMENTS.json")
+    generator_contract = load_json(ROOT / "DB" / "VIRTUAL_TEST_GENERATOR_CONTRACT.json")
+    generator_doc = (ROOT / "DB" / "VIRTUAL_TEST_GENERATOR_CONTRACT.md").read_text(encoding="utf-8")
+    instruments_doc = (ROOT / "DB" / "VIRTUAL_TEST_INSTRUMENTS.md").read_text(encoding="utf-8")
 
-    assert "MIL-STD-883" in component_protocol
-    assert "JESD78" in component_protocol
-    assert "Keysight oscilloscope probe" in component_protocol
-    assert "Gate 5: Virtual Parasitic Test Components" in component_protocol
-    assert "DB/VIRTUAL_TEST_INSTRUMENTS.json" in component_protocol
-    assert "Student-friendly workflow" in component_protocol
+    assert "Gate 1: Definition Package" in component_protocol
+    assert "Gate 2: Chip Behavior" in component_protocol
+    assert "Gate 5: Timing And Bus Risk" in component_protocol
     assert "`RCParasitic`" in component_protocol
-    assert "`DelayNoise` is different from `RCParasitic`" in component_protocol
+    assert "`DelayNoise`" in component_protocol
     assert "`OutputAssert`" in component_protocol
-    assert "4.5 V" in component_protocol
-    assert "5.0 V" in component_protocol
-    assert "5.5 V" in component_protocol
-    assert "100 manual push-switch ticks" in component_protocol
-    assert "5 MHz" in component_protocol
+    assert "Virtual timing is an estimate" in component_protocol
 
     assert "Parent protocol: `DB/COMPONENT_TEST_PROTOCOL.md`" in rv8gr_protocol
     assert "Use the virtual `RCParasitic` component" in rv8gr_protocol
@@ -2183,6 +2179,12 @@ def test_components_test_protocol_names_required_gates_and_references():
     instrument_parts = {item["part"] for item in instruments["instruments"]}
     assert {"ClockSource", "Switch", "Probe", "BusProbe", "RCParasitic", "OutputAssert", "DelayNoise"} <= instrument_parts
     assert "Use virtual instruments to learn" in instruments["student_rule"]
+    assert generator_contract["input_records"] == ["truth_table", "timing", "tri_state", "bus_fight", "propagation"]
+    assert generator_contract["delay_noise_policy"]["status"] == "virtual_stress_not_physical_signoff"
+    assert "The JSON file is canonical" in generator_doc
+    assert "split-record tests into reusable virtual benches" in generator_doc
+    assert "The JSON file is canonical" in instruments_doc
+    assert "Never call virtual stress a physical signoff" in instruments_doc
 
 
 def test_rv8gr_full_control_opcode_sweep_package_shape():

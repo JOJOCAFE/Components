@@ -59,11 +59,6 @@ For physical breadboard work:
 | `Lib/Circuits/RV8GR_*/README.md` | Student with teacher | Good proof cards; most need lab wiring beside them. |
 | `DB/COMPONENT_TEST_PROTOCOL.md` | Teacher | Serious protocol, not first-reading student text. |
 | `Lib/Circuits/RV8GR_TEST_PROTOCOL.md` | Teacher / advanced student | Good real-build measurement guide. |
-| `DB/RV8GR_MULTI_LEVEL_TEST_PROTOCOL.md` | Teacher / verifier | Good gate structure, too dense for beginners. |
-| `DB/RV8GR_CHIP_LEVEL_TEST_PLAN.md` | Teacher / verifier | Required chip-level gate and physical sweep plan. |
-| `DB/RV8GR_TEST_REPORT.md` | Teacher / verifier | Current pass/block status. |
-| `DB/RV8GR_VIRTUAL_BENCH_PLAN.md` | Teacher / tool builder | Virtual instrument mapping. |
-| `DB/RV8GR_BATCH2_VERIFICATION_AUDIT.md` | Maintainer | Evidence audit, not a lesson. |
 | `CHIP_STATUS.md` | Teacher / maintainer | Catalog status snapshot. |
 | `DB/README.md` | Maintainer | DB model and package layout. |
 | `DB_COMPONENT_PACKAGE_SPEC.md` | Maintainer | Component package contract. |

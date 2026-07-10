@@ -294,6 +294,4 @@ Do not change expected results just to make a bad circuit pass.
 - `python/USAGE.md`: deeper Python examples.
 - `DB/STUDENT_CATALOG.md`: student catalog fields.
 - `DB/COMPONENT_TEST_PROTOCOL.md`: serious chip/circuit test protocol.
-- `DB/RV8GR_MULTI_LEVEL_TEST_PROTOCOL.md`: RV8GR chip, circuit, system, and
-  physical signoff levels.
 - `Lib/Circuits/README.md`: RV8GR circuit packages.

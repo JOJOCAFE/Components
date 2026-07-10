@@ -72,7 +72,7 @@ def generic_package_parts() -> set[str]:
     return {
         path.parents[1].name
         for path in db_root().glob("*/*/definition/definition.json")
-        if path.parents[2].name in {"Virtual", "Passive"}
+        if path.parents[2].name in {"Virtual", "Passive", "Discrete"}
     }
 
 
@@ -342,15 +342,27 @@ def test_virtual_and_passive_components_use_definition_packages():
         "YellowLED",
         "Resistor",
         "Capacitor",
+        "NPN",
+        "PNP",
+        "BC549",
+        "BC559",
     }
     assert not list((db_root() / "Virtual").glob("*/component.json"))
     assert not list((db_root() / "Passive").glob("*/component.json"))
+    assert not list((db_root() / "Discrete").glob("*/component.json"))
 
     probe_definition = load_package_definition("Probe")
     assert probe_definition["schema"] == "db.component.definition"
     assert probe_definition["validation"]["ok"] is True, probe_definition["validation"]["errors"]
     assert probe_definition["definition_path"] == "DB/Virtual/Probe/definition/definition.json"
     assert load_digital_definition("Probe", required=False) is None
+
+    for part in ("NPN", "PNP", "BC549", "BC559"):
+        definition = load_package_definition(part)
+        assert definition["schema"] == "db.component.definition"
+        assert definition["validation"]["ok"] is True, (part, definition["validation"]["errors"])
+        assert definition["definition_path"] == f"DB/Discrete/{part}/definition/definition.json"
+        assert load_digital_definition(part, required=False) is None
 
     probe_package = load_component_package("Probe")
     assert probe_package["format"] == "db.component.package"
@@ -384,11 +396,12 @@ def test_virtual_and_passive_components_use_definition_packages():
 
 
 def test_virtual_test_instruments_map_to_real_virtual_components():
-    instruments = json.loads((db_root().parent / "DB" / "VIRTUAL_TEST_INSTRUMENTS.json").read_text(encoding="utf-8"))
+    instruments = json.loads((db_root() / "VIRTUAL_TEST_INSTRUMENTS.json").read_text(encoding="utf-8"))
     virtual_index = json.loads((db_root() / "Virtual" / "index.json").read_text(encoding="utf-8"))
     virtual_parts = set(virtual_index["components"])
 
     assert instruments["schema"] == "components.virtual_test_instruments"
+    assert "group_artifacts" not in virtual_index
     assert "do not replace datasheet evidence" in instruments["claim_boundary"]
     assert "Use virtual instruments to learn" in instruments["student_rule"]
 
@@ -407,8 +420,8 @@ def test_virtual_test_instruments_map_to_real_virtual_components():
 
 
 def test_virtual_test_generator_contract_maps_split_records_to_instruments():
-    contract = json.loads((db_root().parent / "DB" / "VIRTUAL_TEST_GENERATOR_CONTRACT.json").read_text(encoding="utf-8"))
-    instruments = json.loads((db_root().parent / "DB" / "VIRTUAL_TEST_INSTRUMENTS.json").read_text(encoding="utf-8"))
+    contract = json.loads((db_root() / "VIRTUAL_TEST_GENERATOR_CONTRACT.json").read_text(encoding="utf-8"))
+    instruments = json.loads((db_root() / "VIRTUAL_TEST_INSTRUMENTS.json").read_text(encoding="utf-8"))
     instrument_parts = {item["part"] for item in instruments["instruments"]}
 
     assert contract["schema"] == "components.virtual_test_generator_contract"
@@ -428,39 +441,9 @@ def test_virtual_test_generator_contract_maps_split_records_to_instruments():
     assert "DelayNoise shows what could go wrong" in contract["delay_noise_policy"]["student_note"]
 
 
-def test_rv8gr_multi_level_protocol_and_report_are_current():
-    root = db_root().parent
-    protocol = (root / "DB" / "RV8GR_MULTI_LEVEL_TEST_PROTOCOL.md").read_text(encoding="utf-8")
-    report = (root / "DB" / "RV8GR_TEST_REPORT.md").read_text(encoding="utf-8")
-    readiness = json.loads((root / "DB" / "RV8GR_CHIP_LEVEL_READINESS.json").read_text(encoding="utf-8"))
-    coverage = json.loads((root / "Lib" / "Circuits" / "RV8GR_COVERAGE_INDEX.json").read_text(encoding="utf-8"))
-
-    assert "Level 1: Chip-Level Behavior Gate" in protocol
-    assert "Level 2: Circuit-Level Gate" in protocol
-    assert "Level 3: System-Level Gate" in protocol
-    assert "Level 4: Physical Build Signoff Gate" in protocol
-    assert "Virtual Physical-System Fault Gate" in protocol
-    assert "Do not write \"hardware ready\" unless Level 4 passes." in protocol
-    assert "DelayNoise" in protocol and "OutputAssert" in protocol
-    assert "Wrong physical pin number" in protocol
-    assert "Output-to-output wiring" in protocol
-    assert "rising/falling edge" in protocol
-    assert "positive disable-to-enable deadband" in protocol
-
-    assert len(readiness["parts"]) == 18
-    assert len(coverage["packages"]) == 22
-    assert all(item["status"] == "Tested" for item in coverage["packages"])
-
-    assert "| RV8GR required chips | 18 |" in report
-    assert "| RV8GR circuit packages | 22 |" in report
-    assert "| Physical hardware signoff | BLOCKED |" in report
-    assert "Components virtual/model testing is ready" in report
-    assert "Physical hardware is not signed off yet." in report
-    assert "Virtual Physical-System Fault Coverage" in report
-    assert "wrong physical pin number" in report
-    assert "output-to-output wiring" in report
-    assert "rising/falling edge behavior" in report
-    assert "propagation delay, R/C delay, or delay noise" in report
+def test_db_folder_does_not_hold_project_specific_rv8gr_artifacts():
+    rv8gr_paths = [path for path in db_root().rglob("*") if "rv8gr" in path.name.lower()]
+    assert rv8gr_paths == []
 
 
 def test_memory_components_use_definition_packages():
@@ -865,10 +848,8 @@ def test_remaining_seed_timing_and_electrical_evidence_is_extracted():
 
 
 def test_db_manifests_match_schema_contract():
-    schema = json.loads((db_root() / "chip.schema.json").read_text(encoding="utf-8"))
-    assert schema["properties"]["schema"]["const"] == "db.chip"
-    assert "passive" in schema["properties"]["pins"]["items"]["properties"]["direction"]["enum"]
     digital_schema = json.loads((db_root() / "digital.schema.json").read_text(encoding="utf-8"))
+    assert digital_schema["properties"]["schema"]["const"] == "db.component.digital"
     assert set(digital_schema["properties"]["definition_layers"]["required"]) == {
         "component",
         "package",
@@ -878,15 +859,26 @@ def test_db_manifests_match_schema_contract():
         "timing",
         "electrical",
     }
+    assert not (db_root() / "chip.schema.json").exists()
+    assert not list((db_root() / "74xx").glob("*/chip.json"))
+    assert not list((db_root() / "Memory").glob("*/chip.json"))
+    assert not list((db_root() / "Discrete").glob("*/component.json"))
 
     for manifest in load_all_components():
-        for key in schema["required"]:
+        for key in ("schema", "version", "part", "title", "family", "package", "status", "pins"):
             assert key in manifest, (manifest.get("part"), key)
-        assert manifest["schema"] == "db.chip"
+        assert manifest["schema"] == "db.component.manifest"
         assert isinstance(manifest["version"], int)
         assert manifest["version"] >= 1
         assert manifest["package"]["pins"] == len(manifest["pins"])
-        assert set(manifest["status"]).issuperset(set(schema["properties"]["status"]["required"]))
+        assert set(manifest["status"]).issuperset({
+            "datasheet",
+            "pinout",
+            "python_behavior",
+            "verilog_model",
+            "verilog_export",
+            "tests",
+        })
         assert set(manifest["status"].values()).issubset(ALLOWED_STATUS)
         for pin in manifest["pins"]:
             assert {"number", "name", "direction"}.issubset(pin)
@@ -1005,7 +997,7 @@ def run_all():
     test_virtual_and_passive_components_use_definition_packages()
     test_virtual_test_instruments_map_to_real_virtual_components()
     test_virtual_test_generator_contract_maps_split_records_to_instruments()
-    test_rv8gr_multi_level_protocol_and_report_are_current()
+    test_db_folder_does_not_hold_project_specific_rv8gr_artifacts()
     test_memory_components_use_definition_packages()
     test_db_component_detail_exposes_pins_and_capabilities()
     test_generation_seed_digital_definitions_are_valid_and_generator_ready()

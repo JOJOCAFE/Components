@@ -6,8 +6,8 @@
   "source_project": {
     "name": "RV8GR",
     "paths": [
-      "DB/RV8GR_CHIP_LEVEL_READINESS.json",
-      "DB/RV8GR_VIRTUAL_BENCH_PLAN.json",
+      "../RV8/RV8GR/doc/rv8gr_chip_level_readiness.json",
+      "../RV8/RV8GR/doc/rv8gr_virtual_bench_plan.json",
       "DB/VIRTUAL_TEST_GENERATOR_CONTRACT.json",
       "Lib/Circuits/RV8GR_BootSequenceTrace/circuit.json",
       "Lib/Circuits/RV8GR_Lab13MarkerTrace/circuit.json",
@@ -58,7 +58,7 @@
   ],
   "behavior": {
     "coverage_rule": "This package references existing executable circuit proofs instead of duplicating their detailed vector logic.",
-    "chip_level_rule": "All 18 RV8GR chips must remain present in DB/RV8GR_VIRTUAL_BENCH_PLAN.json with five split-record mappings each.",
+    "chip_level_rule": "All 18 RV8GR chips must remain present in the RV8GR doc virtual bench plan with five split-record mappings each.",
     "system_rule": "Boot, Lab 13 marker, RAM store/load/branch, page jump, IRQ latch, and bus ownership proofs must all be part of the gate.",
     "noise_rule": "RCParasitic and DelayNoise are applied only as virtual stress instruments; physical signoff remains blocked."
   },

@@ -61,8 +61,8 @@ tests depend on them.
 
 Required artifacts:
 
-- `DB/RV8GR_CHIP_LEVEL_READINESS.json`
-- `DB/RV8GR_CHIP_LEVEL_TEST_PLAN.md`
+- `RV8GR/doc/rv8gr_chip_level_readiness.json`
+- `RV8GR/doc/rv8gr_virtual_bench_plan.json`
 - each chip's `definition/definition.json`
 - each chip's `tests/truth_table.json`
 - each chip's `tests/timing.json`
@@ -88,7 +88,7 @@ Policy:
 4. If a chip definition changes from a datasheet row, update the matching
    split records and any affected RV8GR circuit package in the same work item.
 
-Current gaps are visible in `DB/RV8GR_CHIP_LEVEL_READINESS.json`. As of this
+Current gaps are visible in `RV8GR/doc/rv8gr_chip_level_readiness.json`. As of this
 checkpoint, functional chip-level records exist for the complete RV8GR set,
 but physical timing remains blocked for chips still marked as model-derived or
 needing electrical extraction.

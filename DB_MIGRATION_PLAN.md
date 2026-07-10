@@ -50,7 +50,7 @@ DB/
       definition/definition.json
   Discrete/
     NPN/
-      component.json
+      definition/definition.json
 ```
 
 For active ICs, `definition/definition.json` is the canonical source artifact.
@@ -59,13 +59,10 @@ logic/timing/electrical records, and generator contracts. Package-local
 `simulation/`, `tests/`, `symbol/`, and `generated/` layers travel with the
 chip and are reproducible from the definition plus generator/test inputs.
 
-Virtual and Passive components use `schema: db.component.definition` inside
-`definition/definition.json`; their embedded layers describe component
-identity, package, pins, simulation service, and UI metadata. The compact
-`component.json` artifact remains only for not-yet-migrated grouped components
-such as Discrete. Legacy `chip.json` loading remains supported for older
-compatibility paths, but no active IC under `DB/74xx` or `DB/Memory` requires
-`chip.json`.
+Virtual, Passive, and Discrete components use `schema: db.component.definition`
+inside `definition/definition.json`; their embedded layers describe component
+identity, package, pins, simulation service, and UI metadata. No active DB
+package requires `chip.json`, `component.json`, or `chip.schema.json`.
 
 ## Current Transitional Shape
 
@@ -92,20 +89,14 @@ Migrated Virtual and Passive component packages live under:
 ```text
 DB/Virtual/<component>/definition/definition.json
 DB/Passive/<component>/definition/definition.json
-```
-
-Not-yet-migrated component manifests live under:
-
-```text
-DB/Discrete/<component>/component.json
+DB/Discrete/<component>/definition/definition.json
 ```
 
 ## Migration Rules
 
 1. Add or update DB package data before changing generators or services.
 2. Every active IC definition must pass `DB/digital.schema.json`; generic
-   component definitions must pass loader validation; legacy component
-   manifests must pass their relevant schema.
+   component definitions must pass loader validation.
 3. Missing chip properties are allowed only when visible in `status`,
    `missing_properties`, or `missing_files`.
 4. Exporters and simulators should consume DB metadata through `chiplib.db`,
@@ -129,7 +120,8 @@ DB/Discrete/<component>/component.json
 
 Status: complete.
 
-- ✅ Add `DB/chip.schema.json`.
+- ✅ Retire `DB/chip.schema.json` after migrating Discrete to package
+  definitions.
 - ✅ Add seed manifests for simple gates and memory.
 - ✅ Add `chiplib.db` loader and CLI access.
 - ✅ Report missing properties and missing referenced files.

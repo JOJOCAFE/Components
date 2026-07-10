@@ -1,160 +1,105 @@
 # Components DB
 
-Component database for the shared Components library.
+Canonical component database for the shared Components library.
 
-## Chip Model Freeze
+The DB is the source of truth for component identity, pins, package shape,
+simulation hooks, export metadata, evidence status, and learner-facing catalog
+data. Project-specific reports belong in their project repos, not here.
 
-The chip model is frozen at `v0.1` on `2026-07-09`.
+## Current Shape
 
-That freeze covers the current DB package shape, schema names, and loader
-contracts for active IC, Virtual, Passive, and Discrete component metadata.
-Future incompatible structure changes must bump the model version and update
-the documented date together.
+The package model is frozen as `v0.1` from `2026-07-09`. Incompatible structure
+changes must bump that model version in `DB/index.json`.
 
-The current structure is grouped by component family. Active ICs, Virtual
-components, and Passive components are layered packages. Discrete components
-still use compact `component.json` manifests:
+Every active component is a package with:
 
 ```text
-DB/
-  74xx/
-    74HC00/
-      definition/definition.json
-      simulation/model.py
-      simulation/model.v
-      simulation/model.json
-      simulation/netlist.json
-      symbol/dip.json
-      tests/*.json
-      generated/artifacts.json
-  Memory/
-    62256/
-      definition/definition.json
-      simulation/model.py
-      simulation/model.v
-      simulation/model.json
-      simulation/netlist.json
-      symbol/dip.json
-      tests/*.json
-      generated/artifacts.json
-  Virtual/
-    InputSource/
-      definition/definition.json
-    Probe/
-      definition/definition.json
-  Passive/
-    LED/
-      definition/definition.json
-    Resistor/
-      definition/definition.json
-  Discrete/
-    NPN/
-      component.json
-    PNP/
-      component.json
-    BC549/
-      component.json
-    BC559/
-      component.json
+DB/<group>/<part>/definition/definition.json
 ```
 
-Each active IC owns one canonical source file,
-`definition/definition.json`, plus package-local layer folders:
+Current package counts:
 
-- `simulation/`: local Python and Verilog behavior, model metadata, and
-  netlist/export metadata
-- `tests/`: truth table, timing, tri-state, bus-fight, and propagation records
-- `symbol/`: DIP/schematic visual metadata
-- `generated/`: reproducible artifact reports from the generator path
+| Group | Count | Purpose |
+|---|---:|---|
+| `74xx` | 57 | 74xx / 74HC logic ICs |
+| `Memory` | 5 | SRAM, EEPROM, and flash ICs |
+| `Virtual` | 12 | simulation-only sources, rails, probes, and stress tools |
+| `Passive` | 6 | LED, resistor, capacitor |
+| `Discrete` | 4 | NPN/PNP transistor entries |
+| Total | 84 | all package definitions |
 
-The IC definition shape is defined by `digital.schema.json`. Virtual and
-Passive packages use `schema: db.component.definition` with embedded
-definition layers for component identity, package, pins, simulation, and UI
-metadata. Legacy `chip.schema.json`, `chip.json`, and `component.json` loading
-remain compatibility paths for older data, not the active IC, Virtual, or
-Passive package source. The DB can represent:
+No active package uses `chip.json`, `component.json`, or `chip.schema.json`.
 
-- `74xx`: 74xx/74HC logic ICs
-- `memory`: SRAM, EEPROM, and flash ICs
-- `virtual`: simulation-only inputs, clocks, rails, pulls, and probes
-- `passive`: LED, resistor, capacitor
-- `discrete`: generic NPN/PNP transistors and specific BC549/BC559 entries
+## Definition Contracts
 
-Missing properties are allowed, but they must be visible through package
-status, `missing_properties`, `missing_files`, generated records, or loader
-reports. A grouped IC, Virtual, or Passive folder is valid when
-`definition/definition.json` is readable and identifies the part. A grouped
-Discrete folder is valid when `component.json` is readable and identifies the
-component.
+Active ICs use:
 
-Active IC implementation files are package-local. The shared family Verilog
-trees remain for smoke coverage and comparison:
+```json
+{"schema": "db.component.digital"}
+```
 
-- `Verilog/74xx/`
-- `Verilog/Memory/`
+That shape is defined by `DB/digital.schema.json` and applies to `74xx` and
+`Memory` parts. These packages may also own:
 
-The DB is the component identity layer. Simulators, exporters, CLI tools, and
-future UI/API code should ask the DB what properties a component has instead of
-scattering component facts across unrelated files.
+- `simulation/model.py`
+- `simulation/model.v`
+- `simulation/model.json`
+- `simulation/netlist.json`
+- `symbol/dip.json`
+- `tests/*.json`
+- `generated/artifacts.json`
 
-The original seed set intentionally covered simple gates, a sequential counter,
-a bidirectional bus transceiver, SRAM, and EEPROM:
+Virtual, Passive, and Discrete packages use:
 
-- `74HC00`
-- `74HC04`
-- `74HC161`
-- `74HC245`
-- `62256`
-- `AT28C256`
+```json
+{"schema": "db.component.definition"}
+```
 
-The next useful set adds flip-flop, register, decoder, and flash coverage:
+Those definitions carry embedded layers for component identity, package, pins,
+simulation, and UI metadata.
 
-- `74HC74`
-- `74HC574`
-- `74HC138`
-- `SST39SF010A`
+`load_component(part)` returns a compatibility catalog view with
+`schema: db.component.manifest`; it is synthesized from package definitions and
+is not a file format to author by hand.
 
-The DB now has one layered package for every active IC model and pinout entry:
-62 DB IC parts for 62 modeled IC parts. Virtual and Passive schematic
-components are also layered packages; Discrete schematic components remain
-compact manifests.
+## What Belongs Here
 
-All 62 active IC parts with `verilog_export=tested` now own their structural
-Verilog export metadata in package `simulation/netlist.json` files.
-`Design.to_verilog()` reads those export blocks through `chiplib.db`; there is
-no separate runtime mapping table to keep in sync.
+Keep these in `DB/`:
 
-Grouped schematic components currently cover:
+- reusable component definitions
+- datasheet-backed pin, timing, electrical, and behavior metadata
+- package-local simulation/export metadata
+- generic test contracts and student catalog documentation
 
-- `InputSource`
-- `ClockSource`
-- `Probe`
-- `BusProbe`
-- `VCC`
-- `GND`
-- `Pullup`
-- `Pulldown`
-- `LED`
-- `Resistor`
-- `Capacitor`
-- `NPN`
-- `PNP`
-- `BC549`
-- `BC559`
+Do not keep these in `DB/`:
 
-Audit the DB against the active legacy catalog:
+- project-specific readiness reports
+- project build plans
+- one-off audit reports
+- generated notes that duplicate JSON status
+
+## Validation
+
+Run from the repo root:
 
 ```sh
-cd ../python
-python3 -m chiplib.cli db --audit
-python3 -m chiplib.cli db --status
+PYTHONPATH=python python3 -B -m tests.test_db
+PYTHONPATH=python python3 -B -m tests.test_generated_split_records
 ```
 
-Use the learner-facing catalog view for student UI/API work:
+CLI catalog checks:
 
 ```sh
-python3 -m chiplib.cli db --student
-python3 -m chiplib.cli db --student --group virtual
+PYTHONPATH=python python3 -m chiplib.cli db --audit
+PYTHONPATH=python python3 -m chiplib.cli db --status
+PYTHONPATH=python python3 -m chiplib.cli db --student
 ```
 
-See `STUDENT_CATALOG.md` for the CLI, Python, and frontend API contract.
+## DB Docs
+
+Human-readable DB docs are intentionally small:
+
+- `COMPONENT_TEST_PROTOCOL.md`: generic chip/circuit verification policy
+- `STUDENT_CATALOG.md`: learner-facing catalog fields and examples
+- `VIRTUAL_TEST_GENERATOR_CONTRACT.md`: how split records become virtual benches
+- `VIRTUAL_TEST_INSTRUMENTS.md`: student-facing virtual instrument guide
