@@ -432,11 +432,11 @@ def test_rv8gr_multi_level_protocol_and_report_are_current():
     assert "DelayNoise" in protocol and "OutputAssert" in protocol
 
     assert len(readiness["parts"]) == 18
-    assert len(coverage["packages"]) == 21
+    assert len(coverage["packages"]) == 22
     assert all(item["status"] == "Tested" for item in coverage["packages"])
 
     assert "| RV8GR required chips | 18 |" in report
-    assert "| RV8GR circuit packages | 21 |" in report
+    assert "| RV8GR circuit packages | 22 |" in report
     assert "| Physical hardware signoff | BLOCKED |" in report
     assert "Components virtual/model testing is ready" in report
     assert "Physical hardware is not signed off yet." in report

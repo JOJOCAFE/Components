@@ -22,8 +22,8 @@ readiness.
 |---|---:|---|
 | RV8GR required chips | 18 | all listed in `DB/RV8GR_CHIP_LEVEL_READINESS.json` |
 | Chip split-record sets | 18 | all have truth/timing/tri-state/bus-fight/propagation records |
-| RV8GR circuit packages | 21 | all indexed in `Lib/Circuits/RV8GR_COVERAGE_INDEX.json` |
-| Indexed packages marked `Tested` | 21 | README/index/package/test checks pass |
+| RV8GR circuit packages | 22 | all indexed in `Lib/Circuits/RV8GR_COVERAGE_INDEX.json` |
+| Indexed packages marked `Tested` | 22 | README/index/package/test checks pass |
 
 ## Commands Run
 
@@ -90,7 +90,7 @@ virtual stress tools, not physical signoff.
 
 ## Circuit/System Result
 
-Circuit package coverage is passing for the 21 indexed RV8GR circuit packages,
+Circuit package coverage is passing for the 22 indexed RV8GR circuit packages,
 including:
 
 - bring-up and clock/reset packages
@@ -99,6 +99,7 @@ including:
 - trace packages for fetch, store/load/branch, page/jump, interrupt, and boot
   sequence
 - Lab 13 full-system `$AA` marker trace
+- whole-system chip-level virtual gate with R/C and delay-noise stress nets
 - virtual test helper package with R/C and delay/noise instruments
 
 System-level recorded RV8GR bench checkpoint is pass in

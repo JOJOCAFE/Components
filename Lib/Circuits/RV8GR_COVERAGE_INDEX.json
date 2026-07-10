@@ -153,6 +153,13 @@
       "status": "Tested",
       "proof_focus": "Lab 13 LI/ADDI/SUBI/BEQ flow, $AA marker, bus owners, final pass state",
       "python_test_prefix": "test_rv8gr_lab13_marker_"
+    },
+    {
+      "circuit": "RV8GR_WholeSystemChipLevelVirtual",
+      "stage": "whole_system_virtual",
+      "status": "Tested",
+      "proof_focus": "chip bench plan, boot, Lab 13, RAM/page/IRQ/bus traces, R/C and delay-noise stress nets",
+      "python_test_prefix": "test_rv8gr_whole_system_chip_level_virtual_"
     }
   ]
 }

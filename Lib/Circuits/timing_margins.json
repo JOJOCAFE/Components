@@ -436,6 +436,13 @@
       "timing_checks": ["LI $10", "ADDI $05", "SUBI $15", "BEQ $0C", "LI $AA", "15 manual clock edges", "one bus driver"],
       "physical_status": "not_proven",
       "claim_boundary": "functional Lab 13 marker trace only; physical single-step, oscillator, and bus-deadband evidence still required"
+    },
+    {
+      "circuit": "RV8GR_WholeSystemChipLevelVirtual",
+      "coverage": "whole_system_chip_level_virtual_stress",
+      "timing_checks": ["18-chip virtual bench plan", "boot trace", "Lab 13 marker", "RAM/page/IRQ/bus trace inclusion", "RCParasitic stress nets", "DelayNoise stress nets"],
+      "physical_status": "not_proven",
+      "claim_boundary": "virtual whole-system chip-level stress only; physical voltage/frequency/scope evidence still required"
     }
   ],
   "system_timing_gates": [

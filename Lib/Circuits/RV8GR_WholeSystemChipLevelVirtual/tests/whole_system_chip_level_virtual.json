@@ -1,0 +1,42 @@
+{
+  "schema": "components.lib.circuit.test.whole_system_chip_level_virtual",
+  "version": 1,
+  "circuit": "rv8gr_whole_system_chip_level_virtual",
+  "source": "Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json",
+  "chip_bench_plan": {
+    "source": "DB/RV8GR_VIRTUAL_BENCH_PLAN.json",
+    "expect_chip_count": 18,
+    "expect_split_records_per_chip": 5,
+    "expect_total_split_record_mappings": 90,
+    "required_instruments": ["InputSource", "ClockSource", "Switch", "Probe", "BusProbe", "OutputAssert", "RCParasitic", "DelayNoise"]
+  },
+  "included_packages": [
+    {"package": "RV8GR_BootSequenceTrace", "source": "Lib/Circuits/RV8GR_BootSequenceTrace/tests/boot_sequence_trace.json", "expect_final": {"PC": "0x0006", "DP": "0x80", "PG": "0x00", "AC": "0x00", "Z": 1}},
+    {"package": "RV8GR_Lab13MarkerTrace", "source": "Lib/Circuits/RV8GR_Lab13MarkerTrace/tests/lab13_marker_trace.json", "expect_final": {"PC": "0x000E", "DP": "0x80", "PG": "0x00", "AC": "0xAA", "Z": 0}},
+    {"package": "RV8GR_StoreLoadBranchTrace", "source": "Lib/Circuits/RV8GR_StoreLoadBranchTrace/tests/store_load_branch_trace.json", "expect_coverage": ["SB", "LB", "BEQ"]},
+    {"package": "RV8GR_PageJumpTrace", "source": "Lib/Circuits/RV8GR_PageJumpTrace/tests/page_jump_trace.json", "expect_coverage": ["SETDP", "SETPG", "J"]},
+    {"package": "RV8GR_InterruptTrace", "source": "Lib/Circuits/RV8GR_InterruptTrace/tests/interrupt_trace.json", "expect_coverage": ["EI", "DI", "IRQ_LOW", "IRQ_RELEASE"]},
+    {"package": "RV8GR_BusOwnership", "source": "Lib/Circuits/RV8GR_BusOwnership/tests/bus_ownership.json", "expect_coverage": ["IBUS", "DBUS", "forced_conflict"]}
+  ],
+  "stress_profiles": [
+    {"net": "CLK", "instruments": ["RCParasitic", "DelayNoise", "OutputAssert"], "delay_profile": "breadboard_slow_edge_estimate", "claim": "virtual_stress_only"},
+    {"net": "/RST", "instruments": ["RCParasitic", "DelayNoise", "OutputAssert"], "delay_profile": "weak_pull_reset_net", "claim": "virtual_stress_only"},
+    {"net": "IBUS[0]", "instruments": ["BusProbe", "RCParasitic", "DelayNoise", "OutputAssert"], "delay_profile": "long_bus_net_with_probe", "claim": "virtual_stress_only"},
+    {"net": "DBUS[0]", "instruments": ["BusProbe", "RCParasitic", "DelayNoise", "OutputAssert"], "delay_profile": "long_bus_net_with_probe", "claim": "virtual_stress_only"},
+    {"net": "RAM_/OE", "instruments": ["Probe", "DelayNoise", "OutputAssert"], "delay_profile": "control_line_glitch_stress", "claim": "virtual_stress_only"},
+    {"net": "RAM_/WE", "instruments": ["Probe", "DelayNoise", "OutputAssert"], "delay_profile": "control_line_glitch_stress", "claim": "virtual_stress_only"},
+    {"net": "ROM_/OE", "instruments": ["Probe", "DelayNoise", "OutputAssert"], "delay_profile": "control_line_glitch_stress", "claim": "virtual_stress_only"}
+  ],
+  "system_sequences": [
+    {"name": "boot_manual_12_edges", "package": "RV8GR_BootSequenceTrace", "clock_edges": 12, "expect_pass": true},
+    {"name": "lab13_marker_15_edges", "package": "RV8GR_Lab13MarkerTrace", "clock_edges": 15, "expect_pass": true},
+    {"name": "ram_store_load_branch", "package": "RV8GR_StoreLoadBranchTrace", "expect_pass": true},
+    {"name": "page_jump", "package": "RV8GR_PageJumpTrace", "expect_pass": true},
+    {"name": "irq_latch_polling_boundary", "package": "RV8GR_InterruptTrace", "expect_pass": true}
+  ],
+  "claim_boundary": {
+    "status": "virtual_whole_system_not_physical_signoff",
+    "blocked_physical_claims": ["hardware_1mhz_ready", "hardware_2mhz_ready", "hardware_5mhz_ready", "student_build_speed_recommendation"],
+    "required_next_physical_evidence": ["installed memory markings", "voltage sweep", "clock/reset scope captures", "bus deadband", "memory float timing", "breadboard RC calibration"]
+  }
+}

@@ -33,6 +33,7 @@ truth when lab wording is simplified.
 | `RV8GR_InterruptTrace` | U31 `74HC74`, U33 `74HC21`, IRQ docs | Tested | EI, DI inert behavior, `/IRQ` LOW hold, release latch, sticky IRQ_FF |
 | `RV8GR_BootSequenceTrace` | `doc/03_instruction_trace.md` Trace 11 + `doc/06_debug_plan.md` Step 0 | Tested | SETDP `$80`, SETPG `$00`, LI `$00`, J self, 12-clock manual bring-up |
 | `RV8GR_Lab13MarkerTrace` | `doc/labs/lab13_full_system.md` Test 1 | Tested | LI/ADDI/SUBI/BEQ path, `$AA` marker, bus owners, final pass state |
+| `RV8GR_WholeSystemChipLevelVirtual` | chip bench plan + tested trace packages | Tested | virtual whole-system chip-level gate with R/C and delay-noise stress nets |
 
 Each circuit package should include:
 

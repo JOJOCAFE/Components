@@ -122,6 +122,8 @@ Status: complete. Package files live under
   2. Done: add `RV8GR_BootSequenceTrace` for `SETDP $80`, `SETPG $00`,
      `LI $00`, and `J self`.
   3. Done: add `RV8GR_Lab13MarkerTrace` for the Lab 13 `$AA` pass program.
+  4. Done: add `RV8GR_WholeSystemChipLevelVirtual` for the full chip-level
+     virtual system gate with R/C and delay-noise stress nets.
 - Next RV8GR hardware tasks:
   1. Single-step the boot sequence on the physical build.
   2. Single-step Lab 13 full-system marker program.

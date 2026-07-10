@@ -32,6 +32,7 @@ PAGE_JUMP_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_PageJumpTrace"
 INTERRUPT_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_InterruptTrace"
 BOOT_SEQUENCE_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_BootSequenceTrace"
 LAB13_MARKER_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_Lab13MarkerTrace"
+WHOLE_SYSTEM_CHIP_LEVEL_VIRTUAL = ROOT / "Lib" / "Circuits" / "RV8GR_WholeSystemChipLevelVirtual"
 TIMING_MARGINS = ROOT / "Lib" / "Circuits" / "timing_margins.json"
 COMPONENT_TEST_PROTOCOL = ROOT / "DB" / "COMPONENT_TEST_PROTOCOL.md"
 RV8GR_TEST_PROTOCOL = ROOT / "Lib" / "Circuits" / "RV8GR_TEST_PROTOCOL.md"
@@ -2790,6 +2791,78 @@ def test_rv8gr_lab13_marker_trace_bus_policy_is_conflict_free():
         assert row["conflict"] is False, row
 
 
+def test_rv8gr_whole_system_chip_level_virtual_package_shape():
+    circuit = load_json(WHOLE_SYSTEM_CHIP_LEVEL_VIRTUAL / "circuit.json")
+    proof = load_json(WHOLE_SYSTEM_CHIP_LEVEL_VIRTUAL / "tests" / "whole_system_chip_level_virtual.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_whole_system_chip_level_virtual"
+    assert proof["circuit"] == circuit["id"]
+    assert (WHOLE_SYSTEM_CHIP_LEVEL_VIRTUAL / "README.md").exists()
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips["CHIP_BENCH"] == "RV8GR_VIRTUAL_BENCH_PLAN"
+    assert chips["BOOT"] == "RV8GR_BootSequenceTrace"
+    assert chips["LAB13"] == "RV8GR_Lab13MarkerTrace"
+    assert chips["IBUSMON"] == "BusProbe"
+    assert chips["DBUSMON"] == "BusProbe"
+    assert chips["OUTCHK"] == "OutputAssert"
+    assert chips["CLKRC"] == "RCParasitic"
+    assert chips["DLY"] == "DelayNoise"
+
+    for source in circuit["source_project"]["paths"]:
+        assert (ROOT / source).exists(), source
+
+
+def test_rv8gr_whole_system_chip_level_virtual_includes_required_gates():
+    proof = load_json(WHOLE_SYSTEM_CHIP_LEVEL_VIRTUAL / "tests" / "whole_system_chip_level_virtual.json")
+    bench = load_json(ROOT / proof["chip_bench_plan"]["source"])
+
+    assert bench["summary"]["rv8gr_chip_count"] == proof["chip_bench_plan"]["expect_chip_count"] == 18
+    assert bench["summary"]["split_records_per_chip"] == proof["chip_bench_plan"]["expect_split_records_per_chip"] == 5
+    assert bench["summary"]["total_split_record_mappings"] == proof["chip_bench_plan"]["expect_total_split_record_mappings"] == 90
+    assert set(proof["chip_bench_plan"]["required_instruments"]) <= {
+        item
+        for mapping in bench["record_mapping"]
+        for item in mapping["virtual_instruments"]
+    } | {"BusProbe"}
+
+    packages = {item["package"]: item for item in proof["included_packages"]}
+    assert {
+        "RV8GR_BootSequenceTrace",
+        "RV8GR_Lab13MarkerTrace",
+        "RV8GR_StoreLoadBranchTrace",
+        "RV8GR_PageJumpTrace",
+        "RV8GR_InterruptTrace",
+        "RV8GR_BusOwnership",
+    } == set(packages)
+    for item in packages.values():
+        assert (ROOT / item["source"]).exists(), item
+
+    boot = load_json(ROOT / packages["RV8GR_BootSequenceTrace"]["source"])
+    lab13 = load_json(ROOT / packages["RV8GR_Lab13MarkerTrace"]["source"])
+    assert boot["final_state"] == packages["RV8GR_BootSequenceTrace"]["expect_final"]
+    assert lab13["final_state"] == packages["RV8GR_Lab13MarkerTrace"]["expect_final"]
+
+
+def test_rv8gr_whole_system_chip_level_virtual_stress_nets_are_virtual_only():
+    proof = load_json(WHOLE_SYSTEM_CHIP_LEVEL_VIRTUAL / "tests" / "whole_system_chip_level_virtual.json")
+    stress = {item["net"]: item for item in proof["stress_profiles"]}
+
+    assert {"CLK", "/RST", "IBUS[0]", "DBUS[0]", "RAM_/OE", "RAM_/WE", "ROM_/OE"} == set(stress)
+    for item in stress.values():
+        assert item["claim"] == "virtual_stress_only", item
+        assert "OutputAssert" in item["instruments"], item
+        assert "DelayNoise" in item["instruments"], item
+    assert {"RCParasitic", "DelayNoise"} <= set(stress["CLK"]["instruments"])
+    assert {"BusProbe", "RCParasitic", "DelayNoise"} <= set(stress["IBUS[0]"]["instruments"])
+
+    boundary = proof["claim_boundary"]
+    assert boundary["status"] == "virtual_whole_system_not_physical_signoff"
+    assert "hardware_5mhz_ready" in boundary["blocked_physical_claims"]
+    assert "breadboard RC calibration" in boundary["required_next_physical_evidence"]
+
+
 def test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary():
     timing = load_json(TIMING_MARGINS)
     assert timing["schema"] == "components.lib.circuit.timing_margins"
@@ -3302,6 +3375,9 @@ def run_all():
     test_rv8gr_lab13_marker_trace_rom_and_rows_match_source_program()
     test_rv8gr_lab13_marker_trace_marker_flow_and_final_pass_state()
     test_rv8gr_lab13_marker_trace_bus_policy_is_conflict_free()
+    test_rv8gr_whole_system_chip_level_virtual_package_shape()
+    test_rv8gr_whole_system_chip_level_virtual_includes_required_gates()
+    test_rv8gr_whole_system_chip_level_virtual_stress_nets_are_virtual_only()
     test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary()
     test_rv8gr_timing_coverage_matrix_accounts_for_every_circuit_package()
     test_rv8gr_system_hazard_gates_cover_timing_bus_edges_and_propagation()
