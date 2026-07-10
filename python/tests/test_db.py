@@ -428,8 +428,13 @@ def test_rv8gr_multi_level_protocol_and_report_are_current():
     assert "Level 2: Circuit-Level Gate" in protocol
     assert "Level 3: System-Level Gate" in protocol
     assert "Level 4: Physical Build Signoff Gate" in protocol
+    assert "Virtual Physical-System Fault Gate" in protocol
     assert "Do not write \"hardware ready\" unless Level 4 passes." in protocol
     assert "DelayNoise" in protocol and "OutputAssert" in protocol
+    assert "Wrong physical pin number" in protocol
+    assert "Output-to-output wiring" in protocol
+    assert "rising/falling edge" in protocol
+    assert "positive disable-to-enable deadband" in protocol
 
     assert len(readiness["parts"]) == 18
     assert len(coverage["packages"]) == 22
@@ -440,6 +445,11 @@ def test_rv8gr_multi_level_protocol_and_report_are_current():
     assert "| Physical hardware signoff | BLOCKED |" in report
     assert "Components virtual/model testing is ready" in report
     assert "Physical hardware is not signed off yet." in report
+    assert "Virtual Physical-System Fault Coverage" in report
+    assert "wrong physical pin number" in report
+    assert "output-to-output wiring" in report
+    assert "rising/falling edge behavior" in report
+    assert "propagation delay, R/C delay, or delay noise" in report
 
 
 def test_memory_components_use_definition_packages():

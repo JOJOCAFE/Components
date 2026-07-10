@@ -25,6 +25,18 @@ It also lists the critical nets that should be stressed with `RCParasitic` and
 - `RAM_/WE`
 - `ROM_/OE`
 
+Required AI error traps:
+
+- wrong physical pin number, pin name, direction, or active-low marker
+- output-to-output wiring unless bus enable conditions prove only one active
+  driver
+- wrong positive/negative or rising/falling edge behavior
+- propagation delay, R/C delay, or delay noise that removes bus deadband or
+  setup/hold margin
+
+Fix method rule: fix the chip definition, bus ownership, edge phase, or timing
+margin. Do not change expected results just to make a bad virtual circuit pass.
+
 Pass means the virtual whole-system package is coherent. It does not mean the
 hardware is signed off. Physical signoff still needs voltage, frequency, and
 scope evidence.

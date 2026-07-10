@@ -173,7 +173,24 @@ Student-friendly workflow:
 4. Write down what the virtual instrument proved and what it did not prove.
 5. Repeat the same signal list with real instruments before hardware signoff.
 
-## Gate 6: Physical Measurement Log
+## Gate 6: Virtual Physical-System Fault Traps
+
+Before a circuit or system test can claim it is ready for physical build, it
+must deliberately test the mistakes that AI-generated wiring and definitions
+often make:
+
+| Mistake | Test rule | Fix method |
+|---|---|---|
+| Wrong pin number, pin name, direction, or active-low marker | Validate circuit pin references against the component definition and pinout evidence before running behavior vectors. | Correct the chip definition or source-backed pin map first. Do not hide the error by rewiring the circuit around bad data. |
+| Output connected to output with no useful condition | Treat output-to-input as normal. Treat output-plus-output as legal only on a named bus with explicit enable conditions proving one active driver at a time; include a forced `BusProbe` conflict vector. | Add tri-state enables, buffer/transceiver direction control, or bus-owner sequencing so only one output drives the bus. |
+| Positive/negative edge or rising/falling edge is wrong | For every clocked chip, prove the datasheet edge captures and the opposite edge holds. | Move the signal to the correct phase or add an intentional inverter; do not rewrite the expected state to fit the wrong edge. |
+| Propagation delay, R/C delay, or delay noise creates overlap | Apply `RCParasitic` and `DelayNoise` between chips on sensitive clock, reset, bus, `/OE`, and `/WE` nets; assert positive deadband and setup/hold margin. | Add wait states or phase separation, disable the old driver earlier, enable the new driver later, shorten/buffer the net, or reduce clock speed until measured margin is positive. |
+
+The virtual report must name which fault was tested, what would make it fail,
+and which fix method was used. These traps make the virtual components act like
+student-friendly test instruments before real probes are available.
+
+## Gate 7: Physical Measurement Log
 
 Every physical run must record:
 

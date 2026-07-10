@@ -2863,6 +2863,33 @@ def test_rv8gr_whole_system_chip_level_virtual_stress_nets_are_virtual_only():
     assert "breadboard RC calibration" in boundary["required_next_physical_evidence"]
 
 
+def test_rv8gr_whole_system_chip_level_virtual_catches_ai_fault_patterns():
+    proof = load_json(WHOLE_SYSTEM_CHIP_LEVEL_VIRTUAL / "tests" / "whole_system_chip_level_virtual.json")
+    traps = {item["id"]: item for item in proof["ai_error_trap_tests"]}
+
+    assert {
+        "pin_number_truth",
+        "output_output_bus_contention",
+        "edge_polarity",
+        "propagation_delay_deadband",
+    } == set(traps)
+    assert "wrong physical pin number" in traps["pin_number_truth"]["problem"]
+    assert "pin number" in traps["pin_number_truth"]["virtual_test"]
+    assert "direction" in traps["pin_number_truth"]["virtual_test"]
+    assert "active-low" in traps["pin_number_truth"]["virtual_test"]
+    assert "two_outputs_always_enabled" in traps["output_output_bus_contention"]["must_fail_when"]
+    assert "BusProbe" in traps["output_output_bus_contention"]["virtual_test"]
+    assert "opposite edge holds" in traps["edge_polarity"]["virtual_test"]
+    assert "opposite_edge_changes_state" in traps["edge_polarity"]["must_fail_when"]
+    assert "RCParasitic" in traps["propagation_delay_deadband"]["virtual_test"]
+    assert "DelayNoise" in traps["propagation_delay_deadband"]["virtual_test"]
+    assert "positive deadband" in traps["propagation_delay_deadband"]["virtual_test"]
+
+    for trap in traps.values():
+        assert trap["must_fail_when"], trap
+        assert len(trap["fix_method"].split()) >= 8, trap
+
+
 def test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary():
     timing = load_json(TIMING_MARGINS)
     assert timing["schema"] == "components.lib.circuit.timing_margins"
@@ -3378,6 +3405,7 @@ def run_all():
     test_rv8gr_whole_system_chip_level_virtual_package_shape()
     test_rv8gr_whole_system_chip_level_virtual_includes_required_gates()
     test_rv8gr_whole_system_chip_level_virtual_stress_nets_are_virtual_only()
+    test_rv8gr_whole_system_chip_level_virtual_catches_ai_fault_patterns()
     test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary()
     test_rv8gr_timing_coverage_matrix_accounts_for_every_circuit_package()
     test_rv8gr_system_hazard_gates_cover_timing_bus_edges_and_propagation()

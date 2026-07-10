@@ -34,6 +34,36 @@
     {"name": "page_jump", "package": "RV8GR_PageJumpTrace", "expect_pass": true},
     {"name": "irq_latch_polling_boundary", "package": "RV8GR_InterruptTrace", "expect_pass": true}
   ],
+  "ai_error_trap_tests": [
+    {
+      "id": "pin_number_truth",
+      "problem": "AI may use the wrong physical pin number or pin name.",
+      "virtual_test": "Before circuit/system simulation, compare every referenced chip pin number, pin name, direction, and active-low marker against the DB definition and pinout evidence.",
+      "must_fail_when": ["pin_number_mismatch", "pin_name_mismatch", "direction_mismatch", "active_low_missing"],
+      "fix_method": "Fix the chip definition or source-backed pin mapping first; do not hide the error by moving circuit wires."
+    },
+    {
+      "id": "output_output_bus_contention",
+      "problem": "AI may connect output to output with no valid bus condition.",
+      "virtual_test": "Allow output-to-input directly. Allow multiple outputs only on a named bus when enable conditions prove at most one driver is active; force a conflict vector with BusProbe.",
+      "must_fail_when": ["two_outputs_always_enabled", "missing_oe_condition", "forced_conflict_not_reported"],
+      "fix_method": "Add tri-state control, buffer/transceiver direction, or OE sequencing so the old driver is off before the new driver is enabled."
+    },
+    {
+      "id": "edge_polarity",
+      "problem": "AI may use positive/negative or rising/falling edge behavior incorrectly.",
+      "virtual_test": "For every edge-triggered chip, assert the declared trigger edge captures and the opposite edge holds; reset/load priority must be explicit.",
+      "must_fail_when": ["rising_edge_expected_but_falling_used", "falling_edge_expected_but_rising_used", "opposite_edge_changes_state"],
+      "fix_method": "Move the signal to the correct clock phase or add an intentional inverter; keep the test expectation tied to the datasheet edge."
+    },
+    {
+      "id": "propagation_delay_deadband",
+      "problem": "Propagation delay can make a new bus driver enable before the old one is high-Z.",
+      "virtual_test": "Apply RCParasitic and DelayNoise on CLK, /RST, IBUS, DBUS, /OE, and /WE; assert output-disable-to-Z plus enable delay leaves positive deadband.",
+      "must_fail_when": ["negative_bus_deadband", "delayed_oe_overlap", "destination_sample_before_settle"],
+      "fix_method": "Add phase separation, delay the new enable, disable the old driver earlier, shorten or buffer the net, or lower the clock rate until measured margin is positive."
+    }
+  ],
   "claim_boundary": {
     "status": "virtual_whole_system_not_physical_signoff",
     "blocked_physical_claims": ["hardware_1mhz_ready", "hardware_2mhz_ready", "hardware_5mhz_ready", "student_build_speed_recommendation"],

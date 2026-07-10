@@ -51,25 +51,32 @@ simulation services, and student-facing documentation.
   result is functional simulation until hardware signal-integrity and timing
   margin evidence are added.
 
-## Active Specialist Agents
+## Active Components Team
 
-These are the current Codex specialist agents used for Components delegation.
-They complement the original JOJOCAFE role names below.
+These are the current Components roles. Use these names in task reports,
+handoffs, and delegation notes.
 
-| Agent | Main skills | Current Components ownership |
+| Name | Main skills | Current Components ownership |
 |---|---|---|
-| Arendt | Specification, schema discipline, task framing, consistency checks | Owns component package specs, `definition.json` schema design, required/optional field rules, missing-data representation, and visual-editor contract boundaries. |
-| Feynman | Teaching, explanation, demo design, student-facing simplification | Owns generated docs, interactive demos, beginner-readable examples, age 10-15 clarity, and switch/timing wording that does not hide hardware limits. |
-| Halley | Verification, audit coverage, test matrix design | Owns truth table, timing, tri-state, bus-fight, propagation, equivalence, CI verification planning, switch pulse-profile tests, and timing-margin consumers. |
-| Ohm | Hardware truth, datasheets, pin/package/electrical evidence | Owns package evidence, pin truth, timing/electrical extraction, active-low naming, breadboard realism, push-switch hardware caveats, and 5 MHz physical-readiness review. |
-| Leibniz | Tooling, loaders, generators, API/CLI integration | Owns definition-backed loaders, generator prototypes, legacy `chip.json` compatibility, CLI/API generation commands, `Switch` simulation-service semantics, and block-UI import/export contracts. |
+| Pim | Coordination, routing, task framing, status checks | Keeps task lists, handoffs, commits, DB, Python, Verilog, docs, circuit packages, and tests aligned. |
+| Bank | Architecture, schema discipline, service boundaries | Owns component package specs, `definition.json` schema design, circuit-library boundaries, visual-editor contracts, and virtual checker architecture. |
+| Fern | Verification, audit coverage, test matrix design | Owns truth table, timing, tri-state, bus-fight, propagation, equivalence, CI gates, virtual fault traps, and release confidence. |
+| Mint | RTL coding, HDL compatibility, bench contracts | Owns Verilog models, structural export contracts, HDL smoke benches, and edge/timing alignment between Python proofs and RTL. |
+| Ohm | Hardware truth, datasheets, pin/package/electrical evidence | Owns package evidence, pin truth, timing/electrical extraction, active-low naming, breadboard realism, and physical readiness review. |
+| Bam | Python behavior, service tooling, circuit simulation | Owns definition-backed loaders, generator prototypes, CLI/API workflows, `Switch` semantics, block-UI import/export, and reusable virtual checker implementation. |
+| Noon | Student docs, examples, labels, lab wording | Owns generated docs, beginner-readable examples, age 10-15 clarity, and switch/timing wording that does not hide hardware limits. |
 
-Shared specialist rule:
+Shared team rule:
 
 - No generated artifact is authoritative by itself. The source is
   `definition/definition.json` plus datasheet evidence; generated Python,
   Verilog, KiCad, SVG, docs, tests, and demos must be reproducible from that
   layer.
+- No circuit/system virtual proof may ignore the four physical-system fault
+  traps: wrong pin truth, invalid output-output wiring, wrong trigger edge, and
+  propagation-delay/deadband risk. Bank and Bam build the checker, Fern owns the
+  failing gates, Ohm owns pin/timing truth, Mint reviews edge/RTL alignment, and
+  Noon keeps the fix method understandable for students.
 
 Current seed-batch milestone:
 

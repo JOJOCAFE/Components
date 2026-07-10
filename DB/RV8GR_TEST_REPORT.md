@@ -105,6 +105,22 @@ including:
 System-level recorded RV8GR bench checkpoint is pass in
 `Lib/Circuits/RV8GR_END_TO_END_TEST_PLAN.md`.
 
+## Virtual Physical-System Fault Coverage
+
+The whole-system virtual gate now requires traps for four common AI-generated
+hardware mistakes:
+
+- wrong physical pin number, pin name, direction, or active-low marker
+- output-to-output wiring unless a named bus proves one active driver at a time
+- wrong positive/negative or rising/falling edge behavior
+- propagation delay, R/C delay, or delay noise that causes bus contention or
+  early sampling
+
+Required fix methods are part of the proof: correct the chip definition or
+pinout evidence, add bus-owner/OE sequencing, move the signal to the datasheet
+edge or intentional inverter, and add timing deadband by phase separation,
+buffering, shorter wiring, or lower clock speed.
+
 ## Physical Evidence Still Required
 
 Hardware speed/signoff is blocked until all are captured:

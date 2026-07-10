@@ -110,6 +110,24 @@ Pass condition: Components proofs and RV8GR benches agree on instruction
 behavior, bus ownership, reset/boot behavior, page/data behavior, and IRQ v1.0
 boundaries.
 
+## Virtual Physical-System Fault Gate
+
+Every chip-level, circuit-level, and whole-system virtual test must include
+traps for the common AI mistakes that can look plausible in text but fail on a
+real breadboard.
+
+| Fault class | Required virtual test | Fix method |
+|---|---|---|
+| Wrong physical pin number or pin name | Compare every circuit pin reference against DB pin number, pin name, direction, active-low marker, and local pinout evidence before simulation starts. | Fix the chip definition or source-backed pin map first; do not move circuit wires to hide a bad definition. |
+| Output-to-output wiring with no valid bus condition | Allow direct output-to-input wiring. Allow multiple outputs only on a named bus when enable conditions prove at most one driver is active; force a conflict vector with `BusProbe`. | Add tri-state control, buffer/transceiver direction, or output-enable sequencing so the old driver is high-Z before the new driver turns on. |
+| Wrong positive/negative or rising/falling edge | For every edge-triggered part, prove the declared trigger edge captures and the opposite edge holds; reset/load priority must be explicit. | Move the signal to the correct clock phase or add an intentional inverter. Keep expected behavior tied to the datasheet edge. |
+| Propagation delay or R/C delay creates bus overlap or early sampling | Use `RCParasitic` and `DelayNoise` on `CLK`, `/RST`, `IBUS`, `DBUS`, `/OE`, and `/WE`; assert positive disable-to-enable deadband and destination setup/hold margin. | Add phase separation, delay the new enable, disable the old driver earlier, shorten or buffer the net, or lower the clock until measured margin is positive. |
+
+Pass condition: a virtual physical-system test must fail loudly for wrong pin
+truth, meaningless output-output wiring, bad edge polarity, and negative delay
+deadband. The report must name the fix method instead of changing the expected
+result to match the bug.
+
 ## Level 4: Physical Build Signoff Gate
 
 Required physical voltage points:
