@@ -8,6 +8,19 @@ helpers. The build plan gives module order and stop conditions; the labs give
 student-facing wiring checks. The circuit packages still record electrical
 truth when lab wording is simplified.
 
+For students around ages 10-15, treat each `RV8GR_*` README as a proof card,
+not as a complete standalone lesson. A teacher or mentor should pair it with
+the matching RV8GR lab/build step, point to the real chips and pins, and check
+the pass state before the next module is connected.
+
+Student stop conditions:
+
+- a chip gets hot or supply current is unexpected
+- a virtual check reports a bus conflict
+- a clocked part changes on the wrong edge
+- a shared bus has no clear owner
+- a fast-clock test is attempted before manual-clock behavior is clean
+
 ## RV8GR Circuit Candidates
 
 | Circuit | RV8GR source | Status | Proof focus |

@@ -1,18 +1,86 @@
 # Components Session Handoff
 
 Date: 2026-07-09
-Last updated: 2026-07-10, after student CLI/API guide and save-session handoff
+Last updated: 2026-07-10, after student readability, RV8GR 36-package audit,
+and team-skill refresh
 
 ## Current State
 
 - Repo: `/home/jo/kiro/Components`
 - Branch: `main`
-- Status at handoff: clean and pushed; `main` matches `origin/main`.
-- Latest pushed commit: `20b8b13 Add student CLI API guide`
+- Status at this handoff: documentation checkpoint prepared for commit/push.
+- Previous pushed commit before this handoff: `87bcfdc Save Components student
+  guide handoff`
 - Latest pushed RV8GR virtual-check commits:
   - `8bb462b Add RV8GR virtual fault protocol`
   - `49ed732 Add circuit virtual fault checker`
   - `b8719bc Update circuit backlog checkpoint status`
+
+## Latest Save: 2026-07-10 Student Readability And RV8GR Count Audit
+
+Completed in this checkpoint:
+
+- Added `STUDENT_READABILITY_AUDIT.md` to map each document to student,
+  teacher, tool-builder, or maintainer use.
+- Updated root `README.md`, `STUDENT_GUIDE.md`, and
+  `Lib/Circuits/README.md` with the beginner route and student stop
+  conditions.
+- Updated `TEAM_SKILLS.md` shared and per-member skills for:
+  - student readability ownership
+  - RV8GR physical package vs part-definition count vocabulary
+  - current board-instance audit responsibility
+  - physical-signoff boundary around timing, bus deadband, and real scope
+    evidence
+
+RV8GR count result checked from live files:
+
+- RV8GR board source:
+  `/home/jo/kiro/RV8/RV8GR/Kicad/gen_kicad.py`
+- Physical board packages: 36 (`U1`-`U34`, `ROM1`, `RAM1`)
+- Board-used part types: 16
+- Components RV8GR-ready definition/options set: 18, because RAM and ROM
+  alternatives are tracked separately in readiness docs.
+- All 16 board-used part types currently have:
+  `definition/definition.json`, local Python model, local Verilog model,
+  simulation JSON, netlist JSON, DIP symbol, generated artifacts, and
+  truth/timing/tri-state/bus-fight/propagation split records.
+
+Verification run for this checkpoint:
+
+```sh
+PYTHONPATH=python python3 -B -m tests.test_db
+PYTHONPATH=python python3 -B -m tests.test_generated_split_records
+PYTHONPATH=python python3 -B -m tests.test_lib_circuits
+PYTHONPATH=python python3 -B -m tests.test_chips
+PYTHONPATH=python python3 -B -m chiplib.cli db --audit
+PYTHONPATH=python python3 -B -m chiplib.cli db --status
+git diff --check
+```
+
+Observed pass results:
+
+- `Components DB tests passed`
+- `Components generated split-record tests passed`
+- `Components library circuit tests passed`
+- `Components Python chip tests passed`
+- `chiplib.cli db --audit`: `ok: true`, no warnings
+- `chiplib.cli db --status`: `ok: true`, no warnings
+- `git diff --check`: clean
+
+Important boundary:
+
+- Components virtual/model checks are ready for RV8GR circuit and system work.
+- Physical hardware speed/signoff remains blocked until real voltage,
+  frequency, bus-deadband, clock/reset edge, memory float/write timing, and
+  oscilloscope evidence are recorded.
+
+Next lanes after this push:
+
+1. Add generated student chip cards from `definition/definition.json`.
+2. Add a short student command card for common CLI/API wiring actions.
+3. Build the first visual chip-block editor screen on `components.block_ui`.
+4. Add MCP adapter only after editor/service command names settle.
+5. Continue physical RV8GR evidence collection before any hardware-ready claim.
 
 ## Latest Save: 2026-07-10 Student Guide And Handoff
 

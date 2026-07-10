@@ -53,6 +53,18 @@ PYTHONPATH=python python3 -B -m chiplib.cli
 
 For shorter examples below, `CLI` means that full prefix.
 
+For a first student session, do not read every reference document. Do this
+short path:
+
+1. Run the NAND example.
+2. Look up one chip in the student catalog.
+3. Read one circuit proof card only if it matches what you are building.
+4. Ask a teacher before changing real wiring, power, or clock speed.
+
+Stop the real build if a chip is hot, the supply current is unexpected, a bus
+conflict appears, or two outputs are connected together without a bus-owner
+rule.
+
 ## Look Up Components
 
 List the student-friendly catalog:
@@ -277,6 +289,8 @@ Do not change expected results just to make a bad circuit pass.
 ## More Reference
 
 - `SCHEMATIC_JSON_SPEC.md`: how schematic JSON is written.
+- `STUDENT_READABILITY_AUDIT.md`: which docs are for students, teachers, or
+  maintainers.
 - `python/USAGE.md`: deeper Python examples.
 - `DB/STUDENT_CATALOG.md`: student catalog fields.
 - `DB/COMPONENT_TEST_PROTOCOL.md`: serious chip/circuit test protocol.

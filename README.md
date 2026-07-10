@@ -244,10 +244,24 @@ The important boundary is unchanged: virtual checks can catch wiring, bus,
 edge, and timing-risk mistakes, but they do not replace physical voltage,
 frequency, or oscilloscope evidence.
 
+For students around ages 10-15, use this build-along order:
+
+1. Read `STUDENT_GUIDE.md`.
+2. Run `Examples/nand.json` with `validate`, `run`, and `probe`.
+3. Use `DB/STUDENT_CATALOG.md` to look up chips before wiring.
+4. Use one `Lib/Circuits/RV8GR_*/README.md` proof card at a time with a teacher
+   or mentor.
+5. Use the protocol docs only when measuring the real build.
+
+See `STUDENT_READABILITY_AUDIT.md` for the current student/teacher/reference
+map across the docs.
+
 ## Subfolder Docs
 
 - `STUDENT_GUIDE.md` - student-first CLI/API guide with safe virtual-vs-hardware
   boundaries.
+- `STUDENT_READABILITY_AUDIT.md` - age 10-15 readability pass, beginner route,
+  and doc audience map.
 - `Verilog/74xx/README.md` - full 74xx logic model list, scan notes, and 74xx source coverage.
 - `Verilog/Memory/README.md` - memory model list and datasheet sources.
 - `DB/README.md` - chip-centered DB package layout and migration notes.

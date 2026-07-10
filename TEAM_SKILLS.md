@@ -53,6 +53,11 @@ simulation services, and student-facing documentation.
   ticks, and 50 kHz, 1 MHz, 2 MHz, and 5 MHz functional profiles. The 5 MHz
   result is functional simulation until hardware signal-integrity and timing
   margin evidence are added.
+- Board-instance discipline: do not confuse physical chip packages with unique
+  part definitions. RV8GR currently has 36 physical packages in the board
+  source (`U1`-`U34`, `ROM1`, `RAM1`), but those packages resolve to 16 board
+  part types and 18 RV8GR-ready definitions when memory options are included.
+  Reports must state which count they mean.
 
 ## Active Components Team
 
@@ -84,6 +89,12 @@ Shared team rule:
   learner readability and document the system wiring commands Components
   actually uses. Do this without weakening datasheet truth, pin numbers,
   active-low labels, edge behavior, tri-state rules, or timing limits.
+- Current student-readability lane: `STUDENT_READABILITY_AUDIT.md` maps each
+  document to student, teacher, tool-builder, or maintainer use. Noon owns the
+  wording, Bam owns command/API accuracy, Ohm owns physical safety wording,
+  Fern owns proof/status truth, Bank owns boundaries, Mint owns HDL truth, and
+  Pim keeps the route visible in `README.md`, `STUDENT_GUIDE.md`, and
+  handoffs.
 
 Current seed-batch milestone:
 
@@ -232,6 +243,10 @@ Components focus:
 - Keep save-session work explicit: update `TEAM_SKILLS.md`, update
   `SESSION_HANDOFF.md`, add a compact persistent note when requested, and push
   the repo checkpoint when files changed.
+- When reporting RV8GR chip counts, say whether the report means board
+  instances, board-used part types, or RV8GR-ready definition options. The
+  current verified board mapping is 36 instances, 16 part types, and all
+  board-used packages have the required package-local files.
 
 ## Bank - Architect
 
@@ -262,6 +277,9 @@ Components focus:
   endpoint-object wires, nets, and backend run configuration.
 - Owns the boundary between virtual stimulus (`ClockSource`, `Switch`) and real
   chip behavior so tests do not hide physical circuit mistakes.
+- Owns count vocabulary and schema placement for RV8GR reports: 36 physical
+  board packages belong to the board/netlist layer, while unique part
+  definitions and memory options belong to the DB/package layer.
 
 ## Fern - Verifier
 
@@ -298,6 +316,10 @@ Components focus:
   one-shot on/off, random push, and preset 100-pulse/10 ms trains.
 - Owns timing-margin consumers that compare circuit propagation paths against
   `Lib/Circuits/timing_margins.json`.
+- Owns the current 36-instance audit gate: each RV8GR board package must map to
+  a current Components package, and each board-used part must keep definition,
+  simulation, Verilog, symbol, generated artifact, and split-record files
+  present.
 
 ## Mint - RTL Coder
 
@@ -326,6 +348,9 @@ Components focus:
   not the same as propagation-delay or hardware margin proof.
 - Checks that visual-editor Verilog export config and opcode-sweep expectations
   stay compatible with generated structural netlists.
+- Confirms board-used Verilog models remain present for the RV8GR 16 part
+  types and that generated/smoke benches stay aligned with package-local
+  `simulation/model.v` files.
 
 ## Ohm - HW Coder
 
@@ -358,6 +383,9 @@ Components focus:
   5 MHz physical-readiness claims.
 - Owns datasheet-backed timing/electrical extraction batches and must keep
   source-named timing values separate from simulator defaults.
+- Owns the physical interpretation of the 36-package RV8GR audit: every
+  instance must use the real DIP/PDIP pin map and the physical speed claim
+  remains blocked until voltage, clock, bus-deadband, and scope evidence exist.
 
 ## Bam - SW Coder
 
@@ -394,6 +422,9 @@ Components focus:
 - Owns block-UI import/export implementation for visual editor workflows.
 - Owns the future wiring-command documentation with Noon: the documented command
   flow must match the actual CLI/API/service behavior.
+- Owns scriptable count and readiness checks that can prove the RV8GR board
+  instances resolve to current DB packages without duplicating chip behavior in
+  a project-specific list.
 
 ## Noon - Docs Writer
 
@@ -430,6 +461,10 @@ Components focus:
 - Owns `STUDENT_GUIDE.md` and the future pass that makes chip JSON/component
   definition output easier for students to read while preserving the real
   engineering facts.
+- Owns `STUDENT_READABILITY_AUDIT.md` and the beginner route: students start
+  from `STUDENT_GUIDE.md`, `Examples/nand.json`, `DB/STUDENT_CATALOG.md`, and
+  one circuit proof card at a time instead of reading every maintainer
+  reference first.
 
 ## Natural Pairings
 
