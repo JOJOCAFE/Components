@@ -1,0 +1,156 @@
+{
+  "schema": "components.virtual_test_instruments",
+  "version": 1,
+  "purpose": "Student-friendly virtual instruments that apply the Components test protocol without modifying real chip definitions.",
+  "claim_boundary": "Virtual instruments can stimulate, observe, estimate, and teach. They do not replace datasheet evidence or physical oscilloscope measurements for hardware signoff.",
+  "student_rule": "Use virtual instruments to learn what should happen, then use real instruments to prove what did happen.",
+  "instruments": [
+    {
+      "part": "InputSource",
+      "instrument_role": "logic_stimulus_source",
+      "protocol_gates": ["source_and_definition"],
+      "student_name": "Input source",
+      "use_for": [
+        "driving truth-table input vectors",
+        "forcing active-low and active-high control states",
+        "building repeatable chip-level virtual tests"
+      ],
+      "not_for": ["real switch bounce, current drive, or analog input threshold measurement"]
+    },
+    {
+      "part": "ClockSource",
+      "instrument_role": "clock_generator",
+      "protocol_gates": ["timing_and_edge_test"],
+      "student_name": "Clock generator",
+      "use_for": [
+        "manual push-switch ticks",
+        "50 kHz, 1 MHz, 2 MHz, and 5 MHz profiles",
+        "repeatable edge tests before physical oscillator tests"
+      ],
+      "not_for": ["hardware speed signoff without measurement"]
+    },
+    {
+      "part": "Switch",
+      "instrument_role": "manual_stimulus",
+      "protocol_gates": ["non_destructive_chip_test", "timing_and_edge_test"],
+      "student_name": "Push switch",
+      "use_for": [
+        "stable on/off input",
+        "one-shot push/release input",
+        "100-tick manual clock runs"
+      ],
+      "not_for": ["debounce proof unless the physical switch waveform is measured"]
+    },
+    {
+      "part": "Probe",
+      "instrument_role": "logic_probe",
+      "protocol_gates": ["source_and_definition", "timing_and_edge_test"],
+      "student_name": "Logic probe",
+      "use_for": [
+        "single signal observation",
+        "expected HIGH/LOW checks",
+        "phase and reset visibility"
+      ],
+      "not_for": ["analog edge quality or ringing measurement"]
+    },
+    {
+      "part": "BusProbe",
+      "instrument_role": "bus_contention_monitor",
+      "protocol_gates": ["bus_ownership_and_race_test"],
+      "student_name": "Bus conflict probe",
+      "use_for": [
+        "active driver list",
+        "IBUS/DBUS contention detection",
+        "forced conflict vectors that must fail"
+      ],
+      "not_for": ["physical current limit or thermal bus-fight safety"]
+    },
+    {
+      "part": "RCParasitic",
+      "instrument_role": "breadboard_delay_estimator",
+      "protocol_gates": ["virtual_parasitic_test_components", "physical_measurement_log"],
+      "student_name": "Breadboard delay estimator",
+      "use_for": [
+        "wire/input/probe capacitance estimates",
+        "tau and 10%-to-90% settling estimates",
+        "choosing which nets must be scoped"
+      ],
+      "not_for": ["hardware timing signoff without oscilloscope captures"]
+    },
+    {
+      "part": "OutputAssert",
+      "instrument_role": "output_expectation_checker",
+      "protocol_gates": ["source_and_definition", "timing_and_edge_test", "bus_ownership_and_race_test"],
+      "student_name": "Expected output checker",
+      "use_for": [
+        "checking that chip outputs match truth-table rows",
+        "checking that circuit outputs still match after delay/noise injection",
+        "making virtual tests fail loudly when expected output is wrong"
+      ],
+      "not_for": ["physical voltage level, analog edge quality, or oscilloscope signoff"]
+    },
+    {
+      "part": "DelayNoise",
+      "instrument_role": "delay_noise_injector",
+      "protocol_gates": ["timing_and_edge_test", "virtual_parasitic_test_components", "bus_ownership_and_race_test"],
+      "student_name": "Delay/noise injector",
+      "use_for": [
+        "adding deterministic delay between chip output and chip input",
+        "adding seeded jitter or short glitch stress",
+        "testing if circuit/system outputs still pass under delay noise"
+      ],
+      "not_for": ["real wiring signoff without scope captures"]
+    },
+    {
+      "part": "VCC",
+      "instrument_role": "virtual_power_rail",
+      "protocol_gates": ["non_destructive_chip_test"],
+      "student_name": "Power rail marker",
+      "use_for": [
+        "declaring intended logic power in a virtual test",
+        "making missing power connections visible"
+      ],
+      "not_for": ["real supply current, voltage drop, or noise measurement"]
+    },
+    {
+      "part": "GND",
+      "instrument_role": "virtual_ground_rail",
+      "protocol_gates": ["non_destructive_chip_test"],
+      "student_name": "Ground rail marker",
+      "use_for": [
+        "declaring intended logic ground in a virtual test",
+        "making missing ground connections visible"
+      ],
+      "not_for": ["real ground bounce or return-current measurement"]
+    },
+    {
+      "part": "Pullup",
+      "instrument_role": "weak_default_high",
+      "protocol_gates": ["source_and_definition", "timing_and_edge_test"],
+      "student_name": "Pull-up",
+      "use_for": [
+        "default HIGH behavior",
+        "reset or control-line idle state modeling"
+      ],
+      "not_for": ["physical RC timing without resistance and capacitance measurement"]
+    },
+    {
+      "part": "Pulldown",
+      "instrument_role": "weak_default_low",
+      "protocol_gates": ["source_and_definition", "timing_and_edge_test"],
+      "student_name": "Pull-down",
+      "use_for": [
+        "default LOW behavior",
+        "control-line idle state modeling"
+      ],
+      "not_for": ["physical RC timing without resistance and capacitance measurement"]
+    }
+  ],
+  "student_protocol_steps": [
+    "Pick the claim: datasheet, model, circuit function, timing estimate, or hardware signoff.",
+    "Add virtual instruments that match the claim.",
+    "Run the JSON/Python proof and make sure failures fail loudly.",
+    "Record what the virtual instruments prove and what they do not prove.",
+    "For hardware signoff, repeat the same signal list with real meter/scope measurements."
+  ]
+}

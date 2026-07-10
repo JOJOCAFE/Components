@@ -1,0 +1,108 @@
+{
+  "schema": "db.component.definition",
+  "version": 1,
+  "id": "OutputAssert",
+  "part": "OutputAssert",
+  "group": "virtual",
+  "kind": "virtual",
+  "role": "output_expectation_checker",
+  "title": "Expected output checker",
+  "family": "Virtual",
+  "package": {
+    "kind": "virtual",
+    "pins": 1
+  },
+  "status": {
+    "datasheet": "not_applicable",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "verilog_model": "not_applicable",
+    "verilog_export": "not_applicable",
+    "tests": "modeled"
+  },
+  "claim_boundary": {
+    "status": "virtual_test_oracle",
+    "belongs_to": "test_instrument_not_chip_definition",
+    "student_note": "This virtual instrument checks that an output equals the expected value at the selected sample point. It is the part that turns a virtual test into pass or fail."
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "IN",
+      "direction": "input"
+    }
+  ],
+  "simulation": {
+    "service": "sim.output_assert",
+    "modes": [
+      "equals",
+      "not_equals",
+      "is_high_z",
+      "is_unknown",
+      "within_timing_window"
+    ],
+    "default_mode": "equals",
+    "default_sample_after_ns": 0,
+    "fail_policy": "raise_assertion"
+  },
+  "ui": {
+    "widget": "output_assert",
+    "symbol": "assert"
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "OutputAssert",
+      "title": "Expected output checker",
+      "family": "Virtual",
+      "group": "virtual",
+      "kind": "virtual",
+      "role": "output_expectation_checker"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "OutputAssert",
+      "packages": [
+        {
+          "id": "virtual",
+          "kind": "virtual",
+          "pins": 1
+        }
+      ],
+      "default_package": "virtual"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "OutputAssert",
+      "pins": [
+        {
+          "number": 1,
+          "name": "IN",
+          "direction": "input"
+        }
+      ],
+      "buses": {}
+    },
+    "simulation": {
+      "schema": "db.component.simulation",
+      "version": 1,
+      "part": "OutputAssert",
+      "simulation": {
+        "service": "sim.output_assert",
+        "fail_policy": "raise_assertion"
+      }
+    },
+    "ui": {
+      "schema": "db.component.ui",
+      "version": 1,
+      "part": "OutputAssert",
+      "ui": {
+        "widget": "output_assert",
+        "symbol": "assert"
+      }
+    }
+  }
+}

@@ -71,6 +71,13 @@ def test_design_exports_block_ui_with_blocks_wires_and_layout():
     assert block_ui["run_config"]["backends"]["python"]["input_format"] == "schematic"
     assert block_ui["run_config"]["backends"]["verilog"]["netlist_format"] == "chiplib.netlist"
     assert block_ui["run_config"]["probes"] == ["logic"]
+    assert block_ui["editor"]["schema"] == "components.block_ui.editor"
+    assert block_ui["editor"]["source_of_truth"] == "normalized_design"
+    assert block_ui["editor"]["palette"]["missing_data_policy"] == "show_status_warning"
+    assert "74xx" in block_ui["editor"]["palette"]["default_groups"]
+    assert {"tool": "export_block_ui", "cli_equivalent": "export-block-ui JSON_FILE"} in block_ui["editor"]["mcp_ready_tools"]
+    assert block_ui["editor"]["current_design"]["chips"] == ["U1"]
+    assert block_ui["editor"]["current_design"]["buses"] == ["DATA"]
 
 
 def test_block_ui_import_preserves_design_fields_and_layout():
@@ -136,11 +143,28 @@ def test_block_ui_import_accepts_visual_endpoint_wires():
     assert imported["layout"]["wires"]["W1"] == {"points": [[10, 20], [80, 20]]}
 
 
+def test_block_ui_editor_metadata_lists_safe_actions_and_gates():
+    block_ui = Design.from_dict(small_design()).to_block_ui()
+    editor = block_ui["editor"]
+    actions = {action["name"]: action for action in editor["actions"]}
+
+    assert {"place_chip", "place_bus", "connect", "add_probe", "run"} <= set(actions)
+    assert actions["connect"]["requires"] == ["endpoint_a", "endpoint_b"]
+    assert {"validate", "snapshot", "run", "probe", "export-netlist", "export-verilog"} <= set(editor["validation_gates"])
+    assert {"component_catalog", "component_detail", "validate_design", "run_design"} <= {
+        item["tool"] for item in editor["mcp_ready_tools"]
+    }
+    rules = " ".join(editor["student_rules"])
+    assert "real package pins" in rules
+    assert "missing datasheet" in rules
+
+
 def run_all():
     test_design_exports_block_ui_with_blocks_wires_and_layout()
     test_block_ui_import_preserves_design_fields_and_layout()
     test_module_helpers_round_trip_block_ui_contract()
     test_block_ui_import_accepts_visual_endpoint_wires()
+    test_block_ui_editor_metadata_lists_safe_actions_and_gates()
 
 
 if __name__ == "__main__":

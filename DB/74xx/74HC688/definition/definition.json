@@ -344,7 +344,33 @@
       "part": "74HC688",
       "delay": {
         "model_delay_ns": 30,
-        "status": "model-derived"
+        "status": "datasheet-backed",
+        "datasheet_typical_ns": {
+          "4.5": {
+            "an_to_output": 34,
+            "bn_to_output": 34,
+            "enable_to_output": 24
+          }
+        },
+        "datasheet_max_ns_25c": {
+          "4.5": {
+            "an_to_output": 42,
+            "bn_to_output": 42,
+            "enable_to_output": 30
+          }
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "4.5": {
+            "an_to_output": 51,
+            "bn_to_output": 51,
+            "enable_to_output": 36
+          }
+        },
+        "conditions": {
+          "load_pf": 15,
+          "path": "A_B_or_E_to_P_equals_Q_output",
+          "section": "5.5 Switching Characteristics"
+        }
       },
       "evidence": {
         "label": "Texas Instruments CD74HC688",
@@ -353,7 +379,9 @@
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     },
@@ -361,16 +389,28 @@
       "schema": "db.component.electrical",
       "version": 1,
       "part": "74HC688",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
+      "recommended_operating": {
+        "vcc_v": {
+          "min": 2,
+          "max": 6
+        },
+        "input_or_output_voltage_v": {
+          "min": 0,
+          "max": "VCC"
         }
       },
-      "current": {
-        "status": "datasheet-required"
+      "static_characteristics": {
+        "input_leakage_max_ua": {
+          "6.0": 1,
+          "5.5": 1
+        },
+        "icc_max_ua": {
+          "6.0": 80,
+          "5.5": 80
+        }
       },
       "loading": {
-        "status": "datasheet-required"
+        "switching_test_load_pf": 15
       },
       "evidence": {
         "label": "Texas Instruments CD74HC688",
@@ -379,7 +419,9 @@
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     }

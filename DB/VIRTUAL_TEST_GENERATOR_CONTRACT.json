@@ -1,0 +1,66 @@
+{
+  "schema": "components.virtual_test_generator_contract",
+  "version": 1,
+  "purpose": "Define how chip split-record tests become student-friendly virtual benches that can later be reused at circuit and system level.",
+  "input_records": [
+    "truth_table",
+    "timing",
+    "tri_state",
+    "bus_fight",
+    "propagation"
+  ],
+  "bench_levels": [
+    {
+      "level": "chip",
+      "goal": "Prove one chip model produces expected outputs for its definition-level tests.",
+      "required_instruments": ["InputSource", "ClockSource", "Switch", "Probe", "OutputAssert"],
+      "optional_instruments": ["BusProbe", "RCParasitic", "DelayNoise"]
+    },
+    {
+      "level": "circuit",
+      "goal": "Prove connected chip outputs still pass when observed through bus, delay, and parasitic instruments.",
+      "required_instruments": ["ClockSource", "Probe", "BusProbe", "OutputAssert"],
+      "optional_instruments": ["RCParasitic", "DelayNoise"]
+    },
+    {
+      "level": "system",
+      "goal": "Run instruction or workload traces while injecting deterministic delay/noise on selected inter-chip nets.",
+      "required_instruments": ["ClockSource", "BusProbe", "OutputAssert"],
+      "optional_instruments": ["Switch", "Probe", "RCParasitic", "DelayNoise"]
+    }
+  ],
+  "record_mapping": [
+    {
+      "record": "truth_table",
+      "virtual_instruments": ["InputSource", "Probe", "OutputAssert"],
+      "generated_checks": ["drive each input vector", "sample every named output", "assert expected logic value"]
+    },
+    {
+      "record": "timing",
+      "virtual_instruments": ["ClockSource", "Switch", "Probe", "OutputAssert"],
+      "generated_checks": ["apply required clock profile", "sample after declared delay", "assert setup/hold or no-edge behavior"]
+    },
+    {
+      "record": "tri_state",
+      "virtual_instruments": ["InputSource", "BusProbe", "OutputAssert"],
+      "generated_checks": ["enable output", "disable output", "assert high-Z when disabled"]
+    },
+    {
+      "record": "bus_fight",
+      "virtual_instruments": ["BusProbe", "OutputAssert"],
+      "generated_checks": ["force safe single-driver vector", "force conflict vector", "assert conflict is reported"]
+    },
+    {
+      "record": "propagation",
+      "virtual_instruments": ["ClockSource", "Probe", "RCParasitic", "DelayNoise", "OutputAssert"],
+      "generated_checks": ["apply source transition", "inject optional delay/noise", "sample destination after timing budget", "assert output still meets expectation"]
+    }
+  ],
+  "delay_noise_policy": {
+    "status": "virtual_stress_not_physical_signoff",
+    "seed_required": true,
+    "must_report": ["base_delay_ns", "jitter_ns", "glitch_probability", "glitch_width_ns", "affected_net"],
+    "student_note": "DelayNoise shows what could go wrong between chips. If a design only passes with zero delay, it is not ready for real wiring."
+  },
+  "claim_boundary": "Generated virtual benches prove model behavior and stress selected assumptions. Physical hardware still needs real voltage, timing, and oscilloscope evidence."
+}

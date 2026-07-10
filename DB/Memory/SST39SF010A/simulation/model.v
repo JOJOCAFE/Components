@@ -6,7 +6,7 @@
 // # SST39SF010A DIP Pinout
 //
 // Manufacturer source: Microchip SST39SF010A/SST39SF020A/SST39SF040 datasheet:
-// https://ww1.microchip.com/downloads/en/DeviceDoc/SST39SF010A-SST39SF020A-SST39SF040-Data-Sheet-DS20005022.pdf
+// https://ww1.microchip.com/downloads/aemDocuments/documents/MPD/ProductDocuments/DataSheets/SST39SF010A-SST39SF020A-SST39SF040-Data-Sheet-DS20005022.pdf
 //
 // Package checked: 32-pin PDIP flash package. Pins that are address pins on
 // larger family members but not used by the 1-Mbit SST39SF010A are listed as NC.

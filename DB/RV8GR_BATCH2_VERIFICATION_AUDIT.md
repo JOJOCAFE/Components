@@ -1,6 +1,9 @@
 # RV8GR Batch 2 Verification Audit
 
-Scope: RV8GR complete set audit for the Batch 2 package records. All RV8GR Batch 2 parts now meet the seed-package record gate.
+Scope: RV8GR complete set audit for the Batch 2 package records. All RV8GR
+Batch 2 parts now meet the seed-package record gate for functional
+chip-level records. Datasheet timing/electrical readiness is tracked
+separately in `DB/RV8GR_CHIP_LEVEL_READINESS.json`.
 
 The complete set is:
 
@@ -26,6 +29,41 @@ The complete set is:
 Each part has a layered package with `definition/definition.json`, local
 simulation files, symbol metadata, generated artifacts, and split test records
 for truth table, timing, tri-state, bus-fight, and propagation coverage.
+
+## Chip-Level Timing Readiness
+
+Circuit-level functional testing can use the split records above, but physical
+timing claims require datasheet-backed or measured chip rows.
+
+Readiness tracker:
+
+- `DB/RV8GR_CHIP_LEVEL_READINESS.json`
+- `DB/RV8GR_CHIP_LEVEL_TEST_PLAN.md`
+
+Currently datasheet-backed enough for circuit functional progression and
+physical timing planning:
+
+- `74HC00`
+- `74HC04`
+- `74HC32`
+- `74HC74`
+- `74HC86`
+- `74HC157`
+- `74HC161`
+- `74HC164`
+- `74HC245`
+- `74HC283`
+- `74HC541`
+- `74HC574`
+- `74HC688`
+- `62256`
+- `AS6C62256`
+- `AT28C256`
+- `SST39SF010A`
+
+Currently blocked for physical timing signoff until bench evidence is recorded:
+
+- none at chip-definition level
 
 ## Representative Deepened Records
 

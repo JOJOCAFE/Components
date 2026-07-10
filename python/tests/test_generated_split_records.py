@@ -188,6 +188,42 @@ def load_definition(part: str):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_rv8gr_chip_readiness():
+    return json.loads((ROOT / "DB" / "RV8GR_CHIP_LEVEL_READINESS.json").read_text(encoding="utf-8"))
+
+
+def load_rv8gr_virtual_bench_plan():
+    return json.loads((ROOT / "DB" / "RV8GR_VIRTUAL_BENCH_PLAN.json").read_text(encoding="utf-8"))
+
+
+def definition_has_datasheet_timing(definition: dict) -> bool:
+    timing = definition["definition_layers"]["timing"]
+    delay = timing.get("delay", {})
+    if delay.get("status") == "datasheet-backed":
+        return True
+    return any(key.startswith("datasheet_") for key in delay)
+
+
+def definition_has_datasheet_electrical(definition: dict) -> bool:
+    electrical = definition["definition_layers"]["electrical"]
+    if "recommended_operating" in electrical and "static_characteristics" in electrical:
+        return True
+    used_for = {
+        item
+        for source in definition.get("datasheet", {}).get("sources", [])
+        for item in source.get("used_for", [])
+    }
+    return bool(
+        used_for
+        & {
+            "electrical",
+            "electrical_characteristics",
+            "dc_characteristics",
+            "recommended_operating_conditions",
+        }
+    )
+
+
 def set_byte(chip, pins, value: int) -> None:
     for bit, pin in enumerate(pins):
         chip.set_input(pin, (value >> bit) & 1)
@@ -525,10 +561,116 @@ def test_rv8gr_complete_set_has_seed_package_layers_and_executable_truth_coverag
                 assert record.get("reason"), (part, test_type)
 
 
+def test_rv8gr_chip_level_readiness_gates_circuit_timing_claims():
+    readiness = load_rv8gr_chip_readiness()
+    assert readiness["schema"] == "components.rv8gr.chip_level_readiness"
+    assert set(readiness["required_split_records"]) == set(SPLIT_TEST_TYPES)
+    assert readiness["required_physical_voltage_test_points_v"] == [4.5, 5.0, 5.5]
+    assert readiness["required_physical_clock_profiles"] == [
+        {"name": "manual_push_switch_100_ticks", "mode": "manual", "ticks": 100},
+        {"name": "50khz", "mode": "oscillator", "frequency_hz": 50_000},
+        {"name": "1mhz", "mode": "oscillator", "frequency_hz": 1_000_000},
+        {"name": "2mhz", "mode": "oscillator", "frequency_hz": 2_000_000},
+        {"name": "5mhz", "mode": "oscillator", "frequency_hz": 5_000_000},
+    ]
+
+    parts = {item["part"]: item for item in readiness["parts"]}
+    assert set(parts) == set(BATCH2_TEST_ROOTS)
+
+    allowed_timing_statuses = {"datasheet_backed", "model_derived"}
+    allowed_electrical_statuses = {"datasheet_backed", "needs_extraction"}
+    allowed_gates = {
+        "ready_for_circuit_functional",
+        "functional_only_until_datasheet_extracted",
+    }
+
+    for part, tests_root in BATCH2_TEST_ROOTS.items():
+        item = parts[part]
+        definition = load_definition(part)
+        assert item["definition_timing_status"] in allowed_timing_statuses, part
+        assert item["definition_electrical_status"] in allowed_electrical_statuses, part
+        assert item["chip_level_gate"] in allowed_gates, part
+        assert item["rv8gr_role"], part
+        assert item["next_datasheet_action"], part
+
+        for test_type in readiness["required_split_records"]:
+            record = json.loads((tests_root / f"{test_type}.json").read_text(encoding="utf-8"))
+            assert record["part"] == part
+            assert isinstance(record["applicable"], bool), (part, test_type)
+            assert record.get("checks") or record.get("vectors") or record.get("reason"), (part, test_type)
+
+        expected_timing_status = (
+            "datasheet_backed" if definition_has_datasheet_timing(definition) else "model_derived"
+        )
+        expected_electrical_status = (
+            "datasheet_backed" if definition_has_datasheet_electrical(definition) else "needs_extraction"
+        )
+        assert item["definition_timing_status"] == expected_timing_status, part
+        assert item["definition_electrical_status"] == expected_electrical_status, part
+
+        if item["definition_timing_status"] != "datasheet_backed" or item["definition_electrical_status"] != "datasheet_backed":
+            assert item["chip_level_gate"] == "functional_only_until_datasheet_extracted", part
+            assert item["physical_timing_allowed"] is False, part
+        else:
+            assert item["chip_level_gate"] == "ready_for_circuit_functional", part
+
+
+def test_rv8gr_virtual_bench_plan_maps_all_split_records_to_instruments():
+    plan = load_rv8gr_virtual_bench_plan()
+    contract = json.loads((ROOT / "DB" / "VIRTUAL_TEST_GENERATOR_CONTRACT.json").read_text(encoding="utf-8"))
+    instruments = json.loads((ROOT / "DB" / "VIRTUAL_TEST_INSTRUMENTS.json").read_text(encoding="utf-8"))
+    instrument_parts = {item["part"] for item in instruments["instruments"]}
+    expected_mapping = {item["record"]: item for item in contract["record_mapping"]}
+
+    assert plan["schema"] == "components.rv8gr.virtual_bench_plan"
+    assert plan["generated_from"] == {
+        "chip_readiness": "DB/RV8GR_CHIP_LEVEL_READINESS.json",
+        "generator_contract": "DB/VIRTUAL_TEST_GENERATOR_CONTRACT.json",
+        "instrument_catalog": "DB/VIRTUAL_TEST_INSTRUMENTS.json",
+    }
+    assert plan["summary"]["rv8gr_chip_count"] == 18
+    assert plan["summary"]["required_split_records"] == list(SPLIT_TEST_TYPES)
+    assert plan["summary"]["split_records_per_chip"] == 5
+    assert plan["summary"]["total_split_record_mappings"] == 90
+    assert plan["summary"]["output_assert_records"] == 90
+    assert plan["summary"]["delay_noise_propagation_records"] == 18
+    assert plan["summary"]["all_required_instruments_declared"] is True
+    assert {item["record"] for item in plan["record_mapping"]} == set(SPLIT_TEST_TYPES)
+
+    chips = {item["part"]: item for item in plan["chips"]}
+    assert set(chips) == set(BATCH2_TEST_ROOTS)
+
+    for part, chip in chips.items():
+        assert chip["package_root"] == BATCH2_TEST_ROOTS[part].parent.relative_to(ROOT).as_posix()
+        records = {item["record"]: item for item in chip["split_records"]}
+        assert set(records) == set(SPLIT_TEST_TYPES), part
+
+        for record_name in SPLIT_TEST_TYPES:
+            record = records[record_name]
+            source = ROOT / record["source"]
+            source_record = json.loads(source.read_text(encoding="utf-8"))
+            mapping = expected_mapping[record_name]
+
+            assert source == BATCH2_TEST_ROOTS[part] / f"{record_name}.json"
+            assert record["applicable"] == source_record["applicable"], (part, record_name)
+            assert record["virtual_instruments"] == mapping["virtual_instruments"], (part, record_name)
+            assert record["generated_checks"] == mapping["generated_checks"], (part, record_name)
+            assert set(record["virtual_instruments"]) <= instrument_parts, (part, record_name)
+            assert record["requires_output_assert"] is True, (part, record_name)
+            assert record["missing_instruments"] == [], (part, record_name)
+
+        propagation = records["propagation"]
+        assert {"DelayNoise", "OutputAssert"} <= set(propagation["virtual_instruments"]), part
+        assert propagation["propagation_stress"] is True, part
+
+
 def test_rv8gr_audit_report_declares_complete_set():
     audit = (ROOT / "DB" / "RV8GR_BATCH2_VERIFICATION_AUDIT.md").read_text(encoding="utf-8")
+    audit_words = " ".join(audit.split())
     assert "RV8GR complete set" in audit
-    assert "All RV8GR Batch 2 parts now meet the seed-package record gate." in audit
+    assert "All RV8GR Batch 2 parts now meet the seed-package record gate for functional" in audit_words
+    assert "`DB/RV8GR_CHIP_LEVEL_READINESS.json`" in audit
+    assert "Currently blocked for physical timing signoff" in audit
     for part in BATCH2_TEST_ROOTS:
         assert f"`{part}`" in audit
 
@@ -1143,6 +1285,8 @@ def run_all():
     test_seed_bus_fight_records_execute_against_board_errors()
     test_task3_representative_batch2_records_have_datasheet_electrical_extraction()
     test_rv8gr_complete_set_has_seed_package_layers_and_executable_truth_coverage()
+    test_rv8gr_chip_level_readiness_gates_circuit_timing_claims()
+    test_rv8gr_virtual_bench_plan_maps_all_split_records_to_instruments()
     test_rv8gr_audit_report_declares_complete_set()
     test_verilog_smoke_workflow_keeps_broad_compile_scope()
     test_split_records_generate_verilog_testbench_metadata()

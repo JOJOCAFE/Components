@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import random
+import re
 
 from chiplib import Z, create_chip
 
@@ -27,7 +28,14 @@ FULL_CONTROL_OPCODE_SWEEP = ROOT / "Lib" / "Circuits" / "RV8GR_FullControlOpcode
 RESET_CLOCK_BRINGUP = ROOT / "Lib" / "Circuits" / "RV8GR_ResetClockBringup"
 FETCH_CYCLE_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_FetchCycleTrace"
 STORE_LOAD_BRANCH_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_StoreLoadBranchTrace"
+PAGE_JUMP_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_PageJumpTrace"
+INTERRUPT_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_InterruptTrace"
+BOOT_SEQUENCE_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_BootSequenceTrace"
+LAB13_MARKER_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_Lab13MarkerTrace"
 TIMING_MARGINS = ROOT / "Lib" / "Circuits" / "timing_margins.json"
+COMPONENT_TEST_PROTOCOL = ROOT / "DB" / "COMPONENT_TEST_PROTOCOL.md"
+RV8GR_TEST_PROTOCOL = ROOT / "Lib" / "Circuits" / "RV8GR_TEST_PROTOCOL.md"
+RV8GR_COVERAGE_INDEX = ROOT / "Lib" / "Circuits" / "RV8GR_COVERAGE_INDEX.json"
 RANDOM_PUSH_SEED = 0x8C16
 BYTE_D_PINS = [2, 3, 4, 5, 6, 7, 8, 9]
 BYTE_Q_PINS = [19, 18, 17, 16, 15, 14, 13, 12]
@@ -385,6 +393,199 @@ def store_load_branch_trace_execute(vector: dict) -> dict[str, object]:
         "u7_direction": u7_direction_from_ownership(ownership),
         "conflict": ownership["conflict"],
     }
+
+
+def page_jump_trace_execute(vector: dict) -> dict[str, object]:
+    opcode = parse_hex(vector["opcode"])
+    operand = parse_hex(vector["operand"])
+    initial = vector["initial"]
+    pc = parse_hex(initial["PC"])
+    pg = parse_hex(initial["PG"])
+    dp = parse_hex(initial["DP"])
+    z = int(initial["Z"])
+    bits = control_bits(opcode)
+    ibus = operand
+
+    pg_result = page_register_step(pg, ibus, "T2_END", bits["MUX_SEL"], bits["AC_WR"])
+    dp_latch = bool(phase_t2(vector["phase"]) and bits["XOR_MODE"] and not (bits["SRC"] or bits["STR"]) and not bits["AC_WR"])
+    branch = branch_jump_control(vector["phase"], bits["JMP"], bits["BR"], z, bits["ALU_SUB"])
+    if dp_latch:
+        dp = ibus
+    if pg_result["latch"]:
+        pg = pg_result["pg"]
+    if branch["pc_ld_n"] == 0:
+        pc = jump_target(pg, operand)
+
+    return {
+        "IBUS": ibus,
+        "PC": pc,
+        "PG": pg,
+        "DP": dp,
+        "Z": z,
+        "pc_ld_n": branch["pc_ld_n"],
+        "pg_latch": pg_result["latch"],
+        "dp_latch": dp_latch,
+        "ibus_drivers": ["U34"],
+        "conflict": False,
+    }
+
+
+def interrupt_trace_execute(vector: dict) -> dict[str, object]:
+    initial = vector["initial"]
+    pc = parse_hex(initial["PC"])
+    ie = int(initial["IE"])
+    irq_ff = int(initial["IRQ_FF"])
+    irq_n = int(initial["/IRQ"])
+    ie, irq_ff, _pc_policy = irq_latch_step(ie, irq_ff, vector["event"], rst=0 if vector["event"] == "reset" else 1)
+    if vector["event"] == "irq_low":
+        irq_n = 0
+    elif vector["event"] == "irq_release_rising":
+        irq_n = 1
+    return {
+        "PC": pc,
+        "IE": ie,
+        "IRQ_FF": irq_ff,
+        "/IRQ": irq_n,
+        "pc_changed": pc != parse_hex(initial["PC"]),
+    }
+
+
+def parse_maybe_unknown(value):
+    if value in {"0xXX", "X", "unknown"}:
+        return value
+    if isinstance(value, int):
+        return value
+    return parse_hex(value)
+
+
+def boot_sequence_trace_execute(vector: dict) -> dict[str, object]:
+    opcode = parse_hex(vector["opcode"])
+    operand = parse_hex(vector["operand"])
+    initial = vector["initial"]
+    pc = parse_hex(initial["PC"]) + 2
+    pg = parse_maybe_unknown(initial["PG"])
+    dp = parse_maybe_unknown(initial["DP"])
+    ac = parse_maybe_unknown(initial["AC"])
+    z = parse_maybe_unknown(initial["Z"])
+    bits = control_bits(opcode)
+    ibus = operand
+    pg_latch = bool(phase_t2(vector["phase"]) and bits["MUX_SEL"] and not bits["AC_WR"])
+    dp_latch = bool(phase_t2(vector["phase"]) and bits["XOR_MODE"] and not (bits["SRC"] or bits["STR"]) and not bits["AC_WR"])
+    ac_latch = bool(phase_t2(vector["phase"]) and bits["AC_WR"])
+    branch = branch_jump_control(vector["phase"], bits["JMP"], bits["BR"], 0 if z == "X" else int(z), bits["ALU_SUB"])
+
+    if dp_latch:
+        dp = ibus
+    if pg_latch:
+        pg = ibus
+    if ac_latch:
+        ac = ibus
+        z = 1 if ac == 0 else 0
+    if branch["pc_ld_n"] == 0:
+        pc = jump_target(0 if pg == "0xXX" else int(pg), operand)
+
+    return {
+        "PC": pc,
+        "PG": pg,
+        "DP": dp,
+        "AC": ac,
+        "Z": z,
+        "IBUS": ibus,
+        "dp_latch": dp_latch,
+        "pg_latch": pg_latch,
+        "ac_latch": ac_latch,
+        "pc_ld_n": branch["pc_ld_n"],
+        "ibus_drivers": ["U34"],
+        "dbus_drivers_fetch": ["ROM"],
+        "conflict": False,
+    }
+
+
+def lab13_instruction(opcode: int) -> str | None:
+    return {
+        0x30: "LI",
+        0x10: "ADDI",
+        0x90: "SUBI",
+        0x02: "BEQ",
+        0x01: "J",
+    }.get(opcode)
+
+
+def lab13_marker_rows(proof: dict) -> list[dict[str, object]]:
+    rom = {parse_hex(item["address"]): parse_hex(item["value"]) for item in proof["rom_bytes"]}
+    state: dict[str, object] = {
+        "pc": parse_hex(proof["initial_state"]["PC"]),
+        "ac": parse_hex(proof["initial_state"]["AC"]),
+        "z": proof["initial_state"]["Z"],
+        "pg": parse_hex(proof["initial_state"]["PG"]),
+        "dp": parse_hex(proof["initial_state"]["DP"]),
+        "irh": None,
+        "irl": None,
+    }
+    rows: list[dict[str, object]] = []
+
+    for clock in range(1, proof["manual_clock_expectation"]["total_clock_edges"] + 1):
+        phase = ("T0", "T1", "T2")[(clock - 1) % 3]
+        if phase == "T0":
+            pc = int(state["pc"])
+            state["irh"] = rom[pc]
+            state["irl"] = None
+            rows.append(
+                {
+                    **state,
+                    "clock": clock,
+                    "phase": phase,
+                    "abus": pc,
+                    "mnemonic": None,
+                    "ibus_drivers": ["U7"],
+                    "dbus_drivers": ["ROM1"],
+                    "conflict": False,
+                }
+            )
+            state["pc"] = (pc + 1) & 0xFFFF
+        elif phase == "T1":
+            pc = int(state["pc"])
+            state["irl"] = rom[pc]
+            rows.append(
+                {
+                    **state,
+                    "clock": clock,
+                    "phase": phase,
+                    "abus": pc,
+                    "mnemonic": None,
+                    "ibus_drivers": ["U7"],
+                    "dbus_drivers": ["ROM1"],
+                    "conflict": False,
+                }
+            )
+            state["pc"] = (pc + 1) & 0xFFFF
+        else:
+            opcode = int(state["irh"])
+            operand = int(state["irl"])
+            bits = control_bits(opcode)
+            result = alu_datapath(int(state["ac"]), operand, bits["ALU_SUB"], bits["XOR_MODE"], bits["MUX_SEL"], bits["AC_WR"], phase)
+            branch = branch_jump_control(phase, bits["JMP"], bits["BR"], int(state["z"]), bits["ALU_SUB"])
+            if bits["AC_WR"]:
+                state["ac"] = result["ac"]
+                state["z"] = result["z"]
+            if branch["pc_ld_n"] == 0:
+                state["pc"] = jump_target(int(state["pg"]), operand)
+
+            ownership = bus_ownership(phase, bits["SRC"], bits["STR"], 0)
+            rows.append(
+                {
+                    **state,
+                    "clock": clock,
+                    "phase": phase,
+                    "abus": int(state["pc"]),
+                    "mnemonic": lab13_instruction(opcode),
+                    "ibus_drivers": ownership["ibus_drivers"],
+                    "dbus_drivers": ownership["dbus_drivers"],
+                    "conflict": ownership["conflict"],
+                }
+            )
+
+    return rows
 
 
 def fetch_cycle_instruction(opcode: int) -> str | None:
@@ -1808,6 +2009,10 @@ def test_rv8gr_virtual_test_helpers_package_shape():
         "PH2": "Probe",
         "IBUSMON": "BusProbe",
         "DBUSMON": "BusProbe",
+        "CLKRC": "RCParasitic",
+        "BUSRC": "RCParasitic",
+        "DLY1": "DelayNoise",
+        "ASSERT1": "OutputAssert",
     }
     for part in proof["virtual_parts_required"]:
         assert (ROOT / "DB" / "Virtual" / part / "definition" / "definition.json").exists(), part
@@ -1863,8 +2068,119 @@ def test_rv8gr_virtual_switch_profiles_execute():
             assert len(result["events"]) == vector["pulses"] * 2, vector
             for index in range(vector["pulses"]):
                 start = index * vector["interval_ms"]
-                assert result["events"][index * 2] == {"time_ms": start, "value": preset["active_state"]}, vector
-                assert result["events"][index * 2 + 1] == {"time_ms": start + vector["active_ms"], "value": preset["idle_state"]}, vector
+            assert result["events"][index * 2] == {"time_ms": start, "value": preset["active_state"]}, vector
+            assert result["events"][index * 2 + 1] == {"time_ms": start + vector["active_ms"], "value": preset["idle_state"]}, vector
+
+
+def rc_parasitic_estimate(vector):
+    capacitance = (
+        vector["wire_capacitance_pf"]
+        + vector["chip_input_capacitance_pf"]
+        + vector["probe_capacitance_pf"]
+        + vector["extra_capacitance_pf"]
+    )
+    tau_ns = vector["source_resistance_ohm"] * capacitance / 1000
+    return {
+        "tau_ns": round(tau_ns, 2),
+        "settling_10_90_ns": round(2.2 * tau_ns, 2),
+    }
+
+
+def test_rv8gr_virtual_rc_parasitic_estimates_are_not_signoff():
+    proof = load_json(VIRTUAL_TEST_HELPERS / "tests" / "virtual_test_helpers.json")
+    rc_def = load_json(ROOT / "DB" / "Virtual" / "RCParasitic" / "definition" / "definition.json")
+
+    assert rc_def["group"] == "virtual"
+    assert rc_def["kind"] == "virtual"
+    assert rc_def["role"] == "parasitic_timing_estimator"
+    assert rc_def["simulation"]["service"] == "sim.rc_parasitic"
+    assert rc_def["claim_boundary"]["status"] == "estimate_only_not_signoff"
+    assert rc_def["claim_boundary"]["belongs_to"] == "circuit_or_board_level_not_chip_definition"
+    assert "must not be used as hardware signoff" in proof["rc_claim_boundary"]
+
+    examples = {item["name"]: item for item in rc_def["simulation"]["example_profiles"]}
+    for vector in proof["rc_parasitic_vectors"]:
+        result = rc_parasitic_estimate(vector)
+        assert result["tau_ns"] == vector["expect_tau_ns"], vector
+        assert result["settling_10_90_ns"] == vector["expect_settling_10_90_ns"], vector
+        assert vector["scope_required_for_signoff"] is True, vector
+
+        example = examples[vector["name"]]
+        assert example["expect_tau_ns"] == vector["expect_tau_ns"], vector
+        assert example["expect_settling_10_90_ns"] == vector["expect_settling_10_90_ns"], vector
+
+
+def delay_noise_apply(vector):
+    return {
+        "sequence": list(vector["input_sequence"]),
+        "max_delay_ns": vector["base_delay_ns"] + vector["jitter_ns"],
+        "seed": vector["seed"],
+        "stress_only_not_physical_signoff": vector.get("stress_only_not_physical_signoff", False),
+    }
+
+
+def output_assert_check(vector):
+    observed = vector["observed"]
+    expected = vector["expected"]
+    if vector["mode"] == "equals":
+        return observed == expected
+    if vector["mode"] == "is_high_z":
+        return observed == "Z" and expected == "Z"
+    raise AssertionError(f"unsupported output assert mode {vector['mode']}")
+
+
+def test_rv8gr_virtual_delay_noise_and_output_assert_helpers_execute():
+    proof = load_json(VIRTUAL_TEST_HELPERS / "tests" / "virtual_test_helpers.json")
+    delay_def = load_json(ROOT / "DB" / "Virtual" / "DelayNoise" / "definition" / "definition.json")
+    assert_def = load_json(ROOT / "DB" / "Virtual" / "OutputAssert" / "definition" / "definition.json")
+
+    assert delay_def["simulation"]["service"] == "sim.delay_noise"
+    assert delay_def["simulation"]["deterministic_seed_required"] is True
+    assert assert_def["simulation"]["service"] == "sim.output_assert"
+    assert assert_def["simulation"]["fail_policy"] == "raise_assertion"
+
+    for vector in proof["delay_noise_vectors"]:
+        result = delay_noise_apply(vector)
+        assert result["sequence"] == vector["expect_sequence"], vector
+        assert result["max_delay_ns"] == vector["expect_max_delay_ns"], vector
+        assert isinstance(result["seed"], int), vector
+
+    for vector in proof["output_assert_vectors"]:
+        assert output_assert_check(vector) is vector["expect_pass"], vector
+
+    generation = proof["virtual_bench_generation"]
+    assert generation["contract"] == "DB/VIRTUAL_TEST_GENERATOR_CONTRACT.json"
+    assert "OutputAssert" in generation["chip_level_requires"]
+    assert "DelayNoise" in generation["system_level_noise_optional"]
+    assert "not physical signoff" in generation["claim_boundary"]
+
+
+def test_components_test_protocol_names_required_gates_and_references():
+    component_protocol = COMPONENT_TEST_PROTOCOL.read_text(encoding="utf-8")
+    rv8gr_protocol = RV8GR_TEST_PROTOCOL.read_text(encoding="utf-8")
+    instruments = load_json(ROOT / "DB" / "VIRTUAL_TEST_INSTRUMENTS.json")
+
+    assert "MIL-STD-883" in component_protocol
+    assert "JESD78" in component_protocol
+    assert "Keysight oscilloscope probe" in component_protocol
+    assert "Gate 5: Virtual Parasitic Test Components" in component_protocol
+    assert "DB/VIRTUAL_TEST_INSTRUMENTS.json" in component_protocol
+    assert "Student-friendly workflow" in component_protocol
+    assert "`RCParasitic`" in component_protocol
+    assert "`DelayNoise` is different from `RCParasitic`" in component_protocol
+    assert "`OutputAssert`" in component_protocol
+    assert "4.5 V" in component_protocol
+    assert "5.0 V" in component_protocol
+    assert "5.5 V" in component_protocol
+    assert "100 manual push-switch ticks" in component_protocol
+    assert "5 MHz" in component_protocol
+
+    assert "Parent protocol: `DB/COMPONENT_TEST_PROTOCOL.md`" in rv8gr_protocol
+    assert "Use the virtual `RCParasitic` component" in rv8gr_protocol
+
+    instrument_parts = {item["part"] for item in instruments["instruments"]}
+    assert {"ClockSource", "Switch", "Probe", "BusProbe", "RCParasitic", "OutputAssert", "DelayNoise"} <= instrument_parts
+    assert "Use virtual instruments to learn" in instruments["student_rule"]
 
 
 def test_rv8gr_full_control_opcode_sweep_package_shape():
@@ -2153,6 +2469,327 @@ def test_rv8gr_store_load_branch_trace_bus_policy_is_conflict_free():
     assert store_load_branch_trace_execute(beq)["PC"] == 0x0020
 
 
+def test_rv8gr_page_jump_trace_package_shape():
+    circuit = load_json(PAGE_JUMP_TRACE / "circuit.json")
+    proof = load_json(PAGE_JUMP_TRACE / "tests" / "page_jump_trace.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_page_jump_trace"
+    assert proof["circuit"] == circuit["id"]
+    assert (PAGE_JUMP_TRACE / "README.md").exists()
+    assert "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md" in circuit["source_project"]["paths"]
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips["U23"] == "74HC574"
+    assert chips["U32"] == "74HC574"
+    assert chips["U34"] == "74HC541"
+    assert chips["IBUSMON"] == "BusProbe"
+
+
+def test_rv8gr_page_jump_trace_vectors_execute():
+    proof = load_json(PAGE_JUMP_TRACE / "tests" / "page_jump_trace.json")
+    assert {trace["name"] for trace in proof["source_traces"]} == {"SETDP", "SETPG", "J"}
+
+    for vector in proof["vectors"]:
+        result = page_jump_trace_execute(vector)
+        expect = vector["expect"]
+        assert result["IBUS"] == parse_hex(expect["IBUS"]), vector
+        assert result["PC"] == parse_hex(expect["PC"]), vector
+        assert result["PG"] == parse_hex(expect["PG"]), vector
+        assert result["DP"] == parse_hex(expect["DP"]), vector
+        assert result["Z"] == expect["Z"], vector
+        assert result["pc_ld_n"] == expect["pc_ld_n"], vector
+        assert result["pg_latch"] is expect["pg_latch"], vector
+        assert result["dp_latch"] is expect["dp_latch"], vector
+        assert result["ibus_drivers"] == expect["ibus_drivers"], vector
+        assert result["conflict"] is expect["conflict"], vector
+
+
+def test_rv8gr_page_jump_trace_sequence_uses_latched_pg_for_jump():
+    proof = load_json(PAGE_JUMP_TRACE / "tests" / "page_jump_trace.json")
+    vectors = {vector["name"]: vector for vector in proof["vectors"]}
+    state = {"PC": "0x0000", "PG": "0x00", "DP": "0x00", "Z": 0}
+
+    for item in proof["sequence"]:
+        vector = dict(vectors[item["vector"]])
+        vector["initial"] = dict(vector["initial"])
+        vector["initial"].update(state)
+        result = page_jump_trace_execute(vector)
+        state = {
+            "PC": f"0x{result['PC']:04X}",
+            "PG": f"0x{result['PG']:02X}",
+            "DP": f"0x{result['DP']:02X}",
+            "Z": result["Z"],
+        }
+
+    assert state == proof["final_state"]
+    assert {"ibus_multi_driver", "pc_page_from_unlatched_operand", "setdp_changes_pg", "setpg_changes_dp"} <= set(proof["bus_safety"]["reject"])
+
+
+def test_rv8gr_interrupt_trace_package_shape():
+    circuit = load_json(INTERRUPT_TRACE / "circuit.json")
+    proof = load_json(INTERRUPT_TRACE / "tests" / "interrupt_trace.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_interrupt_trace"
+    assert proof["circuit"] == circuit["id"]
+    assert (INTERRUPT_TRACE / "README.md").exists()
+    assert "Lib/Circuits/RV8GR_IRQLatch/circuit.json" in circuit["source_project"]["paths"]
+    assert "Lib/Circuits/RV8GR_FullControlOpcodeSweep/circuit.json" in circuit["source_project"]["paths"]
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips["U31"] == "74HC74"
+    assert chips["U33"] == "74HC21"
+    assert chips["IRQSW"] == "Switch"
+    absent_ports = {port["name"] for port in circuit["ports"] if port.get("direction") == "absent"}
+    assert {"PC_FORCE", "IRQ_ACK"} <= absent_ports
+
+
+def test_rv8gr_interrupt_trace_vectors_execute():
+    proof = load_json(INTERRUPT_TRACE / "tests" / "interrupt_trace.json")
+    assert {trace["name"] for trace in proof["source_traces"]} == {"EI", "DI", "IRQ_LOW", "IRQ_RELEASE"}
+
+    for vector in proof["vectors"]:
+        result = interrupt_trace_execute(vector)
+        expect = vector["expect"]
+        assert result["PC"] == parse_hex(expect["PC"]), vector
+        assert result["IE"] == expect["IE"], vector
+        assert result["IRQ_FF"] == expect["IRQ_FF"], vector
+        assert result["/IRQ"] == expect["/IRQ"], vector
+        assert result["pc_changed"] is expect["pc_changed"], vector
+
+
+def test_rv8gr_interrupt_trace_sequence_and_absences():
+    proof = load_json(INTERRUPT_TRACE / "tests" / "interrupt_trace.json")
+    vectors = {vector["name"]: vector for vector in proof["vectors"]}
+    state = {"PC": "0x1234", "IE": 1, "IRQ_FF": 1, "/IRQ": 1}
+
+    for item in proof["sequence"]:
+        vector = dict(vectors[item["vector"]])
+        vector["initial"] = dict(vector["initial"])
+        vector["initial"].update(state)
+        result = interrupt_trace_execute(vector)
+        state = {
+            "PC": f"0x{result['PC']:04X}",
+            "IE": result["IE"],
+            "IRQ_FF": result["IRQ_FF"],
+            "/IRQ": result["/IRQ"],
+        }
+
+    assert state == proof["final_state"]
+    assert {"PC_FORCE", "IRQ_ACK", "auto_vector", "auto_clear"} == set(proof["v1_0_absences"])
+    rules = " ".join(proof["student_rules"])
+    assert "DI is inert" in rules
+    assert "PC does not auto-jump" in rules
+
+
+def test_rv8gr_interrupt_trace_matches_full_control_ei_assumption():
+    interrupt = load_json(INTERRUPT_TRACE / "tests" / "interrupt_trace.json")
+    full = load_json(FULL_CONTROL_OPCODE_SWEEP / "tests" / "full_control_opcode_sweep.json")
+    ei_vector = next(vector for vector in interrupt["vectors"] if vector["name"] == "ei_sets_ie_without_pc_change")
+    full_ei = next(vector for vector in full["named_vectors"] if vector["name"] == "ei_decode")
+
+    assert ei_vector["opcode"] == full_ei["opcode"] == "0x08"
+    assert ei_vector["expect"]["IE"] == full_ei["expect_ie"] == 1
+    assert ei_vector["expect"]["PC"] == full_ei["expect_pc"]
+
+
+def _expect_value(value):
+    if value == "unknown":
+        return value
+    if value in {"0xXX", "X"}:
+        return value
+    if isinstance(value, int):
+        return value
+    return parse_hex(value)
+
+
+def test_rv8gr_boot_sequence_trace_package_shape():
+    circuit = load_json(BOOT_SEQUENCE_TRACE / "circuit.json")
+    proof = load_json(BOOT_SEQUENCE_TRACE / "tests" / "boot_sequence_trace.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_boot_sequence_trace"
+    assert proof["circuit"] == circuit["id"]
+    assert (BOOT_SEQUENCE_TRACE / "README.md").exists()
+    assert "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md" in circuit["source_project"]["paths"]
+    assert "/home/jo/kiro/RV8/RV8GR/doc/06_debug_plan.md" in circuit["source_project"]["paths"]
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips["VCLK"] == "ClockSource"
+    assert chips["IBUSMON"] == "BusProbe"
+    assert chips["DBUSMON"] == "BusProbe"
+    assert chips["U34"] == "74HC541"
+
+
+def test_rv8gr_boot_sequence_trace_vectors_execute():
+    proof = load_json(BOOT_SEQUENCE_TRACE / "tests" / "boot_sequence_trace.json")
+    rom = {parse_hex(item["address"]): parse_hex(item["value"]) for item in proof["rom_bytes"]}
+    assert [rom[address] for address in range(8)] == [0x40, 0x80, 0x20, 0x00, 0x30, 0x00, 0x01, 0x06]
+
+    for vector in proof["vectors"]:
+        result = boot_sequence_trace_execute(vector)
+        expect = vector["expect"]
+        assert result["PC"] == parse_hex(expect["PC"]), vector
+        assert result["IBUS"] == parse_hex(expect["IBUS"]), vector
+        if expect["PG"] == "unknown":
+            assert result["PG"] in {"0xXX", "unknown"}, vector
+        else:
+            assert result["PG"] == _expect_value(expect["PG"]), vector
+        if expect["DP"] == "unknown":
+            assert result["DP"] in {"0xXX", "unknown"}, vector
+        else:
+            assert result["DP"] == _expect_value(expect["DP"]), vector
+        if expect["AC"] == "unknown":
+            assert result["AC"] in {"0xXX", "unknown"}, vector
+        else:
+            assert result["AC"] == _expect_value(expect["AC"]), vector
+        if expect["Z"] == "unknown":
+            assert result["Z"] in {"X", "unknown"}, vector
+        else:
+            assert result["Z"] == _expect_value(expect["Z"]), vector
+        assert result["dp_latch"] is expect["dp_latch"], vector
+        assert result["pg_latch"] is expect["pg_latch"], vector
+        assert result["ac_latch"] is expect["ac_latch"], vector
+        assert result["pc_ld_n"] == expect["pc_ld_n"], vector
+        assert result["ibus_drivers"] == expect["ibus_drivers"], vector
+        assert result["dbus_drivers_fetch"] == expect["dbus_drivers_fetch"], vector
+        assert result["conflict"] is expect["conflict"], vector
+
+
+def test_rv8gr_boot_sequence_trace_ends_in_manual_loop_state():
+    proof = load_json(BOOT_SEQUENCE_TRACE / "tests" / "boot_sequence_trace.json")
+    vectors = {vector["name"]: vector for vector in proof["vectors"]}
+    state = {"PC": "0x0000", "PG": "0xXX", "DP": "0xXX", "AC": "0xXX", "Z": "X"}
+    total_edges = 0
+
+    for item in proof["sequence"]:
+        vector = dict(vectors[item["vector"]])
+        vector["initial"] = dict(vector["initial"])
+        vector["initial"].update(state)
+        result = boot_sequence_trace_execute(vector)
+        state = {
+            "PC": f"0x{result['PC']:04X}",
+            "PG": f"0x{result['PG']:02X}" if isinstance(result["PG"], int) else result["PG"],
+            "DP": f"0x{result['DP']:02X}" if isinstance(result["DP"], int) else result["DP"],
+            "AC": f"0x{result['AC']:02X}" if isinstance(result["AC"], int) else result["AC"],
+            "Z": result["Z"],
+        }
+        total_edges += item["clock_edges"]
+
+    assert state == proof["final_state"]
+    assert total_edges == proof["manual_clock_expectation"]["total_clock_edges"] == 12
+    assert {"ibus_multi_driver", "dbus_multi_driver", "setpg_missing_before_j"} <= set(proof["bus_safety"]["reject"])
+    assert "Functional boot-sequence proof only" in proof["claim_boundary"]
+
+
+def test_rv8gr_lab13_marker_trace_package_shape():
+    circuit = load_json(LAB13_MARKER_TRACE / "circuit.json")
+    proof = load_json(LAB13_MARKER_TRACE / "tests" / "lab13_marker_trace.json")
+
+    assert circuit["schema"] == "components.lib.circuit"
+    assert circuit["id"] == "rv8gr_lab13_marker_trace"
+    assert proof["circuit"] == circuit["id"]
+    assert (LAB13_MARKER_TRACE / "README.md").exists()
+    assert "/home/jo/kiro/RV8/RV8GR/doc/labs/lab13_full_system.md" in circuit["source_project"]["paths"]
+    assert "Lib/Circuits/RV8GR_FetchCycleTrace/circuit.json" in circuit["source_project"]["paths"]
+    assert "Lib/Circuits/RV8GR_BusOwnership/circuit.json" in circuit["source_project"]["paths"]
+
+    chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
+    assert chips["U1_U4"] == "74HC161"
+    assert chips["U5"] == "74HC574"
+    assert chips["U6"] == "74HC574"
+    assert chips["U7"] == "74HC245"
+    assert chips["U34"] == "74HC541"
+    assert chips["ROM1"] == "AT28C256"
+    assert chips["VCLK"] == "ClockSource"
+    assert chips["IBUSMON"] == "BusProbe"
+    assert chips["DBUSMON"] == "BusProbe"
+
+
+def test_rv8gr_lab13_marker_trace_rom_and_rows_match_source_program():
+    proof = load_json(LAB13_MARKER_TRACE / "tests" / "lab13_marker_trace.json")
+    rom = {parse_hex(item["address"]): parse_hex(item["value"]) for item in proof["rom_bytes"]}
+    assert [rom[address] for address in range(0x10)] == [
+        0x30,
+        0x10,
+        0x10,
+        0x05,
+        0x90,
+        0x15,
+        0x02,
+        0x0C,
+        0x01,
+        0x0E,
+        0x00,
+        0x00,
+        0x30,
+        0xAA,
+        0x01,
+        0x0E,
+    ]
+
+    actual = lab13_marker_rows(proof)
+    assert len(actual) == len(proof["marker_trace"]) == 15
+    for expected, row in zip(proof["marker_trace"], actual):
+        assert row["clock"] == expected["clock"], expected
+        assert row["phase"] == expected["phase"], expected
+        assert row["pc"] == parse_hex(expected["pc"]), expected
+        assert row["abus"] == parse_hex(expected["abus"]), expected
+        assert row["irh"] == parse_hex(expected["irh"]), expected
+        assert row["irl"] == (None if expected["irl"] is None else parse_hex(expected["irl"])), expected
+        assert row["mnemonic"] == expected["mnemonic"], expected
+        assert row["ac"] == parse_hex(expected["ac"]), expected
+        assert row["z"] == expected["z"], expected
+        assert row["ibus_drivers"] == expected["ibus_drivers"], expected
+        assert row["dbus_drivers"] == expected["dbus_drivers"], expected
+        assert row["conflict"] is False, expected
+
+
+def test_rv8gr_lab13_marker_trace_marker_flow_and_final_pass_state():
+    proof = load_json(LAB13_MARKER_TRACE / "tests" / "lab13_marker_trace.json")
+    rows = {row["clock"]: row for row in lab13_marker_rows(proof)}
+
+    for marker in proof["marker_flow"]:
+        row = rows[marker["clock"]]
+        assert row["phase"] == "T2", marker
+        assert row["mnemonic"] == marker["mnemonic"], marker
+        assert row["irl"] == parse_hex(marker["operand"]), marker
+        if "expect_ac" in marker:
+            assert row["ac"] == parse_hex(marker["expect_ac"]), marker
+        if "expect_pc" in marker:
+            assert row["pc"] == parse_hex(marker["expect_pc"]), marker
+        assert row["z"] == marker["expect_z"], marker
+
+    final = proof["final_state"]
+    last = rows[proof["manual_clock_expectation"]["total_clock_edges"]]
+    assert last["pc"] == parse_hex(final["PC"])
+    assert last["pg"] == parse_hex(final["PG"])
+    assert last["dp"] == parse_hex(final["DP"])
+    assert last["ac"] == parse_hex(final["AC"]) == 0xAA
+    assert last["z"] == final["Z"] == 0
+    assert rows[12]["pc"] == 0x000C
+    assert all(row["pc"] not in {0x0008, 0x0009, 0x000A, 0x000B} for row in rows.values() if row["clock"] > 12)
+    assert "fail_path_reached" in proof["bus_safety"]["reject"]
+    assert "Functional Lab 13 marker proof only" in proof["claim_boundary"]
+
+
+def test_rv8gr_lab13_marker_trace_bus_policy_is_conflict_free():
+    proof = load_json(LAB13_MARKER_TRACE / "tests" / "lab13_marker_trace.json")
+    assert {"ibus_multi_driver", "dbus_multi_driver", "hardware_speed_claim_without_timing_evidence"} <= set(proof["bus_safety"]["reject"])
+
+    for row in lab13_marker_rows(proof):
+        if row["phase"] in {"T0", "T1"}:
+            assert row["ibus_drivers"] == ["U7"], row
+            assert row["dbus_drivers"] == ["ROM1"], row
+        else:
+            assert row["ibus_drivers"] == ["U34"], row
+            assert row["dbus_drivers"] == ["ROM1"], row
+        assert len(row["ibus_drivers"]) == 1, row
+        assert len(row["dbus_drivers"]) == 1, row
+        assert row["conflict"] is False, row
+
+
 def test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary():
     timing = load_json(TIMING_MARGINS)
     assert timing["schema"] == "components.lib.circuit.timing_margins"
@@ -2160,6 +2797,22 @@ def test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary():
     assert timing["status"]["physical_5mhz_timing"] == "not_proven"
     assert timing["status"]["physical_signal_integrity"] == "not_proven"
     assert "functional simulation only" in timing["status"]["boundary_rule"]
+    sweep = timing["physical_test_sweep"]
+    assert sweep["status"] == "required_not_measured"
+    assert sweep["voltage_points_v"] == [4.5, 5.0, 5.5]
+    sweep_profiles = {profile["name"]: profile for profile in sweep["clock_profiles"]}
+    assert set(sweep_profiles) == {"manual_push_switch_100_ticks", "50_khz", "1_mhz", "2_mhz", "5_mhz"}
+    assert sweep_profiles["manual_push_switch_100_ticks"]["ticks"] == 100
+    assert sweep_profiles["5_mhz"]["claim_boundary"] == "functional_simulation_only_until_scope_evidence"
+    assert {
+        "clock_reset_edge_quality",
+        "phase_one_hot",
+        "selected_memory_speed_grade",
+        "dbus_turnaround_deadband",
+        "ibus_single_driver",
+        "critical_register_setup_margin",
+    } == set(sweep["required_for_each_voltage_and_clock"])
+
     profiles = {profile["name"]: profile for profile in timing["clock_profiles"]}
     assert set(profiles) == {"50_khz", "1_mhz", "2_mhz", "5_mhz"}
     assert profiles["5_mhz"]["physical_status"] == "not_proven"
@@ -2170,7 +2823,7 @@ def test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary():
         for path in (ROOT / "Lib" / "Circuits").glob("RV8GR_*/circuit.json")
     }
     part_sources = {entry["part"]: entry for entry in timing["part_timing_sources"]}
-    assert {"74HC574", "74HC161", "AT28C256", "62256"} <= set(part_sources)
+    assert {"74HC574", "74HC161", "AT28C256", "62256", "AS6C62256"} <= set(part_sources)
     for entry in part_sources.values():
         assert entry["source_file_required"] is True, entry
         assert (ROOT / entry["source"]).exists(), entry
@@ -2191,6 +2844,71 @@ def test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary():
         assert set(note["circuits"]) <= circuit_paths, note
         assert note["current_evidence"], note
         assert note["still_needed"], note
+
+
+def test_rv8gr_timing_coverage_matrix_accounts_for_every_circuit_package():
+    timing = load_json(TIMING_MARGINS)
+    actual_circuits = {
+        path.parent.name
+        for path in (ROOT / "Lib" / "Circuits").glob("RV8GR_*/circuit.json")
+    }
+    matrix = {item["circuit"]: item for item in timing["timing_coverage_matrix"]}
+
+    assert set(matrix) == actual_circuits
+    for item in matrix.values():
+        assert item["coverage"], item
+        assert item["timing_checks"], item
+        assert item["physical_status"] in {
+            "not_proven",
+            "not_applicable",
+            "blocked_missing_deadband",
+            "blocked_missing_memory_write_deadband",
+            "blocked_missing_selected_sram_timing",
+            "blocked_missing_clock_scope_capture",
+            "candidate_source_backed_not_measured",
+        }, item
+        assert item["claim_boundary"], item
+
+    physical_not_ready = {
+        item["circuit"]
+        for item in matrix.values()
+        if str(item["physical_status"]).startswith("blocked")
+        or item["physical_status"] == "candidate_source_backed_not_measured"
+    }
+    assert {
+        "RV8GR_BusOwnership",
+        "RV8GR_StorePath",
+        "RV8GR_DataPageMemory",
+        "RV8GR_RomDbusRead",
+        "RV8GR_ResetClockBringup",
+    } <= physical_not_ready
+
+    gates = {item["name"]: item for item in timing["system_timing_gates"]}
+    assert {
+        "components_circuit_timing_gate",
+        "rv8gr_whole_system_verilog_gate",
+        "physical_timing_gate",
+    } == set(gates)
+    assert gates["physical_timing_gate"]["status"] == "blocked_missing_evidence"
+
+
+def test_rv8gr_system_hazard_gates_cover_timing_bus_edges_and_propagation():
+    timing = load_json(TIMING_MARGINS)
+    gates = {item["id"]: item for item in timing["system_hazard_gates"]}
+
+    assert {"timing_margin", "bus_race", "edge_trigger_polarity", "propagation_delay"} == set(gates)
+    for item in gates.values():
+        assert item["owner"] in {"Fern", "Mint", "Ohm"}, item
+        assert item["software_gate"], item
+        assert item["hardware_gate"], item
+        assert item["signals_to_probe"], item
+        assert item["blocks_system_signoff_if"], item
+        assert item["current_status"], item
+
+    assert {"U7 /OE", "U7 DIR", "ROM /OE", "RAM /WE", "IBUS", "DBUS"} <= set(gates["bus_race"]["signals_to_probe"])
+    assert {"ACC_CLK", "PG_CLK", "DP_Load", "EI_decode", "/IRQ"} <= set(gates["edge_trigger_polarity"]["signals_to_probe"])
+    assert {"ABUS", "DBUS", "IBUS", "/PC_LD"} <= set(gates["propagation_delay"]["signals_to_probe"])
+    assert "unmeasured high-speed claim" in gates["timing_margin"]["blocks_system_signoff_if"]
 
 
 def test_rv8gr_timing_setup_hold_requirements_cover_edge_sensitive_paths():
@@ -2251,9 +2969,32 @@ def test_rv8gr_timing_physical_assumptions_are_source_backed_and_not_proven():
 
     sram = assumptions["sram_read_and_float_pending"]
     sram_source = load_json(ROOT / sram["source"])
+    alt_sram_source = load_json(ROOT / sram["alternate_source"])
     assert sram["model_read_delay_ns"] == nested_value(sram_source, "definition_layers.timing.delay.model_delay_ns")
-    assert nested_value(sram_source, "definition_layers.timing.delay.status") == "model-derived"
-    assert {"selected_speed_grade", "read_access_ns", "output_disable_to_float_ns"} <= set(sram["missing_physical_fields"])
+    assert nested_value(sram_source, "definition_layers.timing.delay.status") == "datasheet-backed"
+    assert nested_value(alt_sram_source, "definition_layers.timing.delay.status") == "datasheet-backed"
+    assert sram["datasheet_read_ns"] == {
+        name: values["address_access"]
+        for name, values in nested_value(sram_source, "definition_layers.timing.delay.datasheet_read_ns").items()
+    }
+    assert sram["output_disable_to_float_ns"] == {
+        name: values["output_disable_to_high_z"]
+        for name, values in nested_value(sram_source, "definition_layers.timing.delay.datasheet_read_ns").items()
+    }
+    assert sram["alternate_datasheet_read_ns"] == {
+        name: values["address_access"]
+        for name, values in nested_value(alt_sram_source, "definition_layers.timing.delay.datasheet_read_ns").items()
+    }
+    assert sram["alternate_output_disable_to_float_ns"] == {
+        name: values["output_disable_to_high_z"]
+        for name, values in nested_value(alt_sram_source, "definition_layers.timing.delay.datasheet_read_ns").items()
+    }
+    assert {
+        "selected_sram_part_number",
+        "selected_speed_grade",
+        "measured_read_access_ns",
+        "measured_output_disable_to_float_ns",
+    } <= set(sram["missing_physical_fields"])
 
     edge = assumptions["edge_register_setup_hold"]
     edge_source = load_json(ROOT / edge["source"])
@@ -2310,8 +3051,9 @@ def test_rv8gr_physical_candidate_paths_keep_5mhz_claim_blocked():
         assert grade["slack_ns"] == period_5mhz - grade["total_with_u7_and_setup_ns"]
 
     sram = candidates["ram_read_62256_candidate_blocked"]
-    assert sram["physical_status"] == "blocked_missing_selected_sram_timing"
-    assert {"selected_sram_part_number", "read_access_ns", "output_disable_to_float_ns"} <= set(sram["missing_physical_fields"])
+    assert sram["physical_status"] == "candidate_source_backed_not_measured"
+    assert {"km62256c_55", "km62256c_70", "as6c62256_55"} == set(sram["source_backed_options"])
+    assert {"selected_sram_part_number", "measured_read_access_ns", "measured_output_disable_to_float_ns"} <= set(sram["missing_physical_fields"])
 
     turnaround = candidates["dbus_turnaround_deadband_candidate"]
     assert turnaround["physical_status"] == "blocked_missing_clock_phase_deadband"
@@ -2336,10 +3078,85 @@ def test_rv8gr_physical_bench_evidence_required_before_hardware_speed_claims():
         assert item["required_evidence"], item
         assert item["pass_condition"], item
 
+    assert {"4.5 V", "5.0 V", "5.5 V"} <= set(evidence["clock_reset_scope_capture"]["required_evidence"])
+    assert {"100 push-switch ticks", "50 kHz", "1 MHz", "2 MHz", "5 MHz"} <= set(evidence["phase_one_hot_scope_capture"]["required_evidence"])
+
     assert "5 MHz clock if attempted" in evidence["clock_reset_scope_capture"]["required_evidence"]
     assert "100 observed ticks" in evidence["phase_one_hot_scope_capture"]["pass_condition"]
     assert "measured deadband" in evidence["dbus_turnaround_scope_capture"]["pass_condition"]
     assert "actual EEPROM marking" in evidence["selected_memory_speed_grade_record"]["required_evidence"]
+
+
+def test_rv8gr_physical_evidence_plan_blocks_speed_claims_until_all_fields_present():
+    timing = load_json(TIMING_MARGINS)
+    plan = timing["physical_evidence_plan"]
+    assert plan["owner_sequence"] == ["Ohm", "Fern", "Pim"]
+    assert plan["claim_gate"] == "blocked_until_all_required_items_pass"
+    assert "hardware_5mhz_ready" in plan["blocked_claims"]
+    assert "student_build_speed_recommendation" in plan["blocked_claims"]
+
+    required = {item["id"]: item for item in plan["required_measurements"]}
+    assert {
+        "installed_memory_markings",
+        "memory_output_float_deadband",
+        "clock_phase_deadband",
+        "supply_and_edge_quality",
+        "breadboard_rc_calibration",
+    } <= set(required)
+    for item in required.values():
+        assert item["status"] == "missing", item
+        assert item["owner"] in {"Ohm", "Fern", "Pim"}, item
+        assert item["how_to_capture"], item
+        assert item["pass_condition"], item
+        assert item["student_note"], item
+
+
+def test_rv8gr_breadboard_rc_model_is_estimate_not_chip_definition_truth():
+    timing = load_json(TIMING_MARGINS)
+    model = timing["board_parasitic_model"]
+
+    assert model["status"] == "estimate_only_not_signoff"
+    assert model["belongs_to"] == "circuit_or_board_level_not_chip_definition"
+    assert model["virtual_component"] == "DB/Virtual/RCParasitic/definition/definition.json"
+    assert model["virtual_test_package"] == "Lib/Circuits/RV8GR_VirtualTestHelpers/tests/virtual_test_helpers.json"
+    assert "Chip definitions describe datasheet behavior at the IC pins" in model["why_not_chip_definition"]
+    assert "tau_ns" in model["rc_estimate_formula"]
+    assert "2.2*tau" in model["threshold_delay_rule"]
+    assert "not proof" in model["threshold_delay_rule"]
+
+    required_inputs = {
+        "source_resistance_ohm",
+        "wire_capacitance_pf",
+        "chip_input_capacitance_pf",
+        "probe_capacitance_pf",
+        "pullup_pulldown_resistance_ohm",
+    }
+    assert required_inputs == set(model["estimate_inputs"])
+    for item in model["estimate_inputs"].values():
+        assert item["status"], item
+        assert item["notes"], item
+
+    nets = {item["net"]: item for item in model["representative_nets_to_calibrate"]}
+    assert {"CLK", "/RST", "DBUS[0]", "IBUS[0]", "/OE or /WE memory control"} == set(nets)
+    assert all(item["why"] for item in nets.values())
+    assert "physical pass/fail requires scoped edge quality" in model["claim_boundary"]
+
+    required = {
+        item["id"]: item
+        for item in timing["physical_evidence_plan"]["required_measurements"]
+    }
+    assert "part top markings" in required["installed_memory_markings"]["how_to_capture"]
+    assert "old driver is off before the new driver turns on" in required["memory_output_float_deadband"]["pass_condition"]
+    assert "T0/T1/T2" in required["clock_phase_deadband"]["how_to_capture"]
+    assert "VCC" in required["supply_and_edge_quality"]["how_to_capture"]
+
+
+def test_rv8gr_page_jump_trace_is_listed_in_circuit_backlog():
+    backlog = (ROOT / "Lib" / "Circuits" / "BACKLOG.md").read_text(encoding="utf-8")
+    assert "RV8GR_PageJumpTrace" in backlog
+    assert "SETDP" in backlog and "SETPG" in backlog and "J" in backlog
+    assert "RV8GR_InterruptTrace" in backlog
+    assert "EI" in backlog and "DI" in backlog and "IRQ release" in backlog
 
 
 def test_all_started_circuit_packages_have_tests():
@@ -2350,6 +3167,42 @@ def test_all_started_circuit_packages_have_tests():
         assert tests, circuit_path
         for test in tests:
             assert (circuit_path.parent / test).exists(), (circuit_path, test)
+
+
+def test_rv8gr_circuit_readme_lists_every_package_and_only_existing_packages():
+    readme = (ROOT / "Lib" / "Circuits" / "README.md").read_text(encoding="utf-8")
+    index = load_json(RV8GR_COVERAGE_INDEX)
+    listed = {
+        match.group(1)
+        for line in readme.splitlines()
+        if line.startswith("| `RV8GR_")
+        for match in [re.search(r"`(RV8GR_[A-Za-z0-9_]+)`", line)]
+        if match
+    }
+    actual = {
+        path.parent.name
+        for path in (ROOT / "Lib" / "Circuits").glob("RV8GR_*/circuit.json")
+    }
+    indexed = {item["circuit"] for item in index["packages"]}
+
+    assert actual <= listed
+    assert listed <= actual
+    assert indexed == actual
+    assert index["schema"] == "components.lib.rv8gr.coverage_index"
+    assert "RV8GR_END_TO_END_TEST_PLAN.md" in readme
+    assert "RV8GR_COVERAGE_INDEX.json" in readme
+
+    test_source = Path(__file__).read_text(encoding="utf-8")
+    for item in index["packages"]:
+        package_dir = ROOT / "Lib" / "Circuits" / item["circuit"]
+        circuit = load_json(package_dir / "circuit.json")
+        assert item["status"] == "Tested", item
+        assert item["proof_focus"], item
+        assert (package_dir / "README.md").exists(), item
+        assert circuit.get("verification", {}).get("tests"), item
+        assert item["python_test_prefix"] in test_source, item
+        for test_file in circuit["verification"]["tests"]:
+            assert (package_dir / test_file).exists(), (item, test_file)
 
 
 def run_all():
@@ -2417,6 +3270,9 @@ def run_all():
     test_rv8gr_virtual_phase_probe_detects_invalid_phases()
     test_rv8gr_virtual_bus_probe_detects_contention()
     test_rv8gr_virtual_switch_profiles_execute()
+    test_rv8gr_virtual_rc_parasitic_estimates_are_not_signoff()
+    test_rv8gr_virtual_delay_noise_and_output_assert_helpers_execute()
+    test_components_test_protocol_names_required_gates_and_references()
     test_rv8gr_full_control_opcode_sweep_package_shape()
     test_rv8gr_full_control_opcode_sweep_all_512_cases_match_verilog_equation()
     test_rv8gr_full_control_named_vectors_and_reserved_mixes_are_visible()
@@ -2432,12 +3288,32 @@ def run_all():
     test_rv8gr_store_load_branch_trace_package_shape()
     test_rv8gr_store_load_branch_trace_vectors_execute()
     test_rv8gr_store_load_branch_trace_bus_policy_is_conflict_free()
+    test_rv8gr_page_jump_trace_package_shape()
+    test_rv8gr_page_jump_trace_vectors_execute()
+    test_rv8gr_page_jump_trace_sequence_uses_latched_pg_for_jump()
+    test_rv8gr_interrupt_trace_package_shape()
+    test_rv8gr_interrupt_trace_vectors_execute()
+    test_rv8gr_interrupt_trace_sequence_and_absences()
+    test_rv8gr_interrupt_trace_matches_full_control_ei_assumption()
+    test_rv8gr_boot_sequence_trace_package_shape()
+    test_rv8gr_boot_sequence_trace_vectors_execute()
+    test_rv8gr_boot_sequence_trace_ends_in_manual_loop_state()
+    test_rv8gr_lab13_marker_trace_package_shape()
+    test_rv8gr_lab13_marker_trace_rom_and_rows_match_source_program()
+    test_rv8gr_lab13_marker_trace_marker_flow_and_final_pass_state()
+    test_rv8gr_lab13_marker_trace_bus_policy_is_conflict_free()
     test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary()
+    test_rv8gr_timing_coverage_matrix_accounts_for_every_circuit_package()
+    test_rv8gr_system_hazard_gates_cover_timing_bus_edges_and_propagation()
     test_rv8gr_timing_setup_hold_requirements_cover_edge_sensitive_paths()
     test_rv8gr_timing_physical_assumptions_are_source_backed_and_not_proven()
     test_rv8gr_physical_candidate_paths_keep_5mhz_claim_blocked()
     test_rv8gr_physical_bench_evidence_required_before_hardware_speed_claims()
+    test_rv8gr_physical_evidence_plan_blocks_speed_claims_until_all_fields_present()
+    test_rv8gr_breadboard_rc_model_is_estimate_not_chip_definition_truth()
+    test_rv8gr_page_jump_trace_is_listed_in_circuit_backlog()
     test_all_started_circuit_packages_have_tests()
+    test_rv8gr_circuit_readme_lists_every_package_and_only_existing_packages()
 
 
 if __name__ == "__main__":

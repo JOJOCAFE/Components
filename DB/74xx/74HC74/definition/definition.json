@@ -294,7 +294,75 @@
       "part": "74HC74",
       "delay": {
         "model_delay_ns": 20,
-        "status": "model-derived"
+        "status": "datasheet-backed",
+        "datasheet_typical_ns": {
+          "4.5": {
+            "clock_to_q": 20,
+            "preset_or_clear_to_q": 20,
+            "transition_q": 8
+          }
+        },
+        "datasheet_max_ns_25c": {
+          "4.5": {
+            "clock_to_q": 35,
+            "preset_or_clear_to_q": 46,
+            "transition_q": 15
+          }
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "4.5": {
+            "clock_to_q": 44,
+            "preset_or_clear_to_q": 58,
+            "transition_q": 19
+          }
+        },
+        "conditions": {
+          "load_pf": 50,
+          "path": "CLK_or_PRE_or_CLR_to_Q",
+          "section": "6.9 Switching Characteristics - 74"
+        }
+      },
+      "timing_requirements": {
+        "clock_frequency_mhz": {
+          "4.5": {
+            "typical_25c": 31,
+            "min_minus40_to_85c": 25
+          }
+        },
+        "clock_high_or_low_ns": {
+          "4.5": {
+            "min_25c": 16,
+            "min_minus40_to_85c": 20
+          }
+        },
+        "preset_or_clear_low_ns": {
+          "4.5": {
+            "min_25c": 20,
+            "min_minus40_to_85c": 25
+          }
+        },
+        "setup_before_clock_ns": {
+          "data": {
+            "4.5": {
+              "min_25c": 20,
+              "min_minus40_to_85c": 25
+            }
+          },
+          "preset_or_clear_inactive": {
+            "4.5": {
+              "min_25c": 5,
+              "min_minus40_to_85c": 6
+            }
+          }
+        },
+        "hold_after_clock_ns": {
+          "data": {
+            "4.5": {
+              "min_25c": 0,
+              "min_minus40_to_85c": 0
+            }
+          }
+        }
       },
       "evidence": {
         "label": "Texas Instruments SN74HC74",
@@ -303,7 +371,9 @@
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     },
@@ -311,16 +381,72 @@
       "schema": "db.component.electrical",
       "version": 1,
       "part": "74HC74",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
+      "recommended_operating": {
+        "vcc_v": {
+          "min": 2,
+          "nom": 5,
+          "max": 6
+        },
+        "input_voltage_v": {
+          "min": 0,
+          "max": "VCC"
+        },
+        "output_voltage_v": {
+          "min": 0,
+          "max": "VCC"
+        },
+        "vih_min_v": {
+          "2.0": 1.5,
+          "4.5": 3.15,
+          "6.0": 4.2
+        },
+        "vil_max_v": {
+          "2.0": 0.5,
+          "4.5": 1.35,
+          "6.0": 1.8
+        },
+        "input_transition_max_ns": {
+          "2.0": 1000,
+          "4.5": 500,
+          "6.0": 400
+        },
+        "ta_c": {
+          "min": -40,
+          "max": 85
         }
       },
-      "current": {
-        "status": "datasheet-required"
+      "static_characteristics": {
+        "voh_min_v": {
+          "ioh_-20ua": {
+            "2.0": 1.9,
+            "4.5": 4.4,
+            "6.0": 5.9
+          },
+          "ioh_-4ma_4.5v": 3.84,
+          "ioh_-5.2ma_6v": 5.34
+        },
+        "vol_max_v": {
+          "iol_20ua": {
+            "2.0": 0.1,
+            "4.5": 0.1,
+            "6.0": 0.1
+          },
+          "iol_4ma_4.5v": 0.33,
+          "iol_5.2ma_6v": 0.33
+        },
+        "input_leakage_max_ua": {
+          "6.0": 1
+        },
+        "icc_max_ua": {
+          "6.0": 40
+        },
+        "ci_max_pf": {
+          "2.0_to_6.0": 10
+        }
       },
       "loading": {
-        "status": "datasheet-required"
+        "switching_test_load_pf": 50,
+        "application_capacitive_load_limit_pf": 50
       },
       "evidence": {
         "label": "Texas Instruments SN74HC74",
@@ -329,7 +455,9 @@
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     }

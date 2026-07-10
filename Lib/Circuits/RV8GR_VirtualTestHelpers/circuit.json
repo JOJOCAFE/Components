@@ -20,7 +20,11 @@
     {"ref": "PH1", "part": "Probe", "role": "Single-bit T1 phase probe"},
     {"ref": "PH2", "part": "Probe", "role": "Single-bit T2 phase probe"},
     {"ref": "IBUSMON", "part": "BusProbe", "role": "IBUS driver/value monitor"},
-    {"ref": "DBUSMON", "part": "BusProbe", "role": "DBUS driver/value monitor"}
+    {"ref": "DBUSMON", "part": "BusProbe", "role": "DBUS driver/value monitor"},
+    {"ref": "CLKRC", "part": "RCParasitic", "role": "Clock/reset breadboard delay estimator"},
+    {"ref": "BUSRC", "part": "RCParasitic", "role": "Shared-bus breadboard delay estimator"},
+    {"ref": "DLY1", "part": "DelayNoise", "role": "Seeded delay/noise injector between chip output and destination input"},
+    {"ref": "ASSERT1", "part": "OutputAssert", "role": "Expected output checker for virtual chip/circuit/system tests"}
   ],
   "ports": [
     {"name": "CLK", "direction": "output"},
@@ -28,7 +32,14 @@
     {"name": "T1", "direction": "input"},
     {"name": "T2", "direction": "input"},
     {"name": "IBUS0..IBUS7", "direction": "bidirectional"},
-    {"name": "DBUS0..DBUS7", "direction": "bidirectional"}
+    {"name": "DBUS0..DBUS7", "direction": "bidirectional"},
+    {"name": "CLK_RC_IN", "direction": "passive"},
+    {"name": "CLK_RC_OUT", "direction": "passive"},
+    {"name": "BUS_RC_IN", "direction": "passive"},
+    {"name": "BUS_RC_OUT", "direction": "passive"},
+    {"name": "NOISE_IN", "direction": "input"},
+    {"name": "NOISE_OUT", "direction": "output"},
+    {"name": "EXPECT_IN", "direction": "input"}
   ],
   "wiring": [
     {"net": "CLK", "connections": ["VCLK.1", "SW1.1", "circuit under test CLK input"]},
@@ -36,13 +47,20 @@
     {"net": "T1", "connections": ["PH1.1", "circuit under test T1 output"]},
     {"net": "T2", "connections": ["PH2.1", "circuit under test T2 output"]},
     {"net": "IBUS0..IBUS7", "connections": ["IBUSMON.1", "circuit under test IBUS"]},
-    {"net": "DBUS0..DBUS7", "connections": ["DBUSMON.1", "circuit under test DBUS"]}
+    {"net": "DBUS0..DBUS7", "connections": ["DBUSMON.1", "circuit under test DBUS"]},
+    {"net": "CLK_RC", "connections": ["CLKRC.1", "CLKRC.2", "representative clock/reset net estimate"]},
+    {"net": "BUS_RC", "connections": ["BUSRC.1", "BUSRC.2", "representative IBUS/DBUS net estimate"]},
+    {"net": "NOISE_TEST", "connections": ["DLY1.1", "DLY1.2", "representative inter-chip net stress point"]},
+    {"net": "EXPECT_TEST", "connections": ["ASSERT1.1", "representative observed output"]}
   ],
   "behavior": {
     "clock_source": "Generates declared test events only. It must not mask missing edge-trigger behavior in real chips.",
     "switch": "Generates stable on/off states, one-shot push/release pulses, one-shot on/off pulses, and deterministic preset pulse trains.",
     "phase_probe": "Records one-hot T0/T1/T2 phase observations and flags zero-hot or multi-hot states.",
     "bus_monitor": "Records active named drivers per bus and reports contention when more than one driver is active.",
+    "rc_parasitic": "Estimates breadboard R/C delay for selected nets. It guides scope targets and timing margins, but it is not chip definition truth and cannot sign off hardware.",
+    "delay_noise": "Injects seeded delay, jitter, and optional glitch stress between chip outputs and destination inputs.",
+    "output_assert": "Checks the observed output against the expected value so a virtual test fails loudly.",
     "boundary": "Virtual helpers may observe and stimulate tests, but functional state transitions must still be proven by real DB component models when those models exist."
   },
   "timing": {
@@ -64,6 +82,9 @@
       "phase probe sees no active phase",
       "phase probe sees more than one active phase",
       "bus monitor sees multiple active drivers",
+      "RC estimate treated as hardware signoff without scoped destination-pin measurement",
+      "delay/noise profile has no deterministic seed",
+      "output checker is missing from a generated chip behavior bench",
       "switch preset emits the wrong number of one-shot edges",
       "5 MHz treated as hardware-proven instead of functional simulation"
     ]
@@ -76,6 +97,9 @@
       "Random push profile has deterministic seed and one logical tick per push",
       "Phase probe catches zero-hot and multi-hot phase states",
       "Bus monitor catches IBUS and DBUS multi-driver contention",
+      "RCParasitic computes tau and 10%-to-90% settling estimates for clock/reset/bus nets",
+      "DelayNoise injects deterministic delay/noise profiles for inter-chip nets",
+      "OutputAssert maps expected outputs to fail-loudly checks",
       "5 MHz is marked functional simulation only"
     ]
   },

@@ -19,6 +19,7 @@ future visual editors keep the same chip behavior and wiring rules.
   "wires": [],
   "nets": [],
   "run_config": {},
+  "editor": {},
   "layout": {}
 }
 ```
@@ -40,6 +41,10 @@ Rules:
   which backend is selected. Python simulation starts from the normalized
   design, while Verilog export starts from the normalized `chiplib.netlist`
   boundary.
+- `editor` exposes backend-owned editor affordances: palette command sources,
+  safe editing actions, validation gates, student rules, and MCP-ready tool
+  names mapped to the existing CLI/service operations. It is metadata for
+  clients; it is not another circuit model.
 - Simulation sections such as `inputs`, `input_sets`, `clocks`, `probes`,
   `displays`, `expect`, `steps`, and `validate` stay at top level so beginners
   can edit the visible circuit while tests and probes remain attached.
@@ -97,3 +102,26 @@ python3 -m chiplib.cli db --catalog --group 74xx
 
 The visual editor should show missing DB properties as learner-facing warnings
 instead of inventing chip behavior or pin data.
+
+## Editor And MCP Adapter Boundary
+
+The preferred architecture is:
+
+```text
+visual editor or MCP client
+    -> components.block_ui editor metadata
+    -> existing CLI/API/service commands
+    -> normalized Design model
+```
+
+MCP tools should be thin adapters over existing service commands, for example:
+
+- `component_catalog` -> `db --catalog`
+- `component_detail` -> `db PART --detail`
+- `validate_design` -> `validate JSON_FILE`
+- `run_design` -> `run JSON_FILE`
+- `export_block_ui` -> `export-block-ui JSON_FILE`
+- `import_block_ui` -> `import-block-ui JSON_FILE`
+
+Keep CLI and tests authoritative. MCP should not own chip behavior, pin truth,
+simulation rules, or generated docs.

@@ -40,6 +40,9 @@ GROUPED_PARTS = {
     "GND",
     "Pullup",
     "Pulldown",
+    "RCParasitic",
+    "OutputAssert",
+    "DelayNoise",
     "LED",
     "RedLED",
     "BlueLED",
@@ -194,6 +197,35 @@ def test_db_seed_entries_are_loadable():
     }
     assert switch["simulation"]["preset_profiles"][0]["name"] == "100_pulses_10ms_interval"
 
+    rc_parasitic = load_component("RCParasitic")
+    assert rc_parasitic["group"] == "virtual"
+    assert rc_parasitic["kind"] == "virtual"
+    assert rc_parasitic["role"] == "parasitic_timing_estimator"
+    assert rc_parasitic["pins"] == [
+        {"number": 1, "name": "IN", "direction": "passive"},
+        {"number": 2, "name": "OUT", "direction": "passive"},
+    ]
+    assert rc_parasitic["simulation"]["service"] == "sim.rc_parasitic"
+    assert rc_parasitic["claim_boundary"]["status"] == "estimate_only_not_signoff"
+
+    output_assert = load_component("OutputAssert")
+    assert output_assert["group"] == "virtual"
+    assert output_assert["kind"] == "virtual"
+    assert output_assert["role"] == "output_expectation_checker"
+    assert output_assert["simulation"]["service"] == "sim.output_assert"
+    assert output_assert["simulation"]["fail_policy"] == "raise_assertion"
+
+    delay_noise = load_component("DelayNoise")
+    assert delay_noise["group"] == "virtual"
+    assert delay_noise["kind"] == "virtual"
+    assert delay_noise["role"] == "delay_noise_injector"
+    assert delay_noise["pins"] == [
+        {"number": 1, "name": "IN", "direction": "input"},
+        {"number": 2, "name": "OUT", "direction": "output"},
+    ]
+    assert delay_noise["simulation"]["service"] == "sim.delay_noise"
+    assert delay_noise["simulation"]["deterministic_seed_required"] is True
+
     led = load_component("LED")
     assert led["group"] == "passive"
     assert led["db_path"] == "DB/Passive/LED/definition/definition.json"
@@ -290,6 +322,9 @@ def test_virtual_and_passive_components_use_definition_packages():
         "GND",
         "Pullup",
         "Pulldown",
+        "RCParasitic",
+        "OutputAssert",
+        "DelayNoise",
         "LED",
         "RedLED",
         "BlueLED",
@@ -335,6 +370,76 @@ def test_virtual_and_passive_components_use_definition_packages():
     yellow_package = load_component_package("YellowLED")
     assert yellow_package["manifest"]["db_path"] == "DB/Passive/YellowLED/definition/definition.json"
     assert yellow_package["layers"]["symbol"]["default_color"] == "yellow"
+
+
+def test_virtual_test_instruments_map_to_real_virtual_components():
+    instruments = json.loads((db_root().parent / "DB" / "VIRTUAL_TEST_INSTRUMENTS.json").read_text(encoding="utf-8"))
+    virtual_index = json.loads((db_root() / "Virtual" / "index.json").read_text(encoding="utf-8"))
+    virtual_parts = set(virtual_index["components"])
+
+    assert instruments["schema"] == "components.virtual_test_instruments"
+    assert "do not replace datasheet evidence" in instruments["claim_boundary"]
+    assert "Use virtual instruments to learn" in instruments["student_rule"]
+
+    mapped = {item["part"] for item in instruments["instruments"]}
+    assert mapped <= virtual_parts
+    assert {"ClockSource", "Switch", "Probe", "BusProbe", "RCParasitic", "OutputAssert", "DelayNoise"} <= mapped
+
+    for item in instruments["instruments"]:
+        definition = load_component(item["part"])
+        assert definition["group"] == "virtual", item
+        assert item["instrument_role"], item
+        assert item["student_name"], item
+        assert item["protocol_gates"], item
+        assert item["use_for"], item
+        assert item["not_for"], item
+
+
+def test_virtual_test_generator_contract_maps_split_records_to_instruments():
+    contract = json.loads((db_root().parent / "DB" / "VIRTUAL_TEST_GENERATOR_CONTRACT.json").read_text(encoding="utf-8"))
+    instruments = json.loads((db_root().parent / "DB" / "VIRTUAL_TEST_INSTRUMENTS.json").read_text(encoding="utf-8"))
+    instrument_parts = {item["part"] for item in instruments["instruments"]}
+
+    assert contract["schema"] == "components.virtual_test_generator_contract"
+    assert contract["input_records"] == ["truth_table", "timing", "tri_state", "bus_fight", "propagation"]
+    assert {level["level"] for level in contract["bench_levels"]} == {"chip", "circuit", "system"}
+
+    for level in contract["bench_levels"]:
+        assert set(level["required_instruments"]) <= instrument_parts, level
+        assert set(level["optional_instruments"]) <= instrument_parts, level
+
+    mapping = {item["record"]: item for item in contract["record_mapping"]}
+    assert set(mapping) == set(contract["input_records"])
+    assert "OutputAssert" in mapping["truth_table"]["virtual_instruments"]
+    assert "BusProbe" in mapping["bus_fight"]["virtual_instruments"]
+    assert {"RCParasitic", "DelayNoise", "OutputAssert"} <= set(mapping["propagation"]["virtual_instruments"])
+    assert contract["delay_noise_policy"]["seed_required"] is True
+    assert "DelayNoise shows what could go wrong" in contract["delay_noise_policy"]["student_note"]
+
+
+def test_rv8gr_multi_level_protocol_and_report_are_current():
+    root = db_root().parent
+    protocol = (root / "DB" / "RV8GR_MULTI_LEVEL_TEST_PROTOCOL.md").read_text(encoding="utf-8")
+    report = (root / "DB" / "RV8GR_TEST_REPORT.md").read_text(encoding="utf-8")
+    readiness = json.loads((root / "DB" / "RV8GR_CHIP_LEVEL_READINESS.json").read_text(encoding="utf-8"))
+    coverage = json.loads((root / "Lib" / "Circuits" / "RV8GR_COVERAGE_INDEX.json").read_text(encoding="utf-8"))
+
+    assert "Level 1: Chip-Level Behavior Gate" in protocol
+    assert "Level 2: Circuit-Level Gate" in protocol
+    assert "Level 3: System-Level Gate" in protocol
+    assert "Level 4: Physical Build Signoff Gate" in protocol
+    assert "Do not write \"hardware ready\" unless Level 4 passes." in protocol
+    assert "DelayNoise" in protocol and "OutputAssert" in protocol
+
+    assert len(readiness["parts"]) == 18
+    assert len(coverage["packages"]) == 21
+    assert all(item["status"] == "Tested" for item in coverage["packages"])
+
+    assert "| RV8GR required chips | 18 |" in report
+    assert "| RV8GR circuit packages | 21 |" in report
+    assert "| Physical hardware signoff | BLOCKED |" in report
+    assert "Components virtual/model testing is ready" in report
+    assert "Physical hardware is not signed off yet." in report
 
 
 def test_memory_components_use_definition_packages():
@@ -750,6 +855,9 @@ def run_all():
     test_db_component_catalog_is_frontend_ready_and_grouped()
     test_student_component_catalog_is_learner_facing_and_status_visible()
     test_virtual_and_passive_components_use_definition_packages()
+    test_virtual_test_instruments_map_to_real_virtual_components()
+    test_virtual_test_generator_contract_maps_split_records_to_instruments()
+    test_rv8gr_multi_level_protocol_and_report_are_current()
     test_memory_components_use_definition_packages()
     test_db_component_detail_exposes_pins_and_capabilities()
     test_generation_seed_digital_definitions_are_valid_and_generator_ready()

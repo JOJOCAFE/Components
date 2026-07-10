@@ -231,7 +231,7 @@
     "sources": [
       {
         "label": "Microchip SST39SF010A/SST39SF020A/SST39SF040",
-        "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/SST39SF010A-SST39SF020A-SST39SF040-Data-Sheet-DS20005022.pdf",
+        "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/MPD/ProductDocuments/DataSheets/SST39SF010A-SST39SF020A-SST39SF040-Data-Sheet-DS20005022.pdf",
         "package_evidence": "32-pin PDIP flash package",
         "used_for": [
           "pins",
@@ -471,16 +471,47 @@
       "part": "SST39SF010A",
       "delay": {
         "model_delay_ns": 70,
-        "status": "model-derived"
+        "status": "datasheet-backed",
+        "datasheet_read_ns": {
+          "sst39sf010a_55": {
+            "read_cycle_time": 55,
+            "chip_enable_access": 55,
+            "address_access": 55,
+            "output_enable_access": 35,
+            "ce_high_to_high_z": 20,
+            "oe_high_to_high_z": 20,
+            "output_hold_from_address_change": 0
+          },
+          "sst39sf010a_70": {
+            "read_cycle_time": 70,
+            "chip_enable_access": 70,
+            "address_access": 70,
+            "output_enable_access": 35,
+            "ce_high_to_high_z": 25,
+            "oe_high_to_high_z": 25,
+            "output_hold_from_address_change": 0
+          }
+        },
+        "conditions": {
+          "vdd_v": "4.5_to_5.5",
+          "load_pf": {
+            "55ns": 30,
+            "70ns": 100
+          },
+          "path": "address_ce_oe_to_dq_or_high_z",
+          "section": "Table 7-1 Read Cycle Timing Parameters"
+        }
       },
       "evidence": {
         "label": "Microchip SST39SF010A/SST39SF020A/SST39SF040",
-        "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/SST39SF010A-SST39SF020A-SST39SF040-Data-Sheet-DS20005022.pdf",
+        "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/MPD/ProductDocuments/DataSheets/SST39SF010A-SST39SF020A-SST39SF040-Data-Sheet-DS20005022.pdf",
         "package_evidence": "32-pin PDIP flash package",
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     },
@@ -488,25 +519,53 @@
       "schema": "db.component.electrical",
       "version": 1,
       "part": "SST39SF010A",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
+      "recommended_operating": {
+        "vdd_v": {
+          "min": 4.5,
+          "max": 5.5
+        },
+        "input_low_max_v": 0.8,
+        "input_high_min_v": 2.0,
+        "cmos_input_high_min_v": "VDD-0.3",
+        "ta_c": {
+          "commercial_min": 0,
+          "commercial_max": 70
         }
       },
-      "current": {
-        "status": "datasheet-required"
+      "static_characteristics": {
+        "standby_current_max_ma": {
+          "ce_high": 3
+        },
+        "standby_current_cmos_max_ua": {
+          "ce_cmos_high": 100
+        },
+        "input_leakage_max_ua": 1,
+        "output_leakage_max_ua": 10,
+        "vol_max_v": {
+          "iol_2.1ma": 0.4
+        },
+        "voh_min_v": {
+          "ioh_400ua": 2.4
+        },
+        "input_capacitance_pf": 6,
+        "io_capacitance_pf": 12
       },
       "loading": {
-        "status": "datasheet-required"
+        "switching_test_load_pf": {
+          "55ns": 30,
+          "70ns": 100
+        }
       },
       "evidence": {
         "label": "Microchip SST39SF010A/SST39SF020A/SST39SF040",
-        "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/SST39SF010A-SST39SF020A-SST39SF040-Data-Sheet-DS20005022.pdf",
+        "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/MPD/ProductDocuments/DataSheets/SST39SF010A-SST39SF020A-SST39SF040-Data-Sheet-DS20005022.pdf",
         "package_evidence": "32-pin PDIP flash package",
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     }

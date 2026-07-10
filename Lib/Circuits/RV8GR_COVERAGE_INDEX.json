@@ -1,0 +1,158 @@
+{
+  "schema": "components.lib.rv8gr.coverage_index",
+  "version": 1,
+  "purpose": "Map each RV8GR circuit package to its build/test coverage so README rows, package directories, proof vectors, and Python checks cannot drift apart.",
+  "status_policy": {
+    "Tested": "Package has circuit.json, README.md, at least one JSON proof file, and executable Python regression coverage.",
+    "Planned": "Package is named in planning docs but does not yet have complete package/proof/test coverage."
+  },
+  "packages": [
+    {
+      "circuit": "RV8GR_RingCounter",
+      "stage": "clock_reset",
+      "status": "Tested",
+      "proof_focus": "T0/T1/T2 sequence, edge behavior, reset, lower-state recovery",
+      "python_test_prefix": "test_rv8gr_ring_counter_"
+    },
+    {
+      "circuit": "RV8GR_PC16",
+      "stage": "program_counter",
+      "status": "Tested",
+      "proof_focus": "count/load priority, carry chain, /PC_LD, PC_INC",
+      "python_test_prefix": "test_rv8gr_pc16_"
+    },
+    {
+      "circuit": "RV8GR_AddressMux16",
+      "stage": "address_path",
+      "status": "Tested",
+      "proof_focus": "PC vs {DP,IRL} address selection, ADDR_REQ, and A15 decode",
+      "python_test_prefix": "test_rv8gr_address_mux16_"
+    },
+    {
+      "circuit": "RV8GR_BusOwnership",
+      "stage": "bus_safety",
+      "status": "Tested",
+      "proof_focus": "T0/T1/T2 IBUS/DBUS drivers and bus-fight detection",
+      "python_test_prefix": "test_rv8gr_bus_ownership_"
+    },
+    {
+      "circuit": "RV8GR_InstructionLatch",
+      "stage": "fetch_decode",
+      "status": "Tested",
+      "proof_focus": "T0/T1 edge capture and T2 hold",
+      "python_test_prefix": "test_rv8gr_instruction_latch_"
+    },
+    {
+      "circuit": "RV8GR_StorePath",
+      "stage": "memory_write",
+      "status": "Tested",
+      "proof_focus": "IBUS to DBUS write direction and memory output disable",
+      "python_test_prefix": "test_rv8gr_store_path_"
+    },
+    {
+      "circuit": "RV8GR_DataPageMemory",
+      "stage": "memory_page",
+      "status": "Tested",
+      "proof_focus": "SETDP, RAM read/write, ROM read via DP, and $7FFF/$8000 boundary",
+      "python_test_prefix": "test_rv8gr_data_page_memory_"
+    },
+    {
+      "circuit": "RV8GR_IRQLatch",
+      "stage": "interrupt",
+      "status": "Tested",
+      "proof_focus": "IE set, /IRQ release latch, sticky IRQ_FF, no v1.0 vector",
+      "python_test_prefix": "test_rv8gr_irq_latch_"
+    },
+    {
+      "circuit": "RV8GR_RomDbusRead",
+      "stage": "memory_read",
+      "status": "Tested",
+      "proof_focus": "DBUS to IBUS read direction and ROM /OE safety",
+      "python_test_prefix": "test_rv8gr_rom_dbus_read_"
+    },
+    {
+      "circuit": "RV8GR_AluAccumulator",
+      "stage": "alu",
+      "status": "Tested",
+      "proof_focus": "ALU path timing, AC latch edge, Z flag settle",
+      "python_test_prefix": "test_rv8gr_alu_"
+    },
+    {
+      "circuit": "RV8GR_PageDataRegisters",
+      "stage": "page_registers",
+      "status": "Tested",
+      "proof_focus": "PG_CLK and DP_Load edge timing",
+      "python_test_prefix": "test_rv8gr_page_"
+    },
+    {
+      "circuit": "RV8GR_BranchJumpControl",
+      "stage": "branch_jump",
+      "status": "Tested",
+      "proof_focus": "/PC_LD, branch condition, no unintended load",
+      "python_test_prefix": "test_rv8gr_branch_jump_"
+    },
+    {
+      "circuit": "RV8GR_VirtualTestHelpers",
+      "stage": "test_infrastructure",
+      "status": "Tested",
+      "proof_focus": "clock profiles, phase probes, bus contention observation, R/C estimates",
+      "python_test_prefix": "test_rv8gr_virtual_"
+    },
+    {
+      "circuit": "RV8GR_FullControlOpcodeSweep",
+      "stage": "control_decode",
+      "status": "Tested",
+      "proof_focus": "all opcode/Z cases, reserved mixes, side-effect drift",
+      "python_test_prefix": "test_rv8gr_full_control_"
+    },
+    {
+      "circuit": "RV8GR_ResetClockBringup",
+      "stage": "bringup",
+      "status": "Tested",
+      "proof_focus": "reset idle/release, one-hot phase pushes, PC known-state policy, clock profiles",
+      "python_test_prefix": "test_rv8gr_reset_clock_"
+    },
+    {
+      "circuit": "RV8GR_FetchCycleTrace",
+      "stage": "instruction_trace",
+      "status": "Tested",
+      "proof_focus": "T0 control fetch, T1 operand fetch, T2 LI execute, PC motion, bus owners",
+      "python_test_prefix": "test_rv8gr_fetch_cycle_"
+    },
+    {
+      "circuit": "RV8GR_StoreLoadBranchTrace",
+      "stage": "instruction_trace",
+      "status": "Tested",
+      "proof_focus": "SB RAM write, LB RAM read, BEQ PC load, bus owners, PC/AC/RAM state",
+      "python_test_prefix": "test_rv8gr_store_load_branch_"
+    },
+    {
+      "circuit": "RV8GR_PageJumpTrace",
+      "stage": "instruction_trace",
+      "status": "Tested",
+      "proof_focus": "SETDP, SETPG, J, page-register state, PC page loading",
+      "python_test_prefix": "test_rv8gr_page_jump_"
+    },
+    {
+      "circuit": "RV8GR_InterruptTrace",
+      "stage": "instruction_trace",
+      "status": "Tested",
+      "proof_focus": "EI, DI inert behavior, /IRQ LOW hold, release latch, sticky IRQ_FF",
+      "python_test_prefix": "test_rv8gr_interrupt_trace_"
+    },
+    {
+      "circuit": "RV8GR_BootSequenceTrace",
+      "stage": "instruction_trace",
+      "status": "Tested",
+      "proof_focus": "SETDP $80, SETPG $00, LI $00, J self, 12-clock manual bring-up",
+      "python_test_prefix": "test_rv8gr_boot_sequence_"
+    },
+    {
+      "circuit": "RV8GR_Lab13MarkerTrace",
+      "stage": "instruction_trace",
+      "status": "Tested",
+      "proof_focus": "Lab 13 LI/ADDI/SUBI/BEQ flow, $AA marker, bus owners, final pass state",
+      "python_test_prefix": "test_rv8gr_lab13_marker_"
+    }
+  ]
+}

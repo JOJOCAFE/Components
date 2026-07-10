@@ -1,0 +1,146 @@
+{
+  "schema": "db.component.definition",
+  "version": 1,
+  "id": "DelayNoise",
+  "part": "DelayNoise",
+  "group": "virtual",
+  "kind": "virtual",
+  "role": "delay_noise_injector",
+  "title": "Delay and noise injector",
+  "family": "Virtual",
+  "package": {
+    "kind": "virtual",
+    "pins": 2
+  },
+  "status": {
+    "datasheet": "not_applicable",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "verilog_model": "not_applicable",
+    "verilog_export": "not_applicable",
+    "tests": "modeled"
+  },
+  "claim_boundary": {
+    "status": "stress_test_not_signoff",
+    "belongs_to": "test_instrument_between_components",
+    "student_note": "This virtual instrument adds controlled delay, jitter, or short glitches between chip outputs and chip inputs. Passing it gives confidence, but real wiring still needs measurement."
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "IN",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "OUT",
+      "direction": "output"
+    }
+  ],
+  "simulation": {
+    "service": "sim.delay_noise",
+    "deterministic_seed_required": true,
+    "default_profile": {
+      "base_delay_ns": 0,
+      "jitter_ns": 0,
+      "glitch_probability": 0.0,
+      "glitch_width_ns": 0,
+      "drop_edge_probability": 0.0,
+      "metastable_window_ns": 0
+    },
+    "example_profiles": [
+      {
+        "name": "no_noise_control",
+        "seed": 0,
+        "base_delay_ns": 0,
+        "jitter_ns": 0,
+        "glitch_probability": 0.0,
+        "glitch_width_ns": 0,
+        "expect_max_delay_ns": 0
+      },
+      {
+        "name": "breadboard_slow_edge_estimate",
+        "seed": 35862,
+        "base_delay_ns": 8,
+        "jitter_ns": 4,
+        "glitch_probability": 0.0,
+        "glitch_width_ns": 0,
+        "expect_max_delay_ns": 12
+      },
+      {
+        "name": "control_line_glitch_stress",
+        "seed": 35863,
+        "base_delay_ns": 5,
+        "jitter_ns": 5,
+        "glitch_probability": 0.05,
+        "glitch_width_ns": 10,
+        "expect_max_delay_ns": 10
+      }
+    ]
+  },
+  "ui": {
+    "widget": "delay_noise",
+    "symbol": "delay_noise"
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "DelayNoise",
+      "title": "Delay and noise injector",
+      "family": "Virtual",
+      "group": "virtual",
+      "kind": "virtual",
+      "role": "delay_noise_injector"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "DelayNoise",
+      "packages": [
+        {
+          "id": "virtual",
+          "kind": "virtual",
+          "pins": 2
+        }
+      ],
+      "default_package": "virtual"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "DelayNoise",
+      "pins": [
+        {
+          "number": 1,
+          "name": "IN",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "OUT",
+          "direction": "output"
+        }
+      ],
+      "buses": {}
+    },
+    "simulation": {
+      "schema": "db.component.simulation",
+      "version": 1,
+      "part": "DelayNoise",
+      "simulation": {
+        "service": "sim.delay_noise",
+        "deterministic_seed_required": true
+      }
+    },
+    "ui": {
+      "schema": "db.component.ui",
+      "version": 1,
+      "part": "DelayNoise",
+      "ui": {
+        "widget": "delay_noise",
+        "symbol": "delay_noise"
+      }
+    }
+  }
+}

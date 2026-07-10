@@ -1,0 +1,83 @@
+{
+  "schema": "components.lib.circuit.test.page_jump_trace",
+  "version": 1,
+  "circuit": "rv8gr_page_jump_trace",
+  "source": "Lib/Circuits/RV8GR_PageJumpTrace/circuit.json",
+  "source_traces": [
+    {"name": "SETDP", "opcode": "0x40", "focus": "data page register"},
+    {"name": "SETPG", "opcode": "0x20", "focus": "program page register"},
+    {"name": "J", "opcode": "0x01", "focus": "PC page load"}
+  ],
+  "vectors": [
+    {
+      "name": "setdp_loads_data_page_only",
+      "mnemonic": "SETDP",
+      "phase": "T2",
+      "opcode": "0x40",
+      "operand": "0x80",
+      "initial": {"PC": "0x0002", "PG": "0x00", "DP": "0x00", "Z": 0},
+      "expect": {
+        "IBUS": "0x80",
+        "PC": "0x0002",
+        "PG": "0x00",
+        "DP": "0x80",
+        "Z": 0,
+        "pc_ld_n": 1,
+        "pg_latch": false,
+        "dp_latch": true,
+        "ibus_drivers": ["U34"],
+        "conflict": false
+      }
+    },
+    {
+      "name": "setpg_loads_program_page_only",
+      "mnemonic": "SETPG",
+      "phase": "T2",
+      "opcode": "0x20",
+      "operand": "0x12",
+      "initial": {"PC": "0x0004", "PG": "0x00", "DP": "0x80", "Z": 0},
+      "expect": {
+        "IBUS": "0x12",
+        "PC": "0x0004",
+        "PG": "0x12",
+        "DP": "0x80",
+        "Z": 0,
+        "pc_ld_n": 1,
+        "pg_latch": true,
+        "dp_latch": false,
+        "ibus_drivers": ["U34"],
+        "conflict": false
+      }
+    },
+    {
+      "name": "j_uses_existing_program_page",
+      "mnemonic": "J",
+      "phase": "T2",
+      "opcode": "0x01",
+      "operand": "0x5A",
+      "initial": {"PC": "0x0006", "PG": "0x12", "DP": "0x80", "Z": 0},
+      "expect": {
+        "IBUS": "0x5A",
+        "PC": "0x125A",
+        "PG": "0x12",
+        "DP": "0x80",
+        "Z": 0,
+        "pc_ld_n": 0,
+        "pg_latch": false,
+        "dp_latch": false,
+        "ibus_drivers": ["U34"],
+        "conflict": false
+      }
+    }
+  ],
+  "sequence": [
+    {"vector": "setdp_loads_data_page_only"},
+    {"vector": "setpg_loads_program_page_only"},
+    {"vector": "j_uses_existing_program_page"}
+  ],
+  "final_state": {"PC": "0x125A", "PG": "0x12", "DP": "0x80", "Z": 0},
+  "bus_safety": {
+    "immediate": "U34 is the only IBUS driver; no memory or AC buffer is enabled for these page/jump traces.",
+    "reject": ["ibus_multi_driver", "pc_page_from_unlatched_operand", "setdp_changes_pg", "setpg_changes_dp"]
+  }
+}

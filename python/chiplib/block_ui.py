@@ -28,6 +28,7 @@ def design_to_block_ui(design: Any) -> JsonMap:
         "wires": _wires_from_design(design, data, wire_layout, netlist),
         "nets": _nets_from_netlist(netlist),
         "run_config": _run_config(data),
+        "editor": _editor_config(data),
         "aliases": deepcopy(data.get("aliases", {})),
         "groups": deepcopy(data.get("groups", {})),
         "modules": deepcopy(data.get("modules", {})),
@@ -235,6 +236,61 @@ def _run_config(data: JsonMap) -> JsonMap:
     }
     config["default_backend"] = default_backend
     return config
+
+
+def _editor_config(data: JsonMap) -> JsonMap:
+    """Return backend-owned editor affordances for visual and AI clients."""
+
+    return {
+        "schema": "components.block_ui.editor",
+        "version": 1,
+        "source_of_truth": "normalized_design",
+        "palette": {
+            "commands": [
+                {"name": "db --student", "purpose": "beginner-readable component list"},
+                {"name": "db --catalog", "purpose": "frontend component metadata"},
+                {"name": "db PART --detail", "purpose": "one component's pins, status, and UI hints"},
+            ],
+            "default_groups": ["74xx", "Memory", "Virtual", "Passive", "Discrete"],
+            "missing_data_policy": "show_status_warning",
+        },
+        "actions": [
+            {"name": "place_chip", "requires": ["part", "ref"], "updates": ["blocks", "layout.blocks"]},
+            {"name": "place_bus", "requires": ["id", "width"], "updates": ["blocks", "layout.blocks"]},
+            {"name": "place_rail", "requires": ["id", "value"], "updates": ["blocks", "rails", "layout.blocks"]},
+            {"name": "connect", "requires": ["endpoint_a", "endpoint_b"], "updates": ["wires", "connect"]},
+            {"name": "disconnect", "requires": ["wire_id"], "updates": ["wires", "connect"]},
+            {"name": "set_input", "requires": ["input_set", "rule"], "updates": ["inputs"]},
+            {"name": "add_probe", "requires": ["name", "target"], "updates": ["probes"]},
+            {"name": "run", "requires": ["backend"], "updates": ["snapshot", "probe_history"]},
+        ],
+        "validation_gates": [
+            "validate",
+            "snapshot",
+            "run",
+            "probe",
+            "export-netlist",
+            "export-verilog",
+        ],
+        "mcp_ready_tools": [
+            {"tool": "component_catalog", "cli_equivalent": "db --catalog"},
+            {"tool": "component_detail", "cli_equivalent": "db PART --detail"},
+            {"tool": "validate_design", "cli_equivalent": "validate JSON_FILE"},
+            {"tool": "run_design", "cli_equivalent": "run JSON_FILE"},
+            {"tool": "export_block_ui", "cli_equivalent": "export-block-ui JSON_FILE"},
+            {"tool": "import_block_ui", "cli_equivalent": "import-block-ui JSON_FILE"},
+        ],
+        "student_rules": [
+            "Use real package pins from the DB catalog.",
+            "Show missing datasheet or export status instead of guessing behavior.",
+            "Run validation before simulation or Verilog export.",
+        ],
+        "current_design": {
+            "chips": sorted(str(name) for name in data.get("chips", {})),
+            "buses": sorted(str(name) for name in data.get("buses", {})),
+            "rails": sorted(str(name) for name in data.get("rails", {})),
+        },
+    }
 
 
 def _layout_from_blocks(data: JsonMap) -> JsonMap:

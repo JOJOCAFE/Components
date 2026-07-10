@@ -431,16 +431,70 @@
       "part": "62256",
       "delay": {
         "model_delay_ns": 70,
-        "status": "model-derived"
+        "status": "datasheet-backed",
+        "datasheet_read_ns": {
+          "km62256c_55": {
+            "read_cycle_time": 55,
+            "address_access": 55,
+            "chip_select_to_output": 55,
+            "output_enable_to_output": 25,
+            "chip_disable_to_high_z": 20,
+            "output_disable_to_high_z": 20,
+            "output_hold_from_address_change": 5
+          },
+          "km62256c_70": {
+            "read_cycle_time": 70,
+            "address_access": 70,
+            "chip_select_to_output": 70,
+            "output_enable_to_output": 35,
+            "chip_disable_to_high_z": 30,
+            "output_disable_to_high_z": 30,
+            "output_hold_from_address_change": 5
+          }
+        },
+        "datasheet_write_ns": {
+          "km62256c_55": {
+            "write_cycle_time": 55,
+            "chip_select_to_end_of_write": 45,
+            "address_setup": 0,
+            "address_valid_to_end_of_write": 45,
+            "write_pulse_width": 40,
+            "write_recovery": 0,
+            "write_to_output_high_z": 20,
+            "data_to_write_overlap": 25,
+            "data_hold_from_write": 0,
+            "end_write_to_output_low_z": 5
+          },
+          "km62256c_70": {
+            "write_cycle_time": 70,
+            "chip_select_to_end_of_write": 60,
+            "address_setup": 0,
+            "address_valid_to_end_of_write": 60,
+            "write_pulse_width": 50,
+            "write_recovery": 0,
+            "write_to_output_high_z": 25,
+            "data_to_write_overlap": 30,
+            "data_hold_from_write": 0,
+            "end_write_to_output_low_z": 5
+          }
+        },
+        "conditions": {
+          "vcc_v": "4.5_to_5.5",
+          "load": "100 pF + 1 TTL",
+          "path": "address_ce_oe_we_to_io_or_high_z",
+          "section": "AC Characteristics"
+        }
       },
       "evidence": {
-        "label": "Alliance Memory AS6C62256",
-        "url": "https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf",
-        "package_evidence": "28-pin PDIP-compatible SRAM pinout",
+        "label": "Samsung KM62256C Family",
+        "url": "Source/KM62256C.PDF",
+        "package_evidence": "28-pin DIP 32K x 8 CMOS SRAM pinout",
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     },
@@ -448,25 +502,63 @@
       "schema": "db.component.electrical",
       "version": 1,
       "part": "62256",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
+      "recommended_operating": {
+        "vcc_v": {
+          "min": 4.5,
+          "nom": 5.0,
+          "max": 5.5
+        },
+        "vss_v": {
+          "min": 0,
+          "typ": 0,
+          "max": 0
+        },
+        "input_high_min_v": 2.2,
+        "input_low_max_v": 0.8,
+        "ta_c": {
+          "commercial_min": 0,
+          "commercial_max": 70,
+          "extended_min": -25,
+          "extended_max": 85,
+          "industrial_min": -40,
+          "industrial_max": 85
         }
       },
-      "current": {
-        "status": "datasheet-required"
+      "static_characteristics": {
+        "input_leakage_max_ua": 1,
+        "output_leakage_max_ua": 1,
+        "operating_supply_current_max_ma": {
+          "icc": 15,
+          "icc1_commercial": 7,
+          "icc2_min_cycle": 70
+        },
+        "standby_current_ttl_max_ma": 1,
+        "standby_current_cmos_max_ua": {
+          "low_power": 100,
+          "low_low_power": 20
+        },
+        "vol_max_v": {
+          "iol_2.1ma": 0.4
+        },
+        "voh_min_v": {
+          "ioh_-1ma": 2.4
+        },
+        "input_capacitance_pf": 6,
+        "io_capacitance_pf": 8
       },
       "loading": {
-        "status": "datasheet-required"
+        "switching_test_load": "100 pF + 1 TTL"
       },
       "evidence": {
-        "label": "Alliance Memory AS6C62256",
-        "url": "https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf",
-        "package_evidence": "28-pin PDIP-compatible SRAM pinout",
+        "label": "Samsung KM62256C Family",
+        "url": "Source/KM62256C.PDF",
+        "package_evidence": "28-pin DIP 32K x 8 CMOS SRAM pinout",
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     }

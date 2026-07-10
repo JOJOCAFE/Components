@@ -5,8 +5,8 @@
 // This block replaces the former standalone pinout Markdown file.
 // # 62256 DIP Pinout
 //
-// Manufacturer source: Alliance Memory AS6C62256 datasheet:
-// https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf
+// Manufacturer source: Samsung KM62256C Family datasheet:
+// Source/KM62256C.PDF
 //
 // Package checked: 28-pin PDIP-compatible 32K x 8 SRAM pinout.
 //

@@ -1,0 +1,162 @@
+{
+  "schema": "db.component.definition",
+  "version": 1,
+  "id": "RCParasitic",
+  "part": "RCParasitic",
+  "group": "virtual",
+  "kind": "virtual",
+  "role": "parasitic_timing_estimator",
+  "title": "Breadboard R/C parasitic timing estimator",
+  "family": "Virtual",
+  "package": {
+    "kind": "virtual",
+    "pins": 2
+  },
+  "status": {
+    "datasheet": "not_applicable",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "verilog_model": "not_applicable",
+    "verilog_export": "not_applicable",
+    "tests": "modeled"
+  },
+  "claim_boundary": {
+    "status": "estimate_only_not_signoff",
+    "belongs_to": "circuit_or_board_level_not_chip_definition",
+    "student_note": "This virtual part estimates delay caused by breadboard wires and input capacitance. It helps decide what to scope, but the real circuit must still be measured.",
+    "physical_signoff_requires": [
+      "oscilloscope edge measurement at the driver pin",
+      "oscilloscope edge measurement at the destination input pin",
+      "voltage sweep at 4.5 V, 5.0 V, and 5.5 V",
+      "manual push-switch and fixed-frequency clock profiles"
+    ]
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "IN",
+      "direction": "passive"
+    },
+    {
+      "number": 2,
+      "name": "OUT",
+      "direction": "passive"
+    }
+  ],
+  "simulation": {
+    "service": "sim.rc_parasitic",
+    "formula": {
+      "tau_ns": "source_resistance_ohm * total_capacitance_pf / 1000",
+      "total_capacitance_pf": "wire_capacitance_pf + chip_input_capacitance_pf + probe_capacitance_pf + extra_capacitance_pf",
+      "settling_10_90_ns": "2.2 * tau_ns"
+    },
+    "default_profile": {
+      "source_resistance_ohm": 50,
+      "wire_capacitance_pf": 20,
+      "chip_input_capacitance_pf": 10,
+      "probe_capacitance_pf": 10,
+      "extra_capacitance_pf": 0
+    },
+    "example_profiles": [
+      {
+        "name": "short_control_net",
+        "source_resistance_ohm": 50,
+        "wire_capacitance_pf": 10,
+        "chip_input_capacitance_pf": 10,
+        "probe_capacitance_pf": 0,
+        "extra_capacitance_pf": 0,
+        "expect_tau_ns": 1.0,
+        "expect_settling_10_90_ns": 2.2
+      },
+      {
+        "name": "long_bus_net_with_probe",
+        "source_resistance_ohm": 80,
+        "wire_capacitance_pf": 50,
+        "chip_input_capacitance_pf": 20,
+        "probe_capacitance_pf": 10,
+        "extra_capacitance_pf": 0,
+        "expect_tau_ns": 6.4,
+        "expect_settling_10_90_ns": 14.08
+      },
+      {
+        "name": "weak_pull_reset_net",
+        "source_resistance_ohm": 10000,
+        "wire_capacitance_pf": 40,
+        "chip_input_capacitance_pf": 20,
+        "probe_capacitance_pf": 10,
+        "extra_capacitance_pf": 30,
+        "expect_tau_ns": 1000.0,
+        "expect_settling_10_90_ns": 2200.0
+      }
+    ]
+  },
+  "ui": {
+    "widget": "rc_parasitic",
+    "symbol": "rc"
+  },
+  "definition_layers": {
+    "component": {
+      "schema": "db.component.definition",
+      "version": 1,
+      "part": "RCParasitic",
+      "title": "Breadboard R/C parasitic timing estimator",
+      "family": "Virtual",
+      "group": "virtual",
+      "kind": "virtual",
+      "role": "parasitic_timing_estimator"
+    },
+    "package": {
+      "schema": "db.component.package",
+      "version": 1,
+      "part": "RCParasitic",
+      "packages": [
+        {
+          "id": "virtual",
+          "kind": "virtual",
+          "pins": 2
+        }
+      ],
+      "default_package": "virtual"
+    },
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "RCParasitic",
+      "pins": [
+        {
+          "number": 1,
+          "name": "IN",
+          "direction": "passive"
+        },
+        {
+          "number": 2,
+          "name": "OUT",
+          "direction": "passive"
+        }
+      ],
+      "buses": {}
+    },
+    "simulation": {
+      "schema": "db.component.simulation",
+      "version": 1,
+      "part": "RCParasitic",
+      "simulation": {
+        "service": "sim.rc_parasitic",
+        "formula": {
+          "tau_ns": "source_resistance_ohm * total_capacitance_pf / 1000",
+          "total_capacitance_pf": "wire_capacitance_pf + chip_input_capacitance_pf + probe_capacitance_pf + extra_capacitance_pf",
+          "settling_10_90_ns": "2.2 * tau_ns"
+        }
+      }
+    },
+    "ui": {
+      "schema": "db.component.ui",
+      "version": 1,
+      "part": "RCParasitic",
+      "ui": {
+        "widget": "rc_parasitic",
+        "symbol": "rc"
+      }
+    }
+  }
+}

@@ -6,7 +6,7 @@
 // # AS6C62256 DIP Pinout
 //
 // Manufacturer source: Alliance Memory AS6C62256 datasheet:
-// https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf
+// Source/AS6C62256.PDF
 //
 // Package checked: 28-pin PDIP-compatible 32K x 8 SRAM pinout.
 //

@@ -431,16 +431,52 @@
       "part": "AS6C62256",
       "delay": {
         "model_delay_ns": 70,
-        "status": "model-derived"
+        "status": "datasheet-backed",
+        "datasheet_read_ns": {
+          "as6c62256_55": {
+            "read_cycle_time": 55,
+            "address_access": 55,
+            "chip_enable_access": 55,
+            "output_enable_access": 30,
+            "chip_enable_to_low_z": 10,
+            "output_enable_to_low_z": 5,
+            "chip_disable_to_high_z": 20,
+            "output_disable_to_high_z": 20,
+            "output_hold_from_address_change": 10
+          }
+        },
+        "datasheet_write_ns": {
+          "as6c62256_55": {
+            "write_cycle_time": 55,
+            "address_valid_to_end_of_write": 50,
+            "chip_enable_to_end_of_write": 50,
+            "address_setup": 0,
+            "write_pulse_width": 45,
+            "write_recovery": 0,
+            "data_to_write_overlap": 25,
+            "data_hold_from_end_of_write": 0,
+            "output_active_from_end_of_write": 5,
+            "write_to_output_high_z": 20
+          }
+        },
+        "conditions": {
+          "vcc_v": "2.7_to_5.5",
+          "output_load": "50 pF + 1 TTL",
+          "high_z_test_load_pf": 5,
+          "path": "address_ce_oe_we_to_dq_or_high_z",
+          "section": "AC Electrical Characteristics"
+        }
       },
       "evidence": {
         "label": "Alliance Memory AS6C62256 datasheet",
-        "url": "https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf",
+        "url": "Source/AS6C62256.PDF",
         "package_evidence": "28-pin PDIP-compatible 32K x 8 SRAM pinout.",
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     },
@@ -448,25 +484,65 @@
       "schema": "db.component.electrical",
       "version": 1,
       "part": "AS6C62256",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
+      "recommended_operating": {
+        "vcc_v": {
+          "min": 2.7,
+          "typ": 3.3,
+          "max": 5.5
+        },
+        "input_high_min_v": "0.7*Vcc",
+        "input_high_max_v": "VCC+0.5",
+        "input_low_min_v": -0.5,
+        "input_low_max_v": 0.6,
+        "ta_c": {
+          "commercial_min": 0,
+          "commercial_max": 70,
+          "industrial_min": -40,
+          "industrial_max": 85
         }
       },
-      "current": {
-        "status": "datasheet-required"
+      "static_characteristics": {
+        "input_leakage_max_ua": 1,
+        "output_leakage_max_ua": 1,
+        "voh_min_v": {
+          "ioh_-1ma": 2.4
+        },
+        "vol_max_v": {
+          "iol_2ma": 0.4
+        },
+        "operating_supply_current_max_ma": {
+          "icc_55ns": 45,
+          "icc1": 10
+        },
+        "standby_current_max_ma": {
+          "ce_high": 3
+        },
+        "standby_current_cmos_max_ua": {
+          "commercial": 50,
+          "industrial": 80
+        },
+        "input_capacitance_pf": 6,
+        "io_capacitance_pf": 8,
+        "data_retention_v": {
+          "min": 2.0,
+          "max": 5.5
+        },
+        "data_retention_current_max_ua": 20
       },
       "loading": {
-        "status": "datasheet-required"
+        "switching_test_load": "50 pF + 1 TTL",
+        "high_z_test_load_pf": 5
       },
       "evidence": {
         "label": "Alliance Memory AS6C62256 datasheet",
-        "url": "https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf",
+        "url": "Source/AS6C62256.PDF",
         "package_evidence": "28-pin PDIP-compatible 32K x 8 SRAM pinout.",
         "used_for": [
           "pins",
           "package",
-          "logic"
+          "logic",
+          "timing",
+          "electrical"
         ]
       }
     }
