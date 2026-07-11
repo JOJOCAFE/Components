@@ -611,6 +611,8 @@ Result shapes:
       "role": "measurement",
       "package": {"kind": "virtual", "pins": 1},
       "status": {},
+      "evidence": {},
+      "procurement": {},
       "capabilities": {
         "physical_pinout": false,
         "python_behavior": false,
@@ -625,8 +627,9 @@ Result shapes:
 The `student-component-catalog` command returns
 `format: components.db.student_catalog`. It is a smaller learner-facing view
 with `readiness`, visible status fields, simulation/export capability flags,
-pin previews, and warnings for missing information. It is intended for students
-around ages 10-15 while still remaining machine-readable for frontend clients.
+procurement hints, pin previews, and warnings for missing information. It is
+intended for students around ages 10-15 while still remaining machine-readable
+for frontend clients.
 
 ```json
 {
@@ -736,6 +739,8 @@ python3 -m chiplib.api --http --host 127.0.0.1 --port 8765
 The API accepts the standard service envelope and dispatches by `command`.
 Stateful frontend-edit commands operate on the loaded in-memory design:
 
+- `headless-capabilities`
+- `ai-capabilities`
 - `create-design`
 - `load`
 - `create-chip`
@@ -778,6 +783,31 @@ Example:
   }
 }
 ```
+
+### headless-capabilities / ai-capabilities
+
+Purpose: return a compact machine-readable manifest for CLI users, local API
+clients, and AI assistants. The manifest lists entrypoints, transport behavior,
+safe student workflow, student guardrails, command groups, important docs, and
+known limits.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli headless
+```
+
+API:
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "headless-capabilities"
+}
+```
+
+AI assistants should read this manifest before helping a student choose parts,
+write schematic JSON, run simulation, or suggest real breadboard changes.
 
 ## Pluggable Service Rules
 

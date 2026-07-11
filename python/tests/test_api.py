@@ -73,6 +73,12 @@ def test_json_api_adapter_dispatches_stateful_frontend_commands():
 def test_json_api_adapter_exposes_component_metadata_without_design():
     service = FrontendDesignService()
 
+    headless = handle_request({"command": "headless-capabilities"}, service)
+    assert headless["ok"] is True
+    assert headless["result"]["format"] == "components.headless.capabilities"
+    assert "student-component-catalog" in headless["result"]["core_commands"]["catalog"]
+    assert "Do not invent pinouts, active-low markers, chip behavior, timing, or procurement facts." in headless["result"]["student_guardrails"]
+
     catalog = handle_request({"command": "component-catalog", "options": {"group": "memory"}}, service)
     assert catalog["ok"] is True
     assert catalog["result"]["format"] == "components.db.catalog"

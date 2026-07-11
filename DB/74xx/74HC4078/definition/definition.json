@@ -374,5 +374,16 @@
       "propagation"
     ]
   },
-  "version": 1
+  "version": 1,
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "STMicroelectronics",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
+  }
 }

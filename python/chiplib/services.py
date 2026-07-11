@@ -16,6 +16,85 @@ JsonMap = dict[str, Any]
 CONTRACT = "components.service.v1"
 
 
+def headless_capabilities() -> JsonMap:
+    """Return the machine-readable CLI/API/AI contract summary."""
+
+    return {
+        "format": "components.headless.capabilities",
+        "version": 1,
+        "contract": CONTRACT,
+        "purpose": "Headless Components access for CLI tools, local APIs, and AI assistants helping students build digital logic projects.",
+        "primary_users": {
+            "student_age_range": "10-15",
+            "also_useful_for": "older learners and project builders up to about 24",
+            "teacher_or_adult_required_for": [
+                "real breadboard power-up",
+                "ordering parts",
+                "raising clock speed",
+                "debugging hot chips or unexpected current",
+            ],
+        },
+        "entrypoints": {
+            "cli": "PYTHONPATH=python python3 -B -m chiplib.cli",
+            "api_stdio": "PYTHONPATH=python python3 -B -m chiplib.api --stdio",
+            "api_http": "PYTHONPATH=python python3 -B -m chiplib.api --http --host 127.0.0.1 --port 8765",
+        },
+        "transports": [
+            {
+                "name": "cli",
+                "state": "stateless per command",
+                "output": "JSON on stdout unless --text is explicitly requested",
+            },
+            {
+                "name": "stdio-api",
+                "state": "stateful for one newline-delimited JSON session",
+                "output": "one JSON response per input line",
+            },
+            {
+                "name": "http-api",
+                "state": "stateful while the local server process is running",
+                "output": "JSON POST response",
+            },
+        ],
+        "ai_workflow": [
+            "Discover parts with student-component-catalog before choosing chips.",
+            "Inspect selected parts with component-detail or component-package before wiring.",
+            "Create or load schematic JSON using real chip refs, real DIP pin numbers, rails, buses, inputs, and probes.",
+            "Run validate before run.",
+            "Run run and probe before suggesting real wiring changes.",
+            "Run circuit-faults for circuit-package JSON that may touch real breadboard wiring.",
+            "Export netlist or Verilog only after simulation passes, and report unsupported parts instead of guessing.",
+        ],
+        "student_guardrails": [
+            "Do not invent pinouts, active-low markers, chip behavior, timing, or procurement facts.",
+            "Do not hide validation errors, bus conflicts, unsupported exports, missing timing evidence, or missing datasheet evidence.",
+            "Explain failures with the chip ref, part, pin, net, command, and suggested fix when available.",
+            "Treat virtual simulation as a learning and wiring check, not physical hardware signoff.",
+            "Tell students to stop a real build when a chip is hot, current is unexpected, or two outputs may fight.",
+        ],
+        "core_commands": {
+            "catalog": ["component-catalog", "student-component-catalog", "component-detail", "component-package"],
+            "design": ["create-design", "load", "create-chip", "delete-chip", "connect", "disconnect", "add-bus", "set-inputs"],
+            "simulation": ["validate", "snapshot", "frontend-snapshot", "run", "step", "probe"],
+            "export": ["export-json", "export-netlist", "export-verilog", "export-block-ui", "import-block-ui"],
+            "verification": ["circuit-faults", "db --audit", "db --status"],
+        },
+        "important_docs": [
+            "Docs/STUDENT_GUIDE.md",
+            "Docs/SERVICE_CONTRACT.md",
+            "Docs/SCHEMATIC_JSON_SPEC.md",
+            "Docs/DB_COMPONENT_PACKAGE_SPEC.md",
+            "Docs/TIMING_PARAMETER_AUDIT.md",
+            "Docs/TIMING_SIMULATION_AUDIT.md",
+        ],
+        "limits": [
+            "Headless simulation currently uses generic chip-level timing for most models.",
+            "Hardware frequency claims require physical timing and signal-integrity evidence outside this service.",
+            "Verilog export is explicit and conservative; unsupported parts are reported.",
+        ],
+    }
+
+
 class SimulationService:
     """Stable internal boundary for simulation-backed Design operations."""
 

@@ -1,6 +1,12 @@
 # Chip Status
 
-Status snapshot for the shared Components library.
+Status baseline for physical 74xx/HCT and memory packages in the shared
+Components library.
+
+This file is still required. `python3 -m chiplib.cli db --status` parses these
+sections and compares them with DB-generated status for the checked physical IC
+groups. Keep it as a compact human-readable baseline for status drift, not as a
+complete catalog dump for Virtual, Passive, Discrete, or Support packages.
 
 ## Status Meanings
 
@@ -20,7 +26,7 @@ All active embedded pinout comments in `Verilog/74xx/*.v` and
 Parts without that evidence must not stay in the active physical pinout
 catalog.
 
-Verified 74HC/HCT embedded pinout documentation currently covers:
+Verified 74HC/HCT pinout documentation currently covers:
 
 `74HC00`, `74HC02`, `74HC03`, `74HC04`, `74HC05`, `74HC07`, `74HC08`, `74HC10`, `74HC11`,
 `74HC14`, `74HC132`, `74HC138`, `74HC139`, `74HC147`, `74HC148`, `74HC151`,
@@ -38,7 +44,8 @@ Verified memory embedded pinout documentation currently covers:
 
 ## Modeled
 
-Modeled 74HC/HCT parts currently have DB-local Verilog/Python model metadata or legacy `Verilog/74xx/*.v` coverage:
+Modeled 74HC/HCT parts currently have DB-local Python/Verilog model metadata
+and matching legacy-family Verilog coverage:
 
 `74HC00`, `74HC02`, `74HC03`, `74HC04`, `74HC05`, `74HC07`, `74HC08`, `74HC10`, `74HC11`,
 `74HC14`, `74HC132`, `74HC138`, `74HC139`, `74HC147`, `74HC148`, `74HC151`,

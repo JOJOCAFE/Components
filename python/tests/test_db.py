@@ -134,6 +134,12 @@ def test_db_seed_entries_are_loadable():
 
     counter = load_component("74HC161")
     assert counter["pins"][0]["name"] == "/CLR"
+    assert counter["logic_family_model"] == "74HC161"
+    assert counter["variants"] == [
+        {"part": "SN74HC161N", "manufacturer": "Texas Instruments"},
+        {"part": "CD74HC161E", "manufacturer": "Texas Instruments"},
+        {"part": "HD74HC161P", "manufacturer": "Renesas/Hitachi"},
+    ]
     assert {key: counter["pins"][14][key] for key in ("number", "name", "direction")} == {"number": 15, "name": "RCO", "direction": "output"}
     assert counter["verilog"]["export"]["ports"] == [
         {"name": "Clear_bar", "pins": [1], "direction": "input"},
@@ -295,6 +301,17 @@ def test_db_component_catalog_is_frontend_ready_and_grouped():
     hc00 = next(item for item in catalog["components"] if item["part"] == "74HC00")
     assert hc00["group"] == "74xx"
     assert hc00["db_path"] == "DB/74xx/74HC00/definition/definition.json"
+    assert hc00["evidence"] == {
+        "dip_pinout_verified": True,
+        "manufacturer": "Texas Instruments",
+        "datasheet_status": "historical-or-current",
+    }
+    assert hc00["procurement"] == {
+        "recommended_for_new_design": False,
+        "availability_class": "legacy",
+        "stock_basis": "nos-or-limited",
+        "last_checked": "2026-07-11",
+    }
     assert hc00["capabilities"]["physical_pinout"] is True
     assert hc00["capabilities"]["verilog_file"] == "DB/74xx/74HC00/simulation/model.v"
     assert hc00["warnings"] == []
@@ -318,8 +335,52 @@ def test_student_component_catalog_is_learner_facing_and_status_visible():
 
     hc00 = next(item for item in student_component_catalog(group="74xx")["components"] if item["part"] == "74HC00")
     assert hc00["readiness"] == "ready"
+    assert hc00["procurement"]["availability_class"] == "legacy"
+    assert hc00["procurement"]["stock_basis"] == "nos-or-limited"
     assert hc00["capabilities"]["can_export_verilog"] is True
     assert hc00["files"]["verilog"] == "DB/74xx/74HC00/simulation/model.v"
+
+    hc161 = next(item for item in student_component_catalog(group="74xx")["components"] if item["part"] == "74HC161")
+    assert hc161["logic_family_model"] == "74HC161"
+    assert {item["part"] for item in hc161["variants"]} == {"SN74HC161N", "CD74HC161E", "HD74HC161P"}
+
+
+def test_physical_ic_definitions_include_evidence_and_procurement_metadata():
+    checked = []
+    for part in component_ids():
+        definition = load_digital_definition(part, required=False)
+        if definition is None:
+            continue
+        group = definition.get("metadata", {}).get("group")
+        if group not in {"74xx", "memory"}:
+            continue
+        checked.append(part)
+        evidence = definition.get("evidence")
+        procurement = definition.get("procurement")
+        assert evidence["dip_pinout_verified"] is True
+        assert evidence["manufacturer"]
+        assert evidence["datasheet_status"] in {"current", "historical", "historical-or-current"}
+        assert procurement["recommended_for_new_design"] is False
+        assert procurement["availability_class"] in {"active", "legacy", "obsolete", "unknown"}
+        assert procurement["stock_basis"] in {"broad-stock", "common-education-stock", "nos-or-limited", "unknown"}
+        assert procurement["last_checked"] == "2026-07-11"
+        assert definition["validation"]["ok"], definition["validation"]["errors"]
+    assert len(checked) == 70
+
+
+def test_logic_family_model_variants_are_validated_and_catalog_visible():
+    definition = load_digital_definition("74HC161")
+    assert definition["logic_family_model"] == "74HC161"
+    assert definition["validation"]["ok"], definition["validation"]["errors"]
+    assert definition["variants"] == [
+        {"part": "SN74HC161N", "manufacturer": "Texas Instruments"},
+        {"part": "CD74HC161E", "manufacturer": "Texas Instruments"},
+        {"part": "HD74HC161P", "manufacturer": "Renesas/Hitachi"},
+    ]
+
+    detail = component_detail("74HC161")
+    assert detail["logic_family_model"] == "74HC161"
+    assert detail["variants"] == definition["variants"]
 
 
 def test_virtual_and_passive_components_use_definition_packages():

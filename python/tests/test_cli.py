@@ -166,6 +166,19 @@ def test_cli_circuit_faults_reports_good_and_bad_circuits():
 
 
 def test_cli_db_summary_and_part_lookup():
+    headless = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "headless"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert headless.returncode == 0, headless.stderr
+    headless_data = json.loads(headless.stdout)
+    assert headless_data["format"] == "components.headless.capabilities"
+    assert headless_data["entrypoints"]["api_stdio"].endswith("chiplib.api --stdio")
+    assert "validate" in headless_data["core_commands"]["simulation"]
+
     summary = subprocess.run(
         [sys.executable, "-B", "-m", "chiplib.cli", "db"],
         cwd=Path(__file__).resolve().parents[1],

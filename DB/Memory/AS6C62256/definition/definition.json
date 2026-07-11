@@ -547,5 +547,16 @@
     "verilog_model": "modeled",
     "verilog_export": "tested",
     "tests": "tested"
+  },
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "Alliance Memory",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
   }
 }

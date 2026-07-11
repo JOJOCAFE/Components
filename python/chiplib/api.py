@@ -8,7 +8,7 @@ import json
 import sys
 from typing import Any
 
-from .services import CONTRACT, FrontendDesignService
+from .services import CONTRACT, FrontendDesignService, headless_capabilities
 
 
 JsonMap = dict[str, Any]
@@ -35,6 +35,8 @@ def handle_request(request: JsonMap, service: FrontendDesignService | None = Non
                 str(options.get("name", input_data.get("name", "untitled"))),
                 description=str(options.get("description", input_data.get("description", ""))),
             )
+        if command in {"headless-capabilities", "ai-capabilities"}:
+            return _ok(command, headless_capabilities())
         if command == "load":
             return service.load(_required_map(input_data, "schematic"))
         if command == "create-chip":
@@ -158,6 +160,17 @@ def _required_map(data: JsonMap, key: str) -> JsonMap:
     if not isinstance(value, dict):
         raise ValueError(f"input.{key} must be an object")
     return value
+
+
+def _ok(command: str, result: JsonMap) -> JsonMap:
+    return {
+        "contract": CONTRACT,
+        "command": command,
+        "ok": True,
+        "result": result,
+        "warnings": [],
+        "metadata": {"engine": "python", "components_version": None, "elapsed_ms": 0},
+    }
 
 
 def _error(command: str, code: str, message: str, *, exception: str | None = None) -> JsonMap:

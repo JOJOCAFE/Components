@@ -70,6 +70,16 @@ package. It must contain:
 - `verification`: required test types and required vector names.
 - `datasheet.sources`: manufacturer/source evidence used for package, pins,
   logic, timing, and electrical claims.
+- `evidence`: compact status flags derived from the package evidence, including
+  `dip_pinout_verified`, `manufacturer`, and `datasheet_status`.
+- `logic_family_model`: canonical shared logic behavior model for compatible
+  orderable variants, such as `74HC161`.
+- `variants`: manufacturer/orderable package numbers that use the same logic
+  family model, each with `part` and `manufacturer`.
+- `procurement`: conservative buying guidance for student/tooling catalogs:
+  `recommended_for_new_design`, `availability_class`, `stock_basis`, and
+  `last_checked`. These fields are catalog hints, not live distributor
+  inventory.
 - `definition_layers`: embedded sublayers only when they carry information not
   already derivable from the top-level fields. Loaders expose a complete
   layer-specific view by deriving component/package/pins/power/logic/timing
@@ -83,7 +93,7 @@ not execute behavior.
 
 - `definition/definition.json` owns chip identity, package, pins, power, logic,
   timing, propagation, tri-state, direction, voltage, current, electrical facts,
-  and datasheet source evidence.
+  datasheet source evidence, and procurement hints.
 - `simulation/` points to executable Python/Verilog behavior and records which
   definition features the simulator implements.
 - `simulation/model.py` is the portable Python behavior source. Project,
@@ -160,6 +170,30 @@ Clocked seed and RV8GR chips must include negative edge/hold coverage. Examples:
 - `74HC574`: no-clock hold, clock while `/OE=1` captures internally, re-enable
   exposes the captured value.
 - `74HC164` and `74HC74`: explicit clocked behavior and asynchronous controls.
+
+### Timing Parameter Contract
+
+Datasheet timing records should use canonical polarity-specific names when the
+source provides them:
+
+- `tPLH` and `tPHL` for input/output propagation delay.
+- `tPZH` and `tPZL` for output enable from high-Z.
+- `tPHZ` and `tPLZ` for output disable to high-Z.
+- `clock_to_q_high` and `clock_to_q_low` for clock-to-Q polarity.
+- `setup`, `hold`, and `minimum_pulse_width` for clock, reset, write, or
+  control timing windows.
+
+Generic fields such as `tpd`, `enable`, `disable`, `clock_to_q`, and memory
+high-Z timing are allowed only as source-backed intermediate data or simulator
+defaults. `Docs/TIMING_PARAMETER_AUDIT.md` tracks which active physical ICs
+still need normalized polarity-specific timing.
+
+Executable models must keep a timing hook even before every datasheet path is
+normalized. Python models should drive outputs through `Chip.output()` so
+`Board.settle()` can schedule chip-level delay, and Verilog models should keep
+`DELAY_RISE`/`DELAY_FALL` or equivalent `assign #(...)` parameters. The audit
+in `Docs/TIMING_SIMULATION_AUDIT.md` tracks whether each active physical model
+has this timing path.
 
 ### Bus Fight And High-Z Contract
 

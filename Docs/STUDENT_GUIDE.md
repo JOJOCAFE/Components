@@ -53,6 +53,15 @@ PYTHONPATH=python python3 -B -m chiplib.cli
 
 For shorter examples below, `CLI` means that full prefix.
 
+For AI assistants or other headless tools, ask Components what it supports:
+
+```sh
+PYTHONPATH=python python3 -B -m chiplib.cli headless
+```
+
+That JSON is the compact CLI/API/AI manifest. It lists safe workflow order,
+student guardrails, supported commands, and current limits.
+
 For a first student session, do not read every reference document. Do this
 short path:
 
@@ -99,6 +108,12 @@ Useful readiness words:
 | `ready` | Good for normal examples and simulation. |
 | `usable` | Can be used, but some advanced output or evidence may be missing. |
 | `needs_info` | Visible in the catalog, but check warnings before building. |
+
+Physical IC catalog cards also include `procurement`. Use
+`recommended_for_new_design`, `availability_class`, and `stock_basis` as a
+buying hint before ordering parts. `legacy` plus `nos-or-limited` means the
+chip can still be useful for learning, but a teacher should check stock or pick
+an easier-to-buy alternative first.
 
 ## Run A Small Circuit
 
@@ -232,6 +247,8 @@ Use HTTP for a web UI or another local program. Stop the server with
 
 These commands are available through `chiplib.api`:
 
+- `headless-capabilities`
+- `ai-capabilities`
 - `create-design`
 - `load`
 - `create-chip`

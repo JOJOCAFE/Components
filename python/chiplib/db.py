@@ -76,6 +76,10 @@ def component_summary() -> JsonMap:
                 "title": item.get("title", ""),
                 "family": item.get("family", ""),
                 "status": deepcopy(item.get("status", {})),
+                "evidence": deepcopy(item.get("evidence", {})),
+                "procurement": deepcopy(item.get("procurement", {})),
+                "logic_family_model": item.get("logic_family_model", ""),
+                "variants": deepcopy(item.get("variants", [])),
                 "missing_properties": list(item.get("missing_properties", [])),
                 "missing_files": list(item.get("missing_files", [])),
             }
@@ -135,6 +139,10 @@ def component_detail(part: str) -> JsonMap:
         "version": 1,
         "pins": deepcopy(manifest.get("pins", [])),
         "sources": deepcopy(manifest.get("sources", [])),
+        "evidence": deepcopy(manifest.get("evidence", {})),
+        "procurement": deepcopy(manifest.get("procurement", {})),
+        "logic_family_model": manifest.get("logic_family_model", ""),
+        "variants": deepcopy(manifest.get("variants", [])),
         "legacy_paths": deepcopy(manifest.get("legacy_paths", {})),
         "verilog": deepcopy(manifest.get("verilog", {})),
         "simulation": deepcopy(manifest.get("simulation", {})),
@@ -500,6 +508,8 @@ def validate_digital_definition(definition: JsonMap) -> JsonMap:
                 value = status.get(key)
                 if value not in allowed_status:
                     errors.append(_issue("digital_status_invalid_value", part, path, f"status.{key} must be one of {sorted(allowed_status)}"))
+    errors.extend(_procurement_metadata_errors(definition, part, path))
+    errors.extend(_variant_metadata_errors(definition, part, path))
     if part:
         errors.extend(_digital_manifest_mismatches(definition, part, path))
     return {"ok": not errors, "errors": errors}
@@ -903,6 +913,10 @@ def _manifest_from_definition(definition: JsonMap, path: Path) -> JsonMap:
         "kind": "ic",
         "package": deepcopy(definition.get("package", {})),
         "status": deepcopy(definition.get("status", {})),
+        "evidence": deepcopy(definition.get("evidence", {})),
+        "procurement": deepcopy(definition.get("procurement", {})),
+        "logic_family_model": definition.get("logic_family_model", ""),
+        "variants": deepcopy(definition.get("variants", [])),
         "pins": deepcopy(definition.get("pins", [])),
         "legacy_paths": {
             "pinout": verilog.get("file", ""),
@@ -988,6 +1002,10 @@ def _component_card(manifest: JsonMap) -> JsonMap:
         "package": deepcopy(package) if isinstance(package, dict) else {},
         "pin_count": len(pins) if isinstance(pins, list) else 0,
         "status": deepcopy(status) if isinstance(status, dict) else {},
+        "evidence": deepcopy(manifest.get("evidence", {})),
+        "procurement": deepcopy(manifest.get("procurement", {})),
+        "logic_family_model": manifest.get("logic_family_model", ""),
+        "variants": deepcopy(manifest.get("variants", [])),
         "capabilities": _component_capabilities(manifest),
         "warnings": _component_warnings(manifest),
     }
@@ -1016,6 +1034,8 @@ def _student_component_card(manifest: JsonMap) -> JsonMap:
         "kind": manifest.get("kind", ""),
         "role": manifest.get("role", ""),
         "readiness": readiness,
+        "logic_family_model": manifest.get("logic_family_model", ""),
+        "variants": deepcopy(manifest.get("variants", [])),
         "status": {
             "datasheet": status_map.get("datasheet", "unknown"),
             "pinout": status_map.get("pinout", "unknown"),
@@ -1024,6 +1044,7 @@ def _student_component_card(manifest: JsonMap) -> JsonMap:
             "verilog_export": status_map.get("verilog_export", "unknown"),
             "tests": status_map.get("tests", "unknown"),
         },
+        "procurement": deepcopy(manifest.get("procurement", {})),
         "capabilities": {
             "can_simulate": bool(capabilities["python_behavior"] or capabilities["simulation_service"]),
             "can_export_verilog": export_ready,
@@ -1089,6 +1110,64 @@ def _component_warnings(manifest: JsonMap) -> list[JsonMap]:
     if isinstance(status, dict) and status.get("datasheet") in ("missing", "unknown"):
         warnings.append({"code": "missing_datasheet", "part": part})
     return warnings
+
+
+def _procurement_metadata_errors(definition: JsonMap, part: str, path: str) -> list[JsonMap]:
+    errors: list[JsonMap] = []
+    evidence = definition.get("evidence")
+    procurement = definition.get("procurement")
+
+    if not isinstance(evidence, dict):
+        errors.append(_issue("digital_evidence_invalid", part, path, "evidence must be an object"))
+    else:
+        if evidence.get("dip_pinout_verified") is not True:
+            errors.append(_issue("digital_evidence_pinout_invalid", part, path, "evidence.dip_pinout_verified must be true for active physical ICs"))
+        if not isinstance(evidence.get("manufacturer"), str) or not evidence.get("manufacturer"):
+            errors.append(_issue("digital_evidence_manufacturer_missing", part, path, "evidence.manufacturer must be a non-empty string"))
+        if evidence.get("datasheet_status") not in {"current", "historical", "historical-or-current"}:
+            errors.append(_issue("digital_evidence_datasheet_status_invalid", part, path, "evidence.datasheet_status must be current, historical, or historical-or-current"))
+
+    if not isinstance(procurement, dict):
+        errors.append(_issue("digital_procurement_invalid", part, path, "procurement must be an object"))
+    else:
+        if not isinstance(procurement.get("recommended_for_new_design"), bool):
+            errors.append(_issue("digital_procurement_recommendation_invalid", part, path, "procurement.recommended_for_new_design must be boolean"))
+        if procurement.get("availability_class") not in {"active", "legacy", "obsolete", "unknown"}:
+            errors.append(_issue("digital_procurement_availability_invalid", part, path, "procurement.availability_class must be active, legacy, obsolete, or unknown"))
+        if procurement.get("stock_basis") not in {"broad-stock", "common-education-stock", "nos-or-limited", "unknown"}:
+            errors.append(_issue("digital_procurement_stock_basis_invalid", part, path, "procurement.stock_basis must be broad-stock, common-education-stock, nos-or-limited, or unknown"))
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(procurement.get("last_checked", ""))):
+            errors.append(_issue("digital_procurement_last_checked_invalid", part, path, "procurement.last_checked must be YYYY-MM-DD"))
+    return errors
+
+
+def _variant_metadata_errors(definition: JsonMap, part: str, path: str) -> list[JsonMap]:
+    errors: list[JsonMap] = []
+    logic_family_model = definition.get("logic_family_model")
+    variants = definition.get("variants")
+    if logic_family_model is None and variants is None:
+        return errors
+    if not isinstance(logic_family_model, str) or not logic_family_model:
+        errors.append(_issue("digital_logic_family_model_invalid", part, path, "logic_family_model must be a non-empty string when variants are listed"))
+    if not isinstance(variants, list) or not variants:
+        errors.append(_issue("digital_variants_invalid", part, path, "variants must be a non-empty list when logic_family_model is set"))
+        return errors
+    seen: set[str] = set()
+    for index, variant in enumerate(variants):
+        if not isinstance(variant, dict):
+            errors.append(_issue("digital_variant_invalid", part, path, f"variants[{index}] must be an object"))
+            continue
+        variant_part = variant.get("part")
+        manufacturer = variant.get("manufacturer")
+        if not isinstance(variant_part, str) or not variant_part:
+            errors.append(_issue("digital_variant_part_missing", part, path, f"variants[{index}].part must be a non-empty string"))
+        elif variant_part in seen:
+            errors.append(_issue("digital_variant_duplicate", part, path, f"duplicate variant part: {variant_part}"))
+        else:
+            seen.add(variant_part)
+        if not isinstance(manufacturer, str) or not manufacturer:
+            errors.append(_issue("digital_variant_manufacturer_missing", part, path, f"variants[{index}].manufacturer must be a non-empty string"))
+    return errors
 
 
 def _referenced_paths(manifest: JsonMap) -> list[str]:

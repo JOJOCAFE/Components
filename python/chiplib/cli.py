@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .db import audit_db, component_catalog, component_detail, component_summary, db_status_report, generate_component_artifacts, load_component, load_component_package, load_digital_definition, student_component_catalog
-from .services import DesignCommandService
+from .services import DesignCommandService, headless_capabilities
 from .virtual_faults import load_circuit_fault_report
 
 
@@ -36,6 +36,9 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     fault.add_argument("json_file")
     fault.add_argument("-o", "--output")
 
+    headless = sub.add_parser("headless", help="emit CLI/API/AI capability manifest")
+    headless.add_argument("-o", "--output")
+
     db = sub.add_parser("db")
     db.add_argument("part", nargs="?", help="optional component part, such as 74HC00")
     db.add_argument("--audit", action="store_true", help="audit DB manifests against legacy catalog files")
@@ -51,6 +54,9 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
 
     args = parser.parse_args(argv)
     designs = design_service or DesignCommandService()
+
+    if args.command == "headless":
+        return write_json(headless_capabilities(), output=getattr(args, "output", None))
 
     if args.command == "db":
         if getattr(args, "audit", False):
