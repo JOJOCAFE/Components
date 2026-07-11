@@ -279,7 +279,103 @@
       },
       "part": "CY7C199",
       "schema": "db.component.timing",
-      "version": 1
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "parameters": {
+          "tPLH": {
+            "status": "generic",
+            "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
+            "values_ns": {
+              "address_to_data_valid_ns": 70,
+              "ce_or_oe_to_high_z_ns": 70,
+              "ce_to_data_valid_ns": 70,
+              "oe_to_data_valid_ns": 70
+            },
+            "note": "Memory read access values are not polarity-specific output transition paths."
+          },
+          "tPHL": {
+            "status": "generic",
+            "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
+            "values_ns": {
+              "address_to_data_valid_ns": 70,
+              "ce_or_oe_to_high_z_ns": 70,
+              "ce_to_data_valid_ns": 70,
+              "oe_to_data_valid_ns": 70
+            },
+            "note": "Memory read access values are not polarity-specific output transition paths."
+          },
+          "tPZH": {
+            "status": "generic",
+            "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
+            "values_ns": {
+              "ce_to_data_valid_ns": 70,
+              "oe_to_data_valid_ns": 70
+            },
+            "note": "Memory output-enable/read access is not split into high/low polarity."
+          },
+          "tPZL": {
+            "status": "generic",
+            "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
+            "values_ns": {
+              "ce_to_data_valid_ns": 70,
+              "oe_to_data_valid_ns": 70
+            },
+            "note": "Memory output-enable/read access is not split into high/low polarity."
+          },
+          "tPHZ": {
+            "status": "generic",
+            "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
+            "values_ns": {
+              "max": 70
+            },
+            "note": "Memory high-Z timing is not split by previous output polarity."
+          },
+          "tPLZ": {
+            "status": "generic",
+            "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
+            "values_ns": {
+              "max": 70
+            },
+            "note": "Memory high-Z timing is not split by previous output polarity."
+          },
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "CY7C199 is asynchronous memory and has no clocked Q output."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "CY7C199 is asynchronous memory and has no clocked Q output."
+          },
+          "setup": {
+            "status": "exact",
+            "source_field": "timing.write.data_setup_min_ns",
+            "values_ns": {
+              "data_setup_min": 70
+            }
+          },
+          "hold": {
+            "status": "exact",
+            "source_field": "timing.write.address_hold_min_ns",
+            "values_ns": {
+              "address_hold_min": 0
+            }
+          },
+          "minimum_pulse_width": {
+            "status": "exact",
+            "source_field": "timing.write.pulse_min_ns",
+            "values_ns": {
+              "write_pulse_min": 70
+            }
+          }
+        },
+        "conditions": {
+          "load_pf": 50,
+          "ta_c": 25
+        }
+      }
     }
   },
   "generation": {
@@ -542,6 +638,102 @@
       "address_hold_min_ns": 0,
       "data_setup_min_ns": 70,
       "pulse_min_ns": 70
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "parameters": {
+        "tPLH": {
+          "status": "generic",
+          "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
+          "values_ns": {
+            "address_to_data_valid_ns": 70,
+            "ce_or_oe_to_high_z_ns": 70,
+            "ce_to_data_valid_ns": 70,
+            "oe_to_data_valid_ns": 70
+          },
+          "note": "Memory read access values are not polarity-specific output transition paths."
+        },
+        "tPHL": {
+          "status": "generic",
+          "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
+          "values_ns": {
+            "address_to_data_valid_ns": 70,
+            "ce_or_oe_to_high_z_ns": 70,
+            "ce_to_data_valid_ns": 70,
+            "oe_to_data_valid_ns": 70
+          },
+          "note": "Memory read access values are not polarity-specific output transition paths."
+        },
+        "tPZH": {
+          "status": "generic",
+          "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
+          "values_ns": {
+            "ce_to_data_valid_ns": 70,
+            "oe_to_data_valid_ns": 70
+          },
+          "note": "Memory output-enable/read access is not split into high/low polarity."
+        },
+        "tPZL": {
+          "status": "generic",
+          "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
+          "values_ns": {
+            "ce_to_data_valid_ns": 70,
+            "oe_to_data_valid_ns": 70
+          },
+          "note": "Memory output-enable/read access is not split into high/low polarity."
+        },
+        "tPHZ": {
+          "status": "generic",
+          "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
+          "values_ns": {
+            "max": 70
+          },
+          "note": "Memory high-Z timing is not split by previous output polarity."
+        },
+        "tPLZ": {
+          "status": "generic",
+          "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
+          "values_ns": {
+            "max": 70
+          },
+          "note": "Memory high-Z timing is not split by previous output polarity."
+        },
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "CY7C199 is asynchronous memory and has no clocked Q output."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "CY7C199 is asynchronous memory and has no clocked Q output."
+        },
+        "setup": {
+          "status": "exact",
+          "source_field": "timing.write.data_setup_min_ns",
+          "values_ns": {
+            "data_setup_min": 70
+          }
+        },
+        "hold": {
+          "status": "exact",
+          "source_field": "timing.write.address_hold_min_ns",
+          "values_ns": {
+            "address_hold_min": 0
+          }
+        },
+        "minimum_pulse_width": {
+          "status": "exact",
+          "source_field": "timing.write.pulse_min_ns",
+          "values_ns": {
+            "write_pulse_min": 70
+          }
+        }
+      },
+      "conditions": {
+        "load_pf": 50,
+        "ta_c": 25
+      }
     }
   },
   "verification": {

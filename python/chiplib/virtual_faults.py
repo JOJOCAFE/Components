@@ -15,6 +15,7 @@ JsonMap = dict[str, Any]
 CONNECTION_RE = re.compile(r"^(?P<ref>[A-Za-z][A-Za-z0-9_]*)\.(?P<pin>[^,\s]+)$")
 NUMERIC_RANGE_RE = re.compile(r"^(?P<start>\d+)\.\.(?P<end>\d+)$")
 NAME_RANGE_RE = re.compile(r"^(?P<prefix>/?[A-Za-z_]+)(?P<start>\d+)\.\.(?P=prefix)(?P<end>\d+)$")
+BUS_RANGE_RE = re.compile(r"^/?[A-Za-z_]+\d+\.\./?[A-Za-z_]+\d+$")
 ACTIVE_LOW_WORDS = ("active-low", "active low", "low enables", "low only", "low-to-high")
 BUS_PROOF_WORDS = (
     "one active",
@@ -29,6 +30,7 @@ BUS_PROOF_WORDS = (
     "bus-fight",
 )
 DELAY_WORDS = ("rcparasitic", "delaynoise", "deadband", "setup/hold", "settle", "float")
+SYMBOLIC_PIN_FAMILIES = {"A", "B", "D", "Q", "Y", "OE", "CLK", "LOAD", "CLR"}
 
 
 @dataclass(frozen=True)
@@ -103,7 +105,7 @@ def _component_pin_maps(ref_parts: dict[str, str]) -> dict[str, JsonMap]:
         pins = list(manifest.get("pins", []))
         by_number = {str(pin.get("number")): pin for pin in pins if pin.get("number") is not None}
         by_name = {_norm_pin_name(str(pin.get("name", ""))): pin for pin in pins if pin.get("name")}
-        maps[part] = {"by_number": by_number, "by_name": by_name}
+        maps[part] = {"by_number": by_number, "by_name": by_name, "kind": manifest.get("kind", "")}
     return maps
 
 
@@ -140,6 +142,8 @@ def _resolve_wiring(
 
 
 def _resolve_connection(connection: str, ref_parts: dict[str, str], component_pins: dict[str, JsonMap]) -> list[PinRef]:
+    if BUS_RANGE_RE.match(connection):
+        return []
     match = CONNECTION_RE.match(connection)
     if not match:
         return []
@@ -147,9 +151,13 @@ def _resolve_connection(connection: str, ref_parts: dict[str, str], component_pi
     token = match.group("pin")
     part = ref_parts.get(ref)
     if part is None:
+        if _is_symbolic_boundary_ref(ref, token):
+            return []
         return [PinRef(ref, "unknown", token, None, False)]
     pin_map = component_pins.get(part)
     if pin_map is None:
+        return []
+    if pin_map.get("kind") == "virtual" and not token.isdigit() and not NUMERIC_RANGE_RE.match(token):
         return []
 
     numeric_range = NUMERIC_RANGE_RE.match(token)
@@ -178,6 +186,10 @@ def _resolve_connection(connection: str, ref_parts: dict[str, str], component_pi
         return refs
 
     pin = pin_map["by_number"].get(token) or pin_map["by_name"].get(_norm_pin_name(token))
+    if pin is None:
+        generic_pins = _generic_family_pins(token, pin_map)
+        if generic_pins:
+            return [PinRef(ref, part, token, generic_pins[0], True)]
     if pin is None and _looks_like_pin_token(token):
         return [PinRef(ref, part, token, None, False)]
     if pin is not None:
@@ -277,7 +289,31 @@ def _finding(finding_id: str, severity: str, message: str, fix_method: str) -> J
 
 
 def _norm_pin_name(name: str) -> str:
-    return name.strip().replace("_bar", "").replace("bar", "").replace(" ", "").upper()
+    return name.strip().lstrip("/").replace("_bar", "").replace("bar", "").replace(" ", "").upper()
+
+
+def _generic_family_pins(token: str, pin_map: JsonMap) -> list[JsonMap]:
+    """Resolve intentional package-level shorthand such as U1_U4.Q or U33.Y."""
+
+    family = _norm_pin_name(token)
+    if not family or family not in SYMBOLIC_PIN_FAMILIES:
+        return []
+    matches = []
+    for name, pin in pin_map["by_name"].items():
+        pin_family = re.sub(r"\d+", "", name)
+        if pin_family == family or name.startswith(family):
+            matches.append(pin)
+    return matches
+
+
+def _is_symbolic_boundary_ref(ref: str, token: str) -> bool:
+    if NUMERIC_RANGE_RE.match(token) or token.isdigit():
+        return False
+    if "_" in ref:
+        return True
+    if NAME_RANGE_RE.match(token):
+        return True
+    return ref.isupper() and bool(re.match(r"^/?[A-Za-z_][A-Za-z0-9_]*(\.\.[A-Za-z_][A-Za-z0-9_]*)?$", token))
 
 
 def _looks_like_pin_token(token: str) -> bool:

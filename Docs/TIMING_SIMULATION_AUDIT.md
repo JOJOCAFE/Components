@@ -14,8 +14,8 @@ functional.
 - Python models with chip-level delay hooks: 70
 - Verilog models with parameterized delay hooks: 70
 - Netlist mappings with delay fields: 4
-- Definitions with some canonical timing terms: 54
-- Definitions still generic/default timing only: 16
+- Definitions with some canonical timing terms: 70
+- Definitions still generic/default timing only: 0
 
 ## Finding
 
@@ -52,14 +52,14 @@ functional.
 | 74HC155 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC157 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC158 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
-| 74HC160 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HC160 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC161 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
-| 74HC162 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
-| 74HC163 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HC162 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HC163 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC164 | 74xx | present | some_canonical | chip_delay | parameterized_delay | delay_mapped |
-| 74HC165 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
-| 74HC166 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
-| 74HC193 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HC165 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HC166 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HC193 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC20 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC21 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC238 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
@@ -70,22 +70,22 @@ functional.
 | 74HC257 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC266 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC27 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
-| 74HC273 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HC273 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC283 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC30 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC32 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC352 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
-| 74HC374 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
-| 74HC377 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HC374 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HC377 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC4049 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC4050 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC4078 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
-| 74HC4520 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
-| 74HC4538 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HC4520 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HC4538 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC541 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC574 | 74xx | present | some_canonical | chip_delay | parameterized_delay | delay_mapped |
-| 74HC593 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
-| 74HC595 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HC593 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HC595 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC688 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HC74 | 74xx | present | some_canonical | chip_delay | parameterized_delay | delay_mapped |
 | 74HC85 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
@@ -95,9 +95,9 @@ functional.
 | 74HCT14 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HCT245 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 74HCT541 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
-| 74HCT574 | 74xx | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
+| 74HCT574 | 74xx | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | 62256 | Memory | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | AS6C62256 | Memory | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
 | AT28C256 | Memory | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
-| CY7C199 | Memory | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
-| SST39SF010A | Memory | present | generic_or_default | chip_delay | parameterized_delay | no_delay_mapping |
+| CY7C199 | Memory | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |
+| SST39SF010A | Memory | present | some_canonical | chip_delay | parameterized_delay | no_delay_mapping |

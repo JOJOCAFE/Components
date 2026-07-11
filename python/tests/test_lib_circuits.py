@@ -2949,33 +2949,6 @@ def test_virtual_physical_fault_checker_accepts_good_rv8gr_packages():
 
 
 def test_rv8gr_circuit_fault_sweep_classifies_ready_packages_and_known_blockers():
-    expected_clean = {
-        "RV8GR_AddressMux16",
-        "RV8GR_AluAccumulator",
-        "RV8GR_BranchJumpControl",
-        "RV8GR_BusOwnership",
-        "RV8GR_DataPageMemory",
-        "RV8GR_FullControlOpcodeSweep",
-        "RV8GR_IRQLatch",
-        "RV8GR_InstructionLatch",
-        "RV8GR_InterruptTrace",
-        "RV8GR_PC16",
-        "RV8GR_PageJumpTrace",
-        "RV8GR_RingCounter",
-        "RV8GR_RomDbusRead",
-        "RV8GR_StorePath",
-        "RV8GR_VirtualTestHelpers",
-        "RV8GR_WholeSystemChipLevelVirtual",
-    }
-    known_pin_shorthand_blockers = {
-        "RV8GR_BootSequenceTrace",
-        "RV8GR_FetchCycleTrace",
-        "RV8GR_Lab13MarkerTrace",
-        "RV8GR_PageDataRegisters",
-        "RV8GR_ResetClockBringup",
-        "RV8GR_StoreLoadBranchTrace",
-    }
-
     clean: set[str] = set()
     blocked: dict[str, set[str]] = {}
     for circuit_path in circuit_package_paths():
@@ -2986,9 +2959,31 @@ def test_rv8gr_circuit_fault_sweep_classifies_ready_packages_and_known_blockers(
             continue
         blocked[package] = {finding["id"] for finding in report["findings"]}
 
-    assert clean == expected_clean
-    assert set(blocked) == known_pin_shorthand_blockers
-    assert all(ids == {"pin_number_truth"} for ids in blocked.values())
+    assert clean == {path.parent.name for path in circuit_package_paths()}
+    assert blocked == {}
+
+
+def test_virtual_physical_fault_checker_accepts_package_level_symbolic_refs():
+    symbolic = {
+        "id": "symbolic_package_refs",
+        "chips": [
+            {"ref": "U1_U4", "part": "74HC161"},
+            {"ref": "U14", "part": "74HC541"},
+            {"ref": "PHASE_MON", "part": "Probe"},
+        ],
+        "wiring": [
+            {"net": "PC0..PC15", "connections": ["U1_U4.Q", "ABUS0..ABUS15", "PHASE_MON.T0"]},
+            {"net": "/AC_BUF", "connections": ["U14./OE"]},
+        ],
+        "timing": {
+            "clocking": "rising edge functional trace",
+            "deadband_boundary": "R/C settling and deadband evidence required before physical signoff.",
+        },
+    }
+
+    report = check_virtual_physical_faults(symbolic)
+
+    assert report["ok"], report
 
 
 def test_virtual_physical_fault_checker_rejects_ai_pin_bus_edge_and_delay_mistakes():
@@ -3001,6 +2996,16 @@ def test_virtual_physical_fault_checker_rejects_ai_pin_bus_edge_and_delay_mistak
     assert not report["ok"]
     assert report["checks"]["pin_number_truth"]["status"] == "fail"
     assert "U1.99" in report["findings"][0]["message"]
+
+    bad_active_low = {
+        "id": "bad_active_low",
+        "chips": [{"ref": "U1", "part": "74HC04"}],
+        "wiring": [{"net": "/A", "connections": ["U1./1A"]}],
+    }
+    report = check_virtual_physical_faults(bad_active_low)
+    assert not report["ok"]
+    assert report["checks"]["pin_number_truth"]["status"] == "fail"
+    assert "active-low" in report["findings"][0]["message"]
 
     output_output = {
         "id": "bad_output_output",
@@ -3585,6 +3590,7 @@ def run_all():
     test_rv8gr_whole_system_chip_level_virtual_catches_ai_fault_patterns()
     test_virtual_physical_fault_checker_accepts_good_rv8gr_packages()
     test_rv8gr_circuit_fault_sweep_classifies_ready_packages_and_known_blockers()
+    test_virtual_physical_fault_checker_accepts_package_level_symbolic_refs()
     test_virtual_physical_fault_checker_rejects_ai_pin_bus_edge_and_delay_mistakes()
     test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary()
     test_rv8gr_timing_coverage_matrix_accounts_for_every_circuit_package()

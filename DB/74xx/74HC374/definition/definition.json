@@ -221,7 +221,118 @@
       },
       "part": "74HC374",
       "schema": "db.component.timing",
-      "version": 1
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "parameters": {
+          "tPLH": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "values_ns": {
+              "typ": 17,
+              "max_25c": 36,
+              "max_minus40_to_85c": 45,
+              "max_minus55_to_125c": 54
+            },
+            "note": "Clock-to-Q exists but tPLH/tPHL polarity split is not extracted."
+          },
+          "tPHL": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "values_ns": {
+              "typ": 17,
+              "max_25c": 36,
+              "max_minus40_to_85c": 45,
+              "max_minus55_to_125c": 54
+            },
+            "note": "Clock-to-Q exists but tPLH/tPHL polarity split is not extracted."
+          },
+          "tPZH": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values.*.enable",
+            "values_ns": {
+              "typ": 16,
+              "max_25c": 30,
+              "max_minus40_to_85c": 38,
+              "max_minus55_to_125c": 45
+            },
+            "note": "Existing local extraction names output-enable timing but does not split enable-to-high/low or disable-to-high-Z polarity paths."
+          },
+          "tPZL": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values.*.enable",
+            "values_ns": {
+              "typ": 16,
+              "max_25c": 30,
+              "max_minus40_to_85c": 38,
+              "max_minus55_to_125c": 45
+            },
+            "note": "Existing local extraction names output-enable timing but does not split enable-to-high/low or disable-to-high-Z polarity paths."
+          },
+          "tPHZ": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values.*.disable",
+            "values_ns": {
+              "typ": 17,
+              "max_25c": 30,
+              "max_minus40_to_85c": 38,
+              "max_minus55_to_125c": 45
+            },
+            "note": "Existing local extraction has output-disable timing but not high/low polarity split."
+          },
+          "tPLZ": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values.*.disable",
+            "values_ns": {
+              "typ": 17,
+              "max_25c": 30,
+              "max_minus40_to_85c": 38,
+              "max_minus55_to_125c": 45
+            },
+            "note": "Existing local extraction has output-disable timing but not high/low polarity split."
+          },
+          "clock_to_q_high": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "values_ns": {
+              "typ": 17,
+              "max_25c": 36,
+              "max_minus40_to_85c": 45,
+              "max_minus55_to_125c": 54
+            },
+            "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+          },
+          "clock_to_q_low": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "values_ns": {
+              "typ": 17,
+              "max_25c": 36,
+              "max_minus40_to_85c": 45,
+              "max_minus55_to_125c": 54
+            },
+            "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+          },
+          "setup": {
+            "status": "missing",
+            "reason": "Existing local timing extraction has no setup-time table for this part."
+          },
+          "hold": {
+            "status": "missing",
+            "reason": "Existing local timing extraction has no hold-time table for this part."
+          },
+          "minimum_pulse_width": {
+            "status": "missing",
+            "reason": "Existing local timing extraction has no minimum pulse-width table for this part."
+          }
+        },
+        "conditions": {
+          "load_pf": 50,
+          "ta_c": 25
+        }
+      }
     }
   },
   "generation": {
@@ -508,6 +619,117 @@
         }
       },
       "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "parameters": {
+        "tPLH": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "values_ns": {
+            "typ": 17,
+            "max_25c": 36,
+            "max_minus40_to_85c": 45,
+            "max_minus55_to_125c": 54
+          },
+          "note": "Clock-to-Q exists but tPLH/tPHL polarity split is not extracted."
+        },
+        "tPHL": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "values_ns": {
+            "typ": 17,
+            "max_25c": 36,
+            "max_minus40_to_85c": 45,
+            "max_minus55_to_125c": 54
+          },
+          "note": "Clock-to-Q exists but tPLH/tPHL polarity split is not extracted."
+        },
+        "tPZH": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values.*.enable",
+          "values_ns": {
+            "typ": 16,
+            "max_25c": 30,
+            "max_minus40_to_85c": 38,
+            "max_minus55_to_125c": 45
+          },
+          "note": "Existing local extraction names output-enable timing but does not split enable-to-high/low or disable-to-high-Z polarity paths."
+        },
+        "tPZL": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values.*.enable",
+          "values_ns": {
+            "typ": 16,
+            "max_25c": 30,
+            "max_minus40_to_85c": 38,
+            "max_minus55_to_125c": 45
+          },
+          "note": "Existing local extraction names output-enable timing but does not split enable-to-high/low or disable-to-high-Z polarity paths."
+        },
+        "tPHZ": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values.*.disable",
+          "values_ns": {
+            "typ": 17,
+            "max_25c": 30,
+            "max_minus40_to_85c": 38,
+            "max_minus55_to_125c": 45
+          },
+          "note": "Existing local extraction has output-disable timing but not high/low polarity split."
+        },
+        "tPLZ": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values.*.disable",
+          "values_ns": {
+            "typ": 17,
+            "max_25c": 30,
+            "max_minus40_to_85c": 38,
+            "max_minus55_to_125c": 45
+          },
+          "note": "Existing local extraction has output-disable timing but not high/low polarity split."
+        },
+        "clock_to_q_high": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "values_ns": {
+            "typ": 17,
+            "max_25c": 36,
+            "max_minus40_to_85c": 45,
+            "max_minus55_to_125c": 54
+          },
+          "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+        },
+        "clock_to_q_low": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "values_ns": {
+            "typ": 17,
+            "max_25c": 36,
+            "max_minus40_to_85c": 45,
+            "max_minus55_to_125c": 54
+          },
+          "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+        },
+        "setup": {
+          "status": "missing",
+          "reason": "Existing local timing extraction has no setup-time table for this part."
+        },
+        "hold": {
+          "status": "missing",
+          "reason": "Existing local timing extraction has no hold-time table for this part."
+        },
+        "minimum_pulse_width": {
+          "status": "missing",
+          "reason": "Existing local timing extraction has no minimum pulse-width table for this part."
+        }
+      },
+      "conditions": {
+        "load_pf": 50,
+        "ta_c": 25
+      }
     }
   },
   "verification": {

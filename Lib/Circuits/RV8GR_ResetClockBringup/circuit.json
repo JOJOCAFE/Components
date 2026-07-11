@@ -75,7 +75,7 @@
       "type": "active_low_asynchronous_clear",
       "applies_to": ["U8", "U1", "U2", "U3", "U4"]
     },
-    "frequency_boundary": "5 MHz is functional simulation only; this package does not promote physical timing proof."
+    "frequency_boundary": "5 MHz is functional simulation only; this package does not promote physical timing proof. Physical bring-up still needs R/C settling and deadband evidence on reset release, push-button clock edges, and PC counter carry paths."
   },
   "verification": {
     "tests": ["tests/reset_clock_bringup.json"],

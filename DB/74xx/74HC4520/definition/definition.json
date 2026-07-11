@@ -125,6 +125,73 @@
           "reset_pulse_width": 30
         }
       }
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "parameters": {
+        "tPLH": {
+          "status": "missing",
+          "reason": "Existing local timing extraction does not include this normalized parameter."
+        },
+        "tPHL": {
+          "status": "missing",
+          "reason": "Existing local timing extraction does not include this normalized parameter."
+        },
+        "tPZH": {
+          "status": "not_applicable",
+          "reason": "74HC4520 has no output-enable/high-Z control in the current package definition."
+        },
+        "tPZL": {
+          "status": "not_applicable",
+          "reason": "74HC4520 has no output-enable/high-Z control in the current package definition."
+        },
+        "tPHZ": {
+          "status": "not_applicable",
+          "reason": "74HC4520 has no output-enable/high-Z control in the current package definition."
+        },
+        "tPLZ": {
+          "status": "not_applicable",
+          "reason": "74HC4520 has no output-enable/high-Z control in the current package definition."
+        },
+        "clock_to_q_high": {
+          "status": "missing",
+          "reason": "Existing local timing extraction does not include this normalized parameter."
+        },
+        "clock_to_q_low": {
+          "status": "missing",
+          "reason": "Existing local timing extraction does not include this normalized parameter."
+        },
+        "setup": {
+          "status": "missing",
+          "reason": "Existing local timing extraction does not include this normalized parameter."
+        },
+        "hold": {
+          "status": "missing",
+          "reason": "Existing local timing extraction does not include this normalized parameter."
+        },
+        "minimum_pulse_width": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values.* pulse-width fields",
+          "values_ns": {
+            "clock_pulse_width": {
+              "min_25c": 16,
+              "min_minus40_to_85c": 20,
+              "min_minus55_to_125c": 24
+            },
+            "reset_pulse_width": {
+              "min_25c": 20,
+              "min_minus40_to_85c": 25,
+              "min_minus55_to_125c": 30
+            }
+          }
+        }
+      },
+      "conditions": {
+        "load_pf": 50,
+        "ta_c": 25
+      }
     }
   },
   "generation": {
@@ -351,6 +418,73 @@
           "package",
           "logic"
         ]
+      },
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "parameters": {
+          "tPLH": {
+            "status": "missing",
+            "reason": "Existing local timing extraction does not include this normalized parameter."
+          },
+          "tPHL": {
+            "status": "missing",
+            "reason": "Existing local timing extraction does not include this normalized parameter."
+          },
+          "tPZH": {
+            "status": "not_applicable",
+            "reason": "74HC4520 has no output-enable/high-Z control in the current package definition."
+          },
+          "tPZL": {
+            "status": "not_applicable",
+            "reason": "74HC4520 has no output-enable/high-Z control in the current package definition."
+          },
+          "tPHZ": {
+            "status": "not_applicable",
+            "reason": "74HC4520 has no output-enable/high-Z control in the current package definition."
+          },
+          "tPLZ": {
+            "status": "not_applicable",
+            "reason": "74HC4520 has no output-enable/high-Z control in the current package definition."
+          },
+          "clock_to_q_high": {
+            "status": "missing",
+            "reason": "Existing local timing extraction does not include this normalized parameter."
+          },
+          "clock_to_q_low": {
+            "status": "missing",
+            "reason": "Existing local timing extraction does not include this normalized parameter."
+          },
+          "setup": {
+            "status": "missing",
+            "reason": "Existing local timing extraction does not include this normalized parameter."
+          },
+          "hold": {
+            "status": "missing",
+            "reason": "Existing local timing extraction does not include this normalized parameter."
+          },
+          "minimum_pulse_width": {
+            "status": "exact",
+            "source_field": "timing.datasheet.values.* pulse-width fields",
+            "values_ns": {
+              "clock_pulse_width": {
+                "min_25c": 16,
+                "min_minus40_to_85c": 20,
+                "min_minus55_to_125c": 24
+              },
+              "reset_pulse_width": {
+                "min_25c": 20,
+                "min_minus40_to_85c": 25,
+                "min_minus55_to_125c": 30
+              }
+            }
+          }
+        },
+        "conditions": {
+          "load_pf": 50,
+          "ta_c": 25
+        }
       }
     },
     "electrical": {
