@@ -33,3 +33,13 @@ Run:
 ```sh
 PYTHONPATH=python python3 -B -m tests.test_lib_circuits
 ```
+
+## Build and test guide
+
+- **Build/probe:** Build U1-U4 from Lab 03. Probe `CLK`, `/RST`, `/PC_LD`, `PC_INC`, PC nibble boundaries, and the 16 PC outputs.
+- **Isolated manual-clock test:** Clear to `$0000`; with `/PC_LD=1` and count enabled, hand-clock through `$000F->$0010` and `$00FF->$0100`. Then set `{PG,IRL}`, pull `/PC_LD=0`, and clock once.
+- **Integration test:** Replace always-enabled lab counting with `PC_INC=T0 OR T1`, connect branch/jump `/PC_LD`, and single-step fetch plus a jump.
+- **Pass:** Reset gives `$0000`; count advances only on enabled rising edges; carry reaches each nibble; load produces `{PG,IRL}` and wins over count.
+- **Stop:** Stop on an unknown PC bit, count while disabled, missed/double count, or wrong parallel-load value.
+- **Temporary wiring:** Remove the Lab 03 ENP/ENT tie-high test arrangement where the integrated `PC_INC` cascade replaces it, and remove direct load switches before connection.
+- **Boundary:** Functional count/load simulation does not prove breadboard carry-chain or clock margin at speed.

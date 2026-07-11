@@ -30,3 +30,13 @@ Run:
 ```sh
 PYTHONPATH=python python3 -B -m tests.test_lib_circuits
 ```
+
+## Build and test guide
+
+- **Build/probe:** Use Lab 12 for U32, U33, the address mux, ROM, and RAM wiring. Probe `DP`, `IRL`, `ABUS`, `A15`, ROM/RAM selects, RAM `/OE`, RAM `/WE`, and DBUS.
+- **Isolated manual-clock test:** Execute `SETDP $80`, then stop the clock. Manually test `SB $03` with `AC=$AA`, followed by `LB $03`.
+- **Integration test:** Run the Lab 12 ROM/RAM boundary checks at pages `$7F` and `$80`, then the full-system RAM program.
+- **Pass:** DP captures `$80`; `RAM[$8003]=$AA`; LB returns `$AA`; `$7FFF` selects ROM and `$8000` selects RAM, with no simultaneous selects.
+- **Stop:** Stop before writing if address, `/WE`, or bus ownership is wrong. Remove power for heat or contention.
+- **Temporary wiring:** Lab 12 temporarily ties unused U33 inputs HIGH. Remove those VCC ties when Lab 14 connects the real `EI_decode` inputs, exactly as the lab directs.
+- **Boundary:** Modeled read/write and decode are not physical memory timing signoff. Verify `/OE`, `/WE`, address stability, and readback on the board.

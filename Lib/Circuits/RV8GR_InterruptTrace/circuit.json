@@ -6,7 +6,7 @@
   "source_project": {
     "name": "RV8GR",
     "paths": [
-      "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/02_instruction_trace.md",
       "Lib/Circuits/RV8GR_IRQLatch/circuit.json",
       "Lib/Circuits/RV8GR_FullControlOpcodeSweep/circuit.json"
     ]
@@ -31,7 +31,8 @@
     {"name": "IRQ_FF", "direction": "output"},
     {"name": "PC0..PC15", "direction": "input/output"},
     {"name": "PC_FORCE", "direction": "absent", "description": "v1.0 has no hardware PC force or interrupt vector path."},
-    {"name": "IRQ_ACK", "direction": "absent", "description": "v1.0 clears IRQ_FF only with /RST."}
+    {"name": "IRQ_ACK", "direction": "absent", "description": "v1.0 clears IRQ_FF only with /RST."},
+    {"name": "VCC", "direction": "power"}
   ],
   "wiring": [
     {"net": "/RST", "connections": ["U31.1", "U31.13"], "rule": "LOW clears IE and IRQ_FF."},

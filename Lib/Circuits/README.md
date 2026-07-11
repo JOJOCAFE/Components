@@ -21,32 +21,39 @@ Student stop conditions:
 - a shared bus has no clear owner
 - a fast-clock test is attempted before manual-clock behavior is clean
 
-## RV8GR Circuit Candidates
+## RV8GR Coverage Status
 
-| Circuit | RV8GR source | Status | Proof focus |
-|---|---|---|---|
-| `RV8GR_RingCounter` | U8 `74HC164` + U24 `74HC04` feedback | Tested | T0/T1/T2 sequence, edge behavior, reset, lower-state recovery |
-| `RV8GR_PC16` | U1-U4 `74HC161` | Tested | count/load priority, carry chain, `/PC_LD`, `PC_INC` |
-| `RV8GR_AddressMux16` | U15-U16/U29-U30 `74HC157` | Tested | PC vs `{DP,IRL}` address selection, `ADDR_REQ`, and A15 decode |
-| `RV8GR_BusOwnership` | U7/U14/U34 plus ROM/RAM bus controls | Tested | T0/T1/T2 IBUS/DBUS drivers and bus-fight detection |
-| `RV8GR_InstructionLatch` | U5/U6 `74HC574` | Tested | T0/T1 edge capture and T2 hold |
-| `RV8GR_StorePath` | U7/U14/RAM/ROM control | Tested | IBUS to DBUS write direction and memory output disable |
-| `RV8GR_DataPageMemory` | U32/U33/RAM/ROM/address mux | Tested | SETDP, RAM read/write, ROM read via DP, and `$7FFF/$8000` boundary |
-| `RV8GR_IRQLatch` | U31 `74HC74` + U33 `74HC21` EI decode | Tested | IE set, `/IRQ` release latch, sticky IRQ_FF, no v1.0 vector |
-| `RV8GR_RomDbusRead` | ROM + U7 `74HC245` | Tested | DBUS to IBUS read direction and ROM `/OE` safety |
-| `RV8GR_AluAccumulator` | U9-U14/U17-U22/U27 | Tested | ALU path timing, AC latch edge, Z flag settle |
-| `RV8GR_PageDataRegisters` | U23/U32/U33/U25 | Tested | `PG_CLK` and `DP_Load` edge timing |
-| `RV8GR_BranchJumpControl` | U24-U28 control gates | Tested | `/PC_LD`, branch condition, no unintended load |
-| `RV8GR_VirtualTestHelpers` | `ClockSource`, `Probe`, `BusProbe` virtual helpers | Tested | clock profiles, phase probes, bus contention observation |
-| `RV8GR_FullControlOpcodeSweep` | T2 horizontal-control equation proof | Tested | all opcode/Z cases, reserved mixes, side-effect drift |
-| `RV8GR_ResetClockBringup` | `lab01_power_clock` + `tb_rv8gr_chip_level` reset/ring sanity | Tested | reset idle/release, one-hot phase pushes, PC known-state policy, clock profiles |
-| `RV8GR_FetchCycleTrace` | `doc/03_instruction_trace.md` + `tb_rv8gr_tasks.v` basic fetch | Tested | T0 control fetch, T1 operand fetch, T2 LI execute, PC motion, bus owners |
-| `RV8GR_StoreLoadBranchTrace` | `doc/03_instruction_trace.md` traces 2, 4, and 7 | Tested | SB RAM write, LB RAM read, BEQ PC load, bus owners, PC/AC/RAM state |
-| `RV8GR_PageJumpTrace` | `doc/03_instruction_trace.md` traces 5, 6, and 8 | Tested | SETDP, SETPG, J, page-register state, PC page loading |
-| `RV8GR_InterruptTrace` | U31 `74HC74`, U33 `74HC21`, IRQ docs | Tested | EI, DI inert behavior, `/IRQ` LOW hold, release latch, sticky IRQ_FF |
-| `RV8GR_BootSequenceTrace` | `doc/03_instruction_trace.md` Trace 11 + `doc/06_debug_plan.md` Step 0 | Tested | SETDP `$80`, SETPG `$00`, LI `$00`, J self, 12-clock manual bring-up |
-| `RV8GR_Lab13MarkerTrace` | `doc/labs/lab13_full_system.md` Test 1 | Tested | LI/ADDI/SUBI/BEQ path, `$AA` marker, bus owners, final pass state |
-| `RV8GR_WholeSystemChipLevelVirtual` | chip bench plan + tested trace packages | Tested | virtual whole-system chip-level gate with R/C and delay-noise stress nets |
+Coverage is layered. `C` means an executable Python test directly covers that
+layer, `-` means not covered, and `P/NM` means physical work is planned but no
+board measurement exists. Structural or vector coverage never implies a live
+component-model, composed-system, or physical pass. Evidence references are in
+`RV8GR_COVERAGE_INDEX.json`; every physical row points to
+`physical_capture_plan.json`.
+
+| Circuit | Structural | Vector/equation | Live model | Composed/system | Physical |
+|---|---:|---:|---:|---:|---:|
+| `RV8GR_RingCounter` | C | C | C | - | P/NM |
+| `RV8GR_PC16` | C | C | C | - | P/NM |
+| `RV8GR_AddressMux16` | C | C | C | - | P/NM |
+| `RV8GR_BusOwnership` | C | C | - | - | P/NM |
+| `RV8GR_InstructionLatch` | C | C | C | - | P/NM |
+| `RV8GR_StorePath` | C | C | - | - | P/NM |
+| `RV8GR_DataPageMemory` | C | C | C | - | P/NM |
+| `RV8GR_IRQLatch` | C | C | C | - | P/NM |
+| `RV8GR_RomDbusRead` | C | C | C | - | P/NM |
+| `RV8GR_AluAccumulator` | C | C | C | - | P/NM |
+| `RV8GR_PageDataRegisters` | C | C | C | - | P/NM |
+| `RV8GR_BranchJumpControl` | C | C | - | - | P/NM |
+| `RV8GR_VirtualTestHelpers` | C | C | - | - | P/NM |
+| `RV8GR_FullControlOpcodeSweep` | C | C | - | - | P/NM |
+| `RV8GR_ResetClockBringup` | C | C | - | - | P/NM |
+| `RV8GR_FetchCycleTrace` | C | C | - | C | P/NM |
+| `RV8GR_StoreLoadBranchTrace` | C | C | - | C | P/NM |
+| `RV8GR_PageJumpTrace` | C | C | - | C | P/NM |
+| `RV8GR_InterruptTrace` | C | C | - | C | P/NM |
+| `RV8GR_BootSequenceTrace` | C | C | - | C | P/NM |
+| `RV8GR_Lab13MarkerTrace` | C | C | - | C | P/NM |
+| `RV8GR_WholeSystemChipLevelVirtual` | C | C | - | C | P/NM |
 
 Each circuit package should include:
 

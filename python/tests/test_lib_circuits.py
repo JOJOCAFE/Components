@@ -2242,7 +2242,6 @@ def test_rv8gr_full_control_opcode_sweep_package_shape():
 
     refs = {chip["ref"] for chip in circuit["chips"]}
     assert {"CTRL", "BUS", "ALU", "PGDP", "PC", "VT"} <= refs
-    assert "tb_rv8gr_opcode_sweep.v" in " ".join(circuit["source_project"]["paths"])
     assert "reserved opcode mix" in " ".join(circuit["timing"]["unsafe_states"])
 
 
@@ -2303,8 +2302,6 @@ def test_rv8gr_reset_clock_bringup_package_shape():
     for part in ("74HC164", "74HC04", "74HC161"):
         assert list((ROOT / "DB").glob(f"*/*{part}/definition/definition.json")), part
 
-    assert "/home/jo/kiro/RV8/RV8GR/doc/labs/lab01_power_clock.md" in circuit["source_project"]["paths"]
-    assert "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_chip_level.v" in circuit["source_project"]["paths"]
     assert circuit["behavior"]["pc_increment_rule"] == "PC increments on edges that start while old T0 or old T1 is high; it holds on reset and old T2."
 
 
@@ -2392,9 +2389,6 @@ def test_rv8gr_fetch_cycle_trace_package_shape():
     assert circuit["id"] == "rv8gr_fetch_cycle_trace"
     assert proof["circuit"] == circuit["id"]
     assert (FETCH_CYCLE_TRACE / "README.md").exists()
-    assert "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md" in circuit["source_project"]["paths"]
-    assert "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_tasks.v" in circuit["source_project"]["paths"]
-
     chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
     assert chips["U5"] == "74HC574"
     assert chips["U6"] == "74HC574"
@@ -2469,8 +2463,6 @@ def test_rv8gr_store_load_branch_trace_package_shape():
     assert circuit["id"] == "rv8gr_store_load_branch_trace"
     assert proof["circuit"] == circuit["id"]
     assert (STORE_LOAD_BRANCH_TRACE / "README.md").exists()
-    assert "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md" in circuit["source_project"]["paths"]
-
     chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
     assert chips["U7"] == "74HC245"
     assert chips["U14"] == "74HC541"
@@ -2525,8 +2517,6 @@ def test_rv8gr_page_jump_trace_package_shape():
     assert circuit["id"] == "rv8gr_page_jump_trace"
     assert proof["circuit"] == circuit["id"]
     assert (PAGE_JUMP_TRACE / "README.md").exists()
-    assert "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md" in circuit["source_project"]["paths"]
-
     chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
     assert chips["U23"] == "74HC574"
     assert chips["U32"] == "74HC574"
@@ -2660,9 +2650,6 @@ def test_rv8gr_boot_sequence_trace_package_shape():
     assert circuit["id"] == "rv8gr_boot_sequence_trace"
     assert proof["circuit"] == circuit["id"]
     assert (BOOT_SEQUENCE_TRACE / "README.md").exists()
-    assert "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md" in circuit["source_project"]["paths"]
-    assert "/home/jo/kiro/RV8/RV8GR/doc/06_debug_plan.md" in circuit["source_project"]["paths"]
-
     chips = {chip["ref"]: chip["part"] for chip in circuit["chips"]}
     assert chips["VCLK"] == "ClockSource"
     assert chips["IBUSMON"] == "BusProbe"
@@ -2739,7 +2726,6 @@ def test_rv8gr_lab13_marker_trace_package_shape():
     assert circuit["id"] == "rv8gr_lab13_marker_trace"
     assert proof["circuit"] == circuit["id"]
     assert (LAB13_MARKER_TRACE / "README.md").exists()
-    assert "/home/jo/kiro/RV8/RV8GR/doc/labs/lab13_full_system.md" in circuit["source_project"]["paths"]
     assert "Lib/Circuits/RV8GR_FetchCycleTrace/circuit.json" in circuit["source_project"]["paths"]
     assert "Lib/Circuits/RV8GR_BusOwnership/circuit.json" in circuit["source_project"]["paths"]
 
@@ -3517,18 +3503,24 @@ def test_rv8gr_circuit_readme_lists_every_package_and_only_existing_packages():
     assert listed <= actual
     assert indexed == actual
     assert index["schema"] == "components.lib.rv8gr.coverage_index"
+    assert index["version"] == 2
+    assert index["coverage_layers"] == [
+        "structural",
+        "vector_equation",
+        "live_component_model",
+        "composed_system",
+        "physical",
+    ]
     assert "RV8GR_END_TO_END_TEST_PLAN.md" in readme
     assert "RV8GR_COVERAGE_INDEX.json" in readme
 
-    test_source = Path(__file__).read_text(encoding="utf-8")
     for item in index["packages"]:
         package_dir = ROOT / "Lib" / "Circuits" / item["circuit"]
         circuit = load_json(package_dir / "circuit.json")
-        assert item["status"] == "Tested", item
         assert item["proof_focus"], item
+        assert set(item["coverage"]) == set(index["coverage_layers"]), item
         assert (package_dir / "README.md").exists(), item
         assert circuit.get("verification", {}).get("tests"), item
-        assert item["python_test_prefix"] in test_source, item
         for test_file in circuit["verification"]["tests"]:
             assert (package_dir / test_file).exists(), (item, test_file)
 

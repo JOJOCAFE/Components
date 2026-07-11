@@ -6,8 +6,8 @@
   "source_project": {
     "name": "RV8GR",
     "paths": [
-      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md",
-      "/home/jo/kiro/RV8/RV8GR/doc/06_debug_plan.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/05_debug_plan.md",
       "/home/jo/kiro/RV8/RV8GR/doc/labs/lab12_ram_datapage.md",
       "/home/jo/kiro/RV8/RV8GR/Kicad/gen_kicad.py",
       "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_chip_level.v"
@@ -34,14 +34,14 @@
     {"name": "DBUS0..DBUS7", "direction": "bidirectional"}
   ],
   "wiring": [
-    {"net": "/AC_BUF", "connections": ["U14.1", "U14.19", "RAM1./WE", "U28.9"]},
-    {"net": "WR_DIR", "connections": ["U7.1", "ROM1./OE"]},
+    {"net": "/AC_BUF", "connections": ["U14.1", "U14.19", "RAM1.27", "U28.9"]},
+    {"net": "WR_DIR", "connections": ["U7.1", "ROM1.22"]},
     {"net": "BUF_OE_N", "connections": ["U7.19"]},
     {"net": "AC0..AC7", "connections": ["U14.2..9"]},
     {"net": "IBUS0..IBUS7", "connections": ["U14.18..11", "U7.2..9"]},
-    {"net": "DBUS0..DBUS7", "connections": ["U7.18..11", "RAM1.D0..D7", "ROM1.D0..D7"]},
-    {"net": "A15", "connections": ["ROM1./CE"]},
-    {"net": "/A15", "connections": ["RAM1./CE"]}
+    {"net": "DBUS0..DBUS7", "connections": ["U7.18..11", "RAM1.11", "RAM1.12", "RAM1.13", "RAM1.15", "RAM1.16", "RAM1.17", "RAM1.18", "RAM1.19", "ROM1.11", "ROM1.12", "ROM1.13", "ROM1.15", "ROM1.16", "ROM1.17", "ROM1.18", "ROM1.19"]},
+    {"net": "A15", "connections": ["ROM1.20"]},
+    {"net": "/A15", "connections": ["RAM1.20"]}
   ],
   "behavior": {
     "store_enable": "/AC_BUF=NAND(T2,STR). It goes LOW only during T2 when STR=1.",

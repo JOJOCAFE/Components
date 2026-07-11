@@ -6,8 +6,8 @@
   "source_project": {
     "name": "RV8GR",
     "paths": [
-      "/home/jo/kiro/RV8/RV8GR/doc/06_debug_plan.md",
-      "/home/jo/kiro/RV8/RV8GR/doc/07_risk_analysis.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/05_debug_plan.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/07_real_build_timing_log.md",
       "/home/jo/kiro/RV8/RV8GR/sim/verify_wiring.py",
       "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_opcode_sweep.v"
     ]
@@ -42,16 +42,16 @@
     {"name": "EXPECT_IN", "direction": "input"}
   ],
   "wiring": [
-    {"net": "CLK", "connections": ["VCLK.1", "SW1.1", "circuit under test CLK input"]},
-    {"net": "T0", "connections": ["PH0.1", "circuit under test T0 output"]},
-    {"net": "T1", "connections": ["PH1.1", "circuit under test T1 output"]},
-    {"net": "T2", "connections": ["PH2.1", "circuit under test T2 output"]},
-    {"net": "IBUS0..IBUS7", "connections": ["IBUSMON.1", "circuit under test IBUS"]},
-    {"net": "DBUS0..DBUS7", "connections": ["DBUSMON.1", "circuit under test DBUS"]},
-    {"net": "CLK_RC", "connections": ["CLKRC.1", "CLKRC.2", "representative clock/reset net estimate"]},
-    {"net": "BUS_RC", "connections": ["BUSRC.1", "BUSRC.2", "representative IBUS/DBUS net estimate"]},
-    {"net": "NOISE_TEST", "connections": ["DLY1.1", "DLY1.2", "representative inter-chip net stress point"]},
-    {"net": "EXPECT_TEST", "connections": ["ASSERT1.1", "representative observed output"]}
+    {"net": "CLK", "connections": ["VCLK.1", "SW1.1", "CLK"]},
+    {"net": "T0", "connections": ["PH0.1", "T0"]},
+    {"net": "T1", "connections": ["PH1.1", "T1"]},
+    {"net": "T2", "connections": ["PH2.1", "T2"]},
+    {"net": "IBUS0..IBUS7", "connections": ["IBUSMON.1", "IBUS0..IBUS7"]},
+    {"net": "DBUS0..DBUS7", "connections": ["DBUSMON.1", "DBUS0..DBUS7"]},
+    {"net": "CLK_RC", "connections": ["CLKRC.1", "CLKRC.2", "CLK_RC_IN", "CLK_RC_OUT"]},
+    {"net": "BUS_RC", "connections": ["BUSRC.1", "BUSRC.2", "BUS_RC_IN", "BUS_RC_OUT"]},
+    {"net": "NOISE_TEST", "connections": ["DLY1.1", "DLY1.2", "NOISE_IN", "NOISE_OUT"]},
+    {"net": "EXPECT_TEST", "connections": ["ASSERT1.1", "EXPECT_IN"]}
   ],
   "behavior": {
     "clock_source": "Generates declared test events only. It must not mask missing edge-trigger behavior in real chips.",

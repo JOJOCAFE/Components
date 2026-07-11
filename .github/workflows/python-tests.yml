@@ -25,6 +25,11 @@ jobs:
           python3 -B -m tests.test_design
           python3 -B -m tests.test_block_ui
           python3 -B -m tests.test_netlist
+          python3 -B -m tests.test_lib_circuits
+          python3 -B -m tests.test_lib_circuit_sources
+          python3 -B -m tests.test_lib_circuit_coverage
+          python3 -B -m tests.test_lib_circuit_endpoints
+          python3 -B -m tests.test_lib_circuit_models
           python3 -B -m tests.test_cli
           python3 -B -m tests.test_api
           python3 -B -m tests.test_db

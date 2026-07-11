@@ -6,7 +6,7 @@
   "source_project": {
     "name": "RV8GR",
     "paths": [
-      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md",
       "/home/jo/kiro/RV8/RV8GR/doc/labs/lab12_ram_datapage.md",
       "/home/jo/kiro/RV8/RV8GR/sim/soft_debug.py",
       "/home/jo/kiro/RV8/RV8GR/Kicad/gen_kicad.py",
@@ -41,10 +41,10 @@
     {"net": "IBUS0..IBUS7", "connections": ["U32.2..9"]},
     {"net": "DP0..DP3", "connections": ["U32.19", "U32.18", "U32.17", "U32.16", "U29.2", "U29.5", "U29.11", "U29.14"]},
     {"net": "DP4..DP7", "connections": ["U32.15", "U32.14", "U32.13", "U32.12", "U30.2", "U30.5", "U30.11", "U30.14"]},
-    {"net": "ABUS15", "connections": ["U30.12", "ROM1./CE", "U24.5"]},
-    {"net": "/A15", "connections": ["U24.6", "RAM1./CE"]},
-    {"net": "DBUS0..DBUS7", "connections": ["ROM1.D0..D7", "RAM1.D0..D7", "U7.18..11"]},
-    {"net": "RAM_/WE", "connections": ["RAM1.27", "/AC_BUF"]}
+    {"net": "ABUS15", "connections": ["U30.12", "ROM1.20", "U24.5"]},
+    {"net": "/A15", "connections": ["U24.6", "RAM1.20"]},
+    {"net": "DBUS0..DBUS7", "connections": ["ROM1.11", "ROM1.12", "ROM1.13", "ROM1.15", "ROM1.16", "ROM1.17", "ROM1.18", "ROM1.19", "RAM1.11", "RAM1.12", "RAM1.13", "RAM1.15", "RAM1.16", "RAM1.17", "RAM1.18", "RAM1.19", "U7.18..11"]},
+    {"net": "RAM_/WE", "connections": ["RAM1.27", "RAM_/WE"]}
   ],
   "behavior": {
     "setdp_decode": "DP_Load = T2 AND XOR_MODE AND /ADDR_MODE AND /AC_WR.",

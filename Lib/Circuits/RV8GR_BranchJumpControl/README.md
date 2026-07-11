@@ -30,3 +30,13 @@ Run:
 ```sh
 PYTHONPATH=python python3 -B -m tests.test_lib_circuits
 ```
+
+## Build and test guide
+
+- **Build/probe:** Build U26-U28 from Lab 10. Probe `T2`, `JMP`, `BR`, `ALU_SUB`, `Z_flag`, `Z_match`, `PC_LOAD_COND`, and active-low `/PC_LD`.
+- **Isolated manual-clock test:** Hold T2 low while setting each J, BEQ, and BNE case. Raise T2 once and observe `/PC_LD`; lower T2 before changing controls.
+- **Integration test:** Reconnect `/PC_LD` to U1-U4, set `{PG,IRL}`, and single-step taken and not-taken branches plus J.
+- **Pass:** `/PC_LD` stays HIGH in T0/T1 and for a false condition; it is LOW only during taken T2, and the next PC value is `{PG,IRL}`. Parallel load wins over count.
+- **Stop:** Stop if `/PC_LD` pulses outside T2, PC changes on a not-taken branch, or PC becomes unknown.
+- **Temporary wiring:** Remove Lab 10 control switches and any direct `/PC_LD` test connection before reconnecting IRH, Z, T2, and the PC chain.
+- **Boundary:** Logic profiles through 5 MHz are simulated behavior; physical timing needs a scope capture of control settling before the PC clock edge.

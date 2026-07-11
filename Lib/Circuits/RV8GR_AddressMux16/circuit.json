@@ -6,9 +6,9 @@
   "source_project": {
     "name": "RV8GR",
     "paths": [
-      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md",
       "/home/jo/kiro/RV8/RV8GR/doc/labs/lab04_address_mux.md",
-      "/home/jo/kiro/RV8/RV8GR/doc/06_debug_plan.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/05_debug_plan.md",
       "/home/jo/kiro/RV8/RV8GR/Kicad/gen_kicad.py",
       "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_chip_level.v"
     ]

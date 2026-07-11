@@ -9,7 +9,7 @@
       "/home/jo/kiro/RV8/RV8GR/doc/labs/lab07_alu.md",
       "/home/jo/kiro/RV8/RV8GR/doc/labs/lab08_accumulator.md",
       "/home/jo/kiro/RV8/RV8GR/doc/labs/lab09_z_flag.md",
-      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md",
       "/home/jo/kiro/RV8/RV8GR/sim/soft_debug.py",
       "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_cpu.v",
       "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_opcode_sweep.v"
@@ -49,17 +49,17 @@
     {"name": "Z_flag", "direction": "output"}
   ],
   "wiring": [
-    {"net": "AC0..AC7", "connections": ["U9.19..12", "U10/U11.A", "U19/U20.B", "U14.2..9", "U22.P0..P7"]},
-    {"net": "IBUS0..IBUS7", "connections": ["U12/U13.A", "U14.18..11"]},
-    {"net": "XOR_B0..XOR_B7", "connections": ["U19/U20.Y", "U12/U13.B"]},
-    {"net": "XOR_Y0..XOR_Y7", "connections": ["U12/U13.Y", "U10/U11.B", "U17/U18.B"]},
-    {"net": "SUM0..SUM7", "connections": ["U10/U11.S", "U17/U18.A"]},
+    {"net": "AC0..AC7", "connections": ["U9.19..12", "U10.5", "U10.3", "U10.14", "U10.12", "U11.5", "U11.3", "U11.14", "U11.12", "U19.3", "U19.6", "U19.10", "U19.13", "U20.3", "U20.6", "U20.10", "U20.13", "U14.2..9", "U22.2", "U22.4", "U22.6", "U22.8", "U22.11", "U22.13", "U22.15", "U22.17"]},
+    {"net": "IBUS0..IBUS7", "connections": ["U12.1", "U12.4", "U12.9", "U12.12", "U13.1", "U13.4", "U13.9", "U13.12", "U14.18..11"]},
+    {"net": "XOR_B0..XOR_B7", "connections": ["U19.4", "U19.7", "U19.9", "U19.12", "U20.4", "U20.7", "U20.9", "U20.12", "U12.2", "U12.5", "U12.10", "U12.13", "U13.2", "U13.5", "U13.10", "U13.13"]},
+    {"net": "XOR_Y0..XOR_Y7", "connections": ["U12.3", "U12.6", "U12.8", "U12.11", "U13.3", "U13.6", "U13.8", "U13.11", "U10.6", "U10.2", "U10.15", "U10.11", "U11.6", "U11.2", "U11.15", "U11.11", "U17.3", "U17.6", "U17.10", "U17.13", "U18.3", "U18.6", "U18.10", "U18.13"]},
+    {"net": "SUM0..SUM7", "connections": ["U10.4", "U10.1", "U10.13", "U10.10", "U11.4", "U11.1", "U11.13", "U11.10", "U17.2", "U17.5", "U17.11", "U17.14", "U18.2", "U18.5", "U18.11", "U18.14"]},
     {"net": "CARRY_CHAIN", "connections": ["U10.9", "U11.7"]},
-    {"net": "AC_D0..AC_D7", "connections": ["U17/U18.Y", "U9.2..9"]},
+    {"net": "AC_D0..AC_D7", "connections": ["U17.4", "U17.7", "U17.9", "U17.12", "U18.4", "U18.7", "U18.9", "U18.12", "U9.2..9"]},
     {"net": "ACC_CLK", "connections": ["U27.11", "U9.11", "U21.3"]},
     {"net": "/AC_BUF", "connections": ["U14.1", "U14.19"]},
-    {"net": "ZERO_COMPARE", "connections": ["U22./Y", "U21.4"]},
-    {"net": "Z_flag", "connections": ["U21.5", "branch/control Z input"]}
+    {"net": "ZERO_COMPARE", "connections": ["U22.19", "U21.4"]},
+    {"net": "Z_flag", "connections": ["U21.5", "Z_flag"]}
   ],
   "behavior": {
     "xor_b": "XOR_MODE=0 selects {8{ALU_SUB}}. XOR_MODE=1 selects AC feedback.",

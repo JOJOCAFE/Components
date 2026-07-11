@@ -6,14 +6,14 @@
   "source_project": {
     "name": "RV8GR",
     "paths": [
-      "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/02_instruction_trace.md",
       "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_tasks.v",
-      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md"
+      "/home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md"
     ]
   },
   "purpose": "Package the first full fetch/execute trace so T0 control fetch, T1 operand fetch, T2 LI execution, PC motion, and bus ownership stay testable outside the full CPU.",
   "chips": [
-    {"ref": "U1_U4", "part": "74HC161", "role": "16-bit program counter chain"},
+    {"ref": "U1_U4", "part": "74HC161", "role": "16-bit program counter chain", "symbolic_endpoints": ["Q", "ENP/ENT"]},
     {"ref": "U5", "part": "74HC574", "role": "T0 control-byte latch"},
     {"ref": "U6", "part": "74HC574", "role": "T1 operand-byte latch"},
     {"ref": "U7", "part": "74HC245", "role": "DBUS to IBUS fetch bridge"},
@@ -37,14 +37,14 @@
   ],
   "wiring": [
     {"net": "PC0..PC15", "connections": ["U1_U4.Q", "ABUS0..ABUS15"]},
-    {"net": "DBUS0..DBUS7", "connections": ["ROM1.D0..D7", "U7.B0..B7", "DBUSMON.1"]},
-    {"net": "IBUS0..IBUS7", "connections": ["U7.A0..A7", "U34.Y0..Y7", "U5.D0..D7", "U6.D0..D7", "IBUSMON.1"]},
-    {"net": "T0", "connections": ["U5.CLK", "PC_INC control"]},
-    {"net": "T1", "connections": ["U6.CLK", "PC_INC control"]},
-    {"net": "T2", "connections": ["execute control"]},
+    {"net": "DBUS0..DBUS7", "connections": ["ROM1.11", "ROM1.12", "ROM1.13", "ROM1.15", "ROM1.16", "ROM1.17", "ROM1.18", "ROM1.19", "U7.18..11", "DBUSMON.1"]},
+    {"net": "IBUS0..IBUS7", "connections": ["U7.2..9", "U34.18..11", "U5.2..9", "U6.2..9", "IBUSMON.1"]},
+    {"net": "T0", "connections": ["U5.11", "T0"]},
+    {"net": "T1", "connections": ["U6.11", "T1"]},
+    {"net": "T2", "connections": ["T2"]},
     {"net": "PC_INC", "connections": ["U1_U4.ENP/ENT"], "rule": "PC_INC = T0 OR T1"},
-    {"net": "/IRL_OE", "connections": ["U34./OE"], "rule": "U34 drives immediate only during T2 immediate execution"},
-    {"net": "BUF_OE_N", "connections": ["U7./OE"], "rule": "U7 bridges DBUS to IBUS during T0/T1 fetch"}
+    {"net": "/IRL_OE", "connections": ["U34.1", "U34.19"], "rule": "U34 drives immediate only during T2 immediate execution"},
+    {"net": "BUF_OE_N", "connections": ["U7.19"], "rule": "U7 bridges DBUS to IBUS during T0/T1 fetch"}
   ],
   "behavior": {
     "t0": "ROM byte at PC drives DBUS, U7 drives IBUS, U5 captures IRH, and PC increments.",

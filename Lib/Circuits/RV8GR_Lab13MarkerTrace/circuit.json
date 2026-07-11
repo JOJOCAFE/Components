@@ -15,7 +15,7 @@
   },
   "purpose": "Package the Lab 13 full-system pass program through the $AA marker so LI, ADDI, SUBI, taken BEQ, bus ownership, and final pass state are checked before physical single-step.",
   "chips": [
-    {"ref": "U1_U4", "part": "74HC161", "role": "16-bit program counter chain"},
+    {"ref": "U1_U4", "part": "74HC161", "role": "16-bit program counter chain", "symbolic_endpoints": ["/LOAD"]},
     {"ref": "U5", "part": "74HC574", "role": "T0 control-byte latch"},
     {"ref": "U6", "part": "74HC574", "role": "T1 operand-byte latch"},
     {"ref": "U7", "part": "74HC245", "role": "ROM DBUS to IBUS fetch bridge"},
@@ -45,11 +45,11 @@
     {"name": "ACC_CLK", "direction": "output"}
   ],
   "wiring": [
-    {"net": "ROM_DBUS", "connections": ["ROM1.D0..D7", "U7.B0..B7", "DBUSMON.1"], "rule": "T0/T1 fetch uses ROM as the only DBUS source."},
-    {"net": "IBUS0..IBUS7", "connections": ["U7.A0..A7", "U34.Y0..Y7", "ALU.B0..B7", "U5.D0..D7", "U6.D0..D7", "IBUSMON.1"], "rule": "Fetch phases use U7; T2 immediate execute uses U34."},
-    {"net": "ACC_CLK", "connections": ["U9.CLK"], "rule": "Rises during T2 for LI, ADDI, and SUBI in this program."},
+    {"net": "ROM_DBUS", "connections": ["ROM1.11", "ROM1.12", "ROM1.13", "ROM1.15", "ROM1.16", "ROM1.17", "ROM1.18", "ROM1.19", "U7.18..11", "DBUSMON.1"], "rule": "T0/T1 fetch uses ROM as the only DBUS source."},
+    {"net": "IBUS0..IBUS7", "connections": ["U7.2..9", "U34.18..11", "IBUS0..IBUS7", "U5.2..9", "U6.2..9", "IBUSMON.1"], "rule": "Fetch phases use U7; T2 immediate execute uses U34."},
+    {"net": "ACC_CLK", "connections": ["ACC_CLK"], "rule": "Rises during T2 for LI, ADDI, and SUBI in this program."},
     {"net": "/PC_LD", "connections": ["U1_U4./LOAD"], "rule": "LOW only for the taken BEQ at clock 12; fail-path J at $0008 is not reached before the $AA marker."},
-    {"net": "Z", "connections": ["U21/U22 zero detect", "U24_U28 branch control"], "rule": "SUBI $15 must set Z=1 before BEQ $0C executes."}
+    {"net": "Z", "connections": ["Z"], "rule": "SUBI $15 must set Z=1 before BEQ $0C executes."}
   ],
   "behavior": {
     "program": "ROM bytes $0000-$000F are the Lab 13 Verify ALL paths program. This package traces through clock 15, where AC becomes $AA.",

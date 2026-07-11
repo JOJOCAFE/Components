@@ -27,3 +27,13 @@ Run:
 ```sh
 PYTHONPATH=python python3 -B -m tests.test_lib_circuits
 ```
+
+## Build and test guide
+
+- **Build/probe:** Use Labs 11-12 for U23, U25, U27, U32, and U33. Probe IBUS, `PG_CLK`, `DP_Load`, PG, DP, IRL, and `PC_LOAD`.
+- **Isolated manual-clock test:** Present a known IBUS byte. For SETPG, observe PG hold while `PG_CLK` is LOW and capture on its rising edge at T2 end. Separately execute SETDP and confirm only DP changes.
+- **Integration test:** Execute `SETPG $12`, `J $5A`, and `SETDP $80`; then use DP for a RAM access.
+- **Pass:** PG becomes `$12`, jump load is `$125A`, DP becomes `$80`, and no instruction changes the other register.
+- **Stop:** Stop on a level-sensitive capture, wrong-register change, unknown PG/DP, or PC load assembled from the wrong bytes.
+- **Temporary wiring:** Remove manual IBUS/control switches and any direct register clocks before reconnecting U34, T2 decode, and instruction controls.
+- **Boundary:** Frequency profiles are functional simulation; physical proof needs the `PG_CLK`/`DP_Load` edge and data setup measured at the registers.

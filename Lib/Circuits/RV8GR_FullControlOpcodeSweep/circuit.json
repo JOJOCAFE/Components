@@ -8,8 +8,8 @@
     "paths": [
       "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_opcode_sweep.v",
       "/home/jo/kiro/RV8/RV8GR/doc/00_design_isa.md",
-      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md",
-      "/home/jo/kiro/RV8/RV8GR/doc/06_debug_plan.md"
+      "/home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/05_debug_plan.md"
     ]
   },
   "purpose": "Prove the RV8GR T2 horizontal-control equations for every opcode and both initial Z states as a reusable circuit-level contract.",

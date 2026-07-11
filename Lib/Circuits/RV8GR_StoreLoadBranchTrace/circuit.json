@@ -6,8 +6,8 @@
   "source_project": {
     "name": "RV8GR",
     "paths": [
-      "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md",
-      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/02_instruction_trace.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md",
       "Lib/Circuits/RV8GR_BusOwnership/circuit.json",
       "Lib/Circuits/RV8GR_StorePath/circuit.json",
       "Lib/Circuits/RV8GR_DataPageMemory/circuit.json",
@@ -16,10 +16,10 @@
   },
   "purpose": "Package the SB, LB, and BEQ T2 traces so store direction, load direction, branch loading, bus ownership, and architectural state can be checked without running the full CPU.",
   "chips": [
-    {"ref": "U1_U4", "part": "74HC161", "role": "16-bit program counter chain"},
+    {"ref": "U1_U4", "part": "74HC161", "role": "16-bit program counter chain", "symbolic_endpoints": ["Q", "/LOAD"]},
     {"ref": "U7", "part": "74HC245", "role": "DBUS/IBUS bridge; DBUS-to-IBUS for load, IBUS-to-DBUS for store"},
     {"ref": "U14", "part": "74HC541", "role": "AC output buffer for SB store data"},
-    {"ref": "U15_U16_U29_U30", "part": "74HC157", "role": "PC versus {DP,IRL} address selection"},
+    {"ref": "U15_U16_U29_U30", "part": "74HC157", "role": "PC versus {DP,IRL} address selection", "symbolic_endpoints": ["Y"]},
     {"ref": "U24_U28", "part": "74HCxx gates", "role": "branch condition and /PC_LD control"},
     {"ref": "U34", "part": "74HC541", "role": "immediate operand driver for BEQ target low byte"},
     {"ref": "RAM1", "part": "62256", "role": "RAM byte at {DP,IRL} for SB and LB"},
@@ -40,12 +40,12 @@
     {"name": "DBUS0..DBUS7", "direction": "bidirectional"}
   ],
   "wiring": [
-    {"net": "ABUS0..ABUS15", "connections": ["U1_U4.Q", "U15_U16_U29_U30.Y", "RAM1.A0..A14"], "rule": "SB and LB select {DP,IRL}; BEQ keeps ABUS on PC during T2."},
-    {"net": "IBUS0..IBUS7", "connections": ["U7.A0..A7", "U14.Y0..Y7", "U34.Y0..Y7", "IBUSMON.1"]},
-    {"net": "DBUS0..DBUS7", "connections": ["U7.B0..B7", "RAM1.DQ0..DQ7", "DBUSMON.1"]},
-    {"net": "/AC_BUF", "connections": ["U14./OE"], "rule": "LOW only during T2 store."},
-    {"net": "WR_DIR", "connections": ["U7.DIR"], "rule": "1 means IBUS to DBUS for store; 0 means DBUS to IBUS for load."},
-    {"net": "BUF_OE_N", "connections": ["U7./OE"], "rule": "LOW for LB and SB T2 data movement."},
+    {"net": "ABUS0..ABUS15", "connections": ["U1_U4.Q", "U15_U16_U29_U30.Y", "RAM1.10", "RAM1.9", "RAM1.8", "RAM1.7", "RAM1.6", "RAM1.5", "RAM1.4", "RAM1.3", "RAM1.25", "RAM1.24", "RAM1.21", "RAM1.23", "RAM1.2", "RAM1.26", "RAM1.1"], "rule": "SB and LB select {DP,IRL}; BEQ keeps ABUS on PC during T2."},
+    {"net": "IBUS0..IBUS7", "connections": ["U7.2..9", "U14.18..11", "U34.18..11", "IBUSMON.1"]},
+    {"net": "DBUS0..DBUS7", "connections": ["U7.18..11", "RAM1.11", "RAM1.12", "RAM1.13", "RAM1.15", "RAM1.16", "RAM1.17", "RAM1.18", "RAM1.19", "DBUSMON.1"]},
+    {"net": "/AC_BUF", "connections": ["U14.1", "U14.19"], "rule": "LOW only during T2 store."},
+    {"net": "WR_DIR", "connections": ["U7.1"], "rule": "1 means IBUS to DBUS for store; 0 means DBUS to IBUS for load."},
+    {"net": "BUF_OE_N", "connections": ["U7.19"], "rule": "LOW for LB and SB T2 data movement."},
     {"net": "/PC_LD", "connections": ["U1_U4./LOAD"], "rule": "LOW only when branch/jump control takes PC in T2."}
   ],
   "behavior": {

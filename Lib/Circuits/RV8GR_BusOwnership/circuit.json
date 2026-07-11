@@ -6,8 +6,8 @@
   "source_project": {
     "name": "RV8GR",
     "paths": [
-      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md",
-      "/home/jo/kiro/RV8/RV8GR/doc/06_debug_plan.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/05_debug_plan.md",
       "/home/jo/kiro/RV8/RV8GR/sim/verify_wiring.py",
       "/home/jo/kiro/RV8/RV8GR/sim/soft_debug.py",
       "/home/jo/kiro/RV8/RV8GR/Kicad/gen_kicad.py",
@@ -38,14 +38,14 @@
     {"name": "DBUS0..DBUS7", "direction": "bidirectional"}
   ],
   "wiring": [
-    {"net": "IBUS0..IBUS7", "connections": ["U7.2..9", "U14.18..11", "U34.18..11", "U5/U6/U23/U32 data inputs", "U12/U13 ALU inputs"]},
-    {"net": "DBUS0..DBUS7", "connections": ["U7.18..11", "ROM1.D0..D7", "RAM1.D0..D7"]},
+    {"net": "IBUS0..IBUS7", "connections": ["U7.2..9", "U14.18..11", "U34.18..11", "IBUS0..IBUS7"]},
+    {"net": "DBUS0..DBUS7", "connections": ["U7.18..11", "ROM1.11", "ROM1.12", "ROM1.13", "ROM1.15", "ROM1.16", "ROM1.17", "ROM1.18", "ROM1.19", "RAM1.11", "RAM1.12", "RAM1.13", "RAM1.15", "RAM1.16", "RAM1.17", "RAM1.18", "RAM1.19"]},
     {"net": "BUF_OE_N", "connections": ["U7.19"]},
-    {"net": "WR_DIR", "connections": ["U7.1", "ROM1./OE"]},
-    {"net": "/AC_BUF", "connections": ["U14.1", "U14.19", "RAM1./WE"]},
+    {"net": "WR_DIR", "connections": ["U7.1", "ROM1.22"]},
+    {"net": "/AC_BUF", "connections": ["U14.1", "U14.19", "RAM1.27"]},
     {"net": "/IRL_OE", "connections": ["U34.1", "U34.19"]},
-    {"net": "A15", "connections": ["ROM1./CE"]},
-    {"net": "/A15", "connections": ["RAM1./CE"]}
+    {"net": "A15", "connections": ["ROM1.20"]},
+    {"net": "/A15", "connections": ["RAM1.20"]}
   ],
   "behavior": {
     "addr_req": "ADDR_REQ=SRC OR STR.",

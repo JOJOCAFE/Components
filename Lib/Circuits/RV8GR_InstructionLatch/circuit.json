@@ -6,7 +6,7 @@
   "source_project": {
     "name": "RV8GR",
     "paths": [
-      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md",
       "/home/jo/kiro/RV8/RV8GR/doc/labs/lab06_ir_latch.md",
       "/home/jo/kiro/RV8/RV8GR/Kicad/gen_kicad.py",
       "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_chip_level.v"

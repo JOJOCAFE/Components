@@ -6,16 +6,16 @@
   "source_project": {
     "name": "RV8GR",
     "paths": [
-      "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md",
-      "/home/jo/kiro/RV8/RV8GR/doc/06_debug_plan.md",
-      "/home/jo/kiro/RV8/RV8GR/doc/09_task_test_plan.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/02_instruction_trace.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/05_debug_plan.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/14_components_verification_protocol.md",
       "Lib/Circuits/RV8GR_PageJumpTrace/circuit.json",
       "Lib/Circuits/RV8GR_AluAccumulator/circuit.json"
     ]
   },
   "purpose": "Package the real RV8GR bring-up ROM start sequence so DP, PG, AC, Z, PC, and the final J-self loop are checked before physical single-step testing.",
   "chips": [
-    {"ref": "U1_U4", "part": "74HC161", "role": "16-bit program counter chain"},
+    {"ref": "U1_U4", "part": "74HC161", "role": "16-bit program counter chain", "symbolic_endpoints": ["/LOAD"]},
     {"ref": "U9_U14", "part": "74HCxx ALU path", "role": "LI immediate path into AC and Z"},
     {"ref": "U23", "part": "74HC574", "role": "program-page register"},
     {"ref": "U32", "part": "74HC574", "role": "data-page register"},
@@ -41,11 +41,11 @@
     {"name": "DBUS0..DBUS7", "direction": "bidirectional"}
   ],
   "wiring": [
-    {"net": "ROM_DBUS", "connections": ["ROM.D0..D7", "U7.B0..B7", "DBUSMON.1"], "rule": "T0/T1 fetch uses ROM as the DBUS owner for the boot bytes."},
-    {"net": "IBUS0..IBUS7", "connections": ["U34.Y0..Y7", "U23.D0..D7", "U32.D0..D7", "ALU.B0..B7", "IBUSMON.1"], "rule": "T2 immediate instructions use U34 as the only IBUS driver."},
-    {"net": "DP_Load", "connections": ["U33.Y", "U32.CLK"], "rule": "Pulses for SETDP $80 only."},
-    {"net": "PG_CLK", "connections": ["U23.CLK"], "rule": "Pulses for SETPG $00 only."},
-    {"net": "ACC_CLK", "connections": ["AC.CLK"], "rule": "Pulses for LI $00 only."},
+    {"net": "ROM_DBUS", "connections": ["DBUS0..DBUS7", "DBUSMON.1"], "rule": "T0/T1 fetch uses ROM as the DBUS owner for the boot bytes."},
+    {"net": "IBUS0..IBUS7", "connections": ["U34.18..11", "U23.2..9", "U32.2..9", "IBUS0..IBUS7", "IBUSMON.1"], "rule": "T2 immediate instructions use U34 as the only IBUS driver."},
+    {"net": "DP_Load", "connections": ["U33.6", "U32.11"], "rule": "Pulses for SETDP $80 only."},
+    {"net": "PG_CLK", "connections": ["U23.11"], "rule": "Pulses for SETPG $00 only."},
+    {"net": "ACC_CLK", "connections": ["AC0..AC7"], "rule": "Pulses for LI $00 only."},
     {"net": "/PC_LD", "connections": ["U1_U4./LOAD"], "rule": "LOW for final J $06 only; PC loops at $0006."}
   ],
   "behavior": {

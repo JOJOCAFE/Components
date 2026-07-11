@@ -29,3 +29,13 @@ Run:
 ```sh
 PYTHONPATH=python python3 -B -m tests.test_lib_circuits
 ```
+
+## Build and test guide
+
+- **Build/probe:** Use Labs 08, 10, and 12 for U14, U7, U26, U28, ROM1, and RAM1. Probe T2, STR, A15, `/AC_BUF`, `WR_DIR`, ROM output enable, RAM `/WE`, IBUS, and DBUS.
+- **Isolated manual-clock test:** Set `AC=$AA` and a RAM-space address. Check T0, T1, and T2/STR=0 first; then assert the T2 store row once and read RAM back after the write ends.
+- **Integration test:** Execute `SB $03` with `DP=$80`, then `LB $03`, while monitoring both buses and memory enables.
+- **Pass:** Only T2/STR=1 enables U14, sets U7 toward DBUS, disables ROM, and pulls RAM `/WE` LOW; RAM `$8003` reads back `$AA`. A ROM-page store remains conflict-free and does not write ROM.
+- **Stop:** Stop before clocking if ROM output is enabled during write, two devices own a bus, or RAM `/WE` is LOW at the wrong address/phase. Remove power for heat.
+- **Temporary wiring:** Remove direct AC-to-bus tests, manual U7 direction/enable wires, and manual RAM write controls before integration.
+- **Boundary:** Simulation proves control ordering and modeled storage. Hardware needs scope proof of ROM disable, bus deadband, and RAM address/data setup around `/WE`.

@@ -7,8 +7,8 @@
     "name": "RV8GR",
     "paths": [
       "/home/jo/kiro/RV8/RV8GR/doc/labs/lab05_rom_buffer.md",
-      "/home/jo/kiro/RV8/RV8GR/doc/02_wiring_guide.md",
-      "/home/jo/kiro/RV8/RV8GR/doc/06_debug_plan.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/05_debug_plan.md",
       "/home/jo/kiro/RV8/RV8GR/sim/soft_debug.py",
       "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_cpu.v"
     ]
@@ -30,11 +30,11 @@
     {"name": "IBUS0..IBUS7", "direction": "bidirectional"}
   ],
   "wiring": [
-    {"net": "A0..A14", "connections": ["ROM1.A0..A14"]},
-    {"net": "A15", "connections": ["ROM1./CE"]},
-    {"net": "WR_DIR", "connections": ["U7.1", "ROM1./OE"]},
+    {"net": "A0..A14", "connections": ["ROM1.10", "ROM1.9", "ROM1.8", "ROM1.7", "ROM1.6", "ROM1.5", "ROM1.4", "ROM1.3", "ROM1.25", "ROM1.24", "ROM1.21", "ROM1.23", "ROM1.2", "ROM1.26", "ROM1.1"]},
+    {"net": "A15", "connections": ["ROM1.20"]},
+    {"net": "WR_DIR", "connections": ["U7.1", "ROM1.22"]},
     {"net": "BUF_OE_N", "connections": ["U7.19"]},
-    {"net": "DBUS0..DBUS7", "connections": ["ROM1.D0..D7", "U7.18..11"]},
+    {"net": "DBUS0..DBUS7", "connections": ["ROM1.11", "ROM1.12", "ROM1.13", "ROM1.15", "ROM1.16", "ROM1.17", "ROM1.18", "ROM1.19", "U7.18..11"]},
     {"net": "IBUS0..IBUS7", "connections": ["U7.2..9"]}
   ],
   "behavior": {

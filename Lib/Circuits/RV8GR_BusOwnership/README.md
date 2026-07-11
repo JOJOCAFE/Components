@@ -32,3 +32,13 @@ Run:
 ```sh
 PYTHONPATH=python python3 -B -m tests.test_lib_circuits
 ```
+
+## Build and test guide
+
+- **Chips/buses:** Observe U7, U14, U34, ROM, and RAM on `IBUS` and `DBUS`. A logic probe shows value; the circuit `BusProbe` also identifies the modeled driver.
+- **Isolated manual-clock test:** Step one T0 fetch, T1 fetch, immediate T2, load T2, and store T2. Pause in each phase and record enabled outputs before continuing.
+- **Integration test:** Run the fetch, store/load, and Lab 13 marker traces with both bus monitors enabled.
+- **Pass:** Ownership matches the Normal Ownership table and no bus has more than one active driver. A floating bus with every output disabled is Hi-Z, not a data pass.
+- **Stop:** Remove power immediately for heat or suspected output-to-output drive. Stop on any conflict report, unknown driven value, or overlapping ROM/RAM output enables.
+- **Temporary wiring:** Remove LED-only bus shortcuts, direct bus drive switches, and the pre-RAM ROM shortcut described in Lab 05 before integration.
+- **Boundary:** Simulation detects modeled enables and conflicts. Physical signoff needs current/heat checks and scope evidence for deadband between drivers.

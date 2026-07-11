@@ -24,3 +24,13 @@ Run:
 ```sh
 PYTHONPATH=python python3 -B -m tests.test_lib_circuits
 ```
+
+## Build and test guide
+
+- **Chips/buses:** This integrated trace uses DP/address memory logic, U14 and U7 for store, RAM for store/load, AC for load, and branch control plus PC. Probe ABUS, IBUS, DBUS, RAM `/OE`/`/WE`, AC, Z, and PC.
+- **Isolated manual-clock test:** With `DP=$80`, hand-step `SB $03`, stop and read back `$8003`; then step `LB $03`; finally set `Z=1` and step `BEQ $20`.
+- **Integration test:** Fetch and execute all three from ROM with bus monitors active, preserving the setup values in Student Checks.
+- **Pass:** Store leaves `RAM[$8003]=$AA`; load leaves `AC=$AA`; taken BEQ leaves `PC=$0020`; every row has at most one owner on each bus.
+- **Stop:** Stop before a write if ABUS is not `$8003`, if RAM controls are wrong, or if a bus conflict appears. Remove power for heat.
+- **Temporary wiring:** Remove direct DP/PG/IRL/AC setup switches and manual memory controls before the integrated ROM trace.
+- **Boundary:** Functional readback and branch results do not prove physical RAM write pulse width, float interval, or branch timing.

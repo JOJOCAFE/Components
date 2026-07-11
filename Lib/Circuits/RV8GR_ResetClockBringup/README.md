@@ -44,3 +44,13 @@ Run:
 ```sh
 PYTHONPATH=python python3 -B -m tests.test_lib_circuits
 ```
+
+## Build and test guide
+
+- **Build/probe:** Follow Labs 01-03 for SW_CLK, SW_RST, U8, U24, and U1-U4. Probe `CLK`, `/RST`, T0/T1/T2, `PC_INC`, and all PC bits.
+- **Isolated manual-clock test:** Hold reset LOW and verify all listed reset values. Release reset without touching clock, then make three clean press/release cycles and check the Student Checks after each release edge.
+- **Integration test:** Connect `PC_INC=T0 OR T1` and continue for several complete T0/T1/T2 loops while checking PC increments only from old T0 or T1.
+- **Pass:** Reset and release do not advance state; the first three release edges give T0/PC `$0000`, T1/PC `$0001`, and T2/PC `$0002`; phases remain one-hot and PC has no X/Z bit.
+- **Stop:** Remove power for heat or a short. Stop on switch bounce causing multiple steps, phase overlap, clock movement during reset release, or unknown PC.
+- **Temporary wiring:** Remove LED-only clock loads and Lab 03 always-enable counter ties that are not part of the integrated wiring; keep only the lab-approved buffered clock/reset path.
+- **Boundary:** JSON uses clean edges and cannot prove mechanical debounce, supply integrity, or physical reset/clock waveform quality.

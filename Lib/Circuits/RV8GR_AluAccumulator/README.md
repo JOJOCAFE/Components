@@ -32,3 +32,13 @@ Run:
 ```sh
 PYTHONPATH=python python3 -B -m tests.test_lib_circuits
 ```
+
+## Build and test guide
+
+- **Build/probe:** Follow Labs 07-09 for U9-U14, U17-U22, and U27. Probe `IBUS`, `XOR_Y`, `SUM`, `ACC_CLK`, `AC`, `/AC_BUF`, and `Z_flag`; use lab pinouts, not this summary, for wiring.
+- **Isolated manual-clock test:** Hold T2 low while setting the controls and IBUS. Raise T2 once with `AC_WR=1`, then lower it. Check LI, ADDI, SUBI, and XORI one vector at a time; repeat with `AC_WR=0` to prove hold.
+- **Integration test:** Single-step instructions through T0/T1/T2, then execute a store and confirm U14 drives IBUS only while `/AC_BUF=0`.
+- **Pass:** AC matches every expected byte, changes only on the rising `ACC_CLK` edge, Z is 1 exactly when captured AC is zero, and AC is the sole IBUS driver during store.
+- **Stop:** Cut power for a hot IC or multiple IBUS drivers. Stop clocking for an unexpected AC edge, unstable feedback, or an unknown bus value.
+- **Temporary wiring:** Remove manual IBUS, control-switch, and direct clock ties from Labs 07-09 before reconnecting IR control, T2, and the shared bus.
+- **Boundary:** Manual and fixed-frequency profiles are functional simulation. Physical frequency claims require scope evidence for `ACC_CLK`, data setup/hold, and bus deadband.

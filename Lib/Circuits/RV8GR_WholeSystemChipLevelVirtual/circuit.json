@@ -50,11 +50,11 @@
     {"name": "ROM_/OE", "direction": "output"}
   ],
   "wiring": [
-    {"net": "CLK", "connections": ["VCLK.1", "CLKRC.1", "DLY.1", "system clock tree"], "rule": "Stress clock/reset timing virtually, but do not claim physical edge quality."},
-    {"net": "/RST", "connections": ["CLKRC.2", "DLY.2", "reset destinations"], "rule": "Reset release must keep known boot state."},
-    {"net": "IBUS0..IBUS7", "connections": ["IBUSMON.1", "BUSRC.1", "DLY.1", "registered and immediate drivers"], "rule": "Exactly one active IBUS driver per checked phase."},
-    {"net": "DBUS0..DBUS7", "connections": ["DBUSMON.1", "BUSRC.2", "memory and transceiver drivers"], "rule": "Exactly one active DBUS driver per checked phase."},
-    {"net": "ARCH_STATE", "connections": ["OUTCHK.1", "PC", "AC", "Z", "PG", "DP"], "rule": "Architectural checkpoints must match lower-level trace final states."}
+    {"net": "CLK", "connections": ["VCLK.1", "CLKRC.1", "DLY.1", "BOOT.CLK", "LAB13.CLK"], "rule": "Stress clock/reset timing virtually, but do not claim physical edge quality."},
+    {"net": "/RST", "connections": ["CLKRC.2", "DLY.2", "IRQ./RST"], "rule": "Reset release must keep known boot state."},
+    {"net": "IBUS0..IBUS7", "connections": ["IBUSMON.1", "BUSRC.1", "DLY.1", "BUS.IBUS0..IBUS7"], "rule": "Exactly one active IBUS driver per checked phase."},
+    {"net": "DBUS0..DBUS7", "connections": ["DBUSMON.1", "BUSRC.2", "BUS.DBUS0..DBUS7"], "rule": "Exactly one active DBUS driver per checked phase."},
+    {"net": "ARCH_STATE", "connections": ["OUTCHK.1", "BOOT.PC0..PC15", "BOOT.AC0..AC7", "BOOT.Z", "BOOT.PG0..PG7", "BOOT.DP0..DP7"], "rule": "Architectural checkpoints must match lower-level trace final states."}
   ],
   "behavior": {
     "coverage_rule": "This package references existing executable circuit proofs instead of duplicating their detailed vector logic.",

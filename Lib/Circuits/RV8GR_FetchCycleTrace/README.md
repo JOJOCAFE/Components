@@ -26,3 +26,13 @@ Run:
 ```sh
 PYTHONPATH=python python3 -B -m tests.test_lib_circuits
 ```
+
+## Build and test guide
+
+- **Chips/buses:** This trace joins ROM, U7, U5, U6, U34, PC, and AC behavior. Probe T0/T1/T2, PC, IRH, IRL, AC, IBUS, and DBUS.
+- **Isolated manual-clock test:** Load `30 42` at ROM `$0000-$0001`, reset, and make exactly three clean release edges, checking the five Student Checks above.
+- **Integration test:** Repeat with the integrated ring counter and address path; verify ROM-to-DBUS-to-U7-to-IBUS in T0/T1 and U34-to-IBUS in T2.
+- **Pass:** Edge 1 gives `IRH=$30, PC=$0001`; edge 2 gives `IRL=$42, PC=$0002`; edge 3 gives `AC=$42, PC=$0002`, with one owner per bus.
+- **Stop:** Stop on skipped/duplicate phases, unknown PC or instruction bytes, wrong bus owner, or any conflict.
+- **Temporary wiring:** Remove manual IR clocks, direct IBUS data switches, and fixed address ties before integration.
+- **Boundary:** The trace proves functional ordering, not switch debounce or physical setup/hold margin.

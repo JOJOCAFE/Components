@@ -27,3 +27,13 @@ Run:
 ```sh
 PYTHONPATH=python python3 -B -m tests.test_lib_circuits
 ```
+
+## Build and test guide
+
+- **Chips/I/O:** U31 stores `IE` and `IRQ_FF`; U33 supplies `EI_decode`; the switch drives active-low `/IRQ`; probes watch both flags and PC.
+- **Isolated manual-clock test:** Reset, execute one EI control row, one DI row, pull `/IRQ` LOW, then release HIGH. Pause after every edge.
+- **Integration test:** Run the same sequence through the full instruction path and continue clocking after IRQ release.
+- **Pass:** The six Student Checks all hold: `IE=1`, DI changes nothing, IRQ release sets a sticky `IRQ_FF=1`, and PC never jumps automatically.
+- **Stop:** Stop on an early IRQ latch, a DI clear, a non-sticky flag, PC movement attributed to IRQ, or an unknown flag.
+- **Temporary wiring:** Remove the Lab 12 U33 VCC ties and connect the Lab 14 EI decode path before this test.
+- **Boundary:** Virtual switch edges are clean. Hardware must separately verify the external IRQ edge and reset behavior with a probe or scope.

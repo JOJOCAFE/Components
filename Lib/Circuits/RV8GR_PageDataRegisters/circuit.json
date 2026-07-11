@@ -8,7 +8,7 @@
     "paths": [
       "/home/jo/kiro/RV8/RV8GR/doc/labs/lab11_page_register.md",
       "/home/jo/kiro/RV8/RV8GR/doc/labs/lab12_ram_datapage.md",
-      "/home/jo/kiro/RV8/RV8GR/doc/07_risk_analysis.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/07_real_build_timing_log.md",
       "/home/jo/kiro/RV8/RV8GR/sim/soft_debug.py",
       "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_setdp.v",
       "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_opcode_sweep.v"
@@ -43,9 +43,9 @@
     {"net": "IBUS0..IBUS7", "connections": ["U23.2..9", "U32.2..9"]},
     {"net": "PG_CLK", "connections": ["U25.11", "U23.11"]},
     {"net": "DP_Load", "connections": ["U33.6", "U32.11"]},
-    {"net": "PG0..PG3", "connections": ["U23.19", "U23.18", "U23.17", "U23.16", "RV8GR_PC16 high-load low nibble"]},
-    {"net": "PG4..PG7", "connections": ["U23.15", "U23.14", "U23.13", "U23.12", "RV8GR_PC16 high-load high nibble"]},
-    {"net": "IRL0..IRL7", "connections": ["RV8GR_InstructionLatch IRL output", "RV8GR_PC16 low-load inputs"]},
+    {"net": "PG0..PG3", "connections": ["U23.19", "U23.18", "U23.17", "U23.16", "PG0..PG3"]},
+    {"net": "PG4..PG7", "connections": ["U23.15", "U23.14", "U23.13", "U23.12", "PG4..PG7"]},
+    {"net": "IRL0..IRL7", "connections": ["IRL0..IRL7"]},
     {"net": "PC_LOAD0..PC_LOAD15", "connections": ["IRL0..IRL7", "PG0..PG7"]}
   ],
   "behavior": {

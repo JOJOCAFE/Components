@@ -42,7 +42,7 @@
     {"net": "JMP", "connections": ["U27.4"]},
     {"net": "PC_LOAD_COND", "connections": ["U27.6", "U26.13"]},
     {"net": "T2", "connections": ["U26.12"]},
-    {"net": "/PC_LD", "connections": ["U26.11", "RV8GR_PC16 /PC_LD inputs"]}
+    {"net": "/PC_LD", "connections": ["U26.11", "/PC_LD"]}
   ],
   "behavior": {
     "z_match": "Z_match=Z_flag XOR ALU_SUB. BEQ uses ALU_SUB=0; BNE uses ALU_SUB=1.",

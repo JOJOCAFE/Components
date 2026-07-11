@@ -1,165 +1,231 @@
 {
   "schema": "components.lib.rv8gr.coverage_index",
-  "version": 1,
-  "purpose": "Map each RV8GR circuit package to its build/test coverage so README rows, package directories, proof vectors, and Python checks cannot drift apart.",
+  "version": 2,
+  "purpose": "Record evidence-backed coverage layers for each RV8GR circuit package without treating package shape, equations, live models, system composition, and physical measurements as equivalent.",
+  "coverage_layers": ["structural", "vector_equation", "live_component_model", "composed_system", "physical"],
   "status_policy": {
-    "Tested": "Package has circuit.json, README.md, at least one JSON proof file, and executable Python regression coverage.",
-    "Planned": "Package is named in planning docs but does not yet have complete package/proof/test coverage."
+    "covered": "An executable Python test directly checks this layer and the evidence_refs identify that test and its input artifact.",
+    "not_covered": "No existing executable test directly proves this layer; lower-layer coverage must not be promoted.",
+    "planned_not_measured": "Physical capture is planned, but no board measurement or capture file has been recorded."
   },
+  "allowed_statuses": {
+    "structural": ["covered", "not_covered"],
+    "vector_equation": ["covered", "not_covered"],
+    "live_component_model": ["covered", "not_covered"],
+    "composed_system": ["covered", "not_covered"],
+    "physical": ["planned_not_measured"]
+  },
+  "physical_evidence_plan": "Lib/Circuits/physical_capture_plan.json",
   "packages": [
     {
       "circuit": "RV8GR_RingCounter",
       "stage": "clock_reset",
-      "status": "Tested",
       "proof_focus": "T0/T1/T2 sequence, edge behavior, reset, lower-state recovery",
-      "python_test_prefix": "test_rv8gr_ring_counter_"
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_RingCounter/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_ring_counter_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_RingCounter/tests/ring_counter.json", "python/tests/test_lib_circuits.py::test_rv8gr_ring_counter_sequence_and_reset"]},
+        "live_component_model": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_ring_counter_sequence_executes_with_component_models"]},
+        "composed_system": {"status": "not_covered", "evidence_refs": []},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_PC16",
-      "stage": "program_counter",
-      "status": "Tested",
-      "proof_focus": "count/load priority, carry chain, /PC_LD, PC_INC",
-      "python_test_prefix": "test_rv8gr_pc16_"
+      "circuit": "RV8GR_PC16", "stage": "program_counter", "proof_focus": "count/load priority, carry chain, /PC_LD, PC_INC",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_PC16/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_pc16_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_PC16/tests/pc16.json", "python/tests/test_lib_circuits.py::test_rv8gr_pc16_vectors_execute"]},
+        "live_component_model": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_pc16_vectors_execute_with_component_models"]},
+        "composed_system": {"status": "not_covered", "evidence_refs": []},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_AddressMux16",
-      "stage": "address_path",
-      "status": "Tested",
-      "proof_focus": "PC vs {DP,IRL} address selection, ADDR_REQ, and A15 decode",
-      "python_test_prefix": "test_rv8gr_address_mux16_"
+      "circuit": "RV8GR_AddressMux16", "stage": "address_path", "proof_focus": "PC vs {DP,IRL} address selection, ADDR_REQ, and A15 decode",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_AddressMux16/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_address_mux16_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_AddressMux16/tests/address_mux16.json", "python/tests/test_lib_circuits.py::test_rv8gr_address_mux16_vectors_execute"]},
+        "live_component_model": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_address_mux16_vectors_execute_with_component_models"]},
+        "composed_system": {"status": "not_covered", "evidence_refs": []},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_BusOwnership",
-      "stage": "bus_safety",
-      "status": "Tested",
-      "proof_focus": "T0/T1/T2 IBUS/DBUS drivers and bus-fight detection",
-      "python_test_prefix": "test_rv8gr_bus_ownership_"
+      "circuit": "RV8GR_BusOwnership", "stage": "bus_safety", "proof_focus": "T0/T1/T2 IBUS/DBUS drivers and bus-fight detection",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_BusOwnership/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_bus_ownership_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_BusOwnership/tests/bus_ownership.json", "python/tests/test_lib_circuits.py::test_rv8gr_bus_ownership_phase_vectors_are_conflict_free"]},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []}, "composed_system": {"status": "not_covered", "evidence_refs": []},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_InstructionLatch",
-      "stage": "fetch_decode",
-      "status": "Tested",
-      "proof_focus": "T0/T1 edge capture and T2 hold",
-      "python_test_prefix": "test_rv8gr_instruction_latch_"
+      "circuit": "RV8GR_InstructionLatch", "stage": "fetch_decode", "proof_focus": "T0/T1 edge capture and T2 hold",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_InstructionLatch/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_instruction_latch_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_InstructionLatch/tests/instruction_latch.json", "python/tests/test_lib_circuits.py::test_rv8gr_instruction_latch_vectors_execute"]},
+        "live_component_model": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_instruction_latch_vectors_execute_with_component_models"]},
+        "composed_system": {"status": "not_covered", "evidence_refs": []}, "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_StorePath",
-      "stage": "memory_write",
-      "status": "Tested",
-      "proof_focus": "IBUS to DBUS write direction and memory output disable",
-      "python_test_prefix": "test_rv8gr_store_path_"
+      "circuit": "RV8GR_StorePath", "stage": "memory_write", "proof_focus": "IBUS to DBUS write direction and memory output disable",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_StorePath/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_store_path_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_StorePath/tests/store_path.json", "python/tests/test_lib_circuits.py::test_rv8gr_store_path_vectors_execute"]},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []}, "composed_system": {"status": "not_covered", "evidence_refs": []},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_DataPageMemory",
-      "stage": "memory_page",
-      "status": "Tested",
-      "proof_focus": "SETDP, RAM read/write, ROM read via DP, and $7FFF/$8000 boundary",
-      "python_test_prefix": "test_rv8gr_data_page_memory_"
+      "circuit": "RV8GR_DataPageMemory", "stage": "memory_page", "proof_focus": "SETDP, RAM read/write, ROM read via DP, and $7FFF/$8000 boundary",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_DataPageMemory/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_data_page_memory_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_DataPageMemory/tests/data_page_memory.json", "python/tests/test_lib_circuits.py::test_rv8gr_data_page_memory_vectors_execute"]},
+        "live_component_model": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_data_page_setdp_executes_with_component_models"]},
+        "composed_system": {"status": "not_covered", "evidence_refs": []}, "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_IRQLatch",
-      "stage": "interrupt",
-      "status": "Tested",
-      "proof_focus": "IE set, /IRQ release latch, sticky IRQ_FF, no v1.0 vector",
-      "python_test_prefix": "test_rv8gr_irq_latch_"
+      "circuit": "RV8GR_IRQLatch", "stage": "interrupt", "proof_focus": "IE set, /IRQ release latch, sticky IRQ_FF, no v1.0 vector",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_IRQLatch/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_irq_latch_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_IRQLatch/tests/irq_latch.json", "python/tests/test_lib_circuits.py::test_rv8gr_irq_latch_vectors_execute"]},
+        "live_component_model": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_irq_latch_vectors_execute_with_component_model"]},
+        "composed_system": {"status": "not_covered", "evidence_refs": []}, "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_RomDbusRead",
-      "stage": "memory_read",
-      "status": "Tested",
-      "proof_focus": "DBUS to IBUS read direction and ROM /OE safety",
-      "python_test_prefix": "test_rv8gr_rom_dbus_read_"
+      "circuit": "RV8GR_RomDbusRead", "stage": "memory_read", "proof_focus": "DBUS to IBUS read direction and ROM /OE safety",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_RomDbusRead/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_rom_dbus_read_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_RomDbusRead/tests/rom_dbus_read.json", "python/tests/test_lib_circuits.py::test_rv8gr_rom_dbus_read_vectors_execute"]},
+        "live_component_model": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_rom_dbus_read_executes_with_component_models"]},
+        "composed_system": {"status": "not_covered", "evidence_refs": []}, "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_AluAccumulator",
-      "stage": "alu",
-      "status": "Tested",
-      "proof_focus": "ALU path timing, AC latch edge, Z flag settle",
-      "python_test_prefix": "test_rv8gr_alu_"
+      "circuit": "RV8GR_AluAccumulator", "stage": "alu", "proof_focus": "ALU path timing, AC latch edge, Z flag settle",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_AluAccumulator/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_alu_accumulator_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_AluAccumulator/tests/alu_accumulator.json", "python/tests/test_lib_circuits.py::test_rv8gr_alu_accumulator_vectors_execute"]},
+        "live_component_model": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_alu_adder_vectors_execute_with_component_models"]},
+        "composed_system": {"status": "not_covered", "evidence_refs": []}, "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_PageDataRegisters",
-      "stage": "page_registers",
-      "status": "Tested",
-      "proof_focus": "PG_CLK and DP_Load edge timing",
-      "python_test_prefix": "test_rv8gr_page_"
+      "circuit": "RV8GR_PageDataRegisters", "stage": "page_registers", "proof_focus": "PG_CLK and DP_Load edge timing",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_PageDataRegisters/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_page_data_registers_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_PageDataRegisters/tests/page_data_registers.json", "python/tests/test_lib_circuits.py::test_rv8gr_page_register_setpg_edge_vectors_execute"]},
+        "live_component_model": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_page_register_setpg_executes_with_component_model"]},
+        "composed_system": {"status": "not_covered", "evidence_refs": []}, "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_BranchJumpControl",
-      "stage": "branch_jump",
-      "status": "Tested",
-      "proof_focus": "/PC_LD, branch condition, no unintended load",
-      "python_test_prefix": "test_rv8gr_branch_jump_"
+      "circuit": "RV8GR_BranchJumpControl", "stage": "branch_jump", "proof_focus": "/PC_LD, branch condition, no unintended load",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_BranchJumpControl/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_branch_jump_control_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_BranchJumpControl/tests/branch_jump_control.json", "python/tests/test_lib_circuits.py::test_rv8gr_branch_jump_opcode_sweep_matches_verilog_bench_equation"]},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []}, "composed_system": {"status": "not_covered", "evidence_refs": []},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_VirtualTestHelpers",
-      "stage": "test_infrastructure",
-      "status": "Tested",
-      "proof_focus": "clock profiles, phase probes, bus contention observation, R/C estimates",
-      "python_test_prefix": "test_rv8gr_virtual_"
+      "circuit": "RV8GR_VirtualTestHelpers", "stage": "test_infrastructure", "proof_focus": "clock profiles, phase probes, bus contention observation, R/C estimates",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_VirtualTestHelpers/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_virtual_test_helpers_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_VirtualTestHelpers/tests/virtual_test_helpers.json", "python/tests/test_lib_circuits.py::test_rv8gr_virtual_clock_profiles_execute"]},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []}, "composed_system": {"status": "not_covered", "evidence_refs": []},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_FullControlOpcodeSweep",
-      "stage": "control_decode",
-      "status": "Tested",
-      "proof_focus": "all opcode/Z cases, reserved mixes, side-effect drift",
-      "python_test_prefix": "test_rv8gr_full_control_"
+      "circuit": "RV8GR_FullControlOpcodeSweep", "stage": "control_decode", "proof_focus": "all opcode/Z cases, reserved mixes, side-effect drift",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_FullControlOpcodeSweep/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_full_control_opcode_sweep_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_FullControlOpcodeSweep/tests/full_control_opcode_sweep.json", "python/tests/test_lib_circuits.py::test_rv8gr_full_control_opcode_sweep_all_512_cases_match_verilog_equation"]},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []}, "composed_system": {"status": "not_covered", "evidence_refs": []},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_ResetClockBringup",
-      "stage": "bringup",
-      "status": "Tested",
-      "proof_focus": "reset idle/release, one-hot phase pushes, PC known-state policy, clock profiles",
-      "python_test_prefix": "test_rv8gr_reset_clock_"
+      "circuit": "RV8GR_ResetClockBringup", "stage": "bringup", "proof_focus": "reset idle/release, one-hot phase pushes, PC known-state policy, clock profiles",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_ResetClockBringup/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_reset_clock_bringup_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_ResetClockBringup/tests/reset_clock_bringup.json", "python/tests/test_lib_circuits.py::test_rv8gr_reset_clock_bringup_reset_idle_and_release"]},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []}, "composed_system": {"status": "not_covered", "evidence_refs": []},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_FetchCycleTrace",
-      "stage": "instruction_trace",
-      "status": "Tested",
-      "proof_focus": "T0 control fetch, T1 operand fetch, T2 LI execute, PC motion, bus owners",
-      "python_test_prefix": "test_rv8gr_fetch_cycle_"
+      "circuit": "RV8GR_FetchCycleTrace", "stage": "instruction_trace", "proof_focus": "T0 control fetch, T1 operand fetch, T2 LI execute, PC motion, bus owners",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_FetchCycleTrace/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_fetch_cycle_trace_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_FetchCycleTrace/tests/fetch_cycle_trace.json", "python/tests/test_lib_circuits.py::test_rv8gr_fetch_cycle_basic_fetch_matches_verilog_task"]},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []},
+        "composed_system": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_fetch_cycle_bus_driver_policy_is_conflict_free"]},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_StoreLoadBranchTrace",
-      "stage": "instruction_trace",
-      "status": "Tested",
-      "proof_focus": "SB RAM write, LB RAM read, BEQ PC load, bus owners, PC/AC/RAM state",
-      "python_test_prefix": "test_rv8gr_store_load_branch_"
+      "circuit": "RV8GR_StoreLoadBranchTrace", "stage": "instruction_trace", "proof_focus": "SB RAM write, LB RAM read, BEQ PC load, bus owners, PC/AC/RAM state",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_StoreLoadBranchTrace/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_store_load_branch_trace_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_StoreLoadBranchTrace/tests/store_load_branch_trace.json", "python/tests/test_lib_circuits.py::test_rv8gr_store_load_branch_trace_vectors_execute"]},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []},
+        "composed_system": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_store_load_branch_trace_bus_policy_is_conflict_free"]},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_PageJumpTrace",
-      "stage": "instruction_trace",
-      "status": "Tested",
-      "proof_focus": "SETDP, SETPG, J, page-register state, PC page loading",
-      "python_test_prefix": "test_rv8gr_page_jump_"
+      "circuit": "RV8GR_PageJumpTrace", "stage": "instruction_trace", "proof_focus": "SETDP, SETPG, J, page-register state, PC page loading",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_PageJumpTrace/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_page_jump_trace_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_PageJumpTrace/tests/page_jump_trace.json", "python/tests/test_lib_circuits.py::test_rv8gr_page_jump_trace_vectors_execute"]},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []},
+        "composed_system": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_page_jump_trace_sequence_uses_latched_pg_for_jump"]},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_InterruptTrace",
-      "stage": "instruction_trace",
-      "status": "Tested",
-      "proof_focus": "EI, DI inert behavior, /IRQ LOW hold, release latch, sticky IRQ_FF",
-      "python_test_prefix": "test_rv8gr_interrupt_trace_"
+      "circuit": "RV8GR_InterruptTrace", "stage": "instruction_trace", "proof_focus": "EI, DI inert behavior, /IRQ LOW hold, release latch, sticky IRQ_FF",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_InterruptTrace/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_interrupt_trace_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_InterruptTrace/tests/interrupt_trace.json", "python/tests/test_lib_circuits.py::test_rv8gr_interrupt_trace_vectors_execute"]},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []},
+        "composed_system": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_interrupt_trace_matches_full_control_ei_assumption"]},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_BootSequenceTrace",
-      "stage": "instruction_trace",
-      "status": "Tested",
-      "proof_focus": "SETDP $80, SETPG $00, LI $00, J self, 12-clock manual bring-up",
-      "python_test_prefix": "test_rv8gr_boot_sequence_"
+      "circuit": "RV8GR_BootSequenceTrace", "stage": "instruction_trace", "proof_focus": "SETDP $80, SETPG $00, LI $00, J self, 12-clock manual bring-up",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_BootSequenceTrace/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_boot_sequence_trace_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_BootSequenceTrace/tests/boot_sequence_trace.json", "python/tests/test_lib_circuits.py::test_rv8gr_boot_sequence_trace_vectors_execute"]},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []},
+        "composed_system": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_boot_sequence_trace_ends_in_manual_loop_state"]},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_Lab13MarkerTrace",
-      "stage": "instruction_trace",
-      "status": "Tested",
-      "proof_focus": "Lab 13 LI/ADDI/SUBI/BEQ flow, $AA marker, bus owners, final pass state",
-      "python_test_prefix": "test_rv8gr_lab13_marker_"
+      "circuit": "RV8GR_Lab13MarkerTrace", "stage": "instruction_trace", "proof_focus": "Lab 13 LI/ADDI/SUBI/BEQ flow, $AA marker, bus owners, final pass state",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_Lab13MarkerTrace/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_lab13_marker_trace_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_Lab13MarkerTrace/tests/lab13_marker_trace.json", "python/tests/test_lib_circuits.py::test_rv8gr_lab13_marker_trace_rom_and_rows_match_source_program"]},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []},
+        "composed_system": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_lab13_marker_trace_marker_flow_and_final_pass_state"]},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     },
     {
-      "circuit": "RV8GR_WholeSystemChipLevelVirtual",
-      "stage": "whole_system_virtual",
-      "status": "Tested",
-      "proof_focus": "chip bench plan, boot, Lab 13, RAM/page/IRQ/bus traces, R/C and delay-noise stress nets",
-      "python_test_prefix": "test_rv8gr_whole_system_chip_level_virtual_"
+      "circuit": "RV8GR_WholeSystemChipLevelVirtual", "stage": "whole_system_virtual", "proof_focus": "chip bench plan, boot, Lab 13, RAM/page/IRQ/bus traces, R/C and delay-noise stress nets",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_whole_system_chip_level_virtual_package_shape"]},
+        "vector_equation": {"status": "covered", "evidence_refs": ["Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/tests/whole_system_chip_level_virtual.json", "python/tests/test_lib_circuits.py::test_rv8gr_whole_system_chip_level_virtual_includes_required_gates"]},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []},
+        "composed_system": {"status": "covered", "evidence_refs": ["python/tests/test_lib_circuits.py::test_rv8gr_whole_system_chip_level_virtual_catches_ai_fault_patterns"]},
+        "physical": {"status": "planned_not_measured", "evidence_refs": ["Lib/Circuits/physical_capture_plan.json"]}
+      }
     }
   ]
 }

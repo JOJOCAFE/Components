@@ -33,3 +33,13 @@ Run:
 ```sh
 PYTHONPATH=python python3 -B -m tests.test_lib_circuits
 ```
+
+## Build and test guide
+
+- **Build/probe:** Use Lab 14 for U31 and U33. Probe `/RST`, `EI_decode`, `/IRQ`, `IE`, and `IRQ_FF`; do not add a PC-force or acknowledge wire.
+- **Isolated manual-clock test:** Reset and release without a CPU clock. Pulse `EI_decode` LOW-to-HIGH once. Then pull `/IRQ` LOW, hold it, and release it HIGH.
+- **Integration test:** Execute EI and DI through T2, apply and release `/IRQ`, then continue 100 CPU ticks while watching both flags and PC.
+- **Pass:** Reset gives `IE=0, IRQ_FF=0`; EI sets IE; DI is inert; only the `/IRQ` release edge sets `IRQ_FF`; it stays set until reset; PC is unchanged by IRQ hardware.
+- **Stop:** Stop on a flag change at the wrong edge, loss of the sticky flag, unknown output, or any automatic PC jump.
+- **Temporary wiring:** Replace the Lab 12 temporary U33 tie-high wiring with the Lab 14 `EI_decode` connections before integration.
+- **Boundary:** This proves the v1.0 polling latch behavior. It does not prove IRQ switch quality, physical edge timing, or a vectored interrupt system.

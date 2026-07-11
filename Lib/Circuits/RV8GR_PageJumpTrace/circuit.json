@@ -6,7 +6,7 @@
   "source_project": {
     "name": "RV8GR",
     "paths": [
-      "/home/jo/kiro/RV8/RV8GR/doc/03_instruction_trace.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/02_instruction_trace.md",
       "Lib/Circuits/RV8GR_PageDataRegisters/circuit.json",
       "Lib/Circuits/RV8GR_BranchJumpControl/circuit.json",
       "Lib/Circuits/RV8GR_FullControlOpcodeSweep/circuit.json"
@@ -14,7 +14,7 @@
   },
   "purpose": "Package SETDP, SETPG, and J T2 traces so page-register state and PC page loading are checked together without running the full CPU.",
   "chips": [
-    {"ref": "U1_U4", "part": "74HC161", "role": "16-bit program counter chain"},
+    {"ref": "U1_U4", "part": "74HC161", "role": "16-bit program counter chain", "symbolic_endpoints": ["/LOAD"]},
     {"ref": "U23", "part": "74HC574", "role": "program-page register"},
     {"ref": "U32", "part": "74HC574", "role": "data-page register"},
     {"ref": "U24_U28", "part": "74HCxx gates", "role": "jump and page-register control"},
@@ -35,9 +35,9 @@
     {"name": "DP_Load", "direction": "output"}
   ],
   "wiring": [
-    {"net": "IBUS0..IBUS7", "connections": ["U34.Y0..Y7", "U23.D0..D7", "U32.D0..D7", "IBUSMON.1"], "rule": "SETDP, SETPG, and J use the immediate operand as exactly one active IBUS driver during T2."},
-    {"net": "PG_CLK", "connections": ["U23.CLK"], "rule": "Rises at T2 end only for SETPG; PG must hold during SETDP and J."},
-    {"net": "DP_Load", "connections": ["U32.CLK"], "rule": "Rises during T2 only for SETDP; DP must hold during SETPG and J."},
+    {"net": "IBUS0..IBUS7", "connections": ["U34.18..11", "U23.2..9", "U32.2..9", "IBUSMON.1"], "rule": "SETDP, SETPG, and J use the immediate operand as exactly one active IBUS driver during T2."},
+    {"net": "PG_CLK", "connections": ["U23.11"], "rule": "Rises at T2 end only for SETPG; PG must hold during SETDP and J."},
+    {"net": "DP_Load", "connections": ["U32.11"], "rule": "Rises during T2 only for SETDP; DP must hold during SETPG and J."},
     {"net": "/PC_LD", "connections": ["U1_U4./LOAD"], "rule": "LOW during T2 only for J or taken branches; J loads PC with {PG, IRL}."}
   ],
   "behavior": {
