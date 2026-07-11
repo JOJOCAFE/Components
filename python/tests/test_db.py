@@ -975,20 +975,19 @@ def test_remaining_seed_timing_and_electrical_evidence_is_extracted():
             assert timing["delay"]["datasheet_read_ns"][timing_name][key] == value
             definition = load_digital_definition("AT28C256")
             top_timing = definition["timing"]
-            assert top_timing == {
-                "variant": "AT28C256-15",
-                "paths": {
-                    "address_to_data_valid_ns": 150,
-                    "ce_to_data_valid_ns": 150,
-                    "oe_to_data_valid_ns": 70,
-                    "ce_or_oe_to_high_z_ns": 50,
-                },
-                "write": {
-                    "pulse_min_ns": 100,
-                    "data_setup_min_ns": 50,
-                    "address_hold_min_ns": 50,
-                },
+            assert top_timing["variant"] == "AT28C256-15"
+            assert top_timing["paths"] == {
+                "address_to_data_valid_ns": 150,
+                "ce_to_data_valid_ns": 150,
+                "oe_to_data_valid_ns": 70,
+                "ce_or_oe_to_high_z_ns": 50,
             }
+            assert top_timing["write"] == {
+                "pulse_min_ns": 100,
+                "data_setup_min_ns": 50,
+                "address_hold_min_ns": 50,
+            }
+            assert top_timing["timing_parameters"]["parameters"]["minimum_pulse_width"]["status"] == "exact"
             layer_delay = timing["delay"]
             assert layer_delay["selected_variant"] == "at28c256_15"
             assert "do_not_assume_70ns" in layer_delay["variant_policy"]["unselected_variant_policy"]

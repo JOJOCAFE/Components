@@ -116,7 +116,115 @@
           }
         }
       },
-      "version": 1
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "parameters": {
+          "clock_to_q_high": {
+            "status": "generic",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+            "note": "Clock-to-Q is source-backed, but HIGH versus LOW output polarity split is not extracted.",
+            "values_ns": {
+              "vcc_4_5_v": 28,
+              "vcc_6_v": 24
+            }
+          },
+          "clock_to_q_low": {
+            "status": "generic",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+            "note": "Clock-to-Q is source-backed, but HIGH versus LOW output polarity split is not extracted.",
+            "values_ns": {
+              "vcc_4_5_v": 28,
+              "vcc_6_v": 24
+            }
+          },
+          "tPZH": {
+            "status": "generic",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.enable_to_q",
+            "note": "Output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+            "values_ns": {
+              "vcc_4_5_v": 26,
+              "vcc_6_v": 23
+            }
+          },
+          "tPZL": {
+            "status": "generic",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.enable_to_q",
+            "note": "Output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+            "values_ns": {
+              "vcc_4_5_v": 26,
+              "vcc_6_v": 23
+            }
+          },
+          "tPHZ": {
+            "status": "generic",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.disable_to_z",
+            "note": "Output disable timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+            "values_ns": {
+              "vcc_4_5_v": 24,
+              "vcc_6_v": 22
+            }
+          },
+          "tPLZ": {
+            "status": "generic",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.disable_to_z",
+            "note": "Output disable timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+            "values_ns": {
+              "vcc_4_5_v": 24,
+              "vcc_6_v": 22
+            }
+          },
+          "setup": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.timing_requirements.setup_before_clock_ns",
+            "note": "Data setup requirement is source-backed.",
+            "values_ns": {
+              "data": {
+                "vcc_4_5_v": 20,
+                "vcc_6_v": 17
+              }
+            }
+          },
+          "hold": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.timing_requirements.hold_after_clock_ns",
+            "note": "Data hold requirement is source-backed.",
+            "values_ns": {
+              "vcc_4_5_v": 5,
+              "vcc_6_v": 5
+            }
+          },
+          "minimum_pulse_width": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.timing_requirements.clock_high_or_low_ns",
+            "note": "Clock pulse width requirement is source-backed.",
+            "values_ns": {
+              "vcc_4_5_v": 16,
+              "vcc_6_v": 14
+            }
+          },
+          "tPLH": {
+            "status": "generic",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+            "note": "Clocked output propagation is source-backed as clock-to-Q; input/output tPLH polarity split is not extracted.",
+            "values_ns": {
+              "vcc_4_5_v": 28,
+              "vcc_6_v": 24
+            }
+          },
+          "tPHL": {
+            "status": "generic",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+            "note": "Clocked output propagation is source-backed as clock-to-Q; input/output tPLH polarity split is not extracted.",
+            "values_ns": {
+              "vcc_4_5_v": 28,
+              "vcc_6_v": 24
+            }
+          }
+        }
+      }
     }
   },
   "generation": {
@@ -384,6 +492,114 @@
         }
       },
       "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "parameters": {
+        "clock_to_q_high": {
+          "status": "generic",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+          "note": "Clock-to-Q is source-backed, but HIGH versus LOW output polarity split is not extracted.",
+          "values_ns": {
+            "vcc_4_5_v": 28,
+            "vcc_6_v": 24
+          }
+        },
+        "clock_to_q_low": {
+          "status": "generic",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+          "note": "Clock-to-Q is source-backed, but HIGH versus LOW output polarity split is not extracted.",
+          "values_ns": {
+            "vcc_4_5_v": 28,
+            "vcc_6_v": 24
+          }
+        },
+        "tPZH": {
+          "status": "generic",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.enable_to_q",
+          "note": "Output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+          "values_ns": {
+            "vcc_4_5_v": 26,
+            "vcc_6_v": 23
+          }
+        },
+        "tPZL": {
+          "status": "generic",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.enable_to_q",
+          "note": "Output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+          "values_ns": {
+            "vcc_4_5_v": 26,
+            "vcc_6_v": 23
+          }
+        },
+        "tPHZ": {
+          "status": "generic",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.disable_to_z",
+          "note": "Output disable timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+          "values_ns": {
+            "vcc_4_5_v": 24,
+            "vcc_6_v": 22
+          }
+        },
+        "tPLZ": {
+          "status": "generic",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.disable_to_z",
+          "note": "Output disable timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+          "values_ns": {
+            "vcc_4_5_v": 24,
+            "vcc_6_v": 22
+          }
+        },
+        "setup": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.timing_requirements.setup_before_clock_ns",
+          "note": "Data setup requirement is source-backed.",
+          "values_ns": {
+            "data": {
+              "vcc_4_5_v": 20,
+              "vcc_6_v": 17
+            }
+          }
+        },
+        "hold": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.timing_requirements.hold_after_clock_ns",
+          "note": "Data hold requirement is source-backed.",
+          "values_ns": {
+            "vcc_4_5_v": 5,
+            "vcc_6_v": 5
+          }
+        },
+        "minimum_pulse_width": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.timing_requirements.clock_high_or_low_ns",
+          "note": "Clock pulse width requirement is source-backed.",
+          "values_ns": {
+            "vcc_4_5_v": 16,
+            "vcc_6_v": 14
+          }
+        },
+        "tPLH": {
+          "status": "generic",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+          "note": "Clocked output propagation is source-backed as clock-to-Q; input/output tPLH polarity split is not extracted.",
+          "values_ns": {
+            "vcc_4_5_v": 28,
+            "vcc_6_v": 24
+          }
+        },
+        "tPHL": {
+          "status": "generic",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+          "note": "Clocked output propagation is source-backed as clock-to-Q; input/output tPLH polarity split is not extracted.",
+          "values_ns": {
+            "vcc_4_5_v": 28,
+            "vcc_6_v": 24
+          }
+        }
+      }
     }
   },
   "verification": {
