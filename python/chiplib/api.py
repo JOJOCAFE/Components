@@ -8,7 +8,7 @@ import json
 import sys
 from typing import Any
 
-from .services import CONTRACT, FrontendDesignService, headless_capabilities
+from .services import CONTRACT, FrontendDesignService, headless_capabilities, project_builder_workflow
 
 
 JsonMap = dict[str, Any]
@@ -37,6 +37,16 @@ def handle_request(request: JsonMap, service: FrontendDesignService | None = Non
             )
         if command in {"headless-capabilities", "ai-capabilities"}:
             return _ok(command, headless_capabilities())
+        if command in {"project-builder", "ai-project-builder"}:
+            part = options.get("part", input_data.get("part"))
+            goal = options.get("goal", input_data.get("goal"))
+            return _ok(
+                command,
+                project_builder_workflow(
+                    part=str(part) if part is not None else None,
+                    goal=str(goal) if goal is not None else None,
+                ),
+            )
         if command == "load":
             return service.load(_required_map(input_data, "schematic"))
         if command == "create-chip":

@@ -95,6 +95,109 @@ def headless_capabilities() -> JsonMap:
     }
 
 
+def project_builder_workflow(*, part: str | None = None, goal: str | None = None) -> JsonMap:
+    """Return an AI-friendly workflow for helping a student build a project."""
+
+    selected_part: JsonMap | None = None
+    if part:
+        selected_part = component_detail(part)
+    starter_schematic = {
+        "name": "student-nand",
+        "description": "Starter 74HC00 NAND gate check before breadboard wiring.",
+        "chips": {"U1": {"part": "74HC00"}},
+        "aliases": {"A": "U1:1", "B": "U1:2", "Y": "U1:3"},
+        "connect": [
+            "VCC -> U1:14",
+            "GND -> U1:7",
+        ],
+        "inputs": {
+            "both_high": ["A = 1", "B = 1"],
+            "a_low": ["A = 0", "B = 1"],
+        },
+        "probes": {"logic": ["A", "B", "Y"]},
+        "expect": {
+            "nand_both_high": ["Y = 0"],
+            "nand_changed": ["Y has rising"],
+        },
+        "steps": [
+            "apply both_high",
+            "settle",
+            "probe",
+            "expect nand_both_high",
+            "apply a_low",
+            "settle",
+            "probe",
+            "expect nand_changed",
+        ],
+    }
+    return {
+        "format": "components.ai.project_builder_workflow",
+        "version": 1,
+        "contract": CONTRACT,
+        "goal": goal or "Help a student choose parts, build schematic JSON, simulate, probe, and explain the result before real wiring.",
+        "selected_part": selected_part,
+        "workflow": [
+            {
+                "step": "discover",
+                "why": "Choose chips from the Components DB instead of inventing parts.",
+                "cli": "PYTHONPATH=python python3 -B -m chiplib.cli db --student --group 74xx",
+                "api": {"command": "student-component-catalog", "options": {"group": "74xx"}},
+            },
+            {
+                "step": "inspect",
+                "why": "Check real DIP pins, active-low pins, evidence, timing notes, and procurement hints.",
+                "cli": "PYTHONPATH=python python3 -B -m chiplib.cli db 74HC00 --detail",
+                "api": {"command": "component-detail", "options": {"part": part or "74HC00"}},
+            },
+            {
+                "step": "draft",
+                "why": "Create schematic JSON with real refs, rails, buses, inputs, and probes.",
+                "artifact": "starter_schematic",
+            },
+            {
+                "step": "validate",
+                "why": "Catch missing chips, bad pins, invalid wiring rules, and schema mistakes before simulation.",
+                "cli": "PYTHONPATH=python python3 -B -m chiplib.cli validate /tmp/student-nand.json",
+                "api": {"command": "validate", "input": {"schematic": starter_schematic}},
+            },
+            {
+                "step": "simulate",
+                "why": "Run the virtual circuit and collect board errors and expectation results.",
+                "cli": "PYTHONPATH=python python3 -B -m chiplib.cli run /tmp/student-nand.json",
+                "api": {"command": "run", "input": {"schematic": starter_schematic}},
+            },
+            {
+                "step": "probe",
+                "why": "Read named signals so the student can compare expected and actual behavior.",
+                "cli": "PYTHONPATH=python python3 -B -m chiplib.cli probe /tmp/student-nand.json",
+                "api": {"command": "probe", "input": {"schematic": starter_schematic}},
+            },
+            {
+                "step": "safety-check",
+                "why": "For circuit packages, check common AI wiring mistakes before real breadboard work.",
+                "cli": "PYTHONPATH=python python3 -B -m chiplib.cli circuit-faults Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json",
+                "api": None,
+            },
+        ],
+        "starter_schematic": starter_schematic,
+        "explain_result_rules": [
+            "Start with whether ok is true or false.",
+            "Name the command that produced each issue.",
+            "For wiring issues, include chip ref, part, pin, and net when available.",
+            "For bus conflicts, tell the student which outputs may be fighting and to stop before real wiring.",
+            "For unsupported exports, say the simulator can still be used and do not guess a Verilog mapping.",
+            "For timing, say whether the result is generic simulation timing or source-backed datasheet timing.",
+        ],
+        "stop_before_hardware_when": [
+            "validation fails",
+            "simulation board errors are present",
+            "two outputs can drive the same net without a bus-owner rule",
+            "pinout evidence or active-low meaning is missing",
+            "chip gets hot or supply current is unexpected",
+        ],
+    }
+
+
 class SimulationService:
     """Stable internal boundary for simulation-backed Design operations."""
 

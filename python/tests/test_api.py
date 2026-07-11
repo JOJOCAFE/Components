@@ -79,6 +79,14 @@ def test_json_api_adapter_exposes_component_metadata_without_design():
     assert "student-component-catalog" in headless["result"]["core_commands"]["catalog"]
     assert "Do not invent pinouts, active-low markers, chip behavior, timing, or procurement facts." in headless["result"]["student_guardrails"]
 
+    builder = handle_request({"command": "project-builder", "options": {"part": "74HC00"}}, service)
+    assert builder["ok"] is True
+    assert builder["result"]["format"] == "components.ai.project_builder_workflow"
+    assert builder["result"]["selected_part"]["part"] == "74HC00"
+    assert builder["result"]["starter_schematic"]["chips"]["U1"]["part"] == "74HC00"
+    assert builder["result"]["starter_schematic"]["expect"]["nand_both_high"] == ["Y = 0"]
+    assert [step["step"] for step in builder["result"]["workflow"][:3]] == ["discover", "inspect", "draft"]
+
     catalog = handle_request({"command": "component-catalog", "options": {"group": "memory"}}, service)
     assert catalog["ok"] is True
     assert catalog["result"]["format"] == "components.db.catalog"

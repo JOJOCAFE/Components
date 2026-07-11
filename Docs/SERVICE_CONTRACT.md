@@ -741,6 +741,8 @@ Stateful frontend-edit commands operate on the loaded in-memory design:
 
 - `headless-capabilities`
 - `ai-capabilities`
+- `project-builder`
+- `ai-project-builder`
 - `create-design`
 - `load`
 - `create-chip`
@@ -808,6 +810,36 @@ API:
 
 AI assistants should read this manifest before helping a student choose parts,
 write schematic JSON, run simulation, or suggest real breadboard changes.
+
+### project-builder / ai-project-builder
+
+Purpose: return the concrete build-along workflow for an AI assistant or
+headless client helping a student. The response includes discovery, inspection,
+drafting, validation, simulation, probe, and safety-check steps plus a starter
+schematic and result-explanation rules.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli project-builder --part 74HC00
+```
+
+API:
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "project-builder",
+  "options": {
+    "part": "74HC00",
+    "goal": "Build and test a NAND gate before breadboard wiring."
+  }
+}
+```
+
+AI assistants should use `selected_part`, `starter_schematic`, `workflow`, and
+`explain_result_rules` from this response instead of hard-coding private
+teaching flow.
 
 ## Pluggable Service Rules
 

@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .db import audit_db, component_catalog, component_detail, component_summary, db_status_report, generate_component_artifacts, load_component, load_component_package, load_digital_definition, student_component_catalog
-from .services import DesignCommandService, headless_capabilities
+from .services import DesignCommandService, headless_capabilities, project_builder_workflow
 from .virtual_faults import load_circuit_fault_report
 
 
@@ -39,6 +39,11 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     headless = sub.add_parser("headless", help="emit CLI/API/AI capability manifest")
     headless.add_argument("-o", "--output")
 
+    builder = sub.add_parser("project-builder", help="emit AI/student project-builder workflow")
+    builder.add_argument("--part", help="optional selected component, such as 74HC00")
+    builder.add_argument("--goal", help="optional project goal text")
+    builder.add_argument("-o", "--output")
+
     db = sub.add_parser("db")
     db.add_argument("part", nargs="?", help="optional component part, such as 74HC00")
     db.add_argument("--audit", action="store_true", help="audit DB manifests against legacy catalog files")
@@ -57,6 +62,11 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
 
     if args.command == "headless":
         return write_json(headless_capabilities(), output=getattr(args, "output", None))
+    if args.command == "project-builder":
+        return write_json(
+            project_builder_workflow(part=getattr(args, "part", None), goal=getattr(args, "goal", None)),
+            output=getattr(args, "output", None),
+        )
 
     if args.command == "db":
         if getattr(args, "audit", False):

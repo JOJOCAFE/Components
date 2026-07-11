@@ -179,6 +179,20 @@ def test_cli_db_summary_and_part_lookup():
     assert headless_data["entrypoints"]["api_stdio"].endswith("chiplib.api --stdio")
     assert "validate" in headless_data["core_commands"]["simulation"]
 
+    builder = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "project-builder", "--part", "74HC00"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert builder.returncode == 0, builder.stderr
+    builder_data = json.loads(builder.stdout)
+    assert builder_data["format"] == "components.ai.project_builder_workflow"
+    assert builder_data["selected_part"]["part"] == "74HC00"
+    assert builder_data["starter_schematic"]["aliases"]["Y"] == "U1:3"
+    assert "expect nand_both_high" in builder_data["starter_schematic"]["steps"]
+
     summary = subprocess.run(
         [sys.executable, "-B", "-m", "chiplib.cli", "db"],
         cwd=Path(__file__).resolve().parents[1],

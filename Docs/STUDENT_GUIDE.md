@@ -62,6 +62,16 @@ PYTHONPATH=python python3 -B -m chiplib.cli headless
 That JSON is the compact CLI/API/AI manifest. It lists safe workflow order,
 student guardrails, supported commands, and current limits.
 
+To ask Components for the build-along workflow an AI should follow:
+
+```sh
+PYTHONPATH=python python3 -B -m chiplib.cli project-builder --part 74HC00
+```
+
+That response includes a starter NAND schematic, the catalog -> inspect ->
+draft -> validate -> run -> probe order, and rules for explaining failures to a
+student.
+
 For a first student session, do not read every reference document. Do this
 short path:
 
@@ -249,6 +259,8 @@ These commands are available through `chiplib.api`:
 
 - `headless-capabilities`
 - `ai-capabilities`
+- `project-builder`
+- `ai-project-builder`
 - `create-design`
 - `load`
 - `create-chip`
