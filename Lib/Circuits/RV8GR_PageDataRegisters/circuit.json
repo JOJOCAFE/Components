@@ -43,9 +43,9 @@
     {"net": "IBUS0..IBUS7", "connections": ["U23.2..9", "U32.2..9"]},
     {"net": "PG_CLK", "connections": ["U25.11", "U23.11"]},
     {"net": "DP_Load", "connections": ["U33.6", "U32.11"]},
-    {"net": "PG0..PG3", "connections": ["U23.19", "U23.18", "U23.17", "U23.16", "U3.3..6"]},
-    {"net": "PG4..PG7", "connections": ["U23.15", "U23.14", "U23.13", "U23.12", "U4.3..6"]},
-    {"net": "IRL0..IRL7", "connections": ["U1.3..6", "U2.3..6"]},
+    {"net": "PG0..PG3", "connections": ["U23.19", "U23.18", "U23.17", "U23.16", "RV8GR_PC16 high-load low nibble"]},
+    {"net": "PG4..PG7", "connections": ["U23.15", "U23.14", "U23.13", "U23.12", "RV8GR_PC16 high-load high nibble"]},
+    {"net": "IRL0..IRL7", "connections": ["RV8GR_InstructionLatch IRL output", "RV8GR_PC16 low-load inputs"]},
     {"net": "PC_LOAD0..PC_LOAD15", "connections": ["IRL0..IRL7", "PG0..PG7"]}
   ],
   "behavior": {

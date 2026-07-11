@@ -53,6 +53,47 @@ def load_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def circuit_package_paths() -> list[Path]:
+    return sorted((ROOT / "Lib" / "Circuits").glob("RV8GR_*/circuit.json"))
+
+
+def db_definition_path_for_part(part: str) -> Path | None:
+    for path in (ROOT / "DB").glob("*/" + part + "/definition/definition.json"):
+        if path.parent.parent.name == part:
+            return path
+    return None
+
+
+def real_chip_parts() -> set[str]:
+    return {
+        path.parent.parent.name
+        for path in (ROOT / "DB").glob("*/*/definition/definition.json")
+    }
+
+
+def package_circuit_parts() -> set[str]:
+    return {path.parent.name for path in circuit_package_paths()}
+
+
+def is_declared_non_db_part(part: str) -> bool:
+    return (
+        part in package_circuit_parts()
+        or part in {"Virtual", "RV8GR_VIRTUAL_BENCH_PLAN", "virtual_control_word"}
+        or part.startswith("74HCxx ")
+    )
+
+
+def numeric_connection_pins(connection: str) -> tuple[str, set[int]] | None:
+    match = re.fullmatch(r"([A-Za-z][A-Za-z0-9_]*)\.([0-9]+)(?:\.\.([0-9]+))?", connection)
+    if not match:
+        return None
+    ref = match.group(1)
+    start = int(match.group(2))
+    end = int(match.group(3) or start)
+    lo, hi = sorted((start, end))
+    return ref, set(range(lo, hi + 1))
+
+
 def nested_value(data: dict, dotted_path: str):
     value = data
     for key in dotted_path.split("."):
@@ -1405,6 +1446,8 @@ def test_rv8gr_data_page_memory_package_shape():
         "U33": "74HC21",
         "U29": "74HC157",
         "U30": "74HC157",
+        "U24": "74HC04",
+        "U7": "74HC245",
         "ROM1": "AT28C256",
         "RAM1": "62256",
     }
@@ -3316,13 +3359,48 @@ def test_rv8gr_page_jump_trace_is_listed_in_circuit_backlog():
 
 
 def test_all_started_circuit_packages_have_tests():
-    for circuit_path in sorted((ROOT / "Lib" / "Circuits").glob("RV8GR_*/circuit.json")):
+    for circuit_path in circuit_package_paths():
         circuit = load_json(circuit_path)
         assert circuit["schema"] == "components.lib.circuit"
         tests = circuit.get("verification", {}).get("tests", [])
         assert tests, circuit_path
         for test in tests:
             assert (circuit_path.parent / test).exists(), (circuit_path, test)
+            assert load_json(circuit_path.parent / test)["circuit"] == circuit["id"]
+
+
+def test_all_started_circuit_packages_resolve_current_chip_parts_and_numeric_pins():
+    db_parts = real_chip_parts()
+    for circuit_path in circuit_package_paths():
+        circuit = load_json(circuit_path)
+        refs: dict[str, str] = {}
+        for chip in circuit.get("chips", []):
+            ref = chip["ref"]
+            part = chip["part"]
+            assert ref not in refs, (circuit_path, ref)
+            refs[ref] = part
+            assert part in db_parts or is_declared_non_db_part(part), (circuit_path, chip)
+
+        exact_ref_pins: dict[str, set[int]] = {}
+        for ref, part in refs.items():
+            definition_path = db_definition_path_for_part(part)
+            if definition_path is None:
+                continue
+            definition = load_json(definition_path)
+            pins = definition.get("pins") or definition.get("definition_layers", {}).get("physical", {}).get("pins", [])
+            exact_ref_pins[ref] = {int(pin["number"]) for pin in pins}
+
+        for wiring in circuit.get("wiring", []):
+            assert wiring.get("net"), (circuit_path, wiring)
+            assert wiring.get("connections"), (circuit_path, wiring)
+            for connection in wiring["connections"]:
+                parsed = numeric_connection_pins(connection)
+                if parsed is None:
+                    continue
+                ref, pins = parsed
+                assert ref in refs, (circuit_path, connection)
+                if ref in exact_ref_pins:
+                    assert pins <= exact_ref_pins[ref], (circuit_path, connection, refs[ref])
 
 
 def test_rv8gr_circuit_readme_lists_every_package_and_only_existing_packages():
@@ -3475,6 +3553,7 @@ def run_all():
     test_rv8gr_breadboard_rc_model_is_estimate_not_chip_definition_truth()
     test_rv8gr_page_jump_trace_is_listed_in_circuit_backlog()
     test_all_started_circuit_packages_have_tests()
+    test_all_started_circuit_packages_resolve_current_chip_parts_and_numeric_pins()
     test_rv8gr_circuit_readme_lists_every_package_and_only_existing_packages()
 
 

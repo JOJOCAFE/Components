@@ -59,7 +59,7 @@
     {"net": "ACC_CLK", "connections": ["U27.11", "U9.11", "U21.3"]},
     {"net": "/AC_BUF", "connections": ["U14.1", "U14.19"]},
     {"net": "ZERO_COMPARE", "connections": ["U22.Y", "U21.4"]},
-    {"net": "Z_flag", "connections": ["U21.5", "U28.1"]}
+    {"net": "Z_flag", "connections": ["U21.5", "branch/control Z input"]}
   ],
   "behavior": {
     "xor_b": "XOR_MODE=0 selects {8{ALU_SUB}}. XOR_MODE=1 selects AC feedback.",

@@ -62,7 +62,11 @@
       "source_paths": [
         "definition_layers.timing.delay.default_ns",
         "definition_layers.timing.delay.datasheet_read_ns.tacc_address_to_output",
-        "definition_layers.timing.delay.datasheet_read_ns.tdf_ce_or_oe_to_float"
+        "definition_layers.timing.delay.datasheet_read_ns.tdf_ce_or_oe_to_float",
+        "definition_layers.timing.timing_parameters.parameters.tPLH",
+        "definition_layers.timing.timing_parameters.parameters.tPHL",
+        "definition_layers.timing.timing_parameters.parameters.tPHZ",
+        "definition_layers.timing.timing_parameters.parameters.tPLZ"
       ],
       "model_read_delay_ns": 150,
       "datasheet_read_ns": {"at28c256_15": 150, "at28c256_20": 200, "at28c256_25": 250, "at28c256_35": 350},
@@ -78,7 +82,12 @@
         "definition_layers.timing.delay.model_delay_ns",
         "definition_layers.timing.delay.status",
         "definition_layers.timing.delay.datasheet_read_ns",
-        "definition_layers.timing.delay.datasheet_write_ns"
+        "definition_layers.timing.delay.datasheet_write_ns",
+        "definition_layers.timing.timing_parameters.parameters.tPLH",
+        "definition_layers.timing.timing_parameters.parameters.tPHL",
+        "definition_layers.timing.timing_parameters.parameters.tPHZ",
+        "definition_layers.timing.timing_parameters.parameters.tPLZ",
+        "definition_layers.timing.timing_parameters.parameters.minimum_pulse_width"
       ],
       "model_read_delay_ns": 70,
       "datasheet_read_ns": {"km62256c_55": 55, "km62256c_70": 70},
@@ -96,7 +105,12 @@
       "source": "DB/74xx/74HC574/definition/definition.json",
       "source_paths": [
         "definition_layers.timing.timing_requirements.setup_before_clock_ns.data.vcc_4_5_v",
-        "definition_layers.timing.timing_requirements.hold_after_clock_ns.vcc_4_5_v"
+        "definition_layers.timing.timing_requirements.hold_after_clock_ns.vcc_4_5_v",
+        "definition_layers.timing.timing_parameters.parameters.clock-to-Q high",
+        "definition_layers.timing.timing_parameters.parameters.clock-to-Q low",
+        "definition_layers.timing.timing_parameters.parameters.setup",
+        "definition_layers.timing.timing_parameters.parameters.hold",
+        "definition_layers.timing.timing_parameters.parameters.minimum_pulse_width"
       ],
       "setup_before_clock_ns": 20,
       "hold_after_clock_ns": 5,
@@ -109,7 +123,12 @@
       "source": "DB/74xx/74HC161/definition/definition.json",
       "source_paths": [
         "definition_layers.timing.timing_requirements.setup_before_clock_ns",
-        "definition_layers.timing.timing_requirements.hold_after_clock_ns.vcc_4_5_v"
+        "definition_layers.timing.timing_requirements.hold_after_clock_ns.vcc_4_5_v",
+        "definition_layers.timing.timing_parameters.parameters.clock-to-Q high",
+        "definition_layers.timing.timing_parameters.parameters.clock-to-Q low",
+        "definition_layers.timing.timing_parameters.parameters.setup",
+        "definition_layers.timing.timing_parameters.parameters.hold",
+        "definition_layers.timing.timing_parameters.parameters.minimum_pulse_width"
       ],
       "setup_before_clock_ns": {"data": 30, "load_low": 27, "enp_ent": 34, "clear_inactive": 25},
       "hold_after_clock_ns": 0,

@@ -19,6 +19,8 @@
     {"ref": "U33", "part": "74HC21", "role": "SETDP decode: DP_Load"},
     {"ref": "U29", "part": "74HC157", "role": "Address mux bits 8-11"},
     {"ref": "U30", "part": "74HC157", "role": "Address mux bits 12-15 and A15"},
+    {"ref": "U24", "part": "74HC04", "role": "Inverts A15 so ROM and RAM selects stay complementary"},
+    {"ref": "U7", "part": "74HC245", "role": "DBUS/IBUS bridge used by data memory reads and writes"},
     {"ref": "ROM1", "part": "AT28C256", "role": "ROM read source for A15=0"},
     {"ref": "RAM1", "part": "62256", "role": "RAM read/write target for A15=1"}
   ],

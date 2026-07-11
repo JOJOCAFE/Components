@@ -446,6 +446,49 @@ def test_starter_chips_have_normalized_timing_parameters():
     assert hc161["minimum_pulse_width"]["values_ns"]["clock_high_or_low_min"]["vcc_4_5_v"] == 16
 
 
+def test_first_non_rv8gr_timing_batch_has_canonical_parameters():
+    expected = {
+        "74HC02": "generic",
+        "74HC03": "exact",
+        "74HC05": "exact",
+        "74HC08": "generic",
+        "74HC10": "generic",
+        "74HC11": "generic",
+        "74HC14": "generic",
+        "74HC132": "generic",
+        "74HC154": "generic",
+        "74HC158": "generic",
+        "74HC352": "generic",
+        "74HC4078": "generic",
+        "74HCT04": "generic",
+        "74HCT14": "generic",
+    }
+
+    for part, propagation_status in expected.items():
+        definition = load_digital_definition(part)
+        public_parameters = definition["timing"]["timing_parameters"]["parameters"]
+        package = load_digital_package(part)
+        layer_parameters = package["layers"]["definition"]["timing"]["timing_parameters"]["parameters"]
+        assert public_parameters.keys() == layer_parameters.keys()
+        assert public_parameters["tPLH"]["status"] == propagation_status
+        assert public_parameters["tPHL"]["status"] == propagation_status
+        assert public_parameters["tPLH"]["values_ns"]
+        assert public_parameters["tPHL"]["values_ns"]
+
+        for name in (
+            "clock_to_q_high",
+            "clock_to_q_low",
+            "hold",
+            "minimum_pulse_width",
+            "setup",
+            "tPHZ",
+            "tPLZ",
+            "tPZH",
+            "tPZL",
+        ):
+            assert public_parameters[name]["status"] == "not_applicable"
+
+
 def test_virtual_and_passive_components_use_definition_packages():
     assert generic_package_parts() == {
         "InputSource",
