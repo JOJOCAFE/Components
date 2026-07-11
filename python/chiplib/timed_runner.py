@@ -174,6 +174,17 @@ class TimedRunner:
                 provenance="circuit_constraint", source="circuit proof vector",
             ))
 
+    def observe_driver_transition(
+        self, net: str, before: Logic4, after: Logic4, *, required_deadband_ps: int = 0
+    ) -> None:
+        """Track ownership gaps automatically for output-enable transitions."""
+
+        before, after = normalize_logic4(before), normalize_logic4(after)
+        if before != "Z" and after == "Z":
+            self.mark_driver_disabled(net)
+        elif before == "Z" and after != "Z":
+            self.mark_driver_enabled(net, required_deadband_ps=required_deadband_ps)
+
     def run_until(self, time_ps: int) -> tuple[ScheduledEvent, ...]:
         return self.scheduler.run_until(time_ps, self._dispatch)
 

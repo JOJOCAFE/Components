@@ -11,10 +11,10 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 GENERATOR_PATH = ROOT / "tools" / "circuit_campaign_report.py"
-CAMPAIGN_JSON = ROOT / "Lib" / "Circuits" / "RV8GR_CIRCUIT_TEST_CAMPAIGN.json"
-CAMPAIGN_MD = ROOT / "Lib" / "Circuits" / "RV8GR_CIRCUIT_TEST_CAMPAIGN.md"
-RUNTIME_JSON = ROOT / "Lib" / "Circuits" / "RV8GR_CIRCUIT_RUNTIME_EVIDENCE.json"
-PHYSICAL_PLAN = ROOT / "Lib" / "Circuits" / "physical_capture_plan.json"
+CAMPAIGN_JSON = ROOT / "examples" / "circuits" / "RV8GR_CIRCUIT_TEST_CAMPAIGN.json"
+CAMPAIGN_MD = ROOT / "examples" / "circuits" / "RV8GR_CIRCUIT_TEST_CAMPAIGN.md"
+RUNTIME_JSON = ROOT / "examples" / "circuits" / "RV8GR_CIRCUIT_RUNTIME_EVIDENCE.json"
+PHYSICAL_PLAN = ROOT / "examples" / "circuits" / "physical_capture_plan.json"
 EXPECTED_PACKAGE_COUNT = 22
 ALLOWED_OUTCOMES = {
     "pass",
@@ -125,7 +125,7 @@ class CircuitCampaignGateTests(unittest.TestCase):
         names = [package_name(row) for row in package_rows(campaign)]
         actual = sorted(
             path.parent.name
-            for path in (ROOT / "Lib" / "Circuits").glob("RV8GR_*/circuit.json")
+            for path in (ROOT / "examples" / "circuits").glob("RV8GR_*/circuit.json")
         )
         self.assertEqual(len(actual), EXPECTED_PACKAGE_COUNT, "package inventory changed")
         self.assertEqual(len(names), EXPECTED_PACKAGE_COUNT, "campaign must have 22 rows")
@@ -224,8 +224,8 @@ class CircuitCampaignGateTests(unittest.TestCase):
             if row["modeled_timing_status"] == "pass":
                 self.assertEqual(timing["status"], "passed", package)
                 self.assertFalse(timing["blocks"], package)
-                self.assertTrue(timing["events"], package)
-                self.assertTrue(timing["constraints"], package)
+                self.assertEqual(timing["runner"], "CircuitTimingBinding", package)
+                self.assertEqual(len(timing["checks"]), 9, package)
             elif row["modeled_timing_status"] == "not_applicable":
                 self.assertEqual(timing["status"], "not_applicable", package)
                 self.assertFalse(timing["blocks"], package)
@@ -235,28 +235,30 @@ class CircuitCampaignGateTests(unittest.TestCase):
             self.assertTrue(timing["modeled_only"], package)
             self.assertEqual(timing["physical_status"], "not_measured", package)
 
-    def test_ring_counter_timing_stays_blocked_without_enforced_thresholds(self):
+    def test_ring_counter_timing_pass_requires_enforced_thresholds(self):
         runtime = load_json(RUNTIME_JSON)
         timing = runtime["packages"]["RV8GR_RingCounter"]["timing"]
-        self.assertEqual(timing["status"], "blocked")
-        self.assertEqual(
-            timing["blocks"][0]["code"],
-            "package_timing_thresholds_not_enforced",
-        )
+        self.assertEqual(timing["status"], "passed")
+        self.assertFalse(timing["blocks"])
+        self.assertEqual(len(timing["checks"]), 9)
+        for constraint in ("setup", "hold", "minimum_pulse_width"):
+            rows = [row for row in timing["checks"] if row["constraint"] == constraint]
+            self.assertEqual([row["offset_ps"] for row in rows], [-1, 0, 1])
+            self.assertEqual([row["violation"] for row in rows], [True, False, False])
 
     def test_logical_status_ignores_index_coverage_label_and_executes_named_test(self):
         generator = load_generator()
         record = generator.logical_record(
             "RV8GR_RingCounter",
             [
-                "Lib/Circuits/RV8GR_RingCounter/tests/ring_counter.json",
+                "examples/circuits/RV8GR_RingCounter/tests/ring_counter.json",
                 "python/tests/test_lib_circuits.py::test_rv8gr_ring_counter_sequence_and_reset",
             ],
         )
         self.assertEqual(record["status"], "passed")
         blocked = generator.logical_record(
             "RV8GR_RingCounter",
-            ["Lib/Circuits/RV8GR_RingCounter/tests/ring_counter.json"],
+            ["examples/circuits/RV8GR_RingCounter/tests/ring_counter.json"],
         )
         self.assertEqual(blocked["status"], "blocked")
 

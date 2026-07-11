@@ -28,7 +28,7 @@ enough for beginners.
 4. Missing chip properties are allowed only when visible in DB status,
    `missing_properties`, `missing_files`, or task docs.
 5. Student clarity is a hard requirement, not a polish pass.
-6. RV8GR-derived circuits in `Lib/Circuits/` must carry wiring data, proof
+6. RV8GR-derived circuits in `examples/circuits/` must carry wiring data, proof
    vectors, Python tests, and student docs together; timing, synchronous edge
    behavior, and bus ownership concerns must be explicit tasks, not assumptions.
 7. Active chip packages use compact `definition/definition.json` source files:
@@ -36,5 +36,5 @@ enough for beginners.
    must stay visible, and chip-local Python models must run standalone with only
    `chiplib/core.py`.
 
-See `Docs/TEAM_SKILLS.md` for the compact team contract and
-`Docs/Agents/` for delegated per-agent skills.
+See `docs/TEAM_SKILLS.md` for the compact team contract and
+`docs/agents/` for delegated per-agent skills.

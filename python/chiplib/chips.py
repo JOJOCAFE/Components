@@ -477,8 +477,8 @@ def create_chip(part: str, name: str) -> Chip:
 
 
 def _create_db_local_chip(part: str, name: str) -> Chip:
-    for group in ("74xx", "Memory", "Support"):
-        model_path = ROOT / "DB" / group / part / "simulation" / "model.py"
+    for group in ("74xx", "memory", "support"):
+        model_path = ROOT / "lib" / "standard" / group / part / "simulation" / "model.py"
         if not model_path.exists():
             continue
         module_name = f"chiplib_db_model_{part.lower()}"

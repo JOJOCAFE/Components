@@ -44,8 +44,8 @@ def handle_request(
                 str(options.get("name", input_data.get("name", "untitled"))),
                 description=str(options.get("description", input_data.get("description", ""))),
             )
-        if command.startswith("circuit-") and command in {
-            "circuit-load", "circuit-validate", "circuit-run", "circuit-step", "circuit-probe"
+        if command in {
+            "circuit-load", "circuit-validate", "circuit-run", "circuit-step", "circuit-probe", "timed-run"
         }:
             def dispatch(selected: CircuitCommandService) -> JsonMap:
                 return _handle_circuit_command(command, input_data, options, selected)
@@ -64,6 +64,16 @@ def handle_request(
             if require_circuit_session:
                 return _error(command, "api.session_id_required", "HTTP circuit commands require session_id")
             return dispatch(circuit_service)
+        if command == "explain-violations":
+            response = input_data.get("response", input_data.get("result", input_data))
+            if not isinstance(response, dict):
+                raise ValueError("input.response must be an object")
+            return circuit_service.explain_violations(response)
+        if command == "export-evidence":
+            response = input_data.get("response", input_data.get("result", input_data))
+            if not isinstance(response, dict):
+                raise ValueError("input.response must be an object")
+            return circuit_service.export_evidence(response, include_traces=bool(options.get("include_traces", input_data.get("include_traces", False))))
         if command in {"headless-capabilities", "ai-capabilities"}:
             return _ok(command, headless_capabilities())
         if command in {"project-builder", "ai-project-builder"}:
@@ -227,6 +237,11 @@ def _handle_circuit_command(
         if not isinstance(operations, list):
             raise ValueError("input.operations must be an array")
         return service.run(path_text, operations=[str(item) for item in operations])
+    if command == "timed-run":
+        operations = options.get("operations", input_data.get("operations", []))
+        if not isinstance(operations, list):
+            raise ValueError("input.operations must be an array")
+        return service.timed_run(path_text, operations=[str(item) for item in operations])
     if command == "circuit-step":
         operation = options.get("operation", input_data.get("operation"))
         if operation is None:

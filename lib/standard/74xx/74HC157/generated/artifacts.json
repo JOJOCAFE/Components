@@ -1,0 +1,967 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [
+        {
+          "explanation": "A is a 4-bit signal group. Bit 0 is pin 2 and the highest bit is pin 14.",
+          "name": "A",
+          "pins_lsb_first": [
+            2,
+            5,
+            11,
+            14
+          ],
+          "width": 4
+        },
+        {
+          "explanation": "B is a 4-bit signal group. Bit 0 is pin 3 and the highest bit is pin 13.",
+          "name": "B",
+          "pins_lsb_first": [
+            3,
+            6,
+            10,
+            13
+          ],
+          "width": 4
+        },
+        {
+          "explanation": "Y is a 4-bit signal group. Bit 0 is pin 4 and the highest bit is pin 12.",
+          "name": "Y",
+          "pins_lsb_first": [
+            4,
+            7,
+            9,
+            12
+          ],
+          "width": 4
+        }
+      ],
+      "buses": {
+        "A": {
+          "pins_lsb_first": [
+            2,
+            5,
+            11,
+            14
+          ],
+          "width": 4
+        },
+        "B": {
+          "pins_lsb_first": [
+            3,
+            6,
+            10,
+            13
+          ],
+          "width": 4
+        },
+        "Y": {
+          "pins_lsb_first": [
+            4,
+            7,
+            9,
+            12
+          ],
+          "width": 4
+        }
+      },
+      "control_explanations": [
+        {
+          "explanation": "A/B controls select. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A/B - select",
+          "pin": "A/B"
+        },
+        {
+          "explanation": "/G controls enable. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/G - enable",
+          "pin": "/G"
+        }
+      ],
+      "controls": [
+        {
+          "active_low": false,
+          "function": "select",
+          "pin": "A/B"
+        },
+        {
+          "active_low": true,
+          "function": "enable",
+          "pin": "/G"
+        }
+      ],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "Default simulator delay is 18 ns; timed mode uses path-specific datasheet delays.",
+        "Check the control pins first: A/B, /G.",
+        "Treat these as grouped signals in the UI: A, B, Y."
+      ],
+      "overview": "74HC157 is a 16-pin DIP part for multiplexer.",
+      "part": "74HC157",
+      "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 10,
+          "names": [
+            "A/B",
+            "1A",
+            "1B",
+            "2A",
+            "2B",
+            "3B",
+            "3A",
+            "4B",
+            "4A",
+            "/G"
+          ],
+          "note": "Input pins: A/B, 1A, 1B, 2A, 2B, 3B, and 4 more."
+        },
+        "output": {
+          "count": 4,
+          "names": [
+            "1Y",
+            "2Y",
+            "3Y",
+            "4Y"
+          ],
+          "note": "Output pins: 1Y, 2Y, 3Y, 4Y."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "Quad 2-Line to 1-Line Multiplexer.",
+      "timing_note": "Default simulator delay is 18 ns; timed mode uses path-specific datasheet delays.",
+      "title": "Quad 2-Line to 1-Line Multiplexer",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "A/B controls select. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A/B - select",
+          "pin": "A/B"
+        },
+        {
+          "explanation": "1A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1A - input",
+          "pin": "1A"
+        },
+        {
+          "explanation": "1B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1B - input",
+          "pin": "1B"
+        },
+        {
+          "explanation": "2A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2A - input",
+          "pin": "2A"
+        },
+        {
+          "explanation": "2B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2B - input",
+          "pin": "2B"
+        },
+        {
+          "explanation": "3B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3B - input",
+          "pin": "3B"
+        },
+        {
+          "explanation": "3A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3A - input",
+          "pin": "3A"
+        },
+        {
+          "explanation": "4B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4B - input",
+          "pin": "4B"
+        },
+        {
+          "explanation": "4A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4A - input",
+          "pin": "4A"
+        },
+        {
+          "explanation": "/G controls enable. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/G - enable",
+          "pin": "/G"
+        }
+      ],
+      "controls": [
+        "A/B",
+        "1A",
+        "1B",
+        "2A",
+        "2B",
+        "3B",
+        "3A",
+        "4B",
+        "4A",
+        "/G"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC157",
+      "probe_labels": [
+        {
+          "hint": "Read all 4 bits together.",
+          "label": "A bus",
+          "name": "A"
+        },
+        {
+          "hint": "Read all 4 bits together.",
+          "label": "B bus",
+          "name": "B"
+        },
+        {
+          "hint": "Read all 4 bits together.",
+          "label": "Y bus",
+          "name": "Y"
+        }
+      ],
+      "probes": [
+        "A",
+        "B",
+        "Y"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change A/B?",
+        "Which truth-table row matches the value on A?"
+      ],
+      "title": "Try 74HC157 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {
+        "A": {
+          "pins_lsb_first": [
+            2,
+            5,
+            11,
+            14
+          ],
+          "width": 4
+        },
+        "B": {
+          "pins_lsb_first": [
+            3,
+            6,
+            10,
+            13
+          ],
+          "width": 4
+        },
+        "Y": {
+          "pins_lsb_first": [
+            4,
+            7,
+            9,
+            12
+          ],
+          "width": 4
+        }
+      },
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "disabled_output": 0,
+        "enable": {
+          "active_low": true,
+          "pin": "/G"
+        },
+        "select": {
+          "0": "A",
+          "1": "B",
+          "pin": "A/B"
+        },
+        "type": "quad_2_to_1_mux",
+        "width": 4
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC157",
+      "pins": [
+        {
+          "direction": "input",
+          "function": "select",
+          "name": "A/B",
+          "number": 1
+        },
+        {
+          "bit": 0,
+          "bus": "A",
+          "direction": "input",
+          "name": "1A",
+          "number": 2
+        },
+        {
+          "bit": 0,
+          "bus": "B",
+          "direction": "input",
+          "name": "1B",
+          "number": 3
+        },
+        {
+          "bit": 0,
+          "bus": "Y",
+          "direction": "output",
+          "name": "1Y",
+          "number": 4
+        },
+        {
+          "bit": 1,
+          "bus": "A",
+          "direction": "input",
+          "name": "2A",
+          "number": 5
+        },
+        {
+          "bit": 1,
+          "bus": "B",
+          "direction": "input",
+          "name": "2B",
+          "number": 6
+        },
+        {
+          "bit": 1,
+          "bus": "Y",
+          "direction": "output",
+          "name": "2Y",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "bit": 2,
+          "bus": "Y",
+          "direction": "output",
+          "name": "3Y",
+          "number": 9
+        },
+        {
+          "bit": 2,
+          "bus": "B",
+          "direction": "input",
+          "name": "3B",
+          "number": 10
+        },
+        {
+          "bit": 2,
+          "bus": "A",
+          "direction": "input",
+          "name": "3A",
+          "number": 11
+        },
+        {
+          "bit": 3,
+          "bus": "Y",
+          "direction": "output",
+          "name": "4Y",
+          "number": 12
+        },
+        {
+          "bit": 3,
+          "bus": "B",
+          "direction": "input",
+          "name": "4B",
+          "number": 13
+        },
+        {
+          "bit": 3,
+          "bus": "A",
+          "direction": "input",
+          "name": "4A",
+          "number": 14
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "function": "enable",
+          "name": "/G",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "multiplexer",
+      "timing": {
+        "delay_ns": 18,
+        "simple": {
+          "default_delay_ns": 18,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 18,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 18
+                }
+              },
+              "to": "output"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 18,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 18
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC157 is not a clocked storage element for this parameter.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC157 is not a clocked storage element for this parameter.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC157 is combinational/bus-control logic and has no clocked data hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC157 is not a clocked storage element for this parameter.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC157 is combinational/bus-control logic and has no clocked data setup timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI SN74HC157 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "data_to_output": 25,
+                  "select_to_output": 25,
+                  "strobe_to_output": 23,
+                  "transition": 12
+                },
+                "datasheet_max_ns_sn54": {
+                  "data_to_output": 38,
+                  "select_to_output": 38,
+                  "strobe_to_output": 34,
+                  "transition": 18
+                },
+                "datasheet_max_ns_sn74": {
+                  "data_to_output": 38,
+                  "select_to_output": 38,
+                  "strobe_to_output": 34,
+                  "transition": 18
+                },
+                "datasheet_typical_ns": {
+                  "data_to_output": 13,
+                  "select_to_output": 18,
+                  "strobe_to_output": 16,
+                  "transition": 8
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC157 has no high-Z output-enable control in this DB model; /G affects logic output selection/enabling, not tri-state bus release.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI SN74HC157 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "data_to_output": 25,
+                  "select_to_output": 25,
+                  "strobe_to_output": 23,
+                  "transition": 12
+                },
+                "datasheet_max_ns_sn54": {
+                  "data_to_output": 38,
+                  "select_to_output": 38,
+                  "strobe_to_output": 34,
+                  "transition": 18
+                },
+                "datasheet_max_ns_sn74": {
+                  "data_to_output": 38,
+                  "select_to_output": 38,
+                  "strobe_to_output": 34,
+                  "transition": 18
+                },
+                "datasheet_typical_ns": {
+                  "data_to_output": 13,
+                  "select_to_output": 18,
+                  "strobe_to_output": 16,
+                  "transition": 8
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC157 has no high-Z output-enable control in this DB model; /G affects logic output selection/enabling, not tri-state bus release.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC157 has no high-Z output-enable control in this DB model; /G affects logic output selection/enabling, not tri-state bus release.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC157 has no high-Z output-enable control in this DB model; /G affects logic output selection/enabling, not tri-state bus release.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
+      },
+      "title": "Quad 2-Line to 1-Line Multiplexer"
+    },
+    "kicad_symbol": {
+      "bus_groups": {
+        "A": [
+          2,
+          5,
+          11,
+          14
+        ],
+        "B": [
+          3,
+          6,
+          10,
+          13
+        ],
+        "Y": [
+          4,
+          7,
+          9,
+          12
+        ]
+      },
+      "labels": {
+        "1": "A/B",
+        "10": "3B",
+        "11": "3A",
+        "13": "4B",
+        "14": "4A",
+        "15": "/G",
+        "16": "VCC",
+        "2": "1A",
+        "3": "1B",
+        "5": "2A",
+        "6": "2B",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC157",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC157",
+      "copy_with_chip": [
+        "lib/standard/74xx/74HC157/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC157/simulation/model.py",
+      "part": "74HC157",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {
+        "A": [
+          2,
+          5,
+          11,
+          14
+        ],
+        "B": [
+          3,
+          6,
+          10,
+          13
+        ],
+        "Y": [
+          4,
+          7,
+          9,
+          12
+        ]
+      },
+      "labels": {
+        "1": "A/B",
+        "10": "3B",
+        "11": "3A",
+        "13": "4B",
+        "14": "4A",
+        "15": "/G",
+        "16": "VCC",
+        "2": "1A",
+        "3": "1B",
+        "5": "2A",
+        "6": "2B",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC157",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC157",
+      "required_vectors": [
+        "select_a",
+        "select_b",
+        "disabled_low"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "74HC157 has unidirectional driven outputs and no shared bus output enable.",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "data_to_y_delay_metadata",
+            "select_to_y_delay_metadata",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "select_control_no_clock",
+            "enable_control_no_clock",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "74HC157 disabled outputs drive low instead of high-Z.",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "select_a",
+            "select_b",
+            "disabled_low"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc157",
+      "compile": {
+        "sources": [
+          "lib/standard/74xx/74HC157/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc157"
+      },
+      "emitted": {
+        "kind": "simple_truth_table",
+        "language": "verilog",
+        "supported": true,
+        "text": "`timescale 1ns/1ps\n\nmodule tb_generated_74hc157;\n  integer failures = 0;\n  reg Enable_bar;\n  reg Select;\n  reg [3:0] A;\n  reg [3:0] B;\n  wire [3:0] Y;\n\n  ttl_74hc157 dut(.Enable_bar(Enable_bar), .Select(Select), .A(A), .B(B), .Y(Y));\n\n  task check;\n    input condition;\n    input [255:0] message;\n    begin\n      if (!condition) begin\n        $display(\"FAIL: %0s\", message);\n        failures = failures + 1;\n      end\n    end\n  endtask\n\n  initial begin\n    A = 4'ha;\n    B = 4'h5;\n    A = 4'ha;\n    B = 4'h5;\n    Enable_bar = 1'b0;\n    Select = 1'b0;\n    #1;\n    check(Y === 4'ha, \"select_a\");\n    A = 4'ha;\n    B = 4'h5;\n    Enable_bar = 1'b0;\n    Select = 1'b1;\n    #1;\n    check(Y === 4'h5, \"select_b\");\n    Enable_bar = 1'b1;\n    #1;\n    check(Y === 4'h0, \"disabled_low\");\n    if (failures == 0) begin\n      $display(\"tb_generated_74hc157 PASSED\");\n      $finish;\n    end\n    $display(\"tb_generated_74hc157 FAILED: %0d failures\", failures);\n    $fatal(1);\n  end\nendmodule\n"
+      },
+      "module": "ttl_74hc157",
+      "part": "74HC157",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "74HC157 has unidirectional driven outputs and no shared bus output enable.",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "data_to_y_delay_metadata",
+            "select_to_y_delay_metadata",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "select_control_no_clock",
+            "enable_control_no_clock",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "74HC157 disabled outputs drive low instead of high-Z.",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "select_a",
+            "select_b",
+            "disabled_low"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          4,
+          7,
+          9,
+          12
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Enable_bar",
+            "pins": [
+              15
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Select",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              2,
+              5,
+              11,
+              14
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "B",
+            "pins": [
+              3,
+              6,
+              10,
+              13
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y",
+            "pins": [
+              4,
+              7,
+              9,
+              12
+            ]
+          }
+        ]
+      },
+      "file": "lib/standard/74xx/74HC157/simulation/model.v",
+      "module": "ttl_74hc157",
+      "netlist": "lib/standard/74xx/74HC157/simulation/netlist.json",
+      "part": "74HC157"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC157",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "lib/standard/74xx/74HC157/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "lib/standard/74xx/74HC157/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "lib/standard/74xx/74HC157/simulation/netlist.json"
+    }
+  ],
+  "source": "lib/standard/74xx/74HC157/definition/definition.json",
+  "version": 1
+}

@@ -269,7 +269,7 @@ def test_memory():
 
 
 def test_seed_split_records_execute_against_python_models():
-    hc157 = json.loads((ROOT / "DB/74xx/74HC157/tests/truth_table.json").read_text(encoding="utf-8"))
+    hc157 = json.loads((ROOT / "lib/standard/74xx/74HC157/tests/truth_table.json").read_text(encoding="utf-8"))
     assert {item["name"] for item in hc157["vectors"]} == {"select_a", "select_b", "disabled_low"}
     mux = create_chip("74HC157", "U")
     set_byte(mux, [2, 5, 11, 14], 0xA)
@@ -284,7 +284,7 @@ def test_seed_split_records_execute_against_python_models():
     eval_chip(mux)
     assert get_byte(mux, [4, 7, 9, 12]) == 0
 
-    hc161 = json.loads((ROOT / "DB/74xx/74HC161/tests/truth_table.json").read_text(encoding="utf-8"))
+    hc161 = json.loads((ROOT / "lib/standard/74xx/74HC161/tests/truth_table.json").read_text(encoding="utf-8"))
     assert {item["name"] for item in hc161["vectors"]} >= {
         "async_clear",
         "parallel_load",
@@ -307,7 +307,7 @@ def test_seed_split_records_execute_against_python_models():
     eval_chip(ctr)
     assert get_byte(ctr, [14, 13, 12, 11]) == 0
 
-    hc245 = json.loads((ROOT / "DB/74xx/74HC245/tests/truth_table.json").read_text(encoding="utf-8"))
+    hc245 = json.loads((ROOT / "lib/standard/74xx/74HC245/tests/truth_table.json").read_text(encoding="utf-8"))
     assert {item["name"] for item in hc245["vectors"]} >= {
         "dir_high_a_to_b",
         "dir_low_b_to_a",
@@ -323,7 +323,7 @@ def test_seed_split_records_execute_against_python_models():
     eval_chip(trans)
     assert trans.read(18) == Z
 
-    hc574 = json.loads((ROOT / "DB/74xx/74HC574/tests/truth_table.json").read_text(encoding="utf-8"))
+    hc574 = json.loads((ROOT / "lib/standard/74xx/74HC574/tests/truth_table.json").read_text(encoding="utf-8"))
     assert {item["name"] for item in hc574["vectors"]} >= {
         "rising_edge_latch_a5",
         "hold_after_d_change",
@@ -351,7 +351,7 @@ def test_seed_split_records_execute_against_python_models():
     reg.commit()
     assert get_byte(reg, [19, 18, 17, 16, 15, 14, 13, 12]) == 0xC3
 
-    at28 = json.loads((ROOT / "DB/Memory/AT28C256/tests/truth_table.json").read_text(encoding="utf-8"))
+    at28 = json.loads((ROOT / "lib/standard/memory/AT28C256/tests/truth_table.json").read_text(encoding="utf-8"))
     assert {item["name"] for item in at28["vectors"]} >= {
         "write_c6_window",
         "write_c6_latch_we_rising",
@@ -833,8 +833,8 @@ def test_probe_counts_clock_pulses_over_time_window():
 
 def test_all_component_parts_instantiate():
     root = Path(__file__).resolve().parents[2]
-    parts = sorted(p.stem.upper() for p in (root / "Verilog" / "74xx").glob("74hc*.v"))
-    parts += sorted(p.stem.upper() for p in (root / "Verilog" / "Memory").glob("*.v"))
+    parts = sorted(p.stem.upper() for p in (root / "verilog" / "74xx").glob("74hc*.v"))
+    parts += sorted(p.stem.upper() for p in (root / "verilog" / "memory").glob("*.v"))
     assert parts, "no Components parts found"
     for part in parts:
         chip = create_chip(part, "U")
@@ -845,8 +845,8 @@ def test_all_component_parts_instantiate():
 
 def test_catalog_behavior_smoke():
     root = Path(__file__).resolve().parents[2]
-    parts = sorted(p.stem.upper() for p in (root / "Verilog" / "74xx").glob("74hc*.v"))
-    parts += sorted(p.stem.upper() for p in (root / "Verilog" / "Memory").glob("*.v"))
+    parts = sorted(p.stem.upper() for p in (root / "verilog" / "74xx").glob("74hc*.v"))
+    parts += sorted(p.stem.upper() for p in (root / "verilog" / "memory").glob("*.v"))
     for part in parts:
         chip = create_chip(part, "U")
         chip.update()

@@ -14,6 +14,7 @@ from chiplib import (
     load_model_factory,
     resolve_model_path,
 )
+from chiplib.model_loader import load_live_chip_memory
 
 
 class ModelLoaderTests(unittest.TestCase):
@@ -23,8 +24,8 @@ class ModelLoaderTests(unittest.TestCase):
     def test_resolves_each_active_model_group_deterministically(self) -> None:
         expected = {
             "74HC00": ("74xx", "74HC00"),
-            "AT28C256": ("Memory", "AT28C256"),
-            "LM358": ("Support", "LM358"),
+            "AT28C256": ("memory", "AT28C256"),
+            "LM358": ("support", "LM358"),
         }
         for part, (group, folder) in expected.items():
             with self.subTest(part=part):
@@ -47,6 +48,18 @@ class ModelLoaderTests(unittest.TestCase):
         clear_model_cache()
         self.assertIsNot(first, load_model_factory("74HC00"))
 
+    def test_public_memory_loader_accepts_memory_and_rejects_private_state(self) -> None:
+        memory = create_live_db_chip("AT28C256", "ROM1")
+        with tempfile.NamedTemporaryFile(suffix=".bin") as image:
+            image.write(b"\x12\x34")
+            image.flush()
+            self.assertEqual(2, load_live_chip_memory(memory, image.name, offset=3))
+        self.assertEqual(b"\x12\x34", bytes(memory.data[3:5]))
+
+        logic = create_live_db_chip("74HC00", "U1")
+        with self.assertRaisesRegex(ModelLoadError, "public mutable data bytearray"):
+            load_live_chip_memory(logic, "unused.bin")
+
     def test_missing_model_has_clear_error(self) -> None:
         with self.assertRaisesRegex(ModelLoadError, "live DB model not found.*NO_SUCH_PART"):
             resolve_model_path("NO_SUCH_PART")
@@ -59,21 +72,21 @@ class ModelLoaderTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             self._write_package(root, "74xx", "DUP")
-            self._write_package(root, "Memory", "DUP")
+            self._write_package(root, "memory", "DUP")
             with self.assertRaisesRegex(ModelLoadError, "duplicate live DB model.*DUP"):
                 resolve_model_path("DUP", root=root)
 
     def test_rejects_definition_identity_mismatch(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self._write_package(root, "Support", "EXPECTED", definition_part="OTHER")
+            self._write_package(root, "support", "EXPECTED", definition_part="OTHER")
             with self.assertRaisesRegex(ModelLoadError, "definition identity mismatch"):
                 resolve_model_path("EXPECTED", root=root)
 
     def test_rejects_missing_factory(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            self._write_package(root, "Support", "NOFACTORY", model="value = 1\n")
+            self._write_package(root, "support", "NOFACTORY", model="value = 1\n")
             with self.assertRaisesRegex(ModelLoadError, "no callable create"):
                 load_model_factory("NOFACTORY", root=root)
 
@@ -113,4 +126,3 @@ def create(name="U"):
 
 if __name__ == "__main__":
     unittest.main()
-

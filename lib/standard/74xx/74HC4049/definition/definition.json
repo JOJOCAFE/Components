@@ -1,0 +1,489 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC4049",
+  "metadata": {
+    "title": "Hex inverting buffer/converter",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "inverter_buffer"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 16,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    },
+    {
+      "number": 2,
+      "name": "1Y",
+      "direction": "output"
+    },
+    {
+      "number": 3,
+      "name": "1A",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "2Y",
+      "direction": "output"
+    },
+    {
+      "number": 5,
+      "name": "2A",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "3Y",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "3A",
+      "direction": "input"
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "4A",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "4Y",
+      "direction": "output"
+    },
+    {
+      "number": 11,
+      "name": "5A",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "5Y",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "NC",
+      "direction": "nc"
+    },
+    {
+      "number": 14,
+      "name": "6A",
+      "direction": "input"
+    },
+    {
+      "number": 15,
+      "name": "6Y",
+      "direction": "output"
+    },
+    {
+      "number": 16,
+      "name": "NC",
+      "direction": "nc"
+    }
+  ],
+  "logic": {
+    "type": "hex_inverting_buffer",
+    "description": "Hex inverting buffer/converter"
+  },
+  "timing": {
+    "delay_ns": 15,
+    "datasheet": {
+      "status": "datasheet-backed",
+      "conditions": "TI CD74HC4049 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+      "values": {
+        "datasheet_typical_ns": {
+          "feature_tpd": 6
+        }
+      }
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "conditions": "TI CD74HC4049 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+      "parameters": {
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "74HC4049 is combinational and has no clocked Q output."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "74HC4049 is combinational and has no clocked Q output."
+        },
+        "hold": {
+          "status": "not_applicable",
+          "reason": "74HC4049 is combinational and has no setup/hold timing requirement."
+        },
+        "minimum_pulse_width": {
+          "status": "not_applicable",
+          "reason": "74HC4049 is combinational and has no clock/reset/write pulse-width requirement."
+        },
+        "setup": {
+          "status": "not_applicable",
+          "reason": "74HC4049 is combinational and has no setup/hold timing requirement."
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "timing.datasheet",
+          "values_ns": {
+            "datasheet_typical_ns": {
+              "feature_tpd": 6
+            }
+          },
+          "note": "TI CD74HC4049 timing table lists propagation delay as tPLH, tPHL. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged."
+        },
+        "tPHZ": {
+          "status": "not_applicable",
+          "reason": "74HC4049 has no output-enable/high-Z control in the existing model."
+        },
+        "tPLH": {
+          "status": "exact",
+          "source_field": "timing.datasheet",
+          "values_ns": {
+            "datasheet_typical_ns": {
+              "feature_tpd": 6
+            }
+          },
+          "note": "TI CD74HC4049 timing table lists propagation delay as tPLH, tPHL. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged."
+        },
+        "tPLZ": {
+          "status": "not_applicable",
+          "reason": "74HC4049 has no output-enable/high-Z control in the existing model."
+        },
+        "tPZH": {
+          "status": "not_applicable",
+          "reason": "74HC4049 has no output-enable/high-Z control in the existing model."
+        },
+        "tPZL": {
+          "status": "not_applicable",
+          "reason": "74HC4049 has no output-enable/high-Z control in the existing model."
+        }
+      }
+    }
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC4049",
+      "file": "lib/standard/74xx/74HC4049/simulation/model.py",
+      "class": "HC4049"
+    },
+    "verilog": {
+      "module": "ttl_74hc4049",
+      "file": "lib/standard/74xx/74HC4049/simulation/model.v",
+      "netlist": "lib/standard/74xx/74HC4049/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC4049",
+    "sources": [
+      {
+        "label": "Texas Instruments CD74HC4049",
+        "url": "https://www.ti.com/lit/ds/symlink/cd74hc4049.pdf",
+        "file": "source/74HC4049_TI_CD74HC4049.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC4049",
+      "pins": [
+        {
+          "number": 1,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        },
+        {
+          "number": 2,
+          "name": "1Y",
+          "direction": "output"
+        },
+        {
+          "number": 3,
+          "name": "1A",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "2Y",
+          "direction": "output"
+        },
+        {
+          "number": 5,
+          "name": "2A",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "3Y",
+          "direction": "output"
+        },
+        {
+          "number": 7,
+          "name": "3A",
+          "direction": "input"
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "4A",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "4Y",
+          "direction": "output"
+        },
+        {
+          "number": 11,
+          "name": "5A",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "5Y",
+          "direction": "output"
+        },
+        {
+          "number": 13,
+          "name": "NC",
+          "direction": "nc"
+        },
+        {
+          "number": 14,
+          "name": "6A",
+          "direction": "input"
+        },
+        {
+          "number": 15,
+          "name": "6Y",
+          "direction": "output"
+        },
+        {
+          "number": 16,
+          "name": "NC",
+          "direction": "nc"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC4049",
+      "rails": [
+        {
+          "number": 1,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        }
+      ]
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC4049",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "datasheet-backed",
+        "public_timing": {
+          "delay_ns": 15,
+          "datasheet": {
+            "status": "datasheet-backed",
+            "conditions": "TI CD74HC4049 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+            "values": {
+              "datasheet_typical_ns": {
+                "feature_tpd": 6
+              }
+            }
+          }
+        },
+        "source_check": "datasheet timing values extracted from local source PDF text; see docs/TIMING_CROSSCHECK_REPORT.md",
+        "conditions": "TI CD74HC4049 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+        "datasheet_typical_ns": {
+          "feature_tpd": 6
+        }
+      },
+      "evidence": {
+        "label": "Texas Instruments CD74HC4049",
+        "url": "https://www.ti.com/lit/ds/symlink/cd74hc4049.pdf",
+        "file": "source/74HC4049_TI_CD74HC4049.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "conditions": "TI CD74HC4049 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+        "parameters": {
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "74HC4049 is combinational and has no clocked Q output."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "74HC4049 is combinational and has no clocked Q output."
+          },
+          "hold": {
+            "status": "not_applicable",
+            "reason": "74HC4049 is combinational and has no setup/hold timing requirement."
+          },
+          "minimum_pulse_width": {
+            "status": "not_applicable",
+            "reason": "74HC4049 is combinational and has no clock/reset/write pulse-width requirement."
+          },
+          "setup": {
+            "status": "not_applicable",
+            "reason": "74HC4049 is combinational and has no setup/hold timing requirement."
+          },
+          "tPHL": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay",
+            "values_ns": {
+              "datasheet_typical_ns": {
+                "feature_tpd": 6
+              }
+            },
+            "note": "TI CD74HC4049 timing table lists propagation delay as tPLH, tPHL. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged."
+          },
+          "tPHZ": {
+            "status": "not_applicable",
+            "reason": "74HC4049 has no output-enable/high-Z control in the existing model."
+          },
+          "tPLH": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay",
+            "values_ns": {
+              "datasheet_typical_ns": {
+                "feature_tpd": 6
+              }
+            },
+            "note": "TI CD74HC4049 timing table lists propagation delay as tPLH, tPHL. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged."
+          },
+          "tPLZ": {
+            "status": "not_applicable",
+            "reason": "74HC4049 has no output-enable/high-Z control in the existing model."
+          },
+          "tPZH": {
+            "status": "not_applicable",
+            "reason": "74HC4049 has no output-enable/high-Z control in the existing model."
+          },
+          "tPZL": {
+            "status": "not_applicable",
+            "reason": "74HC4049 has no output-enable/high-Z control in the existing model."
+          }
+        }
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC4049",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments CD74HC4049",
+        "url": "https://www.ti.com/lit/ds/symlink/cd74hc4049.pdf",
+        "file": "source/74HC4049_TI_CD74HC4049.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "modeled",
+    "tests": "modeled"
+  },
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "Texas Instruments",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
+  }
+}

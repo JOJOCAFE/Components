@@ -1,0 +1,215 @@
+{
+  "schema": "db.component.simulation.netlist",
+  "version": 1,
+  "part": "74HCT245",
+  "source": "lib/standard/74xx/74HCT245/definition/definition.json",
+  "simulation": {
+    "python": "lib/standard/74xx/74HCT245/simulation/model.py",
+    "verilog": "lib/standard/74xx/74HCT245/simulation/model.v"
+  },
+  "verilog": {
+    "module": "ttl_74hct245",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "OE_bar",
+          "pins": [
+            19
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "DIR",
+          "pins": [
+            1
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "A",
+          "pins": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "B",
+          "pins": [
+            18,
+            17,
+            16,
+            15,
+            14,
+            13,
+            12,
+            11
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ]
+    }
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "DIR",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "A1",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 0
+    },
+    {
+      "number": 3,
+      "name": "A2",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 1
+    },
+    {
+      "number": 4,
+      "name": "A3",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 2
+    },
+    {
+      "number": 5,
+      "name": "A4",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 3
+    },
+    {
+      "number": 6,
+      "name": "A5",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 4
+    },
+    {
+      "number": 7,
+      "name": "A6",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 5
+    },
+    {
+      "number": 8,
+      "name": "A7",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 6
+    },
+    {
+      "number": 9,
+      "name": "A8",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 7
+    },
+    {
+      "number": 10,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 11,
+      "name": "B8",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 7
+    },
+    {
+      "number": 12,
+      "name": "B7",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 6
+    },
+    {
+      "number": 13,
+      "name": "B6",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 5
+    },
+    {
+      "number": 14,
+      "name": "B5",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 4
+    },
+    {
+      "number": 15,
+      "name": "B4",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 3
+    },
+    {
+      "number": 16,
+      "name": "B3",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 2
+    },
+    {
+      "number": 17,
+      "name": "B2",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 1
+    },
+    {
+      "number": 18,
+      "name": "B1",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 0
+    },
+    {
+      "number": 19,
+      "name": "/OE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 20,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ]
+}

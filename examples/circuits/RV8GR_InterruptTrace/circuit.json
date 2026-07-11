@@ -1,0 +1,89 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_interrupt_trace",
+  "title": "RV8GR interrupt enable and IRQ trace",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/02_instruction_trace.md",
+      "examples/circuits/RV8GR_IRQLatch/circuit.json",
+      "examples/circuits/RV8GR_FullControlOpcodeSweep/circuit.json"
+    ]
+  },
+  "purpose": "Package EI, DI, and IRQ release trace behavior so IE, IRQ_FF, PC unchanged, and v1.0 polling-only interrupt behavior are checked together.",
+  "chips": [
+    {"ref": "U31", "part": "74HC74", "role": "Dual D flip-flop for IE and IRQ_FF"},
+    {"ref": "U33", "part": "74HC21", "role": "EI decode source for U31 CLK1"},
+    {"ref": "IRQSW", "part": "Switch", "role": "External active-low IRQ input"},
+    {"ref": "IEPROBE", "part": "Probe", "role": "IE flag monitor"},
+    {"ref": "IRQPROBE", "part": "Probe", "role": "IRQ_FF sticky flag monitor"}
+  ],
+  "executable_boundaries": [
+    {
+      "id": "interrupt_control_inputs",
+      "kind": "package_input_contract",
+      "status": "executable_through_declared_ports",
+      "replaces_placeholder": "Virtual",
+      "inputs": ["T2", "IRH0..IRH7", "IRL0..IRL7"],
+      "derived_signals": ["EI_decode"],
+      "source": "/home/jo/kiro/RV8/RV8GR/doc/02_instruction_trace.md",
+      "contract": "The trace receives opcode and phase stimulus at declared package ports; U33 remains the concrete EI decoder and no generic Virtual part is executable.",
+      "blocked_until": "U33 decode inputs are wired authoritatively and EI_decode has one driver."
+    }
+  ],
+  "ports": [
+    {"name": "/RST", "direction": "input", "active_low": true},
+    {"name": "T2", "direction": "input"},
+    {"name": "IRH0..IRH7", "direction": "input"},
+    {"name": "IRL0..IRL7", "direction": "input"},
+    {"name": "EI_decode", "direction": "internal", "edge": "rising"},
+    {"name": "/IRQ", "direction": "input", "active_low": true, "edge": "rising release"},
+    {"name": "IE", "direction": "output"},
+    {"name": "IRQ_FF", "direction": "output"},
+    {"name": "PC0..PC15", "direction": "input/output"},
+    {"name": "PC_FORCE", "direction": "absent", "description": "v1.0 has no hardware PC force or interrupt vector path."},
+    {"name": "IRQ_ACK", "direction": "absent", "description": "v1.0 clears IRQ_FF only with /RST."},
+    {"name": "VCC", "direction": "power"}
+  ],
+  "wiring": [
+    {"net": "/RST", "connections": ["U31.1", "U31.13"], "rule": "LOW clears IE and IRQ_FF."},
+    {"net": "IE_D", "connections": ["U31.2", "VCC"], "rule": "EI clocks constant 1 into IE."},
+    {"net": "EI_decode", "connections": ["U33.8", "U31.3"], "rule": "Rising edge occurs for the EI trace only."},
+    {"net": "IE", "connections": ["U31.5", "IEPROBE.1"]},
+    {"net": "IRQ_D", "connections": ["U31.12", "VCC"], "rule": "IRQ release clocks constant 1 into IRQ_FF."},
+    {"net": "/IRQ", "connections": ["IRQSW.1", "U31.11"], "rule": "LOW assertion holds; release HIGH creates the latch edge."},
+    {"net": "IRQ_FF", "connections": ["U31.9", "IRQPROBE.1"]}
+  ],
+  "behavior": {
+    "reset": "/RST LOW clears IE and IRQ_FF.",
+    "ei": "EI sets IE on the EI_decode rising edge.",
+    "di": "DI is inert in v1.0 hardware; it does not clear IE or IRQ_FF.",
+    "irq_low": "/IRQ asserted LOW does not latch IRQ_FF.",
+    "irq_release": "/IRQ release back HIGH creates a rising edge and latches IRQ_FF.",
+    "sticky": "IRQ_FF remains set across later CPU ticks until reset.",
+    "pc": "PC is unchanged by EI, DI, /IRQ assertion, and /IRQ release in v1.0.",
+    "polling_only": "Software polls IE and IRQ_FF; there is no auto-vector, IRQ acknowledge, or hardware PC force."
+  },
+  "timing": {
+    "clocking": "mixed T2 control and external release edge",
+    "trigger_edges": ["EI_decode rising sets IE", "/IRQ rising release sets IRQ_FF"],
+    "non_trigger_edges": ["DI opcode", "/IRQ LOW assertion", "ordinary CPU ticks"],
+    "frequency_boundary": "Functional trace proof only; physical edge quality is owned by timing_margins.json.",
+    "student_rule": "LOW means the IRQ button is pressed or held; the latch happens when the line returns HIGH."
+  },
+  "verification": {
+    "tests": ["tests/interrupt_trace.json"],
+    "guarantees": [
+      "Reset clears IE and IRQ_FF",
+      "EI sets IE",
+      "DI is inert in v1.0 hardware",
+      "/IRQ LOW assertion alone does not latch IRQ_FF",
+      "/IRQ release latches IRQ_FF",
+      "IRQ_FF remains sticky until reset",
+      "PC stays unchanged",
+      "No auto-vector, PC force, IRQ acknowledge, or auto-clear path appears"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

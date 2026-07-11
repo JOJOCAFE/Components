@@ -18,15 +18,15 @@ jobs:
 
       - name: Run 74xx smoke test
         run: |
-          iverilog -g2012 -Wall -o /tmp/tb_74xx_smoke.vvp Verilog/74xx/*.v Verilog/74xx/tests/tb_74xx_smoke.v
+          iverilog -g2012 -Wall -o /tmp/tb_74xx_smoke.vvp verilog/74xx/*.v verilog/74xx/tests/tb_74xx_smoke.v
           vvp /tmp/tb_74xx_smoke.vvp
 
       - name: Run memory smoke test
         run: |
-          iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp Verilog/Memory/*.v Verilog/Memory/tests/tb_memory_smoke.v
+          iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp verilog/memory/*.v verilog/memory/tests/tb_memory_smoke.v
           vvp /tmp/tb_memory_smoke.vvp
 
       - name: Compile package-local Verilog models
         run: |
-          find DB/74xx DB/Memory -path '*/simulation/model.v' -print0 \
+          find lib/standard/74xx lib/standard/memory -path '*/simulation/model.v' -print0 \
             | xargs -0 iverilog -g2012 -Wall -o /tmp/db_package_models.vvp

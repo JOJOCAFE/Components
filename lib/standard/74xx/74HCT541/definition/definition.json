@@ -1,0 +1,622 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HCT541",
+  "metadata": {
+    "title": "Octal buffer/line driver with 3-state outputs, TTL-compatible inputs",
+    "family": "74HCT",
+    "group": "74xx",
+    "role": "buffer"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 20,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "/OE1",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 2,
+      "name": "A1",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "A2",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "A3",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "A4",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "A5",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "A6",
+      "direction": "input"
+    },
+    {
+      "number": 8,
+      "name": "A7",
+      "direction": "input"
+    },
+    {
+      "number": 9,
+      "name": "A8",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 11,
+      "name": "Y8",
+      "direction": "output"
+    },
+    {
+      "number": 12,
+      "name": "Y7",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "Y6",
+      "direction": "output"
+    },
+    {
+      "number": 14,
+      "name": "Y5",
+      "direction": "output"
+    },
+    {
+      "number": 15,
+      "name": "Y4",
+      "direction": "output"
+    },
+    {
+      "number": 16,
+      "name": "Y3",
+      "direction": "output"
+    },
+    {
+      "number": 17,
+      "name": "Y2",
+      "direction": "output"
+    },
+    {
+      "number": 18,
+      "name": "Y1",
+      "direction": "output"
+    },
+    {
+      "number": 19,
+      "name": "/OE2",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 20,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "octal_buffer_ttl_input",
+    "description": "Octal buffer/line driver with 3-state outputs, TTL-compatible inputs"
+  },
+  "timing": {
+    "delay_ns": 15,
+    "datasheet": {
+      "status": "datasheet-backed",
+      "conditions": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "values": {
+        "datasheet_typical_ns": {
+          "input_to_output": 13
+        },
+        "datasheet_max_ns_25c": {
+          "input_to_output": 23
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "input_to_output": 29
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "input_to_output": 34
+        }
+      }
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "conditions": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "parameters": {
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "74HCT541 is combinational and has no clocked Q output."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "74HCT541 is combinational and has no clocked Q output."
+        },
+        "hold": {
+          "status": "not_applicable",
+          "reason": "74HCT541 is combinational and has no setup/hold timing requirement."
+        },
+        "minimum_pulse_width": {
+          "status": "not_applicable",
+          "reason": "74HCT541 is combinational and has no clock/reset/write pulse-width requirement."
+        },
+        "setup": {
+          "status": "not_applicable",
+          "reason": "74HCT541 is combinational and has no setup/hold timing requirement."
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+          "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "values_ns": {
+            "typ": 13,
+            "max_25c": 23,
+            "max_sn54": 34,
+            "max_sn74": 29
+          }
+        },
+        "tPHZ": {
+          "status": "exact",
+          "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+          "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "values_ns": {
+            "typ": 19,
+            "max_25c": 30,
+            "max_sn54": 45,
+            "max_sn74": 38
+          }
+        },
+        "tPLH": {
+          "status": "exact",
+          "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+          "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "values_ns": {
+            "typ": 13,
+            "max_25c": 23,
+            "max_sn54": 34,
+            "max_sn74": 29
+          }
+        },
+        "tPLZ": {
+          "status": "exact",
+          "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+          "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "values_ns": {
+            "typ": 19,
+            "max_25c": 30,
+            "max_sn54": 45,
+            "max_sn74": 38
+          }
+        },
+        "tPZH": {
+          "status": "exact",
+          "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+          "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "values_ns": {
+            "typ": 21,
+            "max_25c": 30,
+            "max_sn54": 45,
+            "max_sn74": 38
+          }
+        },
+        "tPZL": {
+          "status": "exact",
+          "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+          "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "values_ns": {
+            "typ": 21,
+            "max_25c": 30,
+            "max_sn54": 45,
+            "max_sn74": 38
+          }
+        }
+      }
+    }
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HCT541",
+      "file": "lib/standard/74xx/74HCT541/simulation/model.py",
+      "class": "HCT541"
+    },
+    "verilog": {
+      "module": "ttl_74hct541",
+      "file": "lib/standard/74xx/74HCT541/simulation/model.v",
+      "netlist": "lib/standard/74xx/74HCT541/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation",
+      "tri_state",
+      "bus_fight"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HCT541",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HCT541",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hct541.pdf",
+        "file": "source/74HCT541_TI_SN74HCT541.pdf",
+        "package_evidence": "N, 20-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HCT541",
+      "pins": [
+        {
+          "number": 1,
+          "name": "/OE1",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 2,
+          "name": "A1",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "A2",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "A3",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "A4",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "A5",
+          "direction": "input"
+        },
+        {
+          "number": 7,
+          "name": "A6",
+          "direction": "input"
+        },
+        {
+          "number": 8,
+          "name": "A7",
+          "direction": "input"
+        },
+        {
+          "number": 9,
+          "name": "A8",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 11,
+          "name": "Y8",
+          "direction": "output"
+        },
+        {
+          "number": 12,
+          "name": "Y7",
+          "direction": "output"
+        },
+        {
+          "number": 13,
+          "name": "Y6",
+          "direction": "output"
+        },
+        {
+          "number": 14,
+          "name": "Y5",
+          "direction": "output"
+        },
+        {
+          "number": 15,
+          "name": "Y4",
+          "direction": "output"
+        },
+        {
+          "number": 16,
+          "name": "Y3",
+          "direction": "output"
+        },
+        {
+          "number": 17,
+          "name": "Y2",
+          "direction": "output"
+        },
+        {
+          "number": 18,
+          "name": "Y1",
+          "direction": "output"
+        },
+        {
+          "number": 19,
+          "name": "/OE2",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 20,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HCT541",
+      "rails": [
+        {
+          "number": 10,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 20,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HCT541",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "datasheet-backed",
+        "public_timing": {
+          "delay_ns": 15,
+          "datasheet": {
+            "status": "datasheet-backed",
+            "conditions": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V.",
+            "values": {
+              "datasheet_typical_ns": {
+                "input_to_output": 13
+              },
+              "datasheet_max_ns_25c": {
+                "input_to_output": 23
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "input_to_output": 29
+              },
+              "datasheet_max_ns_minus55_to_125c": {
+                "input_to_output": 34
+              }
+            }
+          }
+        },
+        "source_check": "datasheet timing values extracted from local source PDF text; see docs/TIMING_CROSSCHECK_REPORT.md",
+        "conditions": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_typical_ns": {
+          "input_to_output": 13
+        },
+        "datasheet_max_ns_25c": {
+          "input_to_output": 23
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "input_to_output": 29
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "input_to_output": 34
+        }
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HCT541",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hct541.pdf",
+        "file": "source/74HCT541_TI_SN74HCT541.pdf",
+        "package_evidence": "N, 20-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "conditions": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "parameters": {
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "74HCT541 is combinational and has no clocked Q output."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "74HCT541 is combinational and has no clocked Q output."
+          },
+          "hold": {
+            "status": "not_applicable",
+            "reason": "74HCT541 is combinational and has no setup/hold timing requirement."
+          },
+          "minimum_pulse_width": {
+            "status": "not_applicable",
+            "reason": "74HCT541 is combinational and has no clock/reset/write pulse-width requirement."
+          },
+          "setup": {
+            "status": "not_applicable",
+            "reason": "74HCT541 is combinational and has no setup/hold timing requirement."
+          },
+          "tPHL": {
+            "status": "exact",
+            "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+            "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "values_ns": {
+              "typ": 13,
+              "max_25c": 23,
+              "max_sn54": 34,
+              "max_sn74": 29
+            }
+          },
+          "tPHZ": {
+            "status": "exact",
+            "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+            "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "values_ns": {
+              "typ": 19,
+              "max_25c": 30,
+              "max_sn54": 45,
+              "max_sn74": 38
+            }
+          },
+          "tPLH": {
+            "status": "exact",
+            "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+            "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "values_ns": {
+              "typ": 13,
+              "max_25c": 23,
+              "max_sn54": 34,
+              "max_sn74": 29
+            }
+          },
+          "tPLZ": {
+            "status": "exact",
+            "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+            "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "values_ns": {
+              "typ": 19,
+              "max_25c": 30,
+              "max_sn54": 45,
+              "max_sn74": 38
+            }
+          },
+          "tPZH": {
+            "status": "exact",
+            "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+            "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "values_ns": {
+              "typ": 21,
+              "max_25c": 30,
+              "max_sn54": 45,
+              "max_sn74": 38
+            }
+          },
+          "tPZL": {
+            "status": "exact",
+            "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+            "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "values_ns": {
+              "typ": 21,
+              "max_25c": 30,
+              "max_sn54": 45,
+              "max_sn74": 38
+            }
+          }
+        }
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HCT541",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HCT541",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hct541.pdf",
+        "file": "source/74HCT541_TI_SN74HCT541.pdf",
+        "package_evidence": "N, 20-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "modeled",
+    "tests": "modeled"
+  },
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "Texas Instruments",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
+  }
+}

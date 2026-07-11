@@ -313,7 +313,7 @@ def test_cli_db_summary_and_part_lookup():
     assert detail.returncode == 0, detail.stderr
     detail_data = json.loads(detail.stdout)
     assert detail_data["format"] == "components.db.component"
-    assert detail_data["db_path"] == "DB/74xx/74HC00/definition/definition.json"
+    assert detail_data["db_path"] == "lib/standard/74xx/74HC00/definition/definition.json"
 
     digital = subprocess.run(
         [sys.executable, "-B", "-m", "chiplib.cli", "db", "74HC245", "--digital"],
@@ -448,7 +448,7 @@ def test_cli_design_commands_route_through_service_boundary():
 
 
 def test_cli_functional_circuit_commands_are_structured_and_fail_loudly():
-    path = Path(__file__).resolve().parents[2] / "Lib" / "Circuits" / "RV8GR_RingCounter" / "circuit.json"
+    path = Path(__file__).resolve().parents[2] / "examples" / "circuits" / "RV8GR_RingCounter" / "circuit.json"
     validated = run_cli(path, "circuit-validate")
     assert validated.returncode == 0, validated.stderr
     assert json.loads(validated.stdout)["result"]["status"] == "pass"
@@ -463,11 +463,34 @@ def test_cli_functional_circuit_commands_are_structured_and_fail_loudly():
     assert json.loads(bad.stdout)["error"]["code"] == "runner.unsupported_step"
 
 
+def test_cli_timed_run_is_explicit_and_fail_closed():
+    path = Path(__file__).resolve().parents[2] / "examples" / "circuits" / "RV8GR_RingCounter" / "circuit.json"
+    passed = run_cli(path, "timed-run", "--op", "reset", "--op", "release /CLR", "--op", "clock CLK")
+    assert passed.returncode == 0, passed.stderr
+    result = json.loads(passed.stdout)["result"]
+    assert result["status"] == "pass"
+    assert result["timing"]["modeled_only"] is True
+    blocked = run_cli(path, "timed-run", "--op", "set /CLR 0")
+    assert blocked.returncode == 2
+    assert json.loads(blocked.stdout)["error"]["code"] == "timing.unsupported"
+    with tempfile.TemporaryDirectory() as directory:
+        result_path = Path(directory) / "timed-result.json"
+        evidence_path = Path(directory) / "evidence.json"
+        result_path.write_text(passed.stdout, encoding="utf-8")
+        explained = run_cli(result_path, "explain-violations")
+        assert explained.returncode == 0, explained.stderr
+        assert json.loads(explained.stdout)["result"]["command"] == "explain-violations"
+        exported = run_cli(result_path, "export-evidence", "-o", str(evidence_path), "--include-traces")
+        assert exported.returncode == 0, exported.stderr
+        assert json.loads(evidence_path.read_text(encoding="utf-8"))["result"]["evidence"]["timing"]["trace"]
+
+
 def run_all():
     test_cli_validate_snapshot_run_probe_and_export_json()
     test_cli_db_summary_and_part_lookup()
     test_cli_design_commands_route_through_service_boundary()
     test_cli_functional_circuit_commands_are_structured_and_fail_loudly()
+    test_cli_timed_run_is_explicit_and_fail_closed()
 
 
 if __name__ == "__main__":

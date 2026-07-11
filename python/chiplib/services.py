@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import re
+from hashlib import sha256
 from threading import RLock
 from time import perf_counter
 from typing import Any, Callable
@@ -98,6 +99,100 @@ class CircuitCommandService:
         except Exception as exc:
             return self._failure("circuit-probe", exc, student_command="probe")
 
+    def timed_run(self, path: str | Path | None = None, *, operations: list[str] | None = None) -> JsonMap:
+        """Run only explicitly bound modeled-timing operations.
+
+        This deliberately has no functional fallback: a missing timing path is
+        evidence that the requested timing check is unsupported.
+        """
+        loaded = self._load_if_requested(path, "timed-run")
+        if loaded is not None:
+            return loaded
+        runner = self._require_runner()
+        try:
+            from .circuit_timing import CircuitTimingBinding
+
+            binding = CircuitTimingBinding(runner)
+            executed: list[JsonMap] = []
+            for operation in operations or []:
+                executed.append(self._apply_timed_operation(binding, operation))
+            if not executed:
+                raise ValueError("timed-run requires at least one timed operation")
+            diagnostics = [item.snapshot() for item in binding.timed.diagnostics]
+            status = "needs_attention" if diagnostics else "pass"
+            result = self._student_result(
+                "timed-run", runner,
+                summary=(
+                    f"Modeled timing run completed with {len(executed)} operation(s) and "
+                    f"{len(diagnostics)} violation(s)."
+                ),
+                details={
+                    "executed_steps": executed,
+                    "violations": diagnostics,
+                    "timing": {
+                        "time_ps": binding.timed.time_ps,
+                        "trace": list(binding.timed.trace),
+                        "model": "DB-selected digital timing paths",
+                        "modeled_only": True,
+                    },
+                    "snapshot": runner.snapshot(),
+                },
+            )
+            result["status"] = status
+            result["ok"] = status == "pass"
+            return self._response("timed-run", result)
+        except Exception as exc:
+            return self._timed_failure(exc)
+
+    def explain_violations(self, response: JsonMap) -> JsonMap:
+        """Make existing structured runner diagnostics readable without rerunning."""
+        source = response.get("result", response)
+        if not isinstance(source, dict):
+            return self._failure("explain-violations", ValueError("result must be an object"), student_command="explain-violations")
+        violations = source.get("violations", [])
+        if not isinstance(violations, list):
+            return self._failure("explain-violations", ValueError("result.violations must be an array"), student_command="explain-violations")
+        explanations = [{
+            "code": item.get("code", "runner.unknown_violation") if isinstance(item, dict) else "runner.unknown_violation",
+            "what_happened": item.get("message", "The runner reported a problem.") if isinstance(item, dict) else str(item),
+            "where": item.get("location", {}) if isinstance(item, dict) else {},
+            "details": item.get("details", {}) if isinstance(item, dict) else {},
+            "run_again": "Fix the named circuit issue, then run the same command again.",
+            "physical_boundary": "This simulator result does not prove physical wiring, electrical safety, or physical timing.",
+        } for item in violations]
+        status = "pass" if not explanations else "needs_attention"
+        result = {
+            "contract": CIRCUIT_STUDENT_CONTRACT, "command": "explain-violations",
+            "ok": status == "pass", "status": status,
+            "design": source.get("design", {}),
+            "summary": "No violations need explanation." if not explanations else f"Explained {len(explanations)} violation(s).",
+            "violations": violations, "warnings": source.get("warnings", []),
+            "explanations": explanations,
+            "evidence_boundary": source.get("evidence_boundary", self._evidence_boundary()),
+            "metadata": {"engine": "python", "engine_version": None, "components_version": None, "elapsed_ms": 0},
+        }
+        return self._response("explain-violations", result)
+
+    def export_evidence(self, response: JsonMap, *, include_traces: bool = False) -> JsonMap:
+        """Package existing evidence without changing its verification level."""
+        source = response.get("result", response)
+        if not isinstance(source, dict):
+            return self._failure("export-evidence", ValueError("result must be an object"), student_command="export-evidence")
+        canonical = json.dumps(source, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        evidence = dict(source)
+        if not include_traces and isinstance(evidence.get("timing"), dict):
+            evidence["timing"] = {key: value for key, value in evidence["timing"].items() if key != "trace"}
+        evidence["evidence"] = {"schema": "components.circuit_runner.evidence.v1", "source_digest_sha256": sha256(canonical).hexdigest(), "include_traces": include_traces}
+        result = {
+            "contract": CIRCUIT_STUDENT_CONTRACT, "command": "export-evidence",
+            "ok": source.get("status") == "pass", "status": source.get("status", "error"),
+            "design": source.get("design", {}), "summary": "Exported existing runner evidence without upgrading its claims.",
+            "violations": source.get("violations", []), "warnings": source.get("warnings", []),
+            "evidence": evidence, "evidence_boundary": source.get("evidence_boundary", self._evidence_boundary()),
+            "metadata": {"engine": "python", "engine_version": None, "components_version": None, "elapsed_ms": 0},
+        }
+        return self._response("export-evidence", result)
+
     def _load_if_requested(self, path: str | Path | None, command: str) -> JsonMap | None:
         if path is None:
             return None
@@ -133,6 +228,32 @@ class CircuitCommandService:
             f"unsupported operation {operation!r}; use 'set PORT VALUE', 'clock [PORT]', 'reset', or 'settle'",
         )], runner.package.source_path)
 
+    def _apply_timed_operation(self, binding: Any, operation: str) -> JsonMap:
+        words = str(operation).strip().split()
+        if words == ["reset"]:
+            return {"operation": operation, "action": "reset", "preparation_only": True, "outputs": binding.runner.reset()}
+        if len(words) == 2 and words[0] == "release":
+            value = binding.runner.set_input(words[1], 1)
+            return {"operation": operation, "action": "release", "port": words[1], "value": value, "preparation_only": True}
+        if len(words) == 3 and words[0] == "set":
+            events = binding.set_input(words[1], words[2])
+            action, port = "set", words[1]
+        elif len(words) in {1, 2} and words[0] == "clock":
+            port = words[1] if len(words) == 2 else "CLK"
+            events = binding.pulse_clock(port)
+            action = "clock"
+        else:
+            raise ValueError("timed-run supports 'reset', 'release PORT', 'set PORT VALUE', and 'clock [PORT]' operations")
+        if events:
+            binding.timed.run_until(max(binding.timed.time_ps, *(binding.timed.time_ps + (event.selection.delay_ps or 0) for event in events)))
+        path = binding.compiled_path(port)
+        return {
+            "operation": operation, "action": action, "port": port,
+            "events": [event.snapshot() for event in events],
+            "constraints": binding.constraint_provenance(port),
+            "timing_path": path.name,
+        }
+
     def _student_result(self, command: str, runner: Any, *, summary: str, details: JsonMap) -> JsonMap:
         return {
             "contract": CIRCUIT_STUDENT_CONTRACT,
@@ -144,10 +265,7 @@ class CircuitCommandService:
             "violations": [],
             "warnings": [],
             **details,
-            "evidence_boundary": {
-                "proves": ["the listed functional checks passed in the Python simulator"],
-                "does_not_prove": ["physical wiring", "electrical safety", "physical timing"],
-            },
+            "evidence_boundary": self._evidence_boundary(),
             "metadata": {"engine": "python", "engine_version": None, "components_version": None, "elapsed_ms": 0},
         }
 
@@ -161,6 +279,17 @@ class CircuitCommandService:
         violation = {"code": code, "message": str(exc), "location": {"source_path": issues[0].get("path") if issues else None}, "details": {"issues": issues, "exception": exc.__class__.__name__}}
         result = {"contract": CIRCUIT_STUDENT_CONTRACT, "command": student_command or command.removeprefix("circuit-"), "ok": False, "status": status, "summary": str(exc), "violations": [violation], "warnings": [], "evidence_boundary": {"proves": [], "does_not_prove": ["physical wiring", "electrical safety", "physical timing"]}, "metadata": {"engine": "python", "engine_version": None, "components_version": None, "elapsed_ms": 0}}
         return {"contract": CONTRACT, "command": command, "ok": False, "result": result, "warnings": [], "error": {"code": code, "message": str(exc), "severity": "error", "details": violation["details"]}, "metadata": {"engine": "python", "components_version": None, "elapsed_ms": 0}}
+
+    def _timed_failure(self, exc: Exception) -> JsonMap:
+        issue = getattr(exc, "issue", None)
+        details = issue.to_dict() if issue is not None else {"exception": exc.__class__.__name__}
+        violation = {"code": "timing.unsupported", "message": str(exc), "location": {"source_path": details.get("path")}, "details": details}
+        result = {"contract": CIRCUIT_STUDENT_CONTRACT, "command": "timed-run", "ok": False, "status": "blocked", "summary": str(exc), "violations": [violation], "warnings": [], "evidence_boundary": {"proves": [], "does_not_prove": ["physical wiring", "electrical safety", "physical timing"]}, "metadata": {"engine": "python", "engine_version": None, "components_version": None, "elapsed_ms": 0}}
+        return {"contract": CONTRACT, "command": "timed-run", "ok": False, "result": result, "warnings": [], "error": {"code": "timing.unsupported", "message": str(exc), "severity": "error", "details": details}, "metadata": {"engine": "python", "components_version": None, "elapsed_ms": 0}}
+
+    @staticmethod
+    def _evidence_boundary() -> JsonMap:
+        return {"proves": ["the listed functional checks passed in the Python simulator"], "does_not_prove": ["physical wiring", "electrical safety", "physical timing"]}
 
 
 class CircuitSessionRegistry:
@@ -245,17 +374,17 @@ def headless_capabilities() -> JsonMap:
             "catalog": ["component-catalog", "student-component-catalog", "component-detail", "component-package"],
             "design": ["create-design", "load", "create-chip", "delete-chip", "connect", "disconnect", "add-bus", "set-inputs"],
             "simulation": ["validate", "snapshot", "frontend-snapshot", "run", "step", "probe", "explain-result"],
-            "circuit_simulation": ["circuit-load", "circuit-validate", "circuit-run", "circuit-step", "circuit-probe"],
+            "circuit_simulation": ["circuit-load", "circuit-validate", "circuit-run", "circuit-step", "circuit-probe", "timed-run", "explain-violations", "export-evidence"],
             "export": ["export-json", "export-netlist", "export-verilog", "export-block-ui", "import-block-ui"],
             "verification": ["circuit-faults", "db --audit", "db --status"],
         },
         "important_docs": [
-            "Docs/STUDENT_GUIDE.md",
-            "Docs/SERVICE_CONTRACT.md",
-            "Docs/SCHEMATIC_JSON_SPEC.md",
-            "Docs/DB_COMPONENT_PACKAGE_SPEC.md",
-            "Docs/TIMING_PARAMETER_AUDIT.md",
-            "Docs/TIMING_SIMULATION_AUDIT.md",
+            "docs/STUDENT_GUIDE.md",
+            "docs/SERVICE_CONTRACT.md",
+            "docs/SCHEMATIC_JSON_SPEC.md",
+            "docs/DB_COMPONENT_PACKAGE_SPEC.md",
+            "docs/TIMING_PARAMETER_AUDIT.md",
+            "docs/TIMING_SIMULATION_AUDIT.md",
         ],
         "limits": [
             "Headless simulation currently uses generic chip-level timing for most models.",
@@ -345,7 +474,7 @@ def project_builder_workflow(*, part: str | None = None, goal: str | None = None
             {
                 "step": "safety-check",
                 "why": "For circuit packages, check common AI wiring mistakes before real breadboard work.",
-                "cli": "PYTHONPATH=python python3 -B -m chiplib.cli circuit-faults Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json",
+                "cli": "PYTHONPATH=python python3 -B -m chiplib.cli circuit-faults examples/circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json",
                 "api": None,
             },
         ],
@@ -961,9 +1090,9 @@ def _verilog_file_for_part(part: str, module: str) -> str | None:
     except (KeyError, ValueError):
         pass
     if module.startswith("ttl_"):
-        return f"Verilog/74xx/{part.lower()}.v"
+        return f"verilog/74xx/{part.lower()}.v"
     if module.startswith("mem_"):
-        return f"Verilog/Memory/{module[4:]}.v"
+        return f"verilog/memory/{module[4:]}.v"
     return None
 
 
@@ -974,8 +1103,8 @@ def _verilog_dependencies_for_file(path: str) -> set[str]:
     except OSError:
         return set()
     dependencies: set[str] = set()
-    if re.search(r"\bmem_62256\b", text) and source.as_posix() != "DB/Memory/62256/simulation/model.v":
-        dependencies.add("DB/Memory/62256/simulation/model.v")
+    if re.search(r"\bmem_62256\b", text) and source.as_posix() != "lib/standard/memory/62256/simulation/model.v":
+        dependencies.add("lib/standard/memory/62256/simulation/model.v")
     return dependencies
 
 

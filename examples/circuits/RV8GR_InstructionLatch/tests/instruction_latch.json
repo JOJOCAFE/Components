@@ -1,0 +1,36 @@
+{
+  "schema": "components.lib.circuit.test.instruction_latch",
+  "version": 1,
+  "circuit": "rv8gr_instruction_latch",
+  "source": "examples/circuits/RV8GR_InstructionLatch/circuit.json",
+  "vectors": [
+    {"name": "t0_captures_control", "phase": "T0", "ibus": "0x10", "start_ir_high": "0x00", "start_irl": "0x00", "expect_ir_high": "0x10", "expect_irl": "0x00"},
+    {"name": "t1_captures_operand", "phase": "T1", "ibus": "0x05", "start_ir_high": "0x10", "start_irl": "0x00", "expect_ir_high": "0x10", "expect_irl": "0x05"},
+    {"name": "t2_holds_both", "phase": "T2", "ibus": "0xFF", "start_ir_high": "0x10", "start_irl": "0x05", "expect_ir_high": "0x10", "expect_irl": "0x05"},
+    {"name": "next_t0_replaces_control_only", "phase": "T0", "ibus": "0x90", "start_ir_high": "0x10", "start_irl": "0x05", "expect_ir_high": "0x90", "expect_irl": "0x05"},
+    {"name": "next_t1_replaces_operand_only", "phase": "T1", "ibus": "0x02", "start_ir_high": "0x90", "start_irl": "0x05", "expect_ir_high": "0x90", "expect_irl": "0x02"}
+  ],
+  "control_bits": {
+    "bit7": "ALU_SUB",
+    "bit6": "XOR_MODE",
+    "bit5": "MUX_SEL",
+    "bit4": "AC_WR",
+    "bit3": "SRC",
+    "bit2": "STR",
+    "bit1": "BR",
+    "bit0": "JMP"
+  },
+  "edge_criteria": {
+    "clocking": "edge_sensitive",
+    "trigger_edges": ["T0 rising clocks U5", "T1 rising clocks U6"],
+    "non_trigger_edge": "T2 and non-owning phase clocks hold state"
+  },
+  "clock_profiles": [
+    {"name": "push_switch_single_step", "kind": "manual", "requires": "one clean debounced rising edge per T0/T1 capture"},
+    {"name": "push_switch_random_100", "kind": "manual", "ticks": 100, "max_interval_ms": 500, "seed": 35862, "requires": "one clean debounced rising edge per phase; interval jitter must not add extra captures"},
+    {"name": "50_khz", "frequency_hz": 50000, "period_ns": 20000, "proof": "functional_edge_capture"},
+    {"name": "1_mhz", "frequency_hz": 1000000, "period_ns": 1000, "proof": "functional_edge_capture"},
+    {"name": "2_mhz", "frequency_hz": 2000000, "period_ns": 500, "proof": "functional_edge_capture"},
+    {"name": "5_mhz", "frequency_hz": 5000000, "period_ns": 200, "proof": "functional_edge_capture", "note": "Functional simulation only; physical 5 MHz requires timing-margin and signal-integrity proof."}
+  ]
+}

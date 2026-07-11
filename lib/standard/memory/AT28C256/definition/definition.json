@@ -1,0 +1,688 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "AT28C256",
+  "metadata": {
+    "title": "32K x 8 parallel EEPROM",
+    "family": "Memory",
+    "group": "memory",
+    "role": "eeprom"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 28,
+    "default": "PDIP"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "A14",
+      "direction": "input",
+      "bus": "A",
+      "bit": 14
+    },
+    {
+      "number": 2,
+      "name": "A12",
+      "direction": "input",
+      "bus": "A",
+      "bit": 12
+    },
+    {
+      "number": 3,
+      "name": "A7",
+      "direction": "input",
+      "bus": "A",
+      "bit": 7
+    },
+    {
+      "number": 4,
+      "name": "A6",
+      "direction": "input",
+      "bus": "A",
+      "bit": 6
+    },
+    {
+      "number": 5,
+      "name": "A5",
+      "direction": "input",
+      "bus": "A",
+      "bit": 5
+    },
+    {
+      "number": 6,
+      "name": "A4",
+      "direction": "input",
+      "bus": "A",
+      "bit": 4
+    },
+    {
+      "number": 7,
+      "name": "A3",
+      "direction": "input",
+      "bus": "A",
+      "bit": 3
+    },
+    {
+      "number": 8,
+      "name": "A2",
+      "direction": "input",
+      "bus": "A",
+      "bit": 2
+    },
+    {
+      "number": 9,
+      "name": "A1",
+      "direction": "input",
+      "bus": "A",
+      "bit": 1
+    },
+    {
+      "number": 10,
+      "name": "A0",
+      "direction": "input",
+      "bus": "A",
+      "bit": 0
+    },
+    {
+      "number": 11,
+      "name": "I/O0",
+      "direction": "bidirectional",
+      "bus": "DQ",
+      "bit": 0
+    },
+    {
+      "number": 12,
+      "name": "I/O1",
+      "direction": "bidirectional",
+      "bus": "DQ",
+      "bit": 1
+    },
+    {
+      "number": 13,
+      "name": "I/O2",
+      "direction": "bidirectional",
+      "bus": "DQ",
+      "bit": 2
+    },
+    {
+      "number": 14,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 15,
+      "name": "I/O3",
+      "direction": "bidirectional",
+      "bus": "DQ",
+      "bit": 3
+    },
+    {
+      "number": 16,
+      "name": "I/O4",
+      "direction": "bidirectional",
+      "bus": "DQ",
+      "bit": 4
+    },
+    {
+      "number": 17,
+      "name": "I/O5",
+      "direction": "bidirectional",
+      "bus": "DQ",
+      "bit": 5
+    },
+    {
+      "number": 18,
+      "name": "I/O6",
+      "direction": "bidirectional",
+      "bus": "DQ",
+      "bit": 6
+    },
+    {
+      "number": 19,
+      "name": "I/O7",
+      "direction": "bidirectional",
+      "bus": "DQ",
+      "bit": 7
+    },
+    {
+      "number": 20,
+      "name": "/CE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 21,
+      "name": "A10",
+      "direction": "input",
+      "bus": "A",
+      "bit": 10
+    },
+    {
+      "number": 22,
+      "name": "/OE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 23,
+      "name": "A11",
+      "direction": "input",
+      "bus": "A",
+      "bit": 11
+    },
+    {
+      "number": 24,
+      "name": "A9",
+      "direction": "input",
+      "bus": "A",
+      "bit": 9
+    },
+    {
+      "number": 25,
+      "name": "A8",
+      "direction": "input",
+      "bus": "A",
+      "bit": 8
+    },
+    {
+      "number": 26,
+      "name": "A13",
+      "direction": "input",
+      "bus": "A",
+      "bit": 13
+    },
+    {
+      "number": 27,
+      "name": "/WE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 28,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "parallel_eeprom",
+    "address_width": 15,
+    "data_width": 8,
+    "read": {
+      "when": "/CE=0 and /OE=0 and /WE=1",
+      "drive": "DQ"
+    },
+    "write": {
+      "when": "/CE=0 and /OE=1 during a valid /WE-low write window",
+      "latch": "/WE rising edge",
+      "sample": "DQ",
+      "address_sample": "A",
+      "fidelity_level": "timed_functional",
+      "busy_behavior": "write_cycle_updates blocks functional readback for the configured simulator update count; full data polling is not modeled in v0.1"
+    },
+    "tristate": {
+      "when": "not read",
+      "DQ": "Z"
+    }
+  },
+  "timing": {
+    "variant": "AT28C256-15",
+    "paths": {
+      "address_to_data_valid_ns": 150,
+      "ce_to_data_valid_ns": 150,
+      "oe_to_data_valid_ns": 70,
+      "ce_or_oe_to_high_z_ns": 50
+    },
+    "write": {
+      "pulse_min_ns": 100,
+      "data_setup_min_ns": 50,
+      "address_hold_min_ns": 50
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "conditions": {
+        "variant": "AT28C256-15"
+      },
+      "parameters": {
+        "tPLH": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.public_timing.paths",
+          "note": "tACC/tCE/tOE read access paths define data valid after address, CE, or OE; EEPROM read timing is not split by output HIGH/LOW transition.",
+          "values_ns": {
+            "address_to_data_valid_ns": 150,
+            "ce_to_data_valid_ns": 150,
+            "oe_to_data_valid_ns": 70
+          },
+          "mapping_basis": "tACC/tCE/tOE read access paths define data valid after address, CE, or OE; EEPROM read timing is not split by output HIGH/LOW transition.",
+          "source": "Microchip AT28C256 AC read/write characteristics"
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.public_timing.paths",
+          "note": "tACC/tCE/tOE read access paths define data valid after address, CE, or OE; EEPROM read timing is not split by output HIGH/LOW transition.",
+          "values_ns": {
+            "address_to_data_valid_ns": 150,
+            "ce_to_data_valid_ns": 150,
+            "oe_to_data_valid_ns": 70
+          },
+          "mapping_basis": "tACC/tCE/tOE read access paths define data valid after address, CE, or OE; EEPROM read timing is not split by output HIGH/LOW transition.",
+          "source": "Microchip AT28C256 AC read/write characteristics"
+        },
+        "tPZH": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.public_timing.paths",
+          "note": "tOE/tCE read output-enable paths define when the output becomes valid from disabled/read state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+          "values_ns": {
+            "oe_to_data_valid_ns": 70,
+            "ce_to_data_valid_ns": 150
+          },
+          "mapping_basis": "tOE/tCE read output-enable paths define when the output becomes valid from disabled/read state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+          "source": "Microchip AT28C256 AC read/write characteristics"
+        },
+        "tPZL": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.public_timing.paths",
+          "note": "tOE/tCE read output-enable paths define when the output becomes valid from disabled/read state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+          "values_ns": {
+            "oe_to_data_valid_ns": 70,
+            "ce_to_data_valid_ns": 150
+          },
+          "mapping_basis": "tOE/tCE read output-enable paths define when the output becomes valid from disabled/read state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+          "source": "Microchip AT28C256 AC read/write characteristics"
+        },
+        "tPHZ": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.public_timing.paths",
+          "note": "tDF CE/OE-to-float path defines output-disable timing; not split by previous HIGH/LOW output state.",
+          "values_ns": {
+            "ce_or_oe_to_high_z_ns": 50
+          },
+          "mapping_basis": "tDF CE/OE-to-float path defines output-disable timing; not split by previous HIGH/LOW output state.",
+          "source": "Microchip AT28C256 AC read/write characteristics"
+        },
+        "tPLZ": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.public_timing.paths",
+          "note": "tDF CE/OE-to-float path defines output-disable timing; not split by previous HIGH/LOW output state.",
+          "values_ns": {
+            "ce_or_oe_to_high_z_ns": 50
+          },
+          "mapping_basis": "tDF CE/OE-to-float path defines output-disable timing; not split by previous HIGH/LOW output state.",
+          "source": "Microchip AT28C256 AC read/write characteristics"
+        },
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "AT28C256 is asynchronous memory and has no clock-to-Q output."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "AT28C256 is asynchronous memory and has no clock-to-Q output."
+        },
+        "setup": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.public_timing.write",
+          "note": "Write setup/hold-style requirements are source-backed for the selected variant.",
+          "values_ns": {
+            "data_setup_min_ns": 50,
+            "address_hold_min_ns": 50
+          }
+        },
+        "hold": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.public_timing.write",
+          "note": "Write hold requirement is source-backed for the selected variant.",
+          "values_ns": {
+            "address_hold_min_ns": 50
+          }
+        },
+        "minimum_pulse_width": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.public_timing.write",
+          "note": "Write pulse width is source-backed for the selected variant.",
+          "values_ns": {
+            "write_pulse_min_ns": 100
+          }
+        }
+      }
+    }
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "AT28C256",
+      "file": "lib/standard/memory/AT28C256/simulation/model.py",
+      "class": "AT28C256"
+    },
+    "verilog": {
+      "module": "mem_at28c256",
+      "file": "lib/standard/memory/AT28C256/simulation/model.v",
+      "netlist": "lib/standard/memory/AT28C256/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "tri_state",
+      "propagation"
+    ],
+    "required_vectors": [
+      "write_read",
+      "disabled_high_z",
+      "oe_high_high_z"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "AT28C256",
+    "sources": [
+      {
+        "label": "Microchip AT28C256",
+        "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf",
+        "package_evidence": "28-lead Cerdip/PDIP/Flatpack/SOIC",
+        "used_for": [
+          "pins",
+          "package",
+          "logic",
+          "operating_modes",
+          "dc_characteristics",
+          "ac_read_characteristics",
+          "ac_write_characteristics",
+          "pin_capacitance"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "AT28C256",
+      "delay": {
+        "default_ns": 150,
+        "source": "AT28C256-15 tACC address-to-output datasheet path, not tOE",
+        "datasheet_read_ns": {
+          "tacc_address_to_output": {
+            "at28c256_15": 150,
+            "at28c256_20": 200,
+            "at28c256_25": 250,
+            "at28c256_35": 350
+          },
+          "tce_ce_to_output": {
+            "at28c256_15": 150,
+            "at28c256_20": 200,
+            "at28c256_25": 250,
+            "at28c256_35": 350
+          },
+          "toe_oe_to_output": {
+            "at28c256_15": 70,
+            "at28c256_20": 80,
+            "at28c256_25": 100,
+            "at28c256_35": 100
+          },
+          "tdf_ce_or_oe_to_float": {
+            "at28c256_15": 50,
+            "at28c256_20": 55,
+            "at28c256_25": 60,
+            "at28c256_35": 70
+          }
+        },
+        "datasheet_write_ns": {
+          "address_hold": 50,
+          "write_pulse_width": 100,
+          "data_setup": 50,
+          "data_hold": 0,
+          "write_cycle_us": 10000,
+          "latch_edge": "/WE rising",
+          "write_cycle_updates_default": 1,
+          "busy_behavior": "after /WE rising commit, reads return high-Z for write_cycle_updates before normal readback",
+          "programming_fidelity": "single-byte timed functional write-cycle model"
+        },
+        "model_delay_ns": 150,
+        "selected_variant": "at28c256_15",
+        "variant_policy": {
+          "available_variants": [
+            "at28c256_15",
+            "at28c256_20",
+            "at28c256_25",
+            "at28c256_35"
+          ],
+          "default_variant": "at28c256_15",
+          "unselected_variant_policy": "do_not_assume_70ns; choose a marked speed grade or use the conservative at28c256_35 row",
+          "physical_signoff_requires": "installed package marking must match the selected speed-grade row"
+        },
+        "paths": {
+          "address_to_data_valid_ns": 150,
+          "ce_to_data_valid_ns": 150,
+          "oe_to_data_valid_ns": 70,
+          "ce_or_oe_to_high_z_ns": 50
+        },
+        "fidelity_level": "timed_functional",
+        "unsupported_programming_features": [
+          "DQ7 data polling",
+          "DQ6 toggle bit",
+          "software data protection",
+          "page write window"
+        ],
+        "public_timing": {
+          "variant": "AT28C256-15",
+          "paths": {
+            "address_to_data_valid_ns": 150,
+            "ce_to_data_valid_ns": 150,
+            "oe_to_data_valid_ns": 70,
+            "ce_or_oe_to_high_z_ns": 50
+          },
+          "write": {
+            "pulse_min_ns": 100,
+            "data_setup_min_ns": 50,
+            "address_hold_min_ns": 50
+          }
+        }
+      },
+      "evidence": {
+        "source": "Microchip AT28C256 datasheet, AC read and write characteristics",
+        "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf"
+      },
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "conditions": {
+          "variant": "AT28C256-15"
+        },
+        "parameters": {
+          "tPLH": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.public_timing.paths",
+            "note": "tACC/tCE/tOE read access paths define data valid after address, CE, or OE; EEPROM read timing is not split by output HIGH/LOW transition.",
+            "values_ns": {
+              "address_to_data_valid_ns": 150,
+              "ce_to_data_valid_ns": 150,
+              "oe_to_data_valid_ns": 70
+            },
+            "mapping_basis": "tACC/tCE/tOE read access paths define data valid after address, CE, or OE; EEPROM read timing is not split by output HIGH/LOW transition.",
+            "source": "Microchip AT28C256 AC read/write characteristics"
+          },
+          "tPHL": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.public_timing.paths",
+            "note": "tACC/tCE/tOE read access paths define data valid after address, CE, or OE; EEPROM read timing is not split by output HIGH/LOW transition.",
+            "values_ns": {
+              "address_to_data_valid_ns": 150,
+              "ce_to_data_valid_ns": 150,
+              "oe_to_data_valid_ns": 70
+            },
+            "mapping_basis": "tACC/tCE/tOE read access paths define data valid after address, CE, or OE; EEPROM read timing is not split by output HIGH/LOW transition.",
+            "source": "Microchip AT28C256 AC read/write characteristics"
+          },
+          "tPZH": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.public_timing.paths",
+            "note": "tOE/tCE read output-enable paths define when the output becomes valid from disabled/read state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+            "values_ns": {
+              "oe_to_data_valid_ns": 70,
+              "ce_to_data_valid_ns": 150
+            },
+            "mapping_basis": "tOE/tCE read output-enable paths define when the output becomes valid from disabled/read state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+            "source": "Microchip AT28C256 AC read/write characteristics"
+          },
+          "tPZL": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.public_timing.paths",
+            "note": "tOE/tCE read output-enable paths define when the output becomes valid from disabled/read state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+            "values_ns": {
+              "oe_to_data_valid_ns": 70,
+              "ce_to_data_valid_ns": 150
+            },
+            "mapping_basis": "tOE/tCE read output-enable paths define when the output becomes valid from disabled/read state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+            "source": "Microchip AT28C256 AC read/write characteristics"
+          },
+          "tPHZ": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.public_timing.paths",
+            "note": "tDF CE/OE-to-float path defines output-disable timing; not split by previous HIGH/LOW output state.",
+            "values_ns": {
+              "ce_or_oe_to_high_z_ns": 50
+            },
+            "mapping_basis": "tDF CE/OE-to-float path defines output-disable timing; not split by previous HIGH/LOW output state.",
+            "source": "Microchip AT28C256 AC read/write characteristics"
+          },
+          "tPLZ": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.public_timing.paths",
+            "note": "tDF CE/OE-to-float path defines output-disable timing; not split by previous HIGH/LOW output state.",
+            "values_ns": {
+              "ce_or_oe_to_high_z_ns": 50
+            },
+            "mapping_basis": "tDF CE/OE-to-float path defines output-disable timing; not split by previous HIGH/LOW output state.",
+            "source": "Microchip AT28C256 AC read/write characteristics"
+          },
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "AT28C256 is asynchronous memory and has no clock-to-Q output."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "AT28C256 is asynchronous memory and has no clock-to-Q output."
+          },
+          "setup": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.public_timing.write",
+            "note": "Write setup/hold-style requirements are source-backed for the selected variant.",
+            "values_ns": {
+              "data_setup_min_ns": 50,
+              "address_hold_min_ns": 50
+            }
+          },
+          "hold": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.public_timing.write",
+            "note": "Write hold requirement is source-backed for the selected variant.",
+            "values_ns": {
+              "address_hold_min_ns": 50
+            }
+          },
+          "minimum_pulse_width": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.public_timing.write",
+            "note": "Write pulse width is source-backed for the selected variant.",
+            "values_ns": {
+              "write_pulse_min_ns": 100
+            }
+          }
+        }
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "AT28C256",
+      "logic_family": "parallel_eeprom",
+      "voltage": {
+        "vcc": {
+          "min_v": 4.5,
+          "typ_v": 5.0,
+          "max_v": 5.5,
+          "status": "extracted"
+        },
+        "input_high_v": {
+          "min_v": 2.0,
+          "status": "extracted"
+        },
+        "input_low_v": {
+          "max_v": 0.8,
+          "status": "extracted"
+        },
+        "output_high_v": {
+          "min_v": 2.4,
+          "ioh_ua": -400,
+          "status": "extracted"
+        },
+        "output_low_v": {
+          "max_v": 0.45,
+          "iol_ma": 2.1,
+          "status": "extracted"
+        }
+      },
+      "current": {
+        "input_load_current_max_ua": 10,
+        "output_leakage_current_max_ua": 10,
+        "standby_current_cmos_max_ua": 200,
+        "standby_current_ttl_max_ma": 3,
+        "active_current_max_ma": 50,
+        "status": "extracted"
+      },
+      "loading": {
+        "input_capacitance": {
+          "typ_pf": 4,
+          "max_pf": 6,
+          "status": "extracted"
+        },
+        "output_capacitance": {
+          "typ_pf": 8,
+          "max_pf": 12,
+          "status": "extracted"
+        }
+      },
+      "evidence": {
+        "source": "Microchip AT28C256 datasheet, DC characteristics and pin capacitance",
+        "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf"
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "tested",
+    "tests": "tested"
+  },
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "Microchip",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
+  }
+}

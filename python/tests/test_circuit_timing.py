@@ -6,7 +6,7 @@ from chiplib.circuit_timing import CircuitTimingBinding, CircuitTimingError
 
 
 ROOT = Path(__file__).resolve().parents[2]
-RING = ROOT / "Lib" / "Circuits" / "RV8GR_RingCounter" / "circuit.json"
+RING = ROOT / "examples" / "circuits" / "RV8GR_RingCounter" / "circuit.json"
 
 
 def ready_ring() -> CircuitTimingBinding:
@@ -31,11 +31,18 @@ def test_clock_edge_binds_actual_functional_output_to_clock_to_q_event():
     assert event.snapshot()["modeled_only"] is True
 
     signal = "rv8gr_ring_counter.T0"
-    binding.timed.run_until(event.selection.delay_ps - 1)
+    event_time = next(
+        row["time_ps"] for row in binding.timed.trace if row["kind"] == "active_edge"
+    )
+    binding.timed.run_until(event_time + event.selection.delay_ps - 1)
     assert binding.timed.signals[signal] == 0
-    binding.timed.run_until(event.selection.delay_ps)
+    binding.timed.run_until(event_time + event.selection.delay_ps)
     assert binding.timed.signals[signal] == 1
-    assert binding.timed.trace[-1]["provenance"] in {"exact", "generic", "path", "default"}
+    output_trace = next(
+        row for row in reversed(binding.timed.trace)
+        if row.get("kind") == "timed_output" and row.get("signal") == signal
+    )
+    assert output_trace["provenance"] in {"exact", "generic", "path", "default"}
 
 
 def test_constraint_records_are_selected_automatically_with_db_provenance():
@@ -49,6 +56,56 @@ def test_constraint_records_are_selected_automatically_with_db_provenance():
         assert record["provenance"] in {"exact", "generic", "not_applicable"}
         assert record["source"]
         assert record["modeled_only"] is True
+
+
+def test_package_path_compiles_db_pin_roles_and_real_nets():
+    compiled = ready_ring().compiled_path()
+    assert compiled.chip_ref == "U8"
+    assert compiled.clock_pin == "CLK"
+    assert compiled.clock_net == "CLK"
+    assert compiled.constrained_nets == ("NOT_T0", "NOT_T1")
+    assert compiled.output_ports == ("T0", "T1", "T2")
+    assert compiled.trigger_edge == "rising"
+
+
+def test_actual_package_pulse_width_before_at_after_is_enforced_automatically():
+    probe = ready_ring()
+    required = probe.constraint_provenance()["minimum_pulse_width"]["delay_ps"]
+    for offset, violates in ((-1, True), (0, False), (1, False)):
+        binding = ready_ring()
+        events = binding.pulse_clock(high_ps=required + offset)
+        assert events
+        found = [
+            item for item in binding.timed.diagnostics
+            if item.code == "timing.pulse_width_violation"
+        ]
+        assert bool(found) is violates
+        if found:
+            assert found[0].provenance in {"exact", "generic"}
+            assert found[0].modeled_only is True
+
+
+def test_actual_package_setup_threshold_before_at_after_is_enforced_automatically():
+    probe = ready_ring()
+    required = probe.constraint_provenance()["setup"]["delay_ps"]
+    for offset, violates in ((-1, True), (0, False), (1, False)):
+        binding = ready_ring()
+        binding.pulse_clock(setup_ps=required + offset)
+        found = [item for item in binding.timed.diagnostics if item.code == "timing.setup_violation"]
+        assert bool(found) is violates
+
+
+def test_actual_package_hold_threshold_before_at_after_is_enforced_automatically():
+    probe = ready_ring()
+    required = probe.constraint_provenance()["hold"]["delay_ps"]
+    assert required > 0
+    for offset, violates in ((-1, True), (0, False), (1, False)):
+        binding = ready_ring()
+        binding.pulse_clock(
+            high_ps=max(required + 1, 1), constrained_change_ps=required + offset
+        )
+        found = [item for item in binding.timed.diagnostics if item.code == "timing.hold_violation"]
+        assert bool(found) is violates
 
 
 def test_input_without_explicit_package_timing_path_is_blocked():

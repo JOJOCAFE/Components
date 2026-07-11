@@ -16,13 +16,13 @@ from chiplib.circuit_proofs import (
 ROOT = Path(__file__).resolve().parents[2]
 
 EXPECTED_BATCH_BLOCK_CODES = {
-    "A": {"symbolic_aggregate_not_executable", "unresolved_output", "unsupported_port_direction"},
-    "B": {"proof_vector_mismatch", "proof_internal_control_undriven"},
-    "C": {"proof_adapter_not_implemented", "symbolic_aggregate_not_executable", "composite_not_executable"},
-    "D": {"symbolic_aggregate_not_executable", "unresolved_output"},
-    "E": {"ambiguous_range_width", "symbolic_aggregate_not_executable", "unresolved_output", "unsupported_port_direction"},
-    "F": {"ambiguous_range_width", "symbolic_aggregate_not_executable", "unresolved_output"},
-    "G": {"composite_not_executable", "symbolic_aggregate_not_executable", "unresolved_output"},
+    "A": {"unresolved_output", "unsupported_port_direction"},
+    "B": set(),
+    "C": {"ambiguous_symbolic_width", "composite_not_executable"},
+    "D": {"unresolved_output"},
+    "E": {"ambiguous_range_width", "composite_not_executable", "unresolved_output", "unsupported_port_direction"},
+    "F": {"ambiguous_range_width", "composite_not_executable", "unresolved_output"},
+    "G": {"composite_not_executable", "unresolved_output"},
 }
 
 EXPECTED_BATCH_PACKAGES = {
@@ -48,9 +48,16 @@ class CircuitRunnerPackagePromotionTests(unittest.TestCase):
                 self.assertTrue(all(path.is_file() for path in result.proof_paths))
                 self.assertTrue(all(ROOT in path.parents for path in result.proof_paths))
 
-    def test_ring_counter_is_promoted_only_by_declared_live_execution(self) -> None:
+    def test_promotions_require_declared_live_execution(self) -> None:
         promoted = [result for result in self.results if result.promoted]
-        self.assertEqual(["RV8GR_RingCounter"], [result.package for result in promoted])
+        self.assertEqual(
+            ["RV8GR_BranchJumpControl", "RV8GR_IRQLatch", "RV8GR_ResetClockBringup",
+             "RV8GR_RingCounter", "RV8GR_RomDbusRead", "RV8GR_StorePath"],
+            [result.package for result in promoted],
+        )
+        branch = self.by_name["RV8GR_BranchJumpControl"].observations
+        self.assertEqual(9, branch["vectors_executed"])
+        self.assertTrue(all(check["passed"] for check in branch["checks"]))
         proof = self.by_name["RV8GR_RingCounter"].observations
         self.assertEqual({"T0": 0, "T1": 0, "T2": 0}, proof["reset"])
         self.assertEqual(
@@ -64,10 +71,6 @@ class CircuitRunnerPackagePromotionTests(unittest.TestCase):
     def test_loadable_but_unproved_packages_remain_explicitly_blocked(self) -> None:
         expected = {
             "RV8GR_AluAccumulator": "proof_state_not_executable",
-            "RV8GR_BranchJumpControl": "proof_vector_mismatch",
-            "RV8GR_IRQLatch": "proof_clock_driver_conflict",
-            "RV8GR_RomDbusRead": "proof_rom_image_not_loadable",
-            "RV8GR_StorePath": "proof_internal_control_undriven",
         }
         for package, code in expected.items():
             with self.subTest(package=package):
@@ -76,15 +79,33 @@ class CircuitRunnerPackagePromotionTests(unittest.TestCase):
                 self.assertEqual([code], [block.code for block in result.blocks])
                 self.assertIn("tests/", result.blocks[0].path)
 
-    def test_every_nonexecuted_package_has_structured_runner_blocks(self) -> None:
+    def test_every_nonpromoted_package_has_structured_blocks_and_bounded_observations(self) -> None:
         for result in self.results:
             if result.promoted:
                 continue
             with self.subTest(package=result.package):
                 self.assertEqual("blocked", result.status)
-                self.assertFalse(result.observations)
                 self.assertTrue(result.blocks)
                 self.assertTrue(all(block.code and block.path and block.message for block in result.blocks))
+                if result.observations:
+                    self.assertIn("proof", result.observations)
+                    self.assertIn("vectors_executed", result.observations)
+                    self.assertGreaterEqual(result.observations["vectors_executed"], 0)
+                    self.assertTrue(Path(result.observations["proof"]).is_file())
+
+    def test_partial_observations_never_promote_a_blocked_package(self) -> None:
+        observed = {
+            result.package: result
+            for result in self.results
+            if result.status == "blocked" and result.observations
+        }
+        self.assertEqual(
+            {
+                "RV8GR_AluAccumulator",
+            },
+            set(observed),
+        )
+        self.assertTrue(all(not result.promoted for result in observed.values()))
 
     def test_batches_a_through_g_are_complete_and_explicitly_blocked(self) -> None:
         self.assertEqual(tuple("ABCDEFG"), tuple(PROMOTION_BATCHES))
@@ -95,20 +116,29 @@ class CircuitRunnerPackagePromotionTests(unittest.TestCase):
         for batch, results in batches.items():
             with self.subTest(batch=batch):
                 self.assertEqual(PROMOTION_BATCHES[batch], tuple(item.package for item in results))
-                self.assertTrue(all(item.status == "blocked" for item in results))
+                self.assertTrue(all(item.status in {"blocked", "promoted"} for item in results))
                 codes = {block.code for item in results for block in item.blocks}
                 self.assertEqual(EXPECTED_BATCH_BLOCK_CODES[batch], codes)
+        self.assertEqual(
+            ["RV8GR_BranchJumpControl", "RV8GR_StorePath", "RV8GR_ResetClockBringup"],
+            [
+                item.package
+                for results in batches.values()
+                for item in results
+                if item.promoted
+            ],
+        )
 
     def test_blocks_name_exact_package_json_paths(self) -> None:
         for batch_results in audit_promotion_batches().values():
             for result in batch_results:
                 with self.subTest(package=result.package):
                     self.assertEqual(
-                        ROOT / "Lib" / "Circuits" / result.package / "circuit.json",
+                        ROOT / "examples" / "circuits" / result.package / "circuit.json",
                         result.circuit_path,
                     )
                     self.assertEqual(
-                        (ROOT / "Lib" / "Circuits" / result.package / "tests" / f"{result.circuit_id.removeprefix('rv8gr_')}.json",),
+                        (ROOT / "examples" / "circuits" / result.package / "tests" / f"{result.circuit_id.removeprefix('rv8gr_')}.json",),
                         result.proof_paths,
                     )
                     self.assertTrue(all(

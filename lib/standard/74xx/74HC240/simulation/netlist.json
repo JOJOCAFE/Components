@@ -1,0 +1,176 @@
+{
+  "schema": "db.component.simulation.netlist",
+  "version": 1,
+  "part": "74HC240",
+  "source": "lib/standard/74xx/74HC240/definition/definition.json",
+  "simulation": {
+    "python": "lib/standard/74xx/74HC240/simulation/model.py",
+    "verilog": "lib/standard/74xx/74HC240/simulation/model.v"
+  },
+  "verilog": {
+    "module": "ttl_74hc240",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "OE1_bar",
+          "pins": [
+            1
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "OE2_bar",
+          "pins": [
+            19
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "A",
+          "pins": [
+            2,
+            4,
+            6,
+            8,
+            11,
+            13,
+            15,
+            17
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Y",
+          "pins": [
+            18,
+            16,
+            14,
+            12,
+            9,
+            7,
+            5,
+            3
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        3,
+        5,
+        7,
+        9,
+        12,
+        14,
+        16,
+        18
+      ]
+    }
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "/1OE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 2,
+      "name": "1A1",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "2Y4",
+      "direction": "output"
+    },
+    {
+      "number": 4,
+      "name": "1A2",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "2Y3",
+      "direction": "output"
+    },
+    {
+      "number": 6,
+      "name": "1A3",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "2Y2",
+      "direction": "output"
+    },
+    {
+      "number": 8,
+      "name": "1A4",
+      "direction": "input"
+    },
+    {
+      "number": 9,
+      "name": "2Y1",
+      "direction": "output"
+    },
+    {
+      "number": 10,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 11,
+      "name": "2A1",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "1Y4",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "2A2",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "1Y3",
+      "direction": "output"
+    },
+    {
+      "number": 15,
+      "name": "2A3",
+      "direction": "input"
+    },
+    {
+      "number": 16,
+      "name": "1Y2",
+      "direction": "output"
+    },
+    {
+      "number": 17,
+      "name": "2A4",
+      "direction": "input"
+    },
+    {
+      "number": 18,
+      "name": "1Y1",
+      "direction": "output"
+    },
+    {
+      "number": 19,
+      "name": "/2OE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 20,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ]
+}

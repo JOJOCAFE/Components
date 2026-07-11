@@ -1,0 +1,737 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
+      ],
+      "overview": "74HC147 is a 16-pin DIP part for logic.",
+      "part": "74HC147",
+      "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 10,
+          "names": [
+            "/I4",
+            "/I5",
+            "/I6",
+            "/I7",
+            "/I8",
+            "/I0",
+            "/I9",
+            "/I1",
+            "/I2",
+            "/I3"
+          ],
+          "note": "Input pins: /I4, /I5, /I6, /I7, /I8, /I0, and 4 more."
+        },
+        "output": {
+          "count": 3,
+          "names": [
+            "/Y2",
+            "/Y1",
+            "/Y3"
+          ],
+          "note": "Output pins: /Y2, /Y1, /Y3."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "10-line to 4-line priority encoder with active-low inputs and outputs.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
+      "title": "10-line to 4-line priority encoder with active-low inputs and outputs",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "/I4 controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/I4 - input",
+          "pin": "/I4"
+        },
+        {
+          "explanation": "/I5 controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/I5 - input",
+          "pin": "/I5"
+        },
+        {
+          "explanation": "/I6 controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/I6 - input",
+          "pin": "/I6"
+        },
+        {
+          "explanation": "/I7 controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/I7 - input",
+          "pin": "/I7"
+        },
+        {
+          "explanation": "/I8 controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/I8 - input",
+          "pin": "/I8"
+        },
+        {
+          "explanation": "/I0 controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/I0 - input",
+          "pin": "/I0"
+        },
+        {
+          "explanation": "/I9 controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/I9 - input",
+          "pin": "/I9"
+        },
+        {
+          "explanation": "/I1 controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/I1 - input",
+          "pin": "/I1"
+        },
+        {
+          "explanation": "/I2 controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/I2 - input",
+          "pin": "/I2"
+        },
+        {
+          "explanation": "/I3 controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/I3 - input",
+          "pin": "/I3"
+        }
+      ],
+      "controls": [
+        "/I4",
+        "/I5",
+        "/I6",
+        "/I7",
+        "/I8",
+        "/I0",
+        "/I9",
+        "/I1",
+        "/I2",
+        "/I3"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC147",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/Y2",
+          "name": "/Y2"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/Y1",
+          "name": "/Y1"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/Y3",
+          "name": "/Y3"
+        }
+      ],
+      "probes": [
+        "/Y2",
+        "/Y1",
+        "/Y3"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change /I4?",
+        "Which truth-table row matches the value on /Y2?"
+      ],
+      "title": "Try 74HC147 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "10-line to 4-line priority encoder with active-low inputs and outputs",
+        "type": "10_line_to_4_line_priority_encoder_with"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC147",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I4",
+          "number": 1
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I5",
+          "number": 2
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I6",
+          "number": 3
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I7",
+          "number": 4
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I8",
+          "number": 5
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y2",
+          "number": 6
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y1",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I0",
+          "number": 9
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I9",
+          "number": 10
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I1",
+          "number": 11
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I2",
+          "number": 12
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I3",
+          "number": 13
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y3",
+          "number": 14
+        },
+        {
+          "direction": "nc",
+          "name": "NC",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "logic",
+      "timing": {
+        "datasheet": {
+          "conditions": "TI CD74HC147 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_typical_ns": {
+              "feature_tpd": 13
+            }
+          }
+        },
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "TI CD74HC147 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC147 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC147 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC147 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC147 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC147 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "TI switching characteristics table gives direct propagation-delay timing for the priority encoder outputs; canonical propagation timing is preserved exactly.",
+              "source_field": "timing.datasheet.values",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_typical_ns": {
+                  "feature_tpd": 13
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC147 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "TI switching characteristics table gives direct propagation-delay timing for the priority encoder outputs; canonical propagation timing is preserved exactly.",
+              "source_field": "timing.datasheet.values",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_typical_ns": {
+                  "feature_tpd": 13
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC147 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC147 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC147 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
+      },
+      "title": "10-line to 4-line priority encoder with active-low inputs and outputs"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/I4",
+        "10": "/I9",
+        "11": "/I1",
+        "12": "/I2",
+        "13": "/I3",
+        "16": "VCC",
+        "2": "/I5",
+        "3": "/I6",
+        "4": "/I7",
+        "5": "/I8",
+        "8": "GND",
+        "9": "/I0"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC147",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC147",
+      "copy_with_chip": [
+        "lib/standard/74xx/74HC147/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC147/simulation/model.py",
+      "part": "74HC147",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/I4",
+        "10": "/I9",
+        "11": "/I1",
+        "12": "/I2",
+        "13": "/I3",
+        "16": "VCC",
+        "2": "/I5",
+        "3": "/I6",
+        "4": "/I7",
+        "5": "/I8",
+        "8": "GND",
+        "9": "/I0"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC147",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC147",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC147",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC147",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc147",
+      "compile": {
+        "sources": [
+          "lib/standard/74xx/74HC147/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc147"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc147",
+      "part": "74HC147",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC147",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC147",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          0,
+          6,
+          7,
+          14
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "I0_bar",
+            "pins": [
+              9
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "A_bar",
+            "pins": [
+              11,
+              12,
+              13,
+              1,
+              2,
+              3,
+              4,
+              5,
+              10
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y_bar",
+            "note": "Pin 0 is an internal open placeholder for Y_bar[0], which is unbonded by the repository TI pin table.",
+            "pins": [
+              0,
+              7,
+              6,
+              14
+            ]
+          }
+        ]
+      },
+      "file": "lib/standard/74xx/74HC147/simulation/model.v",
+      "module": "ttl_74hc147",
+      "netlist": "lib/standard/74xx/74HC147/simulation/netlist.json",
+      "part": "74HC147"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC147",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "lib/standard/74xx/74HC147/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "lib/standard/74xx/74HC147/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "lib/standard/74xx/74HC147/simulation/netlist.json"
+    }
+  ],
+  "source": "lib/standard/74xx/74HC147/definition/definition.json",
+  "version": 1
+}

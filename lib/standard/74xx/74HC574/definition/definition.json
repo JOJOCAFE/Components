@@ -1,0 +1,630 @@
+{
+  "datasheet": {
+    "part": "74HC574",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC574",
+        "package_evidence": "N, 20-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc574.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic",
+          "timing_requirements",
+          "electrical_characteristics",
+          "switching_characteristics"
+        ]
+      }
+    ],
+    "version": 1
+  },
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "off_state_output_current": {
+          "status": "extracted",
+          "vcc_6_v_max_ua": 5
+        },
+        "output_drive": {
+          "status": "extracted",
+          "vcc_4_5_v": {
+            "ioh_ma": -6,
+            "iol_ma": 6
+          },
+          "vcc_6_v": {
+            "ioh_ma": -7.8,
+            "iol_ma": 7.8
+          }
+        },
+        "supply_current": {
+          "status": "extracted",
+          "vcc_6_v_max_ua": 80
+        }
+      },
+      "evidence": {
+        "source": "Texas Instruments SN74HC574 datasheet, electrical characteristics",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc574.pdf"
+      },
+      "loading": {
+        "input_capacitance": {
+          "max_pf": 10,
+          "status": "extracted",
+          "typ_pf": 3
+        }
+      },
+      "logic_family": "74HC",
+      "part": "74HC574",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "max_v": 6.0,
+          "min_v": 2.0,
+          "status": "extracted",
+          "typ_v": 5.0
+        }
+      }
+    },
+    "timing": {
+      "delay": {
+        "datasheet_typical_ns": {
+          "clock_to_q": {
+            "vcc_4_5_v": 28,
+            "vcc_6_v": 24
+          },
+          "condition": "SN74HC574, CL=50 pF, TA=25 C",
+          "disable_to_z": {
+            "vcc_4_5_v": 24,
+            "vcc_6_v": 22
+          },
+          "enable_to_q": {
+            "vcc_4_5_v": 26,
+            "vcc_6_v": 23
+          },
+          "transition_q": {
+            "vcc_4_5_v": 8,
+            "vcc_6_v": 6
+          }
+        },
+        "default_ns": 20,
+        "source": "simulation default from Python model"
+      },
+      "evidence": {
+        "source": "Texas Instruments SN74HC574 datasheet, timing requirements and switching characteristics",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc574.pdf"
+      },
+      "part": "74HC574",
+      "schema": "db.component.timing",
+      "timing_requirements": {
+        "clock_frequency_mhz": {
+          "vcc_4_5_v": 30,
+          "vcc_6_v": 38
+        },
+        "clock_high_or_low_ns": {
+          "vcc_4_5_v": 16,
+          "vcc_6_v": 14
+        },
+        "hold_after_clock_ns": {
+          "vcc_4_5_v": 5,
+          "vcc_6_v": 5
+        },
+        "setup_before_clock_ns": {
+          "data": {
+            "vcc_4_5_v": 20,
+            "vcc_6_v": 17
+          }
+        }
+      },
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "parameters": {
+          "clock_to_q_high": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+            "note": "TI SN74HC574 switching table and waveform notes map CLK-to-Q tpd to tPLH/tPHL and clock-to-Q high/low.",
+            "values_ns": {
+              "vcc_4_5_v": 28,
+              "vcc_6_v": 24
+            }
+          },
+          "clock_to_q_low": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+            "note": "TI SN74HC574 switching table and waveform notes map CLK-to-Q tpd to tPLH/tPHL and clock-to-Q high/low.",
+            "values_ns": {
+              "vcc_4_5_v": 28,
+              "vcc_6_v": 24
+            }
+          },
+          "tPZH": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.enable_to_q",
+            "note": "TI SN74HC574 switching table and waveform notes map output enable ten to tPZH/tPZL.",
+            "values_ns": {
+              "vcc_4_5_v": 26,
+              "vcc_6_v": 23
+            }
+          },
+          "tPZL": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.enable_to_q",
+            "note": "TI SN74HC574 switching table and waveform notes map output enable ten to tPZH/tPZL.",
+            "values_ns": {
+              "vcc_4_5_v": 26,
+              "vcc_6_v": 23
+            }
+          },
+          "tPHZ": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.disable_to_z",
+            "note": "TI SN74HC574 switching table and waveform notes map output disable tdis to tPHZ/tPLZ.",
+            "values_ns": {
+              "vcc_4_5_v": 24,
+              "vcc_6_v": 22
+            }
+          },
+          "tPLZ": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.disable_to_z",
+            "note": "TI SN74HC574 switching table and waveform notes map output disable tdis to tPHZ/tPLZ.",
+            "values_ns": {
+              "vcc_4_5_v": 24,
+              "vcc_6_v": 22
+            }
+          },
+          "setup": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.timing_requirements.setup_before_clock_ns",
+            "note": "Data setup requirement is source-backed.",
+            "values_ns": {
+              "data": {
+                "vcc_4_5_v": 20,
+                "vcc_6_v": 17
+              }
+            }
+          },
+          "hold": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.timing_requirements.hold_after_clock_ns",
+            "note": "Data hold requirement is source-backed.",
+            "values_ns": {
+              "vcc_4_5_v": 5,
+              "vcc_6_v": 5
+            }
+          },
+          "minimum_pulse_width": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.timing_requirements.clock_high_or_low_ns",
+            "note": "Clock pulse width requirement is source-backed.",
+            "values_ns": {
+              "vcc_4_5_v": 16,
+              "vcc_6_v": 14
+            }
+          },
+          "tPLH": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+            "note": "TI SN74HC574 switching table and waveform notes map CLK-to-Q tpd to tPLH/tPHL and clock-to-Q high/low.",
+            "values_ns": {
+              "vcc_4_5_v": 28,
+              "vcc_6_v": 24
+            }
+          },
+          "tPHL": {
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+            "note": "TI SN74HC574 switching table and waveform notes map CLK-to-Q tpd to tPLH/tPHL and clock-to-Q high/low.",
+            "values_ns": {
+              "vcc_4_5_v": 28,
+              "vcc_6_v": 24
+            }
+          }
+        }
+      }
+    }
+  },
+  "generation": {
+    "python": {
+      "class": "HC574",
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC574/simulation/model.py",
+      "part": "74HC574"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "lib/standard/74xx/74HC574/simulation/model.v",
+      "module": "ttl_74hc574",
+      "netlist": "lib/standard/74xx/74HC574/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "clock": {
+      "edge": "rising",
+      "pin": "CLK"
+    },
+    "disabled_output": "Z",
+    "enable": {
+      "active_low": true,
+      "pin": "/OE"
+    },
+    "tristate": true,
+    "type": "octal_d_register",
+    "width": 8
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "register",
+    "title": "Octal D-type flip-flop with 3-state outputs"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 20
+  },
+  "part": "74HC574",
+  "pins": [
+    {
+      "active_low": true,
+      "direction": "input",
+      "function": "enable",
+      "name": "/OE",
+      "number": 1
+    },
+    {
+      "bit": 0,
+      "bus": "D",
+      "direction": "input",
+      "name": "1D",
+      "number": 2
+    },
+    {
+      "bit": 1,
+      "bus": "D",
+      "direction": "input",
+      "name": "2D",
+      "number": 3
+    },
+    {
+      "bit": 2,
+      "bus": "D",
+      "direction": "input",
+      "name": "3D",
+      "number": 4
+    },
+    {
+      "bit": 3,
+      "bus": "D",
+      "direction": "input",
+      "name": "4D",
+      "number": 5
+    },
+    {
+      "bit": 4,
+      "bus": "D",
+      "direction": "input",
+      "name": "5D",
+      "number": 6
+    },
+    {
+      "bit": 5,
+      "bus": "D",
+      "direction": "input",
+      "name": "6D",
+      "number": 7
+    },
+    {
+      "bit": 6,
+      "bus": "D",
+      "direction": "input",
+      "name": "7D",
+      "number": 8
+    },
+    {
+      "bit": 7,
+      "bus": "D",
+      "direction": "input",
+      "name": "8D",
+      "number": 9
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 10,
+      "rail": "GND"
+    },
+    {
+      "clock": true,
+      "direction": "input",
+      "name": "CLK",
+      "number": 11
+    },
+    {
+      "bit": 7,
+      "bus": "Q",
+      "direction": "output",
+      "name": "8Q",
+      "number": 12
+    },
+    {
+      "bit": 6,
+      "bus": "Q",
+      "direction": "output",
+      "name": "7Q",
+      "number": 13
+    },
+    {
+      "bit": 5,
+      "bus": "Q",
+      "direction": "output",
+      "name": "6Q",
+      "number": 14
+    },
+    {
+      "bit": 4,
+      "bus": "Q",
+      "direction": "output",
+      "name": "5Q",
+      "number": 15
+    },
+    {
+      "bit": 3,
+      "bus": "Q",
+      "direction": "output",
+      "name": "4Q",
+      "number": 16
+    },
+    {
+      "bit": 2,
+      "bus": "Q",
+      "direction": "output",
+      "name": "3Q",
+      "number": 17
+    },
+    {
+      "bit": 1,
+      "bus": "Q",
+      "direction": "output",
+      "name": "2Q",
+      "number": 18
+    },
+    {
+      "bit": 0,
+      "bus": "Q",
+      "direction": "output",
+      "name": "1Q",
+      "number": 19
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 20,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "clock_edge": "rising",
+    "delay_ns": 20,
+    "simple": {
+      "default_delay_ns": 20,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "async_control_to_output_ns": {
+          "condition": "async control asserted or released",
+          "from": "asynchronous control",
+          "parameter": "tremap",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 20,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 20
+            }
+          },
+          "to": "Q/output"
+        },
+        "clock_to_output_ns": {
+          "condition": "active clock edge",
+          "from": "CLK/clock control",
+          "parameter": "tco",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 20,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 20
+            }
+          },
+          "to": "Q/output"
+        },
+        "input_setup_margin_ns": {
+          "condition": "conservative setup placeholder from model delay",
+          "from": "D/input",
+          "parameter": "tsu",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 20,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 20
+            }
+          },
+          "to": "CLK/clock control"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 20,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 20
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "parameters": {
+        "clock_to_q_high": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+          "note": "TI SN74HC574 switching table and waveform notes map CLK-to-Q tpd to tPLH/tPHL and clock-to-Q high/low.",
+          "values_ns": {
+            "vcc_4_5_v": 28,
+            "vcc_6_v": 24
+          }
+        },
+        "clock_to_q_low": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+          "note": "TI SN74HC574 switching table and waveform notes map CLK-to-Q tpd to tPLH/tPHL and clock-to-Q high/low.",
+          "values_ns": {
+            "vcc_4_5_v": 28,
+            "vcc_6_v": 24
+          }
+        },
+        "tPZH": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.enable_to_q",
+          "note": "TI SN74HC574 switching table and waveform notes map output enable ten to tPZH/tPZL.",
+          "values_ns": {
+            "vcc_4_5_v": 26,
+            "vcc_6_v": 23
+          }
+        },
+        "tPZL": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.enable_to_q",
+          "note": "TI SN74HC574 switching table and waveform notes map output enable ten to tPZH/tPZL.",
+          "values_ns": {
+            "vcc_4_5_v": 26,
+            "vcc_6_v": 23
+          }
+        },
+        "tPHZ": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.disable_to_z",
+          "note": "TI SN74HC574 switching table and waveform notes map output disable tdis to tPHZ/tPLZ.",
+          "values_ns": {
+            "vcc_4_5_v": 24,
+            "vcc_6_v": 22
+          }
+        },
+        "tPLZ": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.disable_to_z",
+          "note": "TI SN74HC574 switching table and waveform notes map output disable tdis to tPHZ/tPLZ.",
+          "values_ns": {
+            "vcc_4_5_v": 24,
+            "vcc_6_v": 22
+          }
+        },
+        "setup": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.timing_requirements.setup_before_clock_ns",
+          "note": "Data setup requirement is source-backed.",
+          "values_ns": {
+            "data": {
+              "vcc_4_5_v": 20,
+              "vcc_6_v": 17
+            }
+          }
+        },
+        "hold": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.timing_requirements.hold_after_clock_ns",
+          "note": "Data hold requirement is source-backed.",
+          "values_ns": {
+            "vcc_4_5_v": 5,
+            "vcc_6_v": 5
+          }
+        },
+        "minimum_pulse_width": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.timing_requirements.clock_high_or_low_ns",
+          "note": "Clock pulse width requirement is source-backed.",
+          "values_ns": {
+            "vcc_4_5_v": 16,
+            "vcc_6_v": 14
+          }
+        },
+        "tPLH": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+          "note": "TI SN74HC574 switching table and waveform notes map CLK-to-Q tpd to tPLH/tPHL and clock-to-Q high/low.",
+          "values_ns": {
+            "vcc_4_5_v": 28,
+            "vcc_6_v": 24
+          }
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+          "note": "TI SN74HC574 switching table and waveform notes map CLK-to-Q tpd to tPLH/tPHL and clock-to-Q high/low.",
+          "values_ns": {
+            "vcc_4_5_v": 28,
+            "vcc_6_v": 24
+          }
+        }
+      }
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "rising_edge_latch",
+      "hold_after_d_change",
+      "disabled_high_z"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "tri_state",
+      "propagation"
+    ]
+  },
+  "version": 1,
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "Texas Instruments",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
+  }
+}

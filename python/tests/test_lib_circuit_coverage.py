@@ -8,9 +8,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-INDEX_PATH = ROOT / "Lib" / "Circuits" / "RV8GR_COVERAGE_INDEX.json"
-README_PATH = ROOT / "Lib" / "Circuits" / "README.md"
-PHYSICAL_PLAN = "Lib/Circuits/physical_capture_plan.json"
+INDEX_PATH = ROOT / "examples" / "circuits" / "RV8GR_COVERAGE_INDEX.json"
+README_PATH = ROOT / "examples" / "circuits" / "README.md"
+PHYSICAL_PLAN = "examples/circuits/physical_capture_plan.json"
 
 
 def load_index() -> dict:
@@ -86,7 +86,7 @@ def test_rv8gr_coverage_index_has_allowed_layer_statuses_and_evidence():
 
     actual_packages = {
         path.parent.name
-        for path in (ROOT / "Lib" / "Circuits").glob("RV8GR_*/circuit.json")
+        for path in (ROOT / "examples" / "circuits").glob("RV8GR_*/circuit.json")
     }
     packages = {item["circuit"]: item for item in index["packages"]}
     assert set(packages) == actual_packages
@@ -134,7 +134,7 @@ def test_rv8gr_readme_coverage_table_matches_index():
 
 
 def test_each_circuit_readme_keeps_a_standalone_student_test_guide():
-    circuit_root = ROOT / "Lib" / "Circuits"
+    circuit_root = ROOT / "examples" / "circuits"
     packages = [item["circuit"] for item in load_index()["packages"]]
     for package in packages:
         text = (circuit_root / package / "README.md").read_text(encoding="utf-8")

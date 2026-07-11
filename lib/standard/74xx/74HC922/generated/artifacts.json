@@ -1,0 +1,847 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
+      ],
+      "overview": "74HC922 is a 18-pin DIP part for logic.",
+      "part": "74HC922",
+      "pin_count": 18,
+      "pin_summary": {
+        "input": {
+          "count": 7,
+          "names": [
+            "ROW Y1",
+            "ROW Y2",
+            "ROW Y3",
+            "ROW Y4",
+            "OSCILLATOR",
+            "KEYBOUNCE MASK",
+            "OUTPUT ENABLE"
+          ],
+          "note": "Input pins: ROW Y1, ROW Y2, ROW Y3, ROW Y4, OSCILLATOR, KEYBOUNCE MASK, and 1 more."
+        },
+        "output": {
+          "count": 9,
+          "names": [
+            "COLUMN X4",
+            "COLUMN X3",
+            "COLUMN X2",
+            "COLUMN X1",
+            "DATA AVAILABLE",
+            "DATA OUT D",
+            "DATA OUT C",
+            "DATA OUT B",
+            "DATA OUT A"
+          ],
+          "note": "Output pins: COLUMN X4, COLUMN X3, COLUMN X2, COLUMN X1, DATA AVAILABLE, DATA OUT D, and 3 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "74HC922 legacy component.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
+      "title": "74HC922 legacy component",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "ROW Y1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "ROW Y1 - input",
+          "pin": "ROW Y1"
+        },
+        {
+          "explanation": "ROW Y2 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "ROW Y2 - input",
+          "pin": "ROW Y2"
+        },
+        {
+          "explanation": "ROW Y3 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "ROW Y3 - input",
+          "pin": "ROW Y3"
+        },
+        {
+          "explanation": "ROW Y4 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "ROW Y4 - input",
+          "pin": "ROW Y4"
+        },
+        {
+          "explanation": "OSCILLATOR controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "OSCILLATOR - input",
+          "pin": "OSCILLATOR"
+        },
+        {
+          "explanation": "KEYBOUNCE MASK controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "KEYBOUNCE MASK - input",
+          "pin": "KEYBOUNCE MASK"
+        },
+        {
+          "explanation": "OUTPUT ENABLE controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "OUTPUT ENABLE - input",
+          "pin": "OUTPUT ENABLE"
+        }
+      ],
+      "controls": [
+        "ROW Y1",
+        "ROW Y2",
+        "ROW Y3",
+        "ROW Y4",
+        "OSCILLATOR",
+        "KEYBOUNCE MASK",
+        "OUTPUT ENABLE"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC922",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "COLUMN X4",
+          "name": "COLUMN X4"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "COLUMN X3",
+          "name": "COLUMN X3"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "COLUMN X2",
+          "name": "COLUMN X2"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "COLUMN X1",
+          "name": "COLUMN X1"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "DATA AVAILABLE",
+          "name": "DATA AVAILABLE"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "DATA OUT D",
+          "name": "DATA OUT D"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "DATA OUT C",
+          "name": "DATA OUT C"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "DATA OUT B",
+          "name": "DATA OUT B"
+        }
+      ],
+      "probes": [
+        "COLUMN X4",
+        "COLUMN X3",
+        "COLUMN X2",
+        "COLUMN X1",
+        "DATA AVAILABLE",
+        "DATA OUT D",
+        "DATA OUT C",
+        "DATA OUT B"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change ROW Y1?",
+        "Which truth-table row matches the value on COLUMN X4?"
+      ],
+      "title": "Try 74HC922 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "74HC922 legacy component",
+        "type": "74hc922_legacy_component"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 18
+      },
+      "part": "74HC922",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "ROW Y1",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "ROW Y2",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "ROW Y3",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "ROW Y4",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "OSCILLATOR",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "KEYBOUNCE MASK",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "COLUMN X4",
+          "number": 7
+        },
+        {
+          "direction": "output",
+          "name": "COLUMN X3",
+          "number": 8
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 9,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "COLUMN X2",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "COLUMN X1",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "DATA AVAILABLE",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "OUTPUT ENABLE",
+          "number": 13
+        },
+        {
+          "direction": "output",
+          "name": "DATA OUT D",
+          "number": 14
+        },
+        {
+          "direction": "output",
+          "name": "DATA OUT C",
+          "number": 15
+        },
+        {
+          "direction": "output",
+          "name": "DATA OUT B",
+          "number": 16
+        },
+        {
+          "direction": "output",
+          "name": "DATA OUT A",
+          "number": 17
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 18,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 9
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 18
+        }
+      ],
+      "role": "logic",
+      "timing": {
+        "datasheet": {
+          "conditions": "MM74C922 timing characteristics, VCC=5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          }
+        },
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "MM74C922 timing characteristics, VCC=5 V.",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC922 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC922 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC922 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC922 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC922 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "MM74C922 AC characteristics give direct data-available to output timing; canonical propagation timing is preserved exactly.",
+              "source_field": "timing.datasheet.values",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns": {
+                  "data_available_to_output": 150,
+                  "high_z_to_output": 250,
+                  "output_to_high_z": 200
+                },
+                "datasheet_typical_ns": {
+                  "data_available_to_output": 60,
+                  "high_z_to_output": 100,
+                  "output_to_high_z": 80
+                }
+              }
+            },
+            "tPHZ": {
+              "note": "MM74C922 AC characteristics give direct output-to-high-Z timing; canonical output-disable timing is preserved exactly.",
+              "source_field": "timing.datasheet.values",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns": {
+                  "data_available_to_output": 150,
+                  "high_z_to_output": 250,
+                  "output_to_high_z": 200
+                },
+                "datasheet_typical_ns": {
+                  "data_available_to_output": 60,
+                  "high_z_to_output": 100,
+                  "output_to_high_z": 80
+                }
+              }
+            },
+            "tPLH": {
+              "note": "MM74C922 AC characteristics give direct data-available to output timing; canonical propagation timing is preserved exactly.",
+              "source_field": "timing.datasheet.values",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns": {
+                  "data_available_to_output": 150,
+                  "high_z_to_output": 250,
+                  "output_to_high_z": 200
+                },
+                "datasheet_typical_ns": {
+                  "data_available_to_output": 60,
+                  "high_z_to_output": 100,
+                  "output_to_high_z": 80
+                }
+              }
+            },
+            "tPLZ": {
+              "note": "MM74C922 AC characteristics give direct output-to-high-Z timing; canonical output-disable timing is preserved exactly.",
+              "source_field": "timing.datasheet.values",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns": {
+                  "data_available_to_output": 150,
+                  "high_z_to_output": 250,
+                  "output_to_high_z": 200
+                },
+                "datasheet_typical_ns": {
+                  "data_available_to_output": 60,
+                  "high_z_to_output": 100,
+                  "output_to_high_z": 80
+                }
+              }
+            },
+            "tPZH": {
+              "note": "MM74C922 AC characteristics give direct high-Z to output timing; canonical output-enable timing is preserved exactly.",
+              "source_field": "timing.datasheet.values",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns": {
+                  "data_available_to_output": 150,
+                  "high_z_to_output": 250,
+                  "output_to_high_z": 200
+                },
+                "datasheet_typical_ns": {
+                  "data_available_to_output": 60,
+                  "high_z_to_output": 100,
+                  "output_to_high_z": 80
+                }
+              }
+            },
+            "tPZL": {
+              "note": "MM74C922 AC characteristics give direct high-Z to output timing; canonical output-enable timing is preserved exactly.",
+              "source_field": "timing.datasheet.values",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns": {
+                  "data_available_to_output": 150,
+                  "high_z_to_output": 250,
+                  "output_to_high_z": 200
+                },
+                "datasheet_typical_ns": {
+                  "data_available_to_output": 60,
+                  "high_z_to_output": 100,
+                  "output_to_high_z": 80
+                }
+              }
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
+      },
+      "title": "74HC922 legacy component"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "ROW Y1",
+        "13": "OUTPUT ENABLE",
+        "18": "VCC",
+        "2": "ROW Y2",
+        "3": "ROW Y3",
+        "4": "ROW Y4",
+        "5": "OSCILLATOR",
+        "6": "KEYBOUNCE MASK",
+        "9": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "part": "74HC922",
+      "pins": 18,
+      "right": [
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC922",
+      "copy_with_chip": [
+        "lib/standard/74xx/74HC922/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC922/simulation/model.py",
+      "part": "74HC922",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "ROW Y1",
+        "13": "OUTPUT ENABLE",
+        "18": "VCC",
+        "2": "ROW Y2",
+        "3": "ROW Y3",
+        "4": "ROW Y4",
+        "5": "OSCILLATOR",
+        "6": "KEYBOUNCE MASK",
+        "9": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "part": "74HC922",
+      "pins": 18,
+      "right": [
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC922",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC922",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC922",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc922",
+      "compile": {
+        "sources": [
+          "lib/standard/74xx/74HC922/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc922"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc922",
+      "part": "74HC922",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC922",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC922",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          7,
+          8,
+          10,
+          11,
+          12,
+          14,
+          15,
+          16,
+          17
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "RowY",
+            "pins": [
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "ColumnX",
+            "pins": [
+              11,
+              10,
+              8,
+              7
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Oscillator",
+            "pins": [
+              5
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "KeybounceMask",
+            "pins": [
+              6
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "OutputEnable",
+            "pins": [
+              13
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "DataOut",
+            "pins": [
+              17,
+              16,
+              15,
+              14
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "DataAvailable",
+            "pins": [
+              12
+            ]
+          }
+        ]
+      },
+      "file": "lib/standard/74xx/74HC922/simulation/model.v",
+      "module": "ttl_74hc922",
+      "netlist": "lib/standard/74xx/74HC922/simulation/netlist.json",
+      "part": "74HC922"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC922",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "lib/standard/74xx/74HC922/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "lib/standard/74xx/74HC922/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "lib/standard/74xx/74HC922/simulation/netlist.json"
+    }
+  ],
+  "source": "lib/standard/74xx/74HC922/definition/definition.json",
+  "version": 1
+}

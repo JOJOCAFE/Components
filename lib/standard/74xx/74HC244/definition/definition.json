@@ -1,0 +1,661 @@
+{
+  "datasheet": {
+    "part": "74HC244",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC244",
+        "package_evidence": "N, 20-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc244.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
+  },
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC244",
+        "package_evidence": "N, 20-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc244.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC244",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      }
+    },
+    "pins": {
+      "part": "74HC244",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/1OE",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1A1",
+          "number": 2
+        },
+        {
+          "direction": "output",
+          "name": "2Y4",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "1A2",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "2Y3",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "1A3",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "2Y2",
+          "number": 7
+        },
+        {
+          "direction": "input",
+          "name": "1A4",
+          "number": 8
+        },
+        {
+          "direction": "output",
+          "name": "2Y1",
+          "number": 9
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "direction": "input",
+          "name": "2A1",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "1Y4",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "2A2",
+          "number": 13
+        },
+        {
+          "direction": "output",
+          "name": "1Y3",
+          "number": 14
+        },
+        {
+          "direction": "input",
+          "name": "2A3",
+          "number": 15
+        },
+        {
+          "direction": "output",
+          "name": "1Y2",
+          "number": 16
+        },
+        {
+          "direction": "input",
+          "name": "2A4",
+          "number": 17
+        },
+        {
+          "direction": "output",
+          "name": "1Y1",
+          "number": 18
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/2OE",
+          "number": 19
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC244",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_max_ns_25c": {
+          "input_to_output": 23
+        },
+        "datasheet_max_ns_minus40_to_125c": {
+          "input_to_output": 34
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "input_to_output": 29
+        },
+        "datasheet_typical_ns": {
+          "input_to_output": 13
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local source PDF text; see docs/TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC244",
+        "package_evidence": "N, 20-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc244.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC244",
+      "schema": "db.component.timing",
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "conditions": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "parameters": {
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "74HC244 is combinational and has no clocked Q output."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "74HC244 is combinational and has no clocked Q output."
+          },
+          "hold": {
+            "status": "not_applicable",
+            "reason": "74HC244 is combinational and has no setup/hold timing requirement."
+          },
+          "minimum_pulse_width": {
+            "status": "not_applicable",
+            "reason": "74HC244 is combinational and has no clock/reset/write pulse-width requirement."
+          },
+          "setup": {
+            "status": "not_applicable",
+            "reason": "74HC244 is combinational and has no setup/hold timing requirement."
+          },
+          "tPHL": {
+            "status": "exact",
+            "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+            "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "values_ns": {
+              "typ": 13,
+              "max_25c": 23,
+              "max_sn54": 34,
+              "max_sn74": 29
+            }
+          },
+          "tPHZ": {
+            "status": "exact",
+            "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+            "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "values_ns": {
+              "typ": 15,
+              "max_25c": 30,
+              "max_sn54": 45,
+              "max_sn74": 38
+            }
+          },
+          "tPLH": {
+            "status": "exact",
+            "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+            "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "values_ns": {
+              "typ": 13,
+              "max_25c": 23,
+              "max_sn54": 34,
+              "max_sn74": 29
+            }
+          },
+          "tPLZ": {
+            "status": "exact",
+            "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+            "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "values_ns": {
+              "typ": 15,
+              "max_25c": 30,
+              "max_sn54": 45,
+              "max_sn74": 38
+            }
+          },
+          "tPZH": {
+            "status": "exact",
+            "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+            "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "values_ns": {
+              "typ": 15,
+              "max_25c": 30,
+              "max_sn54": 45,
+              "max_sn74": 38
+            }
+          },
+          "tPZL": {
+            "status": "exact",
+            "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+            "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "values_ns": {
+              "typ": 15,
+              "max_25c": 30,
+              "max_sn54": 45,
+              "max_sn74": 38
+            }
+          }
+        }
+      }
+    }
+  },
+  "generation": {
+    "python": {
+      "class": "HC244",
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC244/simulation/model.py",
+      "part": "74HC244"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "lib/standard/74xx/74HC244/simulation/model.v",
+      "module": "ttl_74hc244",
+      "netlist": "lib/standard/74xx/74HC244/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "description": "Octal Buffer/Line Driver",
+    "type": "octal_buffer_line_driver"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "buffer",
+    "title": "Octal Buffer/Line Driver"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 20
+  },
+  "part": "74HC244",
+  "pins": [
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/1OE",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "1A1",
+      "number": 2
+    },
+    {
+      "direction": "output",
+      "name": "2Y4",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "1A2",
+      "number": 4
+    },
+    {
+      "direction": "output",
+      "name": "2Y3",
+      "number": 5
+    },
+    {
+      "direction": "input",
+      "name": "1A3",
+      "number": 6
+    },
+    {
+      "direction": "output",
+      "name": "2Y2",
+      "number": 7
+    },
+    {
+      "direction": "input",
+      "name": "1A4",
+      "number": 8
+    },
+    {
+      "direction": "output",
+      "name": "2Y1",
+      "number": 9
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 10,
+      "rail": "GND"
+    },
+    {
+      "direction": "input",
+      "name": "2A1",
+      "number": 11
+    },
+    {
+      "direction": "output",
+      "name": "1Y4",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "2A2",
+      "number": 13
+    },
+    {
+      "direction": "output",
+      "name": "1Y3",
+      "number": 14
+    },
+    {
+      "direction": "input",
+      "name": "2A3",
+      "number": 15
+    },
+    {
+      "direction": "output",
+      "name": "1Y2",
+      "number": 16
+    },
+    {
+      "direction": "input",
+      "name": "2A4",
+      "number": 17
+    },
+    {
+      "direction": "output",
+      "name": "1Y1",
+      "number": 18
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/2OE",
+      "number": 19
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 20,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_max_ns_25c": {
+          "input_to_output": 23
+        },
+        "datasheet_max_ns_minus40_to_125c": {
+          "input_to_output": 34
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "input_to_output": 29
+        },
+        "datasheet_typical_ns": {
+          "input_to_output": 13
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output"
+        },
+        "output_disable_to_high_z_ns": {
+          "condition": "enable control released",
+          "from": "output-enable control",
+          "parameter": "tdis",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output high-Z"
+        },
+        "output_enable_to_output_ns": {
+          "condition": "enable control asserted",
+          "from": "output-enable control",
+          "parameter": "ten",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output driven"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "conditions": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "parameters": {
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "74HC244 is combinational and has no clocked Q output."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "74HC244 is combinational and has no clocked Q output."
+        },
+        "hold": {
+          "status": "not_applicable",
+          "reason": "74HC244 is combinational and has no setup/hold timing requirement."
+        },
+        "minimum_pulse_width": {
+          "status": "not_applicable",
+          "reason": "74HC244 is combinational and has no clock/reset/write pulse-width requirement."
+        },
+        "setup": {
+          "status": "not_applicable",
+          "reason": "74HC244 is combinational and has no setup/hold timing requirement."
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+          "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "values_ns": {
+            "typ": 13,
+            "max_25c": 23,
+            "max_sn54": 34,
+            "max_sn74": 29
+          }
+        },
+        "tPHZ": {
+          "status": "exact",
+          "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+          "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "values_ns": {
+            "typ": 15,
+            "max_25c": 30,
+            "max_sn54": 45,
+            "max_sn74": 38
+          }
+        },
+        "tPLH": {
+          "status": "exact",
+          "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+          "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "values_ns": {
+            "typ": 13,
+            "max_25c": 23,
+            "max_sn54": 34,
+            "max_sn74": 29
+          }
+        },
+        "tPLZ": {
+          "status": "exact",
+          "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+          "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "values_ns": {
+            "typ": 15,
+            "max_25c": 30,
+            "max_sn54": 45,
+            "max_sn74": 38
+          }
+        },
+        "tPZH": {
+          "status": "exact",
+          "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+          "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "values_ns": {
+            "typ": 15,
+            "max_25c": 30,
+            "max_sn54": 45,
+            "max_sn74": 38
+          }
+        },
+        "tPZL": {
+          "status": "exact",
+          "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+          "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "values_ns": {
+            "typ": 15,
+            "max_25c": 30,
+            "max_sn54": 45,
+            "max_sn74": 38
+          }
+        }
+      }
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1,
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "Texas Instruments",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
+  }
+}

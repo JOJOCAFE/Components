@@ -1,0 +1,17 @@
+{
+  "schema": "db.index",
+  "version": 1,
+  "model": {
+    "name": "chip",
+    "version": "v0.1",
+    "frozen_on": "2026-07-09"
+  },
+  "groups": [
+    {"id": "74xx", "title": "74xx and 74HC logic ICs", "path": "lib/standard/74xx"},
+    {"id": "memory", "title": "Memory ICs", "path": "lib/standard/memory"},
+    {"id": "support", "title": "Support ICs", "path": "lib/standard/support"},
+    {"id": "virtual", "title": "Simulation-only sources, rails, and probes", "path": "lib/standard/virtual"},
+    {"id": "passive", "title": "Passive physical parts", "path": "lib/standard/passive"},
+    {"id": "discrete", "title": "Discrete semiconductor parts", "path": "lib/standard/discrete"}
+  ]
+}

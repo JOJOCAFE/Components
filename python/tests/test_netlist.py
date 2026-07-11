@@ -209,7 +209,7 @@ def test_design_to_verilog_exports_74hc147_i0_pin_contract():
             "-Wall",
             "-o",
             str(Path(tmp) / "encoder_147.vvp"),
-            str(root / "Verilog" / "74xx" / "74hc147.v"),
+            str(root / "verilog" / "74xx" / "74hc147.v"),
             str(top),
         ]
         compiled = subprocess.run(cmd, text=True, capture_output=True, check=False)
@@ -260,7 +260,7 @@ def test_design_to_verilog_exports_expanded_common_74hc_mappings():
             "-Wall",
             "-o",
             str(Path(tmp) / "expanded_common_mappings.vvp"),
-            *[str(root / "Verilog" / "74xx" / f"{part.lower()}.v") for part in parts],
+            *[str(root / "verilog" / "74xx" / f"{part.lower()}.v") for part in parts],
             str(top),
         ]
         compiled = subprocess.run(cmd, text=True, capture_output=True, check=False)
@@ -309,7 +309,7 @@ def test_design_to_verilog_exports_mux_shift_and_counter_74hc_mappings():
             "-Wall",
             "-o",
             str(Path(tmp) / "mux_shift_counter_mappings.vvp"),
-            *[str(root / "Verilog" / "74xx" / f"{part.lower()}.v") for part in parts],
+            *[str(root / "verilog" / "74xx" / f"{part.lower()}.v") for part in parts],
             str(top),
         ]
         compiled = subprocess.run(cmd, text=True, capture_output=True, check=False)
@@ -361,7 +361,7 @@ def test_design_to_verilog_exports_decoder_counter_and_gate_74hc_mappings():
             "-Wall",
             "-o",
             str(Path(tmp) / "decoder_counter_gate_mappings.vvp"),
-            *[str(root / "Verilog" / "74xx" / f"{part.lower()}.v") for part in parts],
+            *[str(root / "verilog" / "74xx" / f"{part.lower()}.v") for part in parts],
             str(top),
         ]
         compiled = subprocess.run(cmd, text=True, capture_output=True, check=False)
@@ -408,11 +408,11 @@ def test_design_to_verilog_exports_specialized_74hc_and_memory_mappings():
             "-Wall",
             "-o",
             str(Path(tmp) / "specialized_mappings.vvp"),
-            *[str(root / "Verilog" / "74xx" / f"{part.lower()}.v") for part in ("74HC148", "74HC593", "74HC922")],
-            str(root / "Verilog" / "Memory" / "62256.v"),
-            str(root / "Verilog" / "Memory" / "as6c62256.v"),
-            str(root / "Verilog" / "Memory" / "cy7c199.v"),
-            str(root / "Verilog" / "Memory" / "sst39sf010a.v"),
+            *[str(root / "verilog" / "74xx" / f"{part.lower()}.v") for part in ("74HC148", "74HC593", "74HC922")],
+            str(root / "verilog" / "memory" / "62256.v"),
+            str(root / "verilog" / "memory" / "as6c62256.v"),
+            str(root / "verilog" / "memory" / "cy7c199.v"),
+            str(root / "verilog" / "memory" / "sst39sf010a.v"),
             str(top),
         ]
         compiled = subprocess.run(cmd, text=True, capture_output=True, check=False)
@@ -497,7 +497,7 @@ def test_rv8gr_v2_kicad_netlist_smoke_when_available():
             "-Wall",
             "-o",
             str(Path(tmp) / "rv8gr_v2_chip_level.vvp"),
-            *[str(root / "Verilog" / "74xx" / name) for name in (
+            *[str(root / "verilog" / "74xx" / name) for name in (
                 "74hc00.v",
                 "74hc04.v",
                 "74hc21.v",
@@ -513,8 +513,8 @@ def test_rv8gr_v2_kicad_netlist_smoke_when_available():
                 "74hc574.v",
                 "74hc688.v",
             )],
-            str(root / "Verilog" / "Memory" / "62256.v"),
-            str(root / "Verilog" / "Memory" / "at28c256.v"),
+            str(root / "verilog" / "memory" / "62256.v"),
+            str(root / "verilog" / "memory" / "at28c256.v"),
             str(top),
         ]
         compiled = subprocess.run(cmd, text=True, capture_output=True, check=False)

@@ -1,0 +1,28 @@
+{
+  "schema": "db.component.simulation",
+  "version": 1,
+  "part": "74HC257",
+  "python": {
+    "factory": "create",
+    "class": "HC257",
+    "file": "lib/standard/74xx/74HC257/simulation/model.py",
+    "implements": [
+      "propagation_delay",
+      "tristate",
+      "bidirectional"
+    ]
+  },
+  "verilog": {
+    "module": "ttl_74hc257",
+    "file": "lib/standard/74xx/74HC257/simulation/model.v",
+    "implements": [
+      "propagation_delay",
+      "tristate",
+      "bidirectional"
+    ]
+  },
+  "netlist_generation": {
+    "source": "lib/standard/74xx/74HC257/simulation/netlist.json",
+    "status": "tested"
+  }
+}

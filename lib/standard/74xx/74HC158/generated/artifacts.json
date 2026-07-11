@@ -1,0 +1,763 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
+      ],
+      "overview": "74HC158 is a 16-pin DIP part for multiplexer.",
+      "part": "74HC158",
+      "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 10,
+          "names": [
+            "S",
+            "1I0",
+            "1I1",
+            "2I0",
+            "2I1",
+            "3I1",
+            "3I0",
+            "4I1",
+            "4I0",
+            "E"
+          ],
+          "note": "Input pins: S, 1I0, 1I1, 2I0, 2I1, 3I1, and 4 more."
+        },
+        "output": {
+          "count": 4,
+          "names": [
+            "1Y",
+            "2Y",
+            "3Y",
+            "4Y"
+          ],
+          "note": "Output pins: 1Y, 2Y, 3Y, 4Y."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "quad 2-input multiplexer, inverting outputs.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
+      "title": "quad 2-input multiplexer, inverting outputs",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "S controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "S - input",
+          "pin": "S"
+        },
+        {
+          "explanation": "1I0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1I0 - input",
+          "pin": "1I0"
+        },
+        {
+          "explanation": "1I1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1I1 - input",
+          "pin": "1I1"
+        },
+        {
+          "explanation": "2I0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2I0 - input",
+          "pin": "2I0"
+        },
+        {
+          "explanation": "2I1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2I1 - input",
+          "pin": "2I1"
+        },
+        {
+          "explanation": "3I1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3I1 - input",
+          "pin": "3I1"
+        },
+        {
+          "explanation": "3I0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3I0 - input",
+          "pin": "3I0"
+        },
+        {
+          "explanation": "4I1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4I1 - input",
+          "pin": "4I1"
+        },
+        {
+          "explanation": "4I0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4I0 - input",
+          "pin": "4I0"
+        },
+        {
+          "explanation": "E controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "E - input",
+          "pin": "E"
+        }
+      ],
+      "controls": [
+        "S",
+        "1I0",
+        "1I1",
+        "2I0",
+        "2I1",
+        "3I1",
+        "3I0",
+        "4I1",
+        "4I0",
+        "E"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC158",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y",
+          "name": "1Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y",
+          "name": "2Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "3Y",
+          "name": "3Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "4Y",
+          "name": "4Y"
+        }
+      ],
+      "probes": [
+        "1Y",
+        "2Y",
+        "3Y",
+        "4Y"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change S?",
+        "Which truth-table row matches the value on 1Y?"
+      ],
+      "title": "Try 74HC158 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "quad 2-input multiplexer, inverting outputs",
+        "type": "quad_2_input_multiplexer_inverting_outputs"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC158",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "S",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1I0",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "1I1",
+          "number": 3
+        },
+        {
+          "direction": "output",
+          "name": "1Y",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "2I0",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "2I1",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "2Y",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "3Y",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "3I1",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "3I0",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "4Y",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "4I1",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "4I0",
+          "number": 14
+        },
+        {
+          "direction": "input",
+          "name": "E",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "multiplexer",
+      "timing": {
+        "datasheet": {
+          "conditions": "TI SN74HC158 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns_25c": {
+              "input_to_output": 25,
+              "transition": 12
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "input_to_output": 31,
+              "transition": 15
+            },
+            "datasheet_typical_ns": {
+              "input_to_output": 18,
+              "transition": 8
+            }
+          }
+        },
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "TI SN74HC158 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC158 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC158 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC158 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC158 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC158 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI SN74HC158 switching characteristics and waveform note state tPLH and tPHL are the same as tpd.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "input_to_output": 25,
+                  "transition": 12
+                },
+                "datasheet_max_ns_minus40_to_85c": {
+                  "input_to_output": 31,
+                  "transition": 15
+                },
+                "datasheet_typical_ns": {
+                  "input_to_output": 18,
+                  "transition": 8
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC158 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI SN74HC158 switching characteristics and waveform note state tPLH and tPHL are the same as tpd.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "input_to_output": 25,
+                  "transition": 12
+                },
+                "datasheet_max_ns_minus40_to_85c": {
+                  "input_to_output": 31,
+                  "transition": 15
+                },
+                "datasheet_typical_ns": {
+                  "input_to_output": 18,
+                  "transition": 8
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC158 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC158 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC158 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
+      },
+      "title": "quad 2-input multiplexer, inverting outputs"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "S",
+        "10": "3I1",
+        "11": "3I0",
+        "13": "4I1",
+        "14": "4I0",
+        "15": "E",
+        "16": "VCC",
+        "2": "1I0",
+        "3": "1I1",
+        "5": "2I0",
+        "6": "2I1",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC158",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC158",
+      "copy_with_chip": [
+        "lib/standard/74xx/74HC158/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC158/simulation/model.py",
+      "part": "74HC158",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "S",
+        "10": "3I1",
+        "11": "3I0",
+        "13": "4I1",
+        "14": "4I0",
+        "15": "E",
+        "16": "VCC",
+        "2": "1I0",
+        "3": "1I1",
+        "5": "2I0",
+        "6": "2I1",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC158",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC158",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC158",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC158",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc158",
+      "compile": {
+        "sources": [
+          "lib/standard/74xx/74HC158/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc158"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc158",
+      "part": "74HC158",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC158",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC158",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          4,
+          7,
+          9,
+          12
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Enable_bar",
+            "pins": [
+              15
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Select",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "A_2D",
+            "pins": [
+              2,
+              3,
+              5,
+              6,
+              11,
+              10,
+              14,
+              13
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y_bar",
+            "pins": [
+              4,
+              7,
+              9,
+              12
+            ]
+          }
+        ]
+      },
+      "file": "lib/standard/74xx/74HC158/simulation/model.v",
+      "module": "ttl_74hc158",
+      "netlist": "lib/standard/74xx/74HC158/simulation/netlist.json",
+      "part": "74HC158"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC158",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "lib/standard/74xx/74HC158/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "lib/standard/74xx/74HC158/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "lib/standard/74xx/74HC158/simulation/netlist.json"
+    }
+  ],
+  "source": "lib/standard/74xx/74HC158/definition/definition.json",
+  "version": 1
+}

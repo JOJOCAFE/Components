@@ -11,9 +11,9 @@ from chiplib.db import load_digital_definition
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DB_ROOT = ROOT / "DB"
-MODEL_GROUPS = {"74xx", "Memory"}
-LEGACY_VERILOG_74XX = ROOT / "Verilog" / "74xx"
+DB_ROOT = ROOT / "lib" / "standard"
+MODEL_GROUPS = {"74xx", "memory"}
+LEGACY_VERILOG_74XX = ROOT / "verilog" / "74xx"
 
 PY_TO_DB_DIRECTION = {
     "in": "input",
@@ -259,4 +259,4 @@ def run_all():
 
 if __name__ == "__main__":
     run_all()
-    print("Components Verilog/Python pin alignment tests passed")
+    print("Components verilog/Python pin alignment tests passed")

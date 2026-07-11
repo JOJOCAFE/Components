@@ -9,8 +9,8 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "Docs" / "TIMING_SIMULATION_AUDIT.md"
-PHYSICAL_GROUPS = {"74xx", "Memory"}
+REPORT = ROOT / "docs" / "TIMING_SIMULATION_AUDIT.md"
+PHYSICAL_GROUPS = {"74xx", "memory"}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -18,7 +18,7 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 def group_from_path(path: Path) -> str:
-    return path.relative_to(ROOT / "DB").parts[0]
+    return path.relative_to(ROOT / "lib" / "standard").parts[0]
 
 
 def has_timing_definition(data: dict[str, Any]) -> bool:
@@ -106,7 +106,7 @@ def canonical_timing_status(data: dict[str, Any]) -> str:
 
 def audit_rows() -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
-    for definition in sorted((ROOT / "DB").glob("*/*/definition/definition.json")):
+    for definition in sorted((ROOT / "lib" / "standard").glob("*/*/definition/definition.json")):
         group = group_from_path(definition)
         if group not in PHYSICAL_GROUPS:
             continue

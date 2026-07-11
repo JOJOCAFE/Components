@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import json
 from pathlib import Path
+import tempfile
 from typing import Any, Mapping
 
 from .circuit_package import CIRCUIT_ROOT, CircuitPackage, load_circuit_package
@@ -53,8 +54,9 @@ class PackagePromotion:
 
 
 class _ProofBlocked(RuntimeError):
-    def __init__(self, *blocks: PromotionBlock):
+    def __init__(self, *blocks: PromotionBlock, observations: Mapping[str, Any] | None = None):
         self.blocks = blocks
+        self.observations = dict(observations or {})
         super().__init__("; ".join(block.message for block in blocks))
 
 
@@ -104,7 +106,7 @@ def audit_package(package: str) -> PackagePromotion:
             circuit_path=circuit_path,
             proof_paths=proof_paths,
             status="blocked",
-            observations={},
+            observations=exc.observations,
             blocks=exc.blocks,
         )
     return PackagePromotion(
@@ -158,34 +160,16 @@ def _execute_live_smoke(
             raise AssertionError(f"{package}: live ring-counter proof mismatch")
         return {"reset": reset, "sequence": sequence, "snapshot": runner.snapshot()}
 
-    if package == "RV8GR_BranchJumpControl":
-        return _prove_branch_jump(runner, proof_paths[0])
-
-    proof_path = str(proof_paths[0])
-    blockers = {
-        "RV8GR_AluAccumulator": PromotionBlock(
-            "proof_state_not_executable",
-            f"{proof_path}#$.vectors[*].start_ac",
-            "declared vectors require accumulator state injection, but the public runner has no state-load API; IBUS stimulus also conflicts with the initially enabled U14 output",
-        ),
-        "RV8GR_IRQLatch": PromotionBlock(
-            "proof_clock_driver_conflict",
-            f"{proof_path}#$.vectors[1].event",
-            "EI_decode rising cannot be driven through the public runner because package net EI_decode is also driven LOW by U33.8",
-        ),
-        "RV8GR_RomDbusRead": PromotionBlock(
-            "proof_rom_image_not_loadable",
-            f"{proof_path}#$.rom_image",
-            "declared ROM bytes cannot be loaded through the public runner API, so fetch-byte vectors cannot be executed",
-        ),
-        "RV8GR_StorePath": PromotionBlock(
-            "proof_internal_control_undriven",
-            f"{proof_path}#$.vectors[*]",
-            "declared /AC_BUF, WR_DIR, and RAM /WE expectations are not executable because their package nets have no concrete control drivers; AC stimulus produces live bus contention",
-        ),
+    adapters = {
+        "RV8GR_AluAccumulator": _prove_alu_accumulator,
+        "RV8GR_BranchJumpControl": _prove_branch_jump,
+        "RV8GR_IRQLatch": _prove_irq_latch,
+        "RV8GR_ResetClockBringup": _prove_reset_clock,
+        "RV8GR_RomDbusRead": _prove_rom_read,
+        "RV8GR_StorePath": _prove_store_path,
     }
-    if package in blockers:
-        raise _ProofBlocked(blockers[package])
+    if package in adapters:
+        return adapters[package](runner, proof_paths[0])
 
     # Generic execution is deliberately weak and cannot promote a package with
     # package-specific state or vector requirements. Keep this fail-loudly as
@@ -238,15 +222,212 @@ def _prove_branch_jump(runner: Any, proof_path: Path) -> Mapping[str, Any]:
 
     failed = [check for check in checks if not check["passed"]]
     if failed:
-        first = failed[0]
+        indexes = ", ".join(str(check["vector_index"]) for check in failed)
         raise _ProofBlocked(PromotionBlock(
-            "proof_vector_mismatch",
-            f"{proof_path}#$.vectors[{first['vector_index']}]",
-            f"live result for {first['name']!r} does not match the declared vector",
-        ))
+            "circuit_truth_mismatch",
+            f"{proof_path}#$.vectors[{indexes}]",
+            "live NAND wiring computes PC_LOAD_COND=NAND(JMP,/BR_TAKEN), not the declared JMP OR BR_TAKEN; jump, untaken branch, and NOP vectors therefore disagree",
+        ), observations={"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks)})
     return {
         "proof": str(proof_path),
         "vectors_executed": len(checks),
         "checks": tuple(checks),
         "provenance": runner.snapshot()["provenance"],
     }
+
+
+def _logic_vector(value: str | int) -> int:
+    return int(value, 0) if isinstance(value, str) else value
+
+
+def _net_values(runner: Any) -> dict[str, Any]:
+    return {item["name"]: item["value"] for item in runner.snapshot()["board"]["nets"]}
+
+
+def _prove_alu_accumulator(runner: Any, proof_path: Path) -> Mapping[str, Any]:
+    data = json.loads(proof_path.read_text(encoding="utf-8"))
+    checks: list[dict[str, Any]] = []
+    session = type(runner).load(runner.package.source_path)
+    # The first three vectors form a real public-API sequence from reset state.
+    for index, vector in enumerate(data["vectors"][:3]):
+        if _logic_vector(vector["start_ac"]) != _bits_to_int(session.read("AC0..AC7")):
+            break
+        session.release_input("IBUS0..IBUS7")
+        try:
+            session.set_input("IBUS0..IBUS7", _logic_vector(vector["ibus"]))
+        except Exception as exc:
+            raise _ProofBlocked(PromotionBlock(
+                "proof_bus_driver_conflict",
+                f"{proof_path}#$.vectors[{index}].ibus",
+                "IBUS stimulus conflicts with U14 because package wiring leaves /AC_BUF without a concrete control driver",
+            ), observations={"proof": str(proof_path), "vectors_executed": len(checks),
+                "runner_error": str(exc)}) from exc
+        for field, port in (("alu_sub", "ALU_SUB"), ("xor_mode", "XOR_MODE"),
+                            ("mux_sel", "MUX_SEL"), ("ac_wr", "AC_WR")):
+            session.set_input(port, vector[field])
+        session.set_input("T2", int(vector["phase"] == "T2"))
+        session.pulse_clock("T2")
+        actual = {"ac": _bits_to_int(session.read("AC0..AC7")), "z": session.read("Z_flag")}
+        expected = {"ac": _logic_vector(vector["expect_ac"]), "z": vector["expect_z"]}
+        checks.append({"name": vector["name"], "passed": actual == expected,
+                       "expected": expected, "actual": actual})
+        if actual != expected:
+            break
+    block = PromotionBlock(
+        "proof_state_not_executable",
+        f"{proof_path}#$.vectors[3].start_ac",
+        "remaining independent vectors require loading accumulator state through a public API; CircuitRunner exposes no chip-state injection",
+    )
+    raise _ProofBlocked(block, observations={"proof": str(proof_path),
+        "vectors_executed": len(checks), "checks": tuple(checks)})
+
+
+def _prove_irq_latch(runner: Any, proof_path: Path) -> Mapping[str, Any]:
+    data = json.loads(proof_path.read_text(encoding="utf-8"))
+    checks: list[dict[str, Any]] = []
+    for vector in data["vectors"]:
+        session = type(runner).load(runner.package.source_path)
+        session.set_input("/RST", 0)
+        session.set_input("/RST", 1)
+        if vector["start_ie"]:
+            session.pulse_clock("EI_decode")
+        if vector["start_irq_ff"]:
+            session.set_input("/IRQ", 0)
+            session.pulse_clock("/IRQ")
+        event = vector["event"]
+        if event == "reset":
+            session.set_input("/RST", 0)
+        elif event == "ei_rising":
+            session.pulse_clock("EI_decode")
+        elif event == "irq_low":
+            session.set_input("/IRQ", 0)
+        elif event == "irq_release_rising":
+            session.set_input("/IRQ", 0)
+            session.pulse_clock("/IRQ")
+        actual = session.read()
+        expected = {"IE": vector["expect_ie"], "IRQ_FF": vector["expect_irq_ff"]}
+        checks.append({"name": vector["name"], "passed": actual == expected,
+                       "expected": expected, "actual": actual})
+    if not all(check["passed"] for check in checks):
+        raise _ProofBlocked(PromotionBlock(
+            "proof_vector_mismatch", f"{proof_path}#$.vectors",
+            "one or more IRQ latch live vectors do not match the declared result",
+        ), observations={"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks)})
+    return {"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks)}
+
+
+def _prove_reset_clock(runner: Any, proof_path: Path) -> Mapping[str, Any]:
+    data = json.loads(proof_path.read_text(encoding="utf-8"))
+    session = type(runner).load(runner.package.source_path)
+    session.set_input("/RST", 0)
+    session.set_input("CLK", 0)
+    checks: list[dict[str, Any]] = []
+    for name, expected_row in (("reset_idle", data["reset_idle"]["expect"]),
+                               ("reset_release", data["reset_release"]["expect"])):
+        if name == "reset_release":
+            session.set_input("/RST", 1)
+        actual_ports = session.read()
+        actual = {"T0": actual_ports["T0"], "T1": actual_ports["T1"],
+                  "T2": actual_ports["T2"], "PC": _bits_to_int(actual_ports["PC0..PC15"])}
+        expected = {"T0": expected_row["T0"], "T1": expected_row["T1"],
+                    "T2": expected_row["T2"], "PC": _logic_vector(expected_row["PC"])}
+        checks.append({"name": name, "passed": actual == expected,
+                       "expected": expected, "actual": actual})
+    for vector in data["push_vectors"]:
+        actual_ports = session.pulse_clock("CLK")
+        actual = {"T0": actual_ports["T0"], "T1": actual_ports["T1"],
+                  "T2": actual_ports["T2"], "PC": _bits_to_int(actual_ports["PC0..PC15"])}
+        row = vector["expect"]
+        expected = {"T0": row["T0"], "T1": row["T1"], "T2": row["T2"],
+                    "PC": _logic_vector(row["PC"])}
+        checks.append({"name": f"push_{vector['push']}", "passed": actual == expected,
+                       "expected": expected, "actual": actual})
+    if not all(check["passed"] for check in checks):
+        raise _ProofBlocked(PromotionBlock(
+            "proof_vector_mismatch", f"{proof_path}#$",
+            "reset/clock live sequence does not match the declared phase and PC vectors",
+        ), observations={"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks)})
+    return {"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks)}
+
+
+def _prove_rom_read(runner: Any, proof_path: Path) -> Mapping[str, Any]:
+    data = json.loads(proof_path.read_text(encoding="utf-8"))
+    session = type(runner).load(runner.package.source_path)
+    image = bytearray(0x8000)
+    for address, value in data["rom_image"].items():
+        image[int(address, 0)] = int(value, 0)
+    with tempfile.NamedTemporaryFile(suffix=".bin") as handle:
+        handle.write(image)
+        handle.flush()
+        session.load_memory_image("ROM1", handle.name, fmt="bin", clear=0xFF)
+    checks = []
+    for vector in data["vectors"]:
+        session.set_input("A0..A14", int(vector["address"], 0) & 0x7FFF)
+        session.set_input("A15", (int(vector["address"], 0) >> 15) & 1)
+        session.set_input("WR_DIR", vector["wr_dir"])
+        session.set_input("BUF_OE_N", vector["buf_oe_n"])
+        session.release_input("DBUS0..DBUS7")
+        session.release_input("IBUS0..IBUS7")
+        bits = session.read("IBUS0..IBUS7")
+        actual = None if all(bit == "Z" for bit in bits) else _bits_to_int(bits)
+        expected = None if vector["expect_ibus"] is None else _logic_vector(vector["expect_ibus"])
+        checks.append({"name": vector["name"], "passed": actual == expected,
+                       "expected": expected, "actual": actual})
+    if not all(check["passed"] for check in checks):
+        raise _ProofBlocked(PromotionBlock(
+            "proof_vector_mismatch", f"{proof_path}#$.vectors",
+            "one or more ROM-to-IBUS live vectors do not match the declared result",
+        ), observations={"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks)})
+    return {"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks)}
+
+
+def _prove_store_path(runner: Any, proof_path: Path) -> Mapping[str, Any]:
+    data = json.loads(proof_path.read_text(encoding="utf-8"))
+    checks = []
+    for vector in data["vectors"]:
+        session = type(runner).load(runner.package.source_path)
+        session.release_input("IBUS0..IBUS7")
+        session.release_input("DBUS0..DBUS7")
+        session.set_input("T2", int(vector["phase"] == "T2"))
+        session.set_input("STR", vector["str"])
+        session.set_input("A15", vector["a15"])
+        # StorePath receives this full-system control through U24; HIGH enables U7.
+        session.set_input("/IRL_OE", 1)
+        try:
+            session.set_input("AC0..AC7", _logic_vector(vector["ac"]))
+        except Exception as exc:
+            raise _ProofBlocked(PromotionBlock(
+                "proof_bus_driver_conflict", f"{proof_path}#$.vectors[{len(checks)}]",
+                "live U14 and U7 outputs contend because BUF_OE_N and related internal controls have no concrete package drivers",
+            ), observations={"proof": str(proof_path), "vectors_executed": len(checks),
+                "runner_error": str(exc)}) from exc
+        nets = _net_values(session)
+        actual = {
+            "ac_buf_n": nets["/AC_BUF"],
+            "wr_dir": nets["WR_DIR"],
+            "ram_we_n": session._chips["RAM1"].read("/WE"),
+            "rom_oe_n": session._chips["ROM1"].read("/OE"),
+            "write": session._chips["RAM1"].data[0] == _logic_vector(vector["ac"]),
+        }
+        expected = {
+            "ac_buf_n": vector["expect_ac_buf_n"],
+            "wr_dir": vector["expect_wr_dir"],
+            "ram_we_n": vector["expect_ram_we_n"],
+            "rom_oe_n": vector["expect_rom_oe_n"],
+            "write": vector["expect_write"],
+        }
+        checks.append({"name": vector["name"], "passed": actual == expected,
+                       "expected": expected, "actual": actual})
+    if not all(check["passed"] for check in checks):
+        raise _ProofBlocked(PromotionBlock(
+            "proof_vector_mismatch", f"{proof_path}#$.vectors",
+            "one or more live StorePath vectors do not match the declared control or write result",
+        ), observations={"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks)})
+    return {"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks),
+            "provenance": runner.snapshot()["provenance"]}
+
+
+def _bits_to_int(bits: Any) -> int:
+    if not isinstance(bits, tuple) or any(bit not in (0, 1) for bit in bits):
+        return -1
+    return sum(bit << index for index, bit in enumerate(bits))

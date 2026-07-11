@@ -1,0 +1,693 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
+      ],
+      "overview": "74HC86 is a 14-pin DIP part for xor gate.",
+      "part": "74HC86",
+      "pin_count": 14,
+      "pin_summary": {
+        "input": {
+          "count": 8,
+          "names": [
+            "1A",
+            "1B",
+            "2A",
+            "2B",
+            "3A",
+            "3B",
+            "4A",
+            "4B"
+          ],
+          "note": "Input pins: 1A, 1B, 2A, 2B, 3A, 3B, and 2 more."
+        },
+        "output": {
+          "count": 4,
+          "names": [
+            "1Y",
+            "2Y",
+            "3Y",
+            "4Y"
+          ],
+          "note": "Output pins: 1Y, 2Y, 3Y, 4Y."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "Quad 2-Input XOR Gate.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
+      "title": "Quad 2-Input XOR Gate",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "1A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1A - input",
+          "pin": "1A"
+        },
+        {
+          "explanation": "1B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1B - input",
+          "pin": "1B"
+        },
+        {
+          "explanation": "2A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2A - input",
+          "pin": "2A"
+        },
+        {
+          "explanation": "2B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2B - input",
+          "pin": "2B"
+        },
+        {
+          "explanation": "3A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3A - input",
+          "pin": "3A"
+        },
+        {
+          "explanation": "3B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3B - input",
+          "pin": "3B"
+        },
+        {
+          "explanation": "4A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4A - input",
+          "pin": "4A"
+        },
+        {
+          "explanation": "4B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4B - input",
+          "pin": "4B"
+        }
+      ],
+      "controls": [
+        "1A",
+        "1B",
+        "2A",
+        "2B",
+        "3A",
+        "3B",
+        "4A",
+        "4B"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC86",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y",
+          "name": "1Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y",
+          "name": "2Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "3Y",
+          "name": "3Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "4Y",
+          "name": "4Y"
+        }
+      ],
+      "probes": [
+        "1Y",
+        "2Y",
+        "3Y",
+        "4Y"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change 1A?",
+        "Which truth-table row matches the value on 1Y?"
+      ],
+      "title": "Try 74HC86 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "Quad 2-Input XOR Gate",
+        "type": "quad_2_input_xor"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 14
+      },
+      "part": "74HC86",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "1A",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1B",
+          "number": 2
+        },
+        {
+          "direction": "output",
+          "name": "1Y",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "2A",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "2B",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "2Y",
+          "number": 6
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "3Y",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "3A",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "3B",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "4Y",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "4A",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "4B",
+          "number": 13
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 7
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 14
+        }
+      ],
+      "role": "xor_gate",
+      "timing": {
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": {
+            "load_pf": 50,
+            "path": "A_or_B_to_Y",
+            "section": "6.6 Switching Characteristics - 74"
+          },
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC86 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC86 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC86 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC86 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC86 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "TI SN74HC86 switching characteristics list propagation delay tPLH/tPHL for A/B-to-Y. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged.",
+              "source_field": "timing.datasheet",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 20,
+                "max_minus40_to_85c": 25,
+                "typ": 12
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC86 has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "TI SN74HC86 switching characteristics list propagation delay tPLH/tPHL for A/B-to-Y. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged.",
+              "source_field": "timing.datasheet",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 20,
+                "max_minus40_to_85c": 25,
+                "typ": 12
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC86 has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC86 has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC86 has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
+      },
+      "title": "Quad 2-Input XOR Gate"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "1A",
+        "10": "3B",
+        "12": "4A",
+        "13": "4B",
+        "14": "VCC",
+        "2": "1B",
+        "4": "2A",
+        "5": "2B",
+        "7": "GND",
+        "9": "3A"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC86",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC86",
+      "copy_with_chip": [
+        "lib/standard/74xx/74HC86/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC86/simulation/model.py",
+      "part": "74HC86",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "1A",
+        "10": "3B",
+        "12": "4A",
+        "13": "4B",
+        "14": "VCC",
+        "2": "1B",
+        "4": "2A",
+        "5": "2B",
+        "7": "GND",
+        "9": "3A"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC86",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC86",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC86",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC86",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "xor_00",
+            "xor_01",
+            "xor_10",
+            "xor_11"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc86",
+      "compile": {
+        "sources": [
+          "lib/standard/74xx/74HC86/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc86"
+      },
+      "emitted": {
+        "kind": "simple_scalar_vector_truth_table",
+        "language": "verilog",
+        "supported": true,
+        "text": "`timescale 1ns/1ps\n\nmodule tb_generated_74hc86;\n  integer failures = 0;\n  reg [3:0] A;\n  reg [3:0] B;\n  wire [3:0] Y;\n\n  ttl_74hc86 dut(.A(A), .B(B), .Y(Y));\n\n  task check;\n    input condition;\n    input [255:0] message;\n    begin\n      if (!condition) begin\n        $display(\"FAIL: %0s\", message);\n        failures = failures + 1;\n      end\n    end\n  endtask\n\n  initial begin\n    A = 4'b0000;\n    B = 4'b0000;\n    #1;\n    check(Y === 4'b0000, \"xor_00: Y\");\n    A = 4'b0000;\n    B = 4'b1111;\n    #1;\n    check(Y === 4'b1111, \"xor_01: Y\");\n    A = 4'b1111;\n    B = 4'b0000;\n    #1;\n    check(Y === 4'b1111, \"xor_10: Y\");\n    A = 4'b1111;\n    B = 4'b1111;\n    #1;\n    check(Y === 4'b0000, \"xor_11: Y\");\n    if (failures == 0) begin\n      $display(\"tb_generated_74hc86 PASSED\");\n      $finish;\n    end\n    $display(\"tb_generated_74hc86 FAILED: %0d failures\", failures);\n    $fatal(1);\n  end\nendmodule\n"
+      },
+      "module": "ttl_74hc86",
+      "part": "74HC86",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC86",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC86",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "xor_00",
+            "xor_01",
+            "xor_10",
+            "xor_11"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          3,
+          6,
+          8,
+          11
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              1,
+              4,
+              9,
+              12
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "B",
+            "pins": [
+              2,
+              5,
+              10,
+              13
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y",
+            "pins": [
+              3,
+              6,
+              8,
+              11
+            ]
+          }
+        ]
+      },
+      "file": "lib/standard/74xx/74HC86/simulation/model.v",
+      "module": "ttl_74hc86",
+      "netlist": "lib/standard/74xx/74HC86/simulation/netlist.json",
+      "part": "74HC86"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC86",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "lib/standard/74xx/74HC86/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "lib/standard/74xx/74HC86/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "lib/standard/74xx/74HC86/simulation/netlist.json"
+    }
+  ],
+  "source": "lib/standard/74xx/74HC86/definition/definition.json",
+  "version": 1
+}

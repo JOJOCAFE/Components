@@ -18,7 +18,7 @@ if str(PYTHON_ROOT) not in sys.path:
 
 from chiplib.circuit_proofs import PackagePromotion, audit_all_packages
 from chiplib.circuit_timing import CircuitTimingBinding, CircuitTimingError
-CIRCUITS = ROOT / "Lib" / "Circuits"
+CIRCUITS = ROOT / "examples" / "circuits"
 INDEX_PATH = CIRCUITS / "RV8GR_COVERAGE_INDEX.json"
 TIMING_PATH = CIRCUITS / "timing_margins.json"
 PHYSICAL_PATH = CIRCUITS / "physical_capture_plan.json"
@@ -167,18 +167,47 @@ def timing_record(package: str, promotion: PackagePromotion) -> dict[str, Any]:
             }],
         }
     if package == "RV8GR_RingCounter":
+        checks = []
+        probe = CircuitTimingBinding.load(promotion.circuit_path)
+        probe.runner.reset({"/CLR": 0})
+        probe.runner.set_input("/CLR", 1)
+        constraints = probe.constraint_provenance("CLK")
+        cases = (
+            ("setup", "timing.setup_violation", "setup_ps"),
+            ("minimum_pulse_width", "timing.pulse_width_violation", "high_ps"),
+            ("hold", "timing.hold_violation", "constrained_change_ps"),
+        )
+        for name, code, argument in cases:
+            required = constraints[name]["delay_ps"]
+            if not isinstance(required, int) or required <= 0:
+                raise ValueError(f"{name} has no positive package timing threshold")
+            for offset, should_violate in ((-1, True), (0, False), (1, False)):
+                binding = CircuitTimingBinding.load(promotion.circuit_path)
+                binding.runner.reset({"/CLR": 0})
+                binding.runner.set_input("/CLR", 1)
+                kwargs = {argument: required + offset}
+                if name == "hold":
+                    kwargs["high_ps"] = required + 1
+                events = binding.pulse_clock(**kwargs)
+                violated = any(item.code == code for item in binding.timed.diagnostics)
+                if violated != should_violate or not events:
+                    raise ValueError(
+                        f"{name} threshold check failed at offset {offset}: "
+                        f"expected violation={should_violate}, observed={violated}"
+                    )
+                checks.append({
+                    "constraint": name,
+                    "required_ps": required,
+                    "offset_ps": offset,
+                    "violation": violated,
+                })
         return {
-            "status": "blocked",
+            "status": "passed",
             "modeled_only": True,
             "physical_status": "not_measured",
-            "blocks": [{
-                "code": "package_timing_thresholds_not_enforced",
-                "path": relative(promotion.circuit_path),
-                "message": (
-                    "package execution schedules clock-to-Q but does not enforce setup, "
-                    "hold, and minimum-pulse-width thresholds; modeled timing remains blocked"
-                ),
-            }],
+            "runner": "CircuitTimingBinding",
+            "checks": checks,
+            "blocks": [],
         }
     try:
         binding = CircuitTimingBinding.load(promotion.circuit_path)
@@ -372,8 +401,8 @@ def build_campaign(runtime: dict[str, Any] | None = None) -> dict[str, Any]:
             "package_runtime_executed": True,
             "source_artifacts": [
                 relative(INDEX_PATH),
-                "Lib/Circuits/RV8GR_*/circuit.json",
-                "Lib/Circuits/RV8GR_*/tests/*.json",
+                "examples/circuits/RV8GR_*/circuit.json",
+                "examples/circuits/RV8GR_*/tests/*.json",
                 relative(TIMING_PATH),
                 relative(PHYSICAL_PATH),
                 "python/tests/test_lib_circuits.py",

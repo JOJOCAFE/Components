@@ -96,6 +96,30 @@ def test_deadband_threshold_one_before_at_and_after():
         assert any(d.code == "timing.deadband_violation" for d in runner.diagnostics) is violates
 
 
+def test_output_enable_transitions_enforce_deadband_without_manual_mark_calls():
+    for observed, violates in [(9, True), (10, False), (11, False)]:
+        runner = TimedRunner()
+        runner.observe_driver_transition("BUS", 1, "Z", required_deadband_ps=10)
+        runner.run_until(observed)
+        runner.observe_driver_transition("BUS", "Z", 0, required_deadband_ps=10)
+        assert any(d.code == "timing.deadband_violation" for d in runner.diagnostics) is violates
+
+
+def test_six_output_transition_classes_use_db_delays():
+    timing = profile("74HC245")
+    transitions = ((0, 1), (1, 0), ("Z", 1), ("Z", 0), (1, "Z"), (0, "Z"))
+    for index, (before, after) in enumerate(transitions):
+        runner = TimedRunner()
+        signal = f"Y{index}"
+        runner.signals[signal] = before
+        selected = runner.schedule_output(signal, before, after, timing)
+        assert selected.delay_ps is not None
+        runner.run_until(selected.delay_ps - 1)
+        assert runner.signals[signal] == before
+        runner.run_until(selected.delay_ps)
+        assert runner.signals[signal] == after
+
+
 def test_unknown_clock_edge_is_diagnostic_not_valid_pulse():
     runner = TimedRunner()
     runner.check_clock_transition("CLK", 0, "X", profile())

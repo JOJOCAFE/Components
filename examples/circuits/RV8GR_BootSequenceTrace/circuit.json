@@ -1,0 +1,77 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_boot_sequence_trace",
+  "title": "RV8GR boot sequence trace",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/02_instruction_trace.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/05_debug_plan.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/14_components_verification_protocol.md",
+      "examples/circuits/RV8GR_PageJumpTrace/circuit.json",
+      "examples/circuits/RV8GR_AluAccumulator/circuit.json"
+    ]
+  },
+  "purpose": "Package the real RV8GR bring-up ROM start sequence so DP, PG, AC, Z, PC, and the final J-self loop are checked before physical single-step testing.",
+  "chips": [
+    {"ref": "U1_U4", "part": "74HC161", "role": "16-bit program counter chain", "symbolic_endpoints": ["/LOAD"]},
+    {"ref": "ALU", "part": "RV8GR_AluAccumulator", "role": "Authoritative LI immediate path into AC and Z; child-port mapping is required before hierarchical execution"},
+    {"ref": "U23", "part": "74HC574", "role": "program-page register"},
+    {"ref": "U32", "part": "74HC574", "role": "data-page register"},
+    {"ref": "U33", "part": "74HC21", "role": "SETDP decode"},
+    {"ref": "U34", "part": "74HC541", "role": "immediate operand driver onto IBUS"},
+    {"ref": "VCLK", "part": "ClockSource", "role": "manual 12-clock single-step profile"},
+    {"ref": "IBUSMON", "part": "BusProbe", "role": "IBUS owner monitor"},
+    {"ref": "DBUSMON", "part": "BusProbe", "role": "ROM DBUS owner monitor"}
+  ],
+  "ports": [
+    {"name": "CLK", "direction": "input"},
+    {"name": "T0", "direction": "input"},
+    {"name": "T1", "direction": "input"},
+    {"name": "T2", "direction": "input"},
+    {"name": "PC0..PC15", "direction": "input/output"},
+    {"name": "PG0..PG7", "direction": "input/output"},
+    {"name": "DP0..DP7", "direction": "input/output"},
+    {"name": "AC0..AC7", "direction": "input/output"},
+    {"name": "Z", "direction": "input/output"},
+    {"name": "IRH0..IRH7", "direction": "input"},
+    {"name": "IRL0..IRL7", "direction": "input"},
+    {"name": "IBUS0..IBUS7", "direction": "bidirectional"},
+    {"name": "DBUS0..DBUS7", "direction": "bidirectional"}
+  ],
+  "wiring": [
+    {"net": "ROM_DBUS", "connections": ["DBUS0..DBUS7", "DBUSMON.1"], "rule": "T0/T1 fetch uses ROM as the DBUS owner for the boot bytes."},
+    {"net": "IBUS0..IBUS7", "connections": ["U34.18..11", "U23.2..9", "U32.2..9", "IBUS0..IBUS7", "IBUSMON.1"], "rule": "T2 immediate instructions use U34 as the only IBUS driver."},
+    {"net": "DP_Load", "connections": ["U33.6", "U32.11"], "rule": "Pulses for SETDP $80 only."},
+    {"net": "PG_CLK", "connections": ["U23.11"], "rule": "Pulses for SETPG $00 only."},
+    {"net": "ACC_CLK", "connections": ["AC0..AC7"], "rule": "Pulses for LI $00 only."},
+    {"net": "/PC_LD", "connections": ["U1_U4./LOAD"], "rule": "LOW for final J $06 only; PC loops at $0006."}
+  ],
+  "behavior": {
+    "setdp_80": "First instruction initializes DP to $80 so RAM/register-page data access is safe.",
+    "setpg_00": "Second instruction initializes PG to $00 so jumps and branches stay on ROM page 0 until changed.",
+    "li_00": "Third instruction initializes AC to $00 and Z to 1.",
+    "j_self": "Final instruction loads PC with {PG,$06}; because PG is $00, PC returns to $0006.",
+    "bus_policy": "T0/T1 fetch bytes come from ROM; T2 immediate bytes come from U34. No trace vector allows multiple bus drivers.",
+    "edge_policy": "U23, U32, U9, and the U1_U4 counter chain only update on their intended rising edges; opposite edges hold in this functional trace."
+  },
+  "timing": {
+    "clocking": "12 manual clock edges: four 2-byte instructions with T0/T1/T2 phases.",
+    "frequency_boundary": "Functional and manual single-step proof only; physical speed claims stay blocked until timing_margins.json evidence exists.",
+    "deadband_boundary": "Trace buses still require R/C settling and positive bus-owner deadband before physical signoff; this package records functional row order only.",
+    "student_rule": "After 12 clocks, DP=$80, PG=$00, AC=$00, Z=1, and PC is looping at $0006."
+  },
+  "verification": {
+    "tests": ["tests/boot_sequence_trace.json"],
+    "guarantees": [
+      "SETDP $80 initializes DP before data access",
+      "SETPG $00 initializes PG before J self",
+      "LI $00 initializes AC and Z",
+      "J $06 loops to PC $0006 using the already-latched PG",
+      "T2 immediate bus ownership remains single-driver",
+      "The proof does not promote any physical clock-speed claim"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

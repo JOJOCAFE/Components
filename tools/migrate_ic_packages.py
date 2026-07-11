@@ -97,11 +97,11 @@ DELAYS = {
 def _target_parts() -> list[str]:
     legacy_parts = {
         path.parent.name
-        for path in [*ROOT.glob("DB/74xx/*/chip.json"), *ROOT.glob("DB/Memory/*/chip.json")]
+        for path in [*ROOT.glob("lib/standard/74xx/*/chip.json"), *ROOT.glob("lib/standard/memory/*/chip.json")]
     }
     migrated_parts = {
         path.parents[1].name
-        for path in [*ROOT.glob("DB/74xx/*/definition/definition.json"), *ROOT.glob("DB/Memory/*/definition/definition.json")]
+        for path in [*ROOT.glob("lib/standard/74xx/*/definition/definition.json"), *ROOT.glob("lib/standard/memory/*/definition/definition.json")]
         if path.parents[1].name not in SEED_PARTS
     }
     return sorted(set(PARTS) | legacy_parts | migrated_parts)
@@ -152,7 +152,7 @@ def _logic_type(part: str, manifest: dict) -> str:
 def _delay(part: str, base: Path) -> int:
     if part in DELAYS:
         return DELAYS[part]
-    return 70 if base.parent.name == "Memory" else 15
+    return 70 if base.parent.name == "memory" else 15
 
 
 def main() -> None:
@@ -178,8 +178,8 @@ def main() -> None:
 
 
 def _base_for(part: str) -> Path:
-    for group in ("74xx", "Memory"):
-        candidate = ROOT / "DB" / group / part
+    for group in ("74xx", "memory"):
+        candidate = ROOT / "lib" / "standard" / group / part
         if candidate.exists():
             return candidate
     raise FileNotFoundError(part)
@@ -218,13 +218,13 @@ def _definition_from_manifest(manifest: dict, base: Path) -> dict:
         "python": {
             "factory": "create",
             "part": part,
-            "file": f"DB/{base.parent.name}/{part}/simulation/model.py",
+            "file": f"lib/standard/{base.parent.name}/{part}/simulation/model.py",
             "class": _class_name(part),
         },
         "verilog": {
             "module": manifest["verilog"]["module"],
-            "file": f"DB/{base.parent.name}/{part}/simulation/model.v",
-            "netlist": f"DB/{base.parent.name}/{part}/simulation/netlist.json",
+            "file": f"lib/standard/{base.parent.name}/{part}/simulation/model.v",
+            "netlist": f"lib/standard/{base.parent.name}/{part}/simulation/netlist.json",
         },
     }
     sources = []
@@ -386,7 +386,7 @@ def _netlist(definition: dict, manifest: dict) -> dict:
         "schema": "db.component.simulation.netlist",
         "version": 1,
         "part": definition["part"],
-        "source": f"DB/{definition['metadata']['group'] if definition['metadata']['group'] != 'memory' else 'Memory'}/{definition['part']}/definition/definition.json",
+        "source": f"lib/standard/{definition['metadata']['group'] if definition['metadata']['group'] != 'memory' else 'memory'}/{definition['part']}/definition/definition.json",
         "simulation": {
             "python": definition["generation"]["python"]["file"],
             "verilog": verilog["file"],

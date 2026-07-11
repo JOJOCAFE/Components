@@ -9,7 +9,7 @@ from chiplib.api import handle_request
 from chiplib.services import CircuitSessionRegistry, FrontendDesignService
 
 
-CIRCUIT = Path(__file__).resolve().parents[2] / "Lib" / "Circuits" / "RV8GR_RingCounter" / "circuit.json"
+CIRCUIT = Path(__file__).resolve().parents[2] / "examples" / "circuits" / "RV8GR_RingCounter" / "circuit.json"
 
 
 def test_frontend_design_service_edits_and_exports_design():
@@ -143,7 +143,7 @@ def test_json_api_adapter_exposes_component_metadata_without_design():
     detail = handle_request({"command": "component-detail", "options": {"part": "74HC00"}}, service)
     assert detail["ok"] is True
     assert detail["result"]["format"] == "components.db.component"
-    assert detail["result"]["db_path"] == "DB/74xx/74HC00/definition/definition.json"
+    assert detail["result"]["db_path"] == "lib/standard/74xx/74HC00/definition/definition.json"
     assert detail["result"]["capabilities"]["physical_pinout"] is True
 
     digital = handle_request({"command": "component-digital", "options": {"part": "74HC245"}}, service)
@@ -179,6 +179,24 @@ def test_json_api_adapter_runs_stateful_circuit_session():
     failed = handle_request({"command": "circuit-step", "input": {"operation": "guess"}}, service)
     assert failed["ok"] is False
     assert failed["error"]["code"] == "runner.unsupported_step"
+
+
+def test_json_api_adapter_exposes_timed_run_and_evidence_contracts():
+    service = FrontendDesignService()
+    response = handle_request({
+        "command": "timed-run",
+        "input": {"path": str(CIRCUIT), "operations": ["reset", "release /CLR", "clock CLK"]},
+    }, service)
+    assert response["ok"] is True
+    assert response["result"]["timing"]["modeled_only"] is True
+    explained = handle_request({"command": "explain-violations", "input": {"response": response}}, service)
+    assert explained["ok"] is True
+    exported = handle_request({"command": "export-evidence", "input": {"response": response, "include_traces": True}}, service)
+    assert exported["ok"] is True
+    assert exported["result"]["evidence"]["timing"]["trace"]
+    blocked = handle_request({"command": "timed-run", "input": {"path": str(CIRCUIT), "operations": ["set /CLR 0"]}}, service)
+    assert blocked["result"]["status"] == "blocked"
+    assert blocked["error"]["code"] == "timing.unsupported"
 
 
 def test_http_mode_requires_explicit_circuit_session_id():
@@ -234,6 +252,7 @@ def run_all():
     test_json_api_adapter_explain_result_wraps_structured_summary()
     test_json_api_adapter_exposes_component_metadata_without_design()
     test_json_api_adapter_runs_stateful_circuit_session()
+    test_json_api_adapter_exposes_timed_run_and_evidence_contracts()
     test_http_mode_requires_explicit_circuit_session_id()
     test_http_circuit_sessions_are_isolated_under_concurrency()
 

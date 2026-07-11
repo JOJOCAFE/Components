@@ -1,0 +1,79 @@
+{
+  "schema": "components.lib.circuit.test.interrupt_trace",
+  "version": 1,
+  "circuit": "rv8gr_interrupt_trace",
+  "source": "examples/circuits/RV8GR_InterruptTrace/circuit.json",
+  "source_traces": [
+    {"name": "EI", "opcode": "0x08", "focus": "IE set"},
+    {"name": "DI", "opcode": "0x48", "focus": "v1.0 inert hardware behavior"},
+    {"name": "IRQ_LOW", "focus": "active-low assertion hold"},
+    {"name": "IRQ_RELEASE", "focus": "rising release latch"}
+  ],
+  "vectors": [
+    {
+      "name": "reset_clears_interrupt_flags",
+      "event": "reset",
+      "phase": "reset",
+      "opcode": null,
+      "initial": {"PC": "0x1234", "IE": 1, "IRQ_FF": 1, "/IRQ": 1},
+      "expect": {"PC": "0x1234", "IE": 0, "IRQ_FF": 0, "/IRQ": 1, "pc_changed": false}
+    },
+    {
+      "name": "ei_sets_ie_without_pc_change",
+      "event": "ei_rising",
+      "phase": "T2",
+      "opcode": "0x08",
+      "initial": {"PC": "0x1234", "IE": 0, "IRQ_FF": 0, "/IRQ": 1},
+      "expect": {"PC": "0x1234", "IE": 1, "IRQ_FF": 0, "/IRQ": 1, "pc_changed": false}
+    },
+    {
+      "name": "di_is_inert_v1_0",
+      "event": "di",
+      "phase": "T2",
+      "opcode": "0x48",
+      "initial": {"PC": "0x1234", "IE": 1, "IRQ_FF": 0, "/IRQ": 1},
+      "expect": {"PC": "0x1234", "IE": 1, "IRQ_FF": 0, "/IRQ": 1, "pc_changed": false}
+    },
+    {
+      "name": "irq_low_assertion_holds_irq_ff",
+      "event": "irq_low",
+      "phase": "external",
+      "opcode": null,
+      "initial": {"PC": "0x1234", "IE": 1, "IRQ_FF": 0, "/IRQ": 1},
+      "expect": {"PC": "0x1234", "IE": 1, "IRQ_FF": 0, "/IRQ": 0, "pc_changed": false}
+    },
+    {
+      "name": "irq_release_latches_sticky_flag",
+      "event": "irq_release_rising",
+      "phase": "external",
+      "opcode": null,
+      "initial": {"PC": "0x1234", "IE": 1, "IRQ_FF": 0, "/IRQ": 0},
+      "expect": {"PC": "0x1234", "IE": 1, "IRQ_FF": 1, "/IRQ": 1, "pc_changed": false}
+    },
+    {
+      "name": "sticky_irq_ff_survives_cpu_ticks",
+      "event": "100_cpu_ticks",
+      "phase": "run",
+      "opcode": null,
+      "initial": {"PC": "0x1234", "IE": 1, "IRQ_FF": 1, "/IRQ": 1},
+      "expect": {"PC": "0x1234", "IE": 1, "IRQ_FF": 1, "/IRQ": 1, "pc_changed": false}
+    }
+  ],
+  "sequence": [
+    {"vector": "reset_clears_interrupt_flags"},
+    {"vector": "ei_sets_ie_without_pc_change"},
+    {"vector": "di_is_inert_v1_0"},
+    {"vector": "irq_low_assertion_holds_irq_ff"},
+    {"vector": "irq_release_latches_sticky_flag"},
+    {"vector": "sticky_irq_ff_survives_cpu_ticks"}
+  ],
+  "final_state": {"PC": "0x1234", "IE": 1, "IRQ_FF": 1, "/IRQ": 1},
+  "v1_0_absences": ["PC_FORCE", "IRQ_ACK", "auto_vector", "auto_clear"],
+  "student_rules": [
+    "EI sets IE.",
+    "DI is inert in v1.0 hardware.",
+    "/IRQ LOW is the active request level.",
+    "/IRQ release HIGH is the latch edge.",
+    "Software must poll; the PC does not auto-jump."
+  ]
+}

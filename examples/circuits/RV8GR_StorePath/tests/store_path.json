@@ -1,0 +1,18 @@
+{
+  "schema": "components.lib.circuit.test.store_path",
+  "version": 1,
+  "circuit": "rv8gr_store_path",
+  "source": "examples/circuits/RV8GR_StorePath/circuit.json",
+  "vectors": [
+    {"name": "t0_no_store", "phase": "T0", "str": 1, "a15": 1, "ac": "0xAA", "expect_ac_buf_n": 1, "expect_wr_dir": 0, "expect_ram_we_n": 1, "expect_rom_oe_n": 0, "expect_write": false},
+    {"name": "t1_no_store", "phase": "T1", "str": 1, "a15": 1, "ac": "0xAA", "expect_ac_buf_n": 1, "expect_wr_dir": 0, "expect_ram_we_n": 1, "expect_rom_oe_n": 0, "expect_write": false},
+    {"name": "t2_not_store", "phase": "T2", "str": 0, "a15": 1, "ac": "0xAA", "expect_ac_buf_n": 1, "expect_wr_dir": 0, "expect_ram_we_n": 1, "expect_rom_oe_n": 0, "expect_write": false},
+    {"name": "t2_store_ram", "phase": "T2", "str": 1, "a15": 1, "ac": "0xAA", "expect_ac_buf_n": 0, "expect_wr_dir": 1, "expect_ram_we_n": 0, "expect_rom_oe_n": 1, "expect_write": true},
+    {"name": "t2_store_rom_page_bus_safe", "phase": "T2", "str": 1, "a15": 0, "ac": "0x55", "expect_ac_buf_n": 0, "expect_wr_dir": 1, "expect_ram_we_n": 0, "expect_rom_oe_n": 1, "expect_write": false}
+  ],
+  "bus_safety": {
+    "rom_vs_u7": "WR_DIR=1 disables ROM output while U7 writes DBUS.",
+    "ram_vs_u7": "RAM /WE=0 disables RAM output during write.",
+    "chip_select": "A15=0 selects ROM space; A15=1 selects RAM space."
+  }
+}

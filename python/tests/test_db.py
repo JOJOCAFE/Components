@@ -11,6 +11,7 @@ from chiplib.db import _pinout_mismatches
 from chiplib.chips import create_chip
 
 
+ROOT = Path(__file__).resolve().parents[2]
 ALLOWED_STATUS = {
     "verified",
     "modeled",
@@ -64,7 +65,7 @@ def generation_package_parts() -> set[str]:
     return {
         path.parents[1].name
         for path in db_root().glob("*/*/definition/definition.json")
-        if path.parents[2].name in {"74xx", "Memory"}
+        if path.parents[2].name in {"74xx", "memory"}
     }
 
 
@@ -72,7 +73,7 @@ def generic_package_parts() -> set[str]:
     return {
         path.parents[1].name
         for path in db_root().glob("*/*/definition/definition.json")
-        if path.parents[2].name in {"Virtual", "Passive", "Discrete", "Support"}
+        if path.parents[2].name in {"virtual", "passive", "discrete", "support"}
     }
 
 
@@ -96,7 +97,7 @@ LOCAL_DATASHEET_FILE_OVERRIDES = {
 
 
 def test_db_seed_entries_are_loadable():
-    assert db_root().name == "DB"
+    assert db_root().as_posix().endswith("lib/standard")
     assert SEED_PARTS.issubset(set(component_ids()))
     assert GROUPED_PARTS.issubset(set(component_ids()))
     assert "74HC147" in component_ids()
@@ -193,7 +194,7 @@ def test_db_seed_entries_are_loadable():
     assert source["group"] == "virtual"
     assert source["kind"] == "virtual"
     assert source["role"] == "stimulus"
-    assert source["db_path"] == "DB/Virtual/InputSource/definition/definition.json"
+    assert source["db_path"] == "lib/standard/virtual/InputSource/definition/definition.json"
     assert source["pins"] == [{"number": 1, "name": "OUT", "direction": "output"}]
     assert source["simulation"]["service"] == "sim.input_source"
 
@@ -201,7 +202,7 @@ def test_db_seed_entries_are_loadable():
     assert switch["group"] == "virtual"
     assert switch["kind"] == "virtual"
     assert switch["role"] == "stimulus"
-    assert switch["db_path"] == "DB/Virtual/Switch/definition/definition.json"
+    assert switch["db_path"] == "lib/standard/virtual/Switch/definition/definition.json"
     assert switch["pins"] == [{"number": 1, "name": "OUT", "direction": "output"}]
     assert switch["simulation"]["service"] == "sim.switch"
     assert switch["simulation"]["default_mode"] == "stable_off"
@@ -245,7 +246,7 @@ def test_db_seed_entries_are_loadable():
 
     led = load_component("LED")
     assert led["group"] == "passive"
-    assert led["db_path"] == "DB/Passive/LED/definition/definition.json"
+    assert led["db_path"] == "lib/standard/passive/LED/definition/definition.json"
     assert led["pins"][0]["direction"] == "passive"
     assert led["ui"]["symbol"] == "led"
 
@@ -300,7 +301,7 @@ def test_db_component_catalog_is_frontend_ready_and_grouped():
 
     hc00 = next(item for item in catalog["components"] if item["part"] == "74HC00")
     assert hc00["group"] == "74xx"
-    assert hc00["db_path"] == "DB/74xx/74HC00/definition/definition.json"
+    assert hc00["db_path"] == "lib/standard/74xx/74HC00/definition/definition.json"
     assert hc00["evidence"] == {
         "dip_pinout_verified": True,
         "manufacturer": "Texas Instruments",
@@ -313,7 +314,7 @@ def test_db_component_catalog_is_frontend_ready_and_grouped():
         "last_checked": "2026-07-11",
     }
     assert hc00["capabilities"]["physical_pinout"] is True
-    assert hc00["capabilities"]["verilog_file"] == "DB/74xx/74HC00/simulation/model.v"
+    assert hc00["capabilities"]["verilog_file"] == "lib/standard/74xx/74HC00/simulation/model.v"
     assert hc00["warnings"] == []
 
     memory = component_catalog(group="memory")
@@ -338,7 +339,7 @@ def test_student_component_catalog_is_learner_facing_and_status_visible():
     assert hc00["procurement"]["availability_class"] == "legacy"
     assert hc00["procurement"]["stock_basis"] == "nos-or-limited"
     assert hc00["capabilities"]["can_export_verilog"] is True
-    assert hc00["files"]["verilog"] == "DB/74xx/74HC00/simulation/model.v"
+    assert hc00["files"]["verilog"] == "lib/standard/74xx/74HC00/simulation/model.v"
 
     hc161 = next(item for item in student_component_catalog(group="74xx")["components"] if item["part"] == "74HC161")
     assert hc161["logic_family_model"] == "74HC161"
@@ -846,29 +847,29 @@ def test_virtual_and_passive_components_use_definition_packages():
         "NE555",
         "ULN2803A",
     }
-    assert not list((db_root() / "Virtual").glob("*/component.json"))
-    assert not list((db_root() / "Passive").glob("*/component.json"))
-    assert not list((db_root() / "Discrete").glob("*/component.json"))
-    assert not list((db_root() / "Support").glob("*/component.json"))
+    assert not list((db_root() / "virtual").glob("*/component.json"))
+    assert not list((db_root() / "passive").glob("*/component.json"))
+    assert not list((db_root() / "discrete").glob("*/component.json"))
+    assert not list((db_root() / "support").glob("*/component.json"))
 
     probe_definition = load_package_definition("Probe")
     assert probe_definition["schema"] == "db.component.definition"
     assert probe_definition["validation"]["ok"] is True, probe_definition["validation"]["errors"]
-    assert probe_definition["definition_path"] == "DB/Virtual/Probe/definition/definition.json"
+    assert probe_definition["definition_path"] == "lib/standard/virtual/Probe/definition/definition.json"
     assert load_digital_definition("Probe", required=False) is None
 
     for part in ("NPN", "PNP", "BC549", "BC559"):
         definition = load_package_definition(part)
         assert definition["schema"] == "db.component.definition"
         assert definition["validation"]["ok"] is True, (part, definition["validation"]["errors"])
-        assert definition["definition_path"] == f"DB/Discrete/{part}/definition/definition.json"
+        assert definition["definition_path"] == f"lib/standard/discrete/{part}/definition/definition.json"
         assert load_digital_definition(part, required=False) is None
 
     for part in ("LM358", "LM393", "MAX232", "NE555", "ULN2803A"):
         definition = load_package_definition(part)
         assert definition["schema"] == "db.component.definition"
         assert definition["validation"]["ok"] is True, (part, definition["validation"]["errors"])
-        assert definition["definition_path"] == f"DB/Support/{part}/definition/definition.json"
+        assert definition["definition_path"] == f"lib/standard/support/{part}/definition/definition.json"
         assert load_digital_definition(part, required=False) is None
         component = load_component(part)
         assert component["status"]["python_behavior"] == "tested"
@@ -882,7 +883,7 @@ def test_virtual_and_passive_components_use_definition_packages():
     assert probe_package["part"] == "Probe"
     assert probe_package["definition"]["schema"] == "db.component.definition"
     assert probe_package["definition"]["validation"]["ok"] is True
-    assert probe_package["manifest"]["db_path"] == "DB/Virtual/Probe/definition/definition.json"
+    assert probe_package["manifest"]["db_path"] == "lib/standard/virtual/Probe/definition/definition.json"
     assert probe_package["layers"]["definition"]["component"]["group"] == "virtual"
     assert probe_package["layers"]["definition"]["pins"]["pins"] == [{"number": 1, "name": "IN", "direction": "input"}]
     assert probe_package["layers"]["simulation"]["service"] == "sim.probe"
@@ -892,34 +893,34 @@ def test_virtual_and_passive_components_use_definition_packages():
     support_package = load_component_package("ULN2803A")
     assert support_package["format"] == "db.component.package"
     assert support_package["definition"]["validation"]["ok"] is True
-    assert support_package["manifest"]["db_path"] == "DB/Support/ULN2803A/definition/definition.json"
-    assert support_package["files"]["simulation_model_py"] == "DB/Support/ULN2803A/simulation/model.py"
+    assert support_package["manifest"]["db_path"] == "lib/standard/support/ULN2803A/definition/definition.json"
+    assert support_package["files"]["simulation_model_py"] == "lib/standard/support/ULN2803A/simulation/model.py"
     assert support_package["layers"]["simulation"]["service"] == "sim.support.uln2803a"
     assert any(item["runtime"] == "python" and item["copy_as"] == "model.py" for item in support_package["portable_files"])
     assert any(item["kind"] == "python_runtime" and item["copy_as"] == "chiplib/core.py" for item in support_package["portable_files"])
 
     led_package = load_component_package("LED")
     assert led_package["definition"]["validation"]["ok"] is True
-    assert led_package["manifest"]["db_path"] == "DB/Passive/LED/definition/definition.json"
+    assert led_package["manifest"]["db_path"] == "lib/standard/passive/LED/definition/definition.json"
     assert led_package["layers"]["definition"]["package"]["packages"] == [{"id": "two_terminal", "kind": "two_terminal", "pins": 2}]
     assert led_package["layers"]["symbol"]["default_color"] == "red"
 
     red_package = load_component_package("RedLED")
-    assert red_package["manifest"]["db_path"] == "DB/Passive/RedLED/definition/definition.json"
+    assert red_package["manifest"]["db_path"] == "lib/standard/passive/RedLED/definition/definition.json"
     assert red_package["layers"]["symbol"]["default_color"] == "red"
 
     blue_package = load_component_package("BlueLED")
-    assert blue_package["manifest"]["db_path"] == "DB/Passive/BlueLED/definition/definition.json"
+    assert blue_package["manifest"]["db_path"] == "lib/standard/passive/BlueLED/definition/definition.json"
     assert blue_package["layers"]["symbol"]["default_color"] == "blue"
 
     yellow_package = load_component_package("YellowLED")
-    assert yellow_package["manifest"]["db_path"] == "DB/Passive/YellowLED/definition/definition.json"
+    assert yellow_package["manifest"]["db_path"] == "lib/standard/passive/YellowLED/definition/definition.json"
     assert yellow_package["layers"]["symbol"]["default_color"] == "yellow"
 
 
 def test_virtual_test_instruments_map_to_real_virtual_components():
     instruments = json.loads((db_root() / "VIRTUAL_TEST_INSTRUMENTS.json").read_text(encoding="utf-8"))
-    virtual_index = json.loads((db_root() / "Virtual" / "index.json").read_text(encoding="utf-8"))
+    virtual_index = json.loads((db_root() / "virtual" / "index.json").read_text(encoding="utf-8"))
     virtual_parts = set(virtual_index["components"])
 
     assert instruments["schema"] == "components.virtual_test_instruments"
@@ -971,8 +972,8 @@ def test_db_folder_does_not_hold_project_specific_rv8gr_artifacts():
 def test_memory_components_use_definition_packages():
     memory_parts = {"62256", "AS6C62256", "AT28C256", "CY7C199", "SST39SF010A"}
     assert memory_parts.issubset(set(component_ids()))
-    assert not list((db_root() / "Memory").glob("*/chip.json"))
-    assert {path.parents[1].name for path in (db_root() / "Memory").glob("*/definition/definition.json")} == memory_parts
+    assert not list((db_root() / "memory").glob("*/chip.json"))
+    assert {path.parents[1].name for path in (db_root() / "memory").glob("*/definition/definition.json")} == memory_parts
 
     for part in memory_parts:
         definition = load_digital_definition(part)
@@ -982,7 +983,7 @@ def test_memory_components_use_definition_packages():
         package = load_component_package(part)
         assert package["format"] == "db.component.package"
         assert package["definition"]["schema"] == "db.component.digital"
-        assert package["manifest"]["db_path"] == f"DB/Memory/{part}/definition/definition.json"
+        assert package["manifest"]["db_path"] == f"lib/standard/memory/{part}/definition/definition.json"
         assert package["layers"]["definition"]["component"]["family"] == "Memory"
         assert package["layers"]["simulation"]["model"]["schema"] == "db.component.simulation"
 
@@ -992,11 +993,11 @@ def test_db_component_detail_exposes_pins_and_capabilities():
     assert detail["format"] == "components.db.component"
     assert detail["part"] == "AT28C256"
     assert detail["group"] == "memory"
-    assert detail["db_path"] == "DB/Memory/AT28C256/definition/definition.json"
+    assert detail["db_path"] == "lib/standard/memory/AT28C256/definition/definition.json"
     assert {key: detail["pins"][0][key] for key in ("number", "name", "direction")} == {"number": 1, "name": "A14", "direction": "input"}
     assert detail["capabilities"]["verilog_model"] is True
-    assert detail["capabilities"]["verilog_file"] == "DB/Memory/AT28C256/simulation/model.v"
-    assert detail["digital_definition"]["path"] == "DB/Memory/AT28C256/definition/definition.json"
+    assert detail["capabilities"]["verilog_file"] == "lib/standard/memory/AT28C256/simulation/model.v"
+    assert detail["digital_definition"]["path"] == "lib/standard/memory/AT28C256/definition/definition.json"
     assert set(detail["digital_definition"]["generation_targets"]) == GENERATION_TARGETS
 
 
@@ -1178,7 +1179,7 @@ def test_generation_seed_simulation_sources_are_local_and_importable():
             assert file_key in package["files"], (part, file_key)
             assert Path(package["files"][file_key]).parts[-2] == "simulation", (part, file_key)
 
-        model_path = db_root().parent / model["python"]["file"]
+        model_path = ROOT / model["python"]["file"]
         spec = importlib.util.spec_from_file_location(f"local_{part.lower()}_model", model_path)
         assert spec is not None and spec.loader is not None, part
         module = importlib.util.module_from_spec(spec)
@@ -1191,7 +1192,7 @@ def test_generation_seed_simulation_sources_are_local_and_importable():
 def test_generation_seed_definitions_are_one_file_sources():
     for part in generation_package_parts():
         package = load_digital_package(part)
-        definition_file = db_root().parent / package["files"]["definition"]
+        definition_file = ROOT / package["files"]["definition"]
         json_files = sorted(path.name for path in definition_file.parent.glob("*.json"))
         assert json_files == ["definition.json"], (part, json_files)
         assert not any(name.startswith("legacy_") for name in package["files"]), part
@@ -1299,7 +1300,7 @@ def test_component_generation_artifacts_cover_declared_targets():
 
 def test_generated_artifact_files_exist_for_seed_batch():
     for part in generation_package_parts():
-        definition_path = db_root().parent / load_digital_definition(part)["definition_path"]
+        definition_path = ROOT / load_digital_definition(part)["definition_path"]
         path = definition_path.parents[1] / "generated" / "artifacts.json"
         data = json.loads(path.read_text(encoding="utf-8"))
         assert data["format"] == "db.component.generated"
@@ -1382,8 +1383,8 @@ def test_db_manifests_match_schema_contract():
     }
     assert not (db_root() / "chip.schema.json").exists()
     assert not list((db_root() / "74xx").glob("*/chip.json"))
-    assert not list((db_root() / "Memory").glob("*/chip.json"))
-    assert not list((db_root() / "Discrete").glob("*/component.json"))
+    assert not list((db_root() / "memory").glob("*/chip.json"))
+    assert not list((db_root() / "discrete").glob("*/component.json"))
 
     for manifest in load_all_components():
         for key in ("schema", "version", "part", "title", "family", "package", "status", "pins"):
@@ -1473,8 +1474,8 @@ def test_embedded_pinout_matches_grouped_db_manifest_pins():
 
 
 def test_physical_chip_definitions_have_local_source_datasheets():
-    root = db_root().parent
-    source_dir = root / "Source"
+    root = ROOT
+    source_dir = root / "source"
     source_pdfs = sorted(path for path in source_dir.iterdir() if path.is_file() and path.suffix.lower() == ".pdf")
     missing: list[str] = []
 
@@ -1490,7 +1491,7 @@ def test_physical_chip_definitions_have_local_source_datasheets():
                 local_files.append(root / file_name)
             for key in ("url", "source", "source_note"):
                 value = str(source.get(key, ""))
-                match = re.search(r"(?:Components/)?(Source/[^\s`]+\.pdf|Source/[^\s`]+\.PDF)", value)
+                match = re.search(r"(?:Components/)?(source/[^\s`]+\.pdf|source/[^\s`]+\.PDF)", value)
                 if match:
                     local_files.append(root / match.group(1))
 

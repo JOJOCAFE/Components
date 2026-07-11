@@ -12,7 +12,7 @@ from .db import load_component
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CIRCUIT_ROOT = ROOT / "Lib" / "Circuits"
+CIRCUIT_ROOT = ROOT / "examples" / "circuits"
 REF_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 NUMERIC_ENDPOINT_RE = re.compile(
     r"^(?P<ref>[A-Za-z][A-Za-z0-9_]*)\.(?P<start>[0-9]+)(?:\.\.(?P<end>[0-9]+))?$"
@@ -97,6 +97,18 @@ class BoundaryEndpoint:
 
 
 CircuitEndpoint = NumericEndpoint | SymbolicEndpoint | BoundaryEndpoint
+
+
+def expand_boundary_name(name: str) -> tuple[str, ...]:
+    """Expand an ordered ``NAME0..NAMEn`` boundary, preserving direction."""
+
+    match = re.fullmatch(r"(.*?)(\d+)\.\.(?:\1)?(\d+)", name)
+    if match is None:
+        return (name,)
+    prefix, start_text, end_text = match.groups()
+    start, end = int(start_text), int(end_text)
+    step = 1 if end >= start else -1
+    return tuple(f"{prefix}{index}" for index in range(start, end + step, step))
 
 
 @dataclass(frozen=True)
@@ -363,10 +375,26 @@ def _validate_endpoints(chips: list[CircuitChip], ports: list[CircuitPort], wiri
     boundaries = {port.name for port in ports} | {row.net for row in wiring}
     package_ports = _package_port_map()
     db_pins: dict[str, set[int] | None] = {}
+    boundary_bindings: dict[str, tuple[str, ...]] = {}
     for wire_index, wire in enumerate(wiring):
         for endpoint_index, endpoint in enumerate(wire.connections):
             path = f"$.wiring[{wire_index}].connections[{endpoint_index}]"
             if endpoint.text in boundaries:
+                if isinstance(endpoint, BoundaryEndpoint) and endpoint.text.upper() not in {"VCC", "GND"}:
+                    lines = expand_boundary_name(wire.net)
+                    endpoint_width = len(expand_boundary_name(endpoint.text))
+                    if endpoint_width not in {1, len(lines)}:
+                        issue(
+                            "ambiguous_boundary_width", path,
+                            f"boundary {endpoint.text!r} has width {endpoint_width}, expected {len(lines)} for {wire.net!r}",
+                        )
+                    previous = boundary_bindings.get(endpoint.text)
+                    if previous is not None and previous != lines:
+                        issue(
+                            "ambiguous_boundary_mapping", path,
+                            f"boundary {endpoint.text!r} maps to both {previous!r} and {lines!r}",
+                        )
+                    boundary_bindings[endpoint.text] = lines
                 continue
             if isinstance(endpoint, BoundaryEndpoint):
                 issue("undeclared_boundary", path, f"symbolic boundary {endpoint.text!r} is not a declared port or net")

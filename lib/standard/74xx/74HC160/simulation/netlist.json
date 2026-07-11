@@ -1,0 +1,171 @@
+{
+  "schema": "db.component.simulation.netlist",
+  "version": 1,
+  "part": "74HC160",
+  "source": "lib/standard/74xx/74HC160/definition/definition.json",
+  "simulation": {
+    "python": "lib/standard/74xx/74HC160/simulation/model.py",
+    "verilog": "lib/standard/74xx/74HC160/simulation/model.v"
+  },
+  "verilog": {
+    "module": "ttl_74hc160",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "Clear_bar",
+          "pins": [
+            1
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Load_bar",
+          "pins": [
+            9
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "ENT",
+          "pins": [
+            10
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "ENP",
+          "pins": [
+            7
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "D",
+          "pins": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Clk",
+          "pins": [
+            2
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "RCO",
+          "pins": [
+            15
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "Q",
+          "pins": [
+            14,
+            13,
+            12,
+            11
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    }
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "MR",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "CP",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "D0",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "D1",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "D2",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "D3",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "CEP",
+      "direction": "input"
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "PE",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "CET",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "Q3",
+      "direction": "output"
+    },
+    {
+      "number": 12,
+      "name": "Q2",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "Q1",
+      "direction": "output"
+    },
+    {
+      "number": 14,
+      "name": "Q0",
+      "direction": "output"
+    },
+    {
+      "number": 15,
+      "name": "TC",
+      "direction": "output"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ]
+}

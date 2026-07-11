@@ -1,0 +1,118 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_alu_accumulator",
+  "title": "RV8GR ALU, accumulator, and Z flag",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/labs/lab07_alu.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/labs/lab08_accumulator.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/labs/lab09_z_flag.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/sim/soft_debug.py",
+      "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_cpu.v",
+      "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_opcode_sweep.v"
+    ]
+  },
+  "purpose": "Prove the RV8GR accumulator datapath: ADD/SUB/XOR/LI result selection, AC edge capture, AC store buffer, and Z flag update timing.",
+  "chips": [
+    {"ref": "U9", "part": "74HC574", "role": "Accumulator register"},
+    {"ref": "U10", "part": "74HC283", "role": "Low nibble adder"},
+    {"ref": "U11", "part": "74HC283", "role": "High nibble adder"},
+    {"ref": "U12", "part": "74HC86", "role": "Low nibble XOR/invert bank"},
+    {"ref": "U13", "part": "74HC86", "role": "High nibble XOR/invert bank"},
+    {"ref": "U14", "part": "74HC541", "role": "AC output buffer onto IBUS for store"},
+    {"ref": "U17", "part": "74HC157", "role": "Low nibble AC input mux"},
+    {"ref": "U18", "part": "74HC157", "role": "High nibble AC input mux"},
+    {"ref": "U19", "part": "74HC157", "role": "Low nibble XOR B-input mux"},
+    {"ref": "U20", "part": "74HC157", "role": "High nibble XOR B-input mux"},
+    {"ref": "U21", "part": "74HC74", "role": "Z flag flip-flop"},
+    {"ref": "U22", "part": "74HC688", "role": "AC equals zero comparator"},
+    {"ref": "U26", "part": "74HC00", "role": "Creates /AC_BUF=NAND(T2,STR)"},
+    {"ref": "U27", "part": "74HC00", "role": "ACC_CLK = T2 AND AC_WR gate"}
+  ],
+  "ports": [
+    {"name": "T2", "direction": "input"},
+    {"name": "ALU_SUB", "direction": "input"},
+    {"name": "XOR_MODE", "direction": "input"},
+    {"name": "MUX_SEL", "direction": "input"},
+    {"name": "AC_WR", "direction": "input"},
+    {"name": "STR", "direction": "input"},
+    {"name": "ACC_CLK", "direction": "internal"},
+    {"name": "IBUS0..IBUS7", "direction": "bidirectional"},
+    {"name": "AC0..AC7", "direction": "output"},
+    {"name": "XOR_B0..XOR_B7", "direction": "internal"},
+    {"name": "XOR_Y0..XOR_Y7", "direction": "internal"},
+    {"name": "SUM0..SUM7", "direction": "internal"},
+    {"name": "COUT", "direction": "internal"},
+    {"name": "/AC_BUF", "direction": "internal", "active_low": true},
+    {"name": "Z_flag", "direction": "output"}
+  ],
+  "wiring": [
+    {"net": "AC0..AC7", "connections": ["U9.19..12", "U10.5", "U10.3", "U10.14", "U10.12", "U11.5", "U11.3", "U11.14", "U11.12", "U19.3", "U19.6", "U19.10", "U19.13", "U20.3", "U20.6", "U20.10", "U20.13", "U14.2..9", "U22.2", "U22.4", "U22.6", "U22.8", "U22.11", "U22.13", "U22.15", "U22.17"]},
+    {"net": "IBUS0..IBUS7", "connections": ["U12.1", "U12.4", "U12.9", "U12.12", "U13.1", "U13.4", "U13.9", "U13.12", "U14.18..11"]},
+    {"net": "XOR_B0..XOR_B7", "connections": ["U19.4", "U19.7", "U19.9", "U19.12", "U20.4", "U20.7", "U20.9", "U20.12", "U12.2", "U12.5", "U12.10", "U12.13", "U13.2", "U13.5", "U13.10", "U13.13"]},
+    {"net": "XOR_Y0..XOR_Y7", "connections": ["U12.3", "U12.6", "U12.8", "U12.11", "U13.3", "U13.6", "U13.8", "U13.11", "U10.6", "U10.2", "U10.15", "U10.11", "U11.6", "U11.2", "U11.15", "U11.11", "U17.3", "U17.6", "U17.10", "U17.13", "U18.3", "U18.6", "U18.10", "U18.13"]},
+    {"net": "SUM0..SUM7", "connections": ["U10.4", "U10.1", "U10.13", "U10.10", "U11.4", "U11.1", "U11.13", "U11.10", "U17.2", "U17.5", "U17.11", "U17.14", "U18.2", "U18.5", "U18.11", "U18.14"]},
+    {"net": "CARRY_CHAIN", "connections": ["U10.9", "U11.7"]},
+    {"net": "AC_D0..AC_D7", "connections": ["U17.4", "U17.7", "U17.9", "U17.12", "U18.4", "U18.7", "U18.9", "U18.12", "U9.2..9"]},
+    {"net": "ACC_CLK", "connections": ["U27.11", "U9.11", "U21.3"]},
+    {"net": "T2", "connections": ["U26.9", "U27.12"]},
+    {"net": "AC_WR", "connections": ["U27.13"]},
+    {"net": "STR", "connections": ["U26.10"]},
+    {"net": "ALU_SUB", "connections": ["U10.7", "U19.2", "U19.5", "U19.11", "U19.14", "U20.2", "U20.5", "U20.11", "U20.14"]},
+    {"net": "XOR_MODE", "connections": ["U19.1", "U20.1"]},
+    {"net": "MUX_SEL", "connections": ["U17.1", "U18.1"]},
+    {"net": "/AC_BUF", "connections": ["U26.8", "U14.1", "U14.19"]},
+    {"net": "ZERO_COMPARE", "connections": ["U22.19", "U21.4"]},
+    {"net": "Z_flag", "connections": ["U21.5", "Z_flag"]},
+    {"net": "VCC", "connections": ["U9.20", "U10.16", "U11.16", "U12.14", "U13.14", "U14.20", "U17.16", "U18.16", "U19.16", "U20.16", "U21.1", "U21.10", "U21.13", "U21.14", "U22.20", "U26.14", "U27.14"]},
+    {"net": "GND", "connections": ["U9.1", "U9.10", "U10.8", "U11.8", "U12.7", "U13.7", "U14.10", "U17.8", "U17.15", "U18.8", "U18.15", "U19.8", "U19.15", "U20.8", "U20.15", "U21.2", "U21.7", "U21.11", "U21.12", "U22.1", "U22.3", "U22.5", "U22.7", "U22.9", "U22.10", "U22.12", "U22.14", "U22.16", "U22.18", "U26.7", "U27.7"]}
+  ],
+  "behavior": {
+    "xor_b": "XOR_MODE=0 selects {8{ALU_SUB}}. XOR_MODE=1 selects AC feedback.",
+    "xor_out": "XOR_Y = IBUS XOR XOR_B.",
+    "adder": "SUM = AC + XOR_Y + ALU_SUB. With XOR_MODE=0 this gives ADD or two's-complement SUB.",
+    "ac_mux": "MUX_SEL=0 selects SUM. MUX_SEL=1 selects XOR_Y.",
+    "li": "LI works with XOR_MODE=0, ALU_SUB=0, MUX_SEL=1, so AC receives IBUS.",
+    "accumulator": "U9 captures the selected result on ACC_CLK rising. ACC_CLK is valid only during T2 when AC_WR=1.",
+    "z_flag": "Z is cleared by the ACC_CLK edge and then U22./Y asynchronously presets it when the new AC equals zero. U22./Y is active LOW when AC equals zero.",
+    "ac_buffer": "U14 may drive AC onto IBUS only when /AC_BUF is LOW during store."
+  },
+  "timing": {
+    "clocking": "mixed_combinational_and_edge_triggered",
+    "trigger_edges": [
+      "U9 captures on ACC_CLK rising edge",
+      "U21 updates Z on the same ACC_CLK edge plus U22 async preset when AC=0"
+    ],
+    "propagation_checks": [
+      "xor_b_to_ac_d_model_path: 74HC157 + 74HC86 + two 74HC283 stages + 74HC157 = 121 ns model delay",
+      "ac_to_z_settle_model_path: 74HC574 + 74HC688 + 74HC74 = 70 ns model delay",
+      "ac_store_buffer_to_ibus: 74HC541 = 12 ns model delay"
+    ],
+    "virtual_test_helpers": [
+      "ClockProfileMonitor",
+      "AccumulatorPhaseProbe",
+      "IbusContentionMonitor"
+    ],
+    "unsafe_states": [
+      "AC captures outside T2 AC_WR",
+      "AC feedback treated as a combinational loop instead of registered feedback",
+      "U14 drives IBUS outside store",
+      "Z sampled before the comparator/preset path settles"
+    ]
+  },
+  "verification": {
+    "tests": ["tests/alu_accumulator.json"],
+    "guarantees": [
+      "ADD, SUB, XOR, and LI datapath equations match RV8GR RTL and opcode sweep",
+      "AC captures only when T2 and AC_WR create ACC_CLK",
+      "No-edge and non-AC_WR cases hold AC",
+      "Z flag follows the captured AC value",
+      "U14 store buffer drives IBUS only when enabled",
+      "Clock profiles cover manual push, random 100 pushes, 50 kHz, 1 MHz, 2 MHz, and 5 MHz functional simulation"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

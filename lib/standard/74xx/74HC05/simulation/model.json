@@ -1,0 +1,24 @@
+{
+  "schema": "db.component.simulation",
+  "version": 1,
+  "part": "74HC05",
+  "python": {
+    "factory": "create",
+    "class": "HC05",
+    "file": "lib/standard/74xx/74HC05/simulation/model.py",
+    "implements": [
+      "propagation_delay"
+    ]
+  },
+  "verilog": {
+    "module": "ttl_74hc05",
+    "file": "lib/standard/74xx/74HC05/simulation/model.v",
+    "implements": [
+      "propagation_delay"
+    ]
+  },
+  "netlist_generation": {
+    "source": "lib/standard/74xx/74HC05/simulation/netlist.json",
+    "status": "modeled"
+  }
+}

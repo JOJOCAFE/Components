@@ -1,0 +1,30 @@
+{
+  "schema": "db.component.simulation",
+  "version": 1,
+  "part": "74HC574",
+  "python": {
+    "factory": "create",
+    "class": "HC574",
+    "file": "lib/standard/74xx/74HC574/simulation/model.py",
+    "implements": [
+      "rising_edge_latch",
+      "output_enable",
+      "tristate",
+      "propagation_delay"
+    ]
+  },
+  "verilog": {
+    "module": "ttl_74hc574",
+    "file": "lib/standard/74xx/74HC574/simulation/model.v",
+    "implements": [
+      "rising_edge_latch",
+      "output_enable",
+      "tristate",
+      "propagation_delay"
+    ]
+  },
+  "netlist_generation": {
+    "source": "lib/standard/74xx/74HC574/simulation/netlist.json",
+    "status": "tested"
+  }
+}

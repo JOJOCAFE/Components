@@ -12,7 +12,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "Docs" / "PYTHON_BEHAVIOR_CROSSCHECK_REPORT.md"
+REPORT = ROOT / "docs" / "PYTHON_BEHAVIOR_CROSSCHECK_REPORT.md"
 sys.path.insert(0, str(ROOT / "python"))
 
 from chiplib.core import Z  # noqa: E402
@@ -281,9 +281,9 @@ def main() -> int:
     problems: list[str] = []
     warnings: list[str] = []
 
-    for definition in sorted((ROOT / "DB").glob("*/**/definition/definition.json")):
-        group = definition.relative_to(ROOT / "DB").parts[0]
-        if group not in {"74xx", "Memory", "Support"}:
+    for definition in sorted((ROOT / "lib" / "standard").glob("*/**/definition/definition.json")):
+        group = definition.relative_to(ROOT / "lib" / "standard").parts[0]
+        if group not in {"74xx", "memory", "support"}:
             continue
         data = json.loads(definition.read_text(encoding="utf-8"))
         part = str(data.get("part") or definition.parents[1].name)

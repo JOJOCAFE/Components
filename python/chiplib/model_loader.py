@@ -12,10 +12,11 @@ from typing import Any, Callable
 
 from .core import Chip
 from .db import db_root
+from .loader import ImageFormat, ImageLoadError, load_memory
 
 
 ModelFactory = Callable[[str], Chip]
-ACTIVE_MODEL_GROUPS = ("74xx", "Memory", "Support")
+ACTIVE_MODEL_GROUPS = ("74xx", "memory", "support")
 
 
 class ModelLoadError(RuntimeError):
@@ -86,6 +87,27 @@ def create_live_db_chip(
         )
     chip.model_provenance = dict(getattr(factory, "model_provenance"))
     return chip
+
+
+def load_live_chip_memory(
+    chip: Chip,
+    image: str | Path,
+    *,
+    offset: int = 0,
+    fmt: ImageFormat = "auto",
+    clear: int | None = None,
+) -> int:
+    """Load a public memory image without reaching into private model state."""
+
+    data = getattr(chip, "data", None)
+    if not isinstance(data, bytearray):
+        raise ModelLoadError(
+            f"live DB model {chip.part!r} does not expose a public mutable data bytearray"
+        )
+    try:
+        return load_memory(chip, image, offset=offset, fmt=fmt, clear=clear)
+    except (ImageLoadError, OSError, TypeError, ValueError) as exc:
+        raise ModelLoadError(f"cannot load memory image into {chip.name} ({chip.part}): {exc}") from exc
 
 
 def clear_model_cache() -> None:

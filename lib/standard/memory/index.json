@@ -1,0 +1,8 @@
+{
+  "schema": "db.group",
+  "version": 1,
+  "id": "memory",
+  "title": "Memory ICs",
+  "migration_status": "layered_packages_active",
+  "manifest_note": "Memory IC packages live in lib/standard/memory/<part>/definition/definition.json."
+}

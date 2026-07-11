@@ -1,0 +1,788 @@
+{
+  "datasheet": {
+    "part": "CY7C199",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Infineon/Cypress CY7C199 datasheet",
+        "package_evidence": "28-pin DIP-compatible 32K x 8 SRAM pinout.",
+        "url": "https://www.infineon.com/dgdl/Infineon-CY7C199_32K_x_8_Static_RAM-DataSheet-v07_00-EN.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
+  },
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Infineon/Cypress CY7C199 datasheet",
+        "package_evidence": "28-pin DIP-compatible 32K x 8 SRAM pinout.",
+        "url": "https://www.infineon.com/dgdl/Infineon-CY7C199_32K_x_8_Static_RAM-DataSheet-v07_00-EN.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "CY7C199",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      }
+    },
+    "pins": {
+      "part": "CY7C199",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "A14",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "A12",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "A7",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "A6",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "A5",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "A4",
+          "number": 6
+        },
+        {
+          "direction": "input",
+          "name": "A3",
+          "number": 7
+        },
+        {
+          "direction": "input",
+          "name": "A2",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "A1",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "A0",
+          "number": 10
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O0",
+          "number": 11
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O1",
+          "number": 12
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O2",
+          "number": 13
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 14,
+          "rail": "GND"
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O3",
+          "number": 15
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O4",
+          "number": 16
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O5",
+          "number": 17
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O6",
+          "number": 18
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O7",
+          "number": 19
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/CE",
+          "number": 20
+        },
+        {
+          "direction": "input",
+          "name": "A10",
+          "number": 21
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/OE",
+          "number": 22
+        },
+        {
+          "direction": "input",
+          "name": "A11",
+          "number": 23
+        },
+        {
+          "direction": "input",
+          "name": "A9",
+          "number": 24
+        },
+        {
+          "direction": "input",
+          "name": "A8",
+          "number": 25
+        },
+        {
+          "direction": "input",
+          "name": "A13",
+          "number": 26
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/WE",
+          "number": 27
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 28,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "CY7C199",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 14,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 28,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "Cypress CY7C199 switching characteristics, -20/-25/-35/-45 speed grades.",
+        "datasheet_address_access_max_ns": {
+          "speed_20": 20,
+          "speed_25": 25,
+          "speed_35": 35,
+          "speed_45": 45
+        },
+        "datasheet_data_setup_min_ns": {
+          "speed_20": 10,
+          "speed_25": 10,
+          "speed_35": 15,
+          "speed_45": 15
+        },
+        "datasheet_high_z_max_ns": {
+          "speed_20": 9,
+          "speed_25": 11,
+          "speed_35": 15,
+          "speed_45": 15
+        },
+        "datasheet_hold_min_ns": {
+          "address_hold": 0,
+          "data_hold": 0
+        },
+        "datasheet_oe_access_max_ns": {
+          "speed_20": 9,
+          "speed_25": 10,
+          "speed_35": 16,
+          "speed_45": 16
+        },
+        "datasheet_read_cycle_ns": {
+          "speed_20": 20,
+          "speed_25": 25,
+          "speed_35": 35,
+          "speed_45": 45
+        },
+        "datasheet_write_cycle_ns": {
+          "speed_20": 20,
+          "speed_25": 25,
+          "speed_35": 35,
+          "speed_45": 45
+        },
+        "datasheet_write_pulse_min_ns": {
+          "speed_20": 15,
+          "speed_25": 18,
+          "speed_35": 22,
+          "speed_45": 22
+        },
+        "model_delay_ns": 70,
+        "source_check": "datasheet timing values extracted from local source PDF text; see docs/TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "label": "Infineon/Cypress CY7C199 datasheet",
+        "package_evidence": "28-pin DIP-compatible 32K x 8 SRAM pinout.",
+        "url": "https://www.infineon.com/dgdl/Infineon-CY7C199_32K_x_8_Static_RAM-DataSheet-v07_00-EN.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "CY7C199",
+      "schema": "db.component.timing",
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "parameters": {
+          "tPLH": {
+            "status": "exact",
+            "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
+            "values_ns": {
+              "address_to_data_valid_ns": 70,
+              "ce_or_oe_to_high_z_ns": 70,
+              "ce_to_data_valid_ns": 70,
+              "oe_to_data_valid_ns": 70
+            },
+            "note": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+            "mapping_basis": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+            "source": "Cypress CY7C199 switching characteristics"
+          },
+          "tPHL": {
+            "status": "exact",
+            "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
+            "values_ns": {
+              "address_to_data_valid_ns": 70,
+              "ce_or_oe_to_high_z_ns": 70,
+              "ce_to_data_valid_ns": 70,
+              "oe_to_data_valid_ns": 70
+            },
+            "note": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+            "mapping_basis": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+            "source": "Cypress CY7C199 switching characteristics"
+          },
+          "tPZH": {
+            "status": "exact",
+            "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
+            "values_ns": {
+              "ce_to_data_valid_ns": 70,
+              "oe_to_data_valid_ns": 70
+            },
+            "note": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+            "mapping_basis": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+            "source": "Cypress CY7C199 switching characteristics"
+          },
+          "tPZL": {
+            "status": "exact",
+            "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
+            "values_ns": {
+              "ce_to_data_valid_ns": 70,
+              "oe_to_data_valid_ns": 70
+            },
+            "note": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+            "mapping_basis": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+            "source": "Cypress CY7C199 switching characteristics"
+          },
+          "tPHZ": {
+            "status": "exact",
+            "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
+            "values_ns": {
+              "max": 70
+            },
+            "note": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+            "mapping_basis": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+            "source": "Cypress CY7C199 switching characteristics"
+          },
+          "tPLZ": {
+            "status": "exact",
+            "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
+            "values_ns": {
+              "max": 70
+            },
+            "note": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+            "mapping_basis": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+            "source": "Cypress CY7C199 switching characteristics"
+          },
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "CY7C199 is asynchronous memory and has no clocked Q output."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "CY7C199 is asynchronous memory and has no clocked Q output."
+          },
+          "setup": {
+            "status": "exact",
+            "source_field": "timing.write.data_setup_min_ns",
+            "values_ns": {
+              "data_setup_min": 70
+            }
+          },
+          "hold": {
+            "status": "exact",
+            "source_field": "timing.write.address_hold_min_ns",
+            "values_ns": {
+              "address_hold_min": 0
+            }
+          },
+          "minimum_pulse_width": {
+            "status": "exact",
+            "source_field": "timing.write.pulse_min_ns",
+            "values_ns": {
+              "write_pulse_min": 70
+            }
+          }
+        },
+        "conditions": {
+          "load_pf": 50,
+          "ta_c": 25
+        }
+      }
+    }
+  },
+  "generation": {
+    "python": {
+      "class": "CY7C199",
+      "factory": "create",
+      "file": "lib/standard/memory/CY7C199/simulation/model.py",
+      "part": "CY7C199"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "lib/standard/memory/CY7C199/simulation/model.v",
+      "module": "mem_cy7c199",
+      "netlist": "lib/standard/memory/CY7C199/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "description": "32K x 8 static RAM wrapper",
+    "type": "32k_x_8_static_ram_wrapper"
+  },
+  "metadata": {
+    "family": "Memory",
+    "group": "memory",
+    "role": "memory",
+    "title": "32K x 8 static RAM wrapper"
+  },
+  "package": {
+    "default": "DIP",
+    "kind": "DIP",
+    "pins": 28
+  },
+  "part": "CY7C199",
+  "pins": [
+    {
+      "direction": "input",
+      "name": "A14",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "A12",
+      "number": 2
+    },
+    {
+      "direction": "input",
+      "name": "A7",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "A6",
+      "number": 4
+    },
+    {
+      "direction": "input",
+      "name": "A5",
+      "number": 5
+    },
+    {
+      "direction": "input",
+      "name": "A4",
+      "number": 6
+    },
+    {
+      "direction": "input",
+      "name": "A3",
+      "number": 7
+    },
+    {
+      "direction": "input",
+      "name": "A2",
+      "number": 8
+    },
+    {
+      "direction": "input",
+      "name": "A1",
+      "number": 9
+    },
+    {
+      "direction": "input",
+      "name": "A0",
+      "number": 10
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O0",
+      "number": 11
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O1",
+      "number": 12
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O2",
+      "number": 13
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 14,
+      "rail": "GND"
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O3",
+      "number": 15
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O4",
+      "number": 16
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O5",
+      "number": 17
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O6",
+      "number": 18
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O7",
+      "number": 19
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/CE",
+      "number": 20
+    },
+    {
+      "direction": "input",
+      "name": "A10",
+      "number": 21
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/OE",
+      "number": 22
+    },
+    {
+      "direction": "input",
+      "name": "A11",
+      "number": 23
+    },
+    {
+      "direction": "input",
+      "name": "A9",
+      "number": 24
+    },
+    {
+      "direction": "input",
+      "name": "A8",
+      "number": 25
+    },
+    {
+      "direction": "input",
+      "name": "A13",
+      "number": 26
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/WE",
+      "number": 27
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 28,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "Cypress CY7C199 switching characteristics, -20/-25/-35/-45 speed grades.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_address_access_max_ns": {
+          "speed_20": 20,
+          "speed_25": 25,
+          "speed_35": 35,
+          "speed_45": 45
+        },
+        "datasheet_data_setup_min_ns": {
+          "speed_20": 10,
+          "speed_25": 10,
+          "speed_35": 15,
+          "speed_45": 15
+        },
+        "datasheet_high_z_max_ns": {
+          "speed_20": 9,
+          "speed_25": 11,
+          "speed_35": 15,
+          "speed_45": 15
+        },
+        "datasheet_hold_min_ns": {
+          "address_hold": 0,
+          "data_hold": 0
+        },
+        "datasheet_oe_access_max_ns": {
+          "speed_20": 9,
+          "speed_25": 10,
+          "speed_35": 16,
+          "speed_45": 16
+        },
+        "datasheet_read_cycle_ns": {
+          "speed_20": 20,
+          "speed_25": 25,
+          "speed_35": 35,
+          "speed_45": 45
+        },
+        "datasheet_write_cycle_ns": {
+          "speed_20": 20,
+          "speed_25": 25,
+          "speed_35": 35,
+          "speed_45": 45
+        },
+        "datasheet_write_pulse_min_ns": {
+          "speed_20": 15,
+          "speed_25": 18,
+          "speed_35": 22,
+          "speed_45": 22
+        }
+      }
+    },
+    "paths": {
+      "address_to_data_valid_ns": 70,
+      "ce_or_oe_to_high_z_ns": 70,
+      "ce_to_data_valid_ns": 70,
+      "oe_to_data_valid_ns": 70
+    },
+    "variant": "CY7C199-model-70ns",
+    "write": {
+      "address_hold_min_ns": 0,
+      "data_setup_min_ns": 70,
+      "pulse_min_ns": 70
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "parameters": {
+        "tPLH": {
+          "status": "exact",
+          "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
+          "values_ns": {
+            "address_to_data_valid_ns": 70,
+            "ce_or_oe_to_high_z_ns": 70,
+            "ce_to_data_valid_ns": 70,
+            "oe_to_data_valid_ns": 70
+          },
+          "note": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+          "mapping_basis": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+          "source": "Cypress CY7C199 switching characteristics"
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
+          "values_ns": {
+            "address_to_data_valid_ns": 70,
+            "ce_or_oe_to_high_z_ns": 70,
+            "ce_to_data_valid_ns": 70,
+            "oe_to_data_valid_ns": 70
+          },
+          "note": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+          "mapping_basis": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+          "source": "Cypress CY7C199 switching characteristics"
+        },
+        "tPZH": {
+          "status": "exact",
+          "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
+          "values_ns": {
+            "ce_to_data_valid_ns": 70,
+            "oe_to_data_valid_ns": 70
+          },
+          "note": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+          "mapping_basis": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+          "source": "Cypress CY7C199 switching characteristics"
+        },
+        "tPZL": {
+          "status": "exact",
+          "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
+          "values_ns": {
+            "ce_to_data_valid_ns": 70,
+            "oe_to_data_valid_ns": 70
+          },
+          "note": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+          "mapping_basis": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+          "source": "Cypress CY7C199 switching characteristics"
+        },
+        "tPHZ": {
+          "status": "exact",
+          "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
+          "values_ns": {
+            "max": 70
+          },
+          "note": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+          "mapping_basis": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+          "source": "Cypress CY7C199 switching characteristics"
+        },
+        "tPLZ": {
+          "status": "exact",
+          "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
+          "values_ns": {
+            "max": 70
+          },
+          "note": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+          "mapping_basis": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+          "source": "Cypress CY7C199 switching characteristics"
+        },
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "CY7C199 is asynchronous memory and has no clocked Q output."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "CY7C199 is asynchronous memory and has no clocked Q output."
+        },
+        "setup": {
+          "status": "exact",
+          "source_field": "timing.write.data_setup_min_ns",
+          "values_ns": {
+            "data_setup_min": 70
+          }
+        },
+        "hold": {
+          "status": "exact",
+          "source_field": "timing.write.address_hold_min_ns",
+          "values_ns": {
+            "address_hold_min": 0
+          }
+        },
+        "minimum_pulse_width": {
+          "status": "exact",
+          "source_field": "timing.write.pulse_min_ns",
+          "values_ns": {
+            "write_pulse_min": 70
+          }
+        }
+      },
+      "conditions": {
+        "load_pf": 50,
+        "ta_c": 25
+      }
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function",
+      "disabled_or_high_z"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation",
+      "tri_state",
+      "bus_fight"
+    ]
+  },
+  "version": 1,
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "Cypress",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
+  }
+}

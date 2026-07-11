@@ -70,6 +70,21 @@ class BoundTimingEvent:
         }
 
 
+@dataclass(frozen=True)
+class CompiledTimingPath:
+    """Executable lib/standard/package binding used by every timed package operation."""
+
+    name: str
+    chip_ref: str
+    part: str
+    clock_pin: str
+    clock_net: str
+    constrained_nets: tuple[str, ...]
+    output_ports: tuple[str, ...]
+    trigger_edge: str
+    deadband_ps: int
+
+
 class CircuitTimingBinding:
     """Apply DB timing to transitions produced by one loadable package."""
 
@@ -78,18 +93,51 @@ class CircuitTimingBinding:
         self.timed = timed or TimedRunner()
         self._chips = {chip.ref: chip for chip in runner.package.chips}
         self._profiles: dict[str, TimingProfile] = {}
+        self._compiled: dict[str, CompiledTimingPath] = {}
 
     @classmethod
     def load(cls, path: str | Path) -> "CircuitTimingBinding":
         return cls(CircuitRunner.load(path))
 
-    def pulse_clock(self, input_port: str = "CLK") -> tuple[BoundTimingEvent, ...]:
-        """Execute a real functional clock edge and schedule changed outputs."""
+    def pulse_clock(
+        self, input_port: str = "CLK", *, setup_ps: int | None = None,
+        high_ps: int | None = None, constrained_change_ps: int | None = None,
+    ) -> tuple[BoundTimingEvent, ...]:
+        """Execute a package clock pulse with automatic DB constraint checks."""
 
         path = self._require_path(input_port)
+        compiled = self._compile_path(input_port, path)
+        profile = self._profile(compiled.part)
+        setup = profile.select_constraint(ConstraintKind.SETUP)
+        pulse = profile.select_constraint(ConstraintKind.MINIMUM_PULSE_WIDTH)
+        setup_wait = setup.delay_ps or 0 if setup_ps is None else setup_ps
+        pulse_wait = pulse.delay_ps or 0 if high_ps is None else high_ps
+        if setup_wait < 0 or pulse_wait < 0:
+            raise ValueError("timing intervals must be non-negative")
+        self.timed.run_until(self.timed.time_ps + setup_wait)
+        self.timed.check_clock_transition(compiled.clock_net, 0, 1, profile)
+        self.timed.check_active_edge(
+            compiled.clock_net, compiled.constrained_nets, profile
+        )
+        constrained_before = {
+            net: self.runner.board.net(net).value for net in compiled.constrained_nets
+        }
         before = self.runner.read()
         after = self.runner.pulse_clock(input_port)
-        return self._schedule_changes(input_port, before, after, path, clock_to_q=True)
+        events = self._schedule_changes(input_port, before, after, path, clock_to_q=True)
+        earliest_output_ps = min(event.selection.delay_ps or 0 for event in events)
+        constrained_delay = (
+            earliest_output_ps if constrained_change_ps is None else constrained_change_ps
+        )
+        if constrained_delay < 0:
+            raise ValueError("constrained_change_ps must be non-negative")
+        for net, old in constrained_before.items():
+            new = self.runner.board.net(net).value
+            if new != old:
+                self.timed.drive(net, new, time_ps=self.timed.time_ps + constrained_delay)
+        self.timed.run_until(self.timed.time_ps + pulse_wait)
+        self.timed.check_clock_transition(compiled.clock_net, 1, 0, profile)
+        return events
 
     def set_input(self, input_port: str, value: Any) -> tuple[BoundTimingEvent, ...]:
         """Execute a functional input change when the package declares its path."""
@@ -99,6 +147,10 @@ class CircuitTimingBinding:
         self.runner.set_input(input_port, value)
         after = self.runner.read()
         return self._schedule_changes(input_port, before, after, path, clock_to_q=False)
+
+    def compiled_path(self, input_port: str = "CLK") -> CompiledTimingPath:
+        path = self._require_path(input_port)
+        return self._compile_path(input_port, path)
 
     def constraint_provenance(
         self, input_port: str = "CLK"
@@ -160,6 +212,10 @@ class CircuitTimingBinding:
                 path=str(path.get("name", "")),
                 clock_to_q=clock_to_q,
             )
+            self.timed.observe_driver_transition(
+                signal, before[output.name], after[output.name],
+                required_deadband_ps=self._deadband_ps(path),
+            )
             live_chip = self.runner.board.chips[ref]
             events.append(BoundTimingEvent(
                 self.runner.package.id,
@@ -180,6 +236,80 @@ class CircuitTimingBinding:
                 "functional execution produced no changed package output",
             )
         return tuple(events)
+
+    def _compile_path(
+        self, input_port: str, path: Mapping[str, Any]
+    ) -> CompiledTimingPath:
+        name = str(path.get("name", ""))
+        if name in self._compiled:
+            return self._compiled[name]
+        origin = str(path.get("from", ""))
+        match = re.fullmatch(r"([A-Za-z][A-Za-z0-9_]*)\.([^./]+)", origin)
+        if match is None or match.group(1) not in self._chips:
+            self._blocked("invalid_timing_origin", f"timing.paths.{name}.from", origin)
+        ref, pin_name = match.groups()
+        chip = self.runner.board.chips[ref]
+        try:
+            pin = chip.pin(pin_name)
+        except KeyError:
+            self._blocked(
+                "unknown_timing_pin", f"timing.paths.{name}.from",
+                f"{ref} has no DB pin named {pin_name!r}",
+            )
+        if pin.direction != "in" or pin.net is None:
+            self._blocked(
+                "timing_origin_not_clock_input", f"timing.paths.{name}.from",
+                "timing origin must resolve to a connected DB input pin",
+            )
+        if self._endpoint_name(origin) != input_port:
+            self._blocked(
+                "timing_input_mismatch", f"timing.paths.{name}.from",
+                f"path origin {origin!r} does not bind package input {input_port!r}",
+            )
+        part = self._path_part(path)
+        if self._chips[ref].part != part:
+            self._blocked(
+                "timing_path_part_mismatch", f"timing.paths.{name}.source_part",
+                f"path declares {part!r}, but {ref} is {self._chips[ref].part!r}",
+            )
+        constrained = tuple(sorted({
+            candidate.net.name for candidate in chip.pins.values()
+            if candidate.direction == "in" and candidate.net is not None
+            and candidate.number != pin.number and self._is_constrained_pin(candidate.name)
+        }))
+        outputs = tuple(sorted(
+            port.name for port in self.runner.package.ports
+            if port.direction == "output" and self._output_ref(port.name, port.source) == ref
+        ))
+        if not outputs:
+            self._blocked(
+                "timing_path_has_no_output", f"timing.paths.{name}.to",
+                "path source chip drives no observable package output",
+            )
+        compiled = CompiledTimingPath(
+            name, ref, part, pin.name, pin.net.name, constrained, outputs,
+            str(self.runner.package.raw.get("timing", {}).get("trigger_edge", "rising")),
+            self._deadband_ps(path),
+        )
+        self._compiled[name] = compiled
+        for net in constrained:
+            self.timed.signals.setdefault(net, self.runner.board.net(net).value)
+            self.timed.last_change_ps.setdefault(net, self.timed.time_ps)
+        self.timed.signals.setdefault(pin.net.name, self.runner.board.net(pin.net.name).value)
+        return compiled
+
+    @staticmethod
+    def _is_constrained_pin(name: str) -> bool:
+        normalized = name.upper().replace("_N", "").lstrip("/")
+        asynchronous = {"CLR", "CLEAR", "PRE", "PRESET", "RESET", "RST"}
+        return normalized not in asynchronous
+
+    @staticmethod
+    def _deadband_ps(path: Mapping[str, Any]) -> int:
+        value = path.get("deadband_ps", 0)
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            raise ValueError("package timing deadband_ps must be a non-negative integer")
+        return value
 
     def _require_path(self, input_port: str) -> Mapping[str, Any]:
         timing = self.runner.package.raw.get("timing", {})

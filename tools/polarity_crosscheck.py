@@ -11,7 +11,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "Docs" / "POLARITY_CROSSCHECK_REPORT.md"
+REPORT = ROOT / "docs" / "POLARITY_CROSSCHECK_REPORT.md"
 sys.path.insert(0, str(ROOT / "python"))
 
 
@@ -42,9 +42,9 @@ def main() -> int:
     rows: list[dict[str, Any]] = []
     problems: list[str] = []
 
-    for definition in sorted((ROOT / "DB").glob("*/**/definition/definition.json")):
-        group = definition.relative_to(ROOT / "DB").parts[0]
-        if group not in {"74xx", "Memory"}:
+    for definition in sorted((ROOT / "lib" / "standard").glob("*/**/definition/definition.json")):
+        group = definition.relative_to(ROOT / "lib" / "standard").parts[0]
+        if group not in {"74xx", "memory"}:
             continue
         data = json.loads(definition.read_text(encoding="utf-8"))
         part = str(data.get("part") or definition.parents[1].name)

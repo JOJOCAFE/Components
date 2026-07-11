@@ -1,0 +1,702 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
+      ],
+      "overview": "74HC10 is a 14-pin DIP part for nand gate.",
+      "part": "74HC10",
+      "pin_count": 14,
+      "pin_summary": {
+        "input": {
+          "count": 9,
+          "names": [
+            "1A",
+            "1B",
+            "2A",
+            "2B",
+            "2C",
+            "3A",
+            "3B",
+            "3C",
+            "1C"
+          ],
+          "note": "Input pins: 1A, 1B, 2A, 2B, 2C, 3A, and 3 more."
+        },
+        "output": {
+          "count": 3,
+          "names": [
+            "2Y",
+            "3Y",
+            "1Y"
+          ],
+          "note": "Output pins: 2Y, 3Y, 1Y."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "Triple 3-input NAND gate.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
+      "title": "Triple 3-input NAND gate",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "1A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1A - input",
+          "pin": "1A"
+        },
+        {
+          "explanation": "1B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1B - input",
+          "pin": "1B"
+        },
+        {
+          "explanation": "2A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2A - input",
+          "pin": "2A"
+        },
+        {
+          "explanation": "2B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2B - input",
+          "pin": "2B"
+        },
+        {
+          "explanation": "2C controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2C - input",
+          "pin": "2C"
+        },
+        {
+          "explanation": "3A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3A - input",
+          "pin": "3A"
+        },
+        {
+          "explanation": "3B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3B - input",
+          "pin": "3B"
+        },
+        {
+          "explanation": "3C controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3C - input",
+          "pin": "3C"
+        },
+        {
+          "explanation": "1C controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1C - input",
+          "pin": "1C"
+        }
+      ],
+      "controls": [
+        "1A",
+        "1B",
+        "2A",
+        "2B",
+        "2C",
+        "3A",
+        "3B",
+        "3C",
+        "1C"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC10",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y",
+          "name": "2Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "3Y",
+          "name": "3Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y",
+          "name": "1Y"
+        }
+      ],
+      "probes": [
+        "2Y",
+        "3Y",
+        "1Y"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change 1A?",
+        "Which truth-table row matches the value on 2Y?"
+      ],
+      "title": "Try 74HC10 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "Triple 3-input NAND gate",
+        "type": "triple_3_input_nand_gate"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 14
+      },
+      "part": "74HC10",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "1A",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1B",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "2A",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "2B",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "2C",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "2Y",
+          "number": 6
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "3Y",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "3A",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "3B",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "3C",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "1Y",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "1C",
+          "number": 13
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 7
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 14
+        }
+      ],
+      "role": "nand_gate",
+      "timing": {
+        "datasheet": {
+          "load_pf": 50,
+          "max_ns_25c": 19,
+          "max_ns_minus40_to_85c": 24,
+          "path": "A_B_or_C_to_Y",
+          "source": "TI SN74HC10 datasheet, switching characteristics over recommended operating free-air temperature range, CL = 50 pF",
+          "typical_ns": 10,
+          "vcc_v": 4.5
+        },
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "TI SN74HC10 datasheet, switching characteristics over recommended operating free-air temperature range, CL = 50 pF",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC10 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC10 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC10 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC10 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC10 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "TI SN74HC10 switching characteristics note says tPLH and tPHL are the same as tpd. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged.",
+              "source_field": "timing.datasheet",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 19,
+                "max_minus40_to_85c": 24,
+                "typ": 10
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC10 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "TI SN74HC10 switching characteristics note says tPLH and tPHL are the same as tpd. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged.",
+              "source_field": "timing.datasheet",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 19,
+                "max_minus40_to_85c": 24,
+                "typ": 10
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC10 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC10 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC10 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
+      },
+      "title": "Triple 3-input NAND gate"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "1A",
+        "10": "3B",
+        "11": "3C",
+        "13": "1C",
+        "14": "VCC",
+        "2": "1B",
+        "3": "2A",
+        "4": "2B",
+        "5": "2C",
+        "7": "GND",
+        "9": "3A"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC10",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC10",
+      "copy_with_chip": [
+        "lib/standard/74xx/74HC10/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC10/simulation/model.py",
+      "part": "74HC10",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "1A",
+        "10": "3B",
+        "11": "3C",
+        "13": "1C",
+        "14": "VCC",
+        "2": "1B",
+        "3": "2A",
+        "4": "2B",
+        "5": "2C",
+        "7": "GND",
+        "9": "3A"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC10",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC10",
+      "required_vectors": [
+        "nand3_000",
+        "nand3_011",
+        "nand3_101",
+        "nand3_110",
+        "nand3_111"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC10",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "datasheet_a_b_or_c_to_y_4v5",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "datasheet_tpd_a_b_or_c_to_y_4v5",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC10",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "nand3_000",
+            "nand3_011",
+            "nand3_101",
+            "nand3_110",
+            "nand3_111"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc10",
+      "compile": {
+        "sources": [
+          "lib/standard/74xx/74HC10/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc10"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc10",
+      "part": "74HC10",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC10",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "datasheet_a_b_or_c_to_y_4v5",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "datasheet_tpd_a_b_or_c_to_y_4v5",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC10",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "nand3_000",
+            "nand3_011",
+            "nand3_101",
+            "nand3_110",
+            "nand3_111"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          6,
+          8,
+          12
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "A_2D",
+            "pins": [
+              1,
+              2,
+              13,
+              3,
+              4,
+              5,
+              9,
+              10,
+              11
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y",
+            "pins": [
+              12,
+              6,
+              8
+            ]
+          }
+        ]
+      },
+      "file": "lib/standard/74xx/74HC10/simulation/model.v",
+      "module": "ttl_74hc10",
+      "netlist": "lib/standard/74xx/74HC10/simulation/netlist.json",
+      "part": "74HC10"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC10",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "lib/standard/74xx/74HC10/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "lib/standard/74xx/74HC10/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "lib/standard/74xx/74HC10/simulation/netlist.json"
+    }
+  ],
+  "source": "lib/standard/74xx/74HC10/definition/definition.json",
+  "version": 1
+}

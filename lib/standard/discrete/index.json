@@ -1,0 +1,9 @@
+{
+  "schema": "db.group",
+  "version": 1,
+  "id": "discrete",
+  "title": "Discrete semiconductor components",
+  "migration_status": "definition_packages_active",
+  "manifest_note": "Discrete component definitions live in lib/standard/discrete/<part>/definition/definition.json.",
+  "components": ["NPN", "PNP", "BC549", "BC559"]
+}

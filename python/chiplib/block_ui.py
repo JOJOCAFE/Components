@@ -251,7 +251,7 @@ def _editor_config(data: JsonMap) -> JsonMap:
                 {"name": "db --catalog", "purpose": "frontend component metadata"},
                 {"name": "db PART --detail", "purpose": "one component's pins, status, and UI hints"},
             ],
-            "default_groups": ["74xx", "Memory", "Virtual", "Passive", "Discrete"],
+            "default_groups": ["74xx", "memory", "virtual", "passive", "discrete"],
             "missing_data_policy": "show_status_warning",
         },
         "actions": [

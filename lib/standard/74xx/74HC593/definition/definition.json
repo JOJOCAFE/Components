@@ -1,0 +1,727 @@
+{
+  "datasheet": {
+    "part": "74HC593",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "STMicroelectronics M54HC593/M74HC593",
+        "package_evidence": "B1R plastic package, 20-pin DIP",
+        "url": "`Components/source/M54HC593.PDF`",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
+  },
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "STMicroelectronics M54HC593/M74HC593",
+        "package_evidence": "B1R plastic package, 20-pin DIP",
+        "url": "`Components/source/M54HC593.PDF`",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC593",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      }
+    },
+    "pins": {
+      "part": "74HC593",
+      "pins": [
+        {
+          "direction": "output",
+          "name": "A/QA",
+          "number": 1
+        },
+        {
+          "direction": "output",
+          "name": "B/QB",
+          "number": 2
+        },
+        {
+          "direction": "output",
+          "name": "C/QC",
+          "number": 3
+        },
+        {
+          "direction": "output",
+          "name": "D/QD",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "E/QE",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "F/QF",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "G/QG",
+          "number": 7
+        },
+        {
+          "direction": "output",
+          "name": "H/QH",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "CLOAD",
+          "number": 9
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "RCO",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "CCLR",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "CCK",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "CCKEN",
+          "number": 14
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/CCKEN",
+          "number": 15
+        },
+        {
+          "direction": "input",
+          "name": "RCK",
+          "number": 16
+        },
+        {
+          "direction": "input",
+          "name": "RCKEN",
+          "number": 17
+        },
+        {
+          "direction": "input",
+          "name": "G",
+          "number": 18
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/G",
+          "number": 19
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC593",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "ST M54HC593 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_max_ns_25c": {
+          "propagation_path_a": 42,
+          "propagation_path_b": 44,
+          "q_transition": 12,
+          "rco_transition": 15
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "propagation_path_a": 53,
+          "propagation_path_b": 55,
+          "q_transition": 15,
+          "rco_transition": 19
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "propagation_path_a": 63,
+          "propagation_path_b": 66,
+          "q_transition": 18,
+          "rco_transition": 22
+        },
+        "datasheet_typical_ns": {
+          "propagation_path_a": 27,
+          "propagation_path_b": 28,
+          "q_transition": 7,
+          "rco_transition": 8
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local source PDF text; see docs/TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "label": "STMicroelectronics M54HC593/M74HC593",
+        "package_evidence": "B1R plastic package, 20-pin DIP",
+        "url": "`Components/source/M54HC593.PDF`",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC593",
+      "schema": "db.component.timing",
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "parameters": {
+        "tPLH": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "propagation_path_a": {
+                "typ": 27,
+                "max_25c": 42,
+                "max_minus40_to_85c": 53,
+                "max_minus55_to_125c": 63
+              },
+              "propagation_path_b": {
+                "typ": 28,
+                "max_25c": 44,
+                "max_minus40_to_85c": 55,
+              "max_minus55_to_125c": 66
+            }
+          },
+          "note": "M54HC593 switching characteristics give direct propagation-delay rows for Qn and RCO paths; canonical propagation timing is preserved exactly."
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "propagation_path_a": {
+                "typ": 27,
+                "max_25c": 42,
+                "max_minus40_to_85c": 53,
+                "max_minus55_to_125c": 63
+              },
+              "propagation_path_b": {
+                "typ": 28,
+                "max_25c": 44,
+                "max_minus40_to_85c": 55,
+              "max_minus55_to_125c": 66
+            }
+          },
+          "note": "M54HC593 switching characteristics give direct propagation-delay rows for Qn and RCO paths; canonical propagation timing is preserved exactly."
+        },
+        "tPZH": {
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state enable timing; canonical output-enable timing is preserved exactly."
+        },
+        "tPZL": {
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state enable timing; canonical output-enable timing is preserved exactly."
+        },
+        "tPHZ": {
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state disable timing; canonical output-disable timing is preserved exactly."
+        },
+        "tPLZ": {
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state disable timing; canonical output-disable timing is preserved exactly."
+        },
+          "clock_to_q_high": {
+            "status": "exact",
+            "source_field": "M54HC593 AC electrical characteristics CCK-Qn tPLH/tPHL",
+            "values_ns": {
+              "cck_to_qn": {
+                "typ": {
+                  "vcc_2_v": 108,
+                  "vcc_4_5_v": 27,
+                  "vcc_6_v": 23
+                },
+                "max_25c": {
+                  "vcc_2_v": 210,
+                  "vcc_4_5_v": 42,
+                  "vcc_6_v": 36
+                },
+                "max_minus40_to_85c": {
+                  "vcc_2_v": 265,
+                  "vcc_4_5_v": 53,
+                  "vcc_6_v": 45
+                },
+                "max_minus55_to_125c": {
+                  "vcc_2_v": 315,
+                  "vcc_4_5_v": 63,
+                  "vcc_6_v": 54
+                }
+              }
+            }
+          },
+          "clock_to_q_low": {
+            "status": "exact",
+            "source_field": "M54HC593 AC electrical characteristics CCK-Qn tPLH/tPHL",
+            "values_ns": {
+              "cck_to_qn": {
+                "typ": {
+                  "vcc_2_v": 108,
+                  "vcc_4_5_v": 27,
+                  "vcc_6_v": 23
+                },
+                "max_25c": {
+                  "vcc_2_v": 210,
+                  "vcc_4_5_v": 42,
+                  "vcc_6_v": 36
+                },
+                "max_minus40_to_85c": {
+                  "vcc_2_v": 265,
+                  "vcc_4_5_v": 53,
+                  "vcc_6_v": 45
+                },
+                "max_minus55_to_125c": {
+                  "vcc_2_v": 315,
+                  "vcc_4_5_v": 63,
+                  "vcc_6_v": 54
+                }
+              }
+            }
+          },
+          "setup": {
+            "status": "exact",
+            "source_field": "M54HC593 AC electrical characteristics ts rows",
+            "values_ns": {
+              "ccken_before_cck_min": {"vcc_2_v": {"typ": 56, "max_25c": 125, "max_minus40_to_85c": 160, "max_minus55_to_125c": 195}, "vcc_4_5_v": {"typ": 14, "max_25c": 25, "max_minus40_to_85c": 32, "max_minus55_to_125c": 39}, "vcc_6_v": {"typ": 12, "max_25c": 21, "max_minus40_to_85c": 27, "max_minus55_to_125c": 33}},
+              "rcken_before_rck_min": {"vcc_2_v": {"typ": 32, "max_25c": 75, "max_minus40_to_85c": 95, "max_minus55_to_125c": 110}, "vcc_4_5_v": {"typ": 8, "max_25c": 15, "max_minus40_to_85c": 19, "max_minus55_to_125c": 22}, "vcc_6_v": {"typ": 7, "max_25c": 13, "max_minus40_to_85c": 16, "max_minus55_to_125c": 19}},
+              "rck_before_cload_min": {"vcc_2_v": {"typ": 56, "max_25c": 125, "max_minus40_to_85c": 160, "max_minus55_to_125c": 195}, "vcc_4_5_v": {"typ": 14, "max_25c": 25, "max_minus40_to_85c": 32, "max_minus55_to_125c": 39}, "vcc_6_v": {"typ": 12, "max_25c": 21, "max_minus40_to_85c": 27, "max_minus55_to_125c": 33}}
+            }
+          },
+          "hold": {
+            "status": "exact",
+            "source_field": "M54HC593 AC electrical characteristics th row",
+            "values_ns": {
+              "a_to_h_after_rck_min": {"vcc_2_v": 0, "vcc_4_5_v": 0, "vcc_6_v": 0}
+            }
+          },
+          "minimum_pulse_width": {
+            "status": "exact",
+            "source_field": "M54HC593 AC electrical characteristics tW rows",
+            "values_ns": {
+              "cck_or_rck_high_or_low_min": {"vcc_2_v": {"typ": 44, "max_25c": 100, "max_minus40_to_85c": 125, "max_minus55_to_125c": 150}, "vcc_4_5_v": {"typ": 11, "max_25c": 20, "max_minus40_to_85c": 25, "max_minus55_to_125c": 30}, "vcc_6_v": {"typ": 9, "max_25c": 17, "max_minus40_to_85c": 21, "max_minus55_to_125c": 26}},
+              "cclr_or_cload_low_min": {"vcc_2_v": {"typ": 40, "max_25c": 100, "max_minus40_to_85c": 125, "max_minus55_to_125c": 150}, "vcc_4_5_v": {"typ": 10, "max_25c": 20, "max_minus40_to_85c": 25, "max_minus55_to_125c": 30}, "vcc_6_v": {"typ": 9, "max_25c": 17, "max_minus40_to_85c": 21, "max_minus55_to_125c": 26}}
+            }
+          }
+        },
+        "conditions": {
+          "load_pf": 50,
+          "ta_c": 25
+        }
+      }
+    }
+  },
+  "generation": {
+    "python": {
+      "class": "HC593",
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC593/simulation/model.py",
+      "part": "74HC593"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "lib/standard/74xx/74HC593/simulation/model.v",
+      "module": "ttl_74hc593",
+      "netlist": "lib/standard/74xx/74HC593/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "description": "8-Bit Binary Counter With Input Register",
+    "type": "8_bit_binary_counter_with_input_register"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "counter",
+    "title": "8-Bit Binary Counter With Input Register"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 20
+  },
+  "part": "74HC593",
+  "pins": [
+    {
+      "direction": "output",
+      "name": "A/QA",
+      "number": 1
+    },
+    {
+      "direction": "output",
+      "name": "B/QB",
+      "number": 2
+    },
+    {
+      "direction": "output",
+      "name": "C/QC",
+      "number": 3
+    },
+    {
+      "direction": "output",
+      "name": "D/QD",
+      "number": 4
+    },
+    {
+      "direction": "output",
+      "name": "E/QE",
+      "number": 5
+    },
+    {
+      "direction": "output",
+      "name": "F/QF",
+      "number": 6
+    },
+    {
+      "direction": "output",
+      "name": "G/QG",
+      "number": 7
+    },
+    {
+      "direction": "output",
+      "name": "H/QH",
+      "number": 8
+    },
+    {
+      "direction": "input",
+      "name": "CLOAD",
+      "number": 9
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 10,
+      "rail": "GND"
+    },
+    {
+      "direction": "output",
+      "name": "RCO",
+      "number": 11
+    },
+    {
+      "direction": "input",
+      "name": "CCLR",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "CCK",
+      "number": 13
+    },
+    {
+      "direction": "input",
+      "name": "CCKEN",
+      "number": 14
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/CCKEN",
+      "number": 15
+    },
+    {
+      "direction": "input",
+      "name": "RCK",
+      "number": 16
+    },
+    {
+      "direction": "input",
+      "name": "RCKEN",
+      "number": 17
+    },
+    {
+      "direction": "input",
+      "name": "G",
+      "number": 18
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/G",
+      "number": 19
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 20,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "ST M54HC593 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_max_ns_25c": {
+          "propagation_path_a": 42,
+          "propagation_path_b": 44,
+          "q_transition": 12,
+          "rco_transition": 15
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "propagation_path_a": 53,
+          "propagation_path_b": 55,
+          "q_transition": 15,
+          "rco_transition": 19
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "propagation_path_a": 63,
+          "propagation_path_b": 66,
+          "q_transition": 18,
+          "rco_transition": 22
+        },
+        "datasheet_typical_ns": {
+          "propagation_path_a": 27,
+          "propagation_path_b": 28,
+          "q_transition": 7,
+          "rco_transition": 8
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "async_control_to_output_ns": {
+          "condition": "async control asserted or released",
+          "from": "asynchronous control",
+          "parameter": "tremap",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "Q/output"
+        },
+        "clock_to_output_ns": {
+          "condition": "active clock edge",
+          "from": "CLK/clock control",
+          "parameter": "tco",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "Q/output"
+        },
+        "input_setup_margin_ns": {
+          "condition": "conservative setup placeholder from model delay",
+          "from": "D/input",
+          "parameter": "tsu",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "CLK/clock control"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "parameters": {
+        "tPLH": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "propagation_path_a": {
+              "typ": 27,
+              "max_25c": 42,
+              "max_minus40_to_85c": 53,
+              "max_minus55_to_125c": 63
+            },
+            "propagation_path_b": {
+              "typ": 28,
+              "max_25c": 44,
+              "max_minus40_to_85c": 55,
+              "max_minus55_to_125c": 66
+            }
+          },
+          "note": "M54HC593 switching characteristics give direct propagation-delay rows for Qn and RCO paths; canonical propagation timing is preserved exactly."
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "propagation_path_a": {
+              "typ": 27,
+              "max_25c": 42,
+              "max_minus40_to_85c": 53,
+              "max_minus55_to_125c": 63
+            },
+            "propagation_path_b": {
+              "typ": 28,
+              "max_25c": 44,
+              "max_minus40_to_85c": 55,
+              "max_minus55_to_125c": 66
+            }
+          },
+          "note": "M54HC593 switching characteristics give direct propagation-delay rows for Qn and RCO paths; canonical propagation timing is preserved exactly."
+        },
+        "tPZH": {
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state enable timing; canonical output-enable timing is preserved exactly."
+        },
+        "tPZL": {
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state enable timing; canonical output-enable timing is preserved exactly."
+        },
+        "tPHZ": {
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state disable timing; canonical output-disable timing is preserved exactly."
+        },
+        "tPLZ": {
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state disable timing; canonical output-disable timing is preserved exactly."
+        },
+        "clock_to_q_high": {
+          "status": "missing",
+          "reason": "Existing local extraction does not include clock-to-Q."
+        },
+        "clock_to_q_low": {
+          "status": "missing",
+          "reason": "Existing local extraction does not include clock-to-Q."
+        },
+        "setup": {
+          "status": "missing",
+          "reason": "Existing local timing extraction has no setup-time table for this part."
+        },
+        "hold": {
+          "status": "missing",
+          "reason": "Existing local timing extraction has no hold-time table for this part."
+        },
+        "minimum_pulse_width": {
+          "status": "missing",
+          "reason": "Existing local timing extraction has no minimum pulse-width table for this part."
+        }
+      },
+      "conditions": {
+        "load_pf": 50,
+        "ta_c": 25
+      }
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1,
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "STMicroelectronics",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
+  }
+}

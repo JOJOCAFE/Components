@@ -1,0 +1,804 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "Default simulator delay is 20 ns; timed mode uses path-specific datasheet delays."
+      ],
+      "overview": "74HC74 is a 14-pin DIP part for flip flop.",
+      "part": "74HC74",
+      "pin_count": 14,
+      "pin_summary": {
+        "input": {
+          "count": 8,
+          "names": [
+            "/1CLR",
+            "1D",
+            "1CLK",
+            "/1PRE",
+            "/2PRE",
+            "2CLK",
+            "2D",
+            "/2CLR"
+          ],
+          "note": "Input pins: /1CLR, 1D, 1CLK, /1PRE, /2PRE, 2CLK, and 2 more."
+        },
+        "output": {
+          "count": 4,
+          "names": [
+            "1Q",
+            "/1Q",
+            "/2Q",
+            "2Q"
+          ],
+          "note": "Output pins: 1Q, /1Q, /2Q, 2Q."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "Dual D-type flip-flop with asynchronous preset and clear.",
+      "timing_note": "Default simulator delay is 20 ns; timed mode uses path-specific datasheet delays.",
+      "title": "Dual D-type flip-flop with asynchronous preset and clear",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "/1CLR controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/1CLR - input",
+          "pin": "/1CLR"
+        },
+        {
+          "explanation": "1D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1D - input",
+          "pin": "1D"
+        },
+        {
+          "explanation": "1CLK controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1CLK - input",
+          "pin": "1CLK"
+        },
+        {
+          "explanation": "/1PRE controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/1PRE - input",
+          "pin": "/1PRE"
+        },
+        {
+          "explanation": "/2PRE controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/2PRE - input",
+          "pin": "/2PRE"
+        },
+        {
+          "explanation": "2CLK controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2CLK - input",
+          "pin": "2CLK"
+        },
+        {
+          "explanation": "2D controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2D - input",
+          "pin": "2D"
+        },
+        {
+          "explanation": "/2CLR controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/2CLR - input",
+          "pin": "/2CLR"
+        }
+      ],
+      "controls": [
+        "/1CLR",
+        "1D",
+        "1CLK",
+        "/1PRE",
+        "/2PRE",
+        "2CLK",
+        "2D",
+        "/2CLR"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC74",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Q",
+          "name": "1Q"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/1Q",
+          "name": "/1Q"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/2Q",
+          "name": "/2Q"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Q",
+          "name": "2Q"
+        }
+      ],
+      "probes": [
+        "1Q",
+        "/1Q",
+        "/2Q",
+        "2Q"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change /1CLR?",
+        "Which truth-table row matches the value on 1Q?"
+      ],
+      "title": "Try 74HC74 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "Dual D-type flip-flop with asynchronous preset and clear",
+        "type": "dual_d_flip_flop"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 14
+      },
+      "part": "74HC74",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/1CLR",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1D",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "1CLK",
+          "number": 3
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/1PRE",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "1Q",
+          "number": 5
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/1Q",
+          "number": 6
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/2Q",
+          "number": 8
+        },
+        {
+          "direction": "output",
+          "name": "2Q",
+          "number": 9
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/2PRE",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "2CLK",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "2D",
+          "number": 12
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/2CLR",
+          "number": 13
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 7
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 14
+        }
+      ],
+      "role": "flip_flop",
+      "timing": {
+        "delay_ns": 20,
+        "simple": {
+          "default_delay_ns": 20,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "async_control_to_output_ns": {
+              "condition": "async control asserted or released",
+              "from": "asynchronous control",
+              "parameter": "tremap",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 20,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 20
+                }
+              },
+              "to": "Q/output"
+            },
+            "clock_to_output_ns": {
+              "condition": "active clock edge",
+              "from": "CLK/clock control",
+              "parameter": "tco",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 20,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 20
+                }
+              },
+              "to": "Q/output"
+            },
+            "input_setup_margin_ns": {
+              "condition": "conservative setup placeholder from model delay",
+              "from": "D/input",
+              "parameter": "tsu",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 20,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 20
+                }
+              },
+              "to": "CLK/clock control"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 20,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 20
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "parameters": {
+            "clock_to_q_high": {
+              "note": "Clock-to-Q is source-backed, but HIGH versus LOW output polarity split is not extracted.",
+              "source_field": "definition_layers.timing.delay",
+              "status": "generic",
+              "values_ns": {
+                "max_25c": 35,
+                "max_minus40_to_85c": 44,
+                "typ": 20
+              }
+            },
+            "clock_to_q_low": {
+              "note": "Clock-to-Q is source-backed, but HIGH versus LOW output polarity split is not extracted.",
+              "source_field": "definition_layers.timing.delay",
+              "status": "generic",
+              "values_ns": {
+                "max_25c": 35,
+                "max_minus40_to_85c": 44,
+                "typ": 20
+              }
+            },
+            "hold": {
+              "note": "Data hold requirement is source-backed.",
+              "source_field": "definition_layers.timing.timing_requirements.hold_after_clock_ns",
+              "status": "exact",
+              "values_ns": {
+                "data": {
+                  "4.5": {
+                    "min_25c": 0,
+                    "min_minus40_to_85c": 0
+                  }
+                }
+              }
+            },
+            "minimum_pulse_width": {
+              "note": "Clock and preset/clear pulse-width requirements are source-backed.",
+              "source_field": "definition_layers.timing.timing_requirements",
+              "status": "exact",
+              "values_ns": {
+                "clock_high_or_low_ns": {
+                  "4.5": {
+                    "min_25c": 16,
+                    "min_minus40_to_85c": 20
+                  }
+                },
+                "preset_or_clear_low_ns": {
+                  "4.5": {
+                    "min_25c": 20,
+                    "min_minus40_to_85c": 25
+                  }
+                }
+              }
+            },
+            "setup": {
+              "note": "Data and async-control inactive setup requirements are source-backed.",
+              "source_field": "definition_layers.timing.timing_requirements.setup_before_clock_ns",
+              "status": "exact",
+              "values_ns": {
+                "data": {
+                  "4.5": {
+                    "min_25c": 20,
+                    "min_minus40_to_85c": 25
+                  }
+                },
+                "preset_or_clear_inactive": {
+                  "4.5": {
+                    "min_25c": 5,
+                    "min_minus40_to_85c": 6
+                  }
+                }
+              }
+            },
+            "tPHL": {
+              "note": "Clocked output propagation is source-backed as clock-to-Q; input/output tPLH polarity split is not extracted.",
+              "source_field": "definition_layers.timing.delay",
+              "status": "generic",
+              "values_ns": {
+                "max_25c": 35,
+                "max_minus40_to_85c": 44,
+                "typ": 20
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC74 has push-pull flip-flop outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Clocked output propagation is source-backed as clock-to-Q; input/output tPLH polarity split is not extracted.",
+              "source_field": "definition_layers.timing.delay",
+              "status": "generic",
+              "values_ns": {
+                "max_25c": 35,
+                "max_minus40_to_85c": 44,
+                "typ": 20
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC74 has push-pull flip-flop outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC74 has push-pull flip-flop outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC74 has push-pull flip-flop outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
+      },
+      "title": "Dual D-type flip-flop with asynchronous preset and clear"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/1CLR",
+        "10": "/2PRE",
+        "11": "2CLK",
+        "12": "2D",
+        "13": "/2CLR",
+        "14": "VCC",
+        "2": "1D",
+        "3": "1CLK",
+        "4": "/1PRE",
+        "7": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC74",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC74",
+      "copy_with_chip": [
+        "lib/standard/74xx/74HC74/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC74/simulation/model.py",
+      "part": "74HC74",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/1CLR",
+        "10": "/2PRE",
+        "11": "2CLK",
+        "12": "2D",
+        "13": "/2CLR",
+        "14": "VCC",
+        "2": "1D",
+        "3": "1CLK",
+        "4": "/1PRE",
+        "7": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC74",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC74",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC74",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC74",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "first_clear_forces_q_low",
+            "first_preset_forces_q_high",
+            "first_clock_captures_d_low",
+            "first_clock_captures_d_high",
+            "second_clear_forces_q_low",
+            "second_clock_captures_d_high"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc74",
+      "compile": {
+        "sources": [
+          "lib/standard/74xx/74HC74/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc74"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc74",
+      "part": "74HC74",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC74",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "clock_to_output_metadata",
+            "async_control_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC74",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "first_clear_forces_q_low",
+            "first_preset_forces_q_high",
+            "first_clock_captures_d_low",
+            "first_clock_captures_d_high",
+            "second_clear_forces_q_low",
+            "second_clock_captures_d_high"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          5,
+          6,
+          8,
+          9
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Preset_bar",
+            "pins": [
+              4,
+              10
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Clear_bar",
+            "pins": [
+              1,
+              13
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "D",
+            "pins": [
+              2,
+              12
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Clk",
+            "pins": [
+              3,
+              11
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q",
+            "pins": [
+              5,
+              9
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q_bar",
+            "pins": [
+              6,
+              8
+            ]
+          }
+        ],
+        "sample_delay_ns": {
+          "U21": 20
+        }
+      },
+      "file": "lib/standard/74xx/74HC74/simulation/model.v",
+      "module": "ttl_74hc74",
+      "netlist": "lib/standard/74xx/74HC74/simulation/netlist.json",
+      "part": "74HC74"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC74",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "lib/standard/74xx/74HC74/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "lib/standard/74xx/74HC74/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "lib/standard/74xx/74HC74/simulation/netlist.json"
+    }
+  ],
+  "source": "lib/standard/74xx/74HC74/definition/definition.json",
+  "version": 1
+}

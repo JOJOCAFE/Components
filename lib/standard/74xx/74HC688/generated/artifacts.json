@@ -1,0 +1,819 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "Default simulator delay is 30 ns; timed mode uses path-specific datasheet delays."
+      ],
+      "overview": "74HC688 is a 20-pin DIP part for comparator.",
+      "part": "74HC688",
+      "pin_count": 20,
+      "pin_summary": {
+        "input": {
+          "count": 17,
+          "names": [
+            "/E",
+            "A0",
+            "B0",
+            "A1",
+            "B1",
+            "A2",
+            "B2",
+            "A3",
+            "B3",
+            "A4",
+            "B4",
+            "A5",
+            "B5",
+            "A6",
+            "B6",
+            "A7",
+            "B7"
+          ],
+          "note": "Input pins: /E, A0, B0, A1, B1, A2, and 11 more."
+        },
+        "output": {
+          "count": 1,
+          "names": [
+            "/Y"
+          ],
+          "note": "Output pins: /Y."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "8-Bit Identity Comparator.",
+      "timing_note": "Default simulator delay is 30 ns; timed mode uses path-specific datasheet delays.",
+      "title": "8-Bit Identity Comparator",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "/E controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/E - input",
+          "pin": "/E"
+        },
+        {
+          "explanation": "A0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A0 - input",
+          "pin": "A0"
+        },
+        {
+          "explanation": "B0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "B0 - input",
+          "pin": "B0"
+        },
+        {
+          "explanation": "A1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A1 - input",
+          "pin": "A1"
+        },
+        {
+          "explanation": "B1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "B1 - input",
+          "pin": "B1"
+        },
+        {
+          "explanation": "A2 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A2 - input",
+          "pin": "A2"
+        },
+        {
+          "explanation": "B2 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "B2 - input",
+          "pin": "B2"
+        },
+        {
+          "explanation": "A3 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A3 - input",
+          "pin": "A3"
+        },
+        {
+          "explanation": "B3 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "B3 - input",
+          "pin": "B3"
+        },
+        {
+          "explanation": "A4 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A4 - input",
+          "pin": "A4"
+        },
+        {
+          "explanation": "B4 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "B4 - input",
+          "pin": "B4"
+        },
+        {
+          "explanation": "A5 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A5 - input",
+          "pin": "A5"
+        },
+        {
+          "explanation": "B5 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "B5 - input",
+          "pin": "B5"
+        },
+        {
+          "explanation": "A6 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A6 - input",
+          "pin": "A6"
+        },
+        {
+          "explanation": "B6 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "B6 - input",
+          "pin": "B6"
+        },
+        {
+          "explanation": "A7 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A7 - input",
+          "pin": "A7"
+        },
+        {
+          "explanation": "B7 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "B7 - input",
+          "pin": "B7"
+        }
+      ],
+      "controls": [
+        "/E",
+        "A0",
+        "B0",
+        "A1",
+        "B1",
+        "A2",
+        "B2",
+        "A3",
+        "B3",
+        "A4",
+        "B4",
+        "A5",
+        "B5",
+        "A6",
+        "B6",
+        "A7",
+        "B7"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC688",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/Y",
+          "name": "/Y"
+        }
+      ],
+      "probes": [
+        "/Y"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change /E?",
+        "Which truth-table row matches the value on /Y?"
+      ],
+      "title": "Try 74HC688 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "8-Bit Identity Comparator",
+        "type": "eight_bit_identity_comparator"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 20
+      },
+      "part": "74HC688",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/E",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "A0",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "B0",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "A1",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "B1",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "A2",
+          "number": 6
+        },
+        {
+          "direction": "input",
+          "name": "B2",
+          "number": 7
+        },
+        {
+          "direction": "input",
+          "name": "A3",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "B3",
+          "number": 9
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "direction": "input",
+          "name": "A4",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "B4",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "A5",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "B5",
+          "number": 14
+        },
+        {
+          "direction": "input",
+          "name": "A6",
+          "number": 15
+        },
+        {
+          "direction": "input",
+          "name": "B6",
+          "number": 16
+        },
+        {
+          "direction": "input",
+          "name": "A7",
+          "number": 17
+        },
+        {
+          "direction": "input",
+          "name": "B7",
+          "number": 18
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y",
+          "number": 19
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 10
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 20
+        }
+      ],
+      "role": "comparator",
+      "timing": {
+        "delay_ns": 30,
+        "simple": {
+          "default_delay_ns": 30,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 30,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 30
+                }
+              },
+              "to": "output"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 30,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 30
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": {
+            "load_pf": 15,
+            "path": "A_B_or_E_to_P_equals_Q_output",
+            "section": "5.5 Switching Characteristics"
+          },
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC688 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC688 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC688 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC688 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC688 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI CD74HC688 switching characteristics explicitly list tPLH,tPHL rows for An/Bn/E to output.",
+              "status": "exact",
+              "values_ns": {
+                "conservative_default": {
+                  "max_ns": 30,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 30
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC688 has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI CD74HC688 switching characteristics explicitly list tPLH,tPHL rows for An/Bn/E to output.",
+              "status": "exact",
+              "values_ns": {
+                "conservative_default": {
+                  "max_ns": 30,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 30
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC688 has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC688 has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC688 has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
+      },
+      "title": "8-Bit Identity Comparator"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/E",
+        "10": "GND",
+        "11": "A4",
+        "12": "B4",
+        "13": "A5",
+        "14": "B5",
+        "15": "A6",
+        "16": "B6",
+        "17": "A7",
+        "18": "B7",
+        "2": "A0",
+        "20": "VCC",
+        "3": "B0",
+        "4": "A1",
+        "5": "B1",
+        "6": "A2",
+        "7": "B2",
+        "8": "A3",
+        "9": "B3"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC688",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC688",
+      "copy_with_chip": [
+        "lib/standard/74xx/74HC688/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC688/simulation/model.py",
+      "part": "74HC688",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/E",
+        "10": "GND",
+        "11": "A4",
+        "12": "B4",
+        "13": "A5",
+        "14": "B5",
+        "15": "A6",
+        "16": "B6",
+        "17": "A7",
+        "18": "B7",
+        "2": "A0",
+        "20": "VCC",
+        "3": "B0",
+        "4": "A1",
+        "5": "B1",
+        "6": "A2",
+        "7": "B2",
+        "8": "A3",
+        "9": "B3"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC688",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC688",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC688",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC688",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "equal_outputs_low",
+            "not_equal_outputs_high",
+            "single_bit_difference_outputs_high",
+            "oe_high_forces_high"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc688",
+      "compile": {
+        "sources": [
+          "lib/standard/74xx/74HC688/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc688"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc688",
+      "part": "74HC688",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC688",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC688",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "equal_outputs_low",
+            "not_equal_outputs_high",
+            "single_bit_difference_outputs_high",
+            "oe_high_forces_high"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          19
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Enable_bar",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              2,
+              4,
+              6,
+              8,
+              11,
+              13,
+              15,
+              17
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "B",
+            "pins": [
+              3,
+              5,
+              7,
+              9,
+              12,
+              14,
+              16,
+              18
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Equal_bar",
+            "pins": [
+              19
+            ]
+          }
+        ]
+      },
+      "file": "lib/standard/74xx/74HC688/simulation/model.v",
+      "module": "ttl_74hc688",
+      "netlist": "lib/standard/74xx/74HC688/simulation/netlist.json",
+      "part": "74HC688"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC688",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "lib/standard/74xx/74HC688/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "lib/standard/74xx/74HC688/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "lib/standard/74xx/74HC688/simulation/netlist.json"
+    }
+  ],
+  "source": "lib/standard/74xx/74HC688/definition/definition.json",
+  "version": 1
+}

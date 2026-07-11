@@ -10,8 +10,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 AUDIT_REPORTS = (
-    ("tools/timing_parameter_audit.py", "Docs/TIMING_PARAMETER_AUDIT.md"),
-    ("tools/timing_simulation_audit.py", "Docs/TIMING_SIMULATION_AUDIT.md"),
+    ("tools/timing_parameter_audit.py", "docs/TIMING_PARAMETER_AUDIT.md"),
+    ("tools/timing_simulation_audit.py", "docs/TIMING_SIMULATION_AUDIT.md"),
 )
 
 

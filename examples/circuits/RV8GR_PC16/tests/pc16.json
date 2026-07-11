@@ -1,0 +1,35 @@
+{
+  "schema": "components.lib.circuit.test.pc16",
+  "version": 1,
+  "circuit": "rv8gr_pc16",
+  "source": "examples/circuits/RV8GR_PC16/circuit.json",
+  "reset": {
+    "input": {"/RST": 0},
+    "expect": {"PC": "0x0000"}
+  },
+  "vectors": [
+    {"name": "count_from_zero", "start": "0x0000", "pc_inc": 1, "pc_ld": 1, "clock": true, "expect": "0x0001"},
+    {"name": "no_edge_holds", "start": "0x0001", "pc_inc": 1, "pc_ld": 1, "clock": false, "expect": "0x0001"},
+    {"name": "pc_inc_low_holds", "start": "0x0001", "pc_inc": 0, "pc_ld": 1, "clock": true, "expect": "0x0001"},
+    {"name": "u1_rco_carries_to_u2", "start": "0x000F", "pc_inc": 1, "pc_ld": 1, "clock": true, "expect": "0x0010"},
+    {"name": "u2_rco_carries_to_u3", "start": "0x00FF", "pc_inc": 1, "pc_ld": 1, "clock": true, "expect": "0x0100"},
+    {"name": "u3_rco_carries_to_u4", "start": "0x0FFF", "pc_inc": 1, "pc_ld": 1, "clock": true, "expect": "0x1000"},
+    {"name": "wraps_at_ffff", "start": "0xFFFF", "pc_inc": 1, "pc_ld": 1, "clock": true, "expect": "0x0000"},
+    {"name": "parallel_load_pg_irl", "start": "0x1234", "pc_inc": 0, "pc_ld": 0, "pg": "0xAB", "irl": "0xCD", "clock": true, "expect": "0xABCD"},
+    {"name": "load_priority_over_count", "start": "0x00FF", "pc_inc": 1, "pc_ld": 0, "pg": "0x40", "irl": "0x06", "clock": true, "expect": "0x4006"}
+  ],
+  "clock_profiles": [
+    {"name": "push_switch_single_step", "kind": "manual", "requires": "one clean debounced rising edge per press"},
+    {"name": "push_switch_random_100", "kind": "manual", "ticks": 100, "max_interval_ms": 500, "seed": 35862, "requires": "one clean debounced rising edge per press; interval jitter must not add extra edges"},
+    {"name": "50_khz", "frequency_hz": 50000, "period_ns": 20000, "proof": "functional_edge_sequence"},
+    {"name": "1_mhz", "frequency_hz": 1000000, "period_ns": 1000, "proof": "functional_edge_sequence"},
+    {"name": "2_mhz", "frequency_hz": 2000000, "period_ns": 500, "proof": "functional_edge_sequence"},
+    {"name": "5_mhz", "frequency_hz": 5000000, "period_ns": 200, "proof": "functional_edge_sequence", "note": "Functional simulation only; physical 5 MHz requires timing-margin and signal-integrity proof."}
+  ],
+  "edge_criteria": {
+    "clocking": "edge_sensitive",
+    "trigger_edge": "rising",
+    "non_trigger_edge": "falling_or_no_rising_edge_holds_state",
+    "notes": "PC changes only on asynchronous reset or rising clock edges; /PC_LD has priority over counting."
+  }
+}

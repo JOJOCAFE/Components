@@ -18,7 +18,7 @@ from chiplib.circuit_package import (
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CIRCUIT_FILES = sorted((ROOT / "Lib" / "Circuits").glob("*/circuit.json"))
+CIRCUIT_FILES = sorted((ROOT / "examples" / "circuits").glob("*/circuit.json"))
 
 
 def valid_package() -> dict:
@@ -86,6 +86,15 @@ class CircuitPackageTests(unittest.TestCase):
         with self.assertRaises(CircuitPackageValidationError) as caught:
             parse_circuit_package(data, source_path=ROOT / "fixture.json")
         self.assertIn("undeclared_symbolic_endpoint", {item.code for item in caught.exception.issues})
+
+    def test_rejects_boundary_alias_bound_to_two_different_nets(self) -> None:
+        data = valid_package()
+        data["ports"].append({"name": "ALIAS", "direction": "input"})
+        data["wiring"][0]["connections"].append("ALIAS")
+        data["wiring"][1]["connections"].append("ALIAS")
+        with self.assertRaises(CircuitPackageValidationError) as caught:
+            parse_circuit_package(data, source_path=ROOT / "fixture.json")
+        self.assertIn("ambiguous_boundary_mapping", {item.code for item in caught.exception.issues})
 
     def test_rejects_missing_source_and_malformed_json(self) -> None:
         data = valid_package()

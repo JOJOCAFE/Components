@@ -7,6 +7,7 @@ from dataclasses import replace
 import json
 from pathlib import Path
 import random
+import tempfile
 import unittest
 
 from chiplib import CircuitRunner, CircuitRunnerError, load_circuit_runner
@@ -14,8 +15,8 @@ from chiplib.circuit_package import parse_circuit_package
 
 
 ROOT = Path(__file__).resolve().parents[2]
-RING = ROOT / "Lib" / "Circuits" / "RV8GR_RingCounter" / "circuit.json"
-PACKAGE_ROOT = ROOT / "Lib" / "Circuits"
+RING = ROOT / "examples" / "circuits" / "RV8GR_RingCounter" / "circuit.json"
+PACKAGE_ROOT = ROOT / "examples" / "circuits"
 
 
 def package_data() -> dict:
@@ -158,7 +159,7 @@ class CircuitRunnerTests(unittest.TestCase):
         symbolic = package_data()
         symbolic["chips"][0]["symbolic_endpoints"] = ["A"]
         symbolic["wiring"][0]["connections"][1] = "U1.A"
-        cases.append((symbolic, "symbolic_aggregate_not_executable"))
+        cases.append((symbolic, "ambiguous_symbolic_width"))
         unresolved = package_data()
         unresolved["ports"][1]["name"] = "MISSING"
         cases.append((unresolved, "unresolved_output"))
@@ -167,6 +168,38 @@ class CircuitRunnerTests(unittest.TestCase):
                 CircuitRunner(parse_circuit_package(data, source_path=ROOT / "fixture.json"))
             self.assertIn(code, {issue.code for issue in caught.exception.issues})
             self.assertEqual("circuit_runner_error", caught.exception.to_dict()["error"])
+
+    def test_symbolic_endpoint_resolves_exact_public_pin_name(self) -> None:
+        data = package_data()
+        data["chips"][0]["symbolic_endpoints"] = ["1A"]
+        data["wiring"][0]["connections"][1] = "U1.1A"
+        runner = CircuitRunner(parse_circuit_package(data, source_path=ROOT / "fixture.json"))
+        runner.set_input("IN", 1)
+        self.assertEqual(0, runner.read("OUT"))
+
+    def test_public_boundary_owns_shared_virtual_driver_until_release(self) -> None:
+        data = package_data()
+        data["chips"].append({"ref": "SW", "part": "Switch", "role": "input stimulus"})
+        data["wiring"][0]["connections"].append("SW.1")
+        runner = CircuitRunner(parse_circuit_package(data, source_path=ROOT / "fixture.json"))
+        virtual = runner.board.sources["virtual:SW"]
+        self.assertFalse(virtual.enabled)
+        runner.set_input("IN", 1)
+        self.assertFalse(virtual.enabled)
+        runner.release_input("IN")
+        self.assertTrue(virtual.enabled)
+        self.assertEqual(1, runner.read("OUT"))
+
+    def test_loads_rom_image_through_public_runner_contract(self) -> None:
+        runner = load_circuit_runner(PACKAGE_ROOT / "RV8GR_RomDbusRead" / "circuit.json")
+        with tempfile.NamedTemporaryFile(suffix=".bin") as image:
+            image.write(b"\xA5\x5A")
+            image.flush()
+            self.assertEqual(2, runner.load_memory_image("ROM1", image.name))
+        self.assertEqual(b"\xA5\x5A", bytes(runner.board.chips["ROM1"].data[:2]))
+        with self.assertRaises(CircuitRunnerError) as caught:
+            runner.load_memory_image("U7", "unused.bin")
+        self.assertEqual("memory_image_not_loadable", caught.exception.issues[0].code)
 
     def test_rejects_virtual_parts_composites_and_duplicate_refs(self) -> None:
         virtual_package = parse_circuit_package(package_data(), source_path=ROOT / "fixture.json")
@@ -193,7 +226,7 @@ class CircuitRunnerTests(unittest.TestCase):
         composite["wiring"][0]["connections"][1] = "U1.CLK"
         composite["wiring"][1]["connections"][0] = "U1.CLK"
         with self.assertRaises(CircuitRunnerError) as caught:
-            CircuitRunner(parse_circuit_package(composite, source_path=ROOT / "Lib" / "Circuits" / "fixture.json", check_files=False))
+            CircuitRunner(parse_circuit_package(composite, source_path=ROOT / "examples" / "circuits" / "fixture.json", check_files=False))
         self.assertIn("composite_not_executable", {issue.code for issue in caught.exception.issues})
 
         duplicate = package_data()

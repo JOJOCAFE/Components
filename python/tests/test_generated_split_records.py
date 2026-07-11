@@ -15,48 +15,48 @@ from chiplib import Board, BusConflictError, Z, create_chip
 
 ROOT = Path(__file__).resolve().parents[2]
 SEED_TEST_ROOTS = {
-    "74HC161": ROOT / "DB" / "74xx" / "74HC161" / "tests",
-    "74HC157": ROOT / "DB" / "74xx" / "74HC157" / "tests",
-    "74HC245": ROOT / "DB" / "74xx" / "74HC245" / "tests",
-    "74HC574": ROOT / "DB" / "74xx" / "74HC574" / "tests",
-    "AT28C256": ROOT / "DB" / "Memory" / "AT28C256" / "tests",
+    "74HC161": ROOT / "lib" / "standard" / "74xx" / "74HC161" / "tests",
+    "74HC157": ROOT / "lib" / "standard" / "74xx" / "74HC157" / "tests",
+    "74HC245": ROOT / "lib" / "standard" / "74xx" / "74HC245" / "tests",
+    "74HC574": ROOT / "lib" / "standard" / "74xx" / "74HC574" / "tests",
+    "AT28C256": ROOT / "lib" / "standard" / "memory" / "AT28C256" / "tests",
 }
 TARGETED_TRUTH_TEST_ROOTS = {
-    "74HC21": ROOT / "DB" / "74xx" / "74HC21" / "tests",
-    "74HC74": ROOT / "DB" / "74xx" / "74HC74" / "tests",
-    "74HC86": ROOT / "DB" / "74xx" / "74HC86" / "tests",
-    "74HC161": ROOT / "DB" / "74xx" / "74HC161" / "tests",
-    "74HC164": ROOT / "DB" / "74xx" / "74HC164" / "tests",
-    "74HC245": ROOT / "DB" / "74xx" / "74HC245" / "tests",
-    "74HC283": ROOT / "DB" / "74xx" / "74HC283" / "tests",
-    "74HC541": ROOT / "DB" / "74xx" / "74HC541" / "tests",
-    "74HC574": ROOT / "DB" / "74xx" / "74HC574" / "tests",
-    "74HC688": ROOT / "DB" / "74xx" / "74HC688" / "tests",
-    "62256": ROOT / "DB" / "Memory" / "62256" / "tests",
-    "AS6C62256": ROOT / "DB" / "Memory" / "AS6C62256" / "tests",
-    "AT28C256": ROOT / "DB" / "Memory" / "AT28C256" / "tests",
-    "CY7C199": ROOT / "DB" / "Memory" / "CY7C199" / "tests",
-    "SST39SF010A": ROOT / "DB" / "Memory" / "SST39SF010A" / "tests",
+    "74HC21": ROOT / "lib" / "standard" / "74xx" / "74HC21" / "tests",
+    "74HC74": ROOT / "lib" / "standard" / "74xx" / "74HC74" / "tests",
+    "74HC86": ROOT / "lib" / "standard" / "74xx" / "74HC86" / "tests",
+    "74HC161": ROOT / "lib" / "standard" / "74xx" / "74HC161" / "tests",
+    "74HC164": ROOT / "lib" / "standard" / "74xx" / "74HC164" / "tests",
+    "74HC245": ROOT / "lib" / "standard" / "74xx" / "74HC245" / "tests",
+    "74HC283": ROOT / "lib" / "standard" / "74xx" / "74HC283" / "tests",
+    "74HC541": ROOT / "lib" / "standard" / "74xx" / "74HC541" / "tests",
+    "74HC574": ROOT / "lib" / "standard" / "74xx" / "74HC574" / "tests",
+    "74HC688": ROOT / "lib" / "standard" / "74xx" / "74HC688" / "tests",
+    "62256": ROOT / "lib" / "standard" / "memory" / "62256" / "tests",
+    "AS6C62256": ROOT / "lib" / "standard" / "memory" / "AS6C62256" / "tests",
+    "AT28C256": ROOT / "lib" / "standard" / "memory" / "AT28C256" / "tests",
+    "CY7C199": ROOT / "lib" / "standard" / "memory" / "CY7C199" / "tests",
+    "SST39SF010A": ROOT / "lib" / "standard" / "memory" / "SST39SF010A" / "tests",
 }
 BATCH2_TEST_ROOTS = {
-    "74HC00": ROOT / "DB" / "74xx" / "74HC00" / "tests",
-    "74HC04": ROOT / "DB" / "74xx" / "74HC04" / "tests",
-    "74HC21": ROOT / "DB" / "74xx" / "74HC21" / "tests",
-    "74HC32": ROOT / "DB" / "74xx" / "74HC32" / "tests",
-    "74HC74": ROOT / "DB" / "74xx" / "74HC74" / "tests",
-    "74HC86": ROOT / "DB" / "74xx" / "74HC86" / "tests",
-    "74HC157": ROOT / "DB" / "74xx" / "74HC157" / "tests",
-    "74HC161": ROOT / "DB" / "74xx" / "74HC161" / "tests",
-    "74HC164": ROOT / "DB" / "74xx" / "74HC164" / "tests",
-    "74HC245": ROOT / "DB" / "74xx" / "74HC245" / "tests",
-    "74HC283": ROOT / "DB" / "74xx" / "74HC283" / "tests",
-    "74HC541": ROOT / "DB" / "74xx" / "74HC541" / "tests",
-    "74HC574": ROOT / "DB" / "74xx" / "74HC574" / "tests",
-    "74HC688": ROOT / "DB" / "74xx" / "74HC688" / "tests",
-    "62256": ROOT / "DB" / "Memory" / "62256" / "tests",
-    "AS6C62256": ROOT / "DB" / "Memory" / "AS6C62256" / "tests",
-    "AT28C256": ROOT / "DB" / "Memory" / "AT28C256" / "tests",
-    "SST39SF010A": ROOT / "DB" / "Memory" / "SST39SF010A" / "tests",
+    "74HC00": ROOT / "lib" / "standard" / "74xx" / "74HC00" / "tests",
+    "74HC04": ROOT / "lib" / "standard" / "74xx" / "74HC04" / "tests",
+    "74HC21": ROOT / "lib" / "standard" / "74xx" / "74HC21" / "tests",
+    "74HC32": ROOT / "lib" / "standard" / "74xx" / "74HC32" / "tests",
+    "74HC74": ROOT / "lib" / "standard" / "74xx" / "74HC74" / "tests",
+    "74HC86": ROOT / "lib" / "standard" / "74xx" / "74HC86" / "tests",
+    "74HC157": ROOT / "lib" / "standard" / "74xx" / "74HC157" / "tests",
+    "74HC161": ROOT / "lib" / "standard" / "74xx" / "74HC161" / "tests",
+    "74HC164": ROOT / "lib" / "standard" / "74xx" / "74HC164" / "tests",
+    "74HC245": ROOT / "lib" / "standard" / "74xx" / "74HC245" / "tests",
+    "74HC283": ROOT / "lib" / "standard" / "74xx" / "74HC283" / "tests",
+    "74HC541": ROOT / "lib" / "standard" / "74xx" / "74HC541" / "tests",
+    "74HC574": ROOT / "lib" / "standard" / "74xx" / "74HC574" / "tests",
+    "74HC688": ROOT / "lib" / "standard" / "74xx" / "74HC688" / "tests",
+    "62256": ROOT / "lib" / "standard" / "memory" / "62256" / "tests",
+    "AS6C62256": ROOT / "lib" / "standard" / "memory" / "AS6C62256" / "tests",
+    "AT28C256": ROOT / "lib" / "standard" / "memory" / "AT28C256" / "tests",
+    "SST39SF010A": ROOT / "lib" / "standard" / "memory" / "SST39SF010A" / "tests",
 }
 TASK3_REPRESENTATIVE_PARTS = ("74HC00", "74HC04", "74HC32")
 RV8GR_EXECUTED_PARTS = (
@@ -143,15 +143,15 @@ def expected_split_record_metadata(part: str, test_type: str):
 
 def active_ic_test_roots() -> dict[str, Path]:
     roots: dict[str, Path] = {}
-    for group in ("74xx", "Memory"):
-        for path in sorted((ROOT / "DB" / group).glob("*/tests")):
+    for group in ("74xx", "memory"):
+        for path in sorted((ROOT / "lib" / "standard" / group).glob("*/tests")):
             roots[path.parent.name] = path
     return roots
 
 
 def load_definition(part: str):
-    group = "Memory" if part in {"62256", "AS6C62256", "AT28C256", "SST39SF010A"} else "74xx"
-    path = ROOT / "DB" / group / part / "definition" / "definition.json"
+    group = "memory" if part in {"62256", "AS6C62256", "AT28C256", "SST39SF010A"} else "74xx"
+    path = ROOT / "lib" / "standard" / group / part / "definition" / "definition.json"
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -266,7 +266,7 @@ def test_all_truth_records_declare_edge_criteria():
         "edge_sensitive",
         "control_edge_or_level_sensitive",
     }
-    for path in sorted((ROOT / "DB").glob("*/*/tests/truth_table.json")):
+    for path in sorted((ROOT / "lib" / "standard").glob("*/*/tests/truth_table.json")):
         record = json.loads(path.read_text(encoding="utf-8"))
         criteria = record.get("edge_criteria")
         assert isinstance(criteria, dict), path
@@ -608,19 +608,19 @@ def test_rv8gr_complete_set_has_seed_package_layers_and_executable_truth_coverag
 
 def test_verilog_smoke_workflow_keeps_broad_compile_scope():
     workflow = (ROOT / ".github" / "workflows" / "verilog-smoke.yml").read_text(encoding="utf-8")
-    assert "Verilog/74xx/*.v Verilog/74xx/tests/tb_74xx_smoke.v" in workflow
-    assert "Verilog/Memory/*.v Verilog/Memory/tests/tb_memory_smoke.v" in workflow
-    assert "find DB/74xx DB/Memory -path '*/simulation/model.v'" in workflow
+    assert "verilog/74xx/*.v verilog/74xx/tests/tb_74xx_smoke.v" in workflow
+    assert "verilog/memory/*.v verilog/memory/tests/tb_memory_smoke.v" in workflow
+    assert "find lib/standard/74xx lib/standard/memory -path '*/simulation/model.v'" in workflow
     assert "/tmp/db_package_models.vvp" in workflow
 
-    package_models = sorted((ROOT / "DB").glob("*/**/simulation/model.v"))
+    package_models = sorted((ROOT / "lib" / "standard").glob("*/**/simulation/model.v"))
     assert len(package_models) >= 62
     for path in package_models:
         text = path.read_text(encoding="utf-8")
         assert re.search(r"\bmodule\s+(ttl|mem)_\w+", text), path
 
-    memory_tb = (ROOT / "Verilog" / "Memory" / "tests" / "tb_memory_smoke.v").read_text(encoding="utf-8")
-    for path in sorted((ROOT / "Verilog" / "Memory").glob("*.v")):
+    memory_tb = (ROOT / "verilog" / "memory" / "tests" / "tb_memory_smoke.v").read_text(encoding="utf-8")
+    for path in sorted((ROOT / "verilog" / "memory").glob("*.v")):
         match = re.search(r"\bmodule\s+(mem_\w+)", path.read_text(encoding="utf-8"))
         assert match is not None, path
         assert re.search(rf"\b{re.escape(match.group(1))}\s+\w+", memory_tb), match.group(1)
@@ -636,7 +636,7 @@ def test_split_records_generate_verilog_testbench_metadata():
         assert artifact["bench_module"] == f"tb_generated_{part.lower()}"
         assert artifact["compile"]["tool"] == "iverilog"
         assert artifact["compile"]["standard"] == "g2012"
-        assert artifact["compile"]["sources"] == [f"DB/{'Memory' if part == 'AT28C256' else '74xx'}/{part}/simulation/model.v"]
+        assert artifact["compile"]["sources"] == [f"lib/standard/{'memory' if part == 'AT28C256' else '74xx'}/{part}/simulation/model.v"]
 
         truth_metadata = artifact["split_records"]["truth_table"]
         assert truth_metadata["present"] is True

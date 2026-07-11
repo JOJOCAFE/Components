@@ -15,10 +15,11 @@ from .circuit_package import (
     CircuitPackage,
     NumericEndpoint,
     SymbolicEndpoint,
+    expand_boundary_name,
     load_circuit_package,
 )
 from .core import Board, Logic, LogicSource, X, Z, normalize_logic
-from .model_loader import ModelLoadError, create_live_db_chip
+from .model_loader import ModelLoadError, create_live_db_chip, load_live_chip_memory
 from .virtual_runtime import (
     ClockSourceAdapter,
     SwitchAdapter,
@@ -69,9 +70,12 @@ class CircuitRunner:
         self._net_lines: dict[str, tuple[str, ...]] = {}
         self.virtual_adapters: dict[str, VirtualAdapter] = {}
         self.virtual_bindings: dict[str, tuple[str, ...]] = {}
+        self._chips: dict[str, Any] = {}
+        self._virtual_sources_by_line: dict[str, list[LogicSource]] = {}
+        self._boundary_lines: dict[str, tuple[str, ...]] = {}
         self._virtual_refs = {
             item.ref for item in package.chips
-            if item.part == "Virtual" or (ROOT / "DB" / "Virtual" / item.part).is_dir()
+            if item.part == "Virtual" or (ROOT / "lib" / "standard" / "virtual" / item.part).is_dir()
         }
         self._build()
 
@@ -105,6 +109,20 @@ class CircuitRunner:
                     issues.append(CircuitRunnerIssue(
                         "unsupported_part", f"$.chips[{index}].part", str(exc)
                     ))
+        self._chips = chips
+        if not issues:
+            for wire_index, wire in enumerate(self.package.wiring):
+                for endpoint_index, endpoint in enumerate(wire.connections):
+                    if not isinstance(endpoint, SymbolicEndpoint):
+                        continue
+                    try:
+                        self._resolve_symbolic_endpoint(wire.net, endpoint)
+                    except ValueError as exc:
+                        issues.append(CircuitRunnerIssue(
+                            "ambiguous_symbolic_width",
+                            f"$.wiring[{wire_index}].connections[{endpoint_index}]",
+                            str(exc),
+                        ))
         if not issues:
             for index, port in enumerate(self.package.ports):
                 if port.direction not in {"output", *self._INOUT_DIRECTIONS}:
@@ -131,11 +149,25 @@ class CircuitRunner:
         for wire in self.package.wiring:
             lines = self._expand_name(wire.net)
             self._net_lines[wire.net] = lines
+            for endpoint in wire.connections:
+                if isinstance(endpoint, BoundaryEndpoint) and endpoint.text.upper() not in {"VCC", "GND"}:
+                    previous = self._boundary_lines.get(endpoint.text)
+                    if previous is not None and previous != lines:
+                        self._operation_error(
+                            "ambiguous_boundary_mapping", endpoint.text,
+                            f"boundary {endpoint.text!r} maps to both {previous!r} and {lines!r}",
+                        )
+                    self._boundary_lines[endpoint.text] = lines
             numeric_connections = self._expand_numeric_connections(
                 wire.net, wire.connections, ignored_refs=self._virtual_refs
             )
             for line, endpoint, pin in numeric_connections:
                 self.board.connect(line, chips[endpoint.ref], pin)
+            for endpoint in wire.connections:
+                if isinstance(endpoint, SymbolicEndpoint):
+                    pins = self._resolve_symbolic_endpoint(wire.net, endpoint)
+                    for line, pin in zip(lines, pins):
+                        self.board.connect(line, chips[endpoint.ref], pin)
             for endpoint in wire.connections:
                 if isinstance(endpoint, NumericEndpoint) and endpoint.ref in self.virtual_adapters:
                     self.virtual_bindings[endpoint.ref] = lines
@@ -145,7 +177,8 @@ class CircuitRunner:
                         for index, line in enumerate(lines):
                             name = f"virtual:{endpoint.ref}" if len(lines) == 1 else f"virtual:{endpoint.ref}[{index}]"
                             if name not in self.board.sources:
-                                self.board.logic_source(name, line, initial)
+                                source = self.board.logic_source(name, line, initial)
+                                self._virtual_sources_by_line.setdefault(line, []).append(source)
             for endpoint in wire.connections:
                 if isinstance(endpoint, BoundaryEndpoint) and endpoint.text.upper() in {"VCC", "GND"}:
                     for line in lines:
@@ -155,7 +188,9 @@ class CircuitRunner:
                     self.board.attach_rail(wire.net.upper(), line)
 
         for port in self.package.ports:
-            lines = self._net_lines.get(port.name, self._expand_name(port.name))
+            lines = self._boundary_lines.get(
+                port.name, self._net_lines.get(port.name, self._expand_name(port.name))
+            )
             if port.direction == "input" or port.direction in self._INOUT_DIRECTIONS:
                 initial: Logic = Z if port.direction in self._INOUT_DIRECTIONS else 0
                 sources = tuple(
@@ -167,6 +202,9 @@ class CircuitRunner:
                     for index, line in enumerate(lines)
                 )
                 self.inputs[port.name] = sources[0] if len(sources) == 1 else sources
+                for line in lines:
+                    for source in self._virtual_sources_by_line.get(line, ()):
+                        source.enabled = False
             if port.direction == "output" or port.direction in self._INOUT_DIRECTIONS:
                 self.outputs[port.name] = lines
                 self.probes[port.name] = lines
@@ -183,8 +221,6 @@ class CircuitRunner:
             refs.add(chip.ref)
             if (circuit_root / chip.part / "circuit.json").is_file():
                 issues.append(CircuitRunnerIssue("composite_not_executable", f"{path}.part", f"nested circuit {chip.part!r} is not executable"))
-            if chip.symbolic_endpoints:
-                issues.append(CircuitRunnerIssue("symbolic_aggregate_not_executable", f"{path}.symbolic_endpoints", f"symbolic endpoints on {chip.ref!r} are not executable"))
 
         numeric_by_net: dict[str, list[NumericEndpoint]] = {}
         for wire_index, wire in enumerate(self.package.wiring):
@@ -194,9 +230,9 @@ class CircuitRunner:
                 if isinstance(endpoint, NumericEndpoint):
                     numeric_by_net[wire.net].append(endpoint)
                 elif isinstance(endpoint, SymbolicEndpoint):
-                    issues.append(CircuitRunnerIssue("symbolic_aggregate_not_executable", path, f"symbolic endpoint {endpoint.text!r} is not executable"))
-                elif isinstance(endpoint, BoundaryEndpoint) and endpoint.text != wire.net and endpoint.text.upper() not in {"VCC", "GND"}:
-                    issues.append(CircuitRunnerIssue("symbolic_aggregate_not_executable", path, f"boundary alias {endpoint.text!r} is not executable"))
+                    # Width and pin-name resolution require the live model and are
+                    # checked immediately after model construction.
+                    pass
 
             try:
                 self._expand_numeric_connections(
@@ -219,15 +255,32 @@ class CircuitRunner:
                 issues.append(CircuitRunnerIssue("unresolved_output", f"{path}.name", f"output {port.name!r} has no concrete chip endpoint"))
         return issues
 
+    def _resolve_symbolic_endpoint(
+        self, net: str, endpoint: SymbolicEndpoint
+    ) -> tuple[int, ...]:
+        chip = self._chips.get(endpoint.ref)
+        if chip is None:
+            raise ValueError(
+                f"symbolic endpoint {endpoint.text!r} has no concrete live chip instance"
+            )
+        width = len(self._expand_name(net))
+        exact = [pin.number for pin in chip.pins.values() if pin.name == endpoint.name]
+        indexed: list[tuple[int, int]] = []
+        for pin in chip.pins.values():
+            match = re.fullmatch(re.escape(endpoint.name) + r"(\d+)", pin.name)
+            if match:
+                indexed.append((int(match.group(1)), pin.number))
+        candidates = tuple(exact) if exact else tuple(pin for _, pin in sorted(indexed))
+        if len(candidates) != width:
+            raise ValueError(
+                f"symbolic endpoint {endpoint.text!r} resolves to width {len(candidates)}, "
+                f"expected {width} for {net!r}"
+            )
+        return candidates
+
     @classmethod
     def _expand_name(cls, name: str) -> tuple[str, ...]:
-        match = re.fullmatch(r"(.*?)(\d+)\.\.(?:\1)?(\d+)", name)
-        if match is None:
-            return (name,)
-        prefix, start_text, end_text = match.groups()
-        start, end = int(start_text), int(end_text)
-        step = 1 if end >= start else -1
-        return tuple(f"{prefix}{index}" for index in range(start, end + step, step))
+        return expand_boundary_name(name)
 
     @classmethod
     def _expand_numeric_connections(
@@ -287,16 +340,46 @@ class CircuitRunner:
         binding = self.inputs[name]
         sources = (binding,) if isinstance(binding, LogicSource) else binding
         values = self._coerce_vector(name, value, len(sources))
+        for source in sources:
+            for net in self.board.nets.values():
+                if source in net.sources:
+                    for virtual in self._virtual_sources_by_line.get(net.name, ()):
+                        virtual.enabled = False
         result = tuple(
-            self.board.set_source(source.name, item) for source, item in zip(sources, values)
+            self.board.set_source(source.name, item, enabled=True) for source, item in zip(sources, values)
         )
         self.board.settle()
         return result[0] if len(result) == 1 else result
 
     def release_input(self, name: str) -> Any:
         """Release an input or inout boundary to high impedance."""
+        result = self.set_input(name, Z)
+        binding = self.inputs[name]
+        sources = (binding,) if isinstance(binding, LogicSource) else binding
+        for source in sources:
+            for net in self.board.nets.values():
+                if source in net.sources:
+                    for virtual in self._virtual_sources_by_line.get(net.name, ()):
+                        virtual.enabled = True
+                    net.resolve()
+        self.board.settle()
+        return result
 
-        return self.set_input(name, Z)
+    def load_memory_image(
+        self, ref: str, image: str | Path, *, offset: int = 0,
+        fmt: str = "auto", clear: int | None = None,
+    ) -> int:
+        """Load ROM/RAM through a model's public mutable memory contract."""
+
+        chip = self._chips.get(ref)
+        if chip is None:
+            self._operation_error("unknown_chip", ref, f"chip ref {ref!r} is not bound")
+        try:
+            count = load_live_chip_memory(chip, image, offset=offset, fmt=fmt, clear=clear)
+        except ModelLoadError as exc:
+            self._operation_error("memory_image_not_loadable", ref, str(exc))
+        self.board.settle()
+        return count
 
     def _coerce_vector(self, name: str, value: Any, width: int) -> tuple[Logic, ...]:
         if width == 1:

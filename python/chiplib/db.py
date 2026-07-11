@@ -11,8 +11,8 @@ from typing import Any
 
 JsonMap = dict[str, Any]
 ROOT = Path(__file__).resolve().parents[2]
-DB_ROOT = ROOT / "DB"
-CHIP_STATUS_PATH = ROOT / "Docs" / "CHIP_STATUS.md"
+DB_ROOT = ROOT / "lib" / "standard"
+CHIP_STATUS_PATH = ROOT / "docs" / "CHIP_STATUS.md"
 DIGITAL_SCHEMA_PATH = DB_ROOT / "digital.schema.json"
 SPLIT_TEST_TYPES = ("truth_table", "timing", "tri_state", "bus_fight", "propagation")
 
@@ -379,7 +379,7 @@ def validate_digital_definition(definition: JsonMap) -> JsonMap:
 
     errors: list[JsonMap] = []
     part = str(definition.get("part", ""))
-    path = str(definition.get("definition_path", f"DB/*/{part}/definition/definition.json"))
+    path = str(definition.get("definition_path", f"lib/standard/*/{part}/definition/definition.json"))
     if definition.get("schema") != "db.component.digital":
         errors.append(_issue("digital_schema_invalid", part, path, "schema must be db.component.digital"))
     if not isinstance(definition.get("version"), int) or int(definition.get("version", 0)) < 1:
@@ -520,7 +520,7 @@ def validate_component_definition(definition: JsonMap) -> JsonMap:
 
     errors: list[JsonMap] = []
     part = str(definition.get("part", ""))
-    path = str(definition.get("definition_path", f"DB/*/{part}/definition/definition.json"))
+    path = str(definition.get("definition_path", f"lib/standard/*/{part}/definition/definition.json"))
     if definition.get("schema") != "db.component.definition":
         errors.append(_issue("component_schema_invalid", part, path, "schema must be db.component.definition"))
     if not isinstance(definition.get("version"), int) or int(definition.get("version", 0)) < 1:
@@ -586,7 +586,7 @@ def audit_db() -> JsonMap:
 
     for manifest in components:
         part = str(manifest.get("part", ""))
-        location = str(manifest.get("db_path", f"DB/*/{part}/definition/definition.json"))
+        location = str(manifest.get("db_path", f"lib/standard/*/{part}/definition/definition.json"))
         for key in manifest.get("missing_properties", []):
             errors.append(_issue("missing_property", part, location, f"missing status/property: {key}"))
         for path in manifest.get("missing_files", []):
@@ -759,7 +759,7 @@ def db_status_report() -> JsonMap:
                 "chip_status_missing_db_part",
                 part,
                 str(CHIP_STATUS_PATH.relative_to(ROOT)),
-                f"DB marks {part} as {generated_key}, but Docs/CHIP_STATUS.md does not list it in {status_key}",
+                f"DB marks {part} as {generated_key}, but docs/CHIP_STATUS.md does not list it in {status_key}",
             ))
         if status_key == "missing_datasheet":
             continue
@@ -769,7 +769,7 @@ def db_status_report() -> JsonMap:
                 "code": "chip_status_parts_missing_db",
                 "severity": "warning",
                 "category": status_key,
-                "message": f"{len(missing_db_parts)} Docs/CHIP_STATUS.md {status_key} parts do not have matching DB status yet",
+                "message": f"{len(missing_db_parts)} docs/CHIP_STATUS.md {status_key} parts do not have matching DB status yet",
                 "parts": missing_db_parts,
             })
 
@@ -963,7 +963,7 @@ def _group_summaries(components: list[JsonMap]) -> list[JsonMap]:
         result.append({
             "id": group_id,
             "title": index.get("title", group_id),
-            "path": index.get("path", f"DB/{group_id}"),
+            "path": index.get("path", f"lib/standard/{group_id}"),
             "count": counts[group_id],
             "migration_status": index.get("migration_status", ""),
         })
@@ -2135,17 +2135,17 @@ def _embedded_pinout_pins(path: Path) -> dict[int, str]:
 
 
 def _legacy_74hc_models() -> list[str]:
-    return [path.stem.upper() for path in (ROOT / "Verilog" / "74xx").glob("*.v")]
+    return [path.stem.upper() for path in (ROOT / "verilog" / "74xx").glob("*.v")]
 
 
 def _legacy_memory_models() -> list[str]:
-    return [_memory_part_id(path.stem) for path in (ROOT / "Verilog" / "Memory").glob("*.v")]
+    return [_memory_part_id(path.stem) for path in (ROOT / "verilog" / "memory").glob("*.v")]
 
 
 def _legacy_74hc_pinouts() -> list[str]:
     return [
         path.stem.upper()
-        for path in (ROOT / "Verilog" / "74xx").glob("*.v")
+        for path in (ROOT / "verilog" / "74xx").glob("*.v")
         if "Embedded pinout documentation" in path.read_text(encoding="utf-8")
     ]
 
@@ -2153,7 +2153,7 @@ def _legacy_74hc_pinouts() -> list[str]:
 def _legacy_memory_pinouts() -> list[str]:
     return [
         _memory_part_id(path.stem)
-        for path in (ROOT / "Verilog" / "Memory").glob("*.v")
+        for path in (ROOT / "verilog" / "memory").glob("*.v")
         if "Embedded pinout documentation" in path.read_text(encoding="utf-8")
     ]
 

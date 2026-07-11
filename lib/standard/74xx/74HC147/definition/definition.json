@@ -1,0 +1,537 @@
+{
+  "datasheet": {
+    "part": "74HC147",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "file": "source/74HC147_TI2_2202533.pdf",
+        "label": "Texas Instruments CD74HC147/CD74HCT147",
+        "package_evidence": "PDIP16 pinout in repository source PDF",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
+  },
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "file": "source/74HC147_TI2_2202533.pdf",
+        "label": "Texas Instruments CD74HC147/CD74HCT147",
+        "package_evidence": "PDIP16 pinout in repository source PDF",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC147",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      }
+    },
+    "pins": {
+      "part": "74HC147",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I4",
+          "number": 1
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I5",
+          "number": 2
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I6",
+          "number": 3
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I7",
+          "number": 4
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I8",
+          "number": 5
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y2",
+          "number": 6
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y1",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I0",
+          "number": 9
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I9",
+          "number": 10
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I1",
+          "number": 11
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I2",
+          "number": 12
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I3",
+          "number": 13
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y3",
+          "number": 14
+        },
+        {
+          "direction": "nc",
+          "name": "NC",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC147",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "TI CD74HC147 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+        "datasheet_typical_ns": {
+          "feature_tpd": 13
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local source PDF text; see docs/TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "file": "source/74HC147_TI2_2202533.pdf",
+        "label": "Texas Instruments CD74HC147/CD74HCT147",
+        "package_evidence": "PDIP16 pinout in repository source PDF",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC147",
+      "schema": "db.component.timing",
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "conditions": "TI CD74HC147 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+        "parameters": {
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "74HC147 is combinational and has no clocked Q output."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "74HC147 is combinational and has no clocked Q output."
+          },
+          "hold": {
+            "status": "not_applicable",
+            "reason": "74HC147 is combinational and has no setup/hold timing requirement."
+          },
+          "minimum_pulse_width": {
+            "status": "not_applicable",
+            "reason": "74HC147 is combinational and has no clock/reset/write pulse-width requirement."
+          },
+          "setup": {
+            "status": "not_applicable",
+            "reason": "74HC147 is combinational and has no setup/hold timing requirement."
+          },
+          "tPHL": {
+            "status": "exact",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_typical_ns": {
+                "feature_tpd": 13
+              }
+            },
+            "note": "TI section 4.5 explicitly gives the combined tPLH, tPHL input-to-output propagation-delay row; the shared row is exact for both canonical terms."
+          },
+          "tPHZ": {
+            "status": "not_applicable",
+            "reason": "74HC147 has no output-enable/high-Z control in the existing model."
+          },
+          "tPLH": {
+            "status": "exact",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_typical_ns": {
+                "feature_tpd": 13
+              }
+            },
+            "note": "TI section 4.5 explicitly gives the combined tPLH, tPHL input-to-output propagation-delay row; the shared row is exact for both canonical terms."
+          },
+          "tPLZ": {
+            "status": "not_applicable",
+            "reason": "74HC147 has no output-enable/high-Z control in the existing model."
+          },
+          "tPZH": {
+            "status": "not_applicable",
+            "reason": "74HC147 has no output-enable/high-Z control in the existing model."
+          },
+          "tPZL": {
+            "status": "not_applicable",
+            "reason": "74HC147 has no output-enable/high-Z control in the existing model."
+          }
+        }
+      }
+    }
+  },
+  "generation": {
+    "python": {
+      "class": "HC147",
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC147/simulation/model.py",
+      "part": "74HC147"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "lib/standard/74xx/74HC147/simulation/model.v",
+      "module": "ttl_74hc147",
+      "netlist": "lib/standard/74xx/74HC147/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "description": "10-line to 4-line priority encoder with active-low inputs and outputs",
+    "type": "10_line_to_4_line_priority_encoder_with"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "logic",
+    "title": "10-line to 4-line priority encoder with active-low inputs and outputs"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 16
+  },
+  "part": "74HC147",
+  "pins": [
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I4",
+      "number": 1
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I5",
+      "number": 2
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I6",
+      "number": 3
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I7",
+      "number": 4
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I8",
+      "number": 5
+    },
+    {
+      "active_low": true,
+      "direction": "output",
+      "name": "/Y2",
+      "number": 6
+    },
+    {
+      "active_low": true,
+      "direction": "output",
+      "name": "/Y1",
+      "number": 7
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 8,
+      "rail": "GND"
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I0",
+      "number": 9
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I9",
+      "number": 10
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I1",
+      "number": 11
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I2",
+      "number": 12
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I3",
+      "number": 13
+    },
+    {
+      "active_low": true,
+      "direction": "output",
+      "name": "/Y3",
+      "number": 14
+    },
+    {
+      "direction": "nc",
+      "name": "NC",
+      "number": 15
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 16,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "TI CD74HC147 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_typical_ns": {
+          "feature_tpd": 13
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "conditions": "TI CD74HC147 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+      "parameters": {
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "74HC147 is combinational and has no clocked Q output."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "74HC147 is combinational and has no clocked Q output."
+        },
+        "hold": {
+          "status": "not_applicable",
+          "reason": "74HC147 is combinational and has no setup/hold timing requirement."
+        },
+        "minimum_pulse_width": {
+          "status": "not_applicable",
+          "reason": "74HC147 is combinational and has no clock/reset/write pulse-width requirement."
+        },
+        "setup": {
+          "status": "not_applicable",
+          "reason": "74HC147 is combinational and has no setup/hold timing requirement."
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_typical_ns": {
+              "feature_tpd": 13
+            }
+          },
+          "note": "TI switching characteristics table gives direct propagation-delay timing for the priority encoder outputs; canonical propagation timing is preserved exactly."
+        },
+        "tPHZ": {
+          "status": "not_applicable",
+          "reason": "74HC147 has no output-enable/high-Z control in the existing model."
+        },
+        "tPLH": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_typical_ns": {
+              "feature_tpd": 13
+            }
+          },
+          "note": "TI switching characteristics table gives direct propagation-delay timing for the priority encoder outputs; canonical propagation timing is preserved exactly."
+        },
+        "tPLZ": {
+          "status": "not_applicable",
+          "reason": "74HC147 has no output-enable/high-Z control in the existing model."
+        },
+        "tPZH": {
+          "status": "not_applicable",
+          "reason": "74HC147 has no output-enable/high-Z control in the existing model."
+        },
+        "tPZL": {
+          "status": "not_applicable",
+          "reason": "74HC147 has no output-enable/high-Z control in the existing model."
+        }
+      }
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1,
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "Texas Instruments",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
+  }
+}

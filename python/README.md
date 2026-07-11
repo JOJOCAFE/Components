@@ -77,12 +77,12 @@ the behavior must remain compatible with the Python real-pin model.
 ## Current Coverage
 
 The Python package can instantiate every current Verilog component in
-`Components/Verilog/74xx` and `Components/Verilog/Memory` through `create_chip(part, name)`.
+`Components/verilog/74xx` and `Components/verilog/memory` through `create_chip(part, name)`.
 
 Coverage includes:
 
-- all 57 current `Verilog/74xx/*.v` parts
-- all 5 current `Verilog/Memory/*.v` parts
+- all 57 current `verilog/74xx/*.v` parts
+- all 5 current `verilog/memory/*.v` parts
 - the RV8GR-V2 starter set as hand-written models
 - the remaining Components parts as catalog models loaded from embedded or
   embedded pinout docs
@@ -92,7 +92,7 @@ absent from the Python catalog.
 
 ## Component DB
 
-`Components/DB` is the chip-centered DB layer. Each active IC folder owns a
+`Components/lib/standard` is the chip-centered component-library layer. Each active IC folder owns a
 canonical `definition/definition.json` file plus package-local
 `simulation/`, `tests/`, `symbol/`, and `generated/` layers. Virtual and
 Passive components also use `definition/definition.json`, with embedded
@@ -189,6 +189,6 @@ external input/clock stimulus channels, and rules for keeping Python and
 Verilog compatible.
 
 For students who want commands before Python code, start with
-`../Docs/STUDENT_GUIDE.md`. It shows the CLI, local API, student catalog, and RV8GR
+`../docs/STUDENT_GUIDE.md`. It shows the CLI, local API, student catalog, and RV8GR
 virtual physical-system checker with the hardware signoff boundary kept
 explicit.

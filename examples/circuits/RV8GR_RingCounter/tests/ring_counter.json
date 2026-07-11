@@ -1,0 +1,47 @@
+{
+  "schema": "components.lib.circuit.test.ring_counter",
+  "version": 1,
+  "circuit": "rv8gr_ring_counter",
+  "source": "examples/circuits/RV8GR_RingCounter/circuit.json",
+  "reset": {
+    "input": {"/CLR": 0},
+    "expect": {"T0": 0, "T1": 0, "T2": 0}
+  },
+  "sequence_after_reset": [
+    {"clock": 1, "expect": {"T0": 1, "T1": 0, "T2": 0}},
+    {"clock": 2, "expect": {"T0": 0, "T1": 1, "T2": 0}},
+    {"clock": 3, "expect": {"T0": 0, "T1": 0, "T2": 1}},
+    {"clock": 4, "expect": {"T0": 1, "T1": 0, "T2": 0}},
+    {"clock": 5, "expect": {"T0": 0, "T1": 1, "T2": 0}},
+    {"clock": 6, "expect": {"T0": 0, "T1": 0, "T2": 1}}
+  ],
+  "illegal_lower_state_recovery": {
+    "max_clocks": 3,
+    "normal_states": [
+      {"T0": 1, "T1": 0, "T2": 0},
+      {"T0": 0, "T1": 1, "T2": 0},
+      {"T0": 0, "T1": 0, "T2": 1}
+    ],
+    "states": [
+      {"T0": 0, "T1": 0, "T2": 0},
+      {"T0": 0, "T1": 1, "T2": 1},
+      {"T0": 1, "T1": 0, "T2": 1},
+      {"T0": 1, "T1": 1, "T2": 0},
+      {"T0": 1, "T1": 1, "T2": 1}
+    ]
+  },
+  "clock_profiles": [
+    {"name": "push_switch_single_step", "kind": "manual", "requires": "one clean debounced rising edge per press; bounce can skip phases"},
+    {"name": "push_switch_random_100", "kind": "manual", "ticks": 100, "max_interval_ms": 500, "seed": 35862, "requires": "one clean debounced rising edge per press; interval jitter must not add extra edges"},
+    {"name": "50_khz", "frequency_hz": 50000, "period_ns": 20000, "proof": "functional_edge_sequence"},
+    {"name": "1_mhz", "frequency_hz": 1000000, "period_ns": 1000, "proof": "functional_edge_sequence"},
+    {"name": "2_mhz", "frequency_hz": 2000000, "period_ns": 500, "proof": "functional_edge_sequence"},
+    {"name": "5_mhz", "frequency_hz": 5000000, "period_ns": 200, "proof": "functional_edge_sequence", "note": "Functional simulation only; physical 5 MHz requires timing-margin and signal-integrity proof."}
+  ],
+  "edge_criteria": {
+    "clocking": "edge_sensitive",
+    "trigger_edge": "rising",
+    "non_trigger_edge": "falling_or_no_rising_edge_holds_state",
+    "notes": "T0/T1/T2 change only after U8 rising clock edges or asynchronous /CLR."
+  }
+}

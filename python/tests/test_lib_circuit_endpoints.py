@@ -16,7 +16,7 @@ from chiplib.db import load_component
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CIRCUIT_ROOT = ROOT / "Lib" / "Circuits"
+CIRCUIT_ROOT = ROOT / "examples" / "circuits"
 REAL_PIN_RE = re.compile(r"^(?P<ref>[A-Za-z][A-Za-z0-9_]*)\.(?P<start>[0-9]+)(?:\.\.(?P<end>[0-9]+))?$")
 SYMBOLIC_REF_RE = re.compile(r"^(?P<ref>[A-Za-z][A-Za-z0-9_]*)\.(?P<token>[^\s,]+)$")
 NAME_RANGE_RE = re.compile(r"^(?P<prefix>/?[A-Za-z_]+)(?P<start>[0-9]+)\.\.(?:(?P=prefix))?(?P<end>[0-9]+)$")

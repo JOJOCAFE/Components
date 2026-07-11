@@ -34,17 +34,17 @@ REFERENCE_FILES = [
 
 
 LOCAL_FILES = [
-    "Verilog/74xx/74hc74.v",
-    "Verilog/74xx/74hc138.v",
-    "Verilog/74xx/74hc139.v",
-    "Verilog/74xx/74hc151.v",
-    "Verilog/74xx/74hc153.v",
-    "Verilog/74xx/74hc157.v",
-    "Verilog/74xx/74hc161.v",
-    "Verilog/74xx/74hc164.v",
-    "Verilog/74xx/74hc165.v",
-    "Verilog/74xx/74hc193.v",
-    "Verilog/74xx/74hc273.v",
+    "verilog/74xx/74hc74.v",
+    "verilog/74xx/74hc138.v",
+    "verilog/74xx/74hc139.v",
+    "verilog/74xx/74hc151.v",
+    "verilog/74xx/74hc153.v",
+    "verilog/74xx/74hc157.v",
+    "verilog/74xx/74hc161.v",
+    "verilog/74xx/74hc164.v",
+    "verilog/74xx/74hc165.v",
+    "verilog/74xx/74hc193.v",
+    "verilog/74xx/74hc273.v",
 ]
 
 

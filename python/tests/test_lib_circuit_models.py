@@ -18,8 +18,8 @@ from tests.test_lib_circuit_endpoints import audit_circuit_endpoints
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CIRCUITS = ROOT / "Lib" / "Circuits"
-DB = ROOT / "DB"
+CIRCUITS = ROOT / "examples" / "circuits"
+DB = ROOT / "lib" / "standard"
 
 BYTE_D = [2, 3, 4, 5, 6, 7, 8, 9]
 BYTE_Q = [19, 18, 17, 16, 15, 14, 13, 12]
@@ -277,17 +277,17 @@ def test_non_trace_part_model_smoke_inventory_is_explicit() -> None:
     expected_paths = {
         "RV8GR_AddressMux16": {"74HC157"},
         "RV8GR_AluAccumulator": {"74HC00", "74HC74", "74HC86", "74HC157", "74HC283", "74HC541", "74HC574", "74HC688"},
-        "RV8GR_BranchJumpControl": {"74HC00", "74HC86"},
+        "RV8GR_BranchJumpControl": {"74HC00", "74HC04", "74HC86"},
         "RV8GR_BusOwnership": {"74HC245", "74HC541", "62256", "AT28C256"},
         "RV8GR_DataPageMemory": {"74HC04", "74HC21", "74HC157", "74HC245", "74HC574", "62256", "AT28C256"},
-        "RV8GR_IRQLatch": {"74HC21", "74HC74"},
+        "RV8GR_IRQLatch": {"74HC74"},
         "RV8GR_InstructionLatch": {"74HC574"},
         "RV8GR_PC16": {"74HC161"},
         "RV8GR_PageDataRegisters": {"74HC00", "74HC21", "74HC32", "74HC574"},
-        "RV8GR_ResetClockBringup": {"74HC04", "74HC161", "74HC164"},
+        "RV8GR_ResetClockBringup": {"74HC04", "74HC32", "74HC161", "74HC164"},
         "RV8GR_RingCounter": {"74HC04", "74HC164"},
         "RV8GR_RomDbusRead": {"74HC245", "AT28C256"},
-        "RV8GR_StorePath": {"74HC00", "74HC86", "74HC245", "74HC541", "62256", "AT28C256"},
+        "RV8GR_StorePath": {"74HC00", "74HC04", "74HC86", "74HC245", "74HC541", "62256", "AT28C256"},
     }
     actual = {
         package: physical_parts(package)

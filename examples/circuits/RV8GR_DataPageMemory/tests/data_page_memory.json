@@ -1,0 +1,27 @@
+{
+  "schema": "components.lib.circuit.test.data_page_memory",
+  "version": 1,
+  "circuit": "rv8gr_data_page_memory",
+  "source": "examples/circuits/RV8GR_DataPageMemory/circuit.json",
+  "setdp_vectors": [
+    {"name": "setdp_80", "phase": "T2", "xor_mode": 1, "addr_mode_n": 1, "ac_wr_n": 1, "ibus": "0x80", "start_dp": "0x00", "expect_dp_load": 1, "expect_dp": "0x80"},
+    {"name": "setdp_alias_c0", "phase": "T2", "xor_mode": 1, "addr_mode_n": 1, "ac_wr_n": 1, "ibus": "0x90", "start_dp": "0x80", "expect_dp_load": 1, "expect_dp": "0x90"},
+    {"name": "not_setdp_when_addr_mode_data", "phase": "T2", "xor_mode": 1, "addr_mode_n": 0, "ac_wr_n": 1, "ibus": "0x70", "start_dp": "0x80", "expect_dp_load": 0, "expect_dp": "0x80"},
+    {"name": "not_setdp_when_ac_wr", "phase": "T2", "xor_mode": 1, "addr_mode_n": 1, "ac_wr_n": 0, "ibus": "0x70", "start_dp": "0x80", "expect_dp_load": 0, "expect_dp": "0x80"}
+  ],
+  "memory_vectors": [
+    {"name": "rom_boundary_7fff", "dp": "0x7F", "irl": "0xFF", "expect_address": "0x7FFF", "expect_rom_ce_n": 0, "expect_ram_ce_n": 1},
+    {"name": "ram_boundary_8000", "dp": "0x80", "irl": "0x00", "expect_address": "0x8000", "expect_rom_ce_n": 1, "expect_ram_ce_n": 0},
+    {"name": "ram_write_readback_8003", "dp": "0x80", "irl": "0x03", "write": "0xAA", "expect_read": "0xAA"},
+    {"name": "rom_read_via_dp_0000", "dp": "0x00", "irl": "0x00", "rom_value": "0x40", "expect_read": "0x40"},
+    {"name": "ram_write_readback_9000", "dp": "0x90", "irl": "0x00", "write": "0x55", "expect_read": "0x55"}
+  ],
+  "clock_profiles": [
+    {"name": "push_switch_single_step", "kind": "manual", "requires": "one clean DP_Load rising edge per SETDP"},
+    {"name": "push_switch_random_100", "kind": "manual", "ticks": 100, "max_interval_ms": 500, "seed": 35862, "requires": "one clean DP_Load rising edge per SETDP; interval jitter must not add extra loads"},
+    {"name": "50_khz", "frequency_hz": 50000, "period_ns": 20000, "proof": "functional_dp_load_capture"},
+    {"name": "1_mhz", "frequency_hz": 1000000, "period_ns": 1000, "proof": "functional_dp_load_capture"},
+    {"name": "2_mhz", "frequency_hz": 2000000, "period_ns": 500, "proof": "functional_dp_load_capture"},
+    {"name": "5_mhz", "frequency_hz": 5000000, "period_ns": 200, "proof": "functional_dp_load_capture", "note": "Functional simulation only; physical 5 MHz requires timing-margin and signal-integrity proof."}
+  ]
+}

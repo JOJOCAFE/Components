@@ -1,0 +1,43 @@
+{
+  "schema": "components.lib.circuit.test.fetch_cycle_trace",
+  "version": 1,
+  "circuit": "rv8gr_fetch_cycle_trace",
+  "source": "examples/circuits/RV8GR_FetchCycleTrace/circuit.json",
+  "rom_image": {
+    "0x0000": "0x30",
+    "0x0001": "0x42",
+    "0x0002": "0x10",
+    "0x0003": "0x01",
+    "0x0004": "0x90",
+    "0x0005": "0x43",
+    "0x0006": "0x02",
+    "0x0007": "0x08"
+  },
+  "initial_state": {"PC": "0x0000", "AC": "0x00", "Z": 1, "PG": "0x00", "DP": "0x80"},
+  "basic_fetch": [
+    {"cycle": 1, "phase": "T0", "expect_pc": "0x0001", "expect_irh": "0x30", "expect_irl": null, "expect_ac": "0x00", "expect_z": 1, "ibus_driver": "U7", "dbus_driver": "ROM1"},
+    {"cycle": 2, "phase": "T1", "expect_pc": "0x0002", "expect_irh": "0x30", "expect_irl": "0x42", "expect_ac": "0x00", "expect_z": 1, "ibus_driver": "U7", "dbus_driver": "ROM1"},
+    {"cycle": 3, "phase": "T2", "expect_pc": "0x0002", "expect_irh": "0x30", "expect_irl": "0x42", "expect_ac": "0x42", "expect_z": 0, "ibus_driver": "U34", "dbus_driver": "ROM1", "mnemonic": "LI"}
+  ],
+  "golden_trace": [
+    {"cycle": 1, "phase": "T0", "pc": "0x0000", "abus": "0x0000", "irh": "0x30", "irl": null, "mnemonic": null, "ac": "0x00", "z": 1, "pg": "0x00", "dp": "0x80", "note": "fetch ctrl"},
+    {"cycle": 2, "phase": "T1", "pc": "0x0001", "abus": "0x0001", "irh": "0x30", "irl": "0x42", "mnemonic": null, "ac": "0x00", "z": 1, "pg": "0x00", "dp": "0x80", "note": "fetch operand"},
+    {"cycle": 3, "phase": "T2", "pc": "0x0002", "abus": "0x0002", "irh": "0x30", "irl": "0x42", "mnemonic": "LI", "ac": "0x42", "z": 0, "pg": "0x00", "dp": "0x80", "note": "AC=$42"},
+    {"cycle": 4, "phase": "T0", "pc": "0x0002", "abus": "0x0002", "irh": "0x10", "irl": null, "mnemonic": null, "ac": "0x42", "z": 0, "pg": "0x00", "dp": "0x80", "note": "fetch ctrl"},
+    {"cycle": 5, "phase": "T1", "pc": "0x0003", "abus": "0x0003", "irh": "0x10", "irl": "0x01", "mnemonic": null, "ac": "0x42", "z": 0, "pg": "0x00", "dp": "0x80", "note": "fetch operand"},
+    {"cycle": 6, "phase": "T2", "pc": "0x0004", "abus": "0x0004", "irh": "0x10", "irl": "0x01", "mnemonic": "ADDI", "ac": "0x43", "z": 0, "pg": "0x00", "dp": "0x80", "note": "AC=$42+$01=$43"},
+    {"cycle": 7, "phase": "T0", "pc": "0x0004", "abus": "0x0004", "irh": "0x90", "irl": null, "mnemonic": null, "ac": "0x43", "z": 0, "pg": "0x00", "dp": "0x80", "note": "fetch ctrl"},
+    {"cycle": 8, "phase": "T1", "pc": "0x0005", "abus": "0x0005", "irh": "0x90", "irl": "0x43", "mnemonic": null, "ac": "0x43", "z": 0, "pg": "0x00", "dp": "0x80", "note": "fetch operand"},
+    {"cycle": 9, "phase": "T2", "pc": "0x0006", "abus": "0x0006", "irh": "0x90", "irl": "0x43", "mnemonic": "SUBI", "ac": "0x00", "z": 1, "pg": "0x00", "dp": "0x80", "note": "AC=$43-$43=$00"},
+    {"cycle": 10, "phase": "T0", "pc": "0x0006", "abus": "0x0006", "irh": "0x02", "irl": null, "mnemonic": null, "ac": "0x00", "z": 1, "pg": "0x00", "dp": "0x80", "note": "fetch ctrl"},
+    {"cycle": 11, "phase": "T1", "pc": "0x0007", "abus": "0x0007", "irh": "0x02", "irl": "0x08", "mnemonic": null, "ac": "0x00", "z": 1, "pg": "0x00", "dp": "0x80", "note": "fetch operand"},
+    {"cycle": 12, "phase": "T2", "pc": "0x0008", "abus": "0x0008", "irh": "0x02", "irl": "0x08", "mnemonic": "BEQ", "ac": "0x00", "z": 1, "pg": "0x00", "dp": "0x80", "note": "Z=1 branch taken"}
+  ],
+  "bus_driver_policy": {
+    "T0": {"ibus": ["U7"], "dbus": ["ROM1"]},
+    "T1": {"ibus": ["U7"], "dbus": ["ROM1"]},
+    "T2_immediate": {"ibus": ["U34"], "dbus": ["ROM1"]},
+    "reject": ["ibus_multi_driver", "dbus_multi_driver", "rom_ram_dual_select"]
+  },
+  "final_state": {"PC": "0x0008", "AC": "0x00", "Z": 1, "PG": "0x00", "DP": "0x80"}
+}

@@ -1,0 +1,685 @@
+{
+  "datasheet": {
+    "part": "74HC163",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "file": "source/74HC163_TI_27897_SN74HC163N_DIPVERIFY.pdf",
+        "label": "Legacy pinout datasheet source",
+        "package_evidence": "datasheet-required",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
+  },
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "file": "source/74HC163_TI_27897_SN74HC163N_DIPVERIFY.pdf",
+        "label": "Legacy pinout datasheet source",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC163",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      }
+    },
+    "pins": {
+      "part": "74HC163",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "MR",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "CP",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "D0",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "D1",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "D2",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "D3",
+          "number": 6
+        },
+        {
+          "direction": "input",
+          "name": "CEP",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "input",
+          "name": "PE",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "CET",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "Q3",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "Q2",
+          "number": 12
+        },
+        {
+          "direction": "output",
+          "name": "Q1",
+          "number": 13
+        },
+        {
+          "direction": "output",
+          "name": "Q0",
+          "number": 14
+        },
+        {
+          "direction": "output",
+          "name": "TC",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC163",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "TI SN74HC163 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_fmax_mhz": {
+          "min_125c": 21,
+          "min_25c": 31,
+          "min_85c": 25,
+          "typical": 40
+        },
+        "datasheet_max_ns_25c": {
+          "clock_to_q": 41,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "clock_to_q": 51,
+          "transition": 19
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "clock_to_q": 62,
+          "transition": 22
+        },
+        "datasheet_typical_ns": {
+          "clock_to_q": 25,
+          "transition": 8
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local source PDF text; see docs/TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "file": "source/74HC163_TI_27897_SN74HC163N_DIPVERIFY.pdf",
+        "label": "Legacy pinout datasheet source",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC163",
+      "schema": "db.component.timing",
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "parameters": {
+          "tPLH": {
+            "status": "exact",
+            "source_field": "switching characteristics tPLH/tPHL rows",
+            "values_ns": {
+              "clock_to_q": {
+                "typ": 25,
+                "max_25c": 41,
+                "max_minus40_to_85c": 51,
+                "max_minus55_to_125c": 62
+              }
+            },
+            "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry."
+          },
+          "tPHL": {
+            "status": "exact",
+            "source_field": "switching characteristics tPLH/tPHL rows",
+            "values_ns": {
+              "clock_to_q": {
+                "typ": 25,
+                "max_25c": 41,
+                "max_minus40_to_85c": 51,
+                "max_minus55_to_125c": 62
+              }
+            },
+            "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry."
+          },
+          "tPZH": {
+            "status": "not_applicable",
+            "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+          },
+          "tPZL": {
+            "status": "not_applicable",
+            "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+          },
+          "tPHZ": {
+            "status": "not_applicable",
+            "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+          },
+          "tPLZ": {
+            "status": "not_applicable",
+            "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+          },
+          "clock_to_q_high": {
+            "status": "exact",
+            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "values_ns": {
+              "typ": 25,
+              "max_25c": 41,
+              "max_minus40_to_85c": 51,
+              "max_minus55_to_125c": 62
+            },
+            "note": "Direct clock-to-Q table row; no polarity split is printed in the source."
+          },
+          "clock_to_q_low": {
+            "status": "exact",
+            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "values_ns": {
+              "typ": 25,
+              "max_25c": 41,
+              "max_minus40_to_85c": 51,
+              "max_minus55_to_125c": 62
+            },
+            "note": "Direct clock-to-Q table row; no polarity split is printed in the source."
+          },
+          "setup": {
+            "status": "exact",
+            "source_field": "timing requirements setup rows",
+            "values_ns": {
+              "enable_before_clk_rise_min": {
+                "vcc_2_v": 170,
+                "vcc_4_5_v": 34,
+                "vcc_6_v": 29
+              },
+              "load_before_clk_rise_min": {
+                "vcc_2_v": 135,
+                "vcc_4_5_v": 27,
+                "vcc_6_v": 23
+              },
+              "clear_low_before_clk_rise_min": {
+                "vcc_2_v": 160,
+                "vcc_4_5_v": 32,
+                "vcc_6_v": 27
+              },
+              "clear_inactive_before_clk_rise_min": {
+                "vcc_2_v": 160,
+                "vcc_4_5_v": 32,
+                "vcc_6_v": 27
+              }
+            },
+            "note": "Direct setup-time table rows before CLK rising edge."
+          },
+          "hold": {
+            "status": "exact",
+            "source_field": "timing requirements hold rows",
+            "values_ns": {
+              "synchronous_inputs_after_clk_rise_min": {
+                "vcc_2_v": 0,
+                "vcc_4_5_v": 0,
+                "vcc_6_v": 0
+              }
+            },
+            "note": "Direct hold-time table row after CLK rising edge for all synchronous inputs."
+          },
+          "minimum_pulse_width": {
+            "status": "exact",
+            "source_field": "timing requirements pulse-width rows",
+            "values_ns": {
+              "clock_high_or_low_min": {
+                "vcc_2_v": 80,
+                "vcc_4_5_v": 16,
+                "vcc_6_v": 14
+              }
+            },
+            "note": "Direct pulse-width table rows for CLK high or low."
+          }
+        },
+        "conditions": {
+          "load_pf": 50,
+          "ta_c": 25
+        }
+      }
+    }
+  },
+  "generation": {
+    "python": {
+      "class": "HC163",
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC163/simulation/model.py",
+      "part": "74HC163"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "lib/standard/74xx/74HC163/simulation/model.v",
+      "module": "ttl_74hc163",
+      "netlist": "lib/standard/74xx/74HC163/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "description": "presettable synchronous 4-bit binary counter, synchronous reset",
+    "type": "presettable_synchronous_4_bit_binary_counter_synchronous_reset"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "counter",
+    "title": "presettable synchronous 4-bit binary counter, synchronous reset"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 16
+  },
+  "part": "74HC163",
+  "pins": [
+    {
+      "direction": "input",
+      "name": "MR",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "CP",
+      "number": 2
+    },
+    {
+      "direction": "input",
+      "name": "D0",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "D1",
+      "number": 4
+    },
+    {
+      "direction": "input",
+      "name": "D2",
+      "number": 5
+    },
+    {
+      "direction": "input",
+      "name": "D3",
+      "number": 6
+    },
+    {
+      "direction": "input",
+      "name": "CEP",
+      "number": 7
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 8,
+      "rail": "GND"
+    },
+    {
+      "direction": "input",
+      "name": "PE",
+      "number": 9
+    },
+    {
+      "direction": "input",
+      "name": "CET",
+      "number": 10
+    },
+    {
+      "direction": "output",
+      "name": "Q3",
+      "number": 11
+    },
+    {
+      "direction": "output",
+      "name": "Q2",
+      "number": 12
+    },
+    {
+      "direction": "output",
+      "name": "Q1",
+      "number": 13
+    },
+    {
+      "direction": "output",
+      "name": "Q0",
+      "number": 14
+    },
+    {
+      "direction": "output",
+      "name": "TC",
+      "number": 15
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 16,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "TI SN74HC163 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_fmax_mhz": {
+          "min_125c": 21,
+          "min_25c": 31,
+          "min_85c": 25,
+          "typical": 40
+        },
+        "datasheet_max_ns_25c": {
+          "clock_to_q": 41,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "clock_to_q": 51,
+          "transition": 19
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "clock_to_q": 62,
+          "transition": 22
+        },
+        "datasheet_typical_ns": {
+          "clock_to_q": 25,
+          "transition": 8
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "clock_to_output_ns": {
+          "condition": "active clock edge",
+          "from": "CLK/clock control",
+          "parameter": "tco",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "Q/output"
+        },
+        "input_setup_margin_ns": {
+          "condition": "conservative setup placeholder from model delay",
+          "from": "D/input",
+          "parameter": "tsu",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "CLK/clock control"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "parameters": {
+        "tPLH": {
+          "status": "exact",
+          "source_field": "switching characteristics tPLH/tPHL rows",
+          "values_ns": {
+            "clock_to_q": {
+              "typ": 25,
+              "max_25c": 41,
+              "max_minus40_to_85c": 51,
+              "max_minus55_to_125c": 62
+            }
+          },
+          "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry."
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "switching characteristics tPLH/tPHL rows",
+          "values_ns": {
+            "clock_to_q": {
+              "typ": 25,
+              "max_25c": 41,
+              "max_minus40_to_85c": 51,
+              "max_minus55_to_125c": 62
+            }
+          },
+          "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry."
+        },
+        "tPZH": {
+          "status": "not_applicable",
+          "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+        },
+        "tPZL": {
+          "status": "not_applicable",
+          "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+        },
+        "tPHZ": {
+          "status": "not_applicable",
+          "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+        },
+        "tPLZ": {
+          "status": "not_applicable",
+          "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+        },
+        "clock_to_q_high": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "values_ns": {
+            "typ": 25,
+            "max_25c": 41,
+            "max_minus40_to_85c": 51,
+            "max_minus55_to_125c": 62
+          },
+          "note": "Direct clock-to-Q table row; no polarity split is printed in the source."
+        },
+        "clock_to_q_low": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "values_ns": {
+            "typ": 25,
+            "max_25c": 41,
+            "max_minus40_to_85c": 51,
+            "max_minus55_to_125c": 62
+          },
+          "note": "Direct clock-to-Q table row; no polarity split is printed in the source."
+        },
+        "setup": {
+          "status": "exact",
+          "source_field": "timing requirements setup rows",
+          "values_ns": {
+            "enable_before_clk_rise_min": {
+              "vcc_2_v": 170,
+              "vcc_4_5_v": 34,
+              "vcc_6_v": 29
+            },
+            "load_before_clk_rise_min": {
+              "vcc_2_v": 135,
+              "vcc_4_5_v": 27,
+              "vcc_6_v": 23
+            },
+            "clear_low_before_clk_rise_min": {
+              "vcc_2_v": 160,
+              "vcc_4_5_v": 32,
+              "vcc_6_v": 27
+            },
+            "clear_inactive_before_clk_rise_min": {
+              "vcc_2_v": 160,
+              "vcc_4_5_v": 32,
+              "vcc_6_v": 27
+            }
+          },
+          "note": "Direct setup-time table rows before CLK rising edge."
+        },
+        "hold": {
+          "status": "exact",
+          "source_field": "timing requirements hold rows",
+          "values_ns": {
+            "synchronous_inputs_after_clk_rise_min": {
+              "vcc_2_v": 0,
+              "vcc_4_5_v": 0,
+              "vcc_6_v": 0
+            }
+          },
+          "note": "Direct hold-time table row after CLK rising edge for all synchronous inputs."
+        },
+        "minimum_pulse_width": {
+          "status": "exact",
+          "source_field": "timing requirements pulse-width rows",
+          "values_ns": {
+            "clock_high_or_low_min": {
+              "vcc_2_v": 80,
+              "vcc_4_5_v": 16,
+              "vcc_6_v": 14
+            }
+          },
+          "note": "Direct pulse-width table rows for CLK high or low."
+        }
+      },
+      "conditions": {
+        "load_pf": 50,
+        "ta_c": 25
+      }
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1,
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "Texas Instruments",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
+  }
+}

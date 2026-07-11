@@ -1,0 +1,104 @@
+{
+  "schema": "components.lib.circuit.test.store_load_branch_trace",
+  "version": 1,
+  "circuit": "rv8gr_store_load_branch_trace",
+  "source": "examples/circuits/RV8GR_StoreLoadBranchTrace/circuit.json",
+  "source_traces": [
+    {"name": "SB", "doc_trace": "Trace 2", "opcode": "0x04"},
+    {"name": "BEQ", "doc_trace": "Trace 4", "opcode": "0x02"},
+    {"name": "LB", "doc_trace": "Trace 7", "opcode": "0x38"}
+  ],
+  "vectors": [
+    {
+      "name": "trace2_sb_ram_8003_gets_ac",
+      "mnemonic": "SB",
+      "phase": "T2",
+      "opcode": "0x04",
+      "operand": "0x03",
+      "initial": {"PC": "0x0002", "PG": "0x00", "DP": "0x80", "AC": "0xAA", "Z": 0, "RAM": {"0x8003": "0x00"}},
+      "expect": {
+        "ABUS": "0x8003",
+        "IBUS": "0xAA",
+        "DBUS": "0xAA",
+        "PC": "0x0002",
+        "AC": "0xAA",
+        "Z": 0,
+        "RAM": {"0x8003": "0xAA"},
+        "ibus_drivers": ["U14"],
+        "dbus_drivers": ["U7"],
+        "u7_direction": "IBUS_TO_DBUS",
+        "conflict": false
+      }
+    },
+    {
+      "name": "trace7_lb_ram_8003_to_ac",
+      "mnemonic": "LB",
+      "phase": "T2",
+      "opcode": "0x38",
+      "operand": "0x03",
+      "initial": {"PC": "0x0004", "PG": "0x00", "DP": "0x80", "AC": "0x00", "Z": 1, "RAM": {"0x8003": "0xAA"}},
+      "expect": {
+        "ABUS": "0x8003",
+        "IBUS": "0xAA",
+        "DBUS": "0xAA",
+        "PC": "0x0004",
+        "AC": "0xAA",
+        "Z": 0,
+        "RAM": {"0x8003": "0xAA"},
+        "ibus_drivers": ["U7"],
+        "dbus_drivers": ["RAM1"],
+        "u7_direction": "DBUS_TO_IBUS",
+        "conflict": false
+      }
+    },
+    {
+      "name": "trace4_beq_z1_loads_pc_0020",
+      "mnemonic": "BEQ",
+      "phase": "T2",
+      "opcode": "0x02",
+      "operand": "0x20",
+      "initial": {"PC": "0x0006", "PG": "0x00", "DP": "0x80", "AC": "0x00", "Z": 1, "RAM": {"0x8003": "0xAA"}},
+      "expect": {
+        "ABUS": "0x0006",
+        "IBUS": "0x20",
+        "DBUS": null,
+        "PC": "0x0020",
+        "AC": "0x00",
+        "Z": 1,
+        "RAM": {"0x8003": "0xAA"},
+        "ibus_drivers": ["U34"],
+        "dbus_drivers": ["ROM1"],
+        "u7_direction": "DISABLED",
+        "conflict": false
+      }
+    },
+    {
+      "name": "beq_z0_does_not_load_pc",
+      "mnemonic": "BEQ",
+      "phase": "T2",
+      "opcode": "0x02",
+      "operand": "0x20",
+      "initial": {"PC": "0x0008", "PG": "0x00", "DP": "0x80", "AC": "0x11", "Z": 0, "RAM": {"0x8003": "0xAA"}},
+      "expect": {
+        "ABUS": "0x0008",
+        "IBUS": "0x20",
+        "DBUS": null,
+        "PC": "0x0008",
+        "AC": "0x11",
+        "Z": 0,
+        "RAM": {"0x8003": "0xAA"},
+        "ibus_drivers": ["U34"],
+        "dbus_drivers": ["ROM1"],
+        "u7_direction": "DISABLED",
+        "conflict": false
+      }
+    }
+  ],
+  "bus_safety": {
+    "store": "SB uses U14 as the only IBUS driver and U7 as the only DBUS driver; RAM output is disabled by /WE=0.",
+    "load": "LB uses RAM as the only DBUS driver and U7 as the only IBUS driver.",
+    "branch": "BEQ uses U34 as the only IBUS driver. DBUS may still show ROM data, but U7 is disabled so it does not affect IBUS.",
+    "reject": ["ibus_multi_driver", "dbus_multi_driver", "rom_ram_dual_select"]
+  },
+  "final_state": {"PC": "0x0020", "AC": "0x00", "Z": 1, "RAM": {"0x8003": "0xAA"}}
+}

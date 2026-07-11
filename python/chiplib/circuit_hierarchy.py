@@ -14,6 +14,7 @@ from .circuit_package import CIRCUIT_ROOT, CircuitPackage, SymbolicEndpoint, loa
 
 
 NON_BINDING_DIRECTIONS = frozenset({"internal", "absent", "power"})
+PROOF_GATE_BEHAVIOR_KEYS = frozenset({"coverage_rule", "system_rule"})
 
 
 @dataclass(frozen=True)
@@ -113,6 +114,15 @@ def flatten_circuit_hierarchy(
             issues.append(HierarchyIssue("hierarchy_cycle", prefix or current.id, cycle))
             return
 
+        proof_gate_reason = _independent_proof_gate_reason(current, available)
+        if proof_gate_reason is not None:
+            issues.append(HierarchyIssue(
+                "independent_proof_scenarios_not_composable",
+                prefix or current.id,
+                proof_gate_reason,
+            ))
+            return
+
         local_nets = {wire.net: _qualify(prefix, wire.net) for wire in current.wiring}
         nets.update(local_nets.values())
         endpoint_bindings: dict[tuple[str, str], list[str]] = {}
@@ -182,3 +192,38 @@ def flatten_circuit_hierarchy(
 
 def _qualify(prefix: str, name: str) -> str:
     return f"{prefix}.{name}" if prefix else name
+
+
+def _independent_proof_gate_reason(
+    package: CircuitPackage,
+    catalog: Mapping[str, CircuitPackage],
+) -> str | None:
+    """Identify a verification aggregate that is not an electrical hierarchy.
+
+    A proof gate may list circuit packages so their separate results are all
+    required, but that does not authorize tying same-named ports together.
+    The package contract must explicitly describe proof reuse and must contain
+    more than one child circuit before this guard applies.
+    """
+
+    behavior = package.raw.get("behavior")
+    if not isinstance(behavior, Mapping):
+        return None
+    statements = [
+        str(behavior[key]).lower()
+        for key in sorted(PROOF_GATE_BEHAVIOR_KEYS)
+        if key in behavior
+    ]
+    explicitly_reuses_proofs = any(
+        "references existing executable circuit proofs" in statement
+        or "proofs must all be part of the gate" in statement
+        for statement in statements
+    )
+    child_refs = sorted(chip.ref for chip in package.chips if chip.part in catalog)
+    if not explicitly_reuses_proofs or len(child_refs) < 2:
+        return None
+    return (
+        "verification children are independent proof scenarios, not electrical "
+        f"subcircuits ({', '.join(child_refs)}); run their proofs separately and "
+        "aggregate results instead of paralleling same-named ports"
+    )

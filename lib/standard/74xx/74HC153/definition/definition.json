@@ -1,0 +1,675 @@
+{
+  "datasheet": {
+    "part": "74HC153",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC153",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc153.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic",
+          "timing",
+          "electrical"
+        ]
+      }
+    ],
+    "version": 1
+  },
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "output_drive": {
+          "status": "extracted",
+          "vcc_4_5_v": {
+            "ioh_ma": -6,
+            "iol_ma": 6
+          },
+          "vcc_6_v": {
+            "ioh_ma": -7.8,
+            "iol_ma": 7.8
+          }
+        },
+        "supply_current": {
+          "status": "extracted",
+          "vcc_6_v_max_ua": 80
+        }
+      },
+      "evidence": {
+        "file": "source/74HC153_TI_SN74HC153.pdf",
+        "label": "Texas Instruments SN74HC153",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc153.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic",
+          "electrical"
+        ]
+      },
+      "loading": {
+        "input_capacitance": {
+          "max_pf": 10,
+          "status": "extracted",
+          "typ_pf": 3
+        }
+      },
+      "part": "74HC153",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "max_v": 6.0,
+          "min_v": 2.0,
+          "status": "extracted",
+          "typ_v": 5.0
+        }
+      }
+    },
+    "pins": {
+      "part": "74HC153",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/1G",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "B",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "1C3",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "1C2",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "1C1",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "1C0",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "1Y",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "2Y",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "2C0",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "2C1",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "2C2",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "2C3",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "A",
+          "number": 14
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/2G",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC153",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": {
+          "device": "SN74HC153",
+          "load_capacitance_pf": 50,
+          "paths": [
+            "select_to_y",
+            "data_to_y",
+            "enable_to_y",
+            "transition_y"
+          ]
+        },
+        "datasheet_max_ns_25c": {
+          "data_to_y": {
+            "vcc_4_5_v": 28,
+            "vcc_6_v": 23
+          },
+          "enable_to_y": {
+            "vcc_4_5_v": 19,
+            "vcc_6_v": 16
+          },
+          "select_to_y": {
+            "vcc_4_5_v": 30,
+            "vcc_6_v": 26
+          },
+          "transition_y": {
+            "vcc_4_5_v": 12,
+            "vcc_6_v": 10
+          }
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "data_to_y": {
+            "vcc_4_5_v": 35,
+            "vcc_6_v": 29
+          },
+          "enable_to_y": {
+            "vcc_4_5_v": 24,
+            "vcc_6_v": 20
+          },
+          "select_to_y": {
+            "vcc_4_5_v": 38,
+            "vcc_6_v": 32
+          },
+          "transition_y": {
+            "vcc_4_5_v": 15,
+            "vcc_6_v": 13
+          }
+        },
+        "datasheet_typical_ns": {
+          "data_to_y": {
+            "vcc_4_5_v": 17,
+            "vcc_6_v": 14
+          },
+          "enable_to_y": {
+            "vcc_4_5_v": 11,
+            "vcc_6_v": 9
+          },
+          "select_to_y": {
+            "vcc_4_5_v": 21,
+            "vcc_6_v": 17
+          },
+          "transition_y": {
+            "vcc_4_5_v": 8,
+            "vcc_6_v": 6
+          }
+        },
+        "default_ns": 15,
+        "source": "simulation default from Python model",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "file": "source/74HC153_TI_SN74HC153.pdf",
+        "label": "Texas Instruments SN74HC153",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc153.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic",
+          "timing"
+        ]
+      },
+      "part": "74HC153",
+      "schema": "db.component.timing",
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_timing_model",
+        "parameters": {
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "74HC153 is combinational and has no clocked Q output."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "74HC153 is combinational and has no clocked Q output."
+          },
+          "hold": {
+            "status": "not_applicable",
+            "reason": "74HC153 is combinational and has no setup/hold timing requirement."
+          },
+          "minimum_pulse_width": {
+            "status": "not_applicable",
+            "reason": "74HC153 is combinational and has no clock/reset/write pulse-width requirement."
+          },
+          "setup": {
+            "status": "not_applicable",
+            "reason": "74HC153 is combinational and has no setup/hold timing requirement."
+          },
+          "tPHL": {
+            "status": "exact",
+            "source_field": "TI SN74HC153 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
+            "values_ns": {
+              "datasheet_typical_ns": {
+                "select_to_output": 21,
+                "data_to_output": 17,
+                "enable_to_output": 11,
+                "transition": 8
+              },
+              "datasheet_max_ns_25c": {
+                "select_to_output": 30,
+                "data_to_output": 28,
+                "enable_to_output": 19,
+                "transition": 12
+              },
+              "datasheet_max_ns_sn74": {
+                "select_to_output": 38,
+                "data_to_output": 35,
+                "enable_to_output": 24,
+                "transition": 15
+              },
+              "datasheet_max_ns_sn54": {
+                "select_to_output": 45,
+                "data_to_output": 42,
+                "enable_to_output": 28,
+                "transition": 18
+              }
+            },
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
+          },
+          "tPHZ": {
+            "status": "not_applicable",
+            "reason": "74HC153 has no output-enable/high-Z control in the existing model."
+          },
+          "tPLH": {
+            "status": "exact",
+            "source_field": "TI SN74HC153 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
+            "values_ns": {
+              "datasheet_typical_ns": {
+                "select_to_output": 21,
+                "data_to_output": 17,
+                "enable_to_output": 11,
+                "transition": 8
+              },
+              "datasheet_max_ns_25c": {
+                "select_to_output": 30,
+                "data_to_output": 28,
+                "enable_to_output": 19,
+                "transition": 12
+              },
+              "datasheet_max_ns_sn74": {
+                "select_to_output": 38,
+                "data_to_output": 35,
+                "enable_to_output": 24,
+                "transition": 15
+              },
+              "datasheet_max_ns_sn54": {
+                "select_to_output": 45,
+                "data_to_output": 42,
+                "enable_to_output": 28,
+                "transition": 18
+              }
+            },
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
+          },
+          "tPLZ": {
+            "status": "not_applicable",
+            "reason": "74HC153 has no output-enable/high-Z control in the existing model."
+          },
+          "tPZH": {
+            "status": "not_applicable",
+            "reason": "74HC153 has no output-enable/high-Z control in the existing model."
+          },
+          "tPZL": {
+            "status": "not_applicable",
+            "reason": "74HC153 has no output-enable/high-Z control in the existing model."
+          }
+        }
+      }
+    }
+  },
+  "generation": {
+    "python": {
+      "class": "HC153",
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC153/simulation/model.py",
+      "part": "74HC153"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "lib/standard/74xx/74HC153/simulation/model.v",
+      "module": "ttl_74hc153",
+      "netlist": "lib/standard/74xx/74HC153/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "description": "Dual 4-Line to 1-Line Data Selector/Multiplexer",
+    "type": "dual_4_line_to_1_line_data_selector"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "multiplexer",
+    "title": "Dual 4-Line to 1-Line Data Selector/Multiplexer"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 16
+  },
+  "part": "74HC153",
+  "pins": [
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/1G",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "B",
+      "number": 2
+    },
+    {
+      "direction": "input",
+      "name": "1C3",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "1C2",
+      "number": 4
+    },
+    {
+      "direction": "input",
+      "name": "1C1",
+      "number": 5
+    },
+    {
+      "direction": "input",
+      "name": "1C0",
+      "number": 6
+    },
+    {
+      "direction": "output",
+      "name": "1Y",
+      "number": 7
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 8,
+      "rail": "GND"
+    },
+    {
+      "direction": "output",
+      "name": "2Y",
+      "number": 9
+    },
+    {
+      "direction": "input",
+      "name": "2C0",
+      "number": 10
+    },
+    {
+      "direction": "input",
+      "name": "2C1",
+      "number": 11
+    },
+    {
+      "direction": "input",
+      "name": "2C2",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "2C3",
+      "number": 13
+    },
+    {
+      "direction": "input",
+      "name": "A",
+      "number": 14
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/2G",
+      "number": 15
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 16,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_timing_model",
+      "parameters": {
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "74HC153 is combinational and has no clocked Q output."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "74HC153 is combinational and has no clocked Q output."
+        },
+        "hold": {
+          "status": "not_applicable",
+          "reason": "74HC153 is combinational and has no setup/hold timing requirement."
+        },
+        "minimum_pulse_width": {
+          "status": "not_applicable",
+          "reason": "74HC153 is combinational and has no clock/reset/write pulse-width requirement."
+        },
+        "setup": {
+          "status": "not_applicable",
+          "reason": "74HC153 is combinational and has no setup/hold timing requirement."
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "TI SN74HC153 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
+          "values_ns": {
+            "datasheet_typical_ns": {
+              "select_to_output": 21,
+              "data_to_output": 17,
+              "enable_to_output": 11,
+              "transition": 8
+            },
+            "datasheet_max_ns_25c": {
+              "select_to_output": 30,
+              "data_to_output": 28,
+              "enable_to_output": 19,
+              "transition": 12
+            },
+            "datasheet_max_ns_sn74": {
+              "select_to_output": 38,
+              "data_to_output": 35,
+              "enable_to_output": 24,
+              "transition": 15
+            },
+            "datasheet_max_ns_sn54": {
+              "select_to_output": 45,
+              "data_to_output": 42,
+              "enable_to_output": 28,
+              "transition": 18
+            }
+          },
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
+        },
+        "tPHZ": {
+          "status": "not_applicable",
+          "reason": "74HC153 has no output-enable/high-Z control in the existing model."
+        },
+        "tPLH": {
+          "status": "exact",
+          "source_field": "TI SN74HC153 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
+          "values_ns": {
+            "datasheet_typical_ns": {
+              "select_to_output": 21,
+              "data_to_output": 17,
+              "enable_to_output": 11,
+              "transition": 8
+            },
+            "datasheet_max_ns_25c": {
+              "select_to_output": 30,
+              "data_to_output": 28,
+              "enable_to_output": 19,
+              "transition": 12
+            },
+            "datasheet_max_ns_sn74": {
+              "select_to_output": 38,
+              "data_to_output": 35,
+              "enable_to_output": 24,
+              "transition": 15
+            },
+            "datasheet_max_ns_sn54": {
+              "select_to_output": 45,
+              "data_to_output": 42,
+              "enable_to_output": 28,
+              "transition": 18
+            }
+          },
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
+        },
+        "tPLZ": {
+          "status": "not_applicable",
+          "reason": "74HC153 has no output-enable/high-Z control in the existing model."
+        },
+        "tPZH": {
+          "status": "not_applicable",
+          "reason": "74HC153 has no output-enable/high-Z control in the existing model."
+        },
+        "tPZL": {
+          "status": "not_applicable",
+          "reason": "74HC153 has no output-enable/high-Z control in the existing model."
+        }
+      }
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1,
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "Texas Instruments",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
+  }
+}

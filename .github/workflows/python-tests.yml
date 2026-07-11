@@ -5,6 +5,31 @@ on:
   pull_request:
 
 jobs:
+  circuit-campaign-promotion:
+    name: Circuit campaign promotion gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Verify repository layout
+        run: python3 -B tools/verify_repository_layout.py
+
+      - name: Verify execution-derived campaign artifacts
+        run: PYTHONPATH=python python3 -B tools/circuit_campaign_report.py --check
+
+      - name: Run package promotion and campaign gates
+        working-directory: python
+        run: |
+          python3 -B -m tests.test_circuit_runner_packages
+          python3 -B -m tests.test_circuit_timing
+          python3 -B -m tests.test_lib_circuit_campaign
+
   python-tests:
     runs-on: ubuntu-latest
     steps:
@@ -22,6 +47,7 @@ jobs:
           python3 -B -m tests.test_chips
           python3 -B -m tests.test_generated_split_records
           python3 -B -m tests.test_generated_audit_reports
+          python3 -B -m tests.test_repository_layout
           python3 -B -m tests.test_design
           python3 -B -m tests.test_block_ui
           python3 -B -m tests.test_netlist

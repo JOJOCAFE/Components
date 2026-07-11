@@ -15,7 +15,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "Docs" / "VERILOG_BEHAVIOR_CROSSCHECK_REPORT.md"
+REPORT = ROOT / "docs" / "VERILOG_BEHAVIOR_CROSSCHECK_REPORT.md"
 sys.path.insert(0, str(ROOT / "python"))
 sys.path.insert(0, str(ROOT / "tools"))
 
@@ -98,8 +98,8 @@ def verilog_port_directions(path: Path) -> dict[str, str]:
 def package_dirs() -> list[Path]:
     return sorted(
         path.parent.parent
-        for path in (ROOT / "DB").glob("*/*/simulation/model.v")
-        if path.parent.parent.parent.name in {"74xx", "Memory"}
+        for path in (ROOT / "lib" / "standard").glob("*/*/simulation/model.v")
+        if path.parent.parent.parent.name in {"74xx", "memory"}
         and (path.parent / "model.py").exists()
         and (path.parent / "netlist.json").exists()
         and (path.parent.parent / "tests" / "truth_table.json").exists()
@@ -475,7 +475,7 @@ def verilog_compile_inputs(part_dir: Path) -> list[str]:
     text = model.read_text(encoding="utf-8")
     files: list[Path] = []
     if "mem_62256" in text and part_dir.name != "62256":
-        files.append(ROOT / "DB" / "Memory" / "62256" / "simulation" / "model.v")
+        files.append(ROOT / "lib" / "standard" / "memory" / "62256" / "simulation" / "model.v")
     files.append(model)
     return [str(path) for path in files]
 

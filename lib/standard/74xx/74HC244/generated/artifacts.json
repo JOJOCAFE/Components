@@ -1,0 +1,877 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
+      ],
+      "overview": "74HC244 is a 20-pin DIP part for buffer.",
+      "part": "74HC244",
+      "pin_count": 20,
+      "pin_summary": {
+        "input": {
+          "count": 10,
+          "names": [
+            "/1OE",
+            "1A1",
+            "1A2",
+            "1A3",
+            "1A4",
+            "2A1",
+            "2A2",
+            "2A3",
+            "2A4",
+            "/2OE"
+          ],
+          "note": "Input pins: /1OE, 1A1, 1A2, 1A3, 1A4, 2A1, and 4 more."
+        },
+        "output": {
+          "count": 8,
+          "names": [
+            "2Y4",
+            "2Y3",
+            "2Y2",
+            "2Y1",
+            "1Y4",
+            "1Y3",
+            "1Y2",
+            "1Y1"
+          ],
+          "note": "Output pins: 2Y4, 2Y3, 2Y2, 2Y1, 1Y4, 1Y3, and 2 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "Octal Buffer/Line Driver.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
+      "title": "Octal Buffer/Line Driver",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "/1OE controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/1OE - input",
+          "pin": "/1OE"
+        },
+        {
+          "explanation": "1A1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1A1 - input",
+          "pin": "1A1"
+        },
+        {
+          "explanation": "1A2 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1A2 - input",
+          "pin": "1A2"
+        },
+        {
+          "explanation": "1A3 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1A3 - input",
+          "pin": "1A3"
+        },
+        {
+          "explanation": "1A4 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1A4 - input",
+          "pin": "1A4"
+        },
+        {
+          "explanation": "2A1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2A1 - input",
+          "pin": "2A1"
+        },
+        {
+          "explanation": "2A2 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2A2 - input",
+          "pin": "2A2"
+        },
+        {
+          "explanation": "2A3 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2A3 - input",
+          "pin": "2A3"
+        },
+        {
+          "explanation": "2A4 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2A4 - input",
+          "pin": "2A4"
+        },
+        {
+          "explanation": "/2OE controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/2OE - input",
+          "pin": "/2OE"
+        }
+      ],
+      "controls": [
+        "/1OE",
+        "1A1",
+        "1A2",
+        "1A3",
+        "1A4",
+        "2A1",
+        "2A2",
+        "2A3",
+        "2A4",
+        "/2OE"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC244",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y4",
+          "name": "2Y4"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y3",
+          "name": "2Y3"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y2",
+          "name": "2Y2"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y1",
+          "name": "2Y1"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y4",
+          "name": "1Y4"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y3",
+          "name": "1Y3"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y2",
+          "name": "1Y2"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y1",
+          "name": "1Y1"
+        }
+      ],
+      "probes": [
+        "2Y4",
+        "2Y3",
+        "2Y2",
+        "2Y1",
+        "1Y4",
+        "1Y3",
+        "1Y2",
+        "1Y1"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change /1OE?",
+        "Which truth-table row matches the value on 2Y4?"
+      ],
+      "title": "Try 74HC244 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "Octal Buffer/Line Driver",
+        "type": "octal_buffer_line_driver"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 20
+      },
+      "part": "74HC244",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/1OE",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1A1",
+          "number": 2
+        },
+        {
+          "direction": "output",
+          "name": "2Y4",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "1A2",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "2Y3",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "1A3",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "2Y2",
+          "number": 7
+        },
+        {
+          "direction": "input",
+          "name": "1A4",
+          "number": 8
+        },
+        {
+          "direction": "output",
+          "name": "2Y1",
+          "number": 9
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "direction": "input",
+          "name": "2A1",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "1Y4",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "2A2",
+          "number": 13
+        },
+        {
+          "direction": "output",
+          "name": "1Y3",
+          "number": 14
+        },
+        {
+          "direction": "input",
+          "name": "2A3",
+          "number": 15
+        },
+        {
+          "direction": "output",
+          "name": "1Y2",
+          "number": 16
+        },
+        {
+          "direction": "input",
+          "name": "2A4",
+          "number": 17
+        },
+        {
+          "direction": "output",
+          "name": "1Y1",
+          "number": 18
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/2OE",
+          "number": 19
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 10
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 20
+        }
+      ],
+      "role": "buffer",
+      "timing": {
+        "datasheet": {
+          "conditions": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns_25c": {
+              "input_to_output": 23
+            },
+            "datasheet_max_ns_minus40_to_125c": {
+              "input_to_output": 34
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "input_to_output": 29
+            },
+            "datasheet_typical_ns": {
+              "input_to_output": 13
+            }
+          }
+        },
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output"
+            },
+            "output_disable_to_high_z_ns": {
+              "condition": "enable control released",
+              "from": "output-enable control",
+              "parameter": "tdis",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output high-Z"
+            },
+            "output_enable_to_output_ns": {
+              "condition": "enable control asserted",
+              "from": "output-enable control",
+              "parameter": "ten",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output driven"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC244 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC244 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC244 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC244 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC244 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 23,
+                "max_sn54": 34,
+                "max_sn74": 29,
+                "typ": 13
+              }
+            },
+            "tPHZ": {
+              "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 15
+              }
+            },
+            "tPLH": {
+              "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 23,
+                "max_sn54": 34,
+                "max_sn74": 29,
+                "typ": 13
+              }
+            },
+            "tPLZ": {
+              "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 15
+              }
+            },
+            "tPZH": {
+              "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 15
+              }
+            },
+            "tPZL": {
+              "note": "TI SN74HC244 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC244 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 15
+              }
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
+      },
+      "title": "Octal Buffer/Line Driver"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/1OE",
+        "10": "GND",
+        "11": "2A1",
+        "13": "2A2",
+        "15": "2A3",
+        "17": "2A4",
+        "19": "/2OE",
+        "2": "1A1",
+        "20": "VCC",
+        "4": "1A2",
+        "6": "1A3",
+        "8": "1A4"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC244",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC244",
+      "copy_with_chip": [
+        "lib/standard/74xx/74HC244/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC244/simulation/model.py",
+      "part": "74HC244",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "/1OE",
+        "10": "GND",
+        "11": "2A1",
+        "13": "2A2",
+        "15": "2A3",
+        "17": "2A4",
+        "19": "/2OE",
+        "2": "1A1",
+        "20": "VCC",
+        "4": "1A2",
+        "6": "1A3",
+        "8": "1A4"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "part": "74HC244",
+      "pins": 20,
+      "right": [
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC244",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC244",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "output_enable_to_output_metadata",
+            "output_disable_to_high_z_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "output_enable_to_output_metadata",
+            "output_disable_to_high_z_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC244",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc244",
+      "compile": {
+        "sources": [
+          "lib/standard/74xx/74HC244/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc244"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc244",
+      "part": "74HC244",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC244",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "output_enable_to_output_metadata",
+            "output_disable_to_high_z_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "output_enable_to_output_metadata",
+            "output_disable_to_high_z_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC244",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          3,
+          5,
+          7,
+          9,
+          12,
+          14,
+          16,
+          18
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "OE1_bar",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "OE2_bar",
+            "pins": [
+              19
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              2,
+              4,
+              6,
+              8,
+              11,
+              13,
+              15,
+              17
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y",
+            "pins": [
+              18,
+              16,
+              14,
+              12,
+              9,
+              7,
+              5,
+              3
+            ]
+          }
+        ]
+      },
+      "file": "lib/standard/74xx/74HC244/simulation/model.v",
+      "module": "ttl_74hc244",
+      "netlist": "lib/standard/74xx/74HC244/simulation/netlist.json",
+      "part": "74HC244"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC244",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "lib/standard/74xx/74HC244/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "lib/standard/74xx/74HC244/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "lib/standard/74xx/74HC244/simulation/netlist.json"
+    }
+  ],
+  "source": "lib/standard/74xx/74HC244/definition/definition.json",
+  "version": 1
+}

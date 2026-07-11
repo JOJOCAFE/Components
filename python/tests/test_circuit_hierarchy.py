@@ -113,15 +113,49 @@ class CircuitHierarchyTests(unittest.TestCase):
             flatten_circuit_hierarchy(loop, {"LoopPackage": loop, "LeafPackage": leaf, "Parent": parent})
         self.assertIn("hierarchy_cycle", {row.code for row in caught.exception.issues})
 
-    def test_current_composites_fail_loudly_until_mappings_are_explicit(self) -> None:
+    def test_rejects_independent_proof_gate_instead_of_paralleling_children(self) -> None:
+        leaf, _, _ = fixtures()
+        gate_data = package_data(
+            "proof_gate",
+            [
+                {"ref": "TRACE_A", "part": "LeafPackage", "role": "scenario A"},
+                {"ref": "TRACE_B", "part": "LeafPackage", "role": "scenario B"},
+            ],
+            [{"name": "VCC", "direction": "power"}],
+            [],
+        )
+        gate_data["behavior"] = {
+            "coverage_rule": "This package references existing executable circuit proofs."
+        }
+        gate = parse_circuit_package(gate_data, source_path=ROOT / "proof_gate.json")
+        with self.assertRaises(CircuitHierarchyError) as caught:
+            flatten_circuit_hierarchy(gate, {"LeafPackage": leaf})
+        self.assertEqual(
+            {"independent_proof_scenarios_not_composable"},
+            {row.code for row in caught.exception.issues},
+        )
+        self.assertIn("TRACE_A, TRACE_B", caught.exception.issues[0].message)
+
+    def test_full_control_requires_authoritative_child_port_mappings(self) -> None:
         catalog = discover_circuit_packages()
-        for name in ("RV8GR_FullControlOpcodeSweep", "RV8GR_WholeSystemChipLevelVirtual"):
-            with self.subTest(name=name), self.assertRaises(CircuitHierarchyError) as caught:
-                flatten_circuit_hierarchy(catalog[name], catalog)
-            self.assertIn(
-                "missing_child_port_mapping",
-                {row.code for row in caught.exception.issues},
-            )
+        with self.assertRaises(CircuitHierarchyError) as caught:
+            flatten_circuit_hierarchy(catalog["RV8GR_FullControlOpcodeSweep"], catalog)
+        self.assertIn("missing_child_port_mapping", {row.code for row in caught.exception.issues})
+        self.assertNotIn(
+            "independent_proof_scenarios_not_composable",
+            {row.code for row in caught.exception.issues},
+        )
+
+    def test_whole_system_rejects_independent_trace_scenarios(self) -> None:
+        catalog = discover_circuit_packages()
+        with self.assertRaises(CircuitHierarchyError) as caught:
+            flatten_circuit_hierarchy(catalog["RV8GR_WholeSystemChipLevelVirtual"], catalog)
+        self.assertEqual(
+            {"independent_proof_scenarios_not_composable"},
+            {row.code for row in caught.exception.issues},
+        )
+        self.assertIn("BOOT", caught.exception.issues[0].message)
+        self.assertIn("PAGE_JUMP", caught.exception.issues[0].message)
 
 
 if __name__ == "__main__":

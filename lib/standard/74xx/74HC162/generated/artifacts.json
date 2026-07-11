@@ -1,0 +1,867 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
+      ],
+      "overview": "74HC162 is a 16-pin DIP part for counter.",
+      "part": "74HC162",
+      "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 9,
+          "names": [
+            "MR",
+            "CP",
+            "D0",
+            "D1",
+            "D2",
+            "D3",
+            "CEP",
+            "PE",
+            "CET"
+          ],
+          "note": "Input pins: MR, CP, D0, D1, D2, D3, and 3 more."
+        },
+        "output": {
+          "count": 5,
+          "names": [
+            "Q3",
+            "Q2",
+            "Q1",
+            "Q0",
+            "TC"
+          ],
+          "note": "Output pins: Q3, Q2, Q1, Q0, TC."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "presettable synchronous BCD decade counter, synchronous reset.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
+      "title": "presettable synchronous BCD decade counter, synchronous reset",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "MR controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "MR - input",
+          "pin": "MR"
+        },
+        {
+          "explanation": "CP controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "CP - input",
+          "pin": "CP"
+        },
+        {
+          "explanation": "D0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D0 - input",
+          "pin": "D0"
+        },
+        {
+          "explanation": "D1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D1 - input",
+          "pin": "D1"
+        },
+        {
+          "explanation": "D2 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D2 - input",
+          "pin": "D2"
+        },
+        {
+          "explanation": "D3 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "D3 - input",
+          "pin": "D3"
+        },
+        {
+          "explanation": "CEP controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "CEP - input",
+          "pin": "CEP"
+        },
+        {
+          "explanation": "PE controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "PE - input",
+          "pin": "PE"
+        },
+        {
+          "explanation": "CET controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "CET - input",
+          "pin": "CET"
+        }
+      ],
+      "controls": [
+        "MR",
+        "CP",
+        "D0",
+        "D1",
+        "D2",
+        "D3",
+        "CEP",
+        "PE",
+        "CET"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC162",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Q3",
+          "name": "Q3"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Q2",
+          "name": "Q2"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Q1",
+          "name": "Q1"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Q0",
+          "name": "Q0"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "TC",
+          "name": "TC"
+        }
+      ],
+      "probes": [
+        "Q3",
+        "Q2",
+        "Q1",
+        "Q0",
+        "TC"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change MR?",
+        "Which truth-table row matches the value on Q3?"
+      ],
+      "title": "Try 74HC162 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "presettable synchronous BCD decade counter, synchronous reset",
+        "type": "presettable_synchronous_bcd_decade_counter_synchronous_reset"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC162",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "MR",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "CP",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "D0",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "D1",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "D2",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "D3",
+          "number": 6
+        },
+        {
+          "direction": "input",
+          "name": "CEP",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "input",
+          "name": "PE",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "CET",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "Q3",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "Q2",
+          "number": 12
+        },
+        {
+          "direction": "output",
+          "name": "Q1",
+          "number": 13
+        },
+        {
+          "direction": "output",
+          "name": "Q0",
+          "number": 14
+        },
+        {
+          "direction": "output",
+          "name": "TC",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "counter",
+      "timing": {
+        "datasheet": {
+          "conditions": "Philips 74HC162 dynamic characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_fmax_mhz": {
+              "min_125c": 20,
+              "min_25c": 30,
+              "min_85c": 24,
+              "typical": 57
+            },
+            "datasheet_max_ns_25c": {
+              "cet_to_terminal_count": 30,
+              "clock_to_q": 38,
+              "clock_to_terminal_count": 43,
+              "transition": 15
+            },
+            "datasheet_max_ns_minus40_to_125c": {
+              "cet_to_terminal_count": 45,
+              "clock_to_q": 57,
+              "clock_to_terminal_count": 65,
+              "transition": 22
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "cet_to_terminal_count": 38,
+              "clock_to_q": 48,
+              "clock_to_terminal_count": 54,
+              "transition": 19
+            },
+            "datasheet_typical_ns": {
+              "cet_to_terminal_count": 14,
+              "clock_to_q": 21,
+              "clock_to_terminal_count": 25,
+              "transition": 7
+            }
+          }
+        },
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "clock_to_output_ns": {
+              "condition": "active clock edge",
+              "from": "CLK/clock control",
+              "parameter": "tco",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "Q/output"
+            },
+            "input_setup_margin_ns": {
+              "condition": "conservative setup placeholder from model delay",
+              "from": "D/input",
+              "parameter": "tsu",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "CLK/clock control"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": {
+            "load_pf": 50,
+            "ta_c": 25
+          },
+          "parameters": {
+            "clock_to_q_high": {
+              "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+              "source_field": "timing.datasheet.values.*.clock_to_q",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 38,
+                "max_minus40_to_125c": 57,
+                "max_minus40_to_85c": 48,
+                "typ": 21
+              }
+            },
+            "clock_to_q_low": {
+              "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+              "source_field": "timing.datasheet.values.*.clock_to_q",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 38,
+                "max_minus40_to_125c": 57,
+                "max_minus40_to_85c": 48,
+                "typ": 21
+              }
+            },
+            "hold": {
+              "note": "Direct hold-time table rows from the local datasheet text.",
+              "source_field": "timing requirements hold rows",
+              "status": "exact",
+              "values_ns": {
+                "data_after_clk_rise_min": {
+                  "vcc_2_v": 0,
+                  "vcc_4_5_v": 0,
+                  "vcc_6_v": 0
+                }
+              }
+            },
+            "minimum_pulse_width": {
+              "note": "Direct pulse-width table rows from the local datasheet text.",
+              "source_field": "timing requirements pulse-width rows",
+              "status": "exact",
+              "values_ns": {
+                "clock_high_or_low_min": {
+                  "vcc_2_v": 80,
+                  "vcc_4_5_v": 16,
+                  "vcc_6_v": 14
+                }
+              }
+            },
+            "setup": {
+              "note": "Direct setup-time table rows from the local datasheet text.",
+              "source_field": "timing requirements setup rows",
+              "status": "exact",
+              "values_ns": {
+                "cep_cet_before_clk_rise_min": {
+                  "vcc_2_v": 200,
+                  "vcc_4_5_v": 40,
+                  "vcc_6_v": 34
+                },
+                "clear_inactive_before_clk_rise_min": {
+                  "vcc_2_v": 100,
+                  "vcc_4_5_v": 20,
+                  "vcc_6_v": 17
+                },
+                "data_before_clk_rise_min": {
+                  "vcc_2_v": 100,
+                  "vcc_4_5_v": 20,
+                  "vcc_6_v": 17
+                },
+                "pe_before_clk_rise_min": {
+                  "vcc_2_v": 135,
+                  "vcc_4_5_v": 27,
+                  "vcc_6_v": 23
+                }
+              }
+            },
+            "tPHL": {
+              "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the CP-to-Qn table entry.",
+              "source_field": "switching characteristics tPLH/tPHL rows",
+              "status": "exact",
+              "values_ns": {
+                "clock_to_q": {
+                  "max_25c": 38,
+                  "max_minus40_to_125c": 57,
+                  "max_minus40_to_85c": 48,
+                  "typ": 21
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the CP-to-Qn table entry.",
+              "source_field": "switching characteristics tPLH/tPHL rows",
+              "status": "exact",
+              "values_ns": {
+                "clock_to_q": {
+                  "max_25c": 38,
+                  "max_minus40_to_125c": 57,
+                  "max_minus40_to_85c": 48,
+                  "typ": 21
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
+      },
+      "title": "presettable synchronous BCD decade counter, synchronous reset"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "MR",
+        "10": "CET",
+        "16": "VCC",
+        "2": "CP",
+        "3": "D0",
+        "4": "D1",
+        "5": "D2",
+        "6": "D3",
+        "7": "CEP",
+        "8": "GND",
+        "9": "PE"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC162",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC162",
+      "copy_with_chip": [
+        "lib/standard/74xx/74HC162/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC162/simulation/model.py",
+      "part": "74HC162",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "MR",
+        "10": "CET",
+        "16": "VCC",
+        "2": "CP",
+        "3": "D0",
+        "4": "D1",
+        "5": "D2",
+        "6": "D3",
+        "7": "CEP",
+        "8": "GND",
+        "9": "PE"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC162",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC162",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC162",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "clock_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "clock_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC162",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs",
+            "clocked_alternating_inputs"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc162",
+      "compile": {
+        "sources": [
+          "lib/standard/74xx/74HC162/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc162"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc162",
+      "part": "74HC162",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC162",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "clock_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "clock_to_output_metadata",
+            "input_setup_margin_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC162",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs",
+            "clocked_alternating_inputs"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Clear_bar",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Load_bar",
+            "pins": [
+              9
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "ENT",
+            "pins": [
+              10
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "ENP",
+            "pins": [
+              7
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "D",
+            "pins": [
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Clk",
+            "pins": [
+              2
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "RCO",
+            "pins": [
+              15
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q",
+            "pins": [
+              14,
+              13,
+              12,
+              11
+            ]
+          }
+        ]
+      },
+      "file": "lib/standard/74xx/74HC162/simulation/model.v",
+      "module": "ttl_74hc162",
+      "netlist": "lib/standard/74xx/74HC162/simulation/netlist.json",
+      "part": "74HC162"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC162",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "lib/standard/74xx/74HC162/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "lib/standard/74xx/74HC162/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "lib/standard/74xx/74HC162/simulation/netlist.json"
+    }
+  ],
+  "source": "lib/standard/74xx/74HC162/definition/definition.json",
+  "version": 1
+}

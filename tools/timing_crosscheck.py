@@ -16,8 +16,8 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "Source"
-REPORT = ROOT / "Docs" / "TIMING_CROSSCHECK_REPORT.md"
+SOURCE = ROOT / "source"
+REPORT = ROOT / "docs" / "TIMING_CROSSCHECK_REPORT.md"
 
 SOURCE_ALIASES = {
     "62256": ["KM62256C.PDF", "AS6C62256.PDF"],
@@ -185,7 +185,7 @@ def source_text_status(part: str, data: dict[str, Any]) -> tuple[str, str | None
 
 
 def group_from_definition(path: Path) -> str:
-    return path.relative_to(ROOT / "DB").parts[0]
+    return path.relative_to(ROOT / "lib" / "standard").parts[0]
 
 
 def main() -> int:
@@ -194,9 +194,9 @@ def main() -> int:
     not_source_verified = []
     mixed_defaults = []
 
-    for definition in sorted((ROOT / "DB").glob("*/**/definition/definition.json")):
+    for definition in sorted((ROOT / "lib" / "standard").glob("*/**/definition/definition.json")):
         group = group_from_definition(definition)
-        if group not in {"74xx", "Memory"}:
+        if group not in {"74xx", "memory"}:
             continue
         data = json.loads(definition.read_text(encoding="utf-8"))
         part = str(data.get("part") or definition.parents[1].name)
@@ -270,7 +270,7 @@ def main() -> int:
         "",
         "Important: this is timing-only. `PASS_SOURCE_VALUES_PRESENT` means the DB datasheet timing numbers are present in extracted local PDF text. It does not infer missing timing tables. Any conservative/default simulator timing remains reported as not source-verified or mixed.",
         "",
-        "| Part | Group | Timing Status | Result | Source/PDF | Datasheet Values Checked | Details |",
+        "| Part | Group | Timing Status | Result | source/PDF | Datasheet Values Checked | Details |",
         "|---|---:|---|---|---|---|---|",
     ]
     for row in rows:

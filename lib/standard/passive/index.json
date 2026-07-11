@@ -1,0 +1,24 @@
+{
+  "schema": "db.group",
+  "version": 1,
+  "id": "passive",
+  "title": "Passive physical components",
+  "migration_status": "layered_packages_active",
+  "manifest_note": "Passive component packages live in lib/standard/passive/<part>/definition/definition.json.",
+  "components": [
+    "LED",
+    "RedLED",
+    "BlueLED",
+    "YellowLED",
+    "Resistor",
+    "Capacitor",
+    "Crystal2Pin_1MHz",
+    "Crystal2Pin_2MHz",
+    "Crystal2Pin_5MHz",
+    "Crystal2Pin_10MHz",
+    "Oscillator4Pin_1MHz",
+    "Oscillator4Pin_2MHz",
+    "Oscillator4Pin_5MHz",
+    "Oscillator4Pin_10MHz"
+  ]
+}

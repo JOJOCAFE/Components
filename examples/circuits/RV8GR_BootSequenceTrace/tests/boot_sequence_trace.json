@@ -1,0 +1,132 @@
+{
+  "schema": "components.lib.circuit.test.boot_sequence_trace",
+  "version": 1,
+  "circuit": "rv8gr_boot_sequence_trace",
+  "source": "examples/circuits/RV8GR_BootSequenceTrace/circuit.json",
+  "source_traces": [
+    {"name": "Trace 11", "source": "doc/03_instruction_trace.md", "focus": "SETDP $80 -> SETPG $00 -> LI $00"},
+    {"name": "Debug Step 0", "source": "doc/06_debug_plan.md", "focus": "SETDP $80 -> SETPG $00 -> LI $00 -> J $06"}
+  ],
+  "rom_bytes": [
+    {"address": "0x0000", "value": "0x40", "mnemonic": "SETDP"},
+    {"address": "0x0001", "value": "0x80", "mnemonic": "operand"},
+    {"address": "0x0002", "value": "0x20", "mnemonic": "SETPG"},
+    {"address": "0x0003", "value": "0x00", "mnemonic": "operand"},
+    {"address": "0x0004", "value": "0x30", "mnemonic": "LI"},
+    {"address": "0x0005", "value": "0x00", "mnemonic": "operand"},
+    {"address": "0x0006", "value": "0x01", "mnemonic": "J"},
+    {"address": "0x0007", "value": "0x06", "mnemonic": "operand"}
+  ],
+  "vectors": [
+    {
+      "name": "boot_setdp_80",
+      "mnemonic": "SETDP",
+      "phase": "T2",
+      "opcode": "0x40",
+      "operand": "0x80",
+      "initial": {"PC": "0x0000", "PG": "0xXX", "DP": "0xXX", "AC": "0xXX", "Z": "X"},
+      "expect": {
+        "PC": "0x0002",
+        "PG": "unknown",
+        "DP": "0x80",
+        "AC": "unknown",
+        "Z": "unknown",
+        "IBUS": "0x80",
+        "dp_latch": true,
+        "pg_latch": false,
+        "ac_latch": false,
+        "pc_ld_n": 1,
+        "ibus_drivers": ["U34"],
+        "dbus_drivers_fetch": ["ROM"],
+        "conflict": false
+      }
+    },
+    {
+      "name": "boot_setpg_00",
+      "mnemonic": "SETPG",
+      "phase": "T2",
+      "opcode": "0x20",
+      "operand": "0x00",
+      "initial": {"PC": "0x0002", "PG": "0xXX", "DP": "0x80", "AC": "0xXX", "Z": "X"},
+      "expect": {
+        "PC": "0x0004",
+        "PG": "0x00",
+        "DP": "0x80",
+        "AC": "unknown",
+        "Z": "unknown",
+        "IBUS": "0x00",
+        "dp_latch": false,
+        "pg_latch": true,
+        "ac_latch": false,
+        "pc_ld_n": 1,
+        "ibus_drivers": ["U34"],
+        "dbus_drivers_fetch": ["ROM"],
+        "conflict": false
+      }
+    },
+    {
+      "name": "boot_li_00",
+      "mnemonic": "LI",
+      "phase": "T2",
+      "opcode": "0x30",
+      "operand": "0x00",
+      "initial": {"PC": "0x0004", "PG": "0x00", "DP": "0x80", "AC": "0xXX", "Z": "X"},
+      "expect": {
+        "PC": "0x0006",
+        "PG": "0x00",
+        "DP": "0x80",
+        "AC": "0x00",
+        "Z": 1,
+        "IBUS": "0x00",
+        "dp_latch": false,
+        "pg_latch": false,
+        "ac_latch": true,
+        "pc_ld_n": 1,
+        "ibus_drivers": ["U34"],
+        "dbus_drivers_fetch": ["ROM"],
+        "conflict": false
+      }
+    },
+    {
+      "name": "boot_j_self_06",
+      "mnemonic": "J",
+      "phase": "T2",
+      "opcode": "0x01",
+      "operand": "0x06",
+      "initial": {"PC": "0x0006", "PG": "0x00", "DP": "0x80", "AC": "0x00", "Z": 1},
+      "expect": {
+        "PC": "0x0006",
+        "PG": "0x00",
+        "DP": "0x80",
+        "AC": "0x00",
+        "Z": 1,
+        "IBUS": "0x06",
+        "dp_latch": false,
+        "pg_latch": false,
+        "ac_latch": false,
+        "pc_ld_n": 0,
+        "ibus_drivers": ["U34"],
+        "dbus_drivers_fetch": ["ROM"],
+        "conflict": false
+      }
+    }
+  ],
+  "sequence": [
+    {"vector": "boot_setdp_80", "clock_edges": 3},
+    {"vector": "boot_setpg_00", "clock_edges": 3},
+    {"vector": "boot_li_00", "clock_edges": 3},
+    {"vector": "boot_j_self_06", "clock_edges": 3}
+  ],
+  "final_state": {"PC": "0x0006", "PG": "0x00", "DP": "0x80", "AC": "0x00", "Z": 1},
+  "manual_clock_expectation": {
+    "total_clock_edges": 12,
+    "phase_order": ["T0", "T1", "T2"],
+    "pass_condition": "After 12 clean manual edges, PC loops at $0006 and DP, PG, AC, and Z are defined."
+  },
+  "bus_safety": {
+    "fetch": "ROM is the only DBUS source during T0/T1 fetch.",
+    "execute": "U34 is the only IBUS driver during T2 immediate execution.",
+    "reject": ["wrong_first_opcode", "setdp_missing_before_data_access", "setpg_missing_before_j", "li_missing_before_state_claim", "ibus_multi_driver", "dbus_multi_driver"]
+  },
+  "claim_boundary": "Functional boot-sequence proof only. Physical bring-up must still single-step the real ROM and record timing/edge evidence."
+}

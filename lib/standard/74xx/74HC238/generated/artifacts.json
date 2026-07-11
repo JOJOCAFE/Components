@@ -1,0 +1,797 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
+      ],
+      "overview": "74HC238 is a 16-pin DIP part for decoder.",
+      "part": "74HC238",
+      "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 6,
+          "names": [
+            "A0",
+            "A1",
+            "A2",
+            "E1",
+            "E2",
+            "E3"
+          ],
+          "note": "Input pins: A0, A1, A2, E1, E2, E3."
+        },
+        "output": {
+          "count": 8,
+          "names": [
+            "Y7",
+            "Y6",
+            "Y5",
+            "Y4",
+            "Y3",
+            "Y2",
+            "Y1",
+            "Y0"
+          ],
+          "note": "Output pins: Y7, Y6, Y5, Y4, Y3, Y2, and 2 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "3-to-8 line decoder/demultiplexer, active-high outputs.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
+      "title": "3-to-8 line decoder/demultiplexer, active-high outputs",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "A0 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A0 - input",
+          "pin": "A0"
+        },
+        {
+          "explanation": "A1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A1 - input",
+          "pin": "A1"
+        },
+        {
+          "explanation": "A2 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A2 - input",
+          "pin": "A2"
+        },
+        {
+          "explanation": "E1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "E1 - input",
+          "pin": "E1"
+        },
+        {
+          "explanation": "E2 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "E2 - input",
+          "pin": "E2"
+        },
+        {
+          "explanation": "E3 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "E3 - input",
+          "pin": "E3"
+        }
+      ],
+      "controls": [
+        "A0",
+        "A1",
+        "A2",
+        "E1",
+        "E2",
+        "E3"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC238",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Y7",
+          "name": "Y7"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Y6",
+          "name": "Y6"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Y5",
+          "name": "Y5"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Y4",
+          "name": "Y4"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Y3",
+          "name": "Y3"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Y2",
+          "name": "Y2"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Y1",
+          "name": "Y1"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "Y0",
+          "name": "Y0"
+        }
+      ],
+      "probes": [
+        "Y7",
+        "Y6",
+        "Y5",
+        "Y4",
+        "Y3",
+        "Y2",
+        "Y1",
+        "Y0"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change A0?",
+        "Which truth-table row matches the value on Y7?"
+      ],
+      "title": "Try 74HC238 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "3-to-8 line decoder/demultiplexer, active-high outputs",
+        "type": "3_to_8_line_decoder_demultiplexer_active_high"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC238",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "A0",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "A1",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "A2",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "E1",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "E2",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "E3",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "Y7",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "Y6",
+          "number": 9
+        },
+        {
+          "direction": "output",
+          "name": "Y5",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "Y4",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "Y3",
+          "number": 12
+        },
+        {
+          "direction": "output",
+          "name": "Y2",
+          "number": 13
+        },
+        {
+          "direction": "output",
+          "name": "Y1",
+          "number": 14
+        },
+        {
+          "direction": "output",
+          "name": "Y0",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "decoder",
+      "timing": {
+        "datasheet": {
+          "conditions": "NXP 74HC238 dynamic characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns_25c": {
+              "address_to_output": 30,
+              "e3_to_output": 32,
+              "enable_to_output": 31,
+              "transition": 15
+            },
+            "datasheet_max_ns_minus40_to_125c": {
+              "address_to_output": 45,
+              "e3_to_output": 48,
+              "enable_to_output": 47,
+              "transition": 22
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "address_to_output": 38,
+              "e3_to_output": 40,
+              "enable_to_output": 39,
+              "transition": 19
+            },
+            "datasheet_typical_ns": {
+              "address_to_output": 17,
+              "e3_to_output": 19,
+              "enable_to_output": 18,
+              "transition": 7
+            }
+          }
+        },
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "NXP 74HC238 dynamic characteristics, CL=50 pF, VCC=4.5 V.",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC238 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC238 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC238 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC238 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC238 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "NXP 74HC238 dynamic characteristics state tpd is the same as tPHL and tPLH for address/enable paths.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "address_to_output": 30,
+                  "e3_to_output": 32,
+                  "enable_to_output": 31,
+                  "transition": 15
+                },
+                "datasheet_max_ns_minus40_to_125c": {
+                  "address_to_output": 45,
+                  "e3_to_output": 48,
+                  "enable_to_output": 47,
+                  "transition": 22
+                },
+                "datasheet_max_ns_minus40_to_85c": {
+                  "address_to_output": 38,
+                  "e3_to_output": 40,
+                  "enable_to_output": 39,
+                  "transition": 19
+                },
+                "datasheet_typical_ns": {
+                  "address_to_output": 17,
+                  "e3_to_output": 19,
+                  "enable_to_output": 18,
+                  "transition": 7
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC238 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "NXP 74HC238 dynamic characteristics state tpd is the same as tPHL and tPLH for address/enable paths.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "address_to_output": 30,
+                  "e3_to_output": 32,
+                  "enable_to_output": 31,
+                  "transition": 15
+                },
+                "datasheet_max_ns_minus40_to_125c": {
+                  "address_to_output": 45,
+                  "e3_to_output": 48,
+                  "enable_to_output": 47,
+                  "transition": 22
+                },
+                "datasheet_max_ns_minus40_to_85c": {
+                  "address_to_output": 38,
+                  "e3_to_output": 40,
+                  "enable_to_output": 39,
+                  "transition": 19
+                },
+                "datasheet_typical_ns": {
+                  "address_to_output": 17,
+                  "e3_to_output": 19,
+                  "enable_to_output": 18,
+                  "transition": 7
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC238 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC238 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC238 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
+      },
+      "title": "3-to-8 line decoder/demultiplexer, active-high outputs"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "A0",
+        "16": "VCC",
+        "2": "A1",
+        "3": "A2",
+        "4": "E1",
+        "5": "E2",
+        "6": "E3",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC238",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC238",
+      "copy_with_chip": [
+        "lib/standard/74xx/74HC238/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC238/simulation/model.py",
+      "part": "74HC238",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "A0",
+        "16": "VCC",
+        "2": "A1",
+        "3": "A2",
+        "4": "E1",
+        "5": "E2",
+        "6": "E3",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC238",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC238",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC238",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC238",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc238",
+      "compile": {
+        "sources": [
+          "lib/standard/74xx/74HC238/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc238"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc238",
+      "part": "74HC238",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC238",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC238",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          7,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Enable1_bar",
+            "pins": [
+              4
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Enable2_bar",
+            "pins": [
+              5
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Enable3",
+            "pins": [
+              6
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y",
+            "pins": [
+              15,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              7
+            ]
+          }
+        ]
+      },
+      "file": "lib/standard/74xx/74HC238/simulation/model.v",
+      "module": "ttl_74hc238",
+      "netlist": "lib/standard/74xx/74HC238/simulation/netlist.json",
+      "part": "74HC238"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC238",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "lib/standard/74xx/74HC238/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "lib/standard/74xx/74HC238/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "lib/standard/74xx/74HC238/simulation/netlist.json"
+    }
+  ],
+  "source": "lib/standard/74xx/74HC238/definition/definition.json",
+  "version": 1
+}

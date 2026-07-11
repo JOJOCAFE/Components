@@ -9,7 +9,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "Docs" / "TIMING_PARAMETER_AUDIT.md"
+REPORT = ROOT / "docs" / "TIMING_PARAMETER_AUDIT.md"
 
 PARAMETERS = {
     "tPLH": {
@@ -124,14 +124,14 @@ def classify(payload: dict[str, Any], parameter: str) -> str:
 
 
 def group_from_path(path: Path) -> str:
-    return path.relative_to(ROOT / "DB").parts[0]
+    return path.relative_to(ROOT / "lib" / "standard").parts[0]
 
 
 def audit_rows() -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    for path in sorted((ROOT / "DB").glob("*/*/definition/definition.json")):
+    for path in sorted((ROOT / "lib" / "standard").glob("*/*/definition/definition.json")):
         group = group_from_path(path)
-        if group not in {"74xx", "Memory"}:
+        if group not in {"74xx", "memory"}:
             continue
         data = json.loads(path.read_text(encoding="utf-8"))
         if data.get("schema") != "db.component.digital":

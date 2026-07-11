@@ -25,10 +25,10 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
         if name in ("export-json", "export-block-ui", "import-block-ui"):
             cmd.add_argument("-o", "--output")
 
-    for name in ("circuit-validate", "circuit-run", "circuit-step", "circuit-probe"):
+    for name in ("circuit-validate", "circuit-run", "circuit-step", "circuit-probe", "timed-run"):
         cmd = sub.add_parser(name)
         cmd.add_argument("json_file")
-        if name == "circuit-run":
+        if name in {"circuit-run", "timed-run"}:
             cmd.add_argument("--op", action="append", default=[], help="operation; repeat for multiple operations")
         if name == "circuit-step":
             cmd.add_argument("--op", required=True, help="one operation")
@@ -59,10 +59,19 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     explain.add_argument("--source-command", help="override source command name when the JSON does not include command")
     explain.add_argument("-o", "--output")
 
+    explain_violations = sub.add_parser("explain-violations", help="explain existing circuit-runner violations without rerunning")
+    explain_violations.add_argument("json_file")
+    explain_violations.add_argument("-o", "--output")
+
+    evidence = sub.add_parser("export-evidence", help="export existing circuit-runner evidence without upgrading its claims")
+    evidence.add_argument("json_file")
+    evidence.add_argument("-o", "--output", required=True)
+    evidence.add_argument("--include-traces", action="store_true")
+
     db = sub.add_parser("db")
     db.add_argument("part", nargs="?", help="optional component part, such as 74HC00")
     db.add_argument("--audit", action="store_true", help="audit DB manifests against legacy catalog files")
-    db.add_argument("--status", action="store_true", help="compare DB status categories with Docs/CHIP_STATUS.md")
+    db.add_argument("--status", action="store_true", help="compare DB status categories with docs/CHIP_STATUS.md")
     db.add_argument("--catalog", action="store_true", help="emit frontend-oriented component catalog metadata")
     db.add_argument("--student", action="store_true", help="emit learner-facing component catalog metadata")
     db.add_argument("--detail", action="store_true", help="emit frontend-oriented metadata for one component")
@@ -88,6 +97,14 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
             designs.explain_result(args.json_file, source_command=getattr(args, "source_command", None)),
             output=getattr(args, "output", None),
         )
+    if args.command == "explain-violations":
+        return write_json(
+            circuits.explain_violations(_read_json(args.json_file)), output=getattr(args, "output", None),
+            status=0,
+        )
+    if args.command == "export-evidence":
+        data = circuits.export_evidence(_read_json(args.json_file), include_traces=args.include_traces)
+        return write_json(data, output=args.output, status=0 if data["ok"] else 2)
 
     if args.command == "db":
         if getattr(args, "audit", False):
@@ -141,6 +158,9 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     if args.command == "circuit-probe":
         data = circuits.probe(args.name, args.json_file)
         return write_json(data, status=0 if data["ok"] else 2)
+    if args.command == "timed-run":
+        data = circuits.timed_run(args.json_file, operations=args.op)
+        return write_json(data, status=0 if data["ok"] else 2)
     if args.command == "validate":
         return write_json(designs.validate(args.json_file))
     if args.command == "snapshot":
@@ -169,6 +189,13 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
 def write_json(data: Any, *, output: str | None = None, status: int = 0) -> int:
     text = json.dumps(data, indent=2, sort_keys=True) + "\n"
     return write_text(text, output=output, status=status)
+
+
+def _read_json(path: str) -> dict[str, Any]:
+    value = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError("runner result JSON must be an object")
+    return value
 
 
 def write_text(text: str, *, output: str | None = None, status: int = 0) -> int:

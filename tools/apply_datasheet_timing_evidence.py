@@ -332,7 +332,7 @@ UPDATES: dict[str, dict[str, Any]] = {
 
 def definition_paths() -> dict[str, Path]:
     paths: dict[str, Path] = {}
-    for definition in sorted((ROOT / "DB").glob("*/**/definition/definition.json")):
+    for definition in sorted((ROOT / "lib" / "standard").glob("*/**/definition/definition.json")):
         data = json.loads(definition.read_text(encoding="utf-8"))
         part = str(data.get("part") or definition.parents[1].name)
         paths[part] = definition
@@ -360,7 +360,7 @@ def main() -> int:
         )
         delay = timing.setdefault("delay", {})
         delay["status"] = "datasheet-backed"
-        delay["source_check"] = "datasheet timing values extracted from local Source PDF text; see Docs/TIMING_CROSSCHECK_REPORT.md"
+        delay["source_check"] = "datasheet timing values extracted from local source PDF text; see docs/TIMING_CROSSCHECK_REPORT.md"
         delay["conditions"] = update["conditions"]
         for key, value in update.items():
             if key != "conditions":
@@ -387,7 +387,7 @@ def first_evidence(data: dict[str, Any]) -> dict[str, Any]:
     for entry in data.get("sources") or []:
         if isinstance(entry, dict):
             return entry
-    return {"label": "local Source PDF", "used_for": ["timing"]}
+    return {"label": "local source PDF", "used_for": ["timing"]}
 
 
 if __name__ == "__main__":

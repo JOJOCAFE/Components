@@ -71,7 +71,7 @@ def test_74hc00_python_matches_verilog_vectors():
     expected = sum(bit << i for i, bit in enumerate(expected_bits))
 
     output = run_verilog(
-        "Verilog/74xx/74hc00.v",
+        "verilog/74xx/74hc00.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -101,7 +101,7 @@ def test_74hc161_python_matches_verilog_count_sequence():
     expected_rco = chip.read(15)
 
     output = run_verilog(
-        "Verilog/74xx/74hc161.v",
+        "verilog/74xx/74hc161.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -143,7 +143,7 @@ def test_74hc157_python_matches_verilog_select_and_disable():
     expected_disabled = get_byte(chip, [4, 7, 9, 12])
 
     output = run_verilog(
-        "Verilog/74xx/74hc157.v",
+        "verilog/74xx/74hc157.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -181,7 +181,7 @@ def test_74hc245_python_matches_verilog_a_to_b_and_high_z():
     assert chip.read(18) == Z
 
     output = run_verilog(
-        "Verilog/74xx/74hc245.v",
+        "verilog/74xx/74hc245.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -218,7 +218,7 @@ endmodule
     assert chip.read(18) == Z
 
     output = run_verilog(
-        "Verilog/74xx/74hc245.v",
+        "verilog/74xx/74hc245.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -256,7 +256,7 @@ def test_74hc541_python_matches_verilog_enable_and_high_z():
     assert chip.read(18) == Z
 
     output = run_verilog(
-        "Verilog/74xx/74hc541.v",
+        "verilog/74xx/74hc541.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -294,7 +294,7 @@ def test_74hc574_python_matches_verilog_latch_hold_and_high_z():
     assert chip.read(19) == Z
 
     output = run_verilog(
-        "Verilog/74xx/74hc574.v",
+        "verilog/74xx/74hc574.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -342,7 +342,7 @@ def test_74hc4520_python_matches_verilog_dual_counter_reset_and_enable():
     expected_reset_q2 = get_byte(chip, ["2Q0", "2Q1", "2Q2", "2Q3"])
 
     output = run_verilog(
-        "Verilog/74xx/74hc4520.v",
+        "verilog/74xx/74hc4520.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -401,7 +401,7 @@ def test_74hc4538_python_matches_verilog_trigger_and_reset():
     )
 
     output = run_verilog(
-        "Verilog/74xx/74hc4538.v",
+        "verilog/74xx/74hc4538.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -451,7 +451,7 @@ def test_74hc922_python_matches_verilog_scan_encode_and_high_z():
     assert chip.read("DATA OUT A") == Z
 
     output = run_verilog(
-        "Verilog/74xx/74hc922.v",
+        "verilog/74xx/74hc922.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -507,7 +507,7 @@ def test_62256_python_matches_verilog_write_read_and_high_z():
     assert chip.read(11) == Z
 
     output = run_verilog(
-        "Verilog/Memory/62256.v",
+        "verilog/memory/62256.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -555,7 +555,7 @@ def _assert_32k_sram_python_matches_verilog(part: str, module_file: str, module_
     assert chip.read(11) == Z
 
     output = run_verilog(
-        ["Verilog/Memory/62256.v", module_file],
+        ["verilog/memory/62256.v", module_file],
         f"""
 `timescale 1ns/1ps
 module tb;
@@ -583,11 +583,11 @@ endmodule
 
 
 def test_as6c62256_python_matches_verilog_write_read_and_high_z():
-    _assert_32k_sram_python_matches_verilog("AS6C62256", "Verilog/Memory/as6c62256.v", "mem_as6c62256", "AS6C", 0xC3)
+    _assert_32k_sram_python_matches_verilog("AS6C62256", "verilog/memory/as6c62256.v", "mem_as6c62256", "AS6C", 0xC3)
 
 
 def test_cy7c199_python_matches_verilog_write_read_and_high_z():
-    _assert_32k_sram_python_matches_verilog("CY7C199", "Verilog/Memory/cy7c199.v", "mem_cy7c199", "CY7C", 0x96)
+    _assert_32k_sram_python_matches_verilog("CY7C199", "verilog/memory/cy7c199.v", "mem_cy7c199", "CY7C", 0x96)
 
 
 def test_at28c256_python_matches_verilog_write_read_and_high_z():
@@ -611,7 +611,7 @@ def test_at28c256_python_matches_verilog_write_read_and_high_z():
     assert chip.read(11) == Z
 
     output = run_verilog(
-        "Verilog/Memory/at28c256.v",
+        "verilog/memory/at28c256.v",
         """
 `timescale 1ns/1ps
 module tb;
@@ -663,7 +663,7 @@ def test_sst39sf010a_python_matches_verilog_write_read_and_high_z():
     assert chip.read(13) == Z
 
     output = run_verilog(
-        "Verilog/Memory/sst39sf010a.v",
+        "verilog/memory/sst39sf010a.v",
         """
 `timescale 1ns/1ps
 module tb;

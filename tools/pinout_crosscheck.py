@@ -18,8 +18,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "Source"
-REPORT = ROOT / "Docs" / "PINOUT_CROSSCHECK_REPORT.md"
+SOURCE = ROOT / "source"
+REPORT = ROOT / "docs" / "PINOUT_CROSSCHECK_REPORT.md"
 
 
 MANUAL_PINOUTS: dict[str, dict[int, str]] = {
@@ -460,7 +460,7 @@ def compare_pins(actual: dict[int, str], expected: dict[int, str] | None) -> lis
 
 def group_from_definition(path: Path, data: dict) -> str:
     try:
-        return path.relative_to(ROOT / "DB").parts[0]
+        return path.relative_to(ROOT / "lib" / "standard").parts[0]
     except ValueError:
         return str(data.get("group") or data.get("metadata", {}).get("group") or "")
 
@@ -470,13 +470,13 @@ def main() -> int:
     mismatches = []
     source_problems = []
 
-    for definition in sorted((ROOT / "DB").glob("*/**/definition/definition.json")):
+    for definition in sorted((ROOT / "lib" / "standard").glob("*/**/definition/definition.json")):
         data = json.loads(definition.read_text(encoding="utf-8"))
         part = str(data.get("part") or definition.parents[1].name)
         group = group_from_definition(definition, data)
         pins = db_pin_map(data)
         model_v = definition.parents[1] / "simulation" / "model.v"
-        is_datasheet_ic = group in {"74xx", "Memory", "Support"}
+        is_datasheet_ic = group in {"74xx", "memory", "support"}
 
         if is_datasheet_ic:
             expected, evidence = expected_pinout(part, model_v)
@@ -522,7 +522,7 @@ def main() -> int:
         "",
         "Important: `embedded_pinout_doc` means the DB definition exactly matches the repo embedded pinout table that cites datasheet evidence; `manual_datasheet_text_extraction` means the pin map was checked against extracted datasheet text/diagram in this pass. `PDF_OK` means the local datasheet file is present and readable by `pdfinfo`.",
         "",
-        "| Part | Group | Pins | Result | Evidence | Source/PDF | Details |",
+        "| Part | Group | Pins | Result | Evidence | source/PDF | Details |",
         "|---|---:|---:|---|---|---|---|",
     ]
     for row in rows:
@@ -562,7 +562,7 @@ def main() -> int:
             {
                 "rows": len(rows),
                 "datasheet_ic_rows": sum(
-                    1 for r in rows if r["group"] in {"74xx", "Memory", "Support"}
+                    1 for r in rows if r["group"] in {"74xx", "memory", "support"}
                 ),
                 "mismatches": mismatches,
                 "source_problems": source_problems,

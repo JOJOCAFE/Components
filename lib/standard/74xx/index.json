@@ -1,0 +1,8 @@
+{
+  "schema": "db.group",
+  "version": 1,
+  "id": "74xx",
+  "title": "74xx and 74HC logic ICs",
+  "migration_status": "layered_packages_active",
+  "manifest_note": "74HC IC packages live in lib/standard/74xx/<part>/definition/definition.json."
+}

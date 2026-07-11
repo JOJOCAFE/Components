@@ -1,0 +1,816 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
+      ],
+      "overview": "74HC138 is a 16-pin DIP part for decoder.",
+      "part": "74HC138",
+      "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 6,
+          "names": [
+            "A",
+            "B",
+            "C",
+            "/G2A",
+            "/G2B",
+            "G1"
+          ],
+          "note": "Input pins: A, B, C, /G2A, /G2B, G1."
+        },
+        "output": {
+          "count": 8,
+          "names": [
+            "/Y7",
+            "/Y6",
+            "/Y5",
+            "/Y4",
+            "/Y3",
+            "/Y2",
+            "/Y1",
+            "/Y0"
+          ],
+          "note": "Output pins: /Y7, /Y6, /Y5, /Y4, /Y3, /Y2, and 2 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "3-line to 8-line decoder/demultiplexer with active-low outputs.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
+      "title": "3-line to 8-line decoder/demultiplexer with active-low outputs",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A - input",
+          "pin": "A"
+        },
+        {
+          "explanation": "B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "B - input",
+          "pin": "B"
+        },
+        {
+          "explanation": "C controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "C - input",
+          "pin": "C"
+        },
+        {
+          "explanation": "/G2A controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/G2A - input",
+          "pin": "/G2A"
+        },
+        {
+          "explanation": "/G2B controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/G2B - input",
+          "pin": "/G2B"
+        },
+        {
+          "explanation": "G1 controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "G1 - input",
+          "pin": "G1"
+        }
+      ],
+      "controls": [
+        "A",
+        "B",
+        "C",
+        "/G2A",
+        "/G2B",
+        "G1"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC138",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/Y7",
+          "name": "/Y7"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/Y6",
+          "name": "/Y6"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/Y5",
+          "name": "/Y5"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/Y4",
+          "name": "/Y4"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/Y3",
+          "name": "/Y3"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/Y2",
+          "name": "/Y2"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/Y1",
+          "name": "/Y1"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/Y0",
+          "name": "/Y0"
+        }
+      ],
+      "probes": [
+        "/Y7",
+        "/Y6",
+        "/Y5",
+        "/Y4",
+        "/Y3",
+        "/Y2",
+        "/Y1",
+        "/Y0"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change A?",
+        "Which truth-table row matches the value on /Y7?"
+      ],
+      "title": "Try 74HC138 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "3-line to 8-line decoder/demultiplexer with active-low outputs",
+        "type": "3_line_to_8_line_decoder_demultiplexer_with"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC138",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "A",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "B",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "C",
+          "number": 3
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/G2A",
+          "number": 4
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/G2B",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "G1",
+          "number": 6
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y7",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y6",
+          "number": 9
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y5",
+          "number": 10
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y4",
+          "number": 11
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y3",
+          "number": 12
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y2",
+          "number": 13
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y1",
+          "number": 14
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y0",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "decoder",
+      "timing": {
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output"
+            },
+            "output_disable_to_high_z_ns": {
+              "condition": "enable control released",
+              "from": "output-enable control",
+              "parameter": "tdis",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output high-Z"
+            },
+            "output_enable_to_output_ns": {
+              "condition": "enable control asserted",
+              "from": "output-enable control",
+              "parameter": "ten",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output driven"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_timing_model",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC138 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC138 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC138 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC138 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC138 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI SN74HC138 switching characteristics, CL=50 pF; table gives tpd from A/B/C and enable to any Y, and measurement waveform maps tPLH/tPHL to propagation delay.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "address_to_output": 36,
+                  "enable_to_output": 31,
+                  "transition": 15
+                },
+                "datasheet_max_ns_sn54": {
+                  "address_to_output": 54,
+                  "enable_to_output": 47,
+                  "transition": 22
+                },
+                "datasheet_max_ns_sn74": {
+                  "address_to_output": 45,
+                  "enable_to_output": 39,
+                  "transition": 19
+                },
+                "datasheet_typical_ns": {
+                  "address_to_output": 18,
+                  "enable_to_output": 18,
+                  "transition": 8
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC138 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI SN74HC138 switching characteristics, CL=50 pF; table gives tpd from A/B/C and enable to any Y, and measurement waveform maps tPLH/tPHL to propagation delay.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "address_to_output": 36,
+                  "enable_to_output": 31,
+                  "transition": 15
+                },
+                "datasheet_max_ns_sn54": {
+                  "address_to_output": 54,
+                  "enable_to_output": 47,
+                  "transition": 22
+                },
+                "datasheet_max_ns_sn74": {
+                  "address_to_output": 45,
+                  "enable_to_output": 39,
+                  "transition": 19
+                },
+                "datasheet_typical_ns": {
+                  "address_to_output": 18,
+                  "enable_to_output": 18,
+                  "transition": 8
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC138 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC138 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC138 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
+      },
+      "title": "3-line to 8-line decoder/demultiplexer with active-low outputs"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "A",
+        "16": "VCC",
+        "2": "B",
+        "3": "C",
+        "4": "/G2A",
+        "5": "/G2B",
+        "6": "G1",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC138",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC138",
+      "copy_with_chip": [
+        "lib/standard/74xx/74HC138/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC138/simulation/model.py",
+      "part": "74HC138",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "A",
+        "16": "VCC",
+        "2": "B",
+        "3": "C",
+        "4": "/G2A",
+        "5": "/G2B",
+        "6": "G1",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC138",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC138",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC138",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "output_enable_to_output_metadata",
+            "output_disable_to_high_z_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "output_enable_to_output_metadata",
+            "output_disable_to_high_z_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC138",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc138",
+      "compile": {
+        "sources": [
+          "lib/standard/74xx/74HC138/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc138"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc138",
+      "part": "74HC138",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC138",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "output_enable_to_output_metadata",
+            "output_disable_to_high_z_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "output_enable_to_output_metadata",
+            "output_disable_to_high_z_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC138",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          7,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "B",
+            "pins": [
+              2
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "C",
+            "pins": [
+              3
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "G1",
+            "pins": [
+              6
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "G2A_bar",
+            "pins": [
+              4
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "G2B_bar",
+            "pins": [
+              5
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y_bar",
+            "pins": [
+              15,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              7
+            ]
+          }
+        ]
+      },
+      "file": "lib/standard/74xx/74HC138/simulation/model.v",
+      "module": "ttl_74hc138",
+      "netlist": "lib/standard/74xx/74HC138/simulation/netlist.json",
+      "part": "74HC138"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC138",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "lib/standard/74xx/74HC138/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "lib/standard/74xx/74HC138/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "lib/standard/74xx/74HC138/simulation/netlist.json"
+    }
+  ],
+  "source": "lib/standard/74xx/74HC138/definition/definition.json",
+  "version": 1
+}

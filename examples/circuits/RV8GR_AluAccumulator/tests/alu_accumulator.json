@@ -1,0 +1,42 @@
+{
+  "schema": "components.lib.circuit.test.alu_accumulator",
+  "version": 1,
+  "circuit": "rv8gr_alu_accumulator",
+  "source": "examples/circuits/RV8GR_AluAccumulator/circuit.json",
+  "vectors": [
+    {"name": "li_42", "instruction": "LI", "start_ac": "0x00", "ibus": "0x42", "alu_sub": 0, "xor_mode": 0, "mux_sel": 1, "ac_wr": 1, "phase": "T2", "expect_xor_b": "0x00", "expect_xor": "0x42", "expect_sum": "0x42", "expect_cout": 0, "expect_ac": "0x42", "expect_z": 0},
+    {"name": "addi_05_after_42", "instruction": "ADDI", "start_ac": "0x42", "ibus": "0x05", "alu_sub": 0, "xor_mode": 0, "mux_sel": 0, "ac_wr": 1, "phase": "T2", "expect_xor_b": "0x00", "expect_xor": "0x05", "expect_sum": "0x47", "expect_cout": 0, "expect_ac": "0x47", "expect_z": 0},
+    {"name": "subi_47_sets_zero", "instruction": "SUBI", "start_ac": "0x47", "ibus": "0x47", "alu_sub": 1, "xor_mode": 0, "mux_sel": 0, "ac_wr": 1, "phase": "T2", "expect_xor_b": "0xFF", "expect_xor": "0xB8", "expect_sum": "0x00", "expect_cout": 1, "expect_ac": "0x00", "expect_z": 1},
+    {"name": "sub_borrow_wraps", "instruction": "SUBI", "start_ac": "0x03", "ibus": "0x05", "alu_sub": 1, "xor_mode": 0, "mux_sel": 0, "ac_wr": 1, "phase": "T2", "expect_xor_b": "0xFF", "expect_xor": "0xFA", "expect_sum": "0xFE", "expect_cout": 0, "expect_ac": "0xFE", "expect_z": 0},
+    {"name": "xori_aa_after_ff", "instruction": "XORI", "start_ac": "0xFF", "ibus": "0xAA", "alu_sub": 0, "xor_mode": 1, "mux_sel": 1, "ac_wr": 1, "phase": "T2", "expect_xor_b": "0xFF", "expect_xor": "0x55", "expect_sum": "0x54", "expect_cout": 1, "expect_ac": "0x55", "expect_z": 0},
+    {"name": "xori_self_sets_zero", "instruction": "XORI", "start_ac": "0x55", "ibus": "0x55", "alu_sub": 0, "xor_mode": 1, "mux_sel": 1, "ac_wr": 1, "phase": "T2", "expect_xor_b": "0x55", "expect_xor": "0x00", "expect_sum": "0x55", "expect_cout": 0, "expect_ac": "0x00", "expect_z": 1},
+    {"name": "t1_no_capture", "instruction": "LI", "start_ac": "0x12", "ibus": "0x99", "alu_sub": 0, "xor_mode": 0, "mux_sel": 1, "ac_wr": 1, "phase": "T1", "expect_xor_b": "0x00", "expect_xor": "0x99", "expect_sum": "0xAB", "expect_cout": 0, "expect_ac": "0x12", "expect_z": 0},
+    {"name": "t2_ac_wr_zero_holds", "instruction": "SETPG", "start_ac": "0x12", "ibus": "0x99", "alu_sub": 0, "xor_mode": 0, "mux_sel": 1, "ac_wr": 0, "phase": "T2", "expect_xor_b": "0x00", "expect_xor": "0x99", "expect_sum": "0xAB", "expect_cout": 0, "expect_ac": "0x12", "expect_z": 0}
+  ],
+  "source_vectors": [
+    {"name": "soft_debug_basic_alu", "program": "LI $42; ADDI $05; SUBI $47", "expect_ac": "0x00", "expect_z": 1},
+    {"name": "opcode_sweep_formula_sample", "opcode": "0x70", "start_ac": "0xA5", "ibus": "0x5A", "expect_ac": "0xFF", "expect_z": 0}
+  ],
+  "buffer_vectors": [
+    {"name": "store_buffer_disabled", "ac": "0x42", "ac_buf_n": 1, "expect_ibus": null},
+    {"name": "store_buffer_enabled", "ac": "0x42", "ac_buf_n": 0, "expect_ibus": "0x42"}
+  ],
+  "z_vectors": [
+    {"name": "nonzero_clears_z", "ac": "0x42", "expect_compare_n": 1, "expect_z": 0},
+    {"name": "zero_presets_z", "ac": "0x00", "expect_compare_n": 0, "expect_z": 1},
+    {"name": "toggle_back_to_zero", "sequence": ["0x00", "0x01", "0x00"], "expect_z_sequence": [1, 0, 1]}
+  ],
+  "propagation_checks": [
+    {"name": "xor_b_to_ac_d_model_path", "parts": ["74HC157", "74HC86", "74HC283", "74HC283", "74HC157"], "expect_delay_ns": 121, "limit_ns": 200},
+    {"name": "ac_to_z_settle_model_path", "parts": ["74HC574", "74HC688", "74HC74"], "expect_delay_ns": 70, "limit_ns": 200},
+    {"name": "ac_store_buffer_to_ibus", "parts": ["74HC541"], "expect_delay_ns": 12, "limit_ns": 200}
+  ],
+  "clock_profiles": [
+    {"name": "push_switch_single_step", "kind": "manual", "requires": "one clean ACC_CLK rising edge per AC write"},
+    {"name": "push_switch_random_100", "kind": "manual", "ticks": 100, "max_interval_ms": 500, "seed": 35862, "requires": "one clean ACC_CLK rising edge per AC write; interval jitter must not add extra captures"},
+    {"name": "50_khz", "frequency_hz": 50000, "period_ns": 20000, "proof": "functional_ac_capture"},
+    {"name": "1_mhz", "frequency_hz": 1000000, "period_ns": 1000, "proof": "functional_ac_capture"},
+    {"name": "2_mhz", "frequency_hz": 2000000, "period_ns": 500, "proof": "functional_ac_capture"},
+    {"name": "5_mhz", "frequency_hz": 5000000, "period_ns": 200, "proof": "functional_ac_capture", "note": "Functional simulation only; physical 5 MHz requires timing-margin and signal-integrity proof."}
+  ]
+}

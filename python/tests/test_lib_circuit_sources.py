@@ -10,8 +10,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 RV8GR_ROOT = ROOT.parent / "RV8" / "RV8GR"
 COMPONENTS_LOCAL_ROOTS = (
-    ROOT / "Lib" / "Circuits",
-    ROOT / "DB",
+    ROOT / "examples" / "circuits",
+    ROOT / "lib" / "standard",
 )
 
 
@@ -27,7 +27,7 @@ class LibCircuitSourceTests(unittest.TestCase):
     def test_all_source_project_paths_resolve(self) -> None:
         findings: list[str] = []
 
-        circuit_files = sorted(ROOT.glob("Lib/Circuits/RV8GR_*/circuit.json"))
+        circuit_files = sorted(ROOT.glob("examples/circuits/RV8GR_*/circuit.json"))
         self.assertTrue(circuit_files, "No RV8GR circuit packages found")
         for circuit_file in circuit_files:
             circuit = json.loads(circuit_file.read_text(encoding="utf-8"))
@@ -56,11 +56,11 @@ class LibCircuitSourceTests(unittest.TestCase):
                     findings.append(f"{package}: source is not a regular file: {source}")
                 elif resolved.stat().st_size == 0:
                     findings.append(f"{package}: source file is empty: {source}")
-                elif is_relative_to(resolved, ROOT / "Lib" / "Circuits"):
+                elif is_relative_to(resolved, ROOT / "examples" / "circuits"):
                     if resolved.name != "circuit.json" or not resolved.parent.name.startswith("RV8GR_"):
                         findings.append(f"{package}: local circuit source is not a package circuit.json: {source}")
-                elif is_relative_to(resolved, ROOT / "DB"):
-                    if resolved != ROOT / "DB" / "VIRTUAL_TEST_GENERATOR_CONTRACT.json":
+                elif is_relative_to(resolved, ROOT / "lib" / "standard"):
+                    if resolved != ROOT / "lib" / "standard" / "VIRTUAL_TEST_GENERATOR_CONTRACT.json":
                         findings.append(f"{package}: DB source is not the canonical virtual-test contract: {source}")
 
         self.assertFalse(

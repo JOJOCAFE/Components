@@ -1,0 +1,86 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_full_control_opcode_sweep",
+  "title": "RV8GR full T2 control opcode sweep",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_opcode_sweep.v",
+      "/home/jo/kiro/RV8/RV8GR/doc/00_design_isa.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/doc/05_debug_plan.md"
+    ]
+  },
+  "purpose": "Prove the RV8GR T2 horizontal-control equations for every opcode and both initial Z states as a reusable circuit-level contract.",
+  "chips": [
+    {"ref": "BUS", "part": "RV8GR_BusOwnership", "role": "IBUS/DBUS ownership and store/load bus safety"},
+    {"ref": "ALU", "part": "RV8GR_AluAccumulator", "role": "AC, Z, ALU result, and store buffer effect"},
+    {"ref": "PGDP", "part": "RV8GR_PageDataRegisters", "role": "PG and DP register load side effects"},
+    {"ref": "PC", "part": "RV8GR_BranchJumpControl", "role": "PC load control from JMP/BR/Z"},
+    {"ref": "VT", "part": "RV8GR_VirtualTestHelpers", "role": "Opcode-sweep observation, phase, clock, and bus-conflict monitors"}
+  ],
+  "executable_boundaries": [
+    {
+      "id": "opcode_control_inputs",
+      "kind": "package_input_contract",
+      "status": "executable_through_declared_ports",
+      "replaces_placeholder": "virtual_control_word",
+      "inputs": ["IRH0..IRH7", "T2"],
+      "derived_signals": ["ALU_SUB", "XOR_MODE", "MUX_SEL", "AC_WR", "SRC", "STR", "BR", "JMP"],
+      "source": "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_opcode_sweep.v",
+      "contract": "The opcode sweep drives IRH and T2 at the package boundary; control bits are the latched IRH bits documented by the ISA and wiring guide, not a physical or virtual chip.",
+      "blocked_until": "Child-package port mappings bind each derived control signal to its authoritative destination."
+    }
+  ],
+  "ports": [
+    {"name": "IRH0..IRH7", "direction": "input"},
+    {"name": "IRL0..IRL7", "direction": "input"},
+    {"name": "T2", "direction": "input"},
+    {"name": "AC0..AC7", "direction": "input_output"},
+    {"name": "Z_flag", "direction": "input_output"},
+    {"name": "PG0..PG7", "direction": "input_output"},
+    {"name": "DP0..DP7", "direction": "input_output"},
+    {"name": "IE", "direction": "input_output"},
+    {"name": "PC0..PC15", "direction": "input_output"},
+    {"name": "IBUS0..IBUS7", "direction": "bidirectional"},
+    {"name": "DBUS0..DBUS7", "direction": "bidirectional"}
+  ],
+  "behavior": {
+    "scope": "This circuit tests pure T2 execution logic and intentionally bypasses T0/T1 fetch.",
+    "ibus": "SRC=1 selects RAM[{DP,IRL}], otherwise IRL immediate.",
+    "alu": "XOR_MODE selects AC feedback or {8{ALU_SUB}}; MUX_SEL selects XOR output or adder sum.",
+    "ac": "AC_WR=1 captures the selected ALU result; AC_WR=0 holds AC.",
+    "z": "Z updates only when AC_WR=1; otherwise it holds the initial Z.",
+    "pg": "PG loads IBUS when MUX_SEL=1 and AC_WR=0. Reserved mixes are visible and are not hidden by extra decode.",
+    "dp": "DP loads IRL when XOR_MODE=1, SRC=0, STR=0, and AC_WR=0.",
+    "ie": "IE sets when SRC=1, XOR_MODE=0, and AC_WR=0.",
+    "pc": "PC loads {PG,IRL} when JMP=1 or BR=1 and Z matches ALU_SUB.",
+    "ram": "STR=1 writes AC to RAM when the data address is in RAM page."
+  },
+  "timing": {
+    "clocking": "T2_single_edge_contract",
+    "phase": "T2 only",
+    "sample_points": [
+      "control bits stable before T2 execution edge",
+      "bus ownership checked before write/read side effects",
+      "destination registers checked after model propagation"
+    ],
+    "unsafe_states": [
+      "reserved opcode mix changes PG, DP, IE, PC, RAM, or AC in a way not described by physical decode",
+      "SRC and STR overlap creates unreported bus contention",
+      "Z changes when AC_WR=0",
+      "PC loads outside the documented branch/jump equation"
+    ]
+  },
+  "verification": {
+    "tests": ["tests/full_control_opcode_sweep.json"],
+    "guarantees": [
+      "All 512 opcode/Z cases match the RV8GR Verilog opcode-sweep equations",
+      "Named reserved mixes are explicit and visible",
+      "Bus ownership remains conflict-free for the physical T2 equations",
+      "No test may reduce the full sweep to a PASS banner without assertions"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

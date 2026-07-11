@@ -1,0 +1,1143 @@
+{
+  "datasheet": {
+    "part": "74HC166",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC166",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc166.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
+  },
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC166",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc166.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC166",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      }
+    },
+    "pins": {
+      "part": "74HC166",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "SER",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "A",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "B",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "C",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "D",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "CLK INH",
+          "number": 6
+        },
+        {
+          "direction": "input",
+          "name": "CLK",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/CLR",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "H",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "G",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "F",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "E",
+          "number": 13
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/SH/LD",
+          "number": 14
+        },
+        {
+          "direction": "output",
+          "name": "QH",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC166",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "TI SN74HC166 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_fmax_mhz": {
+          "sn54_min": 21,
+          "sn74_min": 21,
+          "typical": 31
+        },
+        "datasheet_max_ns_25c": {
+          "clear_to_q": 24,
+          "clock_to_q": 30,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_125c": {
+          "clear_to_q": 36,
+          "clock_to_q": 45,
+          "transition": 22
+        },
+        "datasheet_typical_ns": {
+          "clear_to_q": 18,
+          "clock_to_q": 15,
+          "transition": 8
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local source PDF text; see docs/TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC166",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc166.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC166",
+      "schema": "db.component.timing",
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "parameters": {
+          "tPLH": {
+            "status": "exact",
+            "source_field": "TI SN74HC166 switching characteristics tpd CLK->QH",
+            "values_ns": {
+              "clock_to_qh": {
+                "typ_25c": {
+                  "vcc_2_v": 75,
+                  "vcc_4_5_v": 15,
+                  "vcc_6_v": 13
+                },
+                "max_25c": {
+                  "vcc_2_v": 150,
+                  "vcc_4_5_v": 30,
+                  "vcc_6_v": 26
+                },
+                "max_sn54": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                },
+                "max_sn74": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                }
+              }
+            },
+            "note": "CLK-to-QH tpd is the TI clocked output propagation path; CLR is only tPHL."
+          },
+          "tPHL": {
+            "status": "exact",
+            "source_field": "TI SN74HC166 switching characteristics tPHL CLR->QH and tpd CLK->QH",
+            "values_ns": {
+              "clear_to_qh_low": {
+                "typ_25c": {
+                  "vcc_2_v": 62,
+                  "vcc_4_5_v": 18,
+                  "vcc_6_v": 13
+                },
+                "max_25c": {
+                  "vcc_2_v": 120,
+                  "vcc_4_5_v": 24,
+                  "vcc_6_v": 20
+                },
+                "max_sn54": {
+                  "vcc_2_v": 180,
+                  "vcc_4_5_v": 36,
+                  "vcc_6_v": 31
+                },
+                "max_sn74": {
+                  "vcc_2_v": 180,
+                  "vcc_4_5_v": 36,
+                  "vcc_6_v": 31
+                }
+              },
+              "clock_to_qh": {
+                "typ_25c": {
+                  "vcc_2_v": 75,
+                  "vcc_4_5_v": 15,
+                  "vcc_6_v": 13
+                },
+                "max_25c": {
+                  "vcc_2_v": 150,
+                  "vcc_4_5_v": 30,
+                  "vcc_6_v": 26
+                },
+                "max_sn54": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                },
+                "max_sn74": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                }
+              }
+            },
+            "note": "Clear-to-QH low is explicit tPHL; clock-to-QH tpd covers clocked output propagation."
+          },
+          "tPZH": {
+            "status": "not_applicable",
+            "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+          },
+          "tPZL": {
+            "status": "not_applicable",
+            "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+          },
+          "tPHZ": {
+            "status": "not_applicable",
+            "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+          },
+          "tPLZ": {
+            "status": "not_applicable",
+            "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+          },
+          "clock_to_q_high": {
+            "status": "exact",
+            "source_field": "TI SN74HC166 switching characteristics tpd CLK->QH",
+            "values_ns": {
+              "clock_to_qh": {
+                "typ_25c": {
+                  "vcc_2_v": 75,
+                  "vcc_4_5_v": 15,
+                  "vcc_6_v": 13
+                },
+                "max_25c": {
+                  "vcc_2_v": 150,
+                  "vcc_4_5_v": 30,
+                  "vcc_6_v": 26
+                },
+                "max_sn54": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                },
+                "max_sn74": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                }
+              }
+            },
+            "note": "Serial output QH updates on clock rising edge."
+          },
+          "clock_to_q_low": {
+            "status": "exact",
+            "source_field": "TI SN74HC166 switching characteristics tpd CLK->QH and tPHL CLR->QH",
+            "values_ns": {
+              "clock_to_qh": {
+                "typ_25c": {
+                  "vcc_2_v": 75,
+                  "vcc_4_5_v": 15,
+                  "vcc_6_v": 13
+                },
+                "max_25c": {
+                  "vcc_2_v": 150,
+                  "vcc_4_5_v": 30,
+                  "vcc_6_v": 26
+                },
+                "max_sn54": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                },
+                "max_sn74": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                }
+              },
+              "clear_to_qh_low": {
+                "typ_25c": {
+                  "vcc_2_v": 62,
+                  "vcc_4_5_v": 18,
+                  "vcc_6_v": 13
+                },
+                "max_25c": {
+                  "vcc_2_v": 120,
+                  "vcc_4_5_v": 24,
+                  "vcc_6_v": 20
+                },
+                "max_sn54": {
+                  "vcc_2_v": 180,
+                  "vcc_4_5_v": 36,
+                  "vcc_6_v": 31
+                },
+                "max_sn74": {
+                  "vcc_2_v": 180,
+                  "vcc_4_5_v": 36,
+                  "vcc_6_v": 31
+                }
+              }
+            },
+            "note": "Includes clocked output fall and asynchronous clear-to-low propagation."
+          },
+          "setup": {
+            "status": "exact",
+            "source_field": "TI SN74HC166 timing requirements table 5.5 tsu rows",
+            "values_ns": {
+              "sh_ld_high_before_clk_rise_min": {
+                "vcc_2_v": {
+                  "ta_25c": 145,
+                  "sn54": 220,
+                  "sn74": 180
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 29,
+                  "sn54": 44,
+                  "sn74": 36
+                },
+                "vcc_6_v": {
+                  "ta_25c": 25,
+                  "sn54": 38,
+                  "sn74": 31
+                }
+              },
+              "ser_before_clk_rise_min": {
+                "vcc_2_v": {
+                  "ta_25c": 80,
+                  "sn54": 120,
+                  "sn74": 100
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 16,
+                  "sn54": 24,
+                  "sn74": 20
+                },
+                "vcc_6_v": {
+                  "ta_25c": 14,
+                  "sn54": 20,
+                  "sn74": 17
+                }
+              },
+              "clk_inh_low_before_clk_rise_min": {
+                "vcc_2_v": {
+                  "ta_25c": 100,
+                  "sn54": 150,
+                  "sn74": 125
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 20,
+                  "sn54": 30,
+                  "sn74": 25
+                },
+                "vcc_6_v": {
+                  "ta_25c": 17,
+                  "sn54": 26,
+                  "sn74": 21
+                }
+              },
+              "data_before_clk_rise_min": {
+                "vcc_2_v": {
+                  "ta_25c": 80,
+                  "sn54": 120,
+                  "sn74": 100
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 16,
+                  "sn54": 24,
+                  "sn74": 20
+                },
+                "vcc_6_v": {
+                  "ta_25c": 14,
+                  "sn54": 20,
+                  "sn74": 17
+                }
+              },
+              "clear_inactive_before_clk_rise_min": {
+                "vcc_2_v": {
+                  "ta_25c": 40,
+                  "sn54": 60,
+                  "sn74": 50
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 8,
+                  "sn54": 12,
+                  "sn74": 10
+                },
+                "vcc_6_v": {
+                  "ta_25c": 7,
+                  "sn54": 10,
+                  "sn74": 9
+                }
+              }
+            },
+            "note": "All setup rows are named in TI table 5.5."
+          },
+          "hold": {
+            "status": "exact",
+            "source_field": "TI SN74HC166 timing requirements table 5.5 th rows",
+            "values_ns": {
+              "sh_ld_high_after_clk_rise_min": {
+                "vcc_2_v": 0,
+                "vcc_4_5_v": 0,
+                "vcc_6_v": 0
+              },
+              "ser_after_clk_rise_min": {
+                "vcc_2_v": 5,
+                "vcc_4_5_v": 5,
+                "vcc_6_v": 5
+              },
+              "clk_inh_high_after_clk_rise_min": {
+                "vcc_2_v": 0,
+                "vcc_4_5_v": 0,
+                "vcc_6_v": 0
+              },
+              "data_after_clk_rise_min": {
+                "vcc_2_v": 5,
+                "vcc_4_5_v": 5,
+                "vcc_6_v": 5
+              }
+            },
+            "note": "Hold rows are directly listed after CLK rising edge."
+          },
+          "minimum_pulse_width": {
+            "status": "exact",
+            "source_field": "TI SN74HC166 timing requirements table 5.5 tw rows",
+            "values_ns": {
+              "clear_low_min": {
+                "vcc_2_v": {
+                  "ta_25c": 100,
+                  "sn54": 150,
+                  "sn74": 125
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 20,
+                  "sn54": 30,
+                  "sn74": 25
+                },
+                "vcc_6_v": {
+                  "ta_25c": 17,
+                  "sn54": 26,
+                  "sn74": 21
+                }
+              },
+              "clock_high_or_low_min": {
+                "vcc_2_v": {
+                  "ta_25c": 80,
+                  "sn54": 120,
+                  "sn74": 100
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 16,
+                  "sn54": 24,
+                  "sn74": 20
+                },
+                "vcc_6_v": {
+                  "ta_25c": 14,
+                  "sn54": 20,
+                  "sn74": 17
+                }
+              }
+            },
+            "note": "Pulse duration rows explicitly cover CLR low and CLK high or low."
+          }
+        },
+        "conditions": {
+          "load_pf": 50,
+          "ta_c": 25
+        }
+      }
+    }
+  },
+  "generation": {
+    "python": {
+      "class": "HC166",
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC166/simulation/model.py",
+      "part": "74HC166"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "lib/standard/74xx/74HC166/simulation/model.v",
+      "module": "ttl_74hc166",
+      "netlist": "lib/standard/74xx/74HC166/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "description": "8-Bit Parallel-Load Shift Register",
+    "type": "8_bit_parallel_load_shift_register"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "register",
+    "title": "8-Bit Parallel-Load Shift Register"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 16
+  },
+  "part": "74HC166",
+  "pins": [
+    {
+      "direction": "input",
+      "name": "SER",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "A",
+      "number": 2
+    },
+    {
+      "direction": "input",
+      "name": "B",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "C",
+      "number": 4
+    },
+    {
+      "direction": "input",
+      "name": "D",
+      "number": 5
+    },
+    {
+      "direction": "input",
+      "name": "CLK INH",
+      "number": 6
+    },
+    {
+      "direction": "input",
+      "name": "CLK",
+      "number": 7
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 8,
+      "rail": "GND"
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/CLR",
+      "number": 9
+    },
+    {
+      "direction": "input",
+      "name": "H",
+      "number": 10
+    },
+    {
+      "direction": "input",
+      "name": "G",
+      "number": 11
+    },
+    {
+      "direction": "input",
+      "name": "F",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "E",
+      "number": 13
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/SH/LD",
+      "number": 14
+    },
+    {
+      "direction": "output",
+      "name": "QH",
+      "number": 15
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 16,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "TI SN74HC166 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_fmax_mhz": {
+          "sn54_min": 21,
+          "sn74_min": 21,
+          "typical": 31
+        },
+        "datasheet_max_ns_25c": {
+          "clear_to_q": 24,
+          "clock_to_q": 30,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_125c": {
+          "clear_to_q": 36,
+          "clock_to_q": 45,
+          "transition": 22
+        },
+        "datasheet_typical_ns": {
+          "clear_to_q": 18,
+          "clock_to_q": 15,
+          "transition": 8
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "async_control_to_output_ns": {
+          "condition": "async control asserted or released",
+          "from": "asynchronous control",
+          "parameter": "tremap",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "Q/output"
+        },
+        "clock_to_output_ns": {
+          "condition": "active clock edge",
+          "from": "CLK/clock control",
+          "parameter": "tco",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "Q/output"
+        },
+        "input_setup_margin_ns": {
+          "condition": "conservative setup placeholder from model delay",
+          "from": "D/input",
+          "parameter": "tsu",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "CLK/clock control"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "parameters": {
+        "tPLH": {
+          "status": "exact",
+          "source_field": "TI SN74HC166 switching characteristics tpd CLK->QH",
+          "values_ns": {
+            "clock_to_qh": {
+              "typ_25c": {
+                "vcc_2_v": 75,
+                "vcc_4_5_v": 15,
+                "vcc_6_v": 13
+              },
+              "max_25c": {
+                "vcc_2_v": 150,
+                "vcc_4_5_v": 30,
+                "vcc_6_v": 26
+              },
+              "max_sn54": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              },
+              "max_sn74": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              }
+            }
+          },
+          "note": "CLK-to-QH tpd is the TI clocked output propagation path; CLR is only tPHL."
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "TI SN74HC166 switching characteristics tPHL CLR->QH and tpd CLK->QH",
+          "values_ns": {
+            "clear_to_qh_low": {
+              "typ_25c": {
+                "vcc_2_v": 62,
+                "vcc_4_5_v": 18,
+                "vcc_6_v": 13
+              },
+              "max_25c": {
+                "vcc_2_v": 120,
+                "vcc_4_5_v": 24,
+                "vcc_6_v": 20
+              },
+              "max_sn54": {
+                "vcc_2_v": 180,
+                "vcc_4_5_v": 36,
+                "vcc_6_v": 31
+              },
+              "max_sn74": {
+                "vcc_2_v": 180,
+                "vcc_4_5_v": 36,
+                "vcc_6_v": 31
+              }
+            },
+            "clock_to_qh": {
+              "typ_25c": {
+                "vcc_2_v": 75,
+                "vcc_4_5_v": 15,
+                "vcc_6_v": 13
+              },
+              "max_25c": {
+                "vcc_2_v": 150,
+                "vcc_4_5_v": 30,
+                "vcc_6_v": 26
+              },
+              "max_sn54": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              },
+              "max_sn74": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              }
+            }
+          },
+          "note": "Clear-to-QH low is explicit tPHL; clock-to-QH tpd covers clocked output propagation."
+        },
+        "tPZH": {
+          "status": "not_applicable",
+          "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+        },
+        "tPZL": {
+          "status": "not_applicable",
+          "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+        },
+        "tPHZ": {
+          "status": "not_applicable",
+          "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+        },
+        "tPLZ": {
+          "status": "not_applicable",
+          "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+        },
+        "clock_to_q_high": {
+          "status": "exact",
+          "source_field": "TI SN74HC166 switching characteristics tpd CLK->QH",
+          "values_ns": {
+            "clock_to_qh": {
+              "typ_25c": {
+                "vcc_2_v": 75,
+                "vcc_4_5_v": 15,
+                "vcc_6_v": 13
+              },
+              "max_25c": {
+                "vcc_2_v": 150,
+                "vcc_4_5_v": 30,
+                "vcc_6_v": 26
+              },
+              "max_sn54": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              },
+              "max_sn74": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              }
+            }
+          },
+          "note": "Serial output QH updates on clock rising edge."
+        },
+        "clock_to_q_low": {
+          "status": "exact",
+          "source_field": "TI SN74HC166 switching characteristics tpd CLK->QH and tPHL CLR->QH",
+          "values_ns": {
+            "clock_to_qh": {
+              "typ_25c": {
+                "vcc_2_v": 75,
+                "vcc_4_5_v": 15,
+                "vcc_6_v": 13
+              },
+              "max_25c": {
+                "vcc_2_v": 150,
+                "vcc_4_5_v": 30,
+                "vcc_6_v": 26
+              },
+              "max_sn54": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              },
+              "max_sn74": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              }
+            },
+            "clear_to_qh_low": {
+              "typ_25c": {
+                "vcc_2_v": 62,
+                "vcc_4_5_v": 18,
+                "vcc_6_v": 13
+              },
+              "max_25c": {
+                "vcc_2_v": 120,
+                "vcc_4_5_v": 24,
+                "vcc_6_v": 20
+              },
+              "max_sn54": {
+                "vcc_2_v": 180,
+                "vcc_4_5_v": 36,
+                "vcc_6_v": 31
+              },
+              "max_sn74": {
+                "vcc_2_v": 180,
+                "vcc_4_5_v": 36,
+                "vcc_6_v": 31
+              }
+            }
+          },
+          "note": "Includes clocked output fall and asynchronous clear-to-low propagation."
+        },
+        "setup": {
+          "status": "exact",
+          "source_field": "TI SN74HC166 timing requirements table 5.5 tsu rows",
+          "values_ns": {
+            "sh_ld_high_before_clk_rise_min": {
+              "vcc_2_v": {
+                "ta_25c": 145,
+                "sn54": 220,
+                "sn74": 180
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 29,
+                "sn54": 44,
+                "sn74": 36
+              },
+              "vcc_6_v": {
+                "ta_25c": 25,
+                "sn54": 38,
+                "sn74": 31
+              }
+            },
+            "ser_before_clk_rise_min": {
+              "vcc_2_v": {
+                "ta_25c": 80,
+                "sn54": 120,
+                "sn74": 100
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 16,
+                "sn54": 24,
+                "sn74": 20
+              },
+              "vcc_6_v": {
+                "ta_25c": 14,
+                "sn54": 20,
+                "sn74": 17
+              }
+            },
+            "clk_inh_low_before_clk_rise_min": {
+              "vcc_2_v": {
+                "ta_25c": 100,
+                "sn54": 150,
+                "sn74": 125
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 20,
+                "sn54": 30,
+                "sn74": 25
+              },
+              "vcc_6_v": {
+                "ta_25c": 17,
+                "sn54": 26,
+                "sn74": 21
+              }
+            },
+            "data_before_clk_rise_min": {
+              "vcc_2_v": {
+                "ta_25c": 80,
+                "sn54": 120,
+                "sn74": 100
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 16,
+                "sn54": 24,
+                "sn74": 20
+              },
+              "vcc_6_v": {
+                "ta_25c": 14,
+                "sn54": 20,
+                "sn74": 17
+              }
+            },
+            "clear_inactive_before_clk_rise_min": {
+              "vcc_2_v": {
+                "ta_25c": 40,
+                "sn54": 60,
+                "sn74": 50
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 8,
+                "sn54": 12,
+                "sn74": 10
+              },
+              "vcc_6_v": {
+                "ta_25c": 7,
+                "sn54": 10,
+                "sn74": 9
+              }
+            }
+          },
+          "note": "All setup rows are named in TI table 5.5."
+        },
+        "hold": {
+          "status": "exact",
+          "source_field": "TI SN74HC166 timing requirements table 5.5 th rows",
+          "values_ns": {
+            "sh_ld_high_after_clk_rise_min": {
+              "vcc_2_v": 0,
+              "vcc_4_5_v": 0,
+              "vcc_6_v": 0
+            },
+            "ser_after_clk_rise_min": {
+              "vcc_2_v": 5,
+              "vcc_4_5_v": 5,
+              "vcc_6_v": 5
+            },
+            "clk_inh_high_after_clk_rise_min": {
+              "vcc_2_v": 0,
+              "vcc_4_5_v": 0,
+              "vcc_6_v": 0
+            },
+            "data_after_clk_rise_min": {
+              "vcc_2_v": 5,
+              "vcc_4_5_v": 5,
+              "vcc_6_v": 5
+            }
+          },
+          "note": "Hold rows are directly listed after CLK rising edge."
+        },
+        "minimum_pulse_width": {
+          "status": "exact",
+          "source_field": "TI SN74HC166 timing requirements table 5.5 tw rows",
+          "values_ns": {
+            "clear_low_min": {
+              "vcc_2_v": {
+                "ta_25c": 100,
+                "sn54": 150,
+                "sn74": 125
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 20,
+                "sn54": 30,
+                "sn74": 25
+              },
+              "vcc_6_v": {
+                "ta_25c": 17,
+                "sn54": 26,
+                "sn74": 21
+              }
+            },
+            "clock_high_or_low_min": {
+              "vcc_2_v": {
+                "ta_25c": 80,
+                "sn54": 120,
+                "sn74": 100
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 16,
+                "sn54": 24,
+                "sn74": 20
+              },
+              "vcc_6_v": {
+                "ta_25c": 14,
+                "sn54": 20,
+                "sn74": 17
+              }
+            }
+          },
+          "note": "Pulse duration rows explicitly cover CLR low and CLK high or low."
+        }
+      },
+      "conditions": {
+        "load_pf": 50,
+        "ta_c": 25
+      }
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1,
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "Texas Instruments",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
+  }
+}

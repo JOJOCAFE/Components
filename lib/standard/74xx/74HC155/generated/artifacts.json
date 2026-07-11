@@ -1,0 +1,740 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays."
+      ],
+      "overview": "74HC155 is a 16-pin DIP part for decoder.",
+      "part": "74HC155",
+      "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 6,
+          "names": [
+            "1C",
+            "1G",
+            "B",
+            "A",
+            "2G",
+            "2C"
+          ],
+          "note": "Input pins: 1C, 1G, B, A, 2G, 2C."
+        },
+        "output": {
+          "count": 8,
+          "names": [
+            "1Y3",
+            "1Y2",
+            "1Y1",
+            "1Y0",
+            "2Y0",
+            "2Y1",
+            "2Y2",
+            "2Y3"
+          ],
+          "note": "Output pins: 1Y3, 1Y2, 1Y1, 1Y0, 2Y0, 2Y1, and 2 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "dual 2-to-4 line decoder / 3-to-8 line decoder.",
+      "timing_note": "Default simulator delay is 15 ns; timed mode uses path-specific datasheet delays.",
+      "title": "dual 2-to-4 line decoder / 3-to-8 line decoder",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "1C controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1C - input",
+          "pin": "1C"
+        },
+        {
+          "explanation": "1G controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1G - input",
+          "pin": "1G"
+        },
+        {
+          "explanation": "B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "B - input",
+          "pin": "B"
+        },
+        {
+          "explanation": "A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "A - input",
+          "pin": "A"
+        },
+        {
+          "explanation": "2G controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2G - input",
+          "pin": "2G"
+        },
+        {
+          "explanation": "2C controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2C - input",
+          "pin": "2C"
+        }
+      ],
+      "controls": [
+        "1C",
+        "1G",
+        "B",
+        "A",
+        "2G",
+        "2C"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC155",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y3",
+          "name": "1Y3"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y2",
+          "name": "1Y2"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y1",
+          "name": "1Y1"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y0",
+          "name": "1Y0"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y0",
+          "name": "2Y0"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y1",
+          "name": "2Y1"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y2",
+          "name": "2Y2"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y3",
+          "name": "2Y3"
+        }
+      ],
+      "probes": [
+        "1Y3",
+        "1Y2",
+        "1Y1",
+        "1Y0",
+        "2Y0",
+        "2Y1",
+        "2Y2",
+        "2Y3"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change 1C?",
+        "Which truth-table row matches the value on 1Y3?"
+      ],
+      "title": "Try 74HC155 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "dual 2-to-4 line decoder / 3-to-8 line decoder",
+        "type": "dual_2_to_4_line_decoder_3_to"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC155",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "1C",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1G",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "B",
+          "number": 3
+        },
+        {
+          "direction": "output",
+          "name": "1Y3",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "1Y2",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "1Y1",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "1Y0",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "2Y0",
+          "number": 9
+        },
+        {
+          "direction": "output",
+          "name": "2Y1",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "2Y2",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "2Y3",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "A",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "2G",
+          "number": 14
+        },
+        {
+          "direction": "input",
+          "name": "2C",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "decoder",
+      "timing": {
+        "datasheet": {
+          "conditions": "ST M74HC155 feature summary, VCC=5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_typical_ns": {
+              "feature_tpd": 12
+            }
+          }
+        },
+        "delay_ns": 15,
+        "simple": {
+          "default_delay_ns": 15,
+          "source": "legacy functional simulator default"
+        },
+        "timed": {
+          "paths": {
+            "input_to_output_ns": {
+              "condition": "input or select changes",
+              "from": "input",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output"
+            },
+            "transition_time_ns": {
+              "condition": "enabled output switches",
+              "from": "output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "conservative_default": {
+                  "max_ns": 15,
+                  "min_ns": null,
+                  "source": "conservative_default_from_existing_model_delay",
+                  "typ_ns": 15
+                }
+              },
+              "to": "output transition"
+            }
+          },
+          "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "ST M74HC155 feature summary, VCC=5 V.",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC155 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC155 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC155 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC155 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC155 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "ST switching characteristics table gives direct propagation-delay timing for the decoder outputs; canonical propagation timing is preserved exactly.",
+              "source_field": "timing.datasheet.values",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_typical_ns": {
+                  "feature_tpd": 12
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC155 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "ST switching characteristics table gives direct propagation-delay timing for the decoder outputs; canonical propagation timing is preserved exactly.",
+              "source_field": "timing.datasheet.values",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_typical_ns": {
+                  "feature_tpd": 12
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC155 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC155 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC155 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
+      },
+      "title": "dual 2-to-4 line decoder / 3-to-8 line decoder"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "1C",
+        "13": "A",
+        "14": "2G",
+        "15": "2C",
+        "16": "VCC",
+        "2": "1G",
+        "3": "B",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC155",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC155",
+      "copy_with_chip": [
+        "lib/standard/74xx/74HC155/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC155/simulation/model.py",
+      "part": "74HC155",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "1C",
+        "13": "A",
+        "14": "2G",
+        "15": "2C",
+        "16": "VCC",
+        "2": "1G",
+        "3": "B",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC155",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC155",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC155",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC155",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc155",
+      "compile": {
+        "sources": [
+          "lib/standard/74xx/74HC155/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc155"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc155",
+      "part": "74HC155",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC155",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_propagation",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay",
+            "input_to_output_metadata",
+            "transition_time_metadata"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC155",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "all_inputs_low",
+            "all_inputs_high",
+            "alternating_inputs"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11,
+          12
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "Enable1C",
+            "pins": [
+              1
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Enable1G_bar",
+            "pins": [
+              2
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Enable2C_bar",
+            "pins": [
+              15
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "Enable2G_bar",
+            "pins": [
+              14
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              13,
+              3
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y_2D",
+            "pins": [
+              7,
+              6,
+              5,
+              4,
+              9,
+              10,
+              11,
+              12
+            ]
+          }
+        ]
+      },
+      "file": "lib/standard/74xx/74HC155/simulation/model.v",
+      "module": "ttl_74hc155",
+      "netlist": "lib/standard/74xx/74HC155/simulation/netlist.json",
+      "part": "74HC155"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC155",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "lib/standard/74xx/74HC155/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "lib/standard/74xx/74HC155/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "lib/standard/74xx/74HC155/simulation/netlist.json"
+    }
+  ],
+  "source": "lib/standard/74xx/74HC155/definition/definition.json",
+  "version": 1
+}

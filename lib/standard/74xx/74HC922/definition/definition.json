@@ -1,0 +1,677 @@
+{
+  "datasheet": {
+    "part": "74HC922",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Fairchild MM74C922/MM74C923",
+        "package_evidence": "N18A, 18-pin PDIP",
+        "url": "`Components/source/MM74C922.PDF`",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
+  },
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Fairchild MM74C922/MM74C923",
+        "package_evidence": "N18A, 18-pin PDIP",
+        "url": "`Components/source/MM74C922.PDF`",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC922",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      }
+    },
+    "pins": {
+      "part": "74HC922",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "ROW Y1",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "ROW Y2",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "ROW Y3",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "ROW Y4",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "OSCILLATOR",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "KEYBOUNCE MASK",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "COLUMN X4",
+          "number": 7
+        },
+        {
+          "direction": "output",
+          "name": "COLUMN X3",
+          "number": 8
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 9,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "COLUMN X2",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "COLUMN X1",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "DATA AVAILABLE",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "OUTPUT ENABLE",
+          "number": 13
+        },
+        {
+          "direction": "output",
+          "name": "DATA OUT D",
+          "number": 14
+        },
+        {
+          "direction": "output",
+          "name": "DATA OUT C",
+          "number": 15
+        },
+        {
+          "direction": "output",
+          "name": "DATA OUT B",
+          "number": 16
+        },
+        {
+          "direction": "output",
+          "name": "DATA OUT A",
+          "number": 17
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 18,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC922",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 9,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 18,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "MM74C922 timing characteristics, VCC=5 V.",
+        "datasheet_max_ns": {
+          "data_available_to_output": 150,
+          "high_z_to_output": 250,
+          "output_to_high_z": 200
+        },
+        "datasheet_typical_ns": {
+          "data_available_to_output": 60,
+          "high_z_to_output": 100,
+          "output_to_high_z": 80
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local source PDF text; see docs/TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "label": "Fairchild MM74C922/MM74C923",
+        "package_evidence": "N18A, 18-pin PDIP",
+        "url": "`Components/source/MM74C922.PDF`",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC922",
+      "schema": "db.component.timing",
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "conditions": "MM74C922 timing characteristics, VCC=5 V.",
+        "parameters": {
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "74HC922 is combinational and has no clocked Q output."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "74HC922 is combinational and has no clocked Q output."
+          },
+          "hold": {
+            "status": "not_applicable",
+            "reason": "74HC922 is combinational and has no setup/hold timing requirement."
+          },
+          "minimum_pulse_width": {
+            "status": "not_applicable",
+            "reason": "74HC922 is combinational and has no clock/reset/write pulse-width requirement."
+          },
+          "setup": {
+            "status": "not_applicable",
+            "reason": "74HC922 is combinational and has no setup/hold timing requirement."
+          },
+          "tPHL": {
+            "status": "exact",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns": {
+                "data_available_to_output": 150,
+                "high_z_to_output": 250,
+                "output_to_high_z": 200
+              },
+              "datasheet_typical_ns": {
+                "data_available_to_output": 60,
+                "high_z_to_output": 100,
+                "output_to_high_z": 80
+              }
+            },
+            "note": "Fairchild explicitly gives tpd0 and tpd1 for propagation to logical 0 or logical 1; the shared values are exact for tPHL and tPLH."
+          },
+          "tPHZ": {
+            "status": "exact",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns": {
+                "data_available_to_output": 150,
+                "high_z_to_output": 250,
+                "output_to_high_z": 200
+              },
+              "datasheet_typical_ns": {
+                "data_available_to_output": 60,
+                "high_z_to_output": 100,
+                "output_to_high_z": 80
+              }
+            },
+            "note": "Fairchild explicitly gives t0H and t1H for logical 0 or logical 1 entering high impedance; the shared values are exact for tPLZ and tPHZ."
+          },
+          "tPLH": {
+            "status": "exact",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns": {
+                "data_available_to_output": 150,
+                "high_z_to_output": 250,
+                "output_to_high_z": 200
+              },
+              "datasheet_typical_ns": {
+                "data_available_to_output": 60,
+                "high_z_to_output": 100,
+                "output_to_high_z": 80
+              }
+            },
+            "note": "Fairchild explicitly gives tpd0 and tpd1 for propagation to logical 0 or logical 1; the shared values are exact for tPHL and tPLH."
+          },
+          "tPLZ": {
+            "status": "exact",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns": {
+                "data_available_to_output": 150,
+                "high_z_to_output": 250,
+                "output_to_high_z": 200
+              },
+              "datasheet_typical_ns": {
+                "data_available_to_output": 60,
+                "high_z_to_output": 100,
+                "output_to_high_z": 80
+              }
+            },
+            "note": "Fairchild explicitly gives t0H and t1H for logical 0 or logical 1 entering high impedance; the shared values are exact for tPLZ and tPHZ."
+          },
+          "tPZH": {
+            "status": "exact",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns": {
+                "data_available_to_output": 150,
+                "high_z_to_output": 250,
+                "output_to_high_z": 200
+              },
+              "datasheet_typical_ns": {
+                "data_available_to_output": 60,
+                "high_z_to_output": 100,
+                "output_to_high_z": 80
+              }
+            },
+            "note": "Fairchild explicitly gives tH0 and tH1 for high impedance transitioning to logical 0 or logical 1; the shared values are exact for tPZL and tPZH."
+          },
+          "tPZL": {
+            "status": "exact",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns": {
+                "data_available_to_output": 150,
+                "high_z_to_output": 250,
+                "output_to_high_z": 200
+              },
+              "datasheet_typical_ns": {
+                "data_available_to_output": 60,
+                "high_z_to_output": 100,
+                "output_to_high_z": 80
+              }
+            },
+            "note": "Fairchild explicitly gives tH0 and tH1 for high impedance transitioning to logical 0 or logical 1; the shared values are exact for tPZL and tPZH."
+          }
+        }
+      }
+    }
+  },
+  "generation": {
+    "python": {
+      "class": "HC922",
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC922/simulation/model.py",
+      "part": "74HC922"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "lib/standard/74xx/74HC922/simulation/model.v",
+      "module": "ttl_74hc922",
+      "netlist": "lib/standard/74xx/74HC922/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "description": "74HC922 legacy component",
+    "type": "74hc922_legacy_component"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "logic",
+    "title": "74HC922 legacy component"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 18
+  },
+  "part": "74HC922",
+  "pins": [
+    {
+      "direction": "input",
+      "name": "ROW Y1",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "ROW Y2",
+      "number": 2
+    },
+    {
+      "direction": "input",
+      "name": "ROW Y3",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "ROW Y4",
+      "number": 4
+    },
+    {
+      "direction": "input",
+      "name": "OSCILLATOR",
+      "number": 5
+    },
+    {
+      "direction": "input",
+      "name": "KEYBOUNCE MASK",
+      "number": 6
+    },
+    {
+      "direction": "output",
+      "name": "COLUMN X4",
+      "number": 7
+    },
+    {
+      "direction": "output",
+      "name": "COLUMN X3",
+      "number": 8
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 9,
+      "rail": "GND"
+    },
+    {
+      "direction": "output",
+      "name": "COLUMN X2",
+      "number": 10
+    },
+    {
+      "direction": "output",
+      "name": "COLUMN X1",
+      "number": 11
+    },
+    {
+      "direction": "output",
+      "name": "DATA AVAILABLE",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "OUTPUT ENABLE",
+      "number": 13
+    },
+    {
+      "direction": "output",
+      "name": "DATA OUT D",
+      "number": 14
+    },
+    {
+      "direction": "output",
+      "name": "DATA OUT C",
+      "number": 15
+    },
+    {
+      "direction": "output",
+      "name": "DATA OUT B",
+      "number": 16
+    },
+    {
+      "direction": "output",
+      "name": "DATA OUT A",
+      "number": 17
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 18,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "MM74C922 timing characteristics, VCC=5 V.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_max_ns": {
+          "data_available_to_output": 150,
+          "high_z_to_output": 250,
+          "output_to_high_z": 200
+        },
+        "datasheet_typical_ns": {
+          "data_available_to_output": 60,
+          "high_z_to_output": 100,
+          "output_to_high_z": 80
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "conditions": "MM74C922 timing characteristics, VCC=5 V.",
+      "parameters": {
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "74HC922 is combinational and has no clocked Q output."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "74HC922 is combinational and has no clocked Q output."
+        },
+        "hold": {
+          "status": "not_applicable",
+          "reason": "74HC922 is combinational and has no setup/hold timing requirement."
+        },
+        "minimum_pulse_width": {
+          "status": "not_applicable",
+          "reason": "74HC922 is combinational and has no clock/reset/write pulse-width requirement."
+        },
+        "setup": {
+          "status": "not_applicable",
+          "reason": "74HC922 is combinational and has no setup/hold timing requirement."
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          },
+          "note": "MM74C922 AC characteristics give direct data-available to output timing; canonical propagation timing is preserved exactly."
+        },
+        "tPHZ": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          },
+          "note": "MM74C922 AC characteristics give direct output-to-high-Z timing; canonical output-disable timing is preserved exactly."
+        },
+        "tPLH": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          },
+          "note": "MM74C922 AC characteristics give direct data-available to output timing; canonical propagation timing is preserved exactly."
+        },
+        "tPLZ": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          },
+          "note": "MM74C922 AC characteristics give direct output-to-high-Z timing; canonical output-disable timing is preserved exactly."
+        },
+        "tPZH": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          },
+          "note": "MM74C922 AC characteristics give direct high-Z to output timing; canonical output-enable timing is preserved exactly."
+        },
+        "tPZL": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          },
+          "note": "MM74C922 AC characteristics give direct high-Z to output timing; canonical output-enable timing is preserved exactly."
+        }
+      }
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1,
+  "evidence": {
+    "dip_pinout_verified": true,
+    "manufacturer": "Fairchild",
+    "datasheet_status": "historical-or-current"
+  },
+  "procurement": {
+    "recommended_for_new_design": false,
+    "availability_class": "legacy",
+    "stock_basis": "nos-or-limited",
+    "last_checked": "2026-07-11"
+  }
+}

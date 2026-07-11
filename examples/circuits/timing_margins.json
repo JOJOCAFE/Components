@@ -1,0 +1,711 @@
+{
+  "schema": "components.lib.circuit.timing_margins",
+  "version": 1,
+  "scope": "RV8GR circuits under examples/circuits",
+  "status": {
+    "model_delay_margin": "captured",
+    "physical_status": "not_proven",
+    "physical_5mhz_timing": "not_proven",
+    "physical_signal_integrity": "not_proven",
+    "boundary_rule": "5 MHz remains functional simulation only until bench or source-backed physical timing evidence is added."
+  },
+  "physical_test_sweep": {
+    "status": "required_not_measured",
+    "voltage_points_v": [4.5, 5.0, 5.5],
+    "clock_profiles": [
+      {"name": "manual_push_switch_100_ticks", "mode": "manual", "ticks": 100, "pass_condition": "Exactly one clean logical clock edge per push; no double-trigger or missed tick."},
+      {"name": "50_khz", "mode": "oscillator", "frequency_hz": 50000, "period_ns": 20000},
+      {"name": "1_mhz", "mode": "oscillator", "frequency_hz": 1000000, "period_ns": 1000},
+      {"name": "2_mhz", "mode": "oscillator", "frequency_hz": 2000000, "period_ns": 500},
+      {"name": "5_mhz", "mode": "oscillator", "frequency_hz": 5000000, "period_ns": 200, "claim_boundary": "functional_simulation_only_until_scope_evidence"}
+    ],
+    "required_for_each_voltage_and_clock": [
+      "clock_reset_edge_quality",
+      "phase_one_hot",
+      "selected_memory_speed_grade",
+      "dbus_turnaround_deadband",
+      "ibus_single_driver",
+      "critical_register_setup_margin"
+    ],
+    "claim_boundary": "Completing source-backed definitions does not prove physical timing; every voltage/clock profile needs bench evidence."
+  },
+  "clock_profiles": [
+    {"name": "50_khz", "frequency_hz": 50000, "period_ns": 20000, "physical_status": "timing_margin_large_by_model"},
+    {"name": "1_mhz", "frequency_hz": 1000000, "period_ns": 1000, "physical_status": "timing_margin_positive_by_model"},
+    {"name": "2_mhz", "frequency_hz": 2000000, "period_ns": 500, "physical_status": "timing_margin_positive_by_model"},
+    {"name": "5_mhz", "frequency_hz": 5000000, "period_ns": 200, "physical_status": "not_proven", "claim_boundary": "functional_simulation_only"}
+  ],
+  "part_timing_sources": [
+    {"part": "74HC00", "model_delay_ns": 12, "source": "lib/standard/74xx/74HC00/definition/definition.json", "source_file_required": true},
+    {"part": "74HC04", "model_delay_ns": 12, "source": "lib/standard/74xx/74HC04/definition/definition.json", "source_file_required": true},
+    {"part": "74HC21", "model_delay_ns": 15, "source": "lib/standard/74xx/74HC21/definition/definition.json", "source_file_required": true},
+    {"part": "74HC74", "model_delay_ns": 20, "source": "lib/standard/74xx/74HC74/definition/definition.json", "source_file_required": true},
+    {"part": "74HC86", "model_delay_ns": 15, "source": "lib/standard/74xx/74HC86/definition/definition.json", "source_file_required": true},
+    {"part": "74HC157", "model_delay_ns": 18, "source": "lib/standard/74xx/74HC157/definition/definition.json", "source_file_required": true},
+    {"part": "74HC161", "model_delay_ns": 22, "source": "lib/standard/74xx/74HC161/definition/definition.json", "source_file_required": true},
+    {"part": "74HC164", "model_delay_ns": 20, "source": "lib/standard/74xx/74HC164/definition/definition.json", "source_file_required": true},
+    {"part": "74HC245", "model_delay_ns": 12, "source": "lib/standard/74xx/74HC245/definition/definition.json", "source_file_required": true},
+    {"part": "74HC283", "model_delay_ns": 35, "source": "lib/standard/74xx/74HC283/definition/definition.json", "source_file_required": true},
+    {"part": "74HC541", "model_delay_ns": 12, "source": "lib/standard/74xx/74HC541/definition/definition.json", "source_file_required": true},
+    {"part": "74HC574", "model_delay_ns": 20, "setup_before_clock_ns": 20, "hold_after_clock_ns": 5, "source": "lib/standard/74xx/74HC574/definition/definition.json", "source_file_required": true},
+    {"part": "74HC688", "model_delay_ns": 30, "source": "lib/standard/74xx/74HC688/definition/definition.json", "source_file_required": true},
+    {"part": "AT28C256", "model_read_delay_ns": 150, "datasheet_read_ns": {"at28c256_15": 150, "at28c256_20": 200, "at28c256_25": 250, "at28c256_35": 350}, "output_float_ns": {"at28c256_15": 50, "at28c256_20": 55, "at28c256_25": 60, "at28c256_35": 70}, "source": "lib/standard/memory/AT28C256/definition/definition.json", "source_file_required": true, "physical_caveat": "Model read delay uses the AT28C256-15 tACC address-to-output path; slower EEPROM speed grades still require project-specific timing selection."},
+    {"part": "62256", "model_read_delay_ns": 70, "datasheet_read_ns": {"km62256c_55": 55, "km62256c_70": 70}, "output_float_ns": {"km62256c_55": 20, "km62256c_70": 30}, "source": "lib/standard/memory/62256/definition/definition.json", "source_file_required": true, "physical_caveat": "DB source is datasheet-backed; selected physical SRAM marking and measured access/output-disable timing remain required."},
+    {"part": "AS6C62256", "model_read_delay_ns": 70, "datasheet_read_ns": {"as6c62256_55": 55}, "output_float_ns": {"as6c62256_55": 20}, "source": "lib/standard/memory/AS6C62256/definition/definition.json", "source_file_required": true, "physical_caveat": "DB source is datasheet-backed; selected physical SRAM marking and measured access/output-disable timing remain required."}
+  ],
+  "physical_timing_assumptions": [
+    {
+      "id": "at28c256_read_speed_grade_caveat",
+      "part": "AT28C256",
+      "physical_status": "not_proven",
+      "source": "lib/standard/memory/AT28C256/definition/definition.json",
+      "source_paths": [
+        "definition_layers.timing.delay.default_ns",
+        "definition_layers.timing.delay.datasheet_read_ns.tacc_address_to_output",
+        "definition_layers.timing.delay.datasheet_read_ns.tdf_ce_or_oe_to_float",
+        "definition_layers.timing.timing_parameters.parameters.tPLH",
+        "definition_layers.timing.timing_parameters.parameters.tPHL",
+        "definition_layers.timing.timing_parameters.parameters.tPHZ",
+        "definition_layers.timing.timing_parameters.parameters.tPLZ"
+      ],
+      "model_read_delay_ns": 150,
+      "datasheet_read_ns": {"at28c256_15": 150, "at28c256_20": 200, "at28c256_25": 250, "at28c256_35": 350},
+      "output_float_ns": {"at28c256_15": 50, "at28c256_20": 55, "at28c256_25": 60, "at28c256_35": 70},
+      "requirement": "Choose and record the actual EEPROM speed grade before any physical 5 MHz claim."
+    },
+    {
+      "id": "sram_read_and_float_pending",
+      "parts": ["62256", "AS6C62256"],
+      "physical_status": "not_proven",
+      "source": "lib/standard/memory/62256/definition/definition.json",
+      "source_paths": [
+        "definition_layers.timing.delay.model_delay_ns",
+        "definition_layers.timing.delay.status",
+        "definition_layers.timing.delay.datasheet_read_ns",
+        "definition_layers.timing.delay.datasheet_write_ns",
+        "definition_layers.timing.timing_parameters.parameters.tPLH",
+        "definition_layers.timing.timing_parameters.parameters.tPHL",
+        "definition_layers.timing.timing_parameters.parameters.tPHZ",
+        "definition_layers.timing.timing_parameters.parameters.tPLZ",
+        "definition_layers.timing.timing_parameters.parameters.minimum_pulse_width"
+      ],
+      "model_read_delay_ns": 70,
+      "datasheet_read_ns": {"km62256c_55": 55, "km62256c_70": 70},
+      "output_disable_to_float_ns": {"km62256c_55": 20, "km62256c_70": 30},
+      "alternate_source": "lib/standard/memory/AS6C62256/definition/definition.json",
+      "alternate_datasheet_read_ns": {"as6c62256_55": 55},
+      "alternate_output_disable_to_float_ns": {"as6c62256_55": 20},
+      "missing_physical_fields": ["selected_sram_part_number", "selected_speed_grade", "measured_read_access_ns", "measured_output_disable_to_float_ns"],
+      "requirement": "Add selected physical SRAM read and output-float evidence before tightening RAM turnaround claims."
+    },
+    {
+      "id": "edge_register_setup_hold",
+      "part": "74HC574",
+      "physical_status": "not_proven",
+      "source": "lib/standard/74xx/74HC574/definition/definition.json",
+      "source_paths": [
+        "definition_layers.timing.timing_requirements.setup_before_clock_ns.data.vcc_4_5_v",
+        "definition_layers.timing.timing_requirements.hold_after_clock_ns.vcc_4_5_v",
+        "definition_layers.timing.timing_parameters.parameters.clock-to-Q high",
+        "definition_layers.timing.timing_parameters.parameters.clock-to-Q low",
+        "definition_layers.timing.timing_parameters.parameters.setup",
+        "definition_layers.timing.timing_parameters.parameters.hold",
+        "definition_layers.timing.timing_parameters.parameters.minimum_pulse_width"
+      ],
+      "setup_before_clock_ns": 20,
+      "hold_after_clock_ns": 5,
+      "requirement": "Circuit paths that clock 74HC574 inputs must leave this setup/hold window at the physical pins."
+    },
+    {
+      "id": "counter_setup_hold",
+      "part": "74HC161",
+      "physical_status": "not_proven",
+      "source": "lib/standard/74xx/74HC161/definition/definition.json",
+      "source_paths": [
+        "definition_layers.timing.timing_requirements.setup_before_clock_ns",
+        "definition_layers.timing.timing_requirements.hold_after_clock_ns.vcc_4_5_v",
+        "definition_layers.timing.timing_parameters.parameters.clock-to-Q high",
+        "definition_layers.timing.timing_parameters.parameters.clock-to-Q low",
+        "definition_layers.timing.timing_parameters.parameters.setup",
+        "definition_layers.timing.timing_parameters.parameters.hold",
+        "definition_layers.timing.timing_parameters.parameters.minimum_pulse_width"
+      ],
+      "setup_before_clock_ns": {"data": 30, "load_low": 27, "enp_ent": 34, "clear_inactive": 25},
+      "hold_after_clock_ns": 0,
+      "requirement": "Program-counter load/count controls must settle before the clock using the largest relevant setup value."
+    },
+    {
+      "id": "bus_turnaround_deadband",
+      "parts": ["AT28C256", "62256", "74HC245"],
+      "physical_status": "not_proven",
+      "source": "examples/circuits/timing_margins.json",
+      "source_paths": ["bus_race_notes.rom_to_u7_turnaround", "bus_race_notes.ram_read_to_ram_write_turnaround"],
+      "required_deadband": "Disable the old DBUS driver and wait for its output-float time before enabling the next DBUS driver.",
+      "missing_physical_fields": ["clock_phase_deadband_ns", "selected_memory_output_float_ns", "measured_or_source_backed_enable_disable_skew_ns"],
+      "requirement": "No bus turnaround path may be described as physically proven until the deadband is quantified."
+    }
+  ],
+  "physical_candidate_paths": [
+    {
+      "id": "rom_fetch_at28c256_15_candidate",
+      "physical_status": "candidate_source_backed_not_measured",
+      "circuit": "RV8GR_InstructionLatch",
+      "selected_parts": {
+        "rom": "AT28C256-15",
+        "bus_transceiver": "74HC245",
+        "destination": "74HC574"
+      },
+      "clock_profile": "5_mhz",
+      "period_ns": 200,
+      "source_backed_terms_ns": {
+        "rom_tacc_address_to_output": 150,
+        "u7_model_propagation": 12,
+        "destination_setup": 20
+      },
+      "total_source_backed_budget_ns": 182,
+      "source_backed_slack_ns": 18,
+      "claim_boundary": "This is a selected-part timing candidate only; breadboard wiring delay, fanout, edge quality, and measured signal integrity are not included."
+    },
+    {
+      "id": "rom_fetch_slower_at28c256_grades_not_5mhz_safe",
+      "physical_status": "not_safe_at_5mhz_by_source_tacc",
+      "circuit": "RV8GR_InstructionLatch",
+      "clock_profile": "5_mhz",
+      "period_ns": 200,
+      "grades": [
+        {"grade": "AT28C256-20", "rom_tacc_address_to_output_ns": 200, "total_with_u7_and_setup_ns": 232, "slack_ns": -32},
+        {"grade": "AT28C256-25", "rom_tacc_address_to_output_ns": 250, "total_with_u7_and_setup_ns": 282, "slack_ns": -82},
+        {"grade": "AT28C256-35", "rom_tacc_address_to_output_ns": 350, "total_with_u7_and_setup_ns": 382, "slack_ns": -182}
+      ],
+      "claim_boundary": "A slower EEPROM speed grade fails this 5 MHz source-backed ROM fetch budget before wiring margin is added."
+    },
+    {
+      "id": "ram_read_62256_candidate_blocked",
+      "physical_status": "candidate_source_backed_not_measured",
+      "circuit": "RV8GR_DataPageMemory",
+      "clock_profile": "5_mhz",
+      "source_backed_options": {
+        "km62256c_55": {"read_access_ns": 55, "output_disable_to_float_ns": 20},
+        "km62256c_70": {"read_access_ns": 70, "output_disable_to_float_ns": 30},
+        "as6c62256_55": {"read_access_ns": 55, "output_disable_to_float_ns": 20}
+      },
+      "missing_physical_fields": ["selected_sram_part_number", "measured_read_access_ns", "measured_output_disable_to_float_ns", "breadboard_or_pcb_margin_ns"],
+      "claim_boundary": "RAM read/write turnaround has source-backed chip rows, but cannot be physically signed off until the installed SRAM marking and measured bus timing are recorded."
+    },
+    {
+      "id": "dbus_turnaround_deadband_candidate",
+      "physical_status": "blocked_missing_clock_phase_deadband",
+      "circuits": ["RV8GR_BusOwnership", "RV8GR_RomDbusRead", "RV8GR_StorePath"],
+      "selected_parts": {
+        "rom": "AT28C256-15",
+        "bus_transceiver": "74HC245"
+      },
+      "minimum_known_disable_window_ns": 50,
+      "u7_model_enable_delay_ns": 12,
+      "minimum_deadband_before_new_driver_ns": 62,
+      "missing_physical_fields": ["measured_or_source_backed_phase_deadband_ns", "selected_sram_output_float_ns"],
+      "claim_boundary": "The old DBUS driver must be disabled and floated before U7 or RAM is allowed to drive the same bus."
+    }
+  ],
+  "physical_bench_evidence_required": [
+    {
+      "id": "clock_reset_scope_capture",
+      "owner": "Ohm",
+      "status": "missing",
+      "required_evidence": ["reset release waveform", "manual push-clock release edge", "100 push-switch ticks", "50 kHz clock", "1 MHz clock", "2 MHz clock", "5 MHz clock if attempted", "4.5 V", "5.0 V", "5.5 V"],
+      "pass_condition": "Clock and reset edges are monotonic at TTL inputs, with no double-triggering and no reset release runt pulse."
+    },
+    {
+      "id": "phase_one_hot_scope_capture",
+      "owner": "Fern",
+      "status": "missing",
+      "required_evidence": ["T0", "T1", "T2", "CLK", "4.5 V", "5.0 V", "5.5 V", "100 push-switch ticks", "50 kHz", "1 MHz", "2 MHz", "5 MHz"],
+      "pass_condition": "Exactly one of T0/T1/T2 is high after each clean clock edge across at least 100 observed ticks per voltage/clock profile."
+    },
+    {
+      "id": "dbus_turnaround_scope_capture",
+      "owner": "Ohm",
+      "status": "missing",
+      "required_evidence": ["ROM /OE", "RAM /OE or /CE", "U7 /OE", "WR_DIR", "DBUS sample point", "4.5 V", "5.0 V", "5.5 V", "50 kHz", "1 MHz", "2 MHz", "5 MHz"],
+      "pass_condition": "No overlap window shows two enabled DBUS output drivers; measured deadband is greater than selected memory output-float plus buffer enable skew."
+    },
+    {
+      "id": "selected_memory_speed_grade_record",
+      "owner": "Pim",
+      "status": "missing",
+      "required_evidence": ["actual EEPROM marking", "actual SRAM marking", "datasheet timing row used", "selected voltage test row: 4.5 V, 5.0 V, 5.5 V"],
+      "pass_condition": "The physical chips installed match the speed-grade rows used in timing calculations."
+    }
+  ],
+  "physical_evidence_plan": {
+    "capture_contract": "examples/circuits/physical_capture_plan.json",
+    "capture_contract_status": "prepared_no_board_measurements",
+    "owner_sequence": ["Ohm", "Fern", "Pim"],
+    "claim_gate": "blocked_until_all_required_items_pass",
+    "blocked_claims": ["hardware_5mhz_ready", "student_build_speed_recommendation"],
+    "required_measurements": [
+      {
+        "id": "installed_memory_markings",
+        "owner": "Ohm",
+        "status": "missing",
+        "how_to_capture": "Photograph or transcribe the part top markings for the EEPROM and SRAM installed in the build.",
+        "pass_condition": "The installed EEPROM and SRAM markings match datasheet timing rows used by this file.",
+        "student_note": "A chip with the same logic function can still be too slow if its speed grade is different."
+      },
+      {
+        "id": "memory_output_float_deadband",
+        "owner": "Fern",
+        "status": "missing",
+        "how_to_capture": "Scope ROM /OE, RAM /OE or /CE, U7 /OE, WR_DIR, and one DBUS bit during a read-to-write and write-to-read transition.",
+        "pass_condition": "The old driver is off before the new driver turns on, with measured deadband greater than selected memory output-float plus buffer enable skew.",
+        "student_note": "A bus can look correct after it settles while still fighting for a short time during the change."
+      },
+      {
+        "id": "clock_phase_deadband",
+        "owner": "Fern",
+        "status": "missing",
+        "how_to_capture": "Scope CLK with T0/T1/T2 and the memory or U7 enable signals across at least 100 ticks.",
+        "pass_condition": "T0/T1/T2 remain one-hot and every enable transition has a named clock-phase gap before the next possible bus driver.",
+        "student_note": "The phase LEDs show which step is active; the scope proves the edges are not overlapping too fast to see."
+      },
+      {
+        "id": "supply_and_edge_quality",
+        "owner": "Ohm",
+        "status": "missing",
+        "how_to_capture": "Scope VCC at the breadboard rails and at a far IC while toggling reset, manual clock, 1 MHz, 2 MHz, and 5 MHz if attempted.",
+        "pass_condition": "VCC stays inside the selected 74HC datasheet range and clock/reset edges are monotonic at TTL inputs.",
+        "student_note": "Good logic equations still fail if the power rail bounces or the clock edge wiggles."
+      },
+      {
+        "id": "breadboard_rc_calibration",
+        "owner": "Ohm",
+        "status": "missing",
+        "how_to_capture": "Scope a fast control edge at the driver pin and at the destination input on representative short, medium, long, and bus nets at 4.5 V, 5.0 V, and 5.5 V.",
+        "pass_condition": "Measured destination rise/fall and threshold-crossing delay are recorded before any RC estimate is used for signoff.",
+        "student_note": "Breadboard wires behave a little like hidden resistors and capacitors; simulation can estimate this, but the scope tells us the real value."
+      }
+    ]
+  },
+  "board_parasitic_model": {
+    "status": "estimate_only_not_signoff",
+    "belongs_to": "circuit_or_board_level_not_chip_definition",
+    "virtual_component": "lib/standard/virtual/RCParasitic/definition/definition.json",
+    "virtual_test_package": "examples/circuits/RV8GR_VirtualTestHelpers/tests/virtual_test_helpers.json",
+    "why_not_chip_definition": "Chip definitions describe datasheet behavior at the IC pins. Breadboard capacitance, wire resistance, contact resistance, probe loading, and layout-dependent crosstalk change with the build and must stay in circuit/physical timing artifacts.",
+    "rc_estimate_formula": "tau_ns = source_resistance_ohm * total_capacitance_pf / 1000",
+    "threshold_delay_rule": "Use measured threshold-crossing delay when available. Before measurement, treat 2.2*tau as a conservative 10%-to-90% settling estimate, not proof.",
+    "estimate_inputs": {
+      "source_resistance_ohm": {"status": "estimate_required_or_measure", "notes": "Use datasheet output resistance or measure with the installed chip/load."},
+      "wire_capacitance_pf": {"status": "estimate_required_or_measure", "notes": "Depends on breadboard length, adjacent wires, and probes."},
+      "chip_input_capacitance_pf": {"status": "datasheet_backed_where_available", "notes": "Sum every destination input on the net."},
+      "probe_capacitance_pf": {"status": "measure_or_probe_datasheet", "notes": "A scope probe can add enough capacitance to change an edge."},
+      "pullup_pulldown_resistance_ohm": {"status": "required_for_rc_or_open_collector_nets", "notes": "Manual clock/reset and any RC debounce path must include this."}
+    },
+    "representative_nets_to_calibrate": [
+      {"net": "CLK", "why": "A slow or ringing clock can double-trigger edge-sensitive chips."},
+      {"net": "/RST", "why": "Reset release timing controls first known state."},
+      {"net": "DBUS[0]", "why": "Shared bus capacitance affects read/write turnaround and threshold timing."},
+      {"net": "IBUS[0]", "why": "Instruction/data capture depends on stable bus before latch edge."},
+      {"net": "/OE or /WE memory control", "why": "Output-enable and write timing determine bus fight deadband."}
+    ],
+    "claim_boundary": "RC simulation may guide wiring and margin decisions, but physical pass/fail requires scoped edge quality and threshold timing at the real destination pins."
+  },
+  "timing_coverage_matrix": [
+    {
+      "circuit": "RV8GR_RingCounter",
+      "coverage": "model_propagation_and_functional_profiles",
+      "timing_checks": ["clock edge advance", "no-edge hold", "feedback setup", "clock profiles"],
+      "physical_status": "not_proven",
+      "claim_boundary": "functional timing plus model slack"
+    },
+    {
+      "circuit": "RV8GR_PC16",
+      "coverage": "model_propagation_and_functional_profiles",
+      "timing_checks": ["count edge", "load priority", "RCO cascade", "setup/hold", "clock profiles"],
+      "physical_status": "not_proven",
+      "claim_boundary": "functional timing plus model slack"
+    },
+    {
+      "circuit": "RV8GR_AddressMux16",
+      "coverage": "model_propagation",
+      "timing_checks": ["address mux delay", "A15 decode", "SRC/STR/T2 address request"],
+      "physical_status": "not_proven",
+      "claim_boundary": "functional select timing plus model slack"
+    },
+    {
+      "circuit": "RV8GR_BusOwnership",
+      "coverage": "bus_ownership_and_physical_deadband_required",
+      "timing_checks": ["one IBUS driver", "one DBUS driver", "forced conflict rejection", "turnaround deadband required"],
+      "physical_status": "blocked_missing_deadband",
+      "claim_boundary": "bus logic proven; physical overlap timing still requires scope/source evidence"
+    },
+    {
+      "circuit": "RV8GR_InstructionLatch",
+      "coverage": "model_propagation_and_functional_profiles",
+      "timing_checks": ["ROM read to latch setup", "T0/T1 edge capture", "T2 hold", "clock profiles"],
+      "physical_status": "not_proven",
+      "claim_boundary": "functional timing plus model slack; selected ROM grade required"
+    },
+    {
+      "circuit": "RV8GR_StorePath",
+      "coverage": "model_propagation_and_physical_write_window_required",
+      "timing_checks": ["AC to RAM data setup", "RAM /WE window", "ROM output disable", "DBUS contention rejection"],
+      "physical_status": "blocked_missing_memory_write_deadband",
+      "claim_boundary": "functional store timing plus model slack; selected SRAM/ROM output-disable timing required"
+    },
+    {
+      "circuit": "RV8GR_DataPageMemory",
+      "coverage": "model_propagation_and_functional_profiles",
+      "timing_checks": ["SETDP capture", "RAM/ROM read to IBUS", "A15 boundary", "clock profiles"],
+      "physical_status": "candidate_source_backed_not_measured",
+      "claim_boundary": "functional timing plus source-backed SRAM options; installed SRAM marking and measured read/float timing required"
+    },
+    {
+      "circuit": "RV8GR_IRQLatch",
+      "coverage": "functional_edge_profiles",
+      "timing_checks": ["EI rising edge", "/IRQ release rising edge", "/IRQ LOW hold", "sticky hold", "clock profiles"],
+      "physical_status": "not_proven",
+      "claim_boundary": "functional edge behavior only; external switch edge quality must be measured"
+    },
+    {
+      "circuit": "RV8GR_RomDbusRead",
+      "coverage": "bus_ownership_and_physical_deadband_required",
+      "timing_checks": ["ROM output enable", "U7 DBUS-to-IBUS direction", "U7 disable", "ROM-vs-U7 contention rejection"],
+      "physical_status": "blocked_missing_deadband",
+      "claim_boundary": "functional read timing plus model slack; ROM output-float evidence required"
+    },
+    {
+      "circuit": "RV8GR_AluAccumulator",
+      "coverage": "model_propagation_and_functional_profiles",
+      "timing_checks": ["ALU result to AC setup", "AC capture", "AC to Z settle", "store buffer high-Z", "clock profiles"],
+      "physical_status": "not_proven",
+      "claim_boundary": "tightest listed model path; physical 5 MHz still not proven"
+    },
+    {
+      "circuit": "RV8GR_PageDataRegisters",
+      "coverage": "model_propagation_and_functional_profiles",
+      "timing_checks": ["SETPG capture", "PG_CLK edge", "SETDP separation", "jump target output", "clock profiles"],
+      "physical_status": "not_proven",
+      "claim_boundary": "functional timing plus model slack"
+    },
+    {
+      "circuit": "RV8GR_BranchJumpControl",
+      "coverage": "model_propagation_and_functional_profiles",
+      "timing_checks": ["/PC_LD decode", "BEQ/BNE polarity", "JMP load", "opcode sweep", "clock profiles"],
+      "physical_status": "not_proven",
+      "claim_boundary": "functional timing plus model slack"
+    },
+    {
+      "circuit": "RV8GR_VirtualTestHelpers",
+      "coverage": "test_instrumentation_timing",
+      "timing_checks": ["manual clock", "random push", "fixed frequencies", "phase probe", "bus probe", "RC estimate", "delay/noise injection", "output assertion"],
+      "physical_status": "not_applicable",
+      "claim_boundary": "virtual observation helpers do not prove hardware timing"
+    },
+    {
+      "circuit": "RV8GR_FullControlOpcodeSweep",
+      "coverage": "functional_control_timing",
+      "timing_checks": ["all T2 opcode/Z cases", "reserved mixes", "side-effect visibility"],
+      "physical_status": "not_proven",
+      "claim_boundary": "control equations proven functionally; gate delay timing remains covered by specific paths"
+    },
+    {
+      "circuit": "RV8GR_ResetClockBringup",
+      "coverage": "functional_profiles_and_physical_edge_required",
+      "timing_checks": ["reset release", "one-hot phase", "PC known-state policy", "clock profiles"],
+      "physical_status": "blocked_missing_clock_scope_capture",
+      "claim_boundary": "functional reset/clock timing proven; physical edge quality requires scope evidence"
+    },
+    {
+      "circuit": "RV8GR_FetchCycleTrace",
+      "coverage": "whole_fetch_trace_functional",
+      "timing_checks": ["T0 fetch", "T1 fetch", "T2 execute", "PC motion", "bus ownership"],
+      "physical_status": "not_proven",
+      "claim_boundary": "functional trace timing; physical memory/clock evidence covered by lower-level paths"
+    },
+    {
+      "circuit": "RV8GR_StoreLoadBranchTrace",
+      "coverage": "instruction_trace_functional",
+      "timing_checks": ["SB store", "LB load", "BEQ branch", "bus ownership", "state result"],
+      "physical_status": "not_proven",
+      "claim_boundary": "functional trace timing; physical store/load deadband covered by lower-level paths"
+    },
+    {
+      "circuit": "RV8GR_PageJumpTrace",
+      "coverage": "instruction_trace_functional",
+      "timing_checks": ["SETDP", "SETPG", "J", "latched PG use", "one IBUS driver"],
+      "physical_status": "not_proven",
+      "claim_boundary": "functional trace timing; page-register setup covered by lower-level paths"
+    },
+    {
+      "circuit": "RV8GR_InterruptTrace",
+      "coverage": "instruction_and_external_edge_trace_functional",
+      "timing_checks": ["EI", "DI inert", "/IRQ LOW hold", "/IRQ release latch", "PC unchanged"],
+      "physical_status": "not_proven",
+      "claim_boundary": "functional trace timing; external IRQ edge quality requires measurement"
+    },
+    {
+      "circuit": "RV8GR_BootSequenceTrace",
+      "coverage": "instruction_trace_functional_manual_bringup",
+      "timing_checks": ["SETDP $80", "SETPG $00", "LI $00", "J self", "12 manual clock edges", "one IBUS driver"],
+      "physical_status": "not_proven",
+      "claim_boundary": "functional boot trace only; physical single-step and edge evidence still required"
+    },
+    {
+      "circuit": "RV8GR_Lab13MarkerTrace",
+      "coverage": "instruction_trace_functional_manual_marker",
+      "timing_checks": ["LI $10", "ADDI $05", "SUBI $15", "BEQ $0C", "LI $AA", "15 manual clock edges", "one bus driver"],
+      "physical_status": "not_proven",
+      "claim_boundary": "functional Lab 13 marker trace only; physical single-step, oscillator, and bus-deadband evidence still required"
+    },
+    {
+      "circuit": "RV8GR_WholeSystemChipLevelVirtual",
+      "coverage": "whole_system_chip_level_virtual_stress",
+      "timing_checks": ["18-chip virtual bench plan", "boot trace", "Lab 13 marker", "RAM/page/IRQ/bus trace inclusion", "RCParasitic stress nets", "DelayNoise stress nets"],
+      "physical_status": "not_proven",
+      "claim_boundary": "virtual whole-system chip-level stress only; physical voltage/frequency/scope evidence still required"
+    }
+  ],
+  "system_timing_gates": [
+    {
+      "name": "components_circuit_timing_gate",
+      "command": "PYTHONPATH=python python3 -B -m tests.test_lib_circuits",
+      "covers": ["model slack arithmetic", "setup/hold source checks", "clock profiles", "bus-race notes", "timing coverage matrix"]
+    },
+    {
+      "name": "rv8gr_whole_system_verilog_gate",
+      "command": "/home/jo/kiro/RV8/RV8GR/tools/run_all_verilog_tb.sh",
+      "covers": ["behavioral full system", "chip-level full system", "IRQ", "SETDP", "opcode sweep", "assembler program"]
+    },
+    {
+      "name": "physical_timing_gate",
+      "command": "scope and bench evidence, not software-only",
+      "covers": ["memory speed markings", "output-float deadband", "clock-phase deadband", "VCC and edge quality"],
+      "status": "blocked_missing_evidence"
+    }
+  ],
+  "system_hazard_gates": [
+    {
+      "id": "timing_margin",
+      "owner": "Fern",
+      "software_gate": "Recompute slack for every propagation path against 50 kHz, 1 MHz, 2 MHz, and 5 MHz profiles.",
+      "hardware_gate": "Measure selected-chip timing assumptions before accepting any high-speed result.",
+      "signals_to_probe": ["CLK", "T0", "T1", "T2", "destination clock", "destination data"],
+      "blocks_system_signoff_if": ["negative model slack", "unknown selected memory speed", "unmeasured high-speed claim"],
+      "current_status": "software_model_gate_present_physical_gate_blocked"
+    },
+    {
+      "id": "bus_race",
+      "owner": "Ohm",
+      "software_gate": "Assert one active IBUS driver and one active DBUS driver for every phase/vector; force unsafe conflicts to prove detection.",
+      "hardware_gate": "Scope output-enable transitions and prove old drivers are disabled before new drivers turn on.",
+      "signals_to_probe": ["U7 /OE", "U7 DIR", "U14 /OE", "U34 /OE", "ROM /OE", "RAM /OE or /CE", "RAM /WE", "IBUS", "DBUS"],
+      "blocks_system_signoff_if": ["two enabled IBUS drivers", "two enabled DBUS drivers", "missing output-float deadband", "IC heat from contention"],
+      "current_status": "software_conflict_gate_present_physical_deadband_blocked"
+    },
+    {
+      "id": "edge_trigger_polarity",
+      "owner": "Mint",
+      "software_gate": "Check positive-edge captures, negative/active-low controls, no-edge holds, and reset priority for every clocked circuit.",
+      "hardware_gate": "Single-step and scope the real edge that changes each register; confirm opposite edge/no edge holds.",
+      "signals_to_probe": ["CLK", "/RST", "T0", "T1", "T2", "ACC_CLK", "PG_CLK", "DP_Load", "EI_decode", "/IRQ"],
+      "blocks_system_signoff_if": ["register captures on wrong edge", "active-low control inverted", "no-edge hold fails", "reset release double-triggers"],
+      "current_status": "functional_edge_gate_present_physical_scope_needed"
+    },
+    {
+      "id": "propagation_delay",
+      "owner": "Fern",
+      "software_gate": "Track named paths from source outputs through chips to destination setup windows and verify slack arithmetic.",
+      "hardware_gate": "Measure critical path settle time at destination inputs before the active clock edge.",
+      "signals_to_probe": ["ABUS", "DBUS", "IBUS", "AC inputs", "Z_flag", "/PC_LD", "PG inputs", "DP inputs"],
+      "blocks_system_signoff_if": ["critical path not settled before latch edge", "Z_flag sampled before settle", "PC load control late", "memory data late"],
+      "current_status": "model_path_gate_present_physical_measurement_needed"
+    }
+  ],
+  "setup_hold_requirements": [
+    {
+      "destination": "74HC574 edge registers",
+      "used_by_circuits": ["RV8GR_InstructionLatch", "RV8GR_DataPageMemory", "RV8GR_PageDataRegisters", "RV8GR_AluAccumulator"],
+      "setup_before_clock_ns": 20,
+      "hold_after_clock_ns": 5,
+      "note": "Students should read this as: data must already be steady before the clock edge and must not change immediately after it."
+    },
+    {
+      "destination": "74HC161 program counter",
+      "used_by_circuits": ["RV8GR_PC16", "RV8GR_BranchJumpControl"],
+      "setup_before_clock_ns": {"data": 30, "load_low": 27, "enp_ent": 34, "clear_inactive": 25},
+      "hold_after_clock_ns": 0,
+      "note": "The ENP/ENT setup is the largest listed 74HC161 requirement and is the conservative counter-control value."
+    },
+    {
+      "destination": "AT28C256 EEPROM write",
+      "used_by_circuits": ["RV8GR_StorePath"],
+      "address_hold_ns": 50,
+      "data_setup_ns": 50,
+      "data_hold_ns": 0,
+      "note": "Ordinary RV8GR stores target RAM; ROM-page stores are documented as bus-safe but not as normal writable memory."
+    }
+  ],
+  "propagation_paths": [
+    {
+      "id": "ring_feedback_setup_for_next_clock",
+      "circuit": "RV8GR_RingCounter",
+      "from": "U8 Q0/Q1 phase outputs",
+      "through": ["74HC164 clock-to-Q", "74HC04 feedback inverter"],
+      "to": "U8 serial inputs for next rising edge",
+      "model_delay_ns": 32,
+      "required_setup_ns": 0,
+      "total_budget_ns": 32,
+      "slack_ns": {"50_khz": 19968, "1_mhz": 968, "2_mhz": 468, "5_mhz": 168},
+      "notes": ["Feedback must not be treated as changing the phase that was just clocked."]
+    },
+    {
+      "id": "pc_rco_cascade_to_next_nibble",
+      "circuit": "RV8GR_PC16",
+      "from": "lower 74HC161 terminal-count chain",
+      "through": ["three 74HC161 RCO/ENT-style model stages"],
+      "to": "next counter enable before rising clock",
+      "model_delay_ns": 66,
+      "required_setup_ns": 34,
+      "total_budget_ns": 100,
+      "slack_ns": {"50_khz": 19900, "1_mhz": 900, "2_mhz": 400, "5_mhz": 100},
+      "notes": ["Uses the largest listed 74HC161 control setup value.", "Physical 5 MHz still needs bench wiring and fanout evidence."]
+    },
+    {
+      "id": "pc_load_control_to_74hc161_load",
+      "circuit": "RV8GR_BranchJumpControl",
+      "from": "JMP/BR/Z/T2 control inputs",
+      "through": ["74HC86", "74HC00", "74HC00"],
+      "to": "/PC_LD at U1-U4",
+      "model_delay_ns": 39,
+      "required_setup_ns": 27,
+      "total_budget_ns": 66,
+      "slack_ns": {"50_khz": 19934, "1_mhz": 934, "2_mhz": 434, "5_mhz": 134},
+      "notes": ["The path must be settled before the PC clock edge that samples /PC_LD."]
+    },
+    {
+      "id": "address_mux_and_memory_select",
+      "circuit": "RV8GR_AddressMux16",
+      "from": "PC or {DP,IRL}",
+      "through": ["74HC157 address mux", "74HC04 A15 complement when RAM is selected"],
+      "to": "ABUS plus complementary ROM/RAM chip selects",
+      "model_delay_ns": 30,
+      "required_setup_ns": 0,
+      "total_budget_ns": 30,
+      "slack_ns": {"50_khz": 19970, "1_mhz": 970, "2_mhz": 470, "5_mhz": 170},
+      "notes": ["SRC/STR must be stable before T2 data-address use."]
+    },
+    {
+      "id": "rom_fetch_to_instruction_latch_setup",
+      "circuit": "RV8GR_InstructionLatch",
+      "from": "ABUS and ROM controls",
+      "through": ["AT28C256 model read", "74HC245 DBUS-to-IBUS"],
+      "to": "U5/U6 74HC574 data inputs before T0/T1 capture",
+      "model_delay_ns": 82,
+      "required_setup_ns": 20,
+      "total_budget_ns": 102,
+      "slack_ns": {"50_khz": 19898, "1_mhz": 898, "2_mhz": 398, "5_mhz": 98},
+      "notes": ["AT28C256 model read uses the AT28C256-15 tACC path; slower speed grades are not enough to prove physical 5 MHz."]
+    },
+    {
+      "id": "ram_or_rom_data_read_to_ibus_setup",
+      "circuit": "RV8GR_DataPageMemory",
+      "from": "ABUS, ROM/RAM select, and memory output",
+      "through": ["62256 or AT28C256 model read", "74HC245 DBUS-to-IBUS"],
+      "to": "IBUS destination latch setup window",
+      "model_delay_ns": 82,
+      "required_setup_ns": 20,
+      "total_budget_ns": 102,
+      "slack_ns": {"50_khz": 19898, "1_mhz": 898, "2_mhz": 398, "5_mhz": 98},
+      "notes": ["RAM and ROM selects must remain mutually exclusive across the A15 boundary."]
+    },
+    {
+      "id": "setdp_decode_and_capture",
+      "circuit": "RV8GR_DataPageMemory",
+      "from": "T2/XOR_MODE//ADDR_MODE//AC_WR decode and IBUS",
+      "through": ["74HC21 DP_Load decode", "74HC574 data capture"],
+      "to": "DP register outputs",
+      "model_delay_ns": 35,
+      "required_setup_ns": 20,
+      "total_budget_ns": 55,
+      "slack_ns": {"50_khz": 19945, "1_mhz": 945, "2_mhz": 445, "5_mhz": 145},
+      "notes": ["IBUS must satisfy the U32 setup/hold window around DP_Load rising."]
+    },
+    {
+      "id": "setpg_decode_and_capture",
+      "circuit": "RV8GR_PageDataRegisters",
+      "from": "T2/XOR_MODE//ADDR_MODE//AC_WR decode and IBUS",
+      "through": ["74HC21 PG_CLK decode", "74HC574 data capture"],
+      "to": "PG register outputs",
+      "model_delay_ns": 35,
+      "required_setup_ns": 20,
+      "total_budget_ns": 55,
+      "slack_ns": {"50_khz": 19945, "1_mhz": 945, "2_mhz": 445, "5_mhz": 145},
+      "notes": ["IBUS must satisfy the U23 setup/hold window around PG_CLK rising."]
+    },
+    {
+      "id": "store_ac_to_ram_data_setup",
+      "circuit": "RV8GR_StorePath",
+      "from": "AC register outputs",
+      "through": ["74HC541 AC-to-IBUS", "74HC245 IBUS-to-DBUS"],
+      "to": "RAM data pins before /WE write window",
+      "model_delay_ns": 24,
+      "required_setup_ns": 50,
+      "total_budget_ns": 74,
+      "slack_ns": {"50_khz": 19926, "1_mhz": 926, "2_mhz": 426, "5_mhz": 126},
+      "notes": ["Store controls and data path are both T2-sensitive; physical proof must check that /WE is not asserted before data is valid."]
+    },
+    {
+      "id": "alu_result_to_accumulator_setup",
+      "circuit": "RV8GR_AluAccumulator",
+      "from": "IBUS and AC feedback",
+      "through": ["74HC157", "74HC86", "two 74HC283 stages", "74HC157"],
+      "to": "U9 74HC574 AC data inputs before ACC_CLK",
+      "model_delay_ns": 121,
+      "required_setup_ns": 20,
+      "total_budget_ns": 141,
+      "slack_ns": {"50_khz": 19859, "1_mhz": 859, "2_mhz": 359, "5_mhz": 59},
+      "notes": ["This is the tightest listed model path; it is still not a physical 5 MHz proof."]
+    },
+    {
+      "id": "ac_to_z_flag_settle",
+      "circuit": "RV8GR_AluAccumulator",
+      "from": "new AC after ACC_CLK",
+      "through": ["74HC574 clock-to-Q", "74HC688 zero compare", "74HC74 async preset behavior"],
+      "to": "Z_flag valid for later branch decision",
+      "model_delay_ns": 70,
+      "required_setup_ns": 0,
+      "total_budget_ns": 70,
+      "slack_ns": {"50_khz": 19930, "1_mhz": 930, "2_mhz": 430, "5_mhz": 130},
+      "notes": ["Branch control must not sample Z before this path settles."]
+    }
+  ],
+  "bus_race_notes": [
+    {
+      "id": "rom_to_u7_turnaround",
+      "circuits": ["RV8GR_BusOwnership", "RV8GR_RomDbusRead", "RV8GR_StorePath"],
+      "risk": "ROM output disable and U7 write enable can overlap during read-to-store direction changes.",
+      "current_evidence": "Functional bus-ownership tests catch forced simultaneous drivers.",
+      "still_needed": "Physical deadband or source-backed enable/disable timing for breadboard wiring; AT28C256 output-float values are speed-grade dependent."
+    },
+    {
+      "id": "ram_read_to_ram_write_turnaround",
+      "circuits": ["RV8GR_BusOwnership", "RV8GR_DataPageMemory", "RV8GR_StorePath"],
+      "risk": "RAM output and U7 write driver must not both drive DBUS during T2 store.",
+      "current_evidence": "Store path ties RAM /WE LOW during stores and tests forced DBUS conflict states.",
+      "still_needed": "RAM output-disable timing and /WE edge timing from the selected physical SRAM datasheet."
+    },
+    {
+      "id": "ibus_multiple_driver_guard",
+      "circuits": ["RV8GR_BusOwnership", "RV8GR_AluAccumulator", "RV8GR_InstructionLatch"],
+      "risk": "U14, U34, and U7 are all possible IBUS drivers and must remain one-hot.",
+      "current_evidence": "BusOwnership and AluAccumulator artifacts name unsafe multi-driver states.",
+      "still_needed": "Future tests should consume this artifact and assert no profile claims 5 MHz hardware safety without timing evidence."
+    }
+  ],
+  "student_summary": [
+    "50 kHz, 1 MHz, and 2 MHz have large positive model-delay margins for the listed paths.",
+    "5 MHz has a 200 ns period and positive model slack on these paths, but it is still functional-only because breadboard wiring, output-disable races, and selected memory speed grades are not proven here.",
+    "Setup means data is ready before a clock edge; hold means it stays steady just after the edge; bus race means two chips might briefly try to drive the same wire."
+  ]
+}
