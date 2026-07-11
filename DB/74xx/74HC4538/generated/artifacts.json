@@ -1,0 +1,604 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 15 ns before trusting the output."
+      ],
+      "overview": "74HC4538 is a 16-pin DIP part for timer.",
+      "part": "74HC4538",
+      "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 6,
+          "names": [
+            "/1R",
+            "1A",
+            "1B",
+            "2B",
+            "2A",
+            "/2R"
+          ],
+          "note": "Input pins: /1R, 1A, 1B, 2B, 2A, /2R."
+        },
+        "output": {
+          "count": 4,
+          "names": [
+            "1Q",
+            "/1Q",
+            "/2Q",
+            "2Q"
+          ],
+          "note": "Output pins: 1Q, /1Q, /2Q, 2Q."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "Dual precision monostable multivibrator.",
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "title": "Dual precision monostable multivibrator",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "/1R controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/1R - input",
+          "pin": "/1R"
+        },
+        {
+          "explanation": "1A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1A - input",
+          "pin": "1A"
+        },
+        {
+          "explanation": "1B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1B - input",
+          "pin": "1B"
+        },
+        {
+          "explanation": "2B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2B - input",
+          "pin": "2B"
+        },
+        {
+          "explanation": "2A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2A - input",
+          "pin": "2A"
+        },
+        {
+          "explanation": "/2R controls input. This is active low, so 0 turns the control on.",
+          "hint": "This is active low, so 0 turns the control on.",
+          "label": "/2R - input",
+          "pin": "/2R"
+        }
+      ],
+      "controls": [
+        "/1R",
+        "1A",
+        "1B",
+        "2B",
+        "2A",
+        "/2R"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC4538",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Q",
+          "name": "1Q"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/1Q",
+          "name": "/1Q"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "/2Q",
+          "name": "/2Q"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Q",
+          "name": "2Q"
+        }
+      ],
+      "probes": [
+        "1Q",
+        "/1Q",
+        "/2Q",
+        "2Q"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change /1R?",
+        "Which truth-table row matches the value on 1Q?"
+      ],
+      "title": "Try 74HC4538 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "Dual precision monostable multivibrator",
+        "type": "dual_monostable_multivibrator"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC4538",
+      "pins": [
+        {
+          "direction": "passive",
+          "name": "1Cx",
+          "number": 1
+        },
+        {
+          "direction": "passive",
+          "name": "1RxCx",
+          "number": 2
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/1R",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "1A",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "1B",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "1Q",
+          "number": 6
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/1Q",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/2Q",
+          "number": 9
+        },
+        {
+          "direction": "output",
+          "name": "2Q",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "2B",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "2A",
+          "number": 12
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/2R",
+          "number": 13
+        },
+        {
+          "direction": "passive",
+          "name": "2RxCx",
+          "number": 14
+        },
+        {
+          "direction": "passive",
+          "name": "2Cx",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "timer",
+      "timing": {
+        "datasheet": {
+          "conditions": "TI CD74HC4538 prerequisite pulse timing, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_min_ns_25c": {
+              "input_pulse_width": 16,
+              "reset_low_width": 16
+            },
+            "datasheet_min_ns_minus40_to_85c": {
+              "input_pulse_width": 20,
+              "reset_low_width": 20
+            },
+            "datasheet_min_ns_minus55_to_125c": {
+              "input_pulse_width": 24,
+              "reset_low_width": 24
+            }
+          }
+        },
+        "delay_ns": 15
+      },
+      "title": "Dual precision monostable multivibrator"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "11": "2B",
+        "12": "2A",
+        "13": "/2R",
+        "16": "VCC",
+        "3": "/1R",
+        "4": "1A",
+        "5": "1B",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC4538",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC4538",
+      "copy_with_chip": [
+        "DB/74xx/74HC4538/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC4538/simulation/model.py",
+      "part": "74HC4538",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "11": "2B",
+        "12": "2A",
+        "13": "/2R",
+        "16": "VCC",
+        "3": "/1R",
+        "4": "1A",
+        "5": "1B",
+        "8": "GND"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC4538",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC4538",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC4538",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC4538",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "reset_low_forces_q_low",
+            "trigger_sets_q_high",
+            "second_reset_low_forces_q_low",
+            "second_trigger_sets_q_high"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc4538",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC4538/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc4538"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc4538",
+      "part": "74HC4538",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC4538",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC4538",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "reset_low_forces_q_low",
+            "trigger_sets_q_high",
+            "second_reset_low_forces_q_low",
+            "second_trigger_sets_q_high"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          6,
+          7,
+          9,
+          10
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              4,
+              12
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "B",
+            "pins": [
+              5,
+              11
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "R_bar",
+            "pins": [
+              3,
+              13
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q",
+            "pins": [
+              6,
+              10
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q_bar",
+            "pins": [
+              7,
+              9
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC4538/simulation/model.v",
+      "module": "ttl_74hc4538",
+      "netlist": "DB/74xx/74HC4538/simulation/netlist.json",
+      "part": "74HC4538"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC4538",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC4538/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC4538/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC4538/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC4538/definition/definition.json",
+  "version": 1
+}

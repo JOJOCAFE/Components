@@ -1,0 +1,137 @@
+{
+  "schema": "db.component.definition",
+  "version": 1,
+  "part": "MAX232",
+  "title": "RS-232 line driver/receiver with charge pump",
+  "family": "Support IC",
+  "group": "support",
+  "kind": "ic",
+  "role": "line_interface",
+  "package": {
+    "kind": "DIP",
+    "pins": 16,
+    "default": "DIP"
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "tested",
+    "verilog_model": "not_applicable",
+    "verilog_export": "not_applicable",
+    "tests": "tested"
+  },
+  "definition_layers": {
+    "timing": {
+      "delay": {
+        "model_delay_ns": 1,
+        "source": "functional_support_model",
+        "notes": "Model delay only for event ordering; not datasheet analog charge-pump or RS-232 timing."
+      }
+    }
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "C1+",
+      "direction": "passive"
+    },
+    {
+      "number": 2,
+      "name": "V+",
+      "direction": "passive"
+    },
+    {
+      "number": 3,
+      "name": "C1-",
+      "direction": "passive"
+    },
+    {
+      "number": 4,
+      "name": "C2+",
+      "direction": "passive"
+    },
+    {
+      "number": 5,
+      "name": "C2-",
+      "direction": "passive"
+    },
+    {
+      "number": 6,
+      "name": "V-",
+      "direction": "passive"
+    },
+    {
+      "number": 7,
+      "name": "T2OUT",
+      "direction": "output"
+    },
+    {
+      "number": 8,
+      "name": "R2IN",
+      "direction": "input"
+    },
+    {
+      "number": 9,
+      "name": "R2OUT",
+      "direction": "output"
+    },
+    {
+      "number": 10,
+      "name": "T2IN",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "T1IN",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "R1OUT",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "R1IN",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "T1OUT",
+      "direction": "output"
+    },
+    {
+      "number": 15,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "sources": [
+    {
+      "label": "Texas Instruments MAX232",
+      "url": "https://www.ti.com/lit/ds/symlink/max232.pdf",
+      "file": "Source/MAX232_TI_MAX232.pdf",
+      "package_evidence": "DIP, 16-pin package",
+      "used_for": [
+        "pins",
+        "package",
+        "function"
+      ]
+    }
+  ],
+  "simulation": {
+    "service": "sim.support.max232",
+    "notes": "Local Python functional model inverts driver and receiver logic channels; charge-pump pins are package/passive pins."
+  },
+  "ui": {
+    "symbol": "dip",
+    "label": "MAX232"
+  }
+}

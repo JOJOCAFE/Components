@@ -107,6 +107,12 @@ Shared team rule:
   Fern owns proof/status truth, Bank owns boundaries, Mint owns HDL truth, and
   Pim keeps the route visible in `README.md`, `STUDENT_GUIDE.md`, and
   handoffs.
+- Support IC lane: support chips such as `LM358`, `LM393`, `MAX232`, `NE555`,
+  and `ULN2803A` live under `DB/Support` as compact
+  `definition/definition.json` packages. Bam owns their local Python functional
+  models, Fern owns truth-vector and crosscheck coverage, Ohm owns the
+  datasheet/pinout evidence boundary, and Noon must keep wording clear that
+  these are logic-level learning models, not SPICE analog signoff models.
 
 Current seed-batch milestone:
 
@@ -151,6 +157,12 @@ Current seed-batch milestone:
   `/OE` bus-conflict coverage for `74HC245`, capture/hold/output-disable
   coverage for `74HC574`, and write-cycle/read-after-write/protection coverage
   for `AT28C256`.
+- July 2026 full-library checkpoint: the active DB now includes the expanded
+  74HC/HCT batch, source datasheets, generated/package-local Python and Verilog
+  models, pinout comments in Verilog files, timing/polarity/state crosscheck
+  reports, and support-chip Python models. Cross-file drift checks must include
+  DB definitions, Python behavior, Verilog behavior/export, truth vectors,
+  pinout evidence, and report regeneration together.
 
 Current RV8GR circuit-library milestone:
 
@@ -479,6 +491,10 @@ Components focus:
 - Owns compact-definition loader behavior: omitted derivable layers must still
   appear in `load_digital_package(part)["layers"]["definition"]` for UI/API and
   generator consumers.
+- Owns support-chip Python behavior models and generic package portability:
+  `DB/Support/*/simulation/model.py` files stay chip-local, import only
+  `chiplib.core`, and must be exposed through `load_component_package()` with
+  `portable_files` when the package has a local model.
 
 ## Noon - Docs Writer
 
@@ -558,6 +574,13 @@ python3 -m py_compile chiplib/*.py tests/*.py
 python3 -m chiplib.cli db --audit
 python3 -m chiplib.cli db --status
 cd ..
+
+PYTHONPATH=python python3 tools/pinout_crosscheck.py
+PYTHONPATH=python python3 tools/polarity_crosscheck.py
+PYTHONPATH=python python3 tools/timing_crosscheck.py
+PYTHONPATH=python python3 tools/state_behavior_crosscheck.py
+PYTHONPATH=python python3 tools/python_behavior_crosscheck.py
+PYTHONPATH=python python3 tools/verilog_behavior_crosscheck.py
 
 iverilog -g2012 -Wall -o /tmp/tb_74xx_smoke.vvp Verilog/74xx/*.v Verilog/74xx/tests/tb_74xx_smoke.v
 vvp /tmp/tb_74xx_smoke.vvp

@@ -1,339 +1,216 @@
 {
-  "schema": "db.component.digital",
-  "version": 1,
-  "part": "74HC74",
-  "metadata": {
-    "title": "Dual D-type flip-flop with asynchronous preset and clear",
-    "family": "74HC",
-    "group": "74xx",
-    "role": "flip_flop"
-  },
-  "package": {
-    "kind": "DIP",
-    "pins": 14,
-    "default": "N"
-  },
-  "pins": [
-    {
-      "number": 1,
-      "name": "/1CLR",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 2,
-      "name": "1D",
-      "direction": "input"
-    },
-    {
-      "number": 3,
-      "name": "1CLK",
-      "direction": "input"
-    },
-    {
-      "number": 4,
-      "name": "/1PRE",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 5,
-      "name": "1Q",
-      "direction": "output"
-    },
-    {
-      "number": 6,
-      "name": "/1Q",
-      "direction": "output",
-      "active_low": true
-    },
-    {
-      "number": 7,
-      "name": "GND",
-      "direction": "power",
-      "rail": "GND"
-    },
-    {
-      "number": 8,
-      "name": "/2Q",
-      "direction": "output",
-      "active_low": true
-    },
-    {
-      "number": 9,
-      "name": "2Q",
-      "direction": "output"
-    },
-    {
-      "number": 10,
-      "name": "/2PRE",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 11,
-      "name": "2CLK",
-      "direction": "input"
-    },
-    {
-      "number": 12,
-      "name": "2D",
-      "direction": "input"
-    },
-    {
-      "number": 13,
-      "name": "/2CLR",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 14,
-      "name": "VCC",
-      "direction": "power",
-      "rail": "VCC"
-    }
-  ],
-  "logic": {
-    "type": "dual_d_flip_flop",
-    "description": "Dual D-type flip-flop with asynchronous preset and clear"
-  },
-  "timing": {
-    "delay_ns": 20,
-    "simple": {
-      "default_delay_ns": 20,
-      "source": "legacy functional simulator default"
-    },
-    "timed": {
-      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-      "paths": {
-        "clock_to_output_ns": {
-          "parameter": "tco",
-          "from": "CLK/clock control",
-          "to": "Q/output",
-          "condition": "active clock edge",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 20,
-              "max_ns": 20,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "async_control_to_output_ns": {
-          "parameter": "tremap",
-          "from": "asynchronous control",
-          "to": "Q/output",
-          "condition": "async control asserted or released",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 20,
-              "max_ns": 20,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "input_setup_margin_ns": {
-          "parameter": "tsu",
-          "from": "D/input",
-          "to": "CLK/clock control",
-          "condition": "conservative setup placeholder from model delay",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 20,
-              "max_ns": 20,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "transition_time_ns": {
-          "parameter": "tt",
-          "from": "output transition",
-          "to": "output transition",
-          "condition": "enabled output switches",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 20,
-              "max_ns": 20,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        }
-      }
-    }
-  },
-  "generation": {
-    "targets": [
-      "json",
-      "python_simulator",
-      "verilog_wrapper",
-      "verilog_testbench",
-      "kicad_symbol",
-      "svg_pinout",
-      "documentation",
-      "unit_test",
-      "interactive_demo"
-    ],
-    "python": {
-      "factory": "create",
-      "part": "74HC74",
-      "file": "DB/74xx/74HC74/simulation/model.py",
-      "class": "HC74"
-    },
-    "verilog": {
-      "module": "ttl_74hc74",
-      "file": "DB/74xx/74HC74/simulation/model.v",
-      "netlist": "DB/74xx/74HC74/simulation/netlist.json"
-    }
-  },
-  "verification": {
-    "tests": [
-      "truth_table",
-      "timing",
-      "propagation"
-    ],
-    "required_vectors": [
-      "basic_function"
-    ]
-  },
   "datasheet": {
-    "schema": "db.component.datasheet.sources",
-    "version": 1,
     "part": "74HC74",
+    "schema": "db.component.datasheet.sources",
     "sources": [
       {
         "label": "Texas Instruments SN74HC74",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc74.pdf",
         "package_evidence": "N, 14-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc74.pdf",
         "used_for": [
           "pins",
           "package",
           "logic"
         ]
       }
-    ]
+    ],
+    "version": 1
   },
   "definition_layers": {
+    "electrical": {
+      "evidence": {
+        "label": "Texas Instruments SN74HC74",
+        "package_evidence": "N, 14-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc74.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic",
+          "timing",
+          "electrical"
+        ]
+      },
+      "loading": {
+        "application_capacitive_load_limit_pf": 50,
+        "switching_test_load_pf": 50
+      },
+      "part": "74HC74",
+      "recommended_operating": {
+        "input_transition_max_ns": {
+          "2.0": 1000,
+          "4.5": 500,
+          "6.0": 400
+        },
+        "input_voltage_v": {
+          "max": "VCC",
+          "min": 0
+        },
+        "output_voltage_v": {
+          "max": "VCC",
+          "min": 0
+        },
+        "ta_c": {
+          "max": 85,
+          "min": -40
+        },
+        "vcc_v": {
+          "max": 6,
+          "min": 2,
+          "nom": 5
+        },
+        "vih_min_v": {
+          "2.0": 1.5,
+          "4.5": 3.15,
+          "6.0": 4.2
+        },
+        "vil_max_v": {
+          "2.0": 0.5,
+          "4.5": 1.35,
+          "6.0": 1.8
+        }
+      },
+      "schema": "db.component.electrical",
+      "static_characteristics": {
+        "ci_max_pf": {
+          "2.0_to_6.0": 10
+        },
+        "icc_max_ua": {
+          "6.0": 40
+        },
+        "input_leakage_max_ua": {
+          "6.0": 1
+        },
+        "voh_min_v": {
+          "ioh_-20ua": {
+            "2.0": 1.9,
+            "4.5": 4.4,
+            "6.0": 5.9
+          },
+          "ioh_-4ma_4.5v": 3.84,
+          "ioh_-5.2ma_6v": 5.34
+        },
+        "vol_max_v": {
+          "iol_20ua": {
+            "2.0": 0.1,
+            "4.5": 0.1,
+            "6.0": 0.1
+          },
+          "iol_4ma_4.5v": 0.33,
+          "iol_5.2ma_6v": 0.33
+        }
+      },
+      "version": 1
+    },
     "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
       "part": "74HC74",
       "pins": [
         {
-          "number": 1,
+          "active_low": true,
+          "direction": "input",
           "name": "/1CLR",
-          "direction": "input",
-          "active_low": true
+          "number": 1
         },
         {
-          "number": 2,
+          "direction": "input",
           "name": "1D",
-          "direction": "input"
+          "number": 2
         },
         {
-          "number": 3,
-          "name": "1CLK",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "/1PRE",
           "direction": "input",
-          "active_low": true
+          "name": "1CLK",
+          "number": 3
         },
         {
-          "number": 5,
-          "name": "1Q",
-          "direction": "output"
+          "active_low": true,
+          "direction": "input",
+          "name": "/1PRE",
+          "number": 4
         },
         {
-          "number": 6,
-          "name": "/1Q",
           "direction": "output",
-          "active_low": true
+          "name": "1Q",
+          "number": 5
         },
         {
-          "number": 7,
-          "name": "GND",
+          "active_low": true,
+          "direction": "output",
+          "name": "/1Q",
+          "number": 6
+        },
+        {
           "direction": "power",
+          "name": "GND",
+          "number": 7,
           "rail": "GND"
         },
         {
-          "number": 8,
-          "name": "/2Q",
+          "active_low": true,
           "direction": "output",
-          "active_low": true
+          "name": "/2Q",
+          "number": 8
         },
         {
-          "number": 9,
+          "direction": "output",
           "name": "2Q",
-          "direction": "output"
+          "number": 9
         },
         {
-          "number": 10,
+          "active_low": true,
+          "direction": "input",
           "name": "/2PRE",
-          "direction": "input",
-          "active_low": true
+          "number": 10
         },
         {
-          "number": 11,
+          "direction": "input",
           "name": "2CLK",
-          "direction": "input"
+          "number": 11
         },
         {
-          "number": 12,
-          "name": "2D",
-          "direction": "input"
-        },
-        {
-          "number": 13,
-          "name": "/2CLR",
           "direction": "input",
-          "active_low": true
+          "name": "2D",
+          "number": 12
         },
         {
-          "number": 14,
-          "name": "VCC",
+          "active_low": true,
+          "direction": "input",
+          "name": "/2CLR",
+          "number": 13
+        },
+        {
           "direction": "power",
+          "name": "VCC",
+          "number": 14,
           "rail": "VCC"
         }
-      ]
+      ],
+      "schema": "db.component.pins",
+      "version": 1
     },
     "power": {
-      "schema": "db.component.power",
-      "version": 1,
       "part": "74HC74",
       "rails": [
         {
-          "number": 7,
-          "name": "GND",
           "direction": "power",
+          "name": "GND",
+          "number": 7,
           "rail": "GND"
         },
         {
-          "number": 14,
-          "name": "VCC",
           "direction": "power",
+          "name": "VCC",
+          "number": 14,
           "rail": "VCC"
         }
-      ]
+      ],
+      "schema": "db.component.power",
+      "version": 1
     },
     "timing": {
-      "schema": "db.component.timing",
-      "version": 1,
-      "part": "74HC74",
       "delay": {
-        "model_delay_ns": 20,
-        "status": "datasheet-backed",
-        "datasheet_typical_ns": {
-          "4.5": {
-            "clock_to_q": 20,
-            "preset_or_clear_to_q": 20,
-            "transition_q": 8
-          }
+        "conditions": {
+          "load_pf": 50,
+          "path": "CLK_or_PRE_or_CLR_to_Q",
+          "section": "6.9 Switching Characteristics - 74"
         },
         "datasheet_max_ns_25c": {
           "4.5": {
@@ -349,97 +226,49 @@
             "transition_q": 19
           }
         },
-        "conditions": {
-          "load_pf": 50,
-          "path": "CLK_or_PRE_or_CLR_to_Q",
-          "section": "6.9 Switching Characteristics - 74"
-        },
-        "public_timing": {
-          "delay_ns": 20,
-          "simple": {
-            "default_delay_ns": 20,
-            "source": "legacy functional simulator default"
-          },
-          "timed": {
-            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-            "paths": {
-              "clock_to_output_ns": {
-                "parameter": "tco",
-                "from": "CLK/clock control",
-                "to": "Q/output",
-                "condition": "active clock edge",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 20,
-                    "max_ns": 20,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "async_control_to_output_ns": {
-                "parameter": "tremap",
-                "from": "asynchronous control",
-                "to": "Q/output",
-                "condition": "async control asserted or released",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 20,
-                    "max_ns": 20,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "input_setup_margin_ns": {
-                "parameter": "tsu",
-                "from": "D/input",
-                "to": "CLK/clock control",
-                "condition": "conservative setup placeholder from model delay",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 20,
-                    "max_ns": 20,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "transition_time_ns": {
-                "parameter": "tt",
-                "from": "output transition",
-                "to": "output transition",
-                "condition": "enabled output switches",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 20,
-                    "max_ns": 20,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              }
-            }
+        "datasheet_typical_ns": {
+          "4.5": {
+            "clock_to_q": 20,
+            "preset_or_clear_to_q": 20,
+            "transition_q": 8
           }
         },
-        "conservative_defaults": {
-          "clock_to_output_ns": "conservative_default_from_existing_model_delay",
-          "async_control_to_output_ns": "conservative_default_from_existing_model_delay",
-          "input_setup_margin_ns": "conservative_default_from_existing_model_delay",
-          "transition_time_ns": "conservative_default_from_existing_model_delay"
-        }
+        "model_delay_ns": 20,
+        "status": "datasheet-backed"
       },
+      "evidence": {
+        "label": "Texas Instruments SN74HC74",
+        "package_evidence": "N, 14-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc74.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic",
+          "timing",
+          "electrical"
+        ]
+      },
+      "part": "74HC74",
+      "schema": "db.component.timing",
       "timing_requirements": {
         "clock_frequency_mhz": {
           "4.5": {
-            "typical_25c": 31,
-            "min_minus40_to_85c": 25
+            "min_minus40_to_85c": 25,
+            "typical_25c": 31
           }
         },
         "clock_high_or_low_ns": {
           "4.5": {
             "min_25c": 16,
             "min_minus40_to_85c": 20
+          }
+        },
+        "hold_after_clock_ns": {
+          "data": {
+            "4.5": {
+              "min_25c": 0,
+              "min_minus40_to_85c": 0
+            }
           }
         },
         "preset_or_clear_low_ns": {
@@ -461,120 +290,217 @@
               "min_minus40_to_85c": 6
             }
           }
-        },
-        "hold_after_clock_ns": {
-          "data": {
-            "4.5": {
-              "min_25c": 0,
-              "min_minus40_to_85c": 0
-            }
-          }
         }
       },
-      "evidence": {
-        "label": "Texas Instruments SN74HC74",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc74.pdf",
-        "package_evidence": "N, 14-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic",
-          "timing",
-          "electrical"
-        ]
-      }
-    },
-    "electrical": {
-      "schema": "db.component.electrical",
-      "version": 1,
-      "part": "74HC74",
-      "recommended_operating": {
-        "vcc_v": {
-          "min": 2,
-          "nom": 5,
-          "max": 6
-        },
-        "input_voltage_v": {
-          "min": 0,
-          "max": "VCC"
-        },
-        "output_voltage_v": {
-          "min": 0,
-          "max": "VCC"
-        },
-        "vih_min_v": {
-          "2.0": 1.5,
-          "4.5": 3.15,
-          "6.0": 4.2
-        },
-        "vil_max_v": {
-          "2.0": 0.5,
-          "4.5": 1.35,
-          "6.0": 1.8
-        },
-        "input_transition_max_ns": {
-          "2.0": 1000,
-          "4.5": 500,
-          "6.0": 400
-        },
-        "ta_c": {
-          "min": -40,
-          "max": 85
-        }
-      },
-      "static_characteristics": {
-        "voh_min_v": {
-          "ioh_-20ua": {
-            "2.0": 1.9,
-            "4.5": 4.4,
-            "6.0": 5.9
-          },
-          "ioh_-4ma_4.5v": 3.84,
-          "ioh_-5.2ma_6v": 5.34
-        },
-        "vol_max_v": {
-          "iol_20ua": {
-            "2.0": 0.1,
-            "4.5": 0.1,
-            "6.0": 0.1
-          },
-          "iol_4ma_4.5v": 0.33,
-          "iol_5.2ma_6v": 0.33
-        },
-        "input_leakage_max_ua": {
-          "6.0": 1
-        },
-        "icc_max_ua": {
-          "6.0": 40
-        },
-        "ci_max_pf": {
-          "2.0_to_6.0": 10
-        }
-      },
-      "loading": {
-        "switching_test_load_pf": 50,
-        "application_capacitive_load_limit_pf": 50
-      },
-      "evidence": {
-        "label": "Texas Instruments SN74HC74",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc74.pdf",
-        "package_evidence": "N, 14-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic",
-          "timing",
-          "electrical"
-        ]
-      }
+      "version": 1
     }
   },
+  "generation": {
+    "python": {
+      "class": "HC74",
+      "factory": "create",
+      "file": "DB/74xx/74HC74/simulation/model.py",
+      "part": "74HC74"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "DB/74xx/74HC74/simulation/model.v",
+      "module": "ttl_74hc74",
+      "netlist": "DB/74xx/74HC74/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "description": "Dual D-type flip-flop with asynchronous preset and clear",
+    "type": "dual_d_flip_flop"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "flip_flop",
+    "title": "Dual D-type flip-flop with asynchronous preset and clear"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 14
+  },
+  "part": "74HC74",
+  "pins": [
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/1CLR",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "1D",
+      "number": 2
+    },
+    {
+      "direction": "input",
+      "name": "1CLK",
+      "number": 3
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/1PRE",
+      "number": 4
+    },
+    {
+      "direction": "output",
+      "name": "1Q",
+      "number": 5
+    },
+    {
+      "active_low": true,
+      "direction": "output",
+      "name": "/1Q",
+      "number": 6
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 7,
+      "rail": "GND"
+    },
+    {
+      "active_low": true,
+      "direction": "output",
+      "name": "/2Q",
+      "number": 8
+    },
+    {
+      "direction": "output",
+      "name": "2Q",
+      "number": 9
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/2PRE",
+      "number": 10
+    },
+    {
+      "direction": "input",
+      "name": "2CLK",
+      "number": 11
+    },
+    {
+      "direction": "input",
+      "name": "2D",
+      "number": 12
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/2CLR",
+      "number": 13
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 14,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
   "status": {
     "datasheet": "verified",
     "pinout": "verified",
     "python_behavior": "modeled",
-    "verilog_model": "modeled",
+    "tests": "tested",
     "verilog_export": "tested",
-    "tests": "tested"
-  }
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "delay_ns": 20,
+    "simple": {
+      "default_delay_ns": 20,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "async_control_to_output_ns": {
+          "condition": "async control asserted or released",
+          "from": "asynchronous control",
+          "parameter": "tremap",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 20,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 20
+            }
+          },
+          "to": "Q/output"
+        },
+        "clock_to_output_ns": {
+          "condition": "active clock edge",
+          "from": "CLK/clock control",
+          "parameter": "tco",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 20,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 20
+            }
+          },
+          "to": "Q/output"
+        },
+        "input_setup_margin_ns": {
+          "condition": "conservative setup placeholder from model delay",
+          "from": "D/input",
+          "parameter": "tsu",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 20,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 20
+            }
+          },
+          "to": "CLK/clock control"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 20,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 20
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1
 }

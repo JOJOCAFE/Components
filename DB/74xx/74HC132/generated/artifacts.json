@@ -1,0 +1,594 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 15 ns before trusting the output."
+      ],
+      "overview": "74HC132 is a 14-pin DIP part for nand gate.",
+      "part": "74HC132",
+      "pin_count": 14,
+      "pin_summary": {
+        "input": {
+          "count": 8,
+          "names": [
+            "1A",
+            "1B",
+            "2A",
+            "2B",
+            "3A",
+            "3B",
+            "4A",
+            "4B"
+          ],
+          "note": "Input pins: 1A, 1B, 2A, 2B, 3A, 3B, and 2 more."
+        },
+        "output": {
+          "count": 4,
+          "names": [
+            "1Y",
+            "2Y",
+            "3Y",
+            "4Y"
+          ],
+          "note": "Output pins: 1Y, 2Y, 3Y, 4Y."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "Quad 2-input NAND gate with Schmitt-trigger inputs.",
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "title": "Quad 2-input NAND gate with Schmitt-trigger inputs",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "1A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1A - input",
+          "pin": "1A"
+        },
+        {
+          "explanation": "1B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1B - input",
+          "pin": "1B"
+        },
+        {
+          "explanation": "2A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2A - input",
+          "pin": "2A"
+        },
+        {
+          "explanation": "2B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2B - input",
+          "pin": "2B"
+        },
+        {
+          "explanation": "3A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3A - input",
+          "pin": "3A"
+        },
+        {
+          "explanation": "3B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "3B - input",
+          "pin": "3B"
+        },
+        {
+          "explanation": "4A controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4A - input",
+          "pin": "4A"
+        },
+        {
+          "explanation": "4B controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "4B - input",
+          "pin": "4B"
+        }
+      ],
+      "controls": [
+        "1A",
+        "1B",
+        "2A",
+        "2B",
+        "3A",
+        "3B",
+        "4A",
+        "4B"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC132",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Y",
+          "name": "1Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Y",
+          "name": "2Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "3Y",
+          "name": "3Y"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "4Y",
+          "name": "4Y"
+        }
+      ],
+      "probes": [
+        "1Y",
+        "2Y",
+        "3Y",
+        "4Y"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change 1A?",
+        "Which truth-table row matches the value on 1Y?"
+      ],
+      "title": "Try 74HC132 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "Quad 2-input NAND gate with Schmitt-trigger inputs",
+        "type": "quad_2_input_nand_schmitt"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 14
+      },
+      "part": "74HC132",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "1A",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1B",
+          "number": 2
+        },
+        {
+          "direction": "output",
+          "name": "1Y",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "2A",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "2B",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "2Y",
+          "number": 6
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "3Y",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "3A",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "3B",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "4Y",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "4A",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "4B",
+          "number": 13
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 7
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 14
+        }
+      ],
+      "role": "nand_gate",
+      "timing": {
+        "datasheet": {
+          "conditions": "TI SN74HC132 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns_minus40_to_85c": {
+              "input_to_output": 31,
+              "transition": 19
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "input_to_output": 37,
+              "transition": 22
+            },
+            "datasheet_typical_ns": {
+              "input_to_output": 18,
+              "transition": 8
+            }
+          }
+        },
+        "delay_ns": 15
+      },
+      "title": "Quad 2-input NAND gate with Schmitt-trigger inputs"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "1A",
+        "10": "3B",
+        "12": "4A",
+        "13": "4B",
+        "14": "VCC",
+        "2": "1B",
+        "4": "2A",
+        "5": "2B",
+        "7": "GND",
+        "9": "3A"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC132",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC132",
+      "copy_with_chip": [
+        "DB/74xx/74HC132/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC132/simulation/model.py",
+      "part": "74HC132",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "1A",
+        "10": "3B",
+        "12": "4A",
+        "13": "4B",
+        "14": "VCC",
+        "2": "1B",
+        "4": "2A",
+        "5": "2B",
+        "7": "GND",
+        "9": "3A"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "part": "74HC132",
+      "pins": 14,
+      "right": [
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        8
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC132",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC132",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC132",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "gate1_any_low_outputs_high",
+            "gate1_both_high_outputs_low",
+            "all_gates_both_high_output_low"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc132",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC132/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc132"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc132",
+      "part": "74HC132",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC132",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC132",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "gate1_any_low_outputs_high",
+            "gate1_both_high_outputs_low",
+            "all_gates_both_high_output_low"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          3,
+          6,
+          8,
+          11
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "A",
+            "pins": [
+              1,
+              4,
+              9,
+              12
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "B",
+            "pins": [
+              2,
+              5,
+              10,
+              13
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Y",
+            "pins": [
+              3,
+              6,
+              8,
+              11
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC132/simulation/model.v",
+      "module": "ttl_74hc132",
+      "netlist": "DB/74xx/74HC132/simulation/netlist.json",
+      "part": "74HC132"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC132",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC132/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC132/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC132/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC132/definition/definition.json",
+  "version": 1
+}

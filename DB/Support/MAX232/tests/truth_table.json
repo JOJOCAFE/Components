@@ -1,0 +1,50 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "MAX232",
+  "applicable": true,
+  "edge_criteria": {
+    "clocking": "level_sensitive",
+    "trigger_edge": "none",
+    "non_trigger_edge": "not_applicable",
+    "notes": "Support IC functional model; outputs are checked after input/control level changes."
+  },
+  "vectors": [
+    {
+      "name": "driver_1_low_inverts_high",
+      "fresh": true,
+      "inputs": {
+        "T1IN": 0
+      },
+      "expect": {
+        "T1OUT": 1
+      }
+    },
+    {
+      "name": "driver_1_high_inverts_low",
+      "fresh": true,
+      "inputs": {
+        "T1IN": 1
+      },
+      "expect": {
+        "T1OUT": 0
+      }
+    },
+    {
+      "name": "all_channels_mixed_invert",
+      "fresh": true,
+      "inputs": {
+        "T1IN": 1,
+        "T2IN": 0,
+        "R1IN": 1,
+        "R2IN": 0
+      },
+      "expect": {
+        "T1OUT": 0,
+        "T2OUT": 1,
+        "R1OUT": 0,
+        "R2OUT": 1
+      }
+    }
+  ]
+}

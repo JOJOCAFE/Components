@@ -1,177 +1,207 @@
 {
-  "schema": "db.component.digital",
-  "version": 1,
-  "part": "74HC251",
-  "metadata": {
-    "title": "8-Line to 1-Line Data Selector/Multiplexer",
-    "family": "74HC",
-    "group": "74xx",
-    "role": "multiplexer"
+  "datasheet": {
+    "part": "74HC251",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC251",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc251.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
   },
-  "package": {
-    "kind": "DIP",
-    "pins": 16,
-    "default": "N"
-  },
-  "pins": [
-    {
-      "number": 1,
-      "name": "D3",
-      "direction": "input"
-    },
-    {
-      "number": 2,
-      "name": "D2",
-      "direction": "input"
-    },
-    {
-      "number": 3,
-      "name": "D1",
-      "direction": "input"
-    },
-    {
-      "number": 4,
-      "name": "D0",
-      "direction": "input"
-    },
-    {
-      "number": 5,
-      "name": "Y",
-      "direction": "output"
-    },
-    {
-      "number": 6,
-      "name": "/Y",
-      "direction": "output",
-      "active_low": true
-    },
-    {
-      "number": 7,
-      "name": "/OE",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 8,
-      "name": "GND",
-      "direction": "power",
-      "rail": "GND"
-    },
-    {
-      "number": 9,
-      "name": "C",
-      "direction": "input"
-    },
-    {
-      "number": 10,
-      "name": "B",
-      "direction": "input"
-    },
-    {
-      "number": 11,
-      "name": "A",
-      "direction": "input"
-    },
-    {
-      "number": 12,
-      "name": "D7",
-      "direction": "input"
-    },
-    {
-      "number": 13,
-      "name": "D6",
-      "direction": "input"
-    },
-    {
-      "number": 14,
-      "name": "D5",
-      "direction": "input"
-    },
-    {
-      "number": 15,
-      "name": "D4",
-      "direction": "input"
-    },
-    {
-      "number": 16,
-      "name": "VCC",
-      "direction": "power",
-      "rail": "VCC"
-    }
-  ],
-  "logic": {
-    "type": "8_line_to_1_line_data_selector_multiplexer",
-    "description": "8-Line to 1-Line Data Selector/Multiplexer"
-  },
-  "timing": {
-    "delay_ns": 15,
-    "simple": {
-      "default_delay_ns": 15,
-      "source": "legacy functional simulator default"
-    },
-    "timed": {
-      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-      "paths": {
-        "input_to_output_ns": {
-          "parameter": "tpd",
-          "from": "input",
-          "to": "output",
-          "condition": "input or select changes",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "output_enable_to_output_ns": {
-          "parameter": "ten",
-          "from": "output-enable control",
-          "to": "output driven",
-          "condition": "enable control asserted",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "output_disable_to_high_z_ns": {
-          "parameter": "tdis",
-          "from": "output-enable control",
-          "to": "output high-Z",
-          "condition": "enable control released",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "transition_time_ns": {
-          "parameter": "tt",
-          "from": "output transition",
-          "to": "output transition",
-          "condition": "enabled output switches",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC251",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc251.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC251",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
         }
       }
+    },
+    "pins": {
+      "part": "74HC251",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "D3",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "D2",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "D1",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "D0",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "Y",
+          "number": 5
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y",
+          "number": 6
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/OE",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "input",
+          "name": "C",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "B",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "A",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "D7",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "D6",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "D5",
+          "number": 14
+        },
+        {
+          "direction": "input",
+          "name": "D4",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC251",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_max_ns_25c": {
+          "disable": 39,
+          "enable": 29,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "disable": 49,
+          "enable": 36,
+          "transition": 19
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "disable": 57,
+          "enable": 42,
+          "transition": 22
+        },
+        "datasheet_typical_ns": {
+          "disable": 15,
+          "enable": 10,
+          "transition": 8
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC251",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc251.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC251",
+      "schema": "db.component.timing",
+      "version": 1
     }
   },
   "generation": {
+    "python": {
+      "class": "HC251",
+      "factory": "create",
+      "file": "DB/74xx/74HC251/simulation/model.py",
+      "part": "74HC251"
+    },
     "targets": [
       "json",
       "python_simulator",
@@ -183,285 +213,229 @@
       "unit_test",
       "interactive_demo"
     ],
-    "python": {
-      "factory": "create",
-      "part": "74HC251",
-      "file": "DB/74xx/74HC251/simulation/model.py",
-      "class": "HC251"
-    },
     "verilog": {
-      "module": "ttl_74hc251",
       "file": "DB/74xx/74HC251/simulation/model.v",
+      "module": "ttl_74hc251",
       "netlist": "DB/74xx/74HC251/simulation/netlist.json"
     }
   },
+  "logic": {
+    "description": "8-Line to 1-Line Data Selector/Multiplexer",
+    "type": "8_line_to_1_line_data_selector_multiplexer"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "multiplexer",
+    "title": "8-Line to 1-Line Data Selector/Multiplexer"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 16
+  },
+  "part": "74HC251",
+  "pins": [
+    {
+      "direction": "input",
+      "name": "D3",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "D2",
+      "number": 2
+    },
+    {
+      "direction": "input",
+      "name": "D1",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "D0",
+      "number": 4
+    },
+    {
+      "direction": "output",
+      "name": "Y",
+      "number": 5
+    },
+    {
+      "active_low": true,
+      "direction": "output",
+      "name": "/Y",
+      "number": 6
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/OE",
+      "number": 7
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 8,
+      "rail": "GND"
+    },
+    {
+      "direction": "input",
+      "name": "C",
+      "number": 9
+    },
+    {
+      "direction": "input",
+      "name": "B",
+      "number": 10
+    },
+    {
+      "direction": "input",
+      "name": "A",
+      "number": 11
+    },
+    {
+      "direction": "input",
+      "name": "D7",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "D6",
+      "number": 13
+    },
+    {
+      "direction": "input",
+      "name": "D5",
+      "number": 14
+    },
+    {
+      "direction": "input",
+      "name": "D4",
+      "number": 15
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 16,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_max_ns_25c": {
+          "disable": 39,
+          "enable": 29,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "disable": 49,
+          "enable": 36,
+          "transition": 19
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "disable": 57,
+          "enable": 42,
+          "transition": 22
+        },
+        "datasheet_typical_ns": {
+          "disable": 15,
+          "enable": 10,
+          "transition": 8
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output"
+        },
+        "output_disable_to_high_z_ns": {
+          "condition": "enable control released",
+          "from": "output-enable control",
+          "parameter": "tdis",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output high-Z"
+        },
+        "output_enable_to_output_ns": {
+          "condition": "enable control asserted",
+          "from": "output-enable control",
+          "parameter": "ten",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output driven"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    }
+  },
   "verification": {
+    "required_vectors": [
+      "basic_function",
+      "disabled_or_high_z"
+    ],
     "tests": [
       "truth_table",
       "timing",
       "propagation",
       "tri_state",
       "bus_fight"
-    ],
-    "required_vectors": [
-      "basic_function",
-      "disabled_or_high_z"
     ]
   },
-  "datasheet": {
-    "schema": "db.component.datasheet.sources",
-    "version": 1,
-    "part": "74HC251",
-    "sources": [
-      {
-        "label": "Texas Instruments SN74HC251",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc251.pdf",
-        "package_evidence": "N, 16-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    ]
-  },
-  "definition_layers": {
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "74HC251",
-      "pins": [
-        {
-          "number": 1,
-          "name": "D3",
-          "direction": "input"
-        },
-        {
-          "number": 2,
-          "name": "D2",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "D1",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "D0",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "Y",
-          "direction": "output"
-        },
-        {
-          "number": 6,
-          "name": "/Y",
-          "direction": "output",
-          "active_low": true
-        },
-        {
-          "number": 7,
-          "name": "/OE",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 9,
-          "name": "C",
-          "direction": "input"
-        },
-        {
-          "number": 10,
-          "name": "B",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "A",
-          "direction": "input"
-        },
-        {
-          "number": 12,
-          "name": "D7",
-          "direction": "input"
-        },
-        {
-          "number": 13,
-          "name": "D6",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "D5",
-          "direction": "input"
-        },
-        {
-          "number": 15,
-          "name": "D4",
-          "direction": "input"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "74HC251",
-      "rails": [
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "timing": {
-      "schema": "db.component.timing",
-      "version": 1,
-      "part": "74HC251",
-      "delay": {
-        "model_delay_ns": 15,
-        "status": "model-derived",
-        "public_timing": {
-          "delay_ns": 15,
-          "simple": {
-            "default_delay_ns": 15,
-            "source": "legacy functional simulator default"
-          },
-          "timed": {
-            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-            "paths": {
-              "input_to_output_ns": {
-                "parameter": "tpd",
-                "from": "input",
-                "to": "output",
-                "condition": "input or select changes",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "output_enable_to_output_ns": {
-                "parameter": "ten",
-                "from": "output-enable control",
-                "to": "output driven",
-                "condition": "enable control asserted",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "output_disable_to_high_z_ns": {
-                "parameter": "tdis",
-                "from": "output-enable control",
-                "to": "output high-Z",
-                "condition": "enable control released",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "transition_time_ns": {
-                "parameter": "tt",
-                "from": "output transition",
-                "to": "output transition",
-                "condition": "enabled output switches",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "conservative_defaults": {
-          "input_to_output_ns": "conservative_default_from_existing_model_delay",
-          "output_enable_to_output_ns": "conservative_default_from_existing_model_delay",
-          "output_disable_to_high_z_ns": "conservative_default_from_existing_model_delay",
-          "transition_time_ns": "conservative_default_from_existing_model_delay"
-        }
-      },
-      "evidence": {
-        "label": "Texas Instruments SN74HC251",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc251.pdf",
-        "package_evidence": "N, 16-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    },
-    "electrical": {
-      "schema": "db.component.electrical",
-      "version": 1,
-      "part": "74HC251",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
-        }
-      },
-      "current": {
-        "status": "datasheet-required"
-      },
-      "loading": {
-        "status": "datasheet-required"
-      },
-      "evidence": {
-        "label": "Texas Instruments SN74HC251",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc251.pdf",
-        "package_evidence": "N, 16-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    }
-  },
-  "status": {
-    "datasheet": "verified",
-    "pinout": "verified",
-    "python_behavior": "modeled",
-    "verilog_model": "modeled",
-    "verilog_export": "tested",
-    "tests": "tested"
-  }
+  "version": 1
 }

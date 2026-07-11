@@ -2,8 +2,14 @@
 
 from __future__ import annotations
 
+import importlib.util
+from pathlib import Path
+
 from .core import Chip, Delay, Z, bit, pins_from
 from .catalog import CATALOG_PARTS, MEMORY_CATALOG_PARTS, create_catalog_chip
+
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 class HC04(Chip):
@@ -466,5 +472,20 @@ def create_chip(part: str, name: str) -> Chip:
     }
     factory_key = aliases.get(key)
     if not factory_key:
-        raise KeyError(f"unsupported chip part {part!r}")
+        return _create_db_local_chip(key, name)
     return CHIP_FACTORIES[factory_key](name)
+
+
+def _create_db_local_chip(part: str, name: str) -> Chip:
+    for group in ("74xx", "Memory", "Support"):
+        model_path = ROOT / "DB" / group / part / "simulation" / "model.py"
+        if not model_path.exists():
+            continue
+        module_name = f"chiplib_db_model_{part.lower()}"
+        spec = importlib.util.spec_from_file_location(module_name, model_path)
+        if spec is None or spec.loader is None:
+            break
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module.create(name)
+    raise KeyError(f"unsupported chip part {part!r}")

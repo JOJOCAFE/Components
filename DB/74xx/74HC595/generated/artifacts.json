@@ -291,6 +291,34 @@
       ],
       "role": "register",
       "timing": {
+        "datasheet": {
+          "conditions": "TI SN74HC595 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_fmax_mhz": {
+              "min_25c": 31,
+              "sn54_min": 21,
+              "sn74_min": 25,
+              "typical": 38
+            },
+            "datasheet_max_ns_25c": {
+              "output_enable": 30,
+              "srclr_to_qh": 35
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "output_enable": 37,
+              "srclr_to_qh": 44
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "output_enable": 45,
+              "srclr_to_qh": 52
+            },
+            "datasheet_typical_ns": {
+              "output_enable": 15,
+              "srclr_to_qh": 18
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

@@ -47,8 +47,8 @@ module ttl_74hc595 #(parameter DELAY_RISE = 0, DELAY_FALL = 0)
   output QH_prime
 );
 
-reg [7:0] shift_q;
-reg [7:0] store_q;
+reg [7:0] shift_q = 8'h00;
+reg [7:0] store_q = 8'h00;
 
 always @(posedge SRCLK or negedge SRCLR_bar) begin
   if (!SRCLR_bar) shift_q <= 8'h00;

@@ -1,137 +1,189 @@
 {
-  "schema": "db.component.digital",
-  "version": 1,
-  "part": "74HC11",
-  "metadata": {
-    "title": "triple 3-input AND gate",
-    "family": "74HC",
-    "group": "74xx",
-    "role": "logic"
+  "datasheet": {
+    "part": "74HC11",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "file": "Source/74HC11_NXP_344446_DIPCHECK.pdf",
+        "label": "Legacy pinout datasheet source",
+        "package_evidence": "datasheet-required",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
   },
-  "package": {
-    "kind": "DIP",
-    "pins": 14,
-    "default": "N"
-  },
-  "pins": [
-    {
-      "number": 1,
-      "name": "1A",
-      "direction": "input"
-    },
-    {
-      "number": 2,
-      "name": "1B",
-      "direction": "input"
-    },
-    {
-      "number": 3,
-      "name": "2A",
-      "direction": "input"
-    },
-    {
-      "number": 4,
-      "name": "2B",
-      "direction": "input"
-    },
-    {
-      "number": 5,
-      "name": "2C",
-      "direction": "input"
-    },
-    {
-      "number": 6,
-      "name": "2Y",
-      "direction": "output"
-    },
-    {
-      "number": 7,
-      "name": "GND",
-      "direction": "power",
-      "rail": "GND"
-    },
-    {
-      "number": 8,
-      "name": "3Y",
-      "direction": "output"
-    },
-    {
-      "number": 9,
-      "name": "3A",
-      "direction": "input"
-    },
-    {
-      "number": 10,
-      "name": "3B",
-      "direction": "input"
-    },
-    {
-      "number": 11,
-      "name": "3C",
-      "direction": "input"
-    },
-    {
-      "number": 12,
-      "name": "1Y",
-      "direction": "output"
-    },
-    {
-      "number": 13,
-      "name": "1C",
-      "direction": "input"
-    },
-    {
-      "number": 14,
-      "name": "VCC",
-      "direction": "power",
-      "rail": "VCC"
-    }
-  ],
-  "logic": {
-    "type": "triple_3_input_and_gate",
-    "description": "triple 3-input AND gate"
-  },
-  "timing": {
-    "delay_ns": 15,
-    "simple": {
-      "default_delay_ns": 15,
-      "source": "legacy functional simulator default"
-    },
-    "timed": {
-      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-      "paths": {
-        "input_to_output_ns": {
-          "parameter": "tpd",
-          "from": "input",
-          "to": "output",
-          "condition": "input or select changes",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "transition_time_ns": {
-          "parameter": "tt",
-          "from": "output transition",
-          "to": "output transition",
-          "condition": "enabled output switches",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "file": "Source/74HC11_NXP_344446_DIPCHECK.pdf",
+        "label": "Legacy pinout datasheet source",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC11",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
         }
       }
+    },
+    "pins": {
+      "part": "74HC11",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "1A",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1B",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "2A",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "2B",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "2C",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "2Y",
+          "number": 6
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "3Y",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "3A",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "3B",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "3C",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "1Y",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "1C",
+          "number": 13
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC11",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "NXP 74HC11 dynamic characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_max_ns_25c": {
+          "input_to_output": 20,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_125c": {
+          "input_to_output": 30,
+          "transition": 22
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "input_to_output": 25,
+          "transition": 19
+        },
+        "datasheet_typical_ns": {
+          "input_to_output": 12,
+          "transition": 7
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "file": "Source/74HC11_NXP_344446_DIPCHECK.pdf",
+        "label": "Legacy pinout datasheet source",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC11",
+      "schema": "db.component.timing",
+      "version": 1
     }
   },
   "generation": {
+    "python": {
+      "class": "HC11",
+      "factory": "create",
+      "file": "DB/74xx/74HC11/simulation/model.py",
+      "part": "74HC11"
+    },
     "targets": [
       "json",
       "python_simulator",
@@ -143,242 +195,186 @@
       "unit_test",
       "interactive_demo"
     ],
-    "python": {
-      "factory": "create",
-      "part": "74HC11",
-      "file": "DB/74xx/74HC11/simulation/model.py",
-      "class": "HC11"
-    },
     "verilog": {
-      "module": "ttl_74hc11",
       "file": "DB/74xx/74HC11/simulation/model.v",
+      "module": "ttl_74hc11",
       "netlist": "DB/74xx/74HC11/simulation/netlist.json"
     }
   },
+  "logic": {
+    "description": "triple 3-input AND gate",
+    "type": "triple_3_input_and_gate"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "logic",
+    "title": "triple 3-input AND gate"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 14
+  },
+  "part": "74HC11",
+  "pins": [
+    {
+      "direction": "input",
+      "name": "1A",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "1B",
+      "number": 2
+    },
+    {
+      "direction": "input",
+      "name": "2A",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "2B",
+      "number": 4
+    },
+    {
+      "direction": "input",
+      "name": "2C",
+      "number": 5
+    },
+    {
+      "direction": "output",
+      "name": "2Y",
+      "number": 6
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 7,
+      "rail": "GND"
+    },
+    {
+      "direction": "output",
+      "name": "3Y",
+      "number": 8
+    },
+    {
+      "direction": "input",
+      "name": "3A",
+      "number": 9
+    },
+    {
+      "direction": "input",
+      "name": "3B",
+      "number": 10
+    },
+    {
+      "direction": "input",
+      "name": "3C",
+      "number": 11
+    },
+    {
+      "direction": "output",
+      "name": "1Y",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "1C",
+      "number": 13
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 14,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "NXP 74HC11 dynamic characteristics, CL=50 pF, VCC=4.5 V.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_max_ns_25c": {
+          "input_to_output": 20,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_125c": {
+          "input_to_output": 30,
+          "transition": 22
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "input_to_output": 25,
+          "transition": 19
+        },
+        "datasheet_typical_ns": {
+          "input_to_output": 12,
+          "transition": 7
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    }
+  },
   "verification": {
-    "tests": [
-      "truth_table",
-      "timing",
-      "propagation"
-    ],
     "required_vectors": [
       "and3_000",
       "and3_011",
       "and3_101",
       "and3_110",
       "and3_111"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
     ]
   },
-  "datasheet": {
-    "schema": "db.component.datasheet.sources",
-    "version": 1,
-    "part": "74HC11",
-    "sources": [
-      {
-        "label": "Legacy pinout datasheet source",
-        "file": "Source/74HC11_NXP_344446_DIPCHECK.pdf",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ],
-        "package_evidence": "datasheet-required"
-      }
-    ]
-  },
-  "definition_layers": {
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "74HC11",
-      "pins": [
-        {
-          "number": 1,
-          "name": "1A",
-          "direction": "input"
-        },
-        {
-          "number": 2,
-          "name": "1B",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "2A",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "2B",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "2C",
-          "direction": "input"
-        },
-        {
-          "number": 6,
-          "name": "2Y",
-          "direction": "output"
-        },
-        {
-          "number": 7,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 8,
-          "name": "3Y",
-          "direction": "output"
-        },
-        {
-          "number": 9,
-          "name": "3A",
-          "direction": "input"
-        },
-        {
-          "number": 10,
-          "name": "3B",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "3C",
-          "direction": "input"
-        },
-        {
-          "number": 12,
-          "name": "1Y",
-          "direction": "output"
-        },
-        {
-          "number": 13,
-          "name": "1C",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "74HC11",
-      "rails": [
-        {
-          "number": 7,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 14,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "timing": {
-      "schema": "db.component.timing",
-      "version": 1,
-      "part": "74HC11",
-      "delay": {
-        "model_delay_ns": 15,
-        "status": "model-derived",
-        "public_timing": {
-          "delay_ns": 15,
-          "simple": {
-            "default_delay_ns": 15,
-            "source": "legacy functional simulator default"
-          },
-          "timed": {
-            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-            "paths": {
-              "input_to_output_ns": {
-                "parameter": "tpd",
-                "from": "input",
-                "to": "output",
-                "condition": "input or select changes",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "transition_time_ns": {
-                "parameter": "tt",
-                "from": "output transition",
-                "to": "output transition",
-                "condition": "enabled output switches",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "conservative_defaults": {
-          "input_to_output_ns": "conservative_default_from_existing_model_delay",
-          "transition_time_ns": "conservative_default_from_existing_model_delay"
-        }
-      },
-      "evidence": {
-        "label": "Legacy pinout datasheet source",
-        "file": "Source/74HC11_NXP_344446_DIPCHECK.pdf",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    },
-    "electrical": {
-      "schema": "db.component.electrical",
-      "version": 1,
-      "part": "74HC11",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
-        }
-      },
-      "current": {
-        "status": "datasheet-required"
-      },
-      "loading": {
-        "status": "datasheet-required"
-      },
-      "evidence": {
-        "label": "Legacy pinout datasheet source",
-        "file": "Source/74HC11_NXP_344446_DIPCHECK.pdf",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    }
-  },
-  "status": {
-    "datasheet": "verified",
-    "pinout": "verified",
-    "python_behavior": "modeled",
-    "verilog_model": "modeled",
-    "verilog_export": "tested",
-    "tests": "tested"
-  }
+  "version": 1
 }

@@ -1,0 +1,643 @@
+{
+  "artifacts": {
+    "documentation": {
+      "audience": "students ages 10-15, still useful for older learners",
+      "bus_explanations": [],
+      "buses": {},
+      "control_explanations": [],
+      "controls": [],
+      "key_points": [
+        "Connect power before testing signal pins.",
+        "After an input changes, wait about 15 ns before trusting the output."
+      ],
+      "overview": "74HC4520 is a 16-pin DIP part for counter.",
+      "part": "74HC4520",
+      "pin_count": 16,
+      "pin_summary": {
+        "input": {
+          "count": 6,
+          "names": [
+            "1CP",
+            "1E",
+            "1MR",
+            "2CP",
+            "2E",
+            "2MR"
+          ],
+          "note": "Input pins: 1CP, 1E, 1MR, 2CP, 2E, 2MR."
+        },
+        "output": {
+          "count": 8,
+          "names": [
+            "1Q0",
+            "1Q1",
+            "1Q2",
+            "1Q3",
+            "2Q0",
+            "2Q1",
+            "2Q2",
+            "2Q3"
+          ],
+          "note": "Output pins: 1Q0, 1Q1, 1Q2, 1Q3, 2Q0, 2Q1, and 2 more."
+        },
+        "power": {
+          "count": 2,
+          "names": [
+            "GND",
+            "VCC"
+          ],
+          "note": "Power pins: GND, VCC."
+        }
+      },
+      "schema": "db.component.generated.documentation",
+      "sections": [
+        "overview",
+        "pins",
+        "controls",
+        "truth_table",
+        "timing",
+        "try_it"
+      ],
+      "summary": "Dual binary up counter.",
+      "timing_note": "After an input changes, wait about 15 ns before trusting the output.",
+      "title": "Dual binary up counter",
+      "version": 1
+    },
+    "interactive_demo": {
+      "control_labels": [
+        {
+          "explanation": "1CP controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1CP - input",
+          "pin": "1CP"
+        },
+        {
+          "explanation": "1E controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1E - input",
+          "pin": "1E"
+        },
+        {
+          "explanation": "1MR controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "1MR - input",
+          "pin": "1MR"
+        },
+        {
+          "explanation": "2CP controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2CP - input",
+          "pin": "2CP"
+        },
+        {
+          "explanation": "2E controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2E - input",
+          "pin": "2E"
+        },
+        {
+          "explanation": "2MR controls input. Use 1 to turn this control on.",
+          "hint": "Use 1 to turn this control on.",
+          "label": "2MR - input",
+          "pin": "2MR"
+        }
+      ],
+      "controls": [
+        "1CP",
+        "1E",
+        "1MR",
+        "2CP",
+        "2E",
+        "2MR"
+      ],
+      "default_steps": [
+        "apply controls",
+        "settle",
+        "probe"
+      ],
+      "guided_steps": [
+        "Set each control to the value you want to test.",
+        "Run one settle step so the simulated signals can update.",
+        "Read the probes and compare them with the truth table."
+      ],
+      "intro": "Change the inputs, let the model settle, then read the probes.",
+      "part": "74HC4520",
+      "probe_labels": [
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Q0",
+          "name": "1Q0"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Q1",
+          "name": "1Q1"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Q2",
+          "name": "1Q2"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "1Q3",
+          "name": "1Q3"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Q0",
+          "name": "2Q0"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Q1",
+          "name": "2Q1"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Q2",
+          "name": "2Q2"
+        },
+        {
+          "hint": "Read this output after the settle step.",
+          "label": "2Q3",
+          "name": "2Q3"
+        }
+      ],
+      "probes": [
+        "1Q0",
+        "1Q1",
+        "1Q2",
+        "1Q3",
+        "2Q0",
+        "2Q1",
+        "2Q2",
+        "2Q3"
+      ],
+      "schema": "db.component.generated.interactive_demo",
+      "student_questions": [
+        "What changes on the probes when you flip one input?",
+        "What happens when you change 1CP?",
+        "Which truth-table row matches the value on 1Q0?"
+      ],
+      "title": "Try 74HC4520 in the simulator",
+      "version": 1
+    },
+    "json": {
+      "buses": {},
+      "family": "74HC",
+      "format": "components.generated.detail",
+      "group": "74xx",
+      "logic": {
+        "description": "Dual binary up counter",
+        "type": "dual_binary_up_counter"
+      },
+      "package": {
+        "default": "N",
+        "kind": "DIP",
+        "pins": 16
+      },
+      "part": "74HC4520",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "1CP",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1E",
+          "number": 2
+        },
+        {
+          "direction": "output",
+          "name": "1Q0",
+          "number": 3
+        },
+        {
+          "direction": "output",
+          "name": "1Q1",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "1Q2",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "1Q3",
+          "number": 6
+        },
+        {
+          "direction": "input",
+          "name": "1MR",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "input",
+          "name": "2CP",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "2E",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "2Q0",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "2Q1",
+          "number": 12
+        },
+        {
+          "direction": "output",
+          "name": "2Q2",
+          "number": 13
+        },
+        {
+          "direction": "output",
+          "name": "2Q3",
+          "number": 14
+        },
+        {
+          "direction": "input",
+          "name": "2MR",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "power": [
+        {
+          "name": "GND",
+          "nominal_logic": 0,
+          "pin": 8
+        },
+        {
+          "name": "VCC",
+          "nominal_logic": 1,
+          "pin": 16
+        }
+      ],
+      "role": "counter",
+      "timing": {
+        "datasheet": {
+          "conditions": "TI CD74HC4520 prerequisite timing, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_fmax_mhz": {
+              "min_125c": 20,
+              "min_25c": 30,
+              "min_85c": 24
+            },
+            "datasheet_min_ns_25c": {
+              "clock_pulse_width": 16,
+              "reset_pulse_width": 20
+            },
+            "datasheet_min_ns_minus40_to_85c": {
+              "clock_pulse_width": 20,
+              "reset_pulse_width": 25
+            },
+            "datasheet_min_ns_minus55_to_125c": {
+              "clock_pulse_width": 24,
+              "reset_pulse_width": 30
+            }
+          }
+        },
+        "delay_ns": 15
+      },
+      "title": "Dual binary up counter"
+    },
+    "kicad_symbol": {
+      "bus_groups": {},
+      "labels": {
+        "1": "1CP",
+        "10": "2E",
+        "15": "2MR",
+        "16": "VCC",
+        "2": "1E",
+        "7": "1MR",
+        "8": "GND",
+        "9": "2CP"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC4520",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "python_simulator": {
+      "class": "HC4520",
+      "copy_with_chip": [
+        "DB/74xx/74HC4520/simulation/model.py",
+        "python/chiplib/core.py"
+      ],
+      "factory": "create",
+      "file": "DB/74xx/74HC4520/simulation/model.py",
+      "part": "74HC4520",
+      "portable": true
+    },
+    "svg_pinout": {
+      "bus_groups": {},
+      "labels": {
+        "1": "1CP",
+        "10": "2E",
+        "15": "2MR",
+        "16": "VCC",
+        "2": "1E",
+        "7": "1MR",
+        "8": "GND",
+        "9": "2CP"
+      },
+      "left": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "part": "74HC4520",
+      "pins": 16,
+      "right": [
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9
+      ],
+      "schema": "db.component.symbol.dip",
+      "shape": "dip",
+      "version": 1
+    },
+    "unit_test": {
+      "part": "74HC4520",
+      "required_vectors": [
+        "basic_function"
+      ],
+      "schema": "db.component.generated.tests",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC4520",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC4520",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "block1_reset_forces_zero",
+            "block1_first_count",
+            "block1_second_count",
+            "block1_enable_low_holds",
+            "block2_first_count"
+          ]
+        }
+      },
+      "tests": [
+        {
+          "present": true,
+          "source": "tests/truth_table.json",
+          "type": "truth_table"
+        },
+        {
+          "present": true,
+          "source": "tests/timing.json",
+          "type": "timing"
+        },
+        {
+          "present": true,
+          "source": "tests/propagation.json",
+          "type": "propagation"
+        }
+      ],
+      "version": 1
+    },
+    "verilog_testbench": {
+      "bench_module": "tb_generated_74hc4520",
+      "compile": {
+        "sources": [
+          "DB/74xx/74HC4520/simulation/model.v"
+        ],
+        "standard": "g2012",
+        "tool": "iverilog",
+        "top": "tb_generated_74hc4520"
+      },
+      "emitted": {
+        "reason": "simple emitted bench currently supports mux and scalar vector gate records only",
+        "supported": false
+      },
+      "module": "ttl_74hc4520",
+      "part": "74HC4520",
+      "schema": "db.component.generated.verilog_testbench",
+      "split_records": {
+        "bus_fight": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "bus_fight is not applicable to 74HC4520",
+          "source": "tests/bus_fight.json"
+        },
+        "propagation": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/propagation.json"
+        },
+        "timing": {
+          "applicable": true,
+          "checks": [
+            "model_delay"
+          ],
+          "present": true,
+          "source": "tests/timing.json"
+        },
+        "tri_state": {
+          "applicable": false,
+          "checks": [],
+          "present": true,
+          "reason": "tri_state is not applicable to 74HC4520",
+          "source": "tests/tri_state.json"
+        },
+        "truth_table": {
+          "applicable": true,
+          "present": true,
+          "source": "tests/truth_table.json",
+          "vectors": [
+            "block1_reset_forces_zero",
+            "block1_first_count",
+            "block1_second_count",
+            "block1_enable_low_holds",
+            "block2_first_count"
+          ]
+        }
+      },
+      "version": 1
+    },
+    "verilog_wrapper": {
+      "export": {
+        "kind": "structural_port_map",
+        "output_pins": [
+          3,
+          4,
+          5,
+          6,
+          11,
+          12,
+          13,
+          14
+        ],
+        "ports": [
+          {
+            "direction": "input",
+            "name": "CP",
+            "pins": [
+              1,
+              9
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "E",
+            "pins": [
+              2,
+              10
+            ]
+          },
+          {
+            "direction": "input",
+            "name": "MR",
+            "pins": [
+              7,
+              15
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q1",
+            "pins": [
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          {
+            "direction": "output",
+            "name": "Q2",
+            "pins": [
+              11,
+              12,
+              13,
+              14
+            ]
+          }
+        ]
+      },
+      "file": "DB/74xx/74HC4520/simulation/model.v",
+      "module": "ttl_74hc4520",
+      "netlist": "DB/74xx/74HC4520/simulation/netlist.json",
+      "part": "74HC4520"
+    }
+  },
+  "format": "db.component.generated",
+  "part": "74HC4520",
+  "portable_files": [
+    {
+      "copy_as": "model.py",
+      "kind": "python_model",
+      "runtime": "python",
+      "source": "DB/74xx/74HC4520/simulation/model.py"
+    },
+    {
+      "copy_as": "chiplib/core.py",
+      "copy_once": true,
+      "kind": "python_runtime",
+      "runtime": "python",
+      "shared": true,
+      "source": "python/chiplib/core.py"
+    },
+    {
+      "copy_as": "model.v",
+      "kind": "verilog_model",
+      "runtime": "verilog",
+      "source": "DB/74xx/74HC4520/simulation/model.v"
+    },
+    {
+      "copy_as": "netlist.json",
+      "kind": "netlist",
+      "runtime": "metadata",
+      "source": "DB/74xx/74HC4520/simulation/netlist.json"
+    }
+  ],
+  "source": "DB/74xx/74HC4520/definition/definition.json",
+  "version": 1
+}

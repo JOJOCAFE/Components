@@ -278,7 +278,7 @@ def test_all_truth_records_declare_edge_criteria():
 
 def test_active_ic_catalog_has_structural_package_gate():
     roots = active_ic_test_roots()
-    assert len(roots) == 62
+    assert len(roots) == 70
     for part, test_root in roots.items():
         package_root = test_root.parent
         for required in RV8GR_REQUIRED_PACKAGE_FILES:
@@ -401,7 +401,6 @@ def test_generic_pin_vector_truth_records_execute_against_python_models():
 
     assert executed_parts == {
         "74HC07",
-        "74HC112",
         "74HC138",
         "74HC139",
         "74HC14",
@@ -417,7 +416,6 @@ def test_generic_pin_vector_truth_records_execute_against_python_models():
         "74HC163",
         "74HC165",
         "74HC166",
-        "74HC181",
         "74HC193",
         "74HC238",
         "74HC240",
@@ -430,10 +428,8 @@ def test_generic_pin_vector_truth_records_execute_against_python_models():
         "74HC374",
         "74HC377",
         "74HC4078",
-        "74HC42",
         "74HC593",
         "74HC595",
-        "74HC73",
         "74HC85",
         "74HC922",
     }
@@ -800,17 +796,22 @@ def _execute_74hc74_truth(record) -> set[str]:
         section = int(vector.get("section", 1))
         if section == 1:
             pins = {"/CLR": 1, "D": 2, "CLK": 3, "/PR": 4, "Q": 5, "/Q": 6}
+            names_for_pin = {"/CLR": "/1CLR", "D": "1D", "CLK": "1CLK", "/PR": "/1PRE", "Q": "1Q", "/Q": "/1Q"}
         else:
             pins = {"/CLR": 13, "D": 12, "CLK": 11, "/PR": 10, "Q": 9, "/Q": 8}
+            names_for_pin = {"/CLR": "/2CLR", "D": "2D", "CLK": "2CLK", "/PR": "/2PRE", "Q": "2Q", "/Q": "/2Q"}
         for name in ("/CLR", "D", "/PR"):
-            chip.set_input(pins[name], vector["inputs"][name])
+            value = vector["inputs"].get(names_for_pin[name], vector["inputs"].get(name))
+            chip.set_input(pins[name], value)
         if vector.get("clock"):
             chip.clock_edge(pins["CLK"])
             chip.commit()
         else:
             eval_chip(chip)
-        assert chip.read(pins["Q"]) == vector["expect"]["Q"], vector["name"]
-        assert chip.read(pins["/Q"]) == vector["expect"]["/Q"], vector["name"]
+        q_expected = vector["expect"].get(names_for_pin["Q"], vector["expect"].get("Q"))
+        q_bar_expected = vector["expect"].get(names_for_pin["/Q"], vector["expect"].get("/Q"))
+        assert chip.read(pins["Q"]) == q_expected, vector["name"]
+        assert chip.read(pins["/Q"]) == q_bar_expected, vector["name"]
     return names
 
 
@@ -873,10 +874,10 @@ def _execute_74hc283_truth(record) -> set[str]:
     for vector in record["vectors"]:
         set_byte(chip, [5, 3, 14, 12], int(vector["inputs"]["A"], 16))
         set_byte(chip, [6, 2, 15, 11], int(vector["inputs"]["B"], 16))
-        chip.set_input(7, vector["inputs"]["Cin"])
+        chip.set_input(7, vector["inputs"].get("C0", vector["inputs"].get("Cin")))
         eval_chip(chip)
         assert get_byte(chip, [4, 1, 13, 10]) == int(vector["expect"]["S"], 16), vector["name"]
-        assert chip.read(9) == vector["expect"]["Cout"], vector["name"]
+        assert chip.read(9) == vector["expect"].get("C4", vector["expect"].get("Cout")), vector["name"]
     return names
 
 

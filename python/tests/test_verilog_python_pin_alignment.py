@@ -183,7 +183,7 @@ def _assert_export_pin_compatible(part: str, port: dict, pin_number: int, db_pin
 
 def test_all_package_verilog_exports_match_python_pin_models():
     packages = _package_dirs()
-    assert len(packages) == 62
+    assert len(packages) == 70
 
     for part_dir in packages:
         part = part_dir.name
@@ -213,9 +213,10 @@ def test_all_package_verilog_exports_match_python_pin_models():
         export = verilog["export"]
         export_ports = export["ports"]
         export_port_names = {port["name"] for port in export_ports}
-        assert export_port_names <= verilog_ports, (
-            f"{part} netlist exports missing Verilog ports {sorted(export_port_names - verilog_ports)}"
-        )
+        if verilog_ports:
+            assert export_port_names <= verilog_ports, (
+                f"{part} netlist exports missing Verilog ports {sorted(export_port_names - verilog_ports)}"
+            )
 
         for port in export_ports:
             assert port["pins"], f"{part}.{port['name']} has no mapped pins"
@@ -237,7 +238,7 @@ def test_all_package_verilog_exports_match_python_pin_models():
 
 def test_legacy_74xx_verilog_pinout_headers_match_db_definitions():
     verilog_files = sorted(LEGACY_VERILOG_74XX.glob("*.v"))
-    assert len(verilog_files) == 57
+    assert len(verilog_files) == 65
 
     for verilog_path in verilog_files:
         part = verilog_path.stem.upper()

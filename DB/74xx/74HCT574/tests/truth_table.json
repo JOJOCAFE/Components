@@ -1,0 +1,58 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "74HCT574",
+  "applicable": true,
+  "vectors": [
+    {
+      "name": "outputs_disabled_high_z",
+      "fresh": true,
+      "inputs": {
+        "/OE": 1,
+        "D": "0xA5"
+      },
+      "clock": true,
+      "expect": {
+        "Q": "Z"
+      }
+    },
+    {
+      "name": "clock_latches_and_enable_outputs",
+      "inputs": {
+        "/OE": 0
+      },
+      "clock": false,
+      "expect": {
+        "Q": "0xA5"
+      }
+    },
+    {
+      "name": "clock_latches_new_value",
+      "inputs": {
+        "/OE": 0,
+        "D": "0x5A"
+      },
+      "clock": true,
+      "expect": {
+        "Q": "0x5A"
+      }
+    },
+    {
+      "name": "hold_after_d_change",
+      "inputs": {
+        "/OE": 0,
+        "D": "0x00"
+      },
+      "clock": false,
+      "expect": {
+        "Q": "0x5A"
+      }
+    }
+  ],
+  "edge_criteria": {
+    "clocking": "edge_sensitive",
+    "trigger_edge": "rising",
+    "non_trigger_edge": "falling_or_no_rising_edge_holds_state",
+    "notes": "Truth tests prove clocked state changes on the triggering edge and asynchronous controls take priority."
+  }
+}

@@ -253,6 +253,24 @@
       ],
       "role": "logic",
       "timing": {
+        "datasheet": {
+          "conditions": "TI CD74HC30 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns_25c": {
+              "input_to_output": 18
+            },
+            "datasheet_max_ns_minus40_to_125c": {
+              "input_to_output": 27
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "input_to_output": 23
+            },
+            "datasheet_typical_ns": {
+              "input_to_output": 9
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

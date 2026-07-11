@@ -1,0 +1,485 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HCT245",
+  "metadata": {
+    "title": "Octal bus transceiver with 3-state outputs, TTL-compatible inputs",
+    "family": "74HCT",
+    "group": "74xx",
+    "role": "bus_transceiver"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 20,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "DIR",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "A1",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 0
+    },
+    {
+      "number": 3,
+      "name": "A2",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 1
+    },
+    {
+      "number": 4,
+      "name": "A3",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 2
+    },
+    {
+      "number": 5,
+      "name": "A4",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 3
+    },
+    {
+      "number": 6,
+      "name": "A5",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 4
+    },
+    {
+      "number": 7,
+      "name": "A6",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 5
+    },
+    {
+      "number": 8,
+      "name": "A7",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 6
+    },
+    {
+      "number": 9,
+      "name": "A8",
+      "direction": "bidirectional",
+      "bus": "A",
+      "bit": 7
+    },
+    {
+      "number": 10,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 11,
+      "name": "B8",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 7
+    },
+    {
+      "number": 12,
+      "name": "B7",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 6
+    },
+    {
+      "number": 13,
+      "name": "B6",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 5
+    },
+    {
+      "number": 14,
+      "name": "B5",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 4
+    },
+    {
+      "number": 15,
+      "name": "B4",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 3
+    },
+    {
+      "number": 16,
+      "name": "B3",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 2
+    },
+    {
+      "number": 17,
+      "name": "B2",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 1
+    },
+    {
+      "number": 18,
+      "name": "B1",
+      "direction": "bidirectional",
+      "bus": "B",
+      "bit": 0
+    },
+    {
+      "number": 19,
+      "name": "/OE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 20,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "octal_bus_transceiver_ttl_input",
+    "description": "Octal bus transceiver with 3-state outputs, TTL-compatible inputs"
+  },
+  "timing": {
+    "delay_ns": 15,
+    "datasheet": {
+      "status": "datasheet-backed",
+      "conditions": "TI SN74HCT245 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "values": {
+        "datasheet_typical_ns": {
+          "input_to_output": 14
+        },
+        "datasheet_max_ns_25c": {
+          "input_to_output": 20
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "input_to_output": 28
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "input_to_output": 33
+        }
+      }
+    }
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HCT245",
+      "file": "DB/74xx/74HCT245/simulation/model.py",
+      "class": "HCT245"
+    },
+    "verilog": {
+      "module": "ttl_74hct245",
+      "file": "DB/74xx/74HCT245/simulation/model.v",
+      "netlist": "DB/74xx/74HCT245/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation",
+      "tri_state",
+      "bus_fight"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HCT245",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HCT245",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hct245.pdf",
+        "file": "Source/74HCT245_TI_SN74HCT245.pdf",
+        "package_evidence": "N, 20-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HCT245",
+      "pins": [
+        {
+          "number": 1,
+          "name": "DIR",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "A1",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 0
+        },
+        {
+          "number": 3,
+          "name": "A2",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 1
+        },
+        {
+          "number": 4,
+          "name": "A3",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 2
+        },
+        {
+          "number": 5,
+          "name": "A4",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 3
+        },
+        {
+          "number": 6,
+          "name": "A5",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 4
+        },
+        {
+          "number": 7,
+          "name": "A6",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 5
+        },
+        {
+          "number": 8,
+          "name": "A7",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 6
+        },
+        {
+          "number": 9,
+          "name": "A8",
+          "direction": "bidirectional",
+          "bus": "A",
+          "bit": 7
+        },
+        {
+          "number": 10,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 11,
+          "name": "B8",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 7
+        },
+        {
+          "number": 12,
+          "name": "B7",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 6
+        },
+        {
+          "number": 13,
+          "name": "B6",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 5
+        },
+        {
+          "number": 14,
+          "name": "B5",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 4
+        },
+        {
+          "number": 15,
+          "name": "B4",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 3
+        },
+        {
+          "number": 16,
+          "name": "B3",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 2
+        },
+        {
+          "number": 17,
+          "name": "B2",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 1
+        },
+        {
+          "number": 18,
+          "name": "B1",
+          "direction": "bidirectional",
+          "bus": "B",
+          "bit": 0
+        },
+        {
+          "number": 19,
+          "name": "/OE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 20,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HCT245",
+      "rails": [
+        {
+          "number": 10,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 20,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HCT245",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "datasheet-backed",
+        "public_timing": {
+          "delay_ns": 15,
+          "datasheet": {
+            "status": "datasheet-backed",
+            "conditions": "TI SN74HCT245 switching characteristics, CL=50 pF, VCC=4.5 V.",
+            "values": {
+              "datasheet_typical_ns": {
+                "input_to_output": 14
+              },
+              "datasheet_max_ns_25c": {
+                "input_to_output": 20
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "input_to_output": 28
+              },
+              "datasheet_max_ns_minus55_to_125c": {
+                "input_to_output": 33
+              }
+            }
+          }
+        },
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "conditions": "TI SN74HCT245 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_typical_ns": {
+          "input_to_output": 14
+        },
+        "datasheet_max_ns_25c": {
+          "input_to_output": 20
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "input_to_output": 28
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "input_to_output": 33
+        }
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HCT245",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hct245.pdf",
+        "file": "Source/74HCT245_TI_SN74HCT245.pdf",
+        "package_evidence": "N, 20-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HCT245",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HCT245",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hct245.pdf",
+        "file": "Source/74HCT245_TI_SN74HCT245.pdf",
+        "package_evidence": "N, 20-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "modeled",
+    "tests": "modeled"
+  }
+}

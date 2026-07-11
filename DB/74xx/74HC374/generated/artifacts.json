@@ -349,6 +349,42 @@
       ],
       "role": "register",
       "timing": {
+        "datasheet": {
+          "conditions": "TI SN74HC374 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_fmax_mhz": {
+              "min_25c": 30,
+              "sn54_min": 20,
+              "sn74_min": 24,
+              "typical": 60
+            },
+            "datasheet_max_ns_25c": {
+              "clock_to_q": 36,
+              "disable": 30,
+              "enable": 30,
+              "transition": 12
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "clock_to_q": 45,
+              "disable": 38,
+              "enable": 38,
+              "transition": 15
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "clock_to_q": 54,
+              "disable": 45,
+              "enable": 45,
+              "transition": 18
+            },
+            "datasheet_typical_ns": {
+              "clock_to_q": 17,
+              "disable": 17,
+              "enable": 16,
+              "transition": 8
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

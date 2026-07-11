@@ -30,3 +30,8 @@ jobs:
           python3 -B -m tests.test_contracts
           python3 -B -m tests.test_simulation_service
           python3 -B -m tests.test_equivalence
+          python3 -B -m tests.test_verilog_behavior_crosscheck
+
+      - name: Run stateful chip behavior cross-check
+        run: |
+          PYTHONPATH=python python3 tools/state_behavior_crosscheck.py

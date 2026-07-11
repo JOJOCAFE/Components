@@ -1,0 +1,47 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "LM358",
+  "applicable": true,
+  "edge_criteria": {
+    "clocking": "level_sensitive",
+    "trigger_edge": "none",
+    "non_trigger_edge": "not_applicable",
+    "notes": "Support IC functional model; outputs are checked after input/control level changes."
+  },
+  "vectors": [
+    {
+      "name": "ch1_plus_high_outputs_high",
+      "fresh": true,
+      "inputs": {
+        "IN1+": 1,
+        "IN1-": 0
+      },
+      "expect": {
+        "OUT1": 1
+      }
+    },
+    {
+      "name": "ch1_minus_high_outputs_low",
+      "fresh": true,
+      "inputs": {
+        "IN1+": 0,
+        "IN1-": 1
+      },
+      "expect": {
+        "OUT1": 0
+      }
+    },
+    {
+      "name": "ch2_independent_plus_high_outputs_high",
+      "fresh": true,
+      "inputs": {
+        "IN2+": 1,
+        "IN2-": 0
+      },
+      "expect": {
+        "OUT2": 1
+      }
+    }
+  ]
+}

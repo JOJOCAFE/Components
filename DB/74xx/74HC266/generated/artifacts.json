@@ -274,6 +274,24 @@
       ],
       "role": "logic",
       "timing": {
+        "datasheet": {
+          "conditions": "TI CD74HC266 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns_25c": {
+              "tphl_input_to_output": 20,
+              "tplh_input_to_output": 25
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "tphl_input_to_output": 25,
+              "tplh_input_to_output": 31
+            },
+            "datasheet_typical_ns": {
+              "tphl_input_to_output": 13,
+              "tplh_input_to_output": 13
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

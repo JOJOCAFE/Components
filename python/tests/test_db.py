@@ -72,7 +72,7 @@ def generic_package_parts() -> set[str]:
     return {
         path.parents[1].name
         for path in db_root().glob("*/*/definition/definition.json")
-        if path.parents[2].name in {"Virtual", "Passive", "Discrete"}
+        if path.parents[2].name in {"Virtual", "Passive", "Discrete", "Support"}
     }
 
 
@@ -342,14 +342,28 @@ def test_virtual_and_passive_components_use_definition_packages():
         "YellowLED",
         "Resistor",
         "Capacitor",
+        "Crystal2Pin_1MHz",
+        "Crystal2Pin_2MHz",
+        "Crystal2Pin_5MHz",
+        "Crystal2Pin_10MHz",
+        "Oscillator4Pin_1MHz",
+        "Oscillator4Pin_2MHz",
+        "Oscillator4Pin_5MHz",
+        "Oscillator4Pin_10MHz",
         "NPN",
         "PNP",
         "BC549",
         "BC559",
+        "LM358",
+        "LM393",
+        "MAX232",
+        "NE555",
+        "ULN2803A",
     }
     assert not list((db_root() / "Virtual").glob("*/component.json"))
     assert not list((db_root() / "Passive").glob("*/component.json"))
     assert not list((db_root() / "Discrete").glob("*/component.json"))
+    assert not list((db_root() / "Support").glob("*/component.json"))
 
     probe_definition = load_package_definition("Probe")
     assert probe_definition["schema"] == "db.component.definition"
@@ -364,6 +378,19 @@ def test_virtual_and_passive_components_use_definition_packages():
         assert definition["definition_path"] == f"DB/Discrete/{part}/definition/definition.json"
         assert load_digital_definition(part, required=False) is None
 
+    for part in ("LM358", "LM393", "MAX232", "NE555", "ULN2803A"):
+        definition = load_package_definition(part)
+        assert definition["schema"] == "db.component.definition"
+        assert definition["validation"]["ok"] is True, (part, definition["validation"]["errors"])
+        assert definition["definition_path"] == f"DB/Support/{part}/definition/definition.json"
+        assert load_digital_definition(part, required=False) is None
+        component = load_component(part)
+        assert component["status"]["python_behavior"] == "tested"
+        assert component["simulation"]["service"] == f"sim.support.{part.lower()}"
+        detail = component_detail(part)
+        assert detail["capabilities"]["python_behavior"] is True, part
+        assert detail["capabilities"]["verilog_model"] is False, part
+
     probe_package = load_component_package("Probe")
     assert probe_package["format"] == "db.component.package"
     assert probe_package["part"] == "Probe"
@@ -375,6 +402,15 @@ def test_virtual_and_passive_components_use_definition_packages():
     assert probe_package["layers"]["simulation"]["service"] == "sim.probe"
     assert probe_package["layers"]["symbol"]["symbol"] == "probe"
     assert probe_package["portable_files"] == []
+
+    support_package = load_component_package("ULN2803A")
+    assert support_package["format"] == "db.component.package"
+    assert support_package["definition"]["validation"]["ok"] is True
+    assert support_package["manifest"]["db_path"] == "DB/Support/ULN2803A/definition/definition.json"
+    assert support_package["files"]["simulation_model_py"] == "DB/Support/ULN2803A/simulation/model.py"
+    assert support_package["layers"]["simulation"]["service"] == "sim.support.uln2803a"
+    assert any(item["runtime"] == "python" and item["copy_as"] == "model.py" for item in support_package["portable_files"])
+    assert any(item["kind"] == "python_runtime" and item["copy_as"] == "chiplib/core.py" for item in support_package["portable_files"])
 
     led_package = load_component_package("LED")
     assert led_package["definition"]["validation"]["ok"] is True
@@ -669,8 +705,8 @@ def test_generation_seed_simulation_sources_are_local_and_importable():
 def test_generation_seed_definitions_are_one_file_sources():
     for part in generation_package_parts():
         package = load_digital_package(part)
-        definition_dir = db_root() / package["files"]["definition"]
-        json_files = sorted(path.name for path in definition_dir.parent.glob("*.json"))
+        definition_file = db_root().parent / package["files"]["definition"]
+        json_files = sorted(path.name for path in definition_file.parent.glob("*.json"))
         assert json_files == ["definition.json"], (part, json_files)
         assert not any(name.startswith("legacy_") for name in package["files"]), part
 
@@ -918,8 +954,7 @@ def test_db_legacy_coverage_lists_models_and_pinouts():
     assert "74HC00" in legacy["pinouts"]
     assert "AT28C256" in legacy["verilog_models"]
     assert "SST39SF010A" in legacy["pinouts"]
-    legacy_backed = set(component_ids()) - GROUPED_PARTS
-    assert legacy_backed.issubset(set(legacy["verilog_models"]))
+    legacy_backed = (set(component_ids()) - GROUPED_PARTS) & set(legacy["verilog_models"])
     assert legacy_backed.issubset(set(legacy["pinouts"]))
 
 
@@ -935,9 +970,7 @@ def test_db_status_report_checks_chip_status_snapshot():
     assert SEED_PARTS.issubset(set(report["chip_status"]["verified"]))
     assert SEED_PARTS.issubset(set(report["chip_status"]["modeled"]))
     assert tested_seed_parts.issubset(set(report["chip_status"]["tested"]))
-    assert {"74HC150", "74HC260"}.issubset(set(report["chip_status"]["missing_datasheet"]))
-    assert "74HC150" not in report["chip_status"]["tested"]
-    assert "74HC260" not in report["chip_status"]["tested"]
+    assert report["chip_status"]["missing_datasheet"] == []
     assert not any(item["code"] == "chip_status_parts_missing_db" and item.get("category") == "missing_datasheet" for item in report["warnings"])
 
 

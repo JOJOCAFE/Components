@@ -1,0 +1,117 @@
+{
+  "schema": "db.component.symbol.dip",
+  "version": 1,
+  "part": "74HC4520",
+  "shape": "dip",
+  "package": {
+    "kind": "DIP",
+    "pins": 16,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "1CP",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "1E",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "1Q0",
+      "direction": "output"
+    },
+    {
+      "number": 4,
+      "name": "1Q1",
+      "direction": "output"
+    },
+    {
+      "number": 5,
+      "name": "1Q2",
+      "direction": "output"
+    },
+    {
+      "number": 6,
+      "name": "1Q3",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "1MR",
+      "direction": "input"
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "2CP",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "2E",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "2Q0",
+      "direction": "output"
+    },
+    {
+      "number": 12,
+      "name": "2Q1",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "2Q2",
+      "direction": "output"
+    },
+    {
+      "number": 14,
+      "name": "2Q3",
+      "direction": "output"
+    },
+    {
+      "number": 15,
+      "name": "2MR",
+      "direction": "input"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "layout": {
+    "left": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "right": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ]
+  }
+}

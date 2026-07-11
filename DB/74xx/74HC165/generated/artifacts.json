@@ -304,6 +304,28 @@
       ],
       "role": "register",
       "timing": {
+        "datasheet": {
+          "conditions": "TI SN74HC165 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_fmax_mhz": {
+              "min_25c": 31,
+              "sn54_min": 21,
+              "sn74_min": 25,
+              "typical": 50
+            },
+            "datasheet_max_ns_25c": {
+              "clock_to_q": 30,
+              "h_to_q": 30,
+              "shift_load_to_q": 30
+            },
+            "datasheet_typical_ns": {
+              "clock_to_q": 15,
+              "h_to_q": 15,
+              "shift_load_to_q": 20
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

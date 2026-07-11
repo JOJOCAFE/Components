@@ -274,6 +274,24 @@
       ],
       "role": "logic",
       "timing": {
+        "datasheet": {
+          "conditions": "TI SN74HC02 switching characteristics, CL=50 pF, VCC=4.5 V, commercial SN74HC02.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns_25c": {
+              "input_to_output": 18,
+              "transition": 15
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "input_to_output": 23,
+              "transition": 19
+            },
+            "datasheet_typical_ns": {
+              "input_to_output": 9,
+              "transition": 8
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

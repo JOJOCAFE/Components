@@ -299,6 +299,42 @@
       ],
       "role": "counter",
       "timing": {
+        "datasheet": {
+          "conditions": "Philips 74HC162 dynamic characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_fmax_mhz": {
+              "min_125c": 20,
+              "min_25c": 30,
+              "min_85c": 24,
+              "typical": 57
+            },
+            "datasheet_max_ns_25c": {
+              "cet_to_terminal_count": 30,
+              "clock_to_q": 38,
+              "clock_to_terminal_count": 43,
+              "transition": 15
+            },
+            "datasheet_max_ns_minus40_to_125c": {
+              "cet_to_terminal_count": 45,
+              "clock_to_q": 57,
+              "clock_to_terminal_count": 65,
+              "transition": 22
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "cet_to_terminal_count": 38,
+              "clock_to_q": 48,
+              "clock_to_terminal_count": 54,
+              "transition": 19
+            },
+            "datasheet_typical_ns": {
+              "cet_to_terminal_count": 14,
+              "clock_to_q": 21,
+              "clock_to_terminal_count": 25,
+              "transition": 7
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

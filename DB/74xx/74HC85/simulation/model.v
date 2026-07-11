@@ -55,20 +55,9 @@ reg AGreater_computed;
 
 always @(*)
 begin
-  if (A == B && !Equal_in && ALess_in == AGreater_in)
-  begin
-    // abnormal inputs used in parallel expansion configuration
-    Equal_computed = 1'b0;
-    ALess_computed = !ALess_in;
-    AGreater_computed = !AGreater_in;
-  end
-  else
-  begin
-    // normal inputs
-    Equal_computed = A == B && Equal_in;
-    ALess_computed = !Equal_computed && {A, 1'b0} < {B, ALess_in};
-    AGreater_computed = !Equal_computed && {A, AGreater_in} > {B, 1'b0};
-  end
+  Equal_computed = A == B && Equal_in;
+  ALess_computed = !Equal_computed && (A < B || (A == B && ALess_in));
+  AGreater_computed = !Equal_computed && (A > B || (A == B && AGreater_in));
 end
 //------------------------------------------------//
 

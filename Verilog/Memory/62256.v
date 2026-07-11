@@ -65,7 +65,7 @@ module mem_62256 #(parameter ADDR_WIDTH = 15, DATA_WIDTH = 8, INIT_FILE = "")
   assign DQ = read_enable ? memory[A] : {DATA_WIDTH{1'bz}};
 
   always @(*) begin
-    if (write_enable)
+    if (write_enable && (^DQ !== 1'bx))
       memory[A] = DQ;
   end
 

@@ -1,20 +1,65 @@
 # Components Session Handoff
 
 Date: 2026-07-09
-Last updated: 2026-07-11, after DB cleanup, Discrete package migration, and
-RV8GR artifact relocation
+Last updated: 2026-07-11, after the full 74HC/HCT source/model/export pass and
+Support IC Python-model pass
 
 ## Current State
 
 - Repo: `/home/jo/kiro/Components`
 - Branch: `main`
-- Status at this handoff: documentation checkpoint prepared for commit/push.
-- Previous pushed commit before this handoff: `87bcfdc Save Components student
-  guide handoff`
+- Status at this handoff: staged checkpoint prepared for commit/push.
+- Previous pushed commit before this handoff: `8de6f7c Compact DB package docs
+  and retire legacy manifests`
 - Latest pushed RV8GR virtual-check commits:
   - `8bb462b Add RV8GR virtual fault protocol`
   - `49ed732 Add circuit virtual fault checker`
   - `b8719bc Update circuit backlog checkpoint status`
+
+## Latest Save: 2026-07-11 Full 74HC/HCT And Support IC Verification Pass
+
+Completed in this checkpoint:
+
+- Expanded and normalized the active 74HC/HCT DB set with package-local
+  `definition/definition.json`, Python models, Verilog models, netlists, split
+  tests, generated artifacts, source PDFs, and regenerated status/report files.
+- Removed the non-standard/deprecated parts requested for removal from active
+  source and DB scope: `74HC42`, `74HC73`, `74HC112`, and `74HC181`.
+- Added Verilog pinout comments as the standing style for generated/local HDL
+  chip files, so pin number/name truth is visible near the model body.
+- Added passive crystal and oscillator packages for 1 MHz, 2 MHz, 5 MHz, and
+  10 MHz.
+- Added Support group IC packages for `LM358`, `LM393`, `MAX232`, `NE555`, and
+  `ULN2803A` with source-backed pinouts and local Python functional models.
+- Support IC boundary is explicit: these are logic-level learning models for
+  Components behavior tests, not SPICE analog signoff models.
+- `load_component_package()` now includes generic package-local Python models in
+  `files` and `portable_files`; `create_chip()` now resolves `DB/Support`
+  models.
+- Python behavior crosscheck now includes `Support`, so the support-chip models
+  are checked with pin maps, truth vectors, and model-delay metadata.
+
+Verification for this checkpoint:
+
+- `PYTHONPATH=python python3 -B python/tests/test_chips.py`
+- `PYTHONPATH=python python3 -B python/tests/test_db.py`
+- `PYTHONPATH=python python3 tools/python_behavior_crosscheck.py`
+  - 75 models checked
+  - 0 failures
+  - 0 warnings
+- `PYTHONPATH=python python3 -B -m chiplib.cli db --audit`
+  - `ok: true`
+  - no errors/warnings
+- `git diff --cached --check`
+
+Notes for next resume:
+
+- `.venv` was intentionally removed from the worktree cleanup; system Python did
+  not have `pytest`, so the focused checks above used the repo's direct test
+  runners and CLI/crosscheck scripts.
+- The support-chip Python models are intentionally simplified. Deep analog
+  validation belongs to a future SPICE/external-model lane, not the current
+  digital behavior gate.
 
 ## Latest Save: 2026-07-11 DB Cleanup And Package Contract
 

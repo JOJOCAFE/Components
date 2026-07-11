@@ -1,0 +1,392 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC4520",
+  "metadata": {
+    "title": "Dual binary up counter",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "counter"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 16,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "1CP",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "1E",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "1Q0",
+      "direction": "output"
+    },
+    {
+      "number": 4,
+      "name": "1Q1",
+      "direction": "output"
+    },
+    {
+      "number": 5,
+      "name": "1Q2",
+      "direction": "output"
+    },
+    {
+      "number": 6,
+      "name": "1Q3",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "1MR",
+      "direction": "input"
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "2CP",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "2E",
+      "direction": "input"
+    },
+    {
+      "number": 11,
+      "name": "2Q0",
+      "direction": "output"
+    },
+    {
+      "number": 12,
+      "name": "2Q1",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "2Q2",
+      "direction": "output"
+    },
+    {
+      "number": 14,
+      "name": "2Q3",
+      "direction": "output"
+    },
+    {
+      "number": 15,
+      "name": "2MR",
+      "direction": "input"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "dual_binary_up_counter",
+    "description": "Dual binary up counter"
+  },
+  "timing": {
+    "delay_ns": 15,
+    "datasheet": {
+      "status": "datasheet-backed",
+      "conditions": "TI CD74HC4520 prerequisite timing, VCC=4.5 V.",
+      "values": {
+        "datasheet_fmax_mhz": {
+          "min_25c": 30,
+          "min_85c": 24,
+          "min_125c": 20
+        },
+        "datasheet_min_ns_25c": {
+          "clock_pulse_width": 16,
+          "reset_pulse_width": 20
+        },
+        "datasheet_min_ns_minus40_to_85c": {
+          "clock_pulse_width": 20,
+          "reset_pulse_width": 25
+        },
+        "datasheet_min_ns_minus55_to_125c": {
+          "clock_pulse_width": 24,
+          "reset_pulse_width": 30
+        }
+      }
+    }
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC4520",
+      "file": "DB/74xx/74HC4520/simulation/model.py",
+      "class": "HC4520"
+    },
+    "verilog": {
+      "module": "ttl_74hc4520",
+      "file": "DB/74xx/74HC4520/simulation/model.v",
+      "netlist": "DB/74xx/74HC4520/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC4520",
+    "sources": [
+      {
+        "label": "Texas Instruments CD74HC4520",
+        "url": "https://www.ti.com/lit/ds/symlink/cd74hc4520.pdf",
+        "file": "Source/74HC4520_TI_CD74HC4520.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC4520",
+      "pins": [
+        {
+          "number": 1,
+          "name": "1CP",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "1E",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "1Q0",
+          "direction": "output"
+        },
+        {
+          "number": 4,
+          "name": "1Q1",
+          "direction": "output"
+        },
+        {
+          "number": 5,
+          "name": "1Q2",
+          "direction": "output"
+        },
+        {
+          "number": 6,
+          "name": "1Q3",
+          "direction": "output"
+        },
+        {
+          "number": 7,
+          "name": "1MR",
+          "direction": "input"
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "2CP",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "2E",
+          "direction": "input"
+        },
+        {
+          "number": 11,
+          "name": "2Q0",
+          "direction": "output"
+        },
+        {
+          "number": 12,
+          "name": "2Q1",
+          "direction": "output"
+        },
+        {
+          "number": 13,
+          "name": "2Q2",
+          "direction": "output"
+        },
+        {
+          "number": 14,
+          "name": "2Q3",
+          "direction": "output"
+        },
+        {
+          "number": 15,
+          "name": "2MR",
+          "direction": "input"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC4520",
+      "rails": [
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC4520",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "datasheet-backed",
+        "public_timing": {
+          "delay_ns": 15,
+          "datasheet": {
+            "status": "datasheet-backed",
+            "conditions": "TI CD74HC4520 prerequisite timing, VCC=4.5 V.",
+            "values": {
+              "datasheet_fmax_mhz": {
+                "min_25c": 30,
+                "min_85c": 24,
+                "min_125c": 20
+              },
+              "datasheet_min_ns_25c": {
+                "clock_pulse_width": 16,
+                "reset_pulse_width": 20
+              },
+              "datasheet_min_ns_minus40_to_85c": {
+                "clock_pulse_width": 20,
+                "reset_pulse_width": 25
+              },
+              "datasheet_min_ns_minus55_to_125c": {
+                "clock_pulse_width": 24,
+                "reset_pulse_width": 30
+              }
+            }
+          }
+        },
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "conditions": "TI CD74HC4520 prerequisite timing, VCC=4.5 V.",
+        "datasheet_fmax_mhz": {
+          "min_25c": 30,
+          "min_85c": 24,
+          "min_125c": 20
+        },
+        "datasheet_min_ns_25c": {
+          "clock_pulse_width": 16,
+          "reset_pulse_width": 20
+        },
+        "datasheet_min_ns_minus40_to_85c": {
+          "clock_pulse_width": 20,
+          "reset_pulse_width": 25
+        },
+        "datasheet_min_ns_minus55_to_125c": {
+          "clock_pulse_width": 24,
+          "reset_pulse_width": 30
+        }
+      },
+      "evidence": {
+        "label": "Texas Instruments CD74HC4520",
+        "url": "https://www.ti.com/lit/ds/symlink/cd74hc4520.pdf",
+        "file": "Source/74HC4520_TI_CD74HC4520.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC4520",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments CD74HC4520",
+        "url": "https://www.ti.com/lit/ds/symlink/cd74hc4520.pdf",
+        "file": "Source/74HC4520_TI_CD74HC4520.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "modeled",
+    "tests": "modeled"
+  }
+}

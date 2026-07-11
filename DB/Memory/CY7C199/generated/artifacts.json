@@ -455,6 +455,58 @@
       ],
       "role": "memory",
       "timing": {
+        "datasheet": {
+          "conditions": "Cypress CY7C199 switching characteristics, -20/-25/-35/-45 speed grades.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_address_access_max_ns": {
+              "speed_20": 20,
+              "speed_25": 25,
+              "speed_35": 35,
+              "speed_45": 45
+            },
+            "datasheet_data_setup_min_ns": {
+              "speed_20": 10,
+              "speed_25": 10,
+              "speed_35": 15,
+              "speed_45": 15
+            },
+            "datasheet_high_z_max_ns": {
+              "speed_20": 9,
+              "speed_25": 11,
+              "speed_35": 15,
+              "speed_45": 15
+            },
+            "datasheet_hold_min_ns": {
+              "address_hold": 0,
+              "data_hold": 0
+            },
+            "datasheet_oe_access_max_ns": {
+              "speed_20": 9,
+              "speed_25": 10,
+              "speed_35": 16,
+              "speed_45": 16
+            },
+            "datasheet_read_cycle_ns": {
+              "speed_20": 20,
+              "speed_25": 25,
+              "speed_35": 35,
+              "speed_45": 45
+            },
+            "datasheet_write_cycle_ns": {
+              "speed_20": 20,
+              "speed_25": 25,
+              "speed_35": 35,
+              "speed_45": 45
+            },
+            "datasheet_write_pulse_min_ns": {
+              "speed_20": 15,
+              "speed_25": 18,
+              "speed_35": 22,
+              "speed_45": 22
+            }
+          }
+        },
         "paths": {
           "address_to_data_valid_ns": 70,
           "ce_or_oe_to_high_z_ns": 70,

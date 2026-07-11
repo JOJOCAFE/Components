@@ -917,7 +917,9 @@
             "vcc_4_5_v": 15,
             "vcc_6_v": 13
           }
-        }
+        },
+        "model_delay_ns": 12,
+        "status": "datasheet-backed"
       },
       "propagation": [
         {

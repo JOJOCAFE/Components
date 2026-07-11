@@ -69,9 +69,9 @@ module mem_sst39sf010a #(parameter ADDR_WIDTH = 17, DATA_WIDTH = 8, INIT_FILE = 
   assign write_enable = !CE_bar && OE_bar && !WE_bar;
   assign DQ = read_enable ? memory[A] : {DATA_WIDTH{1'bz}};
 
-  always @(negedge WE_bar) begin
-    if (write_enable)
-      memory[A] <= DQ;
+  always @(*) begin
+    if (write_enable && (^DQ !== 1'bx))
+      memory[A] = DQ;
   end
 
   initial begin

@@ -304,6 +304,32 @@
       ],
       "role": "multiplexer",
       "timing": {
+        "datasheet": {
+          "conditions": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns_25c": {
+              "disable": 39,
+              "enable": 29,
+              "transition": 15
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "disable": 49,
+              "enable": 36,
+              "transition": 19
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "disable": 57,
+              "enable": 42,
+              "transition": 22
+            },
+            "datasheet_typical_ns": {
+              "disable": 15,
+              "enable": 10,
+              "transition": 8
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

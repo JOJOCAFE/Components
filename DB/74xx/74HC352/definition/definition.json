@@ -1,147 +1,215 @@
 {
-  "schema": "db.component.digital",
-  "version": 1,
-  "part": "74HC352",
-  "metadata": {
-    "title": "dual 4-input multiplexer, inverting outputs",
-    "family": "74HC",
-    "group": "74xx",
-    "role": "multiplexer"
+  "datasheet": {
+    "part": "74HC352",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "file": "Source/74HC352_STMICROELECTRONICS_23075.pdf",
+        "label": "Legacy pinout datasheet source",
+        "package_evidence": "datasheet-required",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
   },
-  "package": {
-    "kind": "DIP",
-    "pins": 16,
-    "default": "N"
-  },
-  "pins": [
-    {
-      "number": 1,
-      "name": "1G",
-      "direction": "input"
-    },
-    {
-      "number": 2,
-      "name": "B",
-      "direction": "input"
-    },
-    {
-      "number": 3,
-      "name": "1C3",
-      "direction": "input"
-    },
-    {
-      "number": 4,
-      "name": "1C2",
-      "direction": "input"
-    },
-    {
-      "number": 5,
-      "name": "1C1",
-      "direction": "input"
-    },
-    {
-      "number": 6,
-      "name": "1C0",
-      "direction": "input"
-    },
-    {
-      "number": 7,
-      "name": "1Y",
-      "direction": "output"
-    },
-    {
-      "number": 8,
-      "name": "GND",
-      "direction": "power",
-      "rail": "GND"
-    },
-    {
-      "number": 9,
-      "name": "2Y",
-      "direction": "output"
-    },
-    {
-      "number": 10,
-      "name": "2C0",
-      "direction": "input"
-    },
-    {
-      "number": 11,
-      "name": "2C1",
-      "direction": "input"
-    },
-    {
-      "number": 12,
-      "name": "2C2",
-      "direction": "input"
-    },
-    {
-      "number": 13,
-      "name": "2C3",
-      "direction": "input"
-    },
-    {
-      "number": 14,
-      "name": "A",
-      "direction": "input"
-    },
-    {
-      "number": 15,
-      "name": "2G",
-      "direction": "input"
-    },
-    {
-      "number": 16,
-      "name": "VCC",
-      "direction": "power",
-      "rail": "VCC"
-    }
-  ],
-  "logic": {
-    "type": "dual_4_input_multiplexer_inverting_outputs",
-    "description": "dual 4-input multiplexer, inverting outputs"
-  },
-  "timing": {
-    "delay_ns": 15,
-    "simple": {
-      "default_delay_ns": 15,
-      "source": "legacy functional simulator default"
-    },
-    "timed": {
-      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-      "paths": {
-        "input_to_output_ns": {
-          "parameter": "tpd",
-          "from": "input",
-          "to": "output",
-          "condition": "input or select changes",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "transition_time_ns": {
-          "parameter": "tt",
-          "from": "output transition",
-          "to": "output transition",
-          "condition": "enabled output switches",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "file": "Source/74HC352_STMICROELECTRONICS_23075.pdf",
+        "label": "Legacy pinout datasheet source",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC352",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
         }
       }
+    },
+    "pins": {
+      "part": "74HC352",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "1G",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "B",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "1C3",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "1C2",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "1C1",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "1C0",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "1Y",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "2Y",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "2C0",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "2C1",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "2C2",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "2C3",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "A",
+          "number": 14
+        },
+        {
+          "direction": "input",
+          "name": "2G",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC352",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "ST M74HC352 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_max_ns_25c": {
+          "path_1": 23,
+          "path_2": 30,
+          "path_3": 17,
+          "path_4": 25,
+          "path_5": 30,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "path_1": 29,
+          "path_2": 38,
+          "path_3": 21,
+          "path_4": 31,
+          "path_5": 38,
+          "transition": 19
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "path_1": 35,
+          "path_2": 45,
+          "path_3": 26,
+          "path_4": 38,
+          "path_5": 45,
+          "transition": 22
+        },
+        "datasheet_typical_ns": {
+          "path_1": 14,
+          "path_2": 20,
+          "path_3": 10,
+          "path_4": 16,
+          "path_5": 21,
+          "transition": 8
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "file": "Source/74HC352_STMICROELECTRONICS_23075.pdf",
+        "label": "Legacy pinout datasheet source",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC352",
+      "schema": "db.component.timing",
+      "version": 1
     }
   },
   "generation": {
+    "python": {
+      "class": "HC352",
+      "factory": "create",
+      "file": "DB/74xx/74HC352/simulation/model.py",
+      "part": "74HC352"
+    },
     "targets": [
       "json",
       "python_simulator",
@@ -153,248 +221,208 @@
       "unit_test",
       "interactive_demo"
     ],
-    "python": {
-      "factory": "create",
-      "part": "74HC352",
-      "file": "DB/74xx/74HC352/simulation/model.py",
-      "class": "HC352"
-    },
     "verilog": {
-      "module": "ttl_74hc352",
       "file": "DB/74xx/74HC352/simulation/model.v",
+      "module": "ttl_74hc352",
       "netlist": "DB/74xx/74HC352/simulation/netlist.json"
     }
   },
-  "verification": {
-    "tests": [
-      "truth_table",
-      "timing",
-      "propagation"
-    ],
-    "required_vectors": [
-      "basic_function"
-    ]
+  "logic": {
+    "description": "dual 4-input multiplexer, inverting outputs",
+    "type": "dual_4_input_multiplexer_inverting_outputs"
   },
-  "datasheet": {
-    "schema": "db.component.datasheet.sources",
-    "version": 1,
-    "part": "74HC352",
-    "sources": [
-      {
-        "label": "Legacy pinout datasheet source",
-        "file": "Source/74HC352_STMICROELECTRONICS_23075.pdf",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ],
-        "package_evidence": "datasheet-required"
-      }
-    ]
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "multiplexer",
+    "title": "dual 4-input multiplexer, inverting outputs"
   },
-  "definition_layers": {
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "74HC352",
-      "pins": [
-        {
-          "number": 1,
-          "name": "1G",
-          "direction": "input"
-        },
-        {
-          "number": 2,
-          "name": "B",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "1C3",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "1C2",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "1C1",
-          "direction": "input"
-        },
-        {
-          "number": 6,
-          "name": "1C0",
-          "direction": "input"
-        },
-        {
-          "number": 7,
-          "name": "1Y",
-          "direction": "output"
-        },
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 9,
-          "name": "2Y",
-          "direction": "output"
-        },
-        {
-          "number": 10,
-          "name": "2C0",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "2C1",
-          "direction": "input"
-        },
-        {
-          "number": 12,
-          "name": "2C2",
-          "direction": "input"
-        },
-        {
-          "number": 13,
-          "name": "2C3",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "A",
-          "direction": "input"
-        },
-        {
-          "number": 15,
-          "name": "2G",
-          "direction": "input"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 16
+  },
+  "part": "74HC352",
+  "pins": [
+    {
+      "direction": "input",
+      "name": "1G",
+      "number": 1
     },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "74HC352",
-      "rails": [
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
+    {
+      "direction": "input",
+      "name": "B",
+      "number": 2
     },
-    "timing": {
-      "schema": "db.component.timing",
-      "version": 1,
-      "part": "74HC352",
-      "delay": {
-        "model_delay_ns": 15,
-        "status": "model-derived",
-        "public_timing": {
-          "delay_ns": 15,
-          "simple": {
-            "default_delay_ns": 15,
-            "source": "legacy functional simulator default"
-          },
-          "timed": {
-            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-            "paths": {
-              "input_to_output_ns": {
-                "parameter": "tpd",
-                "from": "input",
-                "to": "output",
-                "condition": "input or select changes",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "transition_time_ns": {
-                "parameter": "tt",
-                "from": "output transition",
-                "to": "output transition",
-                "condition": "enabled output switches",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "conservative_defaults": {
-          "input_to_output_ns": "conservative_default_from_existing_model_delay",
-          "transition_time_ns": "conservative_default_from_existing_model_delay"
-        }
-      },
-      "evidence": {
-        "label": "Legacy pinout datasheet source",
-        "file": "Source/74HC352_STMICROELECTRONICS_23075.pdf",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
+    {
+      "direction": "input",
+      "name": "1C3",
+      "number": 3
     },
-    "electrical": {
-      "schema": "db.component.electrical",
-      "version": 1,
-      "part": "74HC352",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
-        }
-      },
-      "current": {
-        "status": "datasheet-required"
-      },
-      "loading": {
-        "status": "datasheet-required"
-      },
-      "evidence": {
-        "label": "Legacy pinout datasheet source",
-        "file": "Source/74HC352_STMICROELECTRONICS_23075.pdf",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
+    {
+      "direction": "input",
+      "name": "1C2",
+      "number": 4
+    },
+    {
+      "direction": "input",
+      "name": "1C1",
+      "number": 5
+    },
+    {
+      "direction": "input",
+      "name": "1C0",
+      "number": 6
+    },
+    {
+      "direction": "output",
+      "name": "1Y",
+      "number": 7
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 8,
+      "rail": "GND"
+    },
+    {
+      "direction": "output",
+      "name": "2Y",
+      "number": 9
+    },
+    {
+      "direction": "input",
+      "name": "2C0",
+      "number": 10
+    },
+    {
+      "direction": "input",
+      "name": "2C1",
+      "number": 11
+    },
+    {
+      "direction": "input",
+      "name": "2C2",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "2C3",
+      "number": 13
+    },
+    {
+      "direction": "input",
+      "name": "A",
+      "number": 14
+    },
+    {
+      "direction": "input",
+      "name": "2G",
+      "number": 15
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 16,
+      "rail": "VCC"
     }
-  },
+  ],
+  "schema": "db.component.digital",
   "status": {
     "datasheet": "verified",
     "pinout": "verified",
     "python_behavior": "modeled",
-    "verilog_model": "modeled",
+    "tests": "tested",
     "verilog_export": "tested",
-    "tests": "tested"
-  }
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "ST M74HC352 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_max_ns_25c": {
+          "path_1": 23,
+          "path_2": 30,
+          "path_3": 17,
+          "path_4": 25,
+          "path_5": 30,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "path_1": 29,
+          "path_2": 38,
+          "path_3": 21,
+          "path_4": 31,
+          "path_5": 38,
+          "transition": 19
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "path_1": 35,
+          "path_2": 45,
+          "path_3": 26,
+          "path_4": 38,
+          "path_5": 45,
+          "transition": 22
+        },
+        "datasheet_typical_ns": {
+          "path_1": 14,
+          "path_2": 20,
+          "path_3": 10,
+          "path_4": 16,
+          "path_5": 21,
+          "transition": 8
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1
 }

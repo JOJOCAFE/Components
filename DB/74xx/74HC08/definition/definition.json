@@ -1,137 +1,191 @@
 {
-  "schema": "db.component.digital",
-  "version": 1,
-  "part": "74HC08",
-  "metadata": {
-    "title": "Quad 2-Input AND Gate",
-    "family": "74HC",
-    "group": "74xx",
-    "role": "logic"
+  "datasheet": {
+    "part": "74HC08",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC08",
+        "package_evidence": "N, 14-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc08.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
   },
-  "package": {
-    "kind": "DIP",
-    "pins": 14,
-    "default": "N"
-  },
-  "pins": [
-    {
-      "number": 1,
-      "name": "1A",
-      "direction": "input"
-    },
-    {
-      "number": 2,
-      "name": "1B",
-      "direction": "input"
-    },
-    {
-      "number": 3,
-      "name": "1Y",
-      "direction": "output"
-    },
-    {
-      "number": 4,
-      "name": "2A",
-      "direction": "input"
-    },
-    {
-      "number": 5,
-      "name": "2B",
-      "direction": "input"
-    },
-    {
-      "number": 6,
-      "name": "2Y",
-      "direction": "output"
-    },
-    {
-      "number": 7,
-      "name": "GND",
-      "direction": "power",
-      "rail": "GND"
-    },
-    {
-      "number": 8,
-      "name": "3Y",
-      "direction": "output"
-    },
-    {
-      "number": 9,
-      "name": "3A",
-      "direction": "input"
-    },
-    {
-      "number": 10,
-      "name": "3B",
-      "direction": "input"
-    },
-    {
-      "number": 11,
-      "name": "4Y",
-      "direction": "output"
-    },
-    {
-      "number": 12,
-      "name": "4A",
-      "direction": "input"
-    },
-    {
-      "number": 13,
-      "name": "4B",
-      "direction": "input"
-    },
-    {
-      "number": 14,
-      "name": "VCC",
-      "direction": "power",
-      "rail": "VCC"
-    }
-  ],
-  "logic": {
-    "type": "quad_2_input_and_gate",
-    "description": "Quad 2-Input AND Gate"
-  },
-  "timing": {
-    "delay_ns": 15,
-    "simple": {
-      "default_delay_ns": 15,
-      "source": "legacy functional simulator default"
-    },
-    "timed": {
-      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-      "paths": {
-        "input_to_output_ns": {
-          "parameter": "tpd",
-          "from": "input",
-          "to": "output",
-          "condition": "input or select changes",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "transition_time_ns": {
-          "parameter": "tt",
-          "from": "output transition",
-          "to": "output transition",
-          "condition": "enabled output switches",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC08",
+        "package_evidence": "N, 14-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc08.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC08",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
         }
       }
+    },
+    "pins": {
+      "part": "74HC08",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "1A",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1B",
+          "number": 2
+        },
+        {
+          "direction": "output",
+          "name": "1Y",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "2A",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "2B",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "2Y",
+          "number": 6
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "3Y",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "3A",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "3B",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "4Y",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "4A",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "4B",
+          "number": 13
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC08",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "TI SN74HC08 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_max_ns_25c": {
+          "input_to_output": 20,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "input_to_output": 25,
+          "transition": 19
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "input_to_output": 30,
+          "transition": 22
+        },
+        "datasheet_typical_ns": {
+          "input_to_output": 10,
+          "transition": 8
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC08",
+        "package_evidence": "N, 14-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc08.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC08",
+      "schema": "db.component.timing",
+      "version": 1
     }
   },
   "generation": {
+    "python": {
+      "class": "HC08",
+      "factory": "create",
+      "file": "DB/74xx/74HC08/simulation/model.py",
+      "part": "74HC08"
+    },
     "targets": [
       "json",
       "python_simulator",
@@ -143,243 +197,185 @@
       "unit_test",
       "interactive_demo"
     ],
-    "python": {
-      "factory": "create",
-      "part": "74HC08",
-      "file": "DB/74xx/74HC08/simulation/model.py",
-      "class": "HC08"
-    },
     "verilog": {
-      "module": "ttl_74hc08",
       "file": "DB/74xx/74HC08/simulation/model.v",
+      "module": "ttl_74hc08",
       "netlist": "DB/74xx/74HC08/simulation/netlist.json"
     }
   },
+  "logic": {
+    "description": "Quad 2-Input AND Gate",
+    "type": "quad_2_input_and_gate"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "logic",
+    "title": "Quad 2-Input AND Gate"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 14
+  },
+  "part": "74HC08",
+  "pins": [
+    {
+      "direction": "input",
+      "name": "1A",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "1B",
+      "number": 2
+    },
+    {
+      "direction": "output",
+      "name": "1Y",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "2A",
+      "number": 4
+    },
+    {
+      "direction": "input",
+      "name": "2B",
+      "number": 5
+    },
+    {
+      "direction": "output",
+      "name": "2Y",
+      "number": 6
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 7,
+      "rail": "GND"
+    },
+    {
+      "direction": "output",
+      "name": "3Y",
+      "number": 8
+    },
+    {
+      "direction": "input",
+      "name": "3A",
+      "number": 9
+    },
+    {
+      "direction": "input",
+      "name": "3B",
+      "number": 10
+    },
+    {
+      "direction": "output",
+      "name": "4Y",
+      "number": 11
+    },
+    {
+      "direction": "input",
+      "name": "4A",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "4B",
+      "number": 13
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 14,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "TI SN74HC08 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_max_ns_25c": {
+          "input_to_output": 20,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "input_to_output": 25,
+          "transition": 19
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "input_to_output": 30,
+          "transition": 22
+        },
+        "datasheet_typical_ns": {
+          "input_to_output": 10,
+          "transition": 8
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    }
+  },
   "verification": {
-    "tests": [
-      "truth_table",
-      "timing",
-      "propagation"
-    ],
     "required_vectors": [
       "and_00",
       "and_01",
       "and_10",
       "and_11"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
     ]
   },
-  "datasheet": {
-    "schema": "db.component.datasheet.sources",
-    "version": 1,
-    "part": "74HC08",
-    "sources": [
-      {
-        "label": "Texas Instruments SN74HC08",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc08.pdf",
-        "package_evidence": "N, 14-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    ]
-  },
-  "definition_layers": {
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "74HC08",
-      "pins": [
-        {
-          "number": 1,
-          "name": "1A",
-          "direction": "input"
-        },
-        {
-          "number": 2,
-          "name": "1B",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "1Y",
-          "direction": "output"
-        },
-        {
-          "number": 4,
-          "name": "2A",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "2B",
-          "direction": "input"
-        },
-        {
-          "number": 6,
-          "name": "2Y",
-          "direction": "output"
-        },
-        {
-          "number": 7,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 8,
-          "name": "3Y",
-          "direction": "output"
-        },
-        {
-          "number": 9,
-          "name": "3A",
-          "direction": "input"
-        },
-        {
-          "number": 10,
-          "name": "3B",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "4Y",
-          "direction": "output"
-        },
-        {
-          "number": 12,
-          "name": "4A",
-          "direction": "input"
-        },
-        {
-          "number": 13,
-          "name": "4B",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "74HC08",
-      "rails": [
-        {
-          "number": 7,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 14,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "timing": {
-      "schema": "db.component.timing",
-      "version": 1,
-      "part": "74HC08",
-      "delay": {
-        "model_delay_ns": 15,
-        "status": "model-derived",
-        "public_timing": {
-          "delay_ns": 15,
-          "simple": {
-            "default_delay_ns": 15,
-            "source": "legacy functional simulator default"
-          },
-          "timed": {
-            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-            "paths": {
-              "input_to_output_ns": {
-                "parameter": "tpd",
-                "from": "input",
-                "to": "output",
-                "condition": "input or select changes",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "transition_time_ns": {
-                "parameter": "tt",
-                "from": "output transition",
-                "to": "output transition",
-                "condition": "enabled output switches",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "conservative_defaults": {
-          "input_to_output_ns": "conservative_default_from_existing_model_delay",
-          "transition_time_ns": "conservative_default_from_existing_model_delay"
-        }
-      },
-      "evidence": {
-        "label": "Texas Instruments SN74HC08",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc08.pdf",
-        "package_evidence": "N, 14-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    },
-    "electrical": {
-      "schema": "db.component.electrical",
-      "version": 1,
-      "part": "74HC08",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
-        }
-      },
-      "current": {
-        "status": "datasheet-required"
-      },
-      "loading": {
-        "status": "datasheet-required"
-      },
-      "evidence": {
-        "label": "Texas Instruments SN74HC08",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc08.pdf",
-        "package_evidence": "N, 14-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    }
-  },
-  "status": {
-    "datasheet": "verified",
-    "pinout": "verified",
-    "python_behavior": "modeled",
-    "verilog_model": "modeled",
-    "verilog_export": "tested",
-    "tests": "tested"
-  }
+  "version": 1
 }

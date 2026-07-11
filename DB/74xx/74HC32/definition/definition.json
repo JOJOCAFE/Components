@@ -1,188 +1,12 @@
 {
-  "schema": "db.component.digital",
-  "version": 1,
-  "part": "74HC32",
-  "metadata": {
-    "title": "Quad 2-Input OR Gate",
-    "family": "74HC",
-    "group": "74xx",
-    "role": "or_gate"
-  },
-  "package": {
-    "kind": "DIP",
-    "pins": 14,
-    "default": "N"
-  },
-  "pins": [
-    {
-      "number": 1,
-      "name": "1A",
-      "direction": "input"
-    },
-    {
-      "number": 2,
-      "name": "1B",
-      "direction": "input"
-    },
-    {
-      "number": 3,
-      "name": "1Y",
-      "direction": "output"
-    },
-    {
-      "number": 4,
-      "name": "2A",
-      "direction": "input"
-    },
-    {
-      "number": 5,
-      "name": "2B",
-      "direction": "input"
-    },
-    {
-      "number": 6,
-      "name": "2Y",
-      "direction": "output"
-    },
-    {
-      "number": 7,
-      "name": "GND",
-      "direction": "power",
-      "rail": "GND"
-    },
-    {
-      "number": 8,
-      "name": "3Y",
-      "direction": "output"
-    },
-    {
-      "number": 9,
-      "name": "3A",
-      "direction": "input"
-    },
-    {
-      "number": 10,
-      "name": "3B",
-      "direction": "input"
-    },
-    {
-      "number": 11,
-      "name": "4Y",
-      "direction": "output"
-    },
-    {
-      "number": 12,
-      "name": "4A",
-      "direction": "input"
-    },
-    {
-      "number": 13,
-      "name": "4B",
-      "direction": "input"
-    },
-    {
-      "number": 14,
-      "name": "VCC",
-      "direction": "power",
-      "rail": "VCC"
-    }
-  ],
-  "logic": {
-    "type": "quad_2_input_or",
-    "description": "Quad 2-Input OR Gate"
-  },
-  "timing": {
-    "delay_ns": 12,
-    "datasheet": {
-      "source": "TI SN74HC32 datasheet, section 6.8 Switching Characteristics - 74, CL = 50 pF",
-      "path": "A_or_B_to_Y",
-      "vcc_v": 4.5,
-      "typical_ns": 10,
-      "max_ns_25c": 20,
-      "max_ns_minus40_to_85c": 25,
-      "load_pf": 50
-    },
-    "simple": {
-      "default_delay_ns": 12,
-      "source": "legacy functional simulator default"
-    },
-    "timed": {
-      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-      "paths": {
-        "input_to_output_ns": {
-          "parameter": "tpd",
-          "from": "input",
-          "to": "output",
-          "condition": "input or select changes",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 12,
-              "max_ns": 12,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "transition_time_ns": {
-          "parameter": "tt",
-          "from": "output transition",
-          "to": "output transition",
-          "condition": "enabled output switches",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 12,
-              "max_ns": 12,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        }
-      }
-    }
-  },
-  "generation": {
-    "targets": [
-      "json",
-      "python_simulator",
-      "verilog_wrapper",
-      "verilog_testbench",
-      "kicad_symbol",
-      "svg_pinout",
-      "documentation",
-      "unit_test",
-      "interactive_demo"
-    ],
-    "python": {
-      "factory": "create",
-      "part": "74HC32",
-      "file": "DB/74xx/74HC32/simulation/model.py",
-      "class": "HC32"
-    },
-    "verilog": {
-      "module": "ttl_74hc32",
-      "file": "DB/74xx/74HC32/simulation/model.v",
-      "netlist": "DB/74xx/74HC32/simulation/netlist.json"
-    }
-  },
-  "verification": {
-    "tests": [
-      "truth_table",
-      "timing",
-      "propagation"
-    ],
-    "required_vectors": [
-      "basic_function"
-    ]
-  },
   "datasheet": {
-    "schema": "db.component.datasheet.sources",
-    "version": 1,
     "part": "74HC32",
+    "schema": "db.component.datasheet.sources",
     "sources": [
       {
         "label": "Texas Instruments SN74HC32",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc32.pdf",
         "package_evidence": "N, 14-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc32.pdf",
         "used_for": [
           "pins",
           "package",
@@ -191,185 +15,15 @@
           "electrical"
         ]
       }
-    ]
+    ],
+    "version": 1
   },
   "definition_layers": {
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "74HC32",
-      "pins": [
-        {
-          "number": 1,
-          "name": "1A",
-          "direction": "input"
-        },
-        {
-          "number": 2,
-          "name": "1B",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "1Y",
-          "direction": "output"
-        },
-        {
-          "number": 4,
-          "name": "2A",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "2B",
-          "direction": "input"
-        },
-        {
-          "number": 6,
-          "name": "2Y",
-          "direction": "output"
-        },
-        {
-          "number": 7,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 8,
-          "name": "3Y",
-          "direction": "output"
-        },
-        {
-          "number": 9,
-          "name": "3A",
-          "direction": "input"
-        },
-        {
-          "number": 10,
-          "name": "3B",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "4Y",
-          "direction": "output"
-        },
-        {
-          "number": 12,
-          "name": "4A",
-          "direction": "input"
-        },
-        {
-          "number": 13,
-          "name": "4B",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "74HC32",
-      "rails": [
-        {
-          "number": 7,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 14,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "timing": {
-      "schema": "db.component.timing",
-      "version": 1,
-      "part": "74HC32",
-      "delay": {
-        "model_delay_ns": 12,
-        "status": "datasheet-backed",
-        "datasheet_typical_ns": {
-          "4.5": 10
-        },
-        "datasheet_max_ns_25c": {
-          "4.5": 20
-        },
-        "datasheet_max_ns_minus40_to_85c": {
-          "4.5": 25
-        },
-        "conditions": {
-          "load_pf": 50,
-          "path": "A_or_B_to_Y"
-        },
-        "public_timing": {
-          "delay_ns": 12,
-          "datasheet": {
-            "source": "TI SN74HC32 datasheet, section 6.8 Switching Characteristics - 74, CL = 50 pF",
-            "path": "A_or_B_to_Y",
-            "vcc_v": 4.5,
-            "typical_ns": 10,
-            "max_ns_25c": 20,
-            "max_ns_minus40_to_85c": 25,
-            "load_pf": 50
-          },
-          "simple": {
-            "default_delay_ns": 12,
-            "source": "legacy functional simulator default"
-          },
-          "timed": {
-            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-            "paths": {
-              "input_to_output_ns": {
-                "parameter": "tpd",
-                "from": "input",
-                "to": "output",
-                "condition": "input or select changes",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 12,
-                    "max_ns": 12,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "transition_time_ns": {
-                "parameter": "tt",
-                "from": "output transition",
-                "to": "output transition",
-                "condition": "enabled output switches",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 12,
-                    "max_ns": 12,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "conservative_defaults": {
-          "input_to_output_ns": "conservative_default_from_existing_model_delay",
-          "transition_time_ns": "conservative_default_from_existing_model_delay"
-        }
-      },
+    "electrical": {
       "evidence": {
         "label": "Texas Instruments SN74HC32",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc32.pdf",
         "package_evidence": "N, 14-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc32.pdf",
         "used_for": [
           "pins",
           "package",
@@ -377,25 +31,34 @@
           "timing",
           "electrical"
         ]
-      }
-    },
-    "electrical": {
-      "schema": "db.component.electrical",
-      "version": 1,
+      },
+      "loading": {
+        "application_capacitive_load_limit_pf": 70,
+        "switching_test_load_pf": 50
+      },
       "part": "74HC32",
       "recommended_operating": {
-        "vcc_v": {
-          "min": 2,
-          "nom": 5,
-          "max": 6
+        "input_transition_max_ns": {
+          "2.0": 1000,
+          "4.5": 500,
+          "6.0": 400
         },
         "input_voltage_v": {
-          "min": 0,
-          "max": "VCC"
+          "max": "VCC",
+          "min": 0
         },
         "output_voltage_v": {
-          "min": 0,
-          "max": "VCC"
+          "max": "VCC",
+          "min": 0
+        },
+        "ta_c": {
+          "max": 85,
+          "min": -40
+        },
+        "vcc_v": {
+          "max": 6,
+          "min": 2,
+          "nom": 5
         },
         "vih_min_v": {
           "2.0": 1.5,
@@ -406,18 +69,16 @@
           "2.0": 0.5,
           "4.5": 1.35,
           "6.0": 1.8
-        },
-        "input_transition_max_ns": {
-          "2.0": 1000,
-          "4.5": 500,
-          "6.0": 400
-        },
-        "ta_c": {
-          "min": -40,
-          "max": 85
         }
       },
+      "schema": "db.component.electrical",
       "static_characteristics": {
+        "ci_max_pf": {
+          "2.0_to_6.0": 10
+        },
+        "icc_max_ua": {
+          "6.0": 20
+        },
         "voh_min_v": {
           "ioh_-20ua": {
             "2.0": 1.9,
@@ -435,22 +96,130 @@
           },
           "iol_4ma_4.5v": 0.33,
           "iol_5.2ma_6v": 0.33
-        },
-        "icc_max_ua": {
-          "6.0": 20
-        },
-        "ci_max_pf": {
-          "2.0_to_6.0": 10
         }
       },
-      "loading": {
-        "switching_test_load_pf": 50,
-        "application_capacitive_load_limit_pf": 70
+      "version": 1
+    },
+    "pins": {
+      "part": "74HC32",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "1A",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1B",
+          "number": 2
+        },
+        {
+          "direction": "output",
+          "name": "1Y",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "2A",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "2B",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "2Y",
+          "number": 6
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "3Y",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "3A",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "3B",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "4Y",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "4A",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "4B",
+          "number": 13
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC32",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": {
+          "load_pf": 50,
+          "path": "A_or_B_to_Y"
+        },
+        "datasheet_max_ns_25c": {
+          "4.5": 20
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "4.5": 25
+        },
+        "datasheet_typical_ns": {
+          "4.5": 10
+        },
+        "model_delay_ns": 12,
+        "status": "datasheet-backed"
       },
       "evidence": {
         "label": "Texas Instruments SN74HC32",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc32.pdf",
         "package_evidence": "N, 14-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc32.pdf",
         "used_for": [
           "pins",
           "package",
@@ -458,15 +227,193 @@
           "timing",
           "electrical"
         ]
-      }
+      },
+      "part": "74HC32",
+      "schema": "db.component.timing",
+      "version": 1
     }
   },
+  "generation": {
+    "python": {
+      "class": "HC32",
+      "factory": "create",
+      "file": "DB/74xx/74HC32/simulation/model.py",
+      "part": "74HC32"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "DB/74xx/74HC32/simulation/model.v",
+      "module": "ttl_74hc32",
+      "netlist": "DB/74xx/74HC32/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "description": "Quad 2-Input OR Gate",
+    "type": "quad_2_input_or"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "or_gate",
+    "title": "Quad 2-Input OR Gate"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 14
+  },
+  "part": "74HC32",
+  "pins": [
+    {
+      "direction": "input",
+      "name": "1A",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "1B",
+      "number": 2
+    },
+    {
+      "direction": "output",
+      "name": "1Y",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "2A",
+      "number": 4
+    },
+    {
+      "direction": "input",
+      "name": "2B",
+      "number": 5
+    },
+    {
+      "direction": "output",
+      "name": "2Y",
+      "number": 6
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 7,
+      "rail": "GND"
+    },
+    {
+      "direction": "output",
+      "name": "3Y",
+      "number": 8
+    },
+    {
+      "direction": "input",
+      "name": "3A",
+      "number": 9
+    },
+    {
+      "direction": "input",
+      "name": "3B",
+      "number": 10
+    },
+    {
+      "direction": "output",
+      "name": "4Y",
+      "number": 11
+    },
+    {
+      "direction": "input",
+      "name": "4A",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "4B",
+      "number": 13
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 14,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
   "status": {
     "datasheet": "verified",
     "pinout": "verified",
     "python_behavior": "modeled",
-    "verilog_model": "modeled",
+    "tests": "tested",
     "verilog_export": "tested",
-    "tests": "tested"
-  }
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "load_pf": 50,
+      "max_ns_25c": 20,
+      "max_ns_minus40_to_85c": 25,
+      "path": "A_or_B_to_Y",
+      "source": "TI SN74HC32 datasheet, section 6.8 Switching Characteristics - 74, CL = 50 pF",
+      "typical_ns": 10,
+      "vcc_v": 4.5
+    },
+    "delay_ns": 12,
+    "simple": {
+      "default_delay_ns": 12,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 12,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 12
+            }
+          },
+          "to": "output"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 12,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 12
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1
 }

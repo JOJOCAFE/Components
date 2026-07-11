@@ -1,160 +1,201 @@
 {
-  "schema": "db.component.digital",
-  "version": 1,
-  "part": "74HC147",
-  "metadata": {
-    "title": "10-line to 4-line priority encoder with active-low inputs and outputs",
-    "family": "74HC",
-    "group": "74xx",
-    "role": "logic"
+  "datasheet": {
+    "part": "74HC147",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "file": "Source/74HC147_TI2_2202533.pdf",
+        "label": "Texas Instruments CD74HC147/CD74HCT147",
+        "package_evidence": "PDIP16 pinout in repository source PDF",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
   },
-  "package": {
-    "kind": "DIP",
-    "pins": 16,
-    "default": "N"
-  },
-  "pins": [
-    {
-      "number": 1,
-      "name": "/I4",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 2,
-      "name": "/I5",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 3,
-      "name": "/I6",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 4,
-      "name": "/I7",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 5,
-      "name": "/I8",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 6,
-      "name": "/Y2",
-      "direction": "output",
-      "active_low": true
-    },
-    {
-      "number": 7,
-      "name": "/Y1",
-      "direction": "output",
-      "active_low": true
-    },
-    {
-      "number": 8,
-      "name": "GND",
-      "direction": "power",
-      "rail": "GND"
-    },
-    {
-      "number": 9,
-      "name": "/I0",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 10,
-      "name": "/I9",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 11,
-      "name": "/I1",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 12,
-      "name": "/I2",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 13,
-      "name": "/I3",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 14,
-      "name": "/Y3",
-      "direction": "output",
-      "active_low": true
-    },
-    {
-      "number": 15,
-      "name": "NC",
-      "direction": "nc"
-    },
-    {
-      "number": 16,
-      "name": "VCC",
-      "direction": "power",
-      "rail": "VCC"
-    }
-  ],
-  "logic": {
-    "type": "10_line_to_4_line_priority_encoder_with",
-    "description": "10-line to 4-line priority encoder with active-low inputs and outputs"
-  },
-  "timing": {
-    "delay_ns": 15,
-    "simple": {
-      "default_delay_ns": 15,
-      "source": "legacy functional simulator default"
-    },
-    "timed": {
-      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-      "paths": {
-        "input_to_output_ns": {
-          "parameter": "tpd",
-          "from": "input",
-          "to": "output",
-          "condition": "input or select changes",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "transition_time_ns": {
-          "parameter": "tt",
-          "from": "output transition",
-          "to": "output transition",
-          "condition": "enabled output switches",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "file": "Source/74HC147_TI2_2202533.pdf",
+        "label": "Texas Instruments CD74HC147/CD74HCT147",
+        "package_evidence": "PDIP16 pinout in repository source PDF",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC147",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
         }
       }
+    },
+    "pins": {
+      "part": "74HC147",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I4",
+          "number": 1
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I5",
+          "number": 2
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I6",
+          "number": 3
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I7",
+          "number": 4
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I8",
+          "number": 5
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y2",
+          "number": 6
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y1",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I0",
+          "number": 9
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I9",
+          "number": 10
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I1",
+          "number": 11
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I2",
+          "number": 12
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/I3",
+          "number": 13
+        },
+        {
+          "active_low": true,
+          "direction": "output",
+          "name": "/Y3",
+          "number": 14
+        },
+        {
+          "direction": "nc",
+          "name": "NC",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC147",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "TI CD74HC147 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+        "datasheet_typical_ns": {
+          "feature_tpd": 13
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "file": "Source/74HC147_TI2_2202533.pdf",
+        "label": "Texas Instruments CD74HC147/CD74HCT147",
+        "package_evidence": "PDIP16 pinout in repository source PDF",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC147",
+      "schema": "db.component.timing",
+      "version": 1
     }
   },
   "generation": {
+    "python": {
+      "class": "HC147",
+      "factory": "create",
+      "file": "DB/74xx/74HC147/simulation/model.py",
+      "part": "74HC147"
+    },
     "targets": [
       "json",
       "python_simulator",
@@ -166,263 +207,192 @@
       "unit_test",
       "interactive_demo"
     ],
-    "python": {
-      "factory": "create",
-      "part": "74HC147",
-      "file": "DB/74xx/74HC147/simulation/model.py",
-      "class": "HC147"
-    },
     "verilog": {
-      "module": "ttl_74hc147",
       "file": "DB/74xx/74HC147/simulation/model.v",
+      "module": "ttl_74hc147",
       "netlist": "DB/74xx/74HC147/simulation/netlist.json"
     }
   },
-  "verification": {
-    "tests": [
-      "truth_table",
-      "timing",
-      "propagation"
-    ],
-    "required_vectors": [
-      "basic_function"
-    ]
+  "logic": {
+    "description": "10-line to 4-line priority encoder with active-low inputs and outputs",
+    "type": "10_line_to_4_line_priority_encoder_with"
   },
-  "datasheet": {
-    "schema": "db.component.datasheet.sources",
-    "version": 1,
-    "part": "74HC147",
-    "sources": [
-      {
-        "label": "Texas Instruments CD74HC147/CD74HCT147",
-        "file": "Source/74HC147_TI2_2202533.pdf",
-        "package_evidence": "PDIP16 pinout in repository source PDF",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    ]
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "logic",
+    "title": "10-line to 4-line priority encoder with active-low inputs and outputs"
   },
-  "definition_layers": {
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "74HC147",
-      "pins": [
-        {
-          "number": 1,
-          "name": "/I4",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 2,
-          "name": "/I5",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 3,
-          "name": "/I6",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 4,
-          "name": "/I7",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 5,
-          "name": "/I8",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 6,
-          "name": "/Y2",
-          "direction": "output",
-          "active_low": true
-        },
-        {
-          "number": 7,
-          "name": "/Y1",
-          "direction": "output",
-          "active_low": true
-        },
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 9,
-          "name": "/I0",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 10,
-          "name": "/I9",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 11,
-          "name": "/I1",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 12,
-          "name": "/I2",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 13,
-          "name": "/I3",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 14,
-          "name": "/Y3",
-          "direction": "output",
-          "active_low": true
-        },
-        {
-          "number": 15,
-          "name": "NC",
-          "direction": "nc"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 16
+  },
+  "part": "74HC147",
+  "pins": [
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I4",
+      "number": 1
     },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "74HC147",
-      "rails": [
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I5",
+      "number": 2
     },
-    "timing": {
-      "schema": "db.component.timing",
-      "version": 1,
-      "part": "74HC147",
-      "delay": {
-        "model_delay_ns": 15,
-        "status": "model-derived",
-        "public_timing": {
-          "delay_ns": 15,
-          "simple": {
-            "default_delay_ns": 15,
-            "source": "legacy functional simulator default"
-          },
-          "timed": {
-            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-            "paths": {
-              "input_to_output_ns": {
-                "parameter": "tpd",
-                "from": "input",
-                "to": "output",
-                "condition": "input or select changes",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "transition_time_ns": {
-                "parameter": "tt",
-                "from": "output transition",
-                "to": "output transition",
-                "condition": "enabled output switches",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "conservative_defaults": {
-          "input_to_output_ns": "conservative_default_from_existing_model_delay",
-          "transition_time_ns": "conservative_default_from_existing_model_delay"
-        }
-      },
-      "evidence": {
-        "label": "Texas Instruments CD74HC147/CD74HCT147",
-        "file": "Source/74HC147_TI2_2202533.pdf",
-        "package_evidence": "PDIP16 pinout in repository source PDF",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I6",
+      "number": 3
     },
-    "electrical": {
-      "schema": "db.component.electrical",
-      "version": 1,
-      "part": "74HC147",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
-        }
-      },
-      "current": {
-        "status": "datasheet-required"
-      },
-      "loading": {
-        "status": "datasheet-required"
-      },
-      "evidence": {
-        "label": "Texas Instruments CD74HC147/CD74HCT147",
-        "file": "Source/74HC147_TI2_2202533.pdf",
-        "package_evidence": "PDIP16 pinout in repository source PDF",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I7",
+      "number": 4
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I8",
+      "number": 5
+    },
+    {
+      "active_low": true,
+      "direction": "output",
+      "name": "/Y2",
+      "number": 6
+    },
+    {
+      "active_low": true,
+      "direction": "output",
+      "name": "/Y1",
+      "number": 7
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 8,
+      "rail": "GND"
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I0",
+      "number": 9
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I9",
+      "number": 10
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I1",
+      "number": 11
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I2",
+      "number": 12
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/I3",
+      "number": 13
+    },
+    {
+      "active_low": true,
+      "direction": "output",
+      "name": "/Y3",
+      "number": 14
+    },
+    {
+      "direction": "nc",
+      "name": "NC",
+      "number": 15
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 16,
+      "rail": "VCC"
     }
-  },
+  ],
+  "schema": "db.component.digital",
   "status": {
     "datasheet": "verified",
     "pinout": "verified",
     "python_behavior": "modeled",
-    "verilog_model": "modeled",
+    "tests": "tested",
     "verilog_export": "tested",
-    "tests": "tested"
-  }
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "TI CD74HC147 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_typical_ns": {
+          "feature_tpd": 13
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1
 }

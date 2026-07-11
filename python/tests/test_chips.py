@@ -152,6 +152,48 @@ def test_hc541_and_hc245_tristate():
     assert get_byte(trans, [18, 17, 16, 15, 14, 13, 12, 11]) == 0x3C
 
 
+def test_support_chips_python_models():
+    opamp = create_chip("LM358", "U")
+    set_pins(opamp, ["IN1+", "IN1-", "IN2+", "IN2-"], [1, 0, 0, 1])
+    eval_chip(opamp)
+    assert opamp.read("OUT1") == 1
+    assert opamp.read("OUT2") == 0
+
+    comparator = create_chip("LM393", "U")
+    set_pins(comparator, ["IN1+", "IN1-", "IN2+", "IN2-"], [1, 0, 0, 1])
+    eval_chip(comparator)
+    assert comparator.read("OUT1") == Z
+    assert comparator.read("OUT2") == 0
+
+    line_driver = create_chip("MAX232", "U")
+    set_pins(line_driver, ["T1IN", "T2IN", "R1IN", "R2IN"], [1, 0, 1, 0])
+    eval_chip(line_driver)
+    assert line_driver.read("T1OUT") == 0
+    assert line_driver.read("T2OUT") == 1
+    assert line_driver.read("R1OUT") == 0
+    assert line_driver.read("R2OUT") == 1
+
+    timer = create_chip("NE555", "U")
+    set_pins(timer, ["RESET", "TRIG", "THRESH"], [1, 0, 0])
+    eval_chip(timer)
+    assert timer.read("OUT") == 1
+    assert timer.read("DISCH") == Z
+    set_pins(timer, ["RESET", "TRIG", "THRESH"], [1, 1, 0])
+    eval_chip(timer)
+    assert timer.read("OUT") == 1
+    timer.set_input("THRESH", 1)
+    eval_chip(timer)
+    assert timer.read("OUT") == 0
+    assert timer.read("DISCH") == 0
+
+    sink_array = create_chip("ULN2803A", "U")
+    sink_array.set_input("1B", 0)
+    sink_array.set_input("8B", 1)
+    eval_chip(sink_array)
+    assert sink_array.read("1C") == Z
+    assert sink_array.read("8C") == 0
+
+
 def test_hc574_hc161_hc164_hc74():
     reg = create_chip("74HC574", "U")
     reg.set_input(1, 0)
@@ -669,20 +711,6 @@ def test_datasheet_clock_edges_and_independent_clock_pins():
     board = Board()
     stimulus = StimulusController(board)
 
-    jk = board.add_chip("JK", create_chip("74HC73", "JK"))
-    jk.set_input("1R", 1)
-    jk.set_input("1J", 1)
-    jk.set_input("1K", 1)
-    board.settle()
-    assert jk.read("1Q") == 0
-
-    jk_clk = stimulus.bind_clock(0, jk, "1CP", initial=0)
-    jk_clk.configure(period_ns=100, duty=0.5).start(start_high=False)
-    stimulus.run_for(50)
-    assert jk.read("1Q") == 0
-    stimulus.run_for(50)
-    assert jk.read("1Q") == 1
-
     dff = board.add_chip("DFF", create_chip("74HC74", "DFF"))
     set_pins(dff, ["/CLR1", "/PR1", "/CLR2", "/PR2"], [1, 1, 1, 1])
     dff.set_input("D1", 1)
@@ -886,6 +914,7 @@ def run_all():
     test_hc283()
     test_hc688()
     test_hc541_and_hc245_tristate()
+    test_support_chips_python_models()
     test_hc574_hc161_hc164_hc74()
     test_memory()
     test_seed_split_records_execute_against_python_models()

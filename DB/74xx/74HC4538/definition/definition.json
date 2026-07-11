@@ -1,0 +1,385 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC4538",
+  "metadata": {
+    "title": "Dual precision monostable multivibrator",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "timer"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 16,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "1Cx",
+      "direction": "passive"
+    },
+    {
+      "number": 2,
+      "name": "1RxCx",
+      "direction": "passive"
+    },
+    {
+      "number": 3,
+      "name": "/1R",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 4,
+      "name": "1A",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "1B",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "1Q",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "/1Q",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "/2Q",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 10,
+      "name": "2Q",
+      "direction": "output"
+    },
+    {
+      "number": 11,
+      "name": "2B",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "2A",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "/2R",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 14,
+      "name": "2RxCx",
+      "direction": "passive"
+    },
+    {
+      "number": 15,
+      "name": "2Cx",
+      "direction": "passive"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "dual_monostable_multivibrator",
+    "description": "Dual precision monostable multivibrator"
+  },
+  "timing": {
+    "delay_ns": 15,
+    "datasheet": {
+      "status": "datasheet-backed",
+      "conditions": "TI CD74HC4538 prerequisite pulse timing, VCC=4.5 V.",
+      "values": {
+        "datasheet_min_ns_25c": {
+          "input_pulse_width": 16,
+          "reset_low_width": 16
+        },
+        "datasheet_min_ns_minus40_to_85c": {
+          "input_pulse_width": 20,
+          "reset_low_width": 20
+        },
+        "datasheet_min_ns_minus55_to_125c": {
+          "input_pulse_width": 24,
+          "reset_low_width": 24
+        }
+      }
+    }
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC4538",
+      "file": "DB/74xx/74HC4538/simulation/model.py",
+      "class": "HC4538"
+    },
+    "verilog": {
+      "module": "ttl_74hc4538",
+      "file": "DB/74xx/74HC4538/simulation/model.v",
+      "netlist": "DB/74xx/74HC4538/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC4538",
+    "sources": [
+      {
+        "label": "Texas Instruments CD74HC4538",
+        "url": "https://www.ti.com/lit/ds/symlink/cd74hc4538.pdf",
+        "file": "Source/74HC4538_TI_CD74HC4538.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC4538",
+      "pins": [
+        {
+          "number": 1,
+          "name": "1Cx",
+          "direction": "passive"
+        },
+        {
+          "number": 2,
+          "name": "1RxCx",
+          "direction": "passive"
+        },
+        {
+          "number": 3,
+          "name": "/1R",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 4,
+          "name": "1A",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "1B",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "1Q",
+          "direction": "output"
+        },
+        {
+          "number": 7,
+          "name": "/1Q",
+          "direction": "output",
+          "active_low": true
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "/2Q",
+          "direction": "output",
+          "active_low": true
+        },
+        {
+          "number": 10,
+          "name": "2Q",
+          "direction": "output"
+        },
+        {
+          "number": 11,
+          "name": "2B",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "2A",
+          "direction": "input"
+        },
+        {
+          "number": 13,
+          "name": "/2R",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 14,
+          "name": "2RxCx",
+          "direction": "passive"
+        },
+        {
+          "number": 15,
+          "name": "2Cx",
+          "direction": "passive"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC4538",
+      "rails": [
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 16,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC4538",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "datasheet-backed",
+        "public_timing": {
+          "delay_ns": 15,
+          "datasheet": {
+            "status": "datasheet-backed",
+            "conditions": "TI CD74HC4538 prerequisite pulse timing, VCC=4.5 V.",
+            "values": {
+              "datasheet_min_ns_25c": {
+                "input_pulse_width": 16,
+                "reset_low_width": 16
+              },
+              "datasheet_min_ns_minus40_to_85c": {
+                "input_pulse_width": 20,
+                "reset_low_width": 20
+              },
+              "datasheet_min_ns_minus55_to_125c": {
+                "input_pulse_width": 24,
+                "reset_low_width": 24
+              }
+            }
+          }
+        },
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "conditions": "TI CD74HC4538 prerequisite pulse timing, VCC=4.5 V.",
+        "datasheet_min_ns_25c": {
+          "input_pulse_width": 16,
+          "reset_low_width": 16
+        },
+        "datasheet_min_ns_minus40_to_85c": {
+          "input_pulse_width": 20,
+          "reset_low_width": 20
+        },
+        "datasheet_min_ns_minus55_to_125c": {
+          "input_pulse_width": 24,
+          "reset_low_width": 24
+        }
+      },
+      "evidence": {
+        "label": "Texas Instruments CD74HC4538",
+        "url": "https://www.ti.com/lit/ds/symlink/cd74hc4538.pdf",
+        "file": "Source/74HC4538_TI_CD74HC4538.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC4538",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments CD74HC4538",
+        "url": "https://www.ti.com/lit/ds/symlink/cd74hc4538.pdf",
+        "file": "Source/74HC4538_TI_CD74HC4538.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "modeled",
+    "tests": "modeled"
+  }
+}

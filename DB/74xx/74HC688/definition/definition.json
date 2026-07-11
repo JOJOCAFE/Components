@@ -1,363 +1,198 @@
 {
-  "schema": "db.component.digital",
-  "version": 1,
-  "part": "74HC688",
-  "metadata": {
-    "title": "8-Bit Identity Comparator",
-    "family": "74HC",
-    "group": "74xx",
-    "role": "comparator"
-  },
-  "package": {
-    "kind": "DIP",
-    "pins": 20,
-    "default": "N"
-  },
-  "pins": [
-    {
-      "number": 1,
-      "name": "/E",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 2,
-      "name": "A0",
-      "direction": "input"
-    },
-    {
-      "number": 3,
-      "name": "B0",
-      "direction": "input"
-    },
-    {
-      "number": 4,
-      "name": "A1",
-      "direction": "input"
-    },
-    {
-      "number": 5,
-      "name": "B1",
-      "direction": "input"
-    },
-    {
-      "number": 6,
-      "name": "A2",
-      "direction": "input"
-    },
-    {
-      "number": 7,
-      "name": "B2",
-      "direction": "input"
-    },
-    {
-      "number": 8,
-      "name": "A3",
-      "direction": "input"
-    },
-    {
-      "number": 9,
-      "name": "B3",
-      "direction": "input"
-    },
-    {
-      "number": 10,
-      "name": "GND",
-      "direction": "power",
-      "rail": "GND"
-    },
-    {
-      "number": 11,
-      "name": "A4",
-      "direction": "input"
-    },
-    {
-      "number": 12,
-      "name": "B4",
-      "direction": "input"
-    },
-    {
-      "number": 13,
-      "name": "A5",
-      "direction": "input"
-    },
-    {
-      "number": 14,
-      "name": "B5",
-      "direction": "input"
-    },
-    {
-      "number": 15,
-      "name": "A6",
-      "direction": "input"
-    },
-    {
-      "number": 16,
-      "name": "B6",
-      "direction": "input"
-    },
-    {
-      "number": 17,
-      "name": "A7",
-      "direction": "input"
-    },
-    {
-      "number": 18,
-      "name": "B7",
-      "direction": "input"
-    },
-    {
-      "number": 19,
-      "name": "/Y",
-      "direction": "output",
-      "active_low": true
-    },
-    {
-      "number": 20,
-      "name": "VCC",
-      "direction": "power",
-      "rail": "VCC"
-    }
-  ],
-  "logic": {
-    "type": "eight_bit_identity_comparator",
-    "description": "8-Bit Identity Comparator"
-  },
-  "timing": {
-    "delay_ns": 30,
-    "simple": {
-      "default_delay_ns": 30,
-      "source": "legacy functional simulator default"
-    },
-    "timed": {
-      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-      "paths": {
-        "input_to_output_ns": {
-          "parameter": "tpd",
-          "from": "input",
-          "to": "output",
-          "condition": "input or select changes",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 30,
-              "max_ns": 30,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "transition_time_ns": {
-          "parameter": "tt",
-          "from": "output transition",
-          "to": "output transition",
-          "condition": "enabled output switches",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 30,
-              "max_ns": 30,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        }
-      }
-    }
-  },
-  "generation": {
-    "targets": [
-      "json",
-      "python_simulator",
-      "verilog_wrapper",
-      "verilog_testbench",
-      "kicad_symbol",
-      "svg_pinout",
-      "documentation",
-      "unit_test",
-      "interactive_demo"
-    ],
-    "python": {
-      "factory": "create",
-      "part": "74HC688",
-      "file": "DB/74xx/74HC688/simulation/model.py",
-      "class": "HC688"
-    },
-    "verilog": {
-      "module": "ttl_74hc688",
-      "file": "DB/74xx/74HC688/simulation/model.v",
-      "netlist": "DB/74xx/74HC688/simulation/netlist.json"
-    }
-  },
-  "verification": {
-    "tests": [
-      "truth_table",
-      "timing",
-      "propagation"
-    ],
-    "required_vectors": [
-      "basic_function"
-    ]
-  },
   "datasheet": {
-    "schema": "db.component.datasheet.sources",
-    "version": 1,
     "part": "74HC688",
+    "schema": "db.component.datasheet.sources",
     "sources": [
       {
         "label": "Texas Instruments CD74HC688",
-        "url": "https://www.ti.com/lit/gpn/cd74hc688",
         "package_evidence": "E, 20-pin PDIP",
+        "url": "https://www.ti.com/lit/gpn/cd74hc688",
         "used_for": [
           "pins",
           "package",
           "logic"
         ]
       }
-    ]
+    ],
+    "version": 1
   },
   "definition_layers": {
+    "electrical": {
+      "evidence": {
+        "label": "Texas Instruments CD74HC688",
+        "package_evidence": "E, 20-pin PDIP",
+        "url": "https://www.ti.com/lit/gpn/cd74hc688",
+        "used_for": [
+          "pins",
+          "package",
+          "logic",
+          "timing",
+          "electrical"
+        ]
+      },
+      "loading": {
+        "switching_test_load_pf": 15
+      },
+      "part": "74HC688",
+      "recommended_operating": {
+        "input_or_output_voltage_v": {
+          "max": "VCC",
+          "min": 0
+        },
+        "vcc_v": {
+          "max": 6,
+          "min": 2
+        }
+      },
+      "schema": "db.component.electrical",
+      "static_characteristics": {
+        "icc_max_ua": {
+          "5.5": 80,
+          "6.0": 80
+        },
+        "input_leakage_max_ua": {
+          "5.5": 1,
+          "6.0": 1
+        }
+      },
+      "version": 1
+    },
     "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
       "part": "74HC688",
       "pins": [
         {
-          "number": 1,
-          "name": "/E",
+          "active_low": true,
           "direction": "input",
-          "active_low": true
+          "name": "/E",
+          "number": 1
         },
         {
-          "number": 2,
+          "direction": "input",
           "name": "A0",
-          "direction": "input"
+          "number": 2
         },
         {
-          "number": 3,
+          "direction": "input",
           "name": "B0",
-          "direction": "input"
+          "number": 3
         },
         {
-          "number": 4,
+          "direction": "input",
           "name": "A1",
-          "direction": "input"
+          "number": 4
         },
         {
-          "number": 5,
+          "direction": "input",
           "name": "B1",
-          "direction": "input"
+          "number": 5
         },
         {
-          "number": 6,
+          "direction": "input",
           "name": "A2",
-          "direction": "input"
+          "number": 6
         },
         {
-          "number": 7,
+          "direction": "input",
           "name": "B2",
-          "direction": "input"
+          "number": 7
         },
         {
-          "number": 8,
+          "direction": "input",
           "name": "A3",
-          "direction": "input"
+          "number": 8
         },
         {
-          "number": 9,
+          "direction": "input",
           "name": "B3",
-          "direction": "input"
+          "number": 9
         },
         {
-          "number": 10,
-          "name": "GND",
           "direction": "power",
+          "name": "GND",
+          "number": 10,
           "rail": "GND"
         },
         {
-          "number": 11,
+          "direction": "input",
           "name": "A4",
-          "direction": "input"
+          "number": 11
         },
         {
-          "number": 12,
+          "direction": "input",
           "name": "B4",
-          "direction": "input"
+          "number": 12
         },
         {
-          "number": 13,
+          "direction": "input",
           "name": "A5",
-          "direction": "input"
+          "number": 13
         },
         {
-          "number": 14,
+          "direction": "input",
           "name": "B5",
-          "direction": "input"
+          "number": 14
         },
         {
-          "number": 15,
+          "direction": "input",
           "name": "A6",
-          "direction": "input"
+          "number": 15
         },
         {
-          "number": 16,
+          "direction": "input",
           "name": "B6",
-          "direction": "input"
+          "number": 16
         },
         {
-          "number": 17,
+          "direction": "input",
           "name": "A7",
-          "direction": "input"
+          "number": 17
         },
         {
-          "number": 18,
+          "direction": "input",
           "name": "B7",
-          "direction": "input"
+          "number": 18
         },
         {
-          "number": 19,
-          "name": "/Y",
+          "active_low": true,
           "direction": "output",
-          "active_low": true
+          "name": "/Y",
+          "number": 19
         },
         {
-          "number": 20,
-          "name": "VCC",
           "direction": "power",
+          "name": "VCC",
+          "number": 20,
           "rail": "VCC"
         }
-      ]
+      ],
+      "schema": "db.component.pins",
+      "version": 1
     },
     "power": {
-      "schema": "db.component.power",
-      "version": 1,
       "part": "74HC688",
       "rails": [
         {
-          "number": 10,
-          "name": "GND",
           "direction": "power",
+          "name": "GND",
+          "number": 10,
           "rail": "GND"
         },
         {
-          "number": 20,
-          "name": "VCC",
           "direction": "power",
+          "name": "VCC",
+          "number": 20,
           "rail": "VCC"
         }
-      ]
+      ],
+      "schema": "db.component.power",
+      "version": 1
     },
     "timing": {
-      "schema": "db.component.timing",
-      "version": 1,
-      "part": "74HC688",
       "delay": {
-        "model_delay_ns": 30,
-        "status": "datasheet-backed",
-        "datasheet_typical_ns": {
-          "4.5": {
-            "an_to_output": 34,
-            "bn_to_output": 34,
-            "enable_to_output": 24
-          }
+        "conditions": {
+          "load_pf": 15,
+          "path": "A_B_or_E_to_P_equals_Q_output",
+          "section": "5.5 Switching Characteristics"
         },
         "datasheet_max_ns_25c": {
           "4.5": {
@@ -373,60 +208,20 @@
             "enable_to_output": 36
           }
         },
-        "conditions": {
-          "load_pf": 15,
-          "path": "A_B_or_E_to_P_equals_Q_output",
-          "section": "5.5 Switching Characteristics"
-        },
-        "public_timing": {
-          "delay_ns": 30,
-          "simple": {
-            "default_delay_ns": 30,
-            "source": "legacy functional simulator default"
-          },
-          "timed": {
-            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-            "paths": {
-              "input_to_output_ns": {
-                "parameter": "tpd",
-                "from": "input",
-                "to": "output",
-                "condition": "input or select changes",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 30,
-                    "max_ns": 30,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "transition_time_ns": {
-                "parameter": "tt",
-                "from": "output transition",
-                "to": "output transition",
-                "condition": "enabled output switches",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 30,
-                    "max_ns": 30,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              }
-            }
+        "datasheet_typical_ns": {
+          "4.5": {
+            "an_to_output": 34,
+            "bn_to_output": 34,
+            "enable_to_output": 24
           }
         },
-        "conservative_defaults": {
-          "input_to_output_ns": "conservative_default_from_existing_model_delay",
-          "transition_time_ns": "conservative_default_from_existing_model_delay"
-        }
+        "model_delay_ns": 30,
+        "status": "datasheet-backed"
       },
       "evidence": {
         "label": "Texas Instruments CD74HC688",
-        "url": "https://www.ti.com/lit/gpn/cd74hc688",
         "package_evidence": "E, 20-pin PDIP",
+        "url": "https://www.ti.com/lit/gpn/cd74hc688",
         "used_for": [
           "pins",
           "package",
@@ -434,55 +229,216 @@
           "timing",
           "electrical"
         ]
-      }
-    },
-    "electrical": {
-      "schema": "db.component.electrical",
-      "version": 1,
+      },
       "part": "74HC688",
-      "recommended_operating": {
-        "vcc_v": {
-          "min": 2,
-          "max": 6
-        },
-        "input_or_output_voltage_v": {
-          "min": 0,
-          "max": "VCC"
-        }
-      },
-      "static_characteristics": {
-        "input_leakage_max_ua": {
-          "6.0": 1,
-          "5.5": 1
-        },
-        "icc_max_ua": {
-          "6.0": 80,
-          "5.5": 80
-        }
-      },
-      "loading": {
-        "switching_test_load_pf": 15
-      },
-      "evidence": {
-        "label": "Texas Instruments CD74HC688",
-        "url": "https://www.ti.com/lit/gpn/cd74hc688",
-        "package_evidence": "E, 20-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic",
-          "timing",
-          "electrical"
-        ]
-      }
+      "schema": "db.component.timing",
+      "version": 1
     }
   },
+  "generation": {
+    "python": {
+      "class": "HC688",
+      "factory": "create",
+      "file": "DB/74xx/74HC688/simulation/model.py",
+      "part": "74HC688"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "DB/74xx/74HC688/simulation/model.v",
+      "module": "ttl_74hc688",
+      "netlist": "DB/74xx/74HC688/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "description": "8-Bit Identity Comparator",
+    "type": "eight_bit_identity_comparator"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "comparator",
+    "title": "8-Bit Identity Comparator"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 20
+  },
+  "part": "74HC688",
+  "pins": [
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/E",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "A0",
+      "number": 2
+    },
+    {
+      "direction": "input",
+      "name": "B0",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "A1",
+      "number": 4
+    },
+    {
+      "direction": "input",
+      "name": "B1",
+      "number": 5
+    },
+    {
+      "direction": "input",
+      "name": "A2",
+      "number": 6
+    },
+    {
+      "direction": "input",
+      "name": "B2",
+      "number": 7
+    },
+    {
+      "direction": "input",
+      "name": "A3",
+      "number": 8
+    },
+    {
+      "direction": "input",
+      "name": "B3",
+      "number": 9
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 10,
+      "rail": "GND"
+    },
+    {
+      "direction": "input",
+      "name": "A4",
+      "number": 11
+    },
+    {
+      "direction": "input",
+      "name": "B4",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "A5",
+      "number": 13
+    },
+    {
+      "direction": "input",
+      "name": "B5",
+      "number": 14
+    },
+    {
+      "direction": "input",
+      "name": "A6",
+      "number": 15
+    },
+    {
+      "direction": "input",
+      "name": "B6",
+      "number": 16
+    },
+    {
+      "direction": "input",
+      "name": "A7",
+      "number": 17
+    },
+    {
+      "direction": "input",
+      "name": "B7",
+      "number": 18
+    },
+    {
+      "active_low": true,
+      "direction": "output",
+      "name": "/Y",
+      "number": 19
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 20,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
   "status": {
     "datasheet": "verified",
     "pinout": "verified",
     "python_behavior": "modeled",
-    "verilog_model": "modeled",
+    "tests": "tested",
     "verilog_export": "tested",
-    "tests": "tested"
-  }
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "delay_ns": 30,
+    "simple": {
+      "default_delay_ns": 30,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 30,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 30
+            }
+          },
+          "to": "output"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 30,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 30
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1
 }

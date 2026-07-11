@@ -48,7 +48,7 @@ module ttl_74hc163 #(parameter WIDTH = 4, DELAY_RISE = 0, DELAY_FALL = 0)
 
 //------------------------------------------------//
 wire RCO_current;
-reg [WIDTH-1:0] Q_current;
+reg [WIDTH-1:0] Q_current = {WIDTH{1'b0}};
 wire [WIDTH-1:0] Q_next;
 
 assign Q_next = Q_current + 1;

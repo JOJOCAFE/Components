@@ -55,8 +55,8 @@ module ttl_74hc593 #(parameter DELAY_RISE = 0, DELAY_FALL = 0)
   input G_bar
 );
 
-reg [7:0] counter;
-reg [7:0] input_register;
+reg [7:0] counter = 8'h00;
+reg [7:0] input_register = 8'h00;
 
 wire output_enabled;
 wire count_enabled;

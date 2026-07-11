@@ -299,6 +299,36 @@
       ],
       "role": "counter",
       "timing": {
+        "datasheet": {
+          "conditions": "Renesas HD74HC160 switching characteristics, VCC=2 V, CL=50 pF.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns_25c": {
+              "clear_to_q": 225,
+              "clock_to_q": 160,
+              "clock_to_ripple_carry": 200,
+              "enable_t_to_ripple_carry": 150,
+              "output_rise_fall": 75
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "clear_to_q": 280,
+              "clock_to_q": 200,
+              "clock_to_ripple_carry": 250,
+              "enable_t_to_ripple_carry": 190,
+              "output_rise_fall": 95
+            },
+            "datasheet_min_ns_25c": {
+              "pulse_width": 80,
+              "removal_clear_to_clock": 100,
+              "setup_data_load_clear_to_clock": 125
+            },
+            "datasheet_min_ns_minus40_to_85c": {
+              "pulse_width": 100,
+              "removal_clear_to_clock": 125,
+              "setup_data_load_clear_to_clock": 156
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

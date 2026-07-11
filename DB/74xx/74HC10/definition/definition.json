@@ -1,378 +1,11 @@
 {
-  "schema": "db.component.digital",
-  "version": 1,
-  "part": "74HC10",
-  "metadata": {
-    "title": "Triple 3-input NAND gate",
-    "family": "74HC",
-    "group": "74xx",
-    "role": "nand_gate"
-  },
-  "package": {
-    "kind": "DIP",
-    "pins": 14,
-    "default": "N"
-  },
-  "pins": [
-    {
-      "number": 1,
-      "name": "1A",
-      "direction": "input"
-    },
-    {
-      "number": 2,
-      "name": "1B",
-      "direction": "input"
-    },
-    {
-      "number": 3,
-      "name": "2A",
-      "direction": "input"
-    },
-    {
-      "number": 4,
-      "name": "2B",
-      "direction": "input"
-    },
-    {
-      "number": 5,
-      "name": "2C",
-      "direction": "input"
-    },
-    {
-      "number": 6,
-      "name": "2Y",
-      "direction": "output"
-    },
-    {
-      "number": 7,
-      "name": "GND",
-      "direction": "power",
-      "rail": "GND"
-    },
-    {
-      "number": 8,
-      "name": "3Y",
-      "direction": "output"
-    },
-    {
-      "number": 9,
-      "name": "3A",
-      "direction": "input"
-    },
-    {
-      "number": 10,
-      "name": "3B",
-      "direction": "input"
-    },
-    {
-      "number": 11,
-      "name": "3C",
-      "direction": "input"
-    },
-    {
-      "number": 12,
-      "name": "1Y",
-      "direction": "output"
-    },
-    {
-      "number": 13,
-      "name": "1C",
-      "direction": "input"
-    },
-    {
-      "number": 14,
-      "name": "VCC",
-      "direction": "power",
-      "rail": "VCC"
-    }
-  ],
-  "logic": {
-    "type": "triple_3_input_nand_gate",
-    "description": "Triple 3-input NAND gate"
-  },
-  "timing": {
-    "delay_ns": 15,
-    "datasheet": {
-      "source": "TI SN74HC10 datasheet, switching characteristics over recommended operating free-air temperature range, CL = 50 pF",
-      "path": "A_B_or_C_to_Y",
-      "vcc_v": 4.5,
-      "typical_ns": 10,
-      "max_ns_25c": 19,
-      "max_ns_minus40_to_85c": 24,
-      "load_pf": 50
-    },
-    "simple": {
-      "default_delay_ns": 15,
-      "source": "legacy functional simulator default"
-    },
-    "timed": {
-      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-      "paths": {
-        "input_to_output_ns": {
-          "parameter": "tpd",
-          "from": "input",
-          "to": "output",
-          "condition": "input or select changes",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "transition_time_ns": {
-          "parameter": "tt",
-          "from": "output transition",
-          "to": "output transition",
-          "condition": "enabled output switches",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        }
-      }
-    }
-  },
-  "generation": {
-    "targets": [
-      "json",
-      "python_simulator",
-      "verilog_wrapper",
-      "verilog_testbench",
-      "kicad_symbol",
-      "svg_pinout",
-      "documentation",
-      "unit_test",
-      "interactive_demo"
-    ],
-    "python": {
-      "factory": "create",
-      "part": "74HC10",
-      "file": "DB/74xx/74HC10/simulation/model.py",
-      "class": "HC10"
-    },
-    "verilog": {
-      "module": "ttl_74hc10",
-      "file": "DB/74xx/74HC10/simulation/model.v",
-      "netlist": "DB/74xx/74HC10/simulation/netlist.json"
-    }
-  },
-  "verification": {
-    "tests": [
-      "truth_table",
-      "timing",
-      "propagation"
-    ],
-    "required_vectors": [
-      "nand3_000",
-      "nand3_011",
-      "nand3_101",
-      "nand3_110",
-      "nand3_111"
-    ]
-  },
   "datasheet": {
-    "schema": "db.component.datasheet.sources",
-    "version": 1,
     "part": "74HC10",
+    "schema": "db.component.datasheet.sources",
     "sources": [
       {
-        "label": "Texas Instruments SN74HC10",
         "file": "Source/74HC10_TI_27881_SN74HC10N_DIPVERIFY.pdf",
-        "used_for": [
-          "pins",
-          "package",
-          "logic",
-          "timing",
-          "electrical"
-        ],
-        "package_evidence": "N, 14-pin PDIP"
-      }
-    ]
-  },
-  "definition_layers": {
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "74HC10",
-      "pins": [
-        {
-          "number": 1,
-          "name": "1A",
-          "direction": "input"
-        },
-        {
-          "number": 2,
-          "name": "1B",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "2A",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "2B",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "2C",
-          "direction": "input"
-        },
-        {
-          "number": 6,
-          "name": "2Y",
-          "direction": "output"
-        },
-        {
-          "number": 7,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 8,
-          "name": "3Y",
-          "direction": "output"
-        },
-        {
-          "number": 9,
-          "name": "3A",
-          "direction": "input"
-        },
-        {
-          "number": 10,
-          "name": "3B",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "3C",
-          "direction": "input"
-        },
-        {
-          "number": 12,
-          "name": "1Y",
-          "direction": "output"
-        },
-        {
-          "number": 13,
-          "name": "1C",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "74HC10",
-      "rails": [
-        {
-          "number": 7,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 14,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "timing": {
-      "schema": "db.component.timing",
-      "version": 1,
-      "part": "74HC10",
-      "delay": {
-        "model_delay_ns": 15,
-        "status": "datasheet-backed",
-        "datasheet_typical_ns": {
-          "4.5": 10
-        },
-        "datasheet_max_ns_25c": {
-          "4.5": 19
-        },
-        "datasheet_max_ns_minus40_to_85c": {
-          "4.5": 24
-        },
-        "conditions": {
-          "load_pf": 50,
-          "path": "A_B_or_C_to_Y"
-        },
-        "public_timing": {
-          "delay_ns": 15,
-          "datasheet": {
-            "source": "TI SN74HC10 datasheet, switching characteristics over recommended operating free-air temperature range, CL = 50 pF",
-            "path": "A_B_or_C_to_Y",
-            "vcc_v": 4.5,
-            "typical_ns": 10,
-            "max_ns_25c": 19,
-            "max_ns_minus40_to_85c": 24,
-            "load_pf": 50
-          },
-          "simple": {
-            "default_delay_ns": 15,
-            "source": "legacy functional simulator default"
-          },
-          "timed": {
-            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-            "paths": {
-              "input_to_output_ns": {
-                "parameter": "tpd",
-                "from": "input",
-                "to": "output",
-                "condition": "input or select changes",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "transition_time_ns": {
-                "parameter": "tt",
-                "from": "output transition",
-                "to": "output transition",
-                "condition": "enabled output switches",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "conservative_defaults": {
-          "input_to_output_ns": "conservative_default_from_existing_model_delay",
-          "transition_time_ns": "conservative_default_from_existing_model_delay"
-        }
-      },
-      "evidence": {
         "label": "Texas Instruments SN74HC10",
-        "file": "Source/74HC10_TI_27881_SN74HC10N_DIPVERIFY.pdf",
         "package_evidence": "N, 14-pin PDIP",
         "used_for": [
           "pins",
@@ -382,24 +15,50 @@
           "electrical"
         ]
       }
-    },
+    ],
+    "version": 1
+  },
+  "definition_layers": {
     "electrical": {
-      "schema": "db.component.electrical",
-      "version": 1,
+      "evidence": {
+        "file": "Source/74HC10_TI_27881_SN74HC10N_DIPVERIFY.pdf",
+        "label": "Texas Instruments SN74HC10",
+        "package_evidence": "N, 14-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic",
+          "timing",
+          "electrical"
+        ]
+      },
+      "loading": {
+        "application_capacitive_load_limit_pf": 50,
+        "switching_test_load_pf": 50
+      },
       "part": "74HC10",
       "recommended_operating": {
-        "vcc_v": {
-          "min": 2,
-          "nom": 5,
-          "max": 6
+        "input_transition_max_ns": {
+          "2.0": 1000,
+          "4.5": 500,
+          "6.0": 400
         },
         "input_voltage_v": {
-          "min": 0,
-          "max": "VCC"
+          "max": "VCC",
+          "min": 0
         },
         "output_voltage_v": {
-          "min": 0,
-          "max": "VCC"
+          "max": "VCC",
+          "min": 0
+        },
+        "ta_c": {
+          "max": 85,
+          "min": -40
+        },
+        "vcc_v": {
+          "max": 6,
+          "min": 2,
+          "nom": 5
         },
         "vih_min_v": {
           "2.0": 1.5,
@@ -410,18 +69,16 @@
           "2.0": 0.5,
           "4.5": 1.35,
           "6.0": 1.8
-        },
-        "input_transition_max_ns": {
-          "2.0": 1000,
-          "4.5": 500,
-          "6.0": 400
-        },
-        "ta_c": {
-          "min": -40,
-          "max": 85
         }
       },
+      "schema": "db.component.electrical",
       "static_characteristics": {
+        "ci_max_pf": {
+          "2.0_to_6.0": 10
+        },
+        "icc_max_ua": {
+          "6.0": 20
+        },
         "voh_min_v": {
           "ioh_-20ua": {
             "2.0": 1.9,
@@ -439,21 +96,129 @@
           },
           "iol_4ma_4.5v": 0.33,
           "iol_5.2ma_6v": 0.33
-        },
-        "icc_max_ua": {
-          "6.0": 20
-        },
-        "ci_max_pf": {
-          "2.0_to_6.0": 10
         }
       },
-      "loading": {
-        "switching_test_load_pf": 50,
-        "application_capacitive_load_limit_pf": 50
+      "version": 1
+    },
+    "pins": {
+      "part": "74HC10",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "1A",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "1B",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "2A",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "2B",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "2C",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "2Y",
+          "number": 6
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "3Y",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "3A",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "3B",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "3C",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "1Y",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "1C",
+          "number": 13
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC10",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 7,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 14,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": {
+          "load_pf": 50,
+          "path": "A_B_or_C_to_Y"
+        },
+        "datasheet_max_ns_25c": {
+          "4.5": 19
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "4.5": 24
+        },
+        "datasheet_typical_ns": {
+          "4.5": 10
+        },
+        "model_delay_ns": 15,
+        "status": "datasheet-backed"
       },
       "evidence": {
-        "label": "Texas Instruments SN74HC10",
         "file": "Source/74HC10_TI_27881_SN74HC10N_DIPVERIFY.pdf",
+        "label": "Texas Instruments SN74HC10",
         "package_evidence": "N, 14-pin PDIP",
         "used_for": [
           "pins",
@@ -462,15 +227,197 @@
           "timing",
           "electrical"
         ]
-      }
+      },
+      "part": "74HC10",
+      "schema": "db.component.timing",
+      "version": 1
     }
   },
+  "generation": {
+    "python": {
+      "class": "HC10",
+      "factory": "create",
+      "file": "DB/74xx/74HC10/simulation/model.py",
+      "part": "74HC10"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "DB/74xx/74HC10/simulation/model.v",
+      "module": "ttl_74hc10",
+      "netlist": "DB/74xx/74HC10/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "description": "Triple 3-input NAND gate",
+    "type": "triple_3_input_nand_gate"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "nand_gate",
+    "title": "Triple 3-input NAND gate"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 14
+  },
+  "part": "74HC10",
+  "pins": [
+    {
+      "direction": "input",
+      "name": "1A",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "1B",
+      "number": 2
+    },
+    {
+      "direction": "input",
+      "name": "2A",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "2B",
+      "number": 4
+    },
+    {
+      "direction": "input",
+      "name": "2C",
+      "number": 5
+    },
+    {
+      "direction": "output",
+      "name": "2Y",
+      "number": 6
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 7,
+      "rail": "GND"
+    },
+    {
+      "direction": "output",
+      "name": "3Y",
+      "number": 8
+    },
+    {
+      "direction": "input",
+      "name": "3A",
+      "number": 9
+    },
+    {
+      "direction": "input",
+      "name": "3B",
+      "number": 10
+    },
+    {
+      "direction": "input",
+      "name": "3C",
+      "number": 11
+    },
+    {
+      "direction": "output",
+      "name": "1Y",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "1C",
+      "number": 13
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 14,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
   "status": {
     "datasheet": "verified",
     "pinout": "verified",
     "python_behavior": "modeled",
-    "verilog_model": "modeled",
+    "tests": "tested",
     "verilog_export": "tested",
-    "tests": "tested"
-  }
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "load_pf": 50,
+      "max_ns_25c": 19,
+      "max_ns_minus40_to_85c": 24,
+      "path": "A_B_or_C_to_Y",
+      "source": "TI SN74HC10 datasheet, switching characteristics over recommended operating free-air temperature range, CL = 50 pF",
+      "typical_ns": 10,
+      "vcc_v": 4.5
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "nand3_000",
+      "nand3_011",
+      "nand3_101",
+      "nand3_110",
+      "nand3_111"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1
 }

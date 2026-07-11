@@ -350,6 +350,32 @@
       ],
       "role": "buffer",
       "timing": {
+        "datasheet": {
+          "conditions": "TI SN74HC240 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns_25c": {
+              "disable": 30,
+              "enable": 30,
+              "input_to_output": 20
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "disable": 38,
+              "enable": 38,
+              "input_to_output": 25
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "disable": 45,
+              "enable": 45,
+              "input_to_output": 30
+            },
+            "datasheet_typical_ns": {
+              "disable": 22,
+              "enable": 15,
+              "input_to_output": 10
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

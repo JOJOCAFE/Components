@@ -1,177 +1,209 @@
 {
-  "schema": "db.component.digital",
-  "version": 1,
-  "part": "74HC595",
-  "metadata": {
-    "title": "8-Bit Serial-In Shift Register With Output Register",
-    "family": "74HC",
-    "group": "74xx",
-    "role": "register"
+  "datasheet": {
+    "part": "74HC595",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC595",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
   },
-  "package": {
-    "kind": "DIP",
-    "pins": 16,
-    "default": "N"
-  },
-  "pins": [
-    {
-      "number": 1,
-      "name": "QB",
-      "direction": "output"
-    },
-    {
-      "number": 2,
-      "name": "QC",
-      "direction": "output"
-    },
-    {
-      "number": 3,
-      "name": "QD",
-      "direction": "output"
-    },
-    {
-      "number": 4,
-      "name": "QE",
-      "direction": "output"
-    },
-    {
-      "number": 5,
-      "name": "QF",
-      "direction": "output"
-    },
-    {
-      "number": 6,
-      "name": "QG",
-      "direction": "output"
-    },
-    {
-      "number": 7,
-      "name": "QH",
-      "direction": "output"
-    },
-    {
-      "number": 8,
-      "name": "GND",
-      "direction": "power",
-      "rail": "GND"
-    },
-    {
-      "number": 9,
-      "name": "QH'",
-      "direction": "output"
-    },
-    {
-      "number": 10,
-      "name": "/SRCLR",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 11,
-      "name": "SRCLK",
-      "direction": "input"
-    },
-    {
-      "number": 12,
-      "name": "RCLK",
-      "direction": "input"
-    },
-    {
-      "number": 13,
-      "name": "/OE",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 14,
-      "name": "SER",
-      "direction": "input"
-    },
-    {
-      "number": 15,
-      "name": "QA",
-      "direction": "output"
-    },
-    {
-      "number": 16,
-      "name": "VCC",
-      "direction": "power",
-      "rail": "VCC"
-    }
-  ],
-  "logic": {
-    "type": "8_bit_serial_in_shift_register_with_output",
-    "description": "8-Bit Serial-In Shift Register With Output Register"
-  },
-  "timing": {
-    "delay_ns": 15,
-    "simple": {
-      "default_delay_ns": 15,
-      "source": "legacy functional simulator default"
-    },
-    "timed": {
-      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-      "paths": {
-        "clock_to_output_ns": {
-          "parameter": "tco",
-          "from": "CLK/clock control",
-          "to": "Q/output",
-          "condition": "active clock edge",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "async_control_to_output_ns": {
-          "parameter": "tremap",
-          "from": "asynchronous control",
-          "to": "Q/output",
-          "condition": "async control asserted or released",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "input_setup_margin_ns": {
-          "parameter": "tsu",
-          "from": "D/input",
-          "to": "CLK/clock control",
-          "condition": "conservative setup placeholder from model delay",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "transition_time_ns": {
-          "parameter": "tt",
-          "from": "output transition",
-          "to": "output transition",
-          "condition": "enabled output switches",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC595",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC595",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
         }
       }
+    },
+    "pins": {
+      "part": "74HC595",
+      "pins": [
+        {
+          "direction": "output",
+          "name": "QB",
+          "number": 1
+        },
+        {
+          "direction": "output",
+          "name": "QC",
+          "number": 2
+        },
+        {
+          "direction": "output",
+          "name": "QD",
+          "number": 3
+        },
+        {
+          "direction": "output",
+          "name": "QE",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "QF",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "QG",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "QH",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "QH'",
+          "number": 9
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/SRCLR",
+          "number": 10
+        },
+        {
+          "direction": "input",
+          "name": "SRCLK",
+          "number": 11
+        },
+        {
+          "direction": "input",
+          "name": "RCLK",
+          "number": 12
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/OE",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "SER",
+          "number": 14
+        },
+        {
+          "direction": "output",
+          "name": "QA",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC595",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "TI SN74HC595 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_fmax_mhz": {
+          "min_25c": 31,
+          "sn54_min": 21,
+          "sn74_min": 25,
+          "typical": 38
+        },
+        "datasheet_max_ns_25c": {
+          "output_enable": 30,
+          "srclr_to_qh": 35
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "output_enable": 37,
+          "srclr_to_qh": 44
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "output_enable": 45,
+          "srclr_to_qh": 52
+        },
+        "datasheet_typical_ns": {
+          "output_enable": 15,
+          "srclr_to_qh": 18
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC595",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC595",
+      "schema": "db.component.timing",
+      "version": 1
     }
   },
   "generation": {
+    "python": {
+      "class": "HC595",
+      "factory": "create",
+      "file": "DB/74xx/74HC595/simulation/model.py",
+      "part": "74HC595"
+    },
     "targets": [
       "json",
       "python_simulator",
@@ -183,285 +215,231 @@
       "unit_test",
       "interactive_demo"
     ],
-    "python": {
-      "factory": "create",
-      "part": "74HC595",
-      "file": "DB/74xx/74HC595/simulation/model.py",
-      "class": "HC595"
-    },
     "verilog": {
-      "module": "ttl_74hc595",
       "file": "DB/74xx/74HC595/simulation/model.v",
+      "module": "ttl_74hc595",
       "netlist": "DB/74xx/74HC595/simulation/netlist.json"
     }
   },
+  "logic": {
+    "description": "8-Bit Serial-In Shift Register With Output Register",
+    "type": "8_bit_serial_in_shift_register_with_output"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "register",
+    "title": "8-Bit Serial-In Shift Register With Output Register"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 16
+  },
+  "part": "74HC595",
+  "pins": [
+    {
+      "direction": "output",
+      "name": "QB",
+      "number": 1
+    },
+    {
+      "direction": "output",
+      "name": "QC",
+      "number": 2
+    },
+    {
+      "direction": "output",
+      "name": "QD",
+      "number": 3
+    },
+    {
+      "direction": "output",
+      "name": "QE",
+      "number": 4
+    },
+    {
+      "direction": "output",
+      "name": "QF",
+      "number": 5
+    },
+    {
+      "direction": "output",
+      "name": "QG",
+      "number": 6
+    },
+    {
+      "direction": "output",
+      "name": "QH",
+      "number": 7
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 8,
+      "rail": "GND"
+    },
+    {
+      "direction": "output",
+      "name": "QH'",
+      "number": 9
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/SRCLR",
+      "number": 10
+    },
+    {
+      "direction": "input",
+      "name": "SRCLK",
+      "number": 11
+    },
+    {
+      "direction": "input",
+      "name": "RCLK",
+      "number": 12
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/OE",
+      "number": 13
+    },
+    {
+      "direction": "input",
+      "name": "SER",
+      "number": 14
+    },
+    {
+      "direction": "output",
+      "name": "QA",
+      "number": 15
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 16,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "TI SN74HC595 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_fmax_mhz": {
+          "min_25c": 31,
+          "sn54_min": 21,
+          "sn74_min": 25,
+          "typical": 38
+        },
+        "datasheet_max_ns_25c": {
+          "output_enable": 30,
+          "srclr_to_qh": 35
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "output_enable": 37,
+          "srclr_to_qh": 44
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "output_enable": 45,
+          "srclr_to_qh": 52
+        },
+        "datasheet_typical_ns": {
+          "output_enable": 15,
+          "srclr_to_qh": 18
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "async_control_to_output_ns": {
+          "condition": "async control asserted or released",
+          "from": "asynchronous control",
+          "parameter": "tremap",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "Q/output"
+        },
+        "clock_to_output_ns": {
+          "condition": "active clock edge",
+          "from": "CLK/clock control",
+          "parameter": "tco",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "Q/output"
+        },
+        "input_setup_margin_ns": {
+          "condition": "conservative setup placeholder from model delay",
+          "from": "D/input",
+          "parameter": "tsu",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "CLK/clock control"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    }
+  },
   "verification": {
+    "required_vectors": [
+      "basic_function",
+      "disabled_or_high_z"
+    ],
     "tests": [
       "truth_table",
       "timing",
       "propagation",
       "tri_state",
       "bus_fight"
-    ],
-    "required_vectors": [
-      "basic_function",
-      "disabled_or_high_z"
     ]
   },
-  "datasheet": {
-    "schema": "db.component.datasheet.sources",
-    "version": 1,
-    "part": "74HC595",
-    "sources": [
-      {
-        "label": "Texas Instruments SN74HC595",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf",
-        "package_evidence": "N, 16-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    ]
-  },
-  "definition_layers": {
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "74HC595",
-      "pins": [
-        {
-          "number": 1,
-          "name": "QB",
-          "direction": "output"
-        },
-        {
-          "number": 2,
-          "name": "QC",
-          "direction": "output"
-        },
-        {
-          "number": 3,
-          "name": "QD",
-          "direction": "output"
-        },
-        {
-          "number": 4,
-          "name": "QE",
-          "direction": "output"
-        },
-        {
-          "number": 5,
-          "name": "QF",
-          "direction": "output"
-        },
-        {
-          "number": 6,
-          "name": "QG",
-          "direction": "output"
-        },
-        {
-          "number": 7,
-          "name": "QH",
-          "direction": "output"
-        },
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 9,
-          "name": "QH'",
-          "direction": "output"
-        },
-        {
-          "number": 10,
-          "name": "/SRCLR",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 11,
-          "name": "SRCLK",
-          "direction": "input"
-        },
-        {
-          "number": 12,
-          "name": "RCLK",
-          "direction": "input"
-        },
-        {
-          "number": 13,
-          "name": "/OE",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 14,
-          "name": "SER",
-          "direction": "input"
-        },
-        {
-          "number": 15,
-          "name": "QA",
-          "direction": "output"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "74HC595",
-      "rails": [
-        {
-          "number": 8,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 16,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "timing": {
-      "schema": "db.component.timing",
-      "version": 1,
-      "part": "74HC595",
-      "delay": {
-        "model_delay_ns": 15,
-        "status": "model-derived",
-        "public_timing": {
-          "delay_ns": 15,
-          "simple": {
-            "default_delay_ns": 15,
-            "source": "legacy functional simulator default"
-          },
-          "timed": {
-            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-            "paths": {
-              "clock_to_output_ns": {
-                "parameter": "tco",
-                "from": "CLK/clock control",
-                "to": "Q/output",
-                "condition": "active clock edge",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "async_control_to_output_ns": {
-                "parameter": "tremap",
-                "from": "asynchronous control",
-                "to": "Q/output",
-                "condition": "async control asserted or released",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "input_setup_margin_ns": {
-                "parameter": "tsu",
-                "from": "D/input",
-                "to": "CLK/clock control",
-                "condition": "conservative setup placeholder from model delay",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "transition_time_ns": {
-                "parameter": "tt",
-                "from": "output transition",
-                "to": "output transition",
-                "condition": "enabled output switches",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "conservative_defaults": {
-          "clock_to_output_ns": "conservative_default_from_existing_model_delay",
-          "async_control_to_output_ns": "conservative_default_from_existing_model_delay",
-          "input_setup_margin_ns": "conservative_default_from_existing_model_delay",
-          "transition_time_ns": "conservative_default_from_existing_model_delay"
-        }
-      },
-      "evidence": {
-        "label": "Texas Instruments SN74HC595",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf",
-        "package_evidence": "N, 16-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    },
-    "electrical": {
-      "schema": "db.component.electrical",
-      "version": 1,
-      "part": "74HC595",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
-        }
-      },
-      "current": {
-        "status": "datasheet-required"
-      },
-      "loading": {
-        "status": "datasheet-required"
-      },
-      "evidence": {
-        "label": "Texas Instruments SN74HC595",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf",
-        "package_evidence": "N, 16-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    }
-  },
-  "status": {
-    "datasheet": "verified",
-    "pinout": "verified",
-    "python_behavior": "modeled",
-    "verilog_model": "modeled",
-    "verilog_export": "tested",
-    "tests": "tested"
-  }
+  "version": 1
 }

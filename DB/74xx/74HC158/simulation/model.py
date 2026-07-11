@@ -35,8 +35,6 @@ class LocalCatalogChip(Chip):
         if pin is None:
             return "rising"
         name = self.pin(pin).name
-        if self.part in ("74HC73", "74HC112") and name.endswith("CP"):
-            return "falling"
         return "rising"
 
     def names(self, pattern: str) -> list[str]:
@@ -94,9 +92,6 @@ class LocalCatalogChip(Chip):
             enabled = not self.r("E1") and not self.r("E2") and self.r("E3")
             sel = self.r("A0") | (self.r("A1") << 1) | (self.r("A2") << 2)
             for i in range(8): self.o(f"Y{i}", 1 if enabled and i == sel else 0)
-        elif p == "74HC42":
-            sel = self.r("0A") | (self.r("1A") << 1) | (self.r("2A") << 2) | (self.r("3A") << 3)
-            for i in range(10): self.o(f"{i}Y", 0 if i == sel else 1)
         elif p == "74HC147":
             selected = 0
             for i in range(10):
@@ -153,8 +148,9 @@ class LocalCatalogChip(Chip):
                 a0 = f"{i}I0" if p == "74HC158" else f"{i}A"
                 a1 = f"{i}I1" if p == "74HC158" else f"{i}B"
                 val = self.r(a1 if sel else a0)
+                if p == "74HC158" and en: self.o(f"{i}Y", 1)
                 if p == "74HC257" and en: self.o(f"{i}Y", Z)
-                else: self.o(f"{i}Y", 1 - val if p == "74HC158" else val)
+                elif not (p == "74HC158" and en): self.o(f"{i}Y", 1 - val if p == "74HC158" else val)
         elif p in ("74HC240", "74HC244", "74HC541"):
             inv = p == "74HC240"
             for group, oe in [(1, "/1OE" if self.has("/1OE") else "/OE1"), (2, "/2OE" if self.has("/2OE") else "/OE2")]:
@@ -178,21 +174,12 @@ class LocalCatalogChip(Chip):
             self._write_names(["Q0", "Q1", "Q2", "Q3"], self._state)
             terminal = 9 if p in ("74HC160", "74HC162") else 15
             self.o("TC", 1 if self._state == terminal and self.r("CET") else 0)
-        elif p in ("74HC73", "74HC112"):
-            self._update_jk_outputs()
         elif p == "74HC165":
             if not self.r("/SH/LD"): self._state = self._read_names(["A", "B", "C", "D", "E", "F", "G", "H"])
             self.o("QH", (self._state >> 7) & 1); self.o("/QH", 1 - ((self._state >> 7) & 1))
         elif p == "74HC166":
             if not self.r("/CLR"): self._state = 0
             self.o("QH", (self._state >> 7) & 1)
-        elif p == "74HC181":
-            a = self._read_names(["A0", "A1", "A2", "A3"]); b = self._read_names(["B0", "B1", "B2", "B3"])
-            s = self.r("S0") | (self.r("S1") << 1) | (self.r("S2") << 2) | (self.r("S3") << 3)
-            f = (a + b + self.r("Cn")) & 0xF if not self.r("M") else _alu_logic(a, b, s)
-            self._write_names(["F0", "F1", "F2", "F3"], f)
-            self.o("A_eq_B", 1 if f == 0xF else 0); self.o("Cn+4", 1 if a + b + self.r("Cn") > 0xF else 0)
-            self.o("P", 0); self.o("G", 0)
         elif p == "74HC193":
             if self.r("CLR"): self._state = 0
             elif not self.r("/LOAD"): self._state = self._read_names(["A", "B", "C", "D"])
@@ -249,8 +236,6 @@ class LocalCatalogChip(Chip):
             self._state = self._read_names([f"{i}D" for i in range(1, 9)])
         elif p == "74HC377":
             if not self.r("E"): self._state = self._read_names([f"D{i}" for i in range(8)])
-        elif p in ("74HC73", "74HC112"):
-            self._clock_jk(pin_name)
         elif p == "74HC165":
             if not self.r("/SH/LD"): self._state = self._read_names(["A", "B", "C", "D", "E", "F", "G", "H"])
             elif not self.r("CLK INH"): self._state = ((self._state << 1) & 0xFF) | self.r("SER")
@@ -282,36 +267,6 @@ class LocalCatalogChip(Chip):
         elif p == "74HC922":
             self._scan_col = (self._scan_col + 1) & 3
         self.update()
-
-    def _clock_jk(self, pin_name: str | None = None) -> None:
-        blocks = [1, 2]
-        if pin_name is not None:
-            blocks = [int(pin_name[0])] if pin_name[:1] in ("1", "2") else []
-        for b in blocks:
-            clear = f"{b}R" if self.has(f"{b}R") else f"{b}RD"
-            preset = f"{b}SD"
-            q = self._state_by_block.get(b, 0)
-            if self.has(clear) and not self.r(clear): q = 0
-            elif self.has(preset) and not self.r(preset): q = 1
-            else:
-                j = self.r(f"{b}J"); k = self.r(f"{b}K")
-                if j and not k: q = 1
-                elif k and not j: q = 0
-                elif j and k: q = 1 - q
-            self._state_by_block[b] = q
-
-    def _update_jk_outputs(self) -> None:
-        for b in (1, 2):
-            q = self._state_by_block.get(b, 0)
-            clear = f"{b}R" if self.has(f"{b}R") else f"{b}RD"
-            preset = f"{b}SD"
-            if self.has(clear) and not self.r(clear): q = 0
-            elif self.has(preset) and not self.r(preset): q = 1
-            self._state_by_block[b] = q
-            self.o(f"{b}Q", q); self.o(f"{b}Q_bar", 1 - q); self.o(f"{b}Q_bar", 1 - q)
-            self.o(f"{b}Q_bar", 1 - q)
-            # Some pinout docs use a slash instead of the Verilog-style suffix.
-            self.o(f"/{b}Q", 1 - q)
 
     def _update_memory(self) -> None:
         if self.part == "SST39SF010A":
@@ -348,16 +303,6 @@ def _numbered_gates(chip: LocalCatalogChip, blocks: int, inputs: list[str], outp
         out = f"{i}{output_suffix}"
         if all(chip.has(n) for n in ins) and chip.has(out): gates.append((ins, out))
     return gates
-
-
-def _alu_logic(a: int, b: int, s: int) -> int:
-    table = {
-        0x0: (~a) & 0xF, 0x1: (~(a | b)) & 0xF, 0x2: ((~a) & b) & 0xF, 0x3: 0,
-        0x4: (~(a & b)) & 0xF, 0x5: (~b) & 0xF, 0x6: (a ^ b) & 0xF, 0x7: (a & (~b)) & 0xF,
-        0x8: ((~a) | b) & 0xF, 0x9: (~(a ^ b)) & 0xF, 0xA: b, 0xB: (a & b) & 0xF,
-        0xC: 0xF, 0xD: (a | (~b)) & 0xF, 0xE: (a | b) & 0xF, 0xF: a,
-    }
-    return table.get(s, 0) & 0xF
 
 
 

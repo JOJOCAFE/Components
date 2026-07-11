@@ -318,6 +318,175 @@ endmodule
     assert result_int(output, "REG") == expected_q
 
 
+def test_74hc4520_python_matches_verilog_dual_counter_reset_and_enable():
+    chip = create_chip("74HC4520", "U")
+    chip.set_input("1MR", 0)
+    chip.set_input("2MR", 0)
+    chip.set_input("1E", 1)
+    chip.set_input("2E", 1)
+    eval_chip(chip)
+    for _ in range(2):
+        chip.clock_edge("1CP")
+        chip.commit()
+    chip.clock_edge("2CP")
+    chip.commit()
+    expected_q1 = get_byte(chip, ["1Q0", "1Q1", "1Q2", "1Q3"])
+    expected_q2 = get_byte(chip, ["2Q0", "2Q1", "2Q2", "2Q3"])
+
+    chip.set_input("1E", 0)
+    chip.clock_edge("1CP")
+    chip.commit()
+    assert get_byte(chip, ["1Q0", "1Q1", "1Q2", "1Q3"]) == expected_q1
+    chip.set_input("2MR", 1)
+    eval_chip(chip)
+    expected_reset_q2 = get_byte(chip, ["2Q0", "2Q1", "2Q2", "2Q3"])
+
+    output = run_verilog(
+        "Verilog/74xx/74hc4520.v",
+        """
+`timescale 1ns/1ps
+module tb;
+  reg [1:0] cp = 2'b00;
+  reg [1:0] e = 2'b11;
+  reg [1:0] mr = 2'b00;
+  wire [3:0] q1;
+  wire [3:0] q2;
+  ttl_74hc4520 dut(.CP(cp), .E(e), .MR(mr), .Q1(q1), .Q2(q2));
+  initial begin
+    #1; mr = 2'b11; #1; mr = 2'b00;
+    #1; cp[0] = 1; #1; cp[0] = 0;
+    #1; cp[0] = 1; #1; cp[0] = 0;
+    #1; cp[1] = 1; #1; cp[1] = 0;
+    #1; $display("RESULT C4520 %h", {q2, q1});
+    e[0] = 0;
+    #1; cp[0] = 1; #1; cp[0] = 0;
+    #1; if (q1 !== 4'h2) begin $display("FAIL enable hold"); $finish(1); end
+    mr[1] = 1;
+    #1; $display("RESULT C4520R %h", q2);
+    $finish;
+  end
+endmodule
+""",
+    )
+    if output is None:
+        return
+    assert result_int(output, "C4520") == ((expected_q2 << 4) | expected_q1)
+    assert result_int(output, "C4520R") == expected_reset_q2 == 0
+
+
+def test_74hc4538_python_matches_verilog_trigger_and_reset():
+    chip = create_chip("74HC4538", "U")
+    chip.set_input("/1R", 1)
+    chip.set_input("/2R", 1)
+    chip.set_input("1B", 1)
+    chip.set_input("2B", 1)
+    eval_chip(chip)
+    chip.clock_edge("1A")
+    chip.commit()
+    chip.clock_edge("2A")
+    chip.commit()
+    expected_set = (
+        (chip.read("/2Q") << 3)
+        | (chip.read("/1Q") << 2)
+        | (chip.read("2Q") << 1)
+        | chip.read("1Q")
+    )
+    chip.set_input("/1R", 0)
+    eval_chip(chip)
+    expected_reset = (
+        (chip.read("/2Q") << 3)
+        | (chip.read("/1Q") << 2)
+        | (chip.read("2Q") << 1)
+        | chip.read("1Q")
+    )
+
+    output = run_verilog(
+        "Verilog/74xx/74hc4538.v",
+        """
+`timescale 1ns/1ps
+module tb;
+  reg [1:0] a = 2'b00;
+  reg [1:0] b = 2'b11;
+  reg [1:0] r_bar = 2'b11;
+  wire [1:0] q;
+  wire [1:0] q_bar;
+  ttl_74hc4538 dut(.A(a), .B(b), .R_bar(r_bar), .Q(q), .Q_bar(q_bar));
+  initial begin
+    #1; a[0] = 1; #1; a[0] = 0;
+    #1; a[1] = 1; #1; a[1] = 0;
+    #1; $display("RESULT M4538S %h", {q_bar[1], q_bar[0], q[1], q[0]});
+    r_bar[0] = 0;
+    #1; $display("RESULT M4538R %h", {q_bar[1], q_bar[0], q[1], q[0]});
+    $finish;
+  end
+endmodule
+""",
+    )
+    if output is None:
+        return
+    assert result_int(output, "M4538S") == expected_set
+    assert result_int(output, "M4538R") == expected_reset
+
+
+def test_74hc922_python_matches_verilog_scan_encode_and_high_z():
+    chip = create_chip("74HC922", "U")
+    chip.set_input("KEYBOUNCE MASK", 1)
+    chip.set_input("OUTPUT ENABLE", 0)
+    for name in ["ROW Y1", "ROW Y2", "ROW Y3", "ROW Y4"]:
+        chip.set_input(name, 1)
+    chip.clock_edge("OSCILLATOR")
+    chip.commit()
+    chip.clock_edge("OSCILLATOR")
+    chip.commit()
+    chip.set_input("ROW Y3", 0)
+    eval_chip(chip)
+    expected_cols = get_byte(chip, ["COLUMN X1", "COLUMN X2", "COLUMN X3", "COLUMN X4"])
+    expected_data = get_byte(chip, ["DATA OUT A", "DATA OUT B", "DATA OUT C", "DATA OUT D"])
+    expected_dav = chip.read("DATA AVAILABLE")
+    chip.set_input("KEYBOUNCE MASK", 0)
+    eval_chip(chip)
+    expected_masked_dav = chip.read("DATA AVAILABLE")
+    chip.set_input("OUTPUT ENABLE", 1)
+    eval_chip(chip)
+    assert chip.read("DATA OUT A") == Z
+
+    output = run_verilog(
+        "Verilog/74xx/74hc922.v",
+        """
+`timescale 1ns/1ps
+module tb;
+  reg [3:0] row_y = 4'b1111;
+  wire [3:0] column_x;
+  reg oscillator = 0;
+  reg keybounce_mask = 1;
+  reg output_enable = 0;
+  wire [3:0] data_out;
+  wire data_available;
+  ttl_74hc922 dut(
+    .RowY(row_y), .ColumnX(column_x), .Oscillator(oscillator),
+    .KeybounceMask(keybounce_mask), .OutputEnable(output_enable),
+    .DataOut(data_out), .DataAvailable(data_available)
+  );
+  initial begin
+    #1; oscillator = 1; #1; oscillator = 0;
+    #1; oscillator = 1; #1; oscillator = 0;
+    row_y = 4'b1011;
+    #1; $display("RESULT K922 %h", {data_available, column_x, data_out});
+    keybounce_mask = 0;
+    #1; $display("RESULT K922M %h", data_available);
+    output_enable = 1;
+    #1; if (data_out !== 4'hz) begin $display("FAIL high-z"); $finish(1); end
+    $finish;
+  end
+endmodule
+""",
+    )
+    if output is None:
+        return
+    assert result_int(output, "K922") == ((expected_dav << 8) | (expected_cols << 4) | expected_data)
+    assert result_int(output, "K922M") == expected_masked_dav == 0
+
+
 def test_62256_python_matches_verilog_write_read_and_high_z():
     chip = create_chip("62256", "U")
     for pin in [10, 9, 8, 7, 6, 5, 4, 3, 25, 24, 21, 23, 2, 26, 1]:
@@ -458,7 +627,8 @@ module tb;
   initial begin
     #1; we_bar = 1;
     #1; drive_dq = 0; oe_bar = 0;
-    #1; $display("RESULT EEPROM %h", dq);
+    #1; $display("RESULT EEPROM_BUSY %h", dq);
+    #3; $display("RESULT EEPROM %h", dq);
     ce_bar = 1; #1; if (dq !== 8'hzz) begin $display("FAIL high-z"); $finish(1); end
     $finish;
   end
@@ -467,6 +637,7 @@ endmodule
     )
     if output is None:
         return
+    assert "RESULT EEPROM_BUSY zz" in output
     assert result_int(output, "EEPROM") == expected_dq
 
 
@@ -526,6 +697,9 @@ def run_all():
     test_74hc245_python_matches_verilog_a_to_b_and_high_z()
     test_74hc541_python_matches_verilog_enable_and_high_z()
     test_74hc574_python_matches_verilog_latch_hold_and_high_z()
+    test_74hc4520_python_matches_verilog_dual_counter_reset_and_enable()
+    test_74hc4538_python_matches_verilog_trigger_and_reset()
+    test_74hc922_python_matches_verilog_scan_encode_and_high_z()
     test_62256_python_matches_verilog_write_read_and_high_z()
     test_as6c62256_python_matches_verilog_write_read_and_high_z()
     test_cy7c199_python_matches_verilog_write_read_and_high_z()

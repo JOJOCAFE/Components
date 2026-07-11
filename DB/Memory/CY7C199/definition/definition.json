@@ -1,184 +1,294 @@
 {
-  "schema": "db.component.digital",
-  "version": 1,
-  "part": "CY7C199",
-  "metadata": {
-    "title": "32K x 8 static RAM wrapper",
-    "family": "Memory",
-    "group": "memory",
-    "role": "memory"
+  "datasheet": {
+    "part": "CY7C199",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Infineon/Cypress CY7C199 datasheet",
+        "package_evidence": "28-pin DIP-compatible 32K x 8 SRAM pinout.",
+        "url": "https://www.infineon.com/dgdl/Infineon-CY7C199_32K_x_8_Static_RAM-DataSheet-v07_00-EN.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
   },
-  "package": {
-    "kind": "DIP",
-    "pins": 28,
-    "default": "DIP"
-  },
-  "pins": [
-    {
-      "number": 1,
-      "name": "A14",
-      "direction": "input"
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Infineon/Cypress CY7C199 datasheet",
+        "package_evidence": "28-pin DIP-compatible 32K x 8 SRAM pinout.",
+        "url": "https://www.infineon.com/dgdl/Infineon-CY7C199_32K_x_8_Static_RAM-DataSheet-v07_00-EN.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "CY7C199",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      }
     },
-    {
-      "number": 2,
-      "name": "A12",
-      "direction": "input"
+    "pins": {
+      "part": "CY7C199",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "A14",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "A12",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "A7",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "A6",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "A5",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "A4",
+          "number": 6
+        },
+        {
+          "direction": "input",
+          "name": "A3",
+          "number": 7
+        },
+        {
+          "direction": "input",
+          "name": "A2",
+          "number": 8
+        },
+        {
+          "direction": "input",
+          "name": "A1",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "A0",
+          "number": 10
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O0",
+          "number": 11
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O1",
+          "number": 12
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O2",
+          "number": 13
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 14,
+          "rail": "GND"
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O3",
+          "number": 15
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O4",
+          "number": 16
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O5",
+          "number": 17
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O6",
+          "number": 18
+        },
+        {
+          "direction": "bidirectional",
+          "name": "I/O7",
+          "number": 19
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/CE",
+          "number": 20
+        },
+        {
+          "direction": "input",
+          "name": "A10",
+          "number": 21
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/OE",
+          "number": 22
+        },
+        {
+          "direction": "input",
+          "name": "A11",
+          "number": 23
+        },
+        {
+          "direction": "input",
+          "name": "A9",
+          "number": 24
+        },
+        {
+          "direction": "input",
+          "name": "A8",
+          "number": 25
+        },
+        {
+          "direction": "input",
+          "name": "A13",
+          "number": 26
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/WE",
+          "number": 27
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 28,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
     },
-    {
-      "number": 3,
-      "name": "A7",
-      "direction": "input"
+    "power": {
+      "part": "CY7C199",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 14,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 28,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
     },
-    {
-      "number": 4,
-      "name": "A6",
-      "direction": "input"
-    },
-    {
-      "number": 5,
-      "name": "A5",
-      "direction": "input"
-    },
-    {
-      "number": 6,
-      "name": "A4",
-      "direction": "input"
-    },
-    {
-      "number": 7,
-      "name": "A3",
-      "direction": "input"
-    },
-    {
-      "number": 8,
-      "name": "A2",
-      "direction": "input"
-    },
-    {
-      "number": 9,
-      "name": "A1",
-      "direction": "input"
-    },
-    {
-      "number": 10,
-      "name": "A0",
-      "direction": "input"
-    },
-    {
-      "number": 11,
-      "name": "I/O0",
-      "direction": "bidirectional"
-    },
-    {
-      "number": 12,
-      "name": "I/O1",
-      "direction": "bidirectional"
-    },
-    {
-      "number": 13,
-      "name": "I/O2",
-      "direction": "bidirectional"
-    },
-    {
-      "number": 14,
-      "name": "GND",
-      "direction": "power",
-      "rail": "GND"
-    },
-    {
-      "number": 15,
-      "name": "I/O3",
-      "direction": "bidirectional"
-    },
-    {
-      "number": 16,
-      "name": "I/O4",
-      "direction": "bidirectional"
-    },
-    {
-      "number": 17,
-      "name": "I/O5",
-      "direction": "bidirectional"
-    },
-    {
-      "number": 18,
-      "name": "I/O6",
-      "direction": "bidirectional"
-    },
-    {
-      "number": 19,
-      "name": "I/O7",
-      "direction": "bidirectional"
-    },
-    {
-      "number": 20,
-      "name": "/CE",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 21,
-      "name": "A10",
-      "direction": "input"
-    },
-    {
-      "number": 22,
-      "name": "/OE",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 23,
-      "name": "A11",
-      "direction": "input"
-    },
-    {
-      "number": 24,
-      "name": "A9",
-      "direction": "input"
-    },
-    {
-      "number": 25,
-      "name": "A8",
-      "direction": "input"
-    },
-    {
-      "number": 26,
-      "name": "A13",
-      "direction": "input"
-    },
-    {
-      "number": 27,
-      "name": "/WE",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 28,
-      "name": "VCC",
-      "direction": "power",
-      "rail": "VCC"
-    }
-  ],
-  "logic": {
-    "type": "32k_x_8_static_ram_wrapper",
-    "description": "32K x 8 static RAM wrapper"
-  },
-  "timing": {
-    "variant": "CY7C199-model-70ns",
-    "paths": {
-      "address_to_data_valid_ns": 70,
-      "ce_to_data_valid_ns": 70,
-      "oe_to_data_valid_ns": 70,
-      "ce_or_oe_to_high_z_ns": 70
-    },
-    "write": {
-      "pulse_min_ns": 70,
-      "data_setup_min_ns": 70,
-      "address_hold_min_ns": 0
+    "timing": {
+      "delay": {
+        "conditions": "Cypress CY7C199 switching characteristics, -20/-25/-35/-45 speed grades.",
+        "datasheet_address_access_max_ns": {
+          "speed_20": 20,
+          "speed_25": 25,
+          "speed_35": 35,
+          "speed_45": 45
+        },
+        "datasheet_data_setup_min_ns": {
+          "speed_20": 10,
+          "speed_25": 10,
+          "speed_35": 15,
+          "speed_45": 15
+        },
+        "datasheet_high_z_max_ns": {
+          "speed_20": 9,
+          "speed_25": 11,
+          "speed_35": 15,
+          "speed_45": 15
+        },
+        "datasheet_hold_min_ns": {
+          "address_hold": 0,
+          "data_hold": 0
+        },
+        "datasheet_oe_access_max_ns": {
+          "speed_20": 9,
+          "speed_25": 10,
+          "speed_35": 16,
+          "speed_45": 16
+        },
+        "datasheet_read_cycle_ns": {
+          "speed_20": 20,
+          "speed_25": 25,
+          "speed_35": 35,
+          "speed_45": 45
+        },
+        "datasheet_write_cycle_ns": {
+          "speed_20": 20,
+          "speed_25": 25,
+          "speed_35": 35,
+          "speed_45": 45
+        },
+        "datasheet_write_pulse_min_ns": {
+          "speed_20": 15,
+          "speed_25": 18,
+          "speed_35": 22,
+          "speed_45": 22
+        },
+        "model_delay_ns": 70,
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "label": "Infineon/Cypress CY7C199 datasheet",
+        "package_evidence": "28-pin DIP-compatible 32K x 8 SRAM pinout.",
+        "url": "https://www.infineon.com/dgdl/Infineon-CY7C199_32K_x_8_Static_RAM-DataSheet-v07_00-EN.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "CY7C199",
+      "schema": "db.component.timing",
+      "version": 1
     }
   },
   "generation": {
+    "python": {
+      "class": "CY7C199",
+      "factory": "create",
+      "file": "DB/Memory/CY7C199/simulation/model.py",
+      "part": "CY7C199"
+    },
     "targets": [
       "json",
       "python_simulator",
@@ -190,295 +300,262 @@
       "unit_test",
       "interactive_demo"
     ],
-    "python": {
-      "factory": "create",
-      "part": "CY7C199",
-      "file": "DB/Memory/CY7C199/simulation/model.py",
-      "class": "CY7C199"
-    },
     "verilog": {
-      "module": "mem_cy7c199",
       "file": "DB/Memory/CY7C199/simulation/model.v",
+      "module": "mem_cy7c199",
       "netlist": "DB/Memory/CY7C199/simulation/netlist.json"
     }
   },
+  "logic": {
+    "description": "32K x 8 static RAM wrapper",
+    "type": "32k_x_8_static_ram_wrapper"
+  },
+  "metadata": {
+    "family": "Memory",
+    "group": "memory",
+    "role": "memory",
+    "title": "32K x 8 static RAM wrapper"
+  },
+  "package": {
+    "default": "DIP",
+    "kind": "DIP",
+    "pins": 28
+  },
+  "part": "CY7C199",
+  "pins": [
+    {
+      "direction": "input",
+      "name": "A14",
+      "number": 1
+    },
+    {
+      "direction": "input",
+      "name": "A12",
+      "number": 2
+    },
+    {
+      "direction": "input",
+      "name": "A7",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "A6",
+      "number": 4
+    },
+    {
+      "direction": "input",
+      "name": "A5",
+      "number": 5
+    },
+    {
+      "direction": "input",
+      "name": "A4",
+      "number": 6
+    },
+    {
+      "direction": "input",
+      "name": "A3",
+      "number": 7
+    },
+    {
+      "direction": "input",
+      "name": "A2",
+      "number": 8
+    },
+    {
+      "direction": "input",
+      "name": "A1",
+      "number": 9
+    },
+    {
+      "direction": "input",
+      "name": "A0",
+      "number": 10
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O0",
+      "number": 11
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O1",
+      "number": 12
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O2",
+      "number": 13
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 14,
+      "rail": "GND"
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O3",
+      "number": 15
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O4",
+      "number": 16
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O5",
+      "number": 17
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O6",
+      "number": 18
+    },
+    {
+      "direction": "bidirectional",
+      "name": "I/O7",
+      "number": 19
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/CE",
+      "number": 20
+    },
+    {
+      "direction": "input",
+      "name": "A10",
+      "number": 21
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/OE",
+      "number": 22
+    },
+    {
+      "direction": "input",
+      "name": "A11",
+      "number": 23
+    },
+    {
+      "direction": "input",
+      "name": "A9",
+      "number": 24
+    },
+    {
+      "direction": "input",
+      "name": "A8",
+      "number": 25
+    },
+    {
+      "direction": "input",
+      "name": "A13",
+      "number": 26
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/WE",
+      "number": 27
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 28,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "Cypress CY7C199 switching characteristics, -20/-25/-35/-45 speed grades.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_address_access_max_ns": {
+          "speed_20": 20,
+          "speed_25": 25,
+          "speed_35": 35,
+          "speed_45": 45
+        },
+        "datasheet_data_setup_min_ns": {
+          "speed_20": 10,
+          "speed_25": 10,
+          "speed_35": 15,
+          "speed_45": 15
+        },
+        "datasheet_high_z_max_ns": {
+          "speed_20": 9,
+          "speed_25": 11,
+          "speed_35": 15,
+          "speed_45": 15
+        },
+        "datasheet_hold_min_ns": {
+          "address_hold": 0,
+          "data_hold": 0
+        },
+        "datasheet_oe_access_max_ns": {
+          "speed_20": 9,
+          "speed_25": 10,
+          "speed_35": 16,
+          "speed_45": 16
+        },
+        "datasheet_read_cycle_ns": {
+          "speed_20": 20,
+          "speed_25": 25,
+          "speed_35": 35,
+          "speed_45": 45
+        },
+        "datasheet_write_cycle_ns": {
+          "speed_20": 20,
+          "speed_25": 25,
+          "speed_35": 35,
+          "speed_45": 45
+        },
+        "datasheet_write_pulse_min_ns": {
+          "speed_20": 15,
+          "speed_25": 18,
+          "speed_35": 22,
+          "speed_45": 22
+        }
+      }
+    },
+    "paths": {
+      "address_to_data_valid_ns": 70,
+      "ce_or_oe_to_high_z_ns": 70,
+      "ce_to_data_valid_ns": 70,
+      "oe_to_data_valid_ns": 70
+    },
+    "variant": "CY7C199-model-70ns",
+    "write": {
+      "address_hold_min_ns": 0,
+      "data_setup_min_ns": 70,
+      "pulse_min_ns": 70
+    }
+  },
   "verification": {
+    "required_vectors": [
+      "basic_function",
+      "disabled_or_high_z"
+    ],
     "tests": [
       "truth_table",
       "timing",
       "propagation",
       "tri_state",
       "bus_fight"
-    ],
-    "required_vectors": [
-      "basic_function",
-      "disabled_or_high_z"
     ]
   },
-  "datasheet": {
-    "schema": "db.component.datasheet.sources",
-    "version": 1,
-    "part": "CY7C199",
-    "sources": [
-      {
-        "label": "Infineon/Cypress CY7C199 datasheet",
-        "url": "https://www.infineon.com/dgdl/Infineon-CY7C199_32K_x_8_Static_RAM-DataSheet-v07_00-EN.pdf",
-        "package_evidence": "28-pin DIP-compatible 32K x 8 SRAM pinout.",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    ]
-  },
-  "definition_layers": {
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "CY7C199",
-      "pins": [
-        {
-          "number": 1,
-          "name": "A14",
-          "direction": "input"
-        },
-        {
-          "number": 2,
-          "name": "A12",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "A7",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "A6",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "A5",
-          "direction": "input"
-        },
-        {
-          "number": 6,
-          "name": "A4",
-          "direction": "input"
-        },
-        {
-          "number": 7,
-          "name": "A3",
-          "direction": "input"
-        },
-        {
-          "number": 8,
-          "name": "A2",
-          "direction": "input"
-        },
-        {
-          "number": 9,
-          "name": "A1",
-          "direction": "input"
-        },
-        {
-          "number": 10,
-          "name": "A0",
-          "direction": "input"
-        },
-        {
-          "number": 11,
-          "name": "I/O0",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 12,
-          "name": "I/O1",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 13,
-          "name": "I/O2",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 14,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 15,
-          "name": "I/O3",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 16,
-          "name": "I/O4",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 17,
-          "name": "I/O5",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 18,
-          "name": "I/O6",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 19,
-          "name": "I/O7",
-          "direction": "bidirectional"
-        },
-        {
-          "number": 20,
-          "name": "/CE",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 21,
-          "name": "A10",
-          "direction": "input"
-        },
-        {
-          "number": 22,
-          "name": "/OE",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 23,
-          "name": "A11",
-          "direction": "input"
-        },
-        {
-          "number": 24,
-          "name": "A9",
-          "direction": "input"
-        },
-        {
-          "number": 25,
-          "name": "A8",
-          "direction": "input"
-        },
-        {
-          "number": 26,
-          "name": "A13",
-          "direction": "input"
-        },
-        {
-          "number": 27,
-          "name": "/WE",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 28,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "CY7C199",
-      "rails": [
-        {
-          "number": 14,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 28,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "timing": {
-      "schema": "db.component.timing",
-      "version": 1,
-      "part": "CY7C199",
-      "delay": {
-        "model_delay_ns": 70,
-        "status": "model-derived",
-        "public_timing": {
-          "variant": "CY7C199-model-70ns",
-          "paths": {
-            "address_to_data_valid_ns": 70,
-            "ce_to_data_valid_ns": 70,
-            "oe_to_data_valid_ns": 70,
-            "ce_or_oe_to_high_z_ns": 70
-          },
-          "write": {
-            "pulse_min_ns": 70,
-            "data_setup_min_ns": 70,
-            "address_hold_min_ns": 0
-          }
-        },
-        "conservative_defaults": {
-          "address_to_data_valid_ns": "conservative_default",
-          "ce_to_data_valid_ns": "conservative_default",
-          "oe_to_data_valid_ns": "conservative_default",
-          "ce_or_oe_to_high_z_ns": "conservative_default",
-          "pulse_min_ns": "conservative_default",
-          "data_setup_min_ns": "conservative_default",
-          "address_hold_min_ns": "conservative_default"
-        }
-      },
-      "evidence": {
-        "label": "Infineon/Cypress CY7C199 datasheet",
-        "url": "https://www.infineon.com/dgdl/Infineon-CY7C199_32K_x_8_Static_RAM-DataSheet-v07_00-EN.pdf",
-        "package_evidence": "28-pin DIP-compatible 32K x 8 SRAM pinout.",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    },
-    "electrical": {
-      "schema": "db.component.electrical",
-      "version": 1,
-      "part": "CY7C199",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
-        }
-      },
-      "current": {
-        "status": "datasheet-required"
-      },
-      "loading": {
-        "status": "datasheet-required"
-      },
-      "evidence": {
-        "label": "Infineon/Cypress CY7C199 datasheet",
-        "url": "https://www.infineon.com/dgdl/Infineon-CY7C199_32K_x_8_Static_RAM-DataSheet-v07_00-EN.pdf",
-        "package_evidence": "28-pin DIP-compatible 32K x 8 SRAM pinout.",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    }
-  },
-  "status": {
-    "datasheet": "verified",
-    "pinout": "verified",
-    "python_behavior": "modeled",
-    "verilog_model": "modeled",
-    "verilog_export": "tested",
-    "tests": "tested"
-  }
+  "version": 1
 }

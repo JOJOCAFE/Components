@@ -275,6 +275,28 @@
       ],
       "role": "logic",
       "timing": {
+        "datasheet": {
+          "conditions": "NXP 74HC27 dynamic characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns_25c": {
+              "input_to_output": 18,
+              "transition": 15
+            },
+            "datasheet_max_ns_minus40_to_125c": {
+              "input_to_output": 27,
+              "transition": 22
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "input_to_output": 23,
+              "transition": 19
+            },
+            "datasheet_typical_ns": {
+              "input_to_output": 10,
+              "transition": 7
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

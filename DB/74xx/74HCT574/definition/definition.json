@@ -1,0 +1,451 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HCT574",
+  "metadata": {
+    "title": "Octal edge-triggered D-type flip-flop with 3-state outputs, TTL-compatible inputs",
+    "family": "74HCT",
+    "group": "74xx",
+    "role": "register"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 20,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "/OE",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 2,
+      "name": "1D",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "2D",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "3D",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "4D",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "5D",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "6D",
+      "direction": "input"
+    },
+    {
+      "number": 8,
+      "name": "7D",
+      "direction": "input"
+    },
+    {
+      "number": 9,
+      "name": "8D",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 11,
+      "name": "CLK",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "8Q",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "7Q",
+      "direction": "output"
+    },
+    {
+      "number": 14,
+      "name": "6Q",
+      "direction": "output"
+    },
+    {
+      "number": 15,
+      "name": "5Q",
+      "direction": "output"
+    },
+    {
+      "number": 16,
+      "name": "4Q",
+      "direction": "output"
+    },
+    {
+      "number": 17,
+      "name": "3Q",
+      "direction": "output"
+    },
+    {
+      "number": 18,
+      "name": "2Q",
+      "direction": "output"
+    },
+    {
+      "number": 19,
+      "name": "1Q",
+      "direction": "output"
+    },
+    {
+      "number": 20,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "octal_d_type_flip_flop_ttl_input",
+    "description": "Octal edge-triggered D-type flip-flop with 3-state outputs, TTL-compatible inputs"
+  },
+  "timing": {
+    "delay_ns": 15,
+    "datasheet": {
+      "status": "datasheet-backed",
+      "conditions": "TI SN74HCT574 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "values": {
+        "datasheet_fmax_mhz": {
+          "typical": 36,
+          "min_25c": 30,
+          "sn74_min": 24,
+          "sn54_min": 20
+        },
+        "datasheet_typical_ns": {
+          "clock_to_q": 30,
+          "enable": 26
+        },
+        "datasheet_max_ns_25c": {
+          "clock_to_q": 36,
+          "enable": 30
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "clock_to_q": 45,
+          "enable": 38
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "clock_to_q": 54,
+          "enable": 45
+        }
+      }
+    }
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HCT574",
+      "file": "DB/74xx/74HCT574/simulation/model.py",
+      "class": "HCT574"
+    },
+    "verilog": {
+      "module": "ttl_74hct574",
+      "file": "DB/74xx/74HCT574/simulation/model.v",
+      "netlist": "DB/74xx/74HCT574/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation",
+      "tri_state",
+      "bus_fight"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HCT574",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HCT574",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hct574.pdf",
+        "file": "Source/74HCT574_TI_SN74HCT574.pdf",
+        "package_evidence": "N, 20-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HCT574",
+      "pins": [
+        {
+          "number": 1,
+          "name": "/OE",
+          "direction": "input",
+          "active_low": true
+        },
+        {
+          "number": 2,
+          "name": "1D",
+          "direction": "input"
+        },
+        {
+          "number": 3,
+          "name": "2D",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "3D",
+          "direction": "input"
+        },
+        {
+          "number": 5,
+          "name": "4D",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "5D",
+          "direction": "input"
+        },
+        {
+          "number": 7,
+          "name": "6D",
+          "direction": "input"
+        },
+        {
+          "number": 8,
+          "name": "7D",
+          "direction": "input"
+        },
+        {
+          "number": 9,
+          "name": "8D",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 11,
+          "name": "CLK",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "8Q",
+          "direction": "output"
+        },
+        {
+          "number": 13,
+          "name": "7Q",
+          "direction": "output"
+        },
+        {
+          "number": 14,
+          "name": "6Q",
+          "direction": "output"
+        },
+        {
+          "number": 15,
+          "name": "5Q",
+          "direction": "output"
+        },
+        {
+          "number": 16,
+          "name": "4Q",
+          "direction": "output"
+        },
+        {
+          "number": 17,
+          "name": "3Q",
+          "direction": "output"
+        },
+        {
+          "number": 18,
+          "name": "2Q",
+          "direction": "output"
+        },
+        {
+          "number": 19,
+          "name": "1Q",
+          "direction": "output"
+        },
+        {
+          "number": 20,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HCT574",
+      "rails": [
+        {
+          "number": 10,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 20,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HCT574",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "datasheet-backed",
+        "public_timing": {
+          "delay_ns": 15,
+          "datasheet": {
+            "status": "datasheet-backed",
+            "conditions": "TI SN74HCT574 switching characteristics, CL=50 pF, VCC=4.5 V.",
+            "values": {
+              "datasheet_fmax_mhz": {
+                "typical": 36,
+                "min_25c": 30,
+                "sn74_min": 24,
+                "sn54_min": 20
+              },
+              "datasheet_typical_ns": {
+                "clock_to_q": 30,
+                "enable": 26
+              },
+              "datasheet_max_ns_25c": {
+                "clock_to_q": 36,
+                "enable": 30
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "clock_to_q": 45,
+                "enable": 38
+              },
+              "datasheet_max_ns_minus55_to_125c": {
+                "clock_to_q": 54,
+                "enable": 45
+              }
+            }
+          }
+        },
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "conditions": "TI SN74HCT574 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_fmax_mhz": {
+          "typical": 36,
+          "min_25c": 30,
+          "sn74_min": 24,
+          "sn54_min": 20
+        },
+        "datasheet_typical_ns": {
+          "clock_to_q": 30,
+          "enable": 26
+        },
+        "datasheet_max_ns_25c": {
+          "clock_to_q": 36,
+          "enable": 30
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "clock_to_q": 45,
+          "enable": 38
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "clock_to_q": 54,
+          "enable": 45
+        }
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HCT574",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hct574.pdf",
+        "file": "Source/74HCT574_TI_SN74HCT574.pdf",
+        "package_evidence": "N, 20-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HCT574",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HCT574",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hct574.pdf",
+        "file": "Source/74HCT574_TI_SN74HCT574.pdf",
+        "package_evidence": "N, 20-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "modeled",
+    "tests": "modeled"
+  }
+}

@@ -1,0 +1,350 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HC4050",
+  "metadata": {
+    "title": "Hex non-inverting buffer/converter",
+    "family": "74HC",
+    "group": "74xx",
+    "role": "buffer"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 16,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    },
+    {
+      "number": 2,
+      "name": "1Y",
+      "direction": "output"
+    },
+    {
+      "number": 3,
+      "name": "1A",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "2Y",
+      "direction": "output"
+    },
+    {
+      "number": 5,
+      "name": "2A",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "3Y",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "3A",
+      "direction": "input"
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "4A",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "4Y",
+      "direction": "output"
+    },
+    {
+      "number": 11,
+      "name": "5A",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "5Y",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "NC",
+      "direction": "nc"
+    },
+    {
+      "number": 14,
+      "name": "6A",
+      "direction": "input"
+    },
+    {
+      "number": 15,
+      "name": "6Y",
+      "direction": "output"
+    },
+    {
+      "number": 16,
+      "name": "NC",
+      "direction": "nc"
+    }
+  ],
+  "logic": {
+    "type": "hex_non_inverting_buffer",
+    "description": "Hex non-inverting buffer/converter"
+  },
+  "timing": {
+    "delay_ns": 15,
+    "datasheet": {
+      "status": "datasheet-backed",
+      "conditions": "TI CD74HC4050 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+      "values": {
+        "datasheet_typical_ns": {
+          "feature_tpd": 6
+        }
+      }
+    }
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HC4050",
+      "file": "DB/74xx/74HC4050/simulation/model.py",
+      "class": "HC4050"
+    },
+    "verilog": {
+      "module": "ttl_74hc4050",
+      "file": "DB/74xx/74HC4050/simulation/model.v",
+      "netlist": "DB/74xx/74HC4050/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HC4050",
+    "sources": [
+      {
+        "label": "Texas Instruments CD74HC4050",
+        "url": "https://www.ti.com/lit/ds/symlink/cd74hc4050.pdf",
+        "file": "Source/74HC4050_TI_CD74HC4050.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HC4050",
+      "pins": [
+        {
+          "number": 1,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        },
+        {
+          "number": 2,
+          "name": "1Y",
+          "direction": "output"
+        },
+        {
+          "number": 3,
+          "name": "1A",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "2Y",
+          "direction": "output"
+        },
+        {
+          "number": 5,
+          "name": "2A",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "3Y",
+          "direction": "output"
+        },
+        {
+          "number": 7,
+          "name": "3A",
+          "direction": "input"
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 9,
+          "name": "4A",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "4Y",
+          "direction": "output"
+        },
+        {
+          "number": 11,
+          "name": "5A",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "5Y",
+          "direction": "output"
+        },
+        {
+          "number": 13,
+          "name": "NC",
+          "direction": "nc"
+        },
+        {
+          "number": 14,
+          "name": "6A",
+          "direction": "input"
+        },
+        {
+          "number": 15,
+          "name": "6Y",
+          "direction": "output"
+        },
+        {
+          "number": 16,
+          "name": "NC",
+          "direction": "nc"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HC4050",
+      "rails": [
+        {
+          "number": 1,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        },
+        {
+          "number": 8,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        }
+      ]
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HC4050",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "datasheet-backed",
+        "public_timing": {
+          "delay_ns": 15,
+          "datasheet": {
+            "status": "datasheet-backed",
+            "conditions": "TI CD74HC4050 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+            "values": {
+              "datasheet_typical_ns": {
+                "feature_tpd": 6
+              }
+            }
+          }
+        },
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "conditions": "TI CD74HC4050 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+        "datasheet_typical_ns": {
+          "feature_tpd": 6
+        }
+      },
+      "evidence": {
+        "label": "Texas Instruments CD74HC4050",
+        "url": "https://www.ti.com/lit/ds/symlink/cd74hc4050.pdf",
+        "file": "Source/74HC4050_TI_CD74HC4050.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HC4050",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments CD74HC4050",
+        "url": "https://www.ti.com/lit/ds/symlink/cd74hc4050.pdf",
+        "file": "Source/74HC4050_TI_CD74HC4050.pdf",
+        "package_evidence": "N, 16-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "modeled",
+    "tests": "modeled"
+  }
+}

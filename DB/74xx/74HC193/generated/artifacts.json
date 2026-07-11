@@ -301,6 +301,50 @@
       ],
       "role": "counter",
       "timing": {
+        "datasheet": {
+          "conditions": "TI SN74HC193 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_fmax_mhz": {
+              "min_25c": 21,
+              "sn54_min": 14,
+              "sn74_min": 17,
+              "typical": 55
+            },
+            "datasheet_max_ns_25c": {
+              "clear_to_q": 48,
+              "count_to_q": 50,
+              "down_to_bo": 33,
+              "load_to_q": 52,
+              "transition": 15,
+              "up_to_co": 33
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "clear_to_q": 60,
+              "count_to_q": 63,
+              "down_to_bo": 41,
+              "load_to_q": 65,
+              "transition": 19,
+              "up_to_co": 41
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "clear_to_q": 72,
+              "count_to_q": 75,
+              "down_to_bo": 50,
+              "load_to_q": 78,
+              "transition": 22,
+              "up_to_co": 50
+            },
+            "datasheet_typical_ns": {
+              "clear_to_q": 36,
+              "count_to_q": 40,
+              "down_to_bo": 24,
+              "load_to_q": 40,
+              "transition": 8,
+              "up_to_co": 24
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

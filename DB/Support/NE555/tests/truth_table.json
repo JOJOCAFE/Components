@@ -1,0 +1,65 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "NE555",
+  "applicable": true,
+  "edge_criteria": {
+    "clocking": "level_sensitive_latch",
+    "trigger_edge": "none",
+    "non_trigger_edge": "not_applicable",
+    "notes": "Support IC functional model; reset, threshold, trigger, output, and discharge states are checked after level changes."
+  },
+  "vectors": [
+    {
+      "name": "reset_low_forces_low",
+      "fresh": true,
+      "inputs": {
+        "RESET": 0,
+        "TRIG": 0,
+        "THRESH": 0
+      },
+      "expect": {
+        "OUT": 0,
+        "DISCH": 0
+      }
+    },
+    {
+      "name": "trigger_low_sets_latch",
+      "fresh": true,
+      "inputs": {
+        "RESET": 1,
+        "TRIG": 0,
+        "THRESH": 0
+      },
+      "expect": {
+        "OUT": 1,
+        "DISCH": "Z"
+      }
+    },
+    {
+      "name": "hold_after_trigger_release",
+      "inputs": {
+        "RESET": 1,
+        "TRIG": 1,
+        "THRESH": 0
+      },
+      "expect": {
+        "OUT": 1,
+        "DISCH": "Z"
+      }
+    },
+    {
+      "name": "threshold_high_resets_latch",
+      "fresh": true,
+      "inputs": {
+        "RESET": 1,
+        "TRIG": 1,
+        "THRESH": 1
+      },
+      "expect": {
+        "OUT": 0,
+        "DISCH": 0
+      }
+    }
+  ]
+}

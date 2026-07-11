@@ -90,8 +90,8 @@ begin
 end
 //------------------------------------------------//
 
-assign #(DELAY_RISE, DELAY_FALL) EO_bar = ~EO_computed;
-assign #(DELAY_RISE, DELAY_FALL) GS_bar = ~GS_computed;
+assign #(DELAY_RISE, DELAY_FALL) EO_bar = EO_computed;
+assign #(DELAY_RISE, DELAY_FALL) GS_bar = GS_computed;
 assign #(DELAY_RISE, DELAY_FALL) Y_bar = ~Y_computed;
 
 endmodule

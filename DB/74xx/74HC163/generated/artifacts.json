@@ -299,6 +299,34 @@
       ],
       "role": "counter",
       "timing": {
+        "datasheet": {
+          "conditions": "TI SN74HC163 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_fmax_mhz": {
+              "min_125c": 21,
+              "min_25c": 31,
+              "min_85c": 25,
+              "typical": 40
+            },
+            "datasheet_max_ns_25c": {
+              "clock_to_q": 41,
+              "transition": 15
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "clock_to_q": 51,
+              "transition": 19
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "clock_to_q": 62,
+              "transition": 22
+            },
+            "datasheet_typical_ns": {
+              "clock_to_q": 25,
+              "transition": 8
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

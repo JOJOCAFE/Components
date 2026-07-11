@@ -1,157 +1,205 @@
 {
-  "schema": "db.component.digital",
-  "version": 1,
-  "part": "74HC922",
-  "metadata": {
-    "title": "74HC922 legacy component",
-    "family": "74HC",
-    "group": "74xx",
-    "role": "logic"
+  "datasheet": {
+    "part": "74HC922",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Fairchild MM74C922/MM74C923",
+        "package_evidence": "N18A, 18-pin PDIP",
+        "url": "`Components/Source/MM74C922.PDF`",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
   },
-  "package": {
-    "kind": "DIP",
-    "pins": 18,
-    "default": "N"
-  },
-  "pins": [
-    {
-      "number": 1,
-      "name": "ROW Y1",
-      "direction": "input"
-    },
-    {
-      "number": 2,
-      "name": "ROW Y2",
-      "direction": "input"
-    },
-    {
-      "number": 3,
-      "name": "ROW Y3",
-      "direction": "input"
-    },
-    {
-      "number": 4,
-      "name": "ROW Y4",
-      "direction": "input"
-    },
-    {
-      "number": 5,
-      "name": "OSCILLATOR",
-      "direction": "input"
-    },
-    {
-      "number": 6,
-      "name": "KEYBOUNCE MASK",
-      "direction": "input"
-    },
-    {
-      "number": 7,
-      "name": "COLUMN X4",
-      "direction": "output"
-    },
-    {
-      "number": 8,
-      "name": "COLUMN X3",
-      "direction": "output"
-    },
-    {
-      "number": 9,
-      "name": "GND",
-      "direction": "power",
-      "rail": "GND"
-    },
-    {
-      "number": 10,
-      "name": "COLUMN X2",
-      "direction": "output"
-    },
-    {
-      "number": 11,
-      "name": "COLUMN X1",
-      "direction": "output"
-    },
-    {
-      "number": 12,
-      "name": "DATA AVAILABLE",
-      "direction": "output"
-    },
-    {
-      "number": 13,
-      "name": "OUTPUT ENABLE",
-      "direction": "input"
-    },
-    {
-      "number": 14,
-      "name": "DATA OUT D",
-      "direction": "output"
-    },
-    {
-      "number": 15,
-      "name": "DATA OUT C",
-      "direction": "output"
-    },
-    {
-      "number": 16,
-      "name": "DATA OUT B",
-      "direction": "output"
-    },
-    {
-      "number": 17,
-      "name": "DATA OUT A",
-      "direction": "output"
-    },
-    {
-      "number": 18,
-      "name": "VCC",
-      "direction": "power",
-      "rail": "VCC"
-    }
-  ],
-  "logic": {
-    "type": "74hc922_legacy_component",
-    "description": "74HC922 legacy component"
-  },
-  "timing": {
-    "delay_ns": 15,
-    "simple": {
-      "default_delay_ns": 15,
-      "source": "legacy functional simulator default"
-    },
-    "timed": {
-      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-      "paths": {
-        "input_to_output_ns": {
-          "parameter": "tpd",
-          "from": "input",
-          "to": "output",
-          "condition": "input or select changes",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "transition_time_ns": {
-          "parameter": "tt",
-          "from": "output transition",
-          "to": "output transition",
-          "condition": "enabled output switches",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Fairchild MM74C922/MM74C923",
+        "package_evidence": "N18A, 18-pin PDIP",
+        "url": "`Components/Source/MM74C922.PDF`",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC922",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
         }
       }
+    },
+    "pins": {
+      "part": "74HC922",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "ROW Y1",
+          "number": 1
+        },
+        {
+          "direction": "input",
+          "name": "ROW Y2",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "ROW Y3",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "ROW Y4",
+          "number": 4
+        },
+        {
+          "direction": "input",
+          "name": "OSCILLATOR",
+          "number": 5
+        },
+        {
+          "direction": "input",
+          "name": "KEYBOUNCE MASK",
+          "number": 6
+        },
+        {
+          "direction": "output",
+          "name": "COLUMN X4",
+          "number": 7
+        },
+        {
+          "direction": "output",
+          "name": "COLUMN X3",
+          "number": 8
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 9,
+          "rail": "GND"
+        },
+        {
+          "direction": "output",
+          "name": "COLUMN X2",
+          "number": 10
+        },
+        {
+          "direction": "output",
+          "name": "COLUMN X1",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "DATA AVAILABLE",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "OUTPUT ENABLE",
+          "number": 13
+        },
+        {
+          "direction": "output",
+          "name": "DATA OUT D",
+          "number": 14
+        },
+        {
+          "direction": "output",
+          "name": "DATA OUT C",
+          "number": 15
+        },
+        {
+          "direction": "output",
+          "name": "DATA OUT B",
+          "number": 16
+        },
+        {
+          "direction": "output",
+          "name": "DATA OUT A",
+          "number": 17
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 18,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC922",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 9,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 18,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "MM74C922 timing characteristics, VCC=5 V.",
+        "datasheet_max_ns": {
+          "data_available_to_output": 150,
+          "high_z_to_output": 250,
+          "output_to_high_z": 200
+        },
+        "datasheet_typical_ns": {
+          "data_available_to_output": 60,
+          "high_z_to_output": 100,
+          "output_to_high_z": 80
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "label": "Fairchild MM74C922/MM74C923",
+        "package_evidence": "N18A, 18-pin PDIP",
+        "url": "`Components/Source/MM74C922.PDF`",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC922",
+      "schema": "db.component.timing",
+      "version": 1
     }
   },
   "generation": {
+    "python": {
+      "class": "HC922",
+      "factory": "create",
+      "file": "DB/74xx/74HC922/simulation/model.py",
+      "part": "74HC922"
+    },
     "targets": [
       "json",
       "python_simulator",
@@ -163,260 +211,196 @@
       "unit_test",
       "interactive_demo"
     ],
-    "python": {
-      "factory": "create",
-      "part": "74HC922",
-      "file": "DB/74xx/74HC922/simulation/model.py",
-      "class": "HC922"
-    },
     "verilog": {
-      "module": "ttl_74hc922",
       "file": "DB/74xx/74HC922/simulation/model.v",
+      "module": "ttl_74hc922",
       "netlist": "DB/74xx/74HC922/simulation/netlist.json"
     }
   },
-  "verification": {
-    "tests": [
-      "truth_table",
-      "timing",
-      "propagation"
-    ],
-    "required_vectors": [
-      "basic_function"
-    ]
+  "logic": {
+    "description": "74HC922 legacy component",
+    "type": "74hc922_legacy_component"
   },
-  "datasheet": {
-    "schema": "db.component.datasheet.sources",
-    "version": 1,
-    "part": "74HC922",
-    "sources": [
-      {
-        "label": "Fairchild MM74C922/MM74C923",
-        "url": "`Components/Source/MM74C922.PDF`",
-        "package_evidence": "N18A, 18-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    ]
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "logic",
+    "title": "74HC922 legacy component"
   },
-  "definition_layers": {
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "74HC922",
-      "pins": [
-        {
-          "number": 1,
-          "name": "ROW Y1",
-          "direction": "input"
-        },
-        {
-          "number": 2,
-          "name": "ROW Y2",
-          "direction": "input"
-        },
-        {
-          "number": 3,
-          "name": "ROW Y3",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "ROW Y4",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "OSCILLATOR",
-          "direction": "input"
-        },
-        {
-          "number": 6,
-          "name": "KEYBOUNCE MASK",
-          "direction": "input"
-        },
-        {
-          "number": 7,
-          "name": "COLUMN X4",
-          "direction": "output"
-        },
-        {
-          "number": 8,
-          "name": "COLUMN X3",
-          "direction": "output"
-        },
-        {
-          "number": 9,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 10,
-          "name": "COLUMN X2",
-          "direction": "output"
-        },
-        {
-          "number": 11,
-          "name": "COLUMN X1",
-          "direction": "output"
-        },
-        {
-          "number": 12,
-          "name": "DATA AVAILABLE",
-          "direction": "output"
-        },
-        {
-          "number": 13,
-          "name": "OUTPUT ENABLE",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "DATA OUT D",
-          "direction": "output"
-        },
-        {
-          "number": 15,
-          "name": "DATA OUT C",
-          "direction": "output"
-        },
-        {
-          "number": 16,
-          "name": "DATA OUT B",
-          "direction": "output"
-        },
-        {
-          "number": 17,
-          "name": "DATA OUT A",
-          "direction": "output"
-        },
-        {
-          "number": 18,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 18
+  },
+  "part": "74HC922",
+  "pins": [
+    {
+      "direction": "input",
+      "name": "ROW Y1",
+      "number": 1
     },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "74HC922",
-      "rails": [
-        {
-          "number": 9,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 18,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
+    {
+      "direction": "input",
+      "name": "ROW Y2",
+      "number": 2
     },
-    "timing": {
-      "schema": "db.component.timing",
-      "version": 1,
-      "part": "74HC922",
-      "delay": {
-        "model_delay_ns": 15,
-        "status": "model-derived",
-        "public_timing": {
-          "delay_ns": 15,
-          "simple": {
-            "default_delay_ns": 15,
-            "source": "legacy functional simulator default"
-          },
-          "timed": {
-            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-            "paths": {
-              "input_to_output_ns": {
-                "parameter": "tpd",
-                "from": "input",
-                "to": "output",
-                "condition": "input or select changes",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "transition_time_ns": {
-                "parameter": "tt",
-                "from": "output transition",
-                "to": "output transition",
-                "condition": "enabled output switches",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "conservative_defaults": {
-          "input_to_output_ns": "conservative_default_from_existing_model_delay",
-          "transition_time_ns": "conservative_default_from_existing_model_delay"
-        }
-      },
-      "evidence": {
-        "label": "Fairchild MM74C922/MM74C923",
-        "url": "`Components/Source/MM74C922.PDF`",
-        "package_evidence": "N18A, 18-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
+    {
+      "direction": "input",
+      "name": "ROW Y3",
+      "number": 3
     },
-    "electrical": {
-      "schema": "db.component.electrical",
-      "version": 1,
-      "part": "74HC922",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
-        }
-      },
-      "current": {
-        "status": "datasheet-required"
-      },
-      "loading": {
-        "status": "datasheet-required"
-      },
-      "evidence": {
-        "label": "Fairchild MM74C922/MM74C923",
-        "url": "`Components/Source/MM74C922.PDF`",
-        "package_evidence": "N18A, 18-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
+    {
+      "direction": "input",
+      "name": "ROW Y4",
+      "number": 4
+    },
+    {
+      "direction": "input",
+      "name": "OSCILLATOR",
+      "number": 5
+    },
+    {
+      "direction": "input",
+      "name": "KEYBOUNCE MASK",
+      "number": 6
+    },
+    {
+      "direction": "output",
+      "name": "COLUMN X4",
+      "number": 7
+    },
+    {
+      "direction": "output",
+      "name": "COLUMN X3",
+      "number": 8
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 9,
+      "rail": "GND"
+    },
+    {
+      "direction": "output",
+      "name": "COLUMN X2",
+      "number": 10
+    },
+    {
+      "direction": "output",
+      "name": "COLUMN X1",
+      "number": 11
+    },
+    {
+      "direction": "output",
+      "name": "DATA AVAILABLE",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "OUTPUT ENABLE",
+      "number": 13
+    },
+    {
+      "direction": "output",
+      "name": "DATA OUT D",
+      "number": 14
+    },
+    {
+      "direction": "output",
+      "name": "DATA OUT C",
+      "number": 15
+    },
+    {
+      "direction": "output",
+      "name": "DATA OUT B",
+      "number": 16
+    },
+    {
+      "direction": "output",
+      "name": "DATA OUT A",
+      "number": 17
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 18,
+      "rail": "VCC"
     }
-  },
+  ],
+  "schema": "db.component.digital",
   "status": {
     "datasheet": "verified",
     "pinout": "verified",
     "python_behavior": "modeled",
-    "verilog_model": "modeled",
+    "tests": "tested",
     "verilog_export": "tested",
-    "tests": "tested"
-  }
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "MM74C922 timing characteristics, VCC=5 V.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_max_ns": {
+          "data_available_to_output": 150,
+          "high_z_to_output": 250,
+          "output_to_high_z": 200
+        },
+        "datasheet_typical_ns": {
+          "data_available_to_output": 60,
+          "high_z_to_output": 100,
+          "output_to_high_z": 80
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "basic_function"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1
 }

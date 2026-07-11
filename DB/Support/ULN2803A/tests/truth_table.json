@@ -1,0 +1,58 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "ULN2803A",
+  "applicable": true,
+  "edge_criteria": {
+    "clocking": "level_sensitive",
+    "trigger_edge": "none",
+    "non_trigger_edge": "not_applicable",
+    "notes": "Support IC functional model; open-collector outputs are checked after input level changes."
+  },
+  "vectors": [
+    {
+      "name": "channel1_low_releases_output",
+      "fresh": true,
+      "inputs": {
+        "1B": 0
+      },
+      "expect": {
+        "1C": "Z"
+      }
+    },
+    {
+      "name": "channel1_high_sinks_low",
+      "fresh": true,
+      "inputs": {
+        "1B": 1
+      },
+      "expect": {
+        "1C": 0
+      }
+    },
+    {
+      "name": "all_channels_high_sink_low",
+      "fresh": true,
+      "inputs": {
+        "1B": 1,
+        "2B": 1,
+        "3B": 1,
+        "4B": 1,
+        "5B": 1,
+        "6B": 1,
+        "7B": 1,
+        "8B": 1
+      },
+      "expect": {
+        "1C": 0,
+        "2C": 0,
+        "3C": 0,
+        "4C": 0,
+        "5C": 0,
+        "6C": 0,
+        "7C": 0,
+        "8C": 0
+      }
+    }
+  ]
+}

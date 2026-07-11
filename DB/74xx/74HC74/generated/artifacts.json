@@ -486,11 +486,12 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "clear_forces_q_low",
-            "preset_forces_q_high",
-            "clock_captures_d_low",
-            "clock_captures_d_high",
-            "second_flip_flop_clock_captures_d"
+            "first_clear_forces_q_low",
+            "first_preset_forces_q_high",
+            "first_clock_captures_d_low",
+            "first_clock_captures_d_high",
+            "second_clear_forces_q_low",
+            "second_clock_captures_d_high"
           ]
         }
       },
@@ -574,11 +575,12 @@
           "present": true,
           "source": "tests/truth_table.json",
           "vectors": [
-            "clear_forces_q_low",
-            "preset_forces_q_high",
-            "clock_captures_d_low",
-            "clock_captures_d_high",
-            "second_flip_flop_clock_captures_d"
+            "first_clear_forces_q_low",
+            "first_preset_forces_q_high",
+            "first_clock_captures_d_low",
+            "first_clock_captures_d_high",
+            "second_clear_forces_q_low",
+            "second_clock_captures_d_high"
           ]
         }
       },

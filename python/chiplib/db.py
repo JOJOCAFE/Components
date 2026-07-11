@@ -278,6 +278,9 @@ def load_component_package(part: str) -> JsonMap:
         "manifest": _manifest_path(part).relative_to(ROOT).as_posix(),
         "definition": (base / "definition" / "definition.json").relative_to(ROOT).as_posix(),
     }
+    model_path = base / "simulation" / "model.py"
+    if model_path.exists():
+        files["simulation_model_py"] = model_path.relative_to(ROOT).as_posix()
     return {
         "format": "db.component.package",
         "version": 1,
@@ -300,7 +303,7 @@ def load_component_package(part: str) -> JsonMap:
             }
         },
         "files": files,
-        "portable_files": [],
+        "portable_files": _portable_simulation_files(files),
     }
 
 
@@ -1484,6 +1487,10 @@ def _simple_verilog_truth_bench(definition: JsonMap, package: JsonMap, truth: Js
         name = str(vector.get("name", "vector"))
         inputs = vector.get("inputs", {}) if isinstance(vector.get("inputs"), dict) else {}
         expect = vector.get("expect", {}) if isinstance(vector.get("expect"), dict) else {}
+        if "A" in inputs:
+            lines.append(f"    A = {_verilog_bus_literal(width, inputs['A'])};")
+        if "B" in inputs:
+            lines.append(f"    B = {_verilog_bus_literal(width, inputs['B'])};")
         if enable_pin in inputs:
             lines.append(f"    {enable_port} = 1'b{int(inputs[enable_pin])};")
         if select_pin in inputs:
@@ -1492,6 +1499,8 @@ def _simple_verilog_truth_bench(definition: JsonMap, package: JsonMap, truth: Js
         expected_y = expect.get("Y")
         if expected_y in {"A", "B"}:
             lines.append(f"    check(Y === {expected_y}, \"{name}\");")
+        elif isinstance(expected_y, str) and expected_y.startswith("0x"):
+            lines.append(f"    check(Y === {_verilog_bus_literal(width, expected_y)}, \"{name}\");")
         elif isinstance(expected_y, int):
             lines.append(f"    check(Y === {width}'h{expected_y:x}, \"{name}\");")
         else:
@@ -1663,6 +1672,11 @@ def _verilog_range(width: int) -> str:
 
 def _verilog_scalar_literal(width: int, value: int) -> str:
     return f"{width}'b" + ("1" if value else "0") * width
+
+
+def _verilog_bus_literal(width: int, value: Any) -> str:
+    number = int(value, 16) if isinstance(value, str) and value.startswith("0x") else int(value)
+    return f"{width}'h{number:x}"
 
 
 def _verilog_ports_by_pin_name(ports: Any, pins: Any) -> dict[str, str]:

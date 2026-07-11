@@ -169,9 +169,19 @@ chip-block editor to the same schematic JSON contract. The block-UI format only
 adds drawable blocks, wires, and layout metadata; chip identity, pins, probes,
 tests, and behavior still come from `Design` and the DB catalog.
 
-Parts without manufacturer-verified DIP evidence, such as the previously
-provisional `74HC150` and `74HC260`, are intentionally absent from the active
-catalog.
+Run the generated Verilog behavior cross-check whenever a Python model,
+Verilog model, netlist export, or truth-table vector changes:
+
+```bash
+python3 tools/verilog_behavior_crosscheck.py
+```
+
+This compiles package-local `simulation/model.v` files with Icarus and checks
+the DB truth vectors against the Verilog behavior. It complements the hand
+smoke benches and Python-vs-Verilog representative tests.
+
+Parts without manufacturer-verified DIP evidence are intentionally absent from
+the active 74HC/HCT catalog until source evidence is added.
 
 ## Naming
 
@@ -229,6 +239,7 @@ cd python
 python3 -m chiplib.cli db --audit
 python3 -m chiplib.cli db --status
 cd ..
+PYTHONPATH=python python3 tools/state_behavior_crosscheck.py
 ```
 
 ## Student CLI/API Start

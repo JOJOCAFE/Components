@@ -1,0 +1,117 @@
+{
+  "schema": "db.component.symbol.dip",
+  "version": 1,
+  "part": "74HC4049",
+  "shape": "dip",
+  "package": {
+    "kind": "DIP",
+    "pins": 16,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    },
+    {
+      "number": 2,
+      "name": "1Y",
+      "direction": "output"
+    },
+    {
+      "number": 3,
+      "name": "1A",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "2Y",
+      "direction": "output"
+    },
+    {
+      "number": 5,
+      "name": "2A",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "3Y",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "3A",
+      "direction": "input"
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "4A",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "4Y",
+      "direction": "output"
+    },
+    {
+      "number": 11,
+      "name": "5A",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "5Y",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "NC",
+      "direction": "nc"
+    },
+    {
+      "number": 14,
+      "name": "6A",
+      "direction": "input"
+    },
+    {
+      "number": 15,
+      "name": "6Y",
+      "direction": "output"
+    },
+    {
+      "number": 16,
+      "name": "NC",
+      "direction": "nc"
+    }
+  ],
+  "layout": {
+    "left": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "right": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ]
+  }
+}

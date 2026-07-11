@@ -141,15 +141,6 @@ module tb_74xx_smoke;
   wire [1:0] ff_q_bar;
   ttl_74hc74 u74(.Preset_bar(ff_preset_bar), .Clear_bar(ff_clear_bar), .D(ff_d), .Clk(ff_clk), .Q(ff_q), .Q_bar(ff_q_bar));
 
-  reg [1:0] jk112_preset_bar;
-  reg [1:0] jk112_clear_bar;
-  reg [1:0] jk112_j;
-  reg [1:0] jk112_k;
-  reg [1:0] jk112_clk;
-  wire [1:0] jk112_q;
-  wire [1:0] jk112_q_bar;
-  ttl_74hc112 u112(.Preset_bar(jk112_preset_bar), .Clear_bar(jk112_clear_bar), .J(jk112_j), .K(jk112_k), .Clk(jk112_clk), .Q(jk112_q), .Q_bar(jk112_q_bar));
-
   reg buf_oe1_bar;
   reg buf_oe2_bar;
   reg [7:0] buf_a;
@@ -189,6 +180,20 @@ module tb_74xx_smoke;
   wire [7:0] q595;
   wire qh595_prime;
   ttl_74hc595 u595(.SER(ser), .SRCLK(srclk595), .RCLK(rclk595), .SRCLR_bar(srclr595_bar), .OE_bar(oe595_bar), .Q(q595), .QH_prime(qh595_prime));
+
+  reg [1:0] ctr4520_cp;
+  reg [1:0] ctr4520_e;
+  reg [1:0] ctr4520_mr;
+  wire [3:0] ctr4520_q1;
+  wire [3:0] ctr4520_q2;
+  ttl_74hc4520 u4520(.CP(ctr4520_cp), .E(ctr4520_e), .MR(ctr4520_mr), .Q1(ctr4520_q1), .Q2(ctr4520_q2));
+
+  reg [1:0] mono4538_a;
+  reg [1:0] mono4538_b;
+  reg [1:0] mono4538_r_bar;
+  wire [1:0] mono4538_q;
+  wire [1:0] mono4538_q_bar;
+  ttl_74hc4538 u4538(.A(mono4538_a), .B(mono4538_b), .R_bar(mono4538_r_bar), .Q(mono4538_q), .Q_bar(mono4538_q_bar));
 
   reg [7:0] cnt593_drv;
   reg cnt593_drive;
@@ -383,22 +388,6 @@ module tb_74xx_smoke;
     #1;
     check(ff_q[0] == 1'b1, "74HC74 asynchronous preset");
 
-    jk112_clk = 2'b00;
-    jk112_preset_bar = 2'b11;
-    jk112_clear_bar = 2'b00;
-    jk112_j = 2'b01;
-    jk112_k = 2'b00;
-    #1;
-    check(jk112_q == 2'b00 && jk112_q_bar == 2'b11, "74HC112 asynchronous clear");
-    jk112_clear_bar = 2'b11;
-    #1 jk112_clk[0] = 1'b1; #1;
-    check(jk112_q[0] == 1'b0, "74HC112 ignores rising clock edge");
-    jk112_clk[0] = 1'b0; #1;
-    check(jk112_q[0] == 1'b1, "74HC112 negative-edge clock");
-    jk112_preset_bar[1] = 1'b0;
-    #1;
-    check(jk112_q[1] == 1'b1 && jk112_q_bar[1] == 1'b0, "74HC112 asynchronous preset");
-
     buf_oe1_bar = 1'b0;
     buf_oe2_bar = 1'b0;
     buf_a = 8'ha5;
@@ -449,6 +438,34 @@ module tb_74xx_smoke;
     #1 rclk595 = 1'b1; #1 rclk595 = 1'b0;
     check(q595 == 8'h01, "74HC595 shift and latch");
 
+    ctr4520_cp = 2'b00;
+    ctr4520_e = 2'b11;
+    ctr4520_mr = 2'b00;
+    #1;
+    ctr4520_mr = 2'b11;
+    #1;
+    ctr4520_mr = 2'b00;
+    #1 ctr4520_cp[0] = 1'b1; #1 ctr4520_cp[0] = 1'b0;
+    #1 ctr4520_cp[0] = 1'b1; #1 ctr4520_cp[0] = 1'b0;
+    #1 ctr4520_cp[1] = 1'b1; #1 ctr4520_cp[1] = 1'b0;
+    check(ctr4520_q1 == 4'h2 && ctr4520_q2 == 4'h1, "74HC4520 dual count");
+    ctr4520_e[0] = 1'b0;
+    #1 ctr4520_cp[0] = 1'b1; #1 ctr4520_cp[0] = 1'b0;
+    check(ctr4520_q1 == 4'h2, "74HC4520 enable hold");
+    ctr4520_mr[1] = 1'b1;
+    #1;
+    check(ctr4520_q2 == 4'h0, "74HC4520 master reset");
+
+    mono4538_a = 2'b00;
+    mono4538_b = 2'b11;
+    mono4538_r_bar = 2'b11;
+    #1 mono4538_a[0] = 1'b1; #1 mono4538_a[0] = 1'b0;
+    #1 mono4538_a[1] = 1'b1; #1 mono4538_a[1] = 1'b0;
+    check(mono4538_q == 2'b11 && mono4538_q_bar == 2'b00, "74HC4538 trigger");
+    mono4538_r_bar[0] = 1'b0;
+    #1;
+    check(mono4538_q[0] == 1'b0 && mono4538_q_bar[0] == 1'b1, "74HC4538 reset");
+
     cnt593_cck = 1'b0;
     cnt593_rck = 1'b0;
     cnt593_cclr = 1'b0;
@@ -476,6 +493,10 @@ module tb_74xx_smoke;
     key_rows = 4'b1110;
     #1;
     check(key_dav == 1'b1 && key_data == 4'h0, "74HC922 key encode row 1 column 1");
+    key_mask = 1'b0;
+    #1;
+    check(key_dav == 1'b0, "74HC922 keybounce mask gates data available");
+    key_mask = 1'b1;
     key_oe = 1'b1;
     #1;
     check(key_data === 4'hz, "74HC922 disabled high-Z");

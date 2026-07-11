@@ -1,0 +1,58 @@
+{
+  "schema": "db.component.definition",
+  "version": 1,
+  "id": "Crystal2Pin_10MHz",
+  "part": "Crystal2Pin_10MHz",
+  "group": "passive",
+  "kind": "physical",
+  "role": "timing_reference",
+  "title": "10 MHz 2-pin crystal",
+  "family": "Crystal",
+  "package": {
+    "kind": "two_pin_crystal",
+    "pins": 2
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "verilog_model": "not_applicable",
+    "verilog_export": "not_applicable",
+    "tests": "modeled"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "XTAL1",
+      "direction": "passive"
+    },
+    {
+      "number": 2,
+      "name": "XTAL2",
+      "direction": "passive"
+    }
+  ],
+  "simulation": {
+    "service": "sim.crystal",
+    "frequency_hz": 10000000,
+    "load_capacitance_pf": 18
+  },
+  "ui": {
+    "widget": "crystal",
+    "symbol": "crystal"
+  },
+  "sources": [
+    {
+      "label": "Abracon ABLS Series HC49/US microprocessor crystal",
+      "url": "https://abracon.com/Resonators/ABLS.pdf",
+      "file": "Source/ABRACON_ABLS_CRYSTAL.pdf",
+      "package_evidence": "HC49/US two-terminal crystal package; datasheet frequency range starts at 3.579545 MHz",
+      "used_for": [
+        "pins",
+        "package",
+        "frequency_range"
+      ]
+    }
+  ],
+  "definition_layers": {}
+}

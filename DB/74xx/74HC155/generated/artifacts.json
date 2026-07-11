@@ -296,6 +296,15 @@
       ],
       "role": "decoder",
       "timing": {
+        "datasheet": {
+          "conditions": "ST M74HC155 feature summary, VCC=5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_typical_ns": {
+              "feature_tpd": 12
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

@@ -1,224 +1,236 @@
 {
-  "schema": "db.component.digital",
-  "version": 1,
-  "part": "74HC374",
-  "metadata": {
-    "title": "Octal D-Type Flip-Flop With 3-State Outputs",
-    "family": "74HC",
-    "group": "74xx",
-    "role": "register"
+  "datasheet": {
+    "part": "74HC374",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC374",
+        "package_evidence": "N, 20-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc374.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ],
+    "version": 1
   },
-  "package": {
-    "kind": "DIP",
-    "pins": 20,
-    "default": "N"
-  },
-  "pins": [
-    {
-      "number": 1,
-      "name": "/OE",
-      "direction": "input",
-      "active_low": true
-    },
-    {
-      "number": 2,
-      "name": "1Q",
-      "direction": "output"
-    },
-    {
-      "number": 3,
-      "name": "1D",
-      "direction": "input"
-    },
-    {
-      "number": 4,
-      "name": "2D",
-      "direction": "input"
-    },
-    {
-      "number": 5,
-      "name": "2Q",
-      "direction": "output"
-    },
-    {
-      "number": 6,
-      "name": "3Q",
-      "direction": "output"
-    },
-    {
-      "number": 7,
-      "name": "3D",
-      "direction": "input"
-    },
-    {
-      "number": 8,
-      "name": "4D",
-      "direction": "input"
-    },
-    {
-      "number": 9,
-      "name": "4Q",
-      "direction": "output"
-    },
-    {
-      "number": 10,
-      "name": "GND",
-      "direction": "power",
-      "rail": "GND"
-    },
-    {
-      "number": 11,
-      "name": "CLK",
-      "direction": "input"
-    },
-    {
-      "number": 12,
-      "name": "5Q",
-      "direction": "output"
-    },
-    {
-      "number": 13,
-      "name": "5D",
-      "direction": "input"
-    },
-    {
-      "number": 14,
-      "name": "6D",
-      "direction": "input"
-    },
-    {
-      "number": 15,
-      "name": "6Q",
-      "direction": "output"
-    },
-    {
-      "number": 16,
-      "name": "7Q",
-      "direction": "output"
-    },
-    {
-      "number": 17,
-      "name": "7D",
-      "direction": "input"
-    },
-    {
-      "number": 18,
-      "name": "8D",
-      "direction": "input"
-    },
-    {
-      "number": 19,
-      "name": "8Q",
-      "direction": "output"
-    },
-    {
-      "number": 20,
-      "name": "VCC",
-      "direction": "power",
-      "rail": "VCC"
-    }
-  ],
-  "logic": {
-    "type": "octal_d_type_flip_flop_with_3_state",
-    "description": "Octal D-Type Flip-Flop With 3-State Outputs"
-  },
-  "timing": {
-    "delay_ns": 15,
-    "simple": {
-      "default_delay_ns": 15,
-      "source": "legacy functional simulator default"
-    },
-    "timed": {
-      "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-      "paths": {
-        "clock_to_output_ns": {
-          "parameter": "tco",
-          "from": "CLK/clock control",
-          "to": "Q/output",
-          "condition": "active clock edge",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "async_control_to_output_ns": {
-          "parameter": "tremap",
-          "from": "asynchronous control",
-          "to": "Q/output",
-          "condition": "async control asserted or released",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "input_setup_margin_ns": {
-          "parameter": "tsu",
-          "from": "D/input",
-          "to": "CLK/clock control",
-          "condition": "conservative setup placeholder from model delay",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "output_enable_to_output_ns": {
-          "parameter": "ten",
-          "from": "output-enable control",
-          "to": "output driven",
-          "condition": "enable control asserted",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "output_disable_to_high_z_ns": {
-          "parameter": "tdis",
-          "from": "output-enable control",
-          "to": "output high-Z",
-          "condition": "enable control released",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
-        },
-        "transition_time_ns": {
-          "parameter": "tt",
-          "from": "output transition",
-          "to": "output transition",
-          "condition": "enabled output switches",
-          "ranges_ns": {
-            "conservative_default": {
-              "min_ns": null,
-              "typ_ns": 15,
-              "max_ns": 15,
-              "source": "conservative_default_from_existing_model_delay"
-            }
-          }
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC374",
+        "package_evidence": "N, 20-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc374.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "part": "74HC374",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
         }
       }
+    },
+    "pins": {
+      "part": "74HC374",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/OE",
+          "number": 1
+        },
+        {
+          "direction": "output",
+          "name": "1Q",
+          "number": 2
+        },
+        {
+          "direction": "input",
+          "name": "1D",
+          "number": 3
+        },
+        {
+          "direction": "input",
+          "name": "2D",
+          "number": 4
+        },
+        {
+          "direction": "output",
+          "name": "2Q",
+          "number": 5
+        },
+        {
+          "direction": "output",
+          "name": "3Q",
+          "number": 6
+        },
+        {
+          "direction": "input",
+          "name": "3D",
+          "number": 7
+        },
+        {
+          "direction": "input",
+          "name": "4D",
+          "number": 8
+        },
+        {
+          "direction": "output",
+          "name": "4Q",
+          "number": 9
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "direction": "input",
+          "name": "CLK",
+          "number": 11
+        },
+        {
+          "direction": "output",
+          "name": "5Q",
+          "number": 12
+        },
+        {
+          "direction": "input",
+          "name": "5D",
+          "number": 13
+        },
+        {
+          "direction": "input",
+          "name": "6D",
+          "number": 14
+        },
+        {
+          "direction": "output",
+          "name": "6Q",
+          "number": 15
+        },
+        {
+          "direction": "output",
+          "name": "7Q",
+          "number": 16
+        },
+        {
+          "direction": "input",
+          "name": "7D",
+          "number": 17
+        },
+        {
+          "direction": "input",
+          "name": "8D",
+          "number": 18
+        },
+        {
+          "direction": "output",
+          "name": "8Q",
+          "number": 19
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC374",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 10,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 20,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "conditions": "TI SN74HC374 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_fmax_mhz": {
+          "min_25c": 30,
+          "sn54_min": 20,
+          "sn74_min": 24,
+          "typical": 60
+        },
+        "datasheet_max_ns_25c": {
+          "clock_to_q": 36,
+          "disable": 30,
+          "enable": 30,
+          "transition": 12
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "clock_to_q": 45,
+          "disable": 38,
+          "enable": 38,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "clock_to_q": 54,
+          "disable": 45,
+          "enable": 45,
+          "transition": 18
+        },
+        "datasheet_typical_ns": {
+          "clock_to_q": 17,
+          "disable": 17,
+          "enable": 16,
+          "transition": 8
+        },
+        "model_delay_ns": 15,
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "status": "datasheet-backed"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC374",
+        "package_evidence": "N, 20-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc374.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      },
+      "part": "74HC374",
+      "schema": "db.component.timing",
+      "version": 1
     }
   },
   "generation": {
+    "python": {
+      "class": "HC374",
+      "factory": "create",
+      "file": "DB/74xx/74HC374/simulation/model.py",
+      "part": "74HC374"
+    },
     "targets": [
       "json",
       "python_simulator",
@@ -230,334 +242,286 @@
       "unit_test",
       "interactive_demo"
     ],
-    "python": {
-      "factory": "create",
-      "part": "74HC374",
-      "file": "DB/74xx/74HC374/simulation/model.py",
-      "class": "HC374"
-    },
     "verilog": {
-      "module": "ttl_74hc374",
       "file": "DB/74xx/74HC374/simulation/model.v",
+      "module": "ttl_74hc374",
       "netlist": "DB/74xx/74HC374/simulation/netlist.json"
     }
   },
+  "logic": {
+    "description": "Octal D-Type Flip-Flop With 3-State Outputs",
+    "type": "octal_d_type_flip_flop_with_3_state"
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "register",
+    "title": "Octal D-Type Flip-Flop With 3-State Outputs"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 20
+  },
+  "part": "74HC374",
+  "pins": [
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/OE",
+      "number": 1
+    },
+    {
+      "direction": "output",
+      "name": "1Q",
+      "number": 2
+    },
+    {
+      "direction": "input",
+      "name": "1D",
+      "number": 3
+    },
+    {
+      "direction": "input",
+      "name": "2D",
+      "number": 4
+    },
+    {
+      "direction": "output",
+      "name": "2Q",
+      "number": 5
+    },
+    {
+      "direction": "output",
+      "name": "3Q",
+      "number": 6
+    },
+    {
+      "direction": "input",
+      "name": "3D",
+      "number": 7
+    },
+    {
+      "direction": "input",
+      "name": "4D",
+      "number": 8
+    },
+    {
+      "direction": "output",
+      "name": "4Q",
+      "number": 9
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 10,
+      "rail": "GND"
+    },
+    {
+      "direction": "input",
+      "name": "CLK",
+      "number": 11
+    },
+    {
+      "direction": "output",
+      "name": "5Q",
+      "number": 12
+    },
+    {
+      "direction": "input",
+      "name": "5D",
+      "number": 13
+    },
+    {
+      "direction": "input",
+      "name": "6D",
+      "number": 14
+    },
+    {
+      "direction": "output",
+      "name": "6Q",
+      "number": 15
+    },
+    {
+      "direction": "output",
+      "name": "7Q",
+      "number": 16
+    },
+    {
+      "direction": "input",
+      "name": "7D",
+      "number": 17
+    },
+    {
+      "direction": "input",
+      "name": "8D",
+      "number": 18
+    },
+    {
+      "direction": "output",
+      "name": "8Q",
+      "number": 19
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 20,
+      "rail": "VCC"
+    }
+  ],
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "datasheet": {
+      "conditions": "TI SN74HC374 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "status": "datasheet-backed",
+      "values": {
+        "datasheet_fmax_mhz": {
+          "min_25c": 30,
+          "sn54_min": 20,
+          "sn74_min": 24,
+          "typical": 60
+        },
+        "datasheet_max_ns_25c": {
+          "clock_to_q": 36,
+          "disable": 30,
+          "enable": 30,
+          "transition": 12
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "clock_to_q": 45,
+          "disable": 38,
+          "enable": 38,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "clock_to_q": 54,
+          "disable": 45,
+          "enable": 45,
+          "transition": 18
+        },
+        "datasheet_typical_ns": {
+          "clock_to_q": 17,
+          "disable": 17,
+          "enable": 16,
+          "transition": 8
+        }
+      }
+    },
+    "delay_ns": 15,
+    "simple": {
+      "default_delay_ns": 15,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "async_control_to_output_ns": {
+          "condition": "async control asserted or released",
+          "from": "asynchronous control",
+          "parameter": "tremap",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "Q/output"
+        },
+        "clock_to_output_ns": {
+          "condition": "active clock edge",
+          "from": "CLK/clock control",
+          "parameter": "tco",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "Q/output"
+        },
+        "input_setup_margin_ns": {
+          "condition": "conservative setup placeholder from model delay",
+          "from": "D/input",
+          "parameter": "tsu",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "CLK/clock control"
+        },
+        "output_disable_to_high_z_ns": {
+          "condition": "enable control released",
+          "from": "output-enable control",
+          "parameter": "tdis",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output high-Z"
+        },
+        "output_enable_to_output_ns": {
+          "condition": "enable control asserted",
+          "from": "output-enable control",
+          "parameter": "ten",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output driven"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 15,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 15
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    }
+  },
   "verification": {
+    "required_vectors": [
+      "basic_function",
+      "disabled_or_high_z"
+    ],
     "tests": [
       "truth_table",
       "timing",
       "propagation",
       "tri_state",
       "bus_fight"
-    ],
-    "required_vectors": [
-      "basic_function",
-      "disabled_or_high_z"
     ]
   },
-  "datasheet": {
-    "schema": "db.component.datasheet.sources",
-    "version": 1,
-    "part": "74HC374",
-    "sources": [
-      {
-        "label": "Texas Instruments SN74HC374",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc374.pdf",
-        "package_evidence": "N, 20-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    ]
-  },
-  "definition_layers": {
-    "pins": {
-      "schema": "db.component.pins",
-      "version": 1,
-      "part": "74HC374",
-      "pins": [
-        {
-          "number": 1,
-          "name": "/OE",
-          "direction": "input",
-          "active_low": true
-        },
-        {
-          "number": 2,
-          "name": "1Q",
-          "direction": "output"
-        },
-        {
-          "number": 3,
-          "name": "1D",
-          "direction": "input"
-        },
-        {
-          "number": 4,
-          "name": "2D",
-          "direction": "input"
-        },
-        {
-          "number": 5,
-          "name": "2Q",
-          "direction": "output"
-        },
-        {
-          "number": 6,
-          "name": "3Q",
-          "direction": "output"
-        },
-        {
-          "number": 7,
-          "name": "3D",
-          "direction": "input"
-        },
-        {
-          "number": 8,
-          "name": "4D",
-          "direction": "input"
-        },
-        {
-          "number": 9,
-          "name": "4Q",
-          "direction": "output"
-        },
-        {
-          "number": 10,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 11,
-          "name": "CLK",
-          "direction": "input"
-        },
-        {
-          "number": 12,
-          "name": "5Q",
-          "direction": "output"
-        },
-        {
-          "number": 13,
-          "name": "5D",
-          "direction": "input"
-        },
-        {
-          "number": 14,
-          "name": "6D",
-          "direction": "input"
-        },
-        {
-          "number": 15,
-          "name": "6Q",
-          "direction": "output"
-        },
-        {
-          "number": 16,
-          "name": "7Q",
-          "direction": "output"
-        },
-        {
-          "number": 17,
-          "name": "7D",
-          "direction": "input"
-        },
-        {
-          "number": 18,
-          "name": "8D",
-          "direction": "input"
-        },
-        {
-          "number": 19,
-          "name": "8Q",
-          "direction": "output"
-        },
-        {
-          "number": 20,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "power": {
-      "schema": "db.component.power",
-      "version": 1,
-      "part": "74HC374",
-      "rails": [
-        {
-          "number": 10,
-          "name": "GND",
-          "direction": "power",
-          "rail": "GND"
-        },
-        {
-          "number": 20,
-          "name": "VCC",
-          "direction": "power",
-          "rail": "VCC"
-        }
-      ]
-    },
-    "timing": {
-      "schema": "db.component.timing",
-      "version": 1,
-      "part": "74HC374",
-      "delay": {
-        "model_delay_ns": 15,
-        "status": "model-derived",
-        "public_timing": {
-          "delay_ns": 15,
-          "simple": {
-            "default_delay_ns": 15,
-            "source": "legacy functional simulator default"
-          },
-          "timed": {
-            "status": "conservative_default_until_part_specific_datasheet_timing_extracted",
-            "paths": {
-              "clock_to_output_ns": {
-                "parameter": "tco",
-                "from": "CLK/clock control",
-                "to": "Q/output",
-                "condition": "active clock edge",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "async_control_to_output_ns": {
-                "parameter": "tremap",
-                "from": "asynchronous control",
-                "to": "Q/output",
-                "condition": "async control asserted or released",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "input_setup_margin_ns": {
-                "parameter": "tsu",
-                "from": "D/input",
-                "to": "CLK/clock control",
-                "condition": "conservative setup placeholder from model delay",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "output_enable_to_output_ns": {
-                "parameter": "ten",
-                "from": "output-enable control",
-                "to": "output driven",
-                "condition": "enable control asserted",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "output_disable_to_high_z_ns": {
-                "parameter": "tdis",
-                "from": "output-enable control",
-                "to": "output high-Z",
-                "condition": "enable control released",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              },
-              "transition_time_ns": {
-                "parameter": "tt",
-                "from": "output transition",
-                "to": "output transition",
-                "condition": "enabled output switches",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns": 15,
-                    "source": "conservative_default_from_existing_model_delay"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "conservative_defaults": {
-          "clock_to_output_ns": "conservative_default_from_existing_model_delay",
-          "async_control_to_output_ns": "conservative_default_from_existing_model_delay",
-          "input_setup_margin_ns": "conservative_default_from_existing_model_delay",
-          "output_enable_to_output_ns": "conservative_default_from_existing_model_delay",
-          "output_disable_to_high_z_ns": "conservative_default_from_existing_model_delay",
-          "transition_time_ns": "conservative_default_from_existing_model_delay"
-        }
-      },
-      "evidence": {
-        "label": "Texas Instruments SN74HC374",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc374.pdf",
-        "package_evidence": "N, 20-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    },
-    "electrical": {
-      "schema": "db.component.electrical",
-      "version": 1,
-      "part": "74HC374",
-      "voltage": {
-        "vcc": {
-          "status": "datasheet-required"
-        }
-      },
-      "current": {
-        "status": "datasheet-required"
-      },
-      "loading": {
-        "status": "datasheet-required"
-      },
-      "evidence": {
-        "label": "Texas Instruments SN74HC374",
-        "url": "https://www.ti.com/lit/ds/symlink/sn74hc374.pdf",
-        "package_evidence": "N, 20-pin PDIP",
-        "used_for": [
-          "pins",
-          "package",
-          "logic"
-        ]
-      }
-    }
-  },
-  "status": {
-    "datasheet": "verified",
-    "pinout": "verified",
-    "python_behavior": "modeled",
-    "verilog_model": "modeled",
-    "verilog_export": "tested",
-    "tests": "tested"
-  }
+  "version": 1
 }

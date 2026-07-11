@@ -306,6 +306,15 @@
       ],
       "role": "logic",
       "timing": {
+        "datasheet": {
+          "conditions": "TI CD74HC147 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_typical_ns": {
+              "feature_tpd": 13
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

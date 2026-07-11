@@ -48,7 +48,7 @@ module ttl_74hc374 #(parameter DELAY_RISE = 0, DELAY_FALL = 0)
   output [7:0] Q
 );
 
-reg [7:0] q;
+reg [7:0] q = 8'h00;
 
 always @(posedge Clk) begin
   q <= D;

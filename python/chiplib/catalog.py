@@ -191,12 +191,12 @@ class CatalogChip(Chip):
         elif p == "74HC147":
             selected = 0
             for i in range(10):
-                if self.has(f"I{i}") and not self.r(f"I{i}"):
+                if self.has(f"/I{i}") and not self.r(f"/I{i}"):
                     selected = i
             # Outputs are active-low BCD bits in the Verilog model.
-            self.o("Y1", 1 - ((selected >> 0) & 1))
-            self.o("Y2", 1 - ((selected >> 1) & 1))
-            self.o("Y3", 1 - ((selected >> 2) & 1))
+            self.o("/Y1", 1 - ((selected >> 1) & 1))
+            self.o("/Y2", 1 - ((selected >> 2) & 1))
+            self.o("/Y3", 1 - ((selected >> 3) & 1))
         elif p == "74HC148":
             if self.r("EI"):
                 self.o("EO", 0); self.o("GS", 0); self.o("A0", 1); self.o("A1", 1); self.o("A2", 1)
@@ -244,7 +244,8 @@ class CatalogChip(Chip):
                 a0 = f"{i}I0" if p == "74HC158" else f"{i}A"
                 a1 = f"{i}I1" if p == "74HC158" else f"{i}B"
                 val = self.r(a1 if sel else a0)
-                if p == "74HC257" and en: self.o(f"{i}Y", Z)
+                if p == "74HC158" and en: self.o(f"{i}Y", 1)
+                elif p == "74HC257" and en: self.o(f"{i}Y", Z)
                 else: self.o(f"{i}Y", 1 - val if p == "74HC158" else val)
         elif p in ("74HC240", "74HC244", "74HC541"):
             inv = p == "74HC240"

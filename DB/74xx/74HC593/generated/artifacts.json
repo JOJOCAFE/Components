@@ -343,6 +343,36 @@
       ],
       "role": "counter",
       "timing": {
+        "datasheet": {
+          "conditions": "ST M54HC593 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns_25c": {
+              "propagation_path_a": 42,
+              "propagation_path_b": 44,
+              "q_transition": 12,
+              "rco_transition": 15
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "propagation_path_a": 53,
+              "propagation_path_b": 55,
+              "q_transition": 15,
+              "rco_transition": 19
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "propagation_path_a": 63,
+              "propagation_path_b": 66,
+              "q_transition": 18,
+              "rco_transition": 22
+            },
+            "datasheet_typical_ns": {
+              "propagation_path_a": 27,
+              "propagation_path_b": 28,
+              "q_transition": 7,
+              "rco_transition": 8
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

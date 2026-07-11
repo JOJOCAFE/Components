@@ -315,6 +315,22 @@
       ],
       "role": "logic",
       "timing": {
+        "datasheet": {
+          "conditions": "MM74C922 timing characteristics, VCC=5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

@@ -483,7 +483,7 @@
             "three_plus_five",
             "carry_in",
             "carry_out",
-            "carry_out_with_cin"
+            "carry_out_with_c0"
           ]
         }
       },
@@ -567,7 +567,7 @@
             "three_plus_five",
             "carry_in",
             "carry_out",
-            "carry_out_with_cin"
+            "carry_out_with_c0"
           ]
         }
       },

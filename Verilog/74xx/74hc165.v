@@ -47,7 +47,7 @@ module ttl_74hc165 #(parameter DELAY_RISE = 0, DELAY_FALL = 0)
   output QH_bar
 );
 
-reg [7:0] q;
+reg [7:0] q = 8'h00;
 
 always @(posedge Clk or negedge ShiftLoad_bar) begin
   if (!ShiftLoad_bar) begin

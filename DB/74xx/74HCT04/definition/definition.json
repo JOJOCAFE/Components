@@ -1,0 +1,369 @@
+{
+  "schema": "db.component.digital",
+  "version": 1,
+  "part": "74HCT04",
+  "metadata": {
+    "title": "Hex inverter, TTL-compatible inputs",
+    "family": "74HCT",
+    "group": "74xx",
+    "role": "inverter"
+  },
+  "package": {
+    "kind": "DIP",
+    "pins": 14,
+    "default": "N"
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "1A",
+      "direction": "input"
+    },
+    {
+      "number": 2,
+      "name": "1Y",
+      "direction": "output"
+    },
+    {
+      "number": 3,
+      "name": "2A",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "2Y",
+      "direction": "output"
+    },
+    {
+      "number": 5,
+      "name": "3A",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "3Y",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 8,
+      "name": "4Y",
+      "direction": "output"
+    },
+    {
+      "number": 9,
+      "name": "4A",
+      "direction": "input"
+    },
+    {
+      "number": 10,
+      "name": "5Y",
+      "direction": "output"
+    },
+    {
+      "number": 11,
+      "name": "5A",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "6Y",
+      "direction": "output"
+    },
+    {
+      "number": 13,
+      "name": "6A",
+      "direction": "input"
+    },
+    {
+      "number": 14,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "logic": {
+    "type": "hex_inverter_ttl_input",
+    "description": "Hex inverter, TTL-compatible inputs"
+  },
+  "timing": {
+    "delay_ns": 15,
+    "datasheet": {
+      "status": "datasheet-backed",
+      "conditions": "TI SN74HCT04 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "values": {
+        "datasheet_typical_ns": {
+          "input_to_output": 14,
+          "transition": 9
+        },
+        "datasheet_max_ns_25c": {
+          "input_to_output": 20,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "input_to_output": 25,
+          "transition": 19
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "input_to_output": 30,
+          "transition": 22
+        }
+      }
+    }
+  },
+  "generation": {
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "python": {
+      "factory": "create",
+      "part": "74HCT04",
+      "file": "DB/74xx/74HCT04/simulation/model.py",
+      "class": "HCT04"
+    },
+    "verilog": {
+      "module": "ttl_74hct04",
+      "file": "DB/74xx/74HCT04/simulation/model.v",
+      "netlist": "DB/74xx/74HCT04/simulation/netlist.json"
+    }
+  },
+  "verification": {
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ],
+    "required_vectors": [
+      "basic_function"
+    ]
+  },
+  "datasheet": {
+    "schema": "db.component.datasheet.sources",
+    "version": 1,
+    "part": "74HCT04",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HCT04",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hct04.pdf",
+        "file": "Source/74HCT04_TI_SN74HCT04.pdf",
+        "package_evidence": "N, 14-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    ]
+  },
+  "definition_layers": {
+    "pins": {
+      "schema": "db.component.pins",
+      "version": 1,
+      "part": "74HCT04",
+      "pins": [
+        {
+          "number": 1,
+          "name": "1A",
+          "direction": "input"
+        },
+        {
+          "number": 2,
+          "name": "1Y",
+          "direction": "output"
+        },
+        {
+          "number": 3,
+          "name": "2A",
+          "direction": "input"
+        },
+        {
+          "number": 4,
+          "name": "2Y",
+          "direction": "output"
+        },
+        {
+          "number": 5,
+          "name": "3A",
+          "direction": "input"
+        },
+        {
+          "number": 6,
+          "name": "3Y",
+          "direction": "output"
+        },
+        {
+          "number": 7,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 8,
+          "name": "4Y",
+          "direction": "output"
+        },
+        {
+          "number": 9,
+          "name": "4A",
+          "direction": "input"
+        },
+        {
+          "number": 10,
+          "name": "5Y",
+          "direction": "output"
+        },
+        {
+          "number": 11,
+          "name": "5A",
+          "direction": "input"
+        },
+        {
+          "number": 12,
+          "name": "6Y",
+          "direction": "output"
+        },
+        {
+          "number": 13,
+          "name": "6A",
+          "direction": "input"
+        },
+        {
+          "number": 14,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "power": {
+      "schema": "db.component.power",
+      "version": 1,
+      "part": "74HCT04",
+      "rails": [
+        {
+          "number": 7,
+          "name": "GND",
+          "direction": "power",
+          "rail": "GND"
+        },
+        {
+          "number": 14,
+          "name": "VCC",
+          "direction": "power",
+          "rail": "VCC"
+        }
+      ]
+    },
+    "timing": {
+      "schema": "db.component.timing",
+      "version": 1,
+      "part": "74HCT04",
+      "delay": {
+        "model_delay_ns": 15,
+        "status": "datasheet-backed",
+        "public_timing": {
+          "delay_ns": 15,
+          "datasheet": {
+            "status": "datasheet-backed",
+            "conditions": "TI SN74HCT04 switching characteristics, CL=50 pF, VCC=4.5 V.",
+            "values": {
+              "datasheet_typical_ns": {
+                "input_to_output": 14,
+                "transition": 9
+              },
+              "datasheet_max_ns_25c": {
+                "input_to_output": 20,
+                "transition": 15
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "input_to_output": 25,
+                "transition": 19
+              },
+              "datasheet_max_ns_minus55_to_125c": {
+                "input_to_output": 30,
+                "transition": 22
+              }
+            }
+          }
+        },
+        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "conditions": "TI SN74HCT04 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "datasheet_typical_ns": {
+          "input_to_output": 14,
+          "transition": 9
+        },
+        "datasheet_max_ns_25c": {
+          "input_to_output": 20,
+          "transition": 15
+        },
+        "datasheet_max_ns_minus40_to_85c": {
+          "input_to_output": 25,
+          "transition": 19
+        },
+        "datasheet_max_ns_minus55_to_125c": {
+          "input_to_output": 30,
+          "transition": 22
+        }
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HCT04",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hct04.pdf",
+        "file": "Source/74HCT04_TI_SN74HCT04.pdf",
+        "package_evidence": "N, 14-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    },
+    "electrical": {
+      "schema": "db.component.electrical",
+      "version": 1,
+      "part": "74HCT04",
+      "voltage": {
+        "vcc": {
+          "status": "datasheet-required"
+        }
+      },
+      "current": {
+        "status": "datasheet-required"
+      },
+      "loading": {
+        "status": "datasheet-required"
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HCT04",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hct04.pdf",
+        "file": "Source/74HCT04_TI_SN74HCT04.pdf",
+        "package_evidence": "N, 14-pin PDIP",
+        "used_for": [
+          "pins",
+          "package",
+          "logic"
+        ]
+      }
+    }
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "verilog_model": "modeled",
+    "verilog_export": "modeled",
+    "tests": "modeled"
+  }
+}

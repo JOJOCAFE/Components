@@ -47,7 +47,7 @@ module ttl_74hc377 #(parameter WIDTH = 8, DELAY_RISE = 0, DELAY_FALL = 0)
 );
 
 //------------------------------------------------//
-reg [WIDTH-1:0] Q_current;
+reg [WIDTH-1:0] Q_current = {WIDTH{1'b0}};
 
 always @(posedge Clk)
 begin

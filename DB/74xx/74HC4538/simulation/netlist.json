@@ -1,0 +1,152 @@
+{
+  "schema": "db.component.simulation.netlist",
+  "version": 1,
+  "part": "74HC4538",
+  "source": "DB/74xx/74HC4538/definition/definition.json",
+  "simulation": {
+    "python": "DB/74xx/74HC4538/simulation/model.py",
+    "verilog": "DB/74xx/74HC4538/simulation/model.v"
+  },
+  "verilog": {
+    "module": "ttl_74hc4538",
+    "export": {
+      "kind": "structural_port_map",
+      "ports": [
+        {
+          "name": "A",
+          "pins": [
+            4,
+            12
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "B",
+          "pins": [
+            5,
+            11
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "R_bar",
+          "pins": [
+            3,
+            13
+          ],
+          "direction": "input"
+        },
+        {
+          "name": "Q",
+          "pins": [
+            6,
+            10
+          ],
+          "direction": "output"
+        },
+        {
+          "name": "Q_bar",
+          "pins": [
+            7,
+            9
+          ],
+          "direction": "output"
+        }
+      ],
+      "output_pins": [
+        6,
+        7,
+        9,
+        10
+      ]
+    }
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "1Cx",
+      "direction": "passive"
+    },
+    {
+      "number": 2,
+      "name": "1RxCx",
+      "direction": "passive"
+    },
+    {
+      "number": 3,
+      "name": "/1R",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 4,
+      "name": "1A",
+      "direction": "input"
+    },
+    {
+      "number": 5,
+      "name": "1B",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "1Q",
+      "direction": "output"
+    },
+    {
+      "number": 7,
+      "name": "/1Q",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 8,
+      "name": "GND",
+      "direction": "power",
+      "rail": "GND"
+    },
+    {
+      "number": 9,
+      "name": "/2Q",
+      "direction": "output",
+      "active_low": true
+    },
+    {
+      "number": 10,
+      "name": "2Q",
+      "direction": "output"
+    },
+    {
+      "number": 11,
+      "name": "2B",
+      "direction": "input"
+    },
+    {
+      "number": 12,
+      "name": "2A",
+      "direction": "input"
+    },
+    {
+      "number": 13,
+      "name": "/2R",
+      "direction": "input",
+      "active_low": true
+    },
+    {
+      "number": 14,
+      "name": "2RxCx",
+      "direction": "passive"
+    },
+    {
+      "number": 15,
+      "name": "2Cx",
+      "direction": "passive"
+    },
+    {
+      "number": 16,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ]
+}

@@ -349,6 +349,20 @@
       ],
       "role": "register",
       "timing": {
+        "datasheet": {
+          "conditions": "TI SN74HC273 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "status": "datasheet-backed",
+          "values": {
+            "datasheet_fmax_mhz": {
+              "sn74_min": 21
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "clear_to_q": 40,
+              "clock_to_q": 40,
+              "transition": 19
+            }
+          }
+        },
         "delay_ns": 15,
         "simple": {
           "default_delay_ns": 15,

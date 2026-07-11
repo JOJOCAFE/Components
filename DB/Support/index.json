@@ -1,0 +1,9 @@
+{
+  "schema": "db.group",
+  "version": 1,
+  "id": "support",
+  "title": "Support ICs",
+  "migration_status": "layered_packages_active",
+  "manifest_note": "Support IC packages live in DB/Support/<part>/definition/definition.json. These are source-backed package definitions; analog or level-conversion behavior models are not digital DB models unless explicitly added later.",
+  "components": ["LM358", "LM393", "MAX232", "NE555", "ULN2803A"]
+}

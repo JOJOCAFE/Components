@@ -1,0 +1,86 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "74HC4520",
+  "applicable": true,
+  "vectors": [
+    {
+      "name": "block1_reset_forces_zero",
+      "fresh": true,
+      "inputs": {
+        "1MR": 1,
+        "1E": 1
+      },
+      "clock": false,
+      "expect": {
+        "1Q0": 0,
+        "1Q1": 0,
+        "1Q2": 0,
+        "1Q3": 0
+      }
+    },
+    {
+      "name": "block1_first_count",
+      "inputs": {
+        "1MR": 0,
+        "1E": 1
+      },
+      "clock": true,
+      "expect": {
+        "1Q0": 1,
+        "1Q1": 0,
+        "1Q2": 0,
+        "1Q3": 0
+      }
+    },
+    {
+      "name": "block1_second_count",
+      "inputs": {
+        "1MR": 0,
+        "1E": 1
+      },
+      "clock": true,
+      "expect": {
+        "1Q0": 0,
+        "1Q1": 1,
+        "1Q2": 0,
+        "1Q3": 0
+      }
+    },
+    {
+      "name": "block1_enable_low_holds",
+      "inputs": {
+        "1MR": 0,
+        "1E": 0
+      },
+      "clock": true,
+      "expect": {
+        "1Q0": 0,
+        "1Q1": 1,
+        "1Q2": 0,
+        "1Q3": 0
+      }
+    },
+    {
+      "name": "block2_first_count",
+      "fresh": true,
+      "inputs": {
+        "2MR": 0,
+        "2E": 1
+      },
+      "clock": true,
+      "expect": {
+        "2Q0": 1,
+        "2Q1": 0,
+        "2Q2": 0,
+        "2Q3": 0
+      }
+    }
+  ],
+  "edge_criteria": {
+    "clocking": "edge_sensitive",
+    "trigger_edge": "rising",
+    "non_trigger_edge": "falling_or_no_rising_edge_holds_state",
+    "notes": "Truth tests prove clocked state changes on the triggering edge and asynchronous controls take priority."
+  }
+}

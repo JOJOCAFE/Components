@@ -1,0 +1,97 @@
+{
+  "schema": "db.component.definition",
+  "version": 1,
+  "part": "LM358",
+  "title": "Dual operational amplifier",
+  "family": "Support IC",
+  "group": "support",
+  "kind": "ic",
+  "role": "op_amp",
+  "package": {
+    "kind": "DIP",
+    "pins": 8,
+    "default": "DIP"
+  },
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "tested",
+    "verilog_model": "not_applicable",
+    "verilog_export": "not_applicable",
+    "tests": "tested"
+  },
+  "definition_layers": {
+    "timing": {
+      "delay": {
+        "model_delay_ns": 1,
+        "source": "functional_support_model",
+        "notes": "Model delay only for event ordering; not datasheet analog timing."
+      }
+    }
+  },
+  "pins": [
+    {
+      "number": 1,
+      "name": "OUT1",
+      "direction": "output"
+    },
+    {
+      "number": 2,
+      "name": "IN1-",
+      "direction": "input"
+    },
+    {
+      "number": 3,
+      "name": "IN1+",
+      "direction": "input"
+    },
+    {
+      "number": 4,
+      "name": "VSS",
+      "direction": "power",
+      "rail": "VSS"
+    },
+    {
+      "number": 5,
+      "name": "IN2+",
+      "direction": "input"
+    },
+    {
+      "number": 6,
+      "name": "IN2-",
+      "direction": "input"
+    },
+    {
+      "number": 7,
+      "name": "OUT2",
+      "direction": "output"
+    },
+    {
+      "number": 8,
+      "name": "VCC",
+      "direction": "power",
+      "rail": "VCC"
+    }
+  ],
+  "sources": [
+    {
+      "label": "Texas Instruments LM358",
+      "url": "https://www.ti.com/lit/ds/symlink/lm358.pdf",
+      "file": "Source/LM358_TI_LM358.pdf",
+      "package_evidence": "DIP, 8-pin package",
+      "used_for": [
+        "pins",
+        "package",
+        "function"
+      ]
+    }
+  ],
+  "simulation": {
+    "service": "sim.support.lm358",
+    "notes": "Local Python functional model uses saturated comparator-style outputs for logic-level learning; not a SPICE op-amp macro-model."
+  },
+  "ui": {
+    "symbol": "dip",
+    "label": "LM358"
+  }
+}

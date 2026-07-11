@@ -5,69 +5,85 @@
   "applicable": true,
   "vectors": [
     {
-      "name": "clear_forces_q_low",
+      "name": "first_clear_forces_q_low",
+      "fresh": true,
       "inputs": {
-        "/CLR": 0,
-        "/PR": 1,
-        "D": 1
+        "/1CLR": 0,
+        "/1PRE": 1,
+        "1D": 1
       },
       "clock": false,
       "expect": {
-        "Q": 0,
-        "/Q": 1
+        "1Q": 0,
+        "/1Q": 1
       }
     },
     {
-      "name": "preset_forces_q_high",
+      "name": "first_preset_forces_q_high",
       "inputs": {
-        "/CLR": 1,
-        "/PR": 0,
-        "D": 0
+        "/1CLR": 1,
+        "/1PRE": 0,
+        "1D": 0
       },
       "clock": false,
       "expect": {
-        "Q": 1,
-        "/Q": 0
+        "1Q": 1,
+        "/1Q": 0
       }
     },
     {
-      "name": "clock_captures_d_low",
+      "name": "first_clock_captures_d_low",
       "inputs": {
-        "/CLR": 1,
-        "/PR": 1,
-        "D": 0
+        "/1CLR": 1,
+        "/1PRE": 1,
+        "1D": 0
       },
       "clock": true,
       "expect": {
-        "Q": 0,
-        "/Q": 1
+        "1Q": 0,
+        "/1Q": 1
       }
     },
     {
-      "name": "clock_captures_d_high",
+      "name": "first_clock_captures_d_high",
       "inputs": {
-        "/CLR": 1,
-        "/PR": 1,
-        "D": 1
+        "/1CLR": 1,
+        "/1PRE": 1,
+        "1D": 1
       },
       "clock": true,
       "expect": {
-        "Q": 1,
-        "/Q": 0
+        "1Q": 1,
+        "/1Q": 0
       }
     },
     {
-      "name": "second_flip_flop_clock_captures_d",
+      "name": "second_clear_forces_q_low",
+      "fresh": true,
       "section": 2,
       "inputs": {
-        "/CLR": 1,
-        "/PR": 1,
-        "D": 1
+        "/2CLR": 0,
+        "/2PRE": 1,
+        "2D": 1
+      },
+      "clock": false,
+      "expect": {
+        "2Q": 0,
+        "/2Q": 1
+      }
+    },
+    {
+      "name": "second_clock_captures_d_high",
+      "section": 2,
+      "inputs": {
+        "/2CLR": 1,
+        "/2PRE": 1,
+        "2D": 1
       },
       "clock": true,
       "expect": {
-        "Q": 1,
-        "/Q": 0
+        "2Q": 1,
+        "/2Q": 0
       }
     }
   ],
@@ -75,6 +91,6 @@
     "clocking": "edge_sensitive",
     "trigger_edge": "rising",
     "non_trigger_edge": "falling_or_no_rising_edge_holds_state",
-    "notes": "Truth tests must prove state changes only on the triggering rising edge and holds without that edge."
+    "notes": "Truth tests prove clocked state changes on the triggering edge and asynchronous controls take priority."
   }
 }

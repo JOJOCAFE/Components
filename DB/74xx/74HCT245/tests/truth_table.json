@@ -1,0 +1,51 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "74HCT245",
+  "applicable": true,
+  "vectors": [
+    {
+      "name": "dir_high_a_to_b",
+      "inputs": {
+        "DIR": 1,
+        "/OE": 0,
+        "A": "0x5A"
+      },
+      "expect": {
+        "B": "0x5A",
+        "A": "Z"
+      }
+    },
+    {
+      "name": "dir_low_b_to_a",
+      "inputs": {
+        "DIR": 0,
+        "/OE": 0,
+        "B": "0xA6"
+      },
+      "expect": {
+        "A": "0xA6",
+        "B": "Z"
+      }
+    },
+    {
+      "name": "disabled_outputs_high_z",
+      "inputs": {
+        "DIR": 1,
+        "/OE": 1,
+        "A": "0xFF",
+        "B": "0x00"
+      },
+      "expect": {
+        "A": "Z",
+        "B": "Z"
+      }
+    }
+  ],
+  "edge_criteria": {
+    "clocking": "level_sensitive",
+    "trigger_edge": "none",
+    "non_trigger_edge": "not_applicable",
+    "notes": "Combinational or level-controlled part; outputs are checked after input/control level changes and propagation delay."
+  }
+}

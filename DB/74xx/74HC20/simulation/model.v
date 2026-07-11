@@ -39,25 +39,16 @@ module ttl_74hc20 #(parameter BLOCKS = 2, WIDTH_IN = 4, DELAY_RISE = 0, DELAY_FA
 );
 
 //------------------------------------------------//
-wire [WIDTH_IN-1:0] A [0:BLOCKS-1];
 reg [BLOCKS-1:0] computed;
 integer i;
 
 always @(*)
 begin
   for (i = 0; i < BLOCKS; i++)
-    computed[i] = ~(&A[i]);
+    computed[i] = ~(&A_2D[WIDTH_IN*i+:WIDTH_IN]);
 end
 //------------------------------------------------//
 
-wire [BLOCKS*WIDTH_IN-1:0] A_pack_in;
-assign A_pack_in = A_2D;
-generate
-  genvar unpk_idx;
-  for (unpk_idx = 0; unpk_idx < BLOCKS; unpk_idx = unpk_idx + 1) begin: gen_unpack
-    assign A[unpk_idx][WIDTH_IN-1:0] = A_pack_in[WIDTH_IN*unpk_idx+:WIDTH_IN];
-  end
-endgenerate
 assign #(DELAY_RISE, DELAY_FALL) Y = computed;
 
 endmodule

@@ -9,11 +9,11 @@
       "inputs": {
         "A": "0x0",
         "B": "0x0",
-        "Cin": 0
+        "C0": 0
       },
       "expect": {
         "S": "0x0",
-        "Cout": 0
+        "C4": 0
       }
     },
     {
@@ -21,11 +21,11 @@
       "inputs": {
         "A": "0x3",
         "B": "0x5",
-        "Cin": 0
+        "C0": 0
       },
       "expect": {
         "S": "0x8",
-        "Cout": 0
+        "C4": 0
       }
     },
     {
@@ -33,11 +33,11 @@
       "inputs": {
         "A": "0x3",
         "B": "0x5",
-        "Cin": 1
+        "C0": 1
       },
       "expect": {
         "S": "0x9",
-        "Cout": 0
+        "C4": 0
       }
     },
     {
@@ -45,23 +45,23 @@
       "inputs": {
         "A": "0xF",
         "B": "0x1",
-        "Cin": 0
+        "C0": 0
       },
       "expect": {
         "S": "0x0",
-        "Cout": 1
+        "C4": 1
       }
     },
     {
-      "name": "carry_out_with_cin",
+      "name": "carry_out_with_c0",
       "inputs": {
         "A": "0xF",
         "B": "0x0",
-        "Cin": 1
+        "C0": 1
       },
       "expect": {
         "S": "0x0",
-        "Cout": 1
+        "C4": 1
       }
     }
   ],

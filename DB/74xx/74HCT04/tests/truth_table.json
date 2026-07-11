@@ -1,0 +1,51 @@
+{
+  "schema": "db.component.test.truth_table",
+  "version": 1,
+  "part": "74HCT04",
+  "applicable": true,
+  "vectors": [
+    {
+      "name": "gate1_low_to_high",
+      "inputs": {
+        "1A": 0
+      },
+      "expect": {
+        "1Y": 1
+      }
+    },
+    {
+      "name": "gate1_high_to_low",
+      "inputs": {
+        "1A": 1
+      },
+      "expect": {
+        "1Y": 0
+      }
+    },
+    {
+      "name": "all_inverters_pattern",
+      "inputs": {
+        "1A": 0,
+        "2A": 1,
+        "3A": 0,
+        "4A": 1,
+        "5A": 0,
+        "6A": 1
+      },
+      "expect": {
+        "1Y": 1,
+        "2Y": 0,
+        "3Y": 1,
+        "4Y": 0,
+        "5Y": 1,
+        "6Y": 0
+      }
+    }
+  ],
+  "edge_criteria": {
+    "clocking": "level_sensitive",
+    "trigger_edge": "none",
+    "non_trigger_edge": "not_applicable",
+    "notes": "Combinational or level-controlled part; outputs are checked after input/control level changes and propagation delay."
+  }
+}

@@ -409,7 +409,7 @@
       "version": 1,
       "part": "AS6C62256",
       "delay": {
-        "model_delay_ns": 70,
+        "model_delay_ns": 55,
         "status": "datasheet-backed",
         "datasheet_read_ns": {
           "as6c62256_55": {

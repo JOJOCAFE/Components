@@ -7,21 +7,25 @@
     {
       "name": "select_a",
       "inputs": {
+        "A": "0xA",
+        "B": "0x5",
         "A/B": 0,
         "/G": 0
       },
       "expect": {
-        "Y": "A"
+        "Y": "0xA"
       }
     },
     {
       "name": "select_b",
       "inputs": {
+        "A": "0xA",
+        "B": "0x5",
         "A/B": 1,
         "/G": 0
       },
       "expect": {
-        "Y": "B"
+        "Y": "0x5"
       }
     },
     {
