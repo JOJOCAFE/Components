@@ -291,7 +291,7 @@
             }
           }
         },
-        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "source_check": "datasheet timing values extracted from local Source PDF text; see Docs/TIMING_CROSSCHECK_REPORT.md",
         "conditions": "TI SN74HCT14 switching characteristics, CL=50 pF, VCC=4.5 V.",
         "datasheet_typical_ns": {
           "input_to_output": 20

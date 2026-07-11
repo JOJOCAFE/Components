@@ -360,7 +360,7 @@ def main() -> int:
         )
         delay = timing.setdefault("delay", {})
         delay["status"] = "datasheet-backed"
-        delay["source_check"] = "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md"
+        delay["source_check"] = "datasheet timing values extracted from local Source PDF text; see Docs/TIMING_CROSSCHECK_REPORT.md"
         delay["conditions"] = update["conditions"]
         for key, value in update.items():
             if key != "conditions":

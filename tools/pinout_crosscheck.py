@@ -19,7 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "Source"
-REPORT = ROOT / "PINOUT_CROSSCHECK_REPORT.md"
+REPORT = ROOT / "Docs" / "PINOUT_CROSSCHECK_REPORT.md"
 
 
 MANUAL_PINOUTS: dict[str, dict[int, str]] = {

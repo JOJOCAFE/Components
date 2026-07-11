@@ -20,42 +20,9 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 - `Schemas/` - machine-readable schemas for exported interchange artifacts,
   including the normalized netlist contract.
 - `Source/` - manufacturer datasheet PDFs used as local evidence for pinout documentation; see `Source/README.md` for the retained evidence list.
-- `STUDENT_GUIDE.md` - beginner-first guide for using Components from the CLI
-  and local API before the visual editor exists.
-- `SCHEMATIC_JSON_SPEC.md` - readable JSON schematic script contract for
-  digital simulation, CPU labs, netlist export, Verilog/testbench generation,
-  and future UI display.
-- `SERVICE_CONTRACT.md` - CLI/API service contract for validation, snapshots,
-  simulation runs, probes, exporters, and DB audit/status responses.
-- `BLOCK_UI_CONTRACT.md` - drawable block import/export contract that
-  round-trips through the same normalized `Design` model as schematic JSON.
-- `PYTHON_BACKEND_ARCHITECTURE.md` - backend-first architecture where JSON,
-  UI blocks, CLI commands, Python scripts, netlists, and Verilog all talk
-  through one Python design model.
-- `CHIP_STATUS.md` - chip status split by datasheet verification, models,
-  test coverage, netlist export support, and missing-datasheet exclusions.
-- `SERVICE_ARCHITECTURE_TASKS.md` - task plan for splitting behavior,
-  simulation, exporters, CLI, and future API/UI work behind stable internal
-  service contracts.
-- `EXTERNAL_ENGINE_ADAPTER_PLAN.md` - contract plan for future Rust, C, or C++
-  simulation engines that plug into the same normalized JSON service boundary.
-- `FRONTEND_SNAPSHOT_CONTRACT.md` - UI/API snapshot shape for drawing chips,
-  nets, buses, probes, displays, errors, and warnings without scraping backend
-  internals.
-- `DB_MIGRATION_PLAN.md` - historical migration plan for making `DB/` the chip
-  identity layer; active ICs now use layered DB packages under the frozen
-  `v0.1` chip model.
-- `DB_COMPONENT_PACKAGE_SPEC.md` - layered component package structure for
-  definition, simulation, verification, and symbol data, with datasheet
-  evidence embedded in the definition file.
-- `GENERATION_PIPELINE.md` - one-file `definition/definition.json` flow for
-  generating JSON, simulator adapters, Verilog wrappers, KiCad symbols, SVG
-  pinouts, docs, unit tests, and interactive demos.
-- `COMPONENT_GENERATION_BACKLOG.md` - package generation backlog covering seed,
-  RV8GR Batch 2, and active catalog package status.
+- `Docs/` - compact documentation index, guides, contracts, status, reports,
+  task plans, team skills, and handoff notes.
 - `AGENTS.md` - local JOJOCAFE team ownership map for Components work.
-- `TEAM_SKILLS.md` - individual and shared skills for DB, Python, Verilog,
-  simulation, verification, and student-facing documentation.
 
 ## Verification Rule
 
@@ -128,7 +95,7 @@ tri-state conflict checks, and carry propagation-delay metadata for timing
 analysis.
 
 The long-term simulator goal is a student-friendly block UI whose design state
-round-trips 1-to-1 with `SCHEMATIC_JSON_SPEC.md`: JSON can become editable
+round-trips 1-to-1 with `Docs/SCHEMATIC_JSON_SPEC.md`: JSON can become editable
 blocks, and blocks can become the same logical JSON, including probes and
 display blocks. The UI should behave like Blender or Maya: a front-end that
 calls Python backend commands and renders the returned design/simulation state.
@@ -244,7 +211,7 @@ PYTHONPATH=python python3 tools/state_behavior_crosscheck.py
 
 ## Student CLI/API Start
 
-For the shortest learner-facing path, start with `STUDENT_GUIDE.md`. It shows:
+For the shortest learner-facing path, start with `Docs/STUDENT_GUIDE.md`. It shows:
 
 - how to inspect the student component catalog
 - how to run `Examples/nand.json`
@@ -257,50 +224,18 @@ frequency, or oscilloscope evidence.
 
 For students around ages 10-15, use this build-along order:
 
-1. Read `STUDENT_GUIDE.md`.
+1. Read `Docs/STUDENT_GUIDE.md`.
 2. Run `Examples/nand.json` with `validate`, `run`, and `probe`.
 3. Use `DB/STUDENT_CATALOG.md` to look up chips before wiring.
 4. Use one `Lib/Circuits/RV8GR_*/README.md` proof card at a time with a teacher
    or mentor.
 5. Use the protocol docs only when measuring the real build.
 
-See `STUDENT_READABILITY_AUDIT.md` for the current student/teacher/reference
-map across the docs.
+Use `Docs/README.md` for the current student/teacher/reference map across the
+docs.
 
-## Subfolder Docs
+## Documentation
 
-- `STUDENT_GUIDE.md` - student-first CLI/API guide with safe virtual-vs-hardware
-  boundaries.
-- `STUDENT_READABILITY_AUDIT.md` - age 10-15 readability pass, beginner route,
-  and doc audience map.
-- `Verilog/74xx/README.md` - full 74xx logic model list, scan notes, and 74xx source coverage.
-- `Verilog/Memory/README.md` - memory model list and datasheet sources.
-- `DB/README.md` - chip-centered DB package layout and migration notes.
-- `python/README.md` - Python chip-library coverage and usage.
-- `Examples/*.json` - service-ready NAND, counter, bus transceiver, memory
-  read, and tiny CPU-slice schematics used by contract tests.
-- `CHIP_STATUS.md` - verified/modeled/tested/missing-datasheet status split
-  for the active chip library.
-- `SCHEMATIC_JSON_SPEC.md` - complete JSON schematic-script shape for digital
-  and CPU simulation projects.
-- `Schemas/normalized-netlist.schema.json` - JSON Schema for
-  `Design.to_netlist()` exports consumed by CLI, UI, and HDL tooling.
-- `SERVICE_CONTRACT.md` - shared CLI/API request, response, error, versioning,
-  and pluggable-service rules.
-- `DB_COMPONENT_PACKAGE_SPEC.md` and `GENERATION_PIPELINE.md` - current DB
-  package layer where one `definition/definition.json` drives generated JSON,
-  simulator adapters, Verilog wrappers, KiCad symbols, SVG pinouts,
-  documentation, unit tests, and interactive demos.
-- `BLOCK_UI_CONTRACT.md` - block editor import/export shape for drawable
-  chips, buses, rails, wires, and layout metadata over the normalized `Design`
-  model.
-- `PYTHON_BACKEND_ARCHITECTURE.md` - Python command/API model for the future
-  block UI, CLI tool, Python script use, netlist exporter, and Verilog/testbench
-  exporter.
-- `SERVICE_ARCHITECTURE_TASKS.md` - service-boundary task plan for keeping the
-  component library modular before it grows too large.
-- `DB_MIGRATION_PLAN.md` - DB migration plan for moving chip facts under
-  per-chip ownership without breaking existing tools.
-- `BACKLOG.md` - deferred future work, including the visual chip-block UI idea.
-- `AGENTS.md` - compact team directory and ownership map for this repo.
-- `TEAM_SKILLS.md` - detailed team skill map and Components quality gates.
+Start with `Docs/README.md`. It groups the moved documentation by audience:
+students, teachers, tool builders, maintainers, verification reports, and
+handoff/team process.

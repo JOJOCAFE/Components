@@ -319,7 +319,7 @@
             }
           }
         },
-        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "source_check": "datasheet timing values extracted from local Source PDF text; see Docs/TIMING_CROSSCHECK_REPORT.md",
         "conditions": "TI CD74HC4538 prerequisite pulse timing, VCC=4.5 V.",
         "datasheet_min_ns_25c": {
           "input_pulse_width": 16,

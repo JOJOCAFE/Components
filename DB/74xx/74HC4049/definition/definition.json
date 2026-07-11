@@ -293,7 +293,7 @@
             }
           }
         },
-        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "source_check": "datasheet timing values extracted from local Source PDF text; see Docs/TIMING_CROSSCHECK_REPORT.md",
         "conditions": "TI CD74HC4049 feature summary, VCC=5 V, CL=15 pF, TA=25 C.",
         "datasheet_typical_ns": {
           "feature_tpd": 6

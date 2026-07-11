@@ -189,6 +189,6 @@ external input/clock stimulus channels, and rules for keeping Python and
 Verilog compatible.
 
 For students who want commands before Python code, start with
-`../STUDENT_GUIDE.md`. It shows the CLI, local API, student catalog, and RV8GR
+`../Docs/STUDENT_GUIDE.md`. It shows the CLI, local API, student catalog, and RV8GR
 virtual physical-system checker with the hardware signoff boundary kept
 explicit.

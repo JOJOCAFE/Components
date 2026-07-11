@@ -36,4 +36,5 @@ enough for beginners.
    must stay visible, and chip-local Python models must run standalone with only
    `chiplib/core.py`.
 
-See `TEAM_SKILLS.md` for detailed individual and shared skills.
+See `Docs/TEAM_SKILLS.md` for the compact team contract and
+`Docs/Agents/` for delegated per-agent skills.

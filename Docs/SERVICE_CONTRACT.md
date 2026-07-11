@@ -683,8 +683,8 @@ delay/deadband mistakes, but it is not hardware signoff.
 
 ### frontend-snapshot
 
-Purpose: return the stable UI/API drawing snapshot described in
-`FRONTEND_SNAPSHOT_CONTRACT.md`.
+Purpose: return the stable UI/API drawing snapshot for chips, nets, probes,
+displays, warnings, and validation state.
 
 Python:
 
@@ -787,7 +787,9 @@ Example:
 - A plugin may implement simulation, netlist export, Verilog export, or API
   transport, but it must consume canonical `Design` or normalized netlist JSON.
 - A plugin must return the response shapes in this document.
-- External simulation engines must follow `EXTERNAL_ENGINE_ADAPTER_PLAN.md`.
+- External simulation engines must consume canonical `Design` or normalized
+  netlist JSON and return this service response shape; they must not parse
+  student schematic JSON with private chip behavior rules.
 - A plugin must report unsupported parts, missing DB metadata, and unsupported
   export features as structured errors or `unsupported` entries.
 - A plugin must not silently infer pin mappings or chip behavior from names

@@ -12,7 +12,7 @@ from typing import Any
 JsonMap = dict[str, Any]
 ROOT = Path(__file__).resolve().parents[2]
 DB_ROOT = ROOT / "DB"
-CHIP_STATUS_PATH = ROOT / "CHIP_STATUS.md"
+CHIP_STATUS_PATH = ROOT / "Docs" / "CHIP_STATUS.md"
 DIGITAL_SCHEMA_PATH = DB_ROOT / "digital.schema.json"
 SPLIT_TEST_TYPES = ("truth_table", "timing", "tri_state", "bus_fight", "propagation")
 
@@ -749,7 +749,7 @@ def db_status_report() -> JsonMap:
                 "chip_status_missing_db_part",
                 part,
                 str(CHIP_STATUS_PATH.relative_to(ROOT)),
-                f"DB marks {part} as {generated_key}, but CHIP_STATUS.md does not list it in {status_key}",
+                f"DB marks {part} as {generated_key}, but Docs/CHIP_STATUS.md does not list it in {status_key}",
             ))
         if status_key == "missing_datasheet":
             continue
@@ -759,7 +759,7 @@ def db_status_report() -> JsonMap:
                 "code": "chip_status_parts_missing_db",
                 "severity": "warning",
                 "category": status_key,
-                "message": f"{len(missing_db_parts)} CHIP_STATUS.md {status_key} parts do not have matching DB status yet",
+                "message": f"{len(missing_db_parts)} Docs/CHIP_STATUS.md {status_key} parts do not have matching DB status yet",
                 "parts": missing_db_parts,
             })
 

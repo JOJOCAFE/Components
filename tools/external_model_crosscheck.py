@@ -21,7 +21,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "Source" / "ExternalModels"
-REPORT = ROOT / "EXTERNAL_MODEL_CROSSCHECK_REPORT.md"
+REPORT = ROOT / "Docs" / "EXTERNAL_MODEL_CROSSCHECK_REPORT.md"
 sys.path.insert(0, str(ROOT / "python"))
 
 from chiplib import Z, create_chip  # noqa: E402

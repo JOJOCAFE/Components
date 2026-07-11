@@ -82,7 +82,15 @@ Important: `embedded_pinout_doc` means the DB definition exactly matches the rep
 | SST39SF010A | Memory | 32 | PASS_EXACT_PIN_MAP | embedded_pinout_doc:DB/Memory/SST39SF010A/simulation/model.v | PDF_OK:Source/SST39SF010A_MICROCHIP_DS20005022.pdf:32p | 32 pins match |
 | BlueLED | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
 | Capacitor | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Crystal2Pin_10MHz | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Crystal2Pin_1MHz | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Crystal2Pin_2MHz | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Crystal2Pin_5MHz | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
 | LED | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Oscillator4Pin_10MHz | Passive | 4 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Oscillator4Pin_1MHz | Passive | 4 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Oscillator4Pin_2MHz | Passive | 4 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Oscillator4Pin_5MHz | Passive | 4 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
 | RedLED | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
 | Resistor | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
 | YellowLED | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
@@ -106,7 +114,7 @@ Important: `embedded_pinout_doc` means the DB definition exactly matches the rep
 
 ## Summary
 
-- Total DB definitions checked: 97
+- Total DB definitions checked: 105
 - Datasheet-backed IC definitions checked: 75
 - Mismatches: 0
 - Cannot/source-problem items: 0

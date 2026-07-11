@@ -173,7 +173,7 @@
           "shift_load_to_q": 20
         },
         "model_delay_ns": 15,
-        "source_check": "datasheet timing values extracted from local Source PDF text; see TIMING_CROSSCHECK_REPORT.md",
+        "source_check": "datasheet timing values extracted from local Source PDF text; see Docs/TIMING_CROSSCHECK_REPORT.md",
         "status": "datasheet-backed"
       },
       "evidence": {

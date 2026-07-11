@@ -1,20 +1,101 @@
 # Components Session Handoff
 
 Date: 2026-07-09
-Last updated: 2026-07-11, after the full 74HC/HCT source/model/export pass and
-Support IC Python-model pass
+Last updated: 2026-07-11, after root Markdown compaction into `Docs/`,
+unused-doc removal, and compact team-skill delegation
 
 ## Current State
 
 - Repo: `/home/jo/kiro/Components`
 - Branch: `main`
-- Status at this handoff: staged checkpoint prepared for commit/push.
-- Previous pushed commit before this handoff: `8de6f7c Compact DB package docs
-  and retire legacy manifests`
+- Status at this handoff: documentation-layout and compact team-skill
+  checkpoint committed locally; push still pending.
+- Previous pushed commit before this handoff: `a8450fa Expand 74HC library and
+  support IC models`
 - Latest pushed RV8GR virtual-check commits:
   - `8bb462b Add RV8GR virtual fault protocol`
   - `49ed732 Add circuit virtual fault checker`
   - `b8719bc Update circuit backlog checkpoint status`
+
+## Latest Save: 2026-07-11 Root Markdown Compaction
+
+Completed in this checkpoint:
+
+- Root Markdown was reduced to only:
+  - `README.md`
+  - `AGENTS.md`
+- General documentation was moved under `Docs/`.
+- Added `Docs/README.md` as the compact documentation index.
+- Root `README.md` was compacted to point readers to `Docs/README.md` instead
+  of listing every reference document inline.
+- `AGENTS.md`, `python/README.md`, DB status paths, report-generator paths, and
+  timing-evidence strings were updated for the new `Docs/` layout.
+- The crosscheck tools now write generated reports into `Docs/`:
+  - `EXTERNAL_MODEL_CROSSCHECK_REPORT.md`
+  - `PINOUT_CROSSCHECK_REPORT.md`
+  - `POLARITY_CROSSCHECK_REPORT.md`
+  - `PYTHON_BEHAVIOR_CROSSCHECK_REPORT.md`
+  - `STATE_BEHAVIOR_CROSSCHECK_REPORT.md`
+  - `TIMING_CROSSCHECK_REPORT.md`
+  - `VERILOG_BEHAVIOR_CROSSCHECK_REPORT.md`
+- Audited every `Docs/*.md` file and removed stale/superseded docs:
+  - `BACKLOG.md`
+  - `COMPONENT_GENERATION_BACKLOG.md`
+  - `DB_MIGRATION_PLAN.md`
+  - `EXTERNAL_ENGINE_ADAPTER_PLAN.md`
+  - `FRONTEND_SNAPSHOT_CONTRACT.md`
+  - `PYTHON_BACKEND_ARCHITECTURE.md`
+  - `SERVICE_ARCHITECTURE_TASKS.md`
+  - `STUDENT_READABILITY_AUDIT.md`
+- Remaining `Docs/*.md` files after cleanup:
+  - `BLOCK_UI_CONTRACT.md`
+  - `CHIP_STATUS.md`
+  - `DB_COMPONENT_PACKAGE_SPEC.md`
+  - `EXTERNAL_MODEL_CROSSCHECK_REPORT.md`
+  - `GENERATION_PIPELINE.md`
+  - `PINOUT_CROSSCHECK_REPORT.md`
+  - `POLARITY_CROSSCHECK_REPORT.md`
+  - `PYTHON_BEHAVIOR_CROSSCHECK_REPORT.md`
+  - `README.md`
+  - `SCHEMATIC_JSON_SPEC.md`
+  - `SERVICE_CONTRACT.md`
+  - `SESSION_HANDOFF.md`
+  - `STATE_BEHAVIOR_CROSSCHECK_REPORT.md`
+  - `STUDENT_GUIDE.md`
+  - `TEAM_SKILLS.md`
+  - `TIMING_CROSSCHECK_REPORT.md`
+  - `VERILOG_BEHAVIOR_CROSSCHECK_REPORT.md`
+- `Docs/TEAM_SKILLS.md` was compacted to only the rules every agent must know:
+  mission, non-negotiable rules, role ownership, model routing, work
+  discipline, pairings, and broad quality gates.
+- Detailed role skills were delegated to `Docs/Agents/`:
+  `Pim.md`, `Bank.md`, `Fern.md`, `Mint.md`, `Ohm.md`, `Bam.md`, and
+  `Noon.md`.
+- `AGENTS.md` and `Docs/README.md` now point to the compact team contract plus
+  the delegated per-agent skill files.
+
+Verification for this checkpoint:
+
+- `PYTHONPATH=python python3 -B -m chiplib.cli db --audit`
+- `PYTHONPATH=python python3 -B -m chiplib.cli db --status`
+- `PYTHONPATH=python python3 -B python/tests/test_db.py`
+- `PYTHONPATH=python python3 -B python/tests/test_chips.py`
+- `PYTHONPATH=python python3 tools/python_behavior_crosscheck.py`
+- `PYTHONPATH=python python3 tools/pinout_crosscheck.py`
+- `PYTHONPATH=python python3 tools/polarity_crosscheck.py`
+- `PYTHONPATH=python python3 tools/timing_crosscheck.py`
+- `PYTHONPATH=python python3 tools/state_behavior_crosscheck.py`
+- `PYTHONPATH=python python3 tools/verilog_behavior_crosscheck.py`
+- `PYTHONPATH=python python3 tools/external_model_crosscheck.py`
+- `git diff --cached --check`
+
+Notes for next resume:
+
+- This checkpoint includes the doc move, unused-doc removals, and compact
+  team-skill delegation.
+- Only remaining deleted root-doc filename references are intentional
+  `Lib/Circuits/BACKLOG.md` references; the root `BACKLOG.md` was retired.
+- Push is still pending unless a later handoff says otherwise.
 
 ## Latest Save: 2026-07-11 Full 74HC/HCT And Support IC Verification Pass
 
@@ -114,8 +195,9 @@ Current remaining lanes:
 
 Completed in this checkpoint:
 
-- Added `STUDENT_READABILITY_AUDIT.md` to map each document to student,
-  teacher, tool-builder, or maintainer use.
+- Added a student-readability audit to map each document to student, teacher,
+  tool-builder, or maintainer use. That dated audit was later folded into
+  `Docs/README.md`.
 - Updated root `README.md`, `STUDENT_GUIDE.md`, and
   `Lib/Circuits/README.md` with the beginner route and student stop
   conditions.
@@ -233,7 +315,8 @@ Current remaining lanes:
 - Added component-generation direction:
   - `DB_COMPONENT_PACKAGE_SPEC.md`
   - `GENERATION_PIPELINE.md`
-  - `COMPONENT_GENERATION_BACKLOG.md`
+  - a component-generation backlog, later retired after the active package
+    contracts and generated reports became the maintained source.
 - Added generator-ready `definition/definition.json` seed files for:
   - `74HC161`
   - `74HC157`
@@ -316,8 +399,8 @@ windows and high-Z/write-protection behavior.
 4. Deepen datasheet-backed timing/electrical extraction for rest-of-catalog
    parts beyond the seed/RV8GR set.
 5. Keep Verilog smoke compiling family-level and package-local Verilog models.
-6. Keep `TEAM_SKILLS.md`, `COMPONENT_GENERATION_BACKLOG.md`, and this handoff
-   synchronized whenever the team roles or package/test contracts change.
+6. Keep `TEAM_SKILLS.md`, `Docs/README.md`, and this handoff synchronized
+   whenever the team roles or package/test contracts change.
 
 ## Current Complete-Set Test State
 
@@ -447,15 +530,15 @@ Team ownership:
 - `.github/workflows/verilog-smoke.yml` now also compiles package-local
   `DB/74xx` and `DB/Memory` `simulation/model.v` files.
 - Updated docs for chip definition and verification contracts:
-  `README.md`, `DB_COMPONENT_PACKAGE_SPEC.md`, `GENERATION_PIPELINE.md`,
-  `COMPONENT_GENERATION_BACKLOG.md`, and this handoff now describe
+  `README.md`, `DB_COMPONENT_PACKAGE_SPEC.md`, `GENERATION_PIPELINE.md`, and
+  this handoff now describe
   `definition/definition.json`, package-local simulation files, generated
   artifacts, and required test records.
-- Reconciled stale migration/service docs after Pim team wake-up:
-  `DB_MIGRATION_PLAN.md`, `DB/README.md`, `python/README.md`, `BACKLOG.md`,
-  `SERVICE_ARCHITECTURE_TASKS.md`, `TEAM_SKILLS.md`, and `README.md` now
-  describe active ICs as layered DB packages instead of current
-  `chip.json`/family-model manifests. Remaining `chip.json` references are
+- Reconciled stale migration/service docs after Pim team wake-up. The later
+  compact-doc pass retired the old root backlog, migration, and service-task
+  plan files after active rules moved into `DB/README.md`, `python/README.md`,
+  `TEAM_SKILLS.md`, `Docs/README.md`, and package contracts. Remaining
+  `chip.json` references are
   legacy compatibility notes.
 - Updated `TEAM_SKILLS.md` broad health gates to include `test_block_ui`,
   `test_generated_split_records`, `db --audit`, and `db --status`.
@@ -539,8 +622,9 @@ Work completed in the latest pushed commit:
   - Source-named TI datasheet switching/electrical values are kept separate from
     the simulator default delay so 5 MHz and propagation claims remain
     conservative.
-- Updated `BACKLOG.md`, `Lib/Circuits/README.md`, and added
-  `Lib/Circuits/BACKLOG.md`.
+- Updated the then-root backlog, `Lib/Circuits/README.md`, and added
+  `Lib/Circuits/BACKLOG.md`. The root backlog was later retired; the active
+  circuit backlog is `Lib/Circuits/BACKLOG.md`.
 
 Verification run for that commit:
 

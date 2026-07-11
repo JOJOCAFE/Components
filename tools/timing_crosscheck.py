@@ -17,7 +17,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "Source"
-REPORT = ROOT / "TIMING_CROSSCHECK_REPORT.md"
+REPORT = ROOT / "Docs" / "TIMING_CROSSCHECK_REPORT.md"
 
 SOURCE_ALIASES = {
     "62256": ["KM62256C.PDF", "AS6C62256.PDF"],

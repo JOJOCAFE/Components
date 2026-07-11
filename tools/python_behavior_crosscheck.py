@@ -12,7 +12,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "PYTHON_BEHAVIOR_CROSSCHECK_REPORT.md"
+REPORT = ROOT / "Docs" / "PYTHON_BEHAVIOR_CROSSCHECK_REPORT.md"
 sys.path.insert(0, str(ROOT / "python"))
 
 from chiplib.core import Z  # noqa: E402

@@ -11,7 +11,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "POLARITY_CROSSCHECK_REPORT.md"
+REPORT = ROOT / "Docs" / "POLARITY_CROSSCHECK_REPORT.md"
 sys.path.insert(0, str(ROOT / "python"))
 
 

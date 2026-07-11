@@ -39,7 +39,7 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     db = sub.add_parser("db")
     db.add_argument("part", nargs="?", help="optional component part, such as 74HC00")
     db.add_argument("--audit", action="store_true", help="audit DB manifests against legacy catalog files")
-    db.add_argument("--status", action="store_true", help="compare DB status categories with CHIP_STATUS.md")
+    db.add_argument("--status", action="store_true", help="compare DB status categories with Docs/CHIP_STATUS.md")
     db.add_argument("--catalog", action="store_true", help="emit frontend-oriented component catalog metadata")
     db.add_argument("--student", action="store_true", help="emit learner-facing component catalog metadata")
     db.add_argument("--detail", action="store_true", help="emit frontend-oriented metadata for one component")

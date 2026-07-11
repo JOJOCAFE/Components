@@ -15,7 +15,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "VERILOG_BEHAVIOR_CROSSCHECK_REPORT.md"
+REPORT = ROOT / "Docs" / "VERILOG_BEHAVIOR_CROSSCHECK_REPORT.md"
 sys.path.insert(0, str(ROOT / "python"))
 sys.path.insert(0, str(ROOT / "tools"))
 

@@ -289,8 +289,7 @@ Do not change expected results just to make a bad circuit pass.
 ## More Reference
 
 - `SCHEMATIC_JSON_SPEC.md`: how schematic JSON is written.
-- `STUDENT_READABILITY_AUDIT.md`: which docs are for students, teachers, or
-  maintainers.
+- `README.md`: which docs are for students, teachers, or maintainers.
 - `python/USAGE.md`: deeper Python examples.
 - `DB/STUDENT_CATALOG.md`: student catalog fields.
 - `DB/COMPONENT_TEST_PROTOCOL.md`: serious chip/circuit test protocol.
