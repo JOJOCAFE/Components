@@ -75,7 +75,7 @@ def headless_capabilities() -> JsonMap:
         "core_commands": {
             "catalog": ["component-catalog", "student-component-catalog", "component-detail", "component-package"],
             "design": ["create-design", "load", "create-chip", "delete-chip", "connect", "disconnect", "add-bus", "set-inputs"],
-            "simulation": ["validate", "snapshot", "frontend-snapshot", "run", "step", "probe"],
+            "simulation": ["validate", "snapshot", "frontend-snapshot", "run", "step", "probe", "explain-result"],
             "export": ["export-json", "export-netlist", "export-verilog", "export-block-ui", "import-block-ui"],
             "verification": ["circuit-faults", "db --audit", "db --status"],
         },
@@ -195,6 +195,38 @@ def project_builder_workflow(*, part: str | None = None, goal: str | None = None
             "pinout evidence or active-low meaning is missing",
             "chip gets hot or supply current is unexpected",
         ],
+    }
+
+
+def explain_result(response: JsonMap, *, source_command: str | None = None) -> JsonMap:
+    """Summarize an existing service/CLI response without adding domain facts."""
+
+    command = source_command or _response_command(response)
+    ok = _response_ok(response)
+    issues = _collect_explain_issues(response)
+    warning_count = len([item for item in issues if item.get("severity") == "warning"])
+    return {
+        "format": "components.explain_result",
+        "version": 1,
+        "contract": CONTRACT,
+        "source_command": command,
+        "ok": ok,
+        "status": "ok" if ok and not issues else "needs_attention",
+        "summary": {
+            "command": command,
+            "ok": ok,
+            "issue_count": len([item for item in issues if item.get("severity") != "warning"]),
+            "warning_count": warning_count,
+            "top_fields": _top_level_fields(response),
+        },
+        "issues": issues,
+        "likely_next_steps": _explain_next_steps(command, issues),
+        "stop_before_hardware_warnings": _stop_before_hardware_warnings(command, ok, issues),
+        "references": {
+            "command_field": "$.command" if "command" in response else None,
+            "ok_field": "$.ok" if "ok" in response else "$.valid" if "valid" in response else None,
+            "issue_fields": sorted({str(issue["source_path"]) for issue in issues if issue.get("source_path")}),
+        },
     }
 
 
@@ -452,6 +484,12 @@ class DesignCommandService:
     def export_verilog(self, json_file: str) -> JsonMap:
         return self.verilog.export(self.load_design(json_file))
 
+    def explain_result(self, json_file: str, *, source_command: str | None = None) -> JsonMap:
+        data = json.loads(Path(json_file).read_text(encoding="utf-8"))
+        if not isinstance(data, dict):
+            raise ValueError("explain-result JSON root must be an object")
+        return explain_result(data, source_command=source_command)
+
 
 class FrontendDesignService:
     """Stateful design editing service for frontend/API adapters."""
@@ -585,6 +623,9 @@ class FrontendDesignService:
 
     def component_generate(self, part: str) -> JsonMap:
         return self._ok("component-generate", generate_component_artifacts(part))
+
+    def explain_result(self, response: JsonMap, *, source_command: str | None = None) -> JsonMap:
+        return self._ok("explain-result", explain_result(response, source_command=source_command))
 
     def _require_design(self) -> Any:
         if self.design is None:
@@ -781,3 +822,169 @@ def _portable_files_for_part(part: str) -> list[str]:
         if isinstance(source, str) and source:
             result.append(source)
     return result
+
+
+def _response_command(response: JsonMap) -> str:
+    command = response.get("command")
+    if isinstance(command, str) and command:
+        return command
+    schema = response.get("schema")
+    if schema == "components.virtual_physical_fault_report":
+        return "circuit-faults"
+    if "valid" in response or "validation" in response:
+        return "validate"
+    if "expectations" in response or "log" in response:
+        return "run"
+    if "sets" in response or "samples" in response or "probes" in response:
+        return "probe"
+    return "unknown"
+
+
+def _response_ok(response: JsonMap) -> bool:
+    if isinstance(response.get("ok"), bool):
+        return bool(response["ok"])
+    if isinstance(response.get("valid"), bool):
+        return bool(response["valid"])
+    if isinstance(response.get("result"), dict):
+        result = response["result"]
+        if isinstance(result.get("ok"), bool):
+            return bool(result["ok"])
+        if isinstance(result.get("valid"), bool):
+            return bool(result["valid"])
+    return not _collect_explain_issues(response)
+
+
+def _top_level_fields(response: JsonMap) -> list[str]:
+    return sorted(str(key) for key in response.keys())[:16]
+
+
+def _collect_explain_issues(response: JsonMap) -> list[JsonMap]:
+    issues: list[JsonMap] = []
+    _collect_error_object(issues, response.get("error"), "$.error")
+    _collect_issue_list(issues, response.get("errors"), "$.errors", default_severity="error")
+    _collect_issue_list(issues, response.get("warnings"), "$.warnings", default_severity="warning")
+    _collect_issue_list(issues, response.get("findings"), "$.findings", default_severity="error")
+    _collect_issue_list(issues, response.get("missing"), "$.missing", default_severity="error")
+
+    result = response.get("result")
+    if isinstance(result, dict):
+        _collect_issue_list(issues, result.get("errors"), "$.result.errors", default_severity="error")
+        _collect_issue_list(issues, result.get("warnings"), "$.result.warnings", default_severity="warning")
+        validation = result.get("validation")
+        if isinstance(validation, dict):
+            _collect_issue_list(issues, validation.get("errors"), "$.result.validation.errors", default_severity="error")
+            _collect_issue_list(issues, validation.get("warnings"), "$.result.validation.warnings", default_severity="warning")
+        run_payload = result.get("run")
+        if isinstance(run_payload, dict):
+            _collect_run_payload_issues(issues, run_payload, "$.result.run")
+        _collect_run_payload_issues(issues, result, "$.result")
+
+    validation = response.get("validation")
+    if isinstance(validation, dict):
+        _collect_issue_list(issues, validation.get("errors"), "$.validation.errors", default_severity="error")
+        _collect_issue_list(issues, validation.get("warnings"), "$.validation.warnings", default_severity="warning")
+    _collect_run_payload_issues(issues, response, "$")
+    return issues
+
+
+def _collect_run_payload_issues(issues: list[JsonMap], payload: JsonMap, base_path: str) -> None:
+    board_errors = _board_errors(payload)
+    if board_errors:
+        _collect_issue_list(issues, board_errors, f"{base_path}.snapshot.board.errors", default_severity="error")
+    expectations = payload.get("expectations")
+    if isinstance(expectations, dict):
+        _collect_issue_list(issues, expectations.get("failed"), f"{base_path}.expectations.failed", default_severity="error")
+
+
+def _collect_error_object(issues: list[JsonMap], error: Any, path: str) -> None:
+    if not isinstance(error, dict):
+        return
+    issues.append(_explain_issue(error, path, default_severity=str(error.get("severity", "error"))))
+    details = error.get("details")
+    if isinstance(details, dict):
+        _collect_issue_list(issues, details.get("errors"), f"{path}.details.errors", default_severity="error")
+
+
+def _collect_issue_list(issues: list[JsonMap], value: Any, path: str, *, default_severity: str) -> None:
+    if not isinstance(value, list):
+        return
+    for index, item in enumerate(value):
+        issues.append(_explain_issue(item, f"{path}[{index}]", default_severity=default_severity))
+
+
+def _explain_issue(item: Any, path: str, *, default_severity: str) -> JsonMap:
+    if isinstance(item, dict):
+        code = item.get("code") or item.get("type") or item.get("category") or item.get("name") or "issue"
+        summary = item.get("message") or item.get("detail") or item.get("summary") or _compact_json(item)
+        severity = str(item.get("severity", default_severity))
+        result: JsonMap = {
+            "severity": severity,
+            "code": str(code),
+            "summary": str(summary),
+            "source_path": path,
+            "field_refs": _field_refs(item),
+        }
+        suggested = item.get("suggested_fix") or item.get("fix") or item.get("fix_method")
+        if isinstance(suggested, str) and suggested:
+            result["provided_next_step"] = suggested
+        checks = item.get("checks")
+        if isinstance(checks, list):
+            result["check_count"] = len(checks)
+        return result
+    return {
+        "severity": default_severity,
+        "code": "issue",
+        "summary": str(item),
+        "source_path": path,
+        "field_refs": {},
+    }
+
+
+def _field_refs(item: JsonMap) -> JsonMap:
+    refs: JsonMap = {}
+    for key in ("command", "ref", "part", "pin", "net", "bus", "rule", "name", "set", "step", "path"):
+        value = item.get(key)
+        if value is not None:
+            refs[key] = value
+    location = item.get("location")
+    if isinstance(location, dict):
+        refs["location"] = {key: value for key, value in location.items() if value is not None}
+    return refs
+
+
+def _compact_json(item: JsonMap) -> str:
+    return json.dumps(item, sort_keys=True, separators=(",", ":"))[:240]
+
+
+def _explain_next_steps(command: str, issues: list[JsonMap]) -> list[JsonMap]:
+    if not issues:
+        return [{"step": "No blocking issue was reported by the provided response.", "source": "$.ok"}]
+    steps: list[JsonMap] = []
+    seen: set[str] = set()
+    for issue in issues:
+        provided = issue.get("provided_next_step")
+        if isinstance(provided, str) and provided and provided not in seen:
+            steps.append({"step": provided, "source": issue.get("source_path")})
+            seen.add(provided)
+    generic = f"Fix the referenced {command} fields, then rerun {command} and explain-result."
+    if generic not in seen:
+        steps.append({"step": generic, "source": "references.issue_fields"})
+    return steps
+
+
+def _stop_before_hardware_warnings(command: str, ok: bool, issues: list[JsonMap]) -> list[JsonMap]:
+    warnings: list[JsonMap] = []
+    if not ok and command in {"validate", "run", "probe", "circuit-faults"}:
+        warnings.append({
+            "reason": f"{command} did not report ok=true.",
+            "source": "$.ok",
+        })
+    for issue in issues:
+        code = str(issue.get("code", "")).lower()
+        summary = str(issue.get("summary", "")).lower()
+        if any(word in f"{code} {summary}" for word in ("bus_conflict", "contention", "output_output", "hot", "current")):
+            warnings.append({
+                "reason": "The provided response mentions a bus/output/current risk.",
+                "source": issue.get("source_path"),
+            })
+    return warnings

@@ -165,6 +165,37 @@ def test_cli_circuit_faults_reports_good_and_bad_circuits():
         assert data["checks"]["pin_number_truth"]["status"] == "fail"
 
 
+def test_cli_explain_result_summarizes_existing_result_json():
+    with tempfile.TemporaryDirectory() as tmp:
+        result_path = Path(tmp) / "validate-result.json"
+        result_path.write_text(
+            json.dumps({
+                "ok": False,
+                "errors": [
+                    {
+                        "type": "connection_invalid",
+                        "rule": "A -> U1:99",
+                        "detail": "pin 99 is not known",
+                    }
+                ],
+                "warnings": [],
+            }),
+            encoding="utf-8",
+        )
+
+        result = run_cli(result_path, "explain-result", "--source-command", "validate")
+        assert result.returncode == 0, result.stderr
+        data = json.loads(result.stdout)
+        assert data["format"] == "components.explain_result"
+        assert data["source_command"] == "validate"
+        assert data["ok"] is False
+        assert data["status"] == "needs_attention"
+        assert data["issues"][0]["code"] == "connection_invalid"
+        assert data["issues"][0]["field_refs"]["rule"] == "A -> U1:99"
+        assert data["stop_before_hardware_warnings"][0]["source"] == "$.ok"
+        assert "$.errors[0]" in data["references"]["issue_fields"]
+
+
 def test_cli_db_summary_and_part_lookup():
     headless = subprocess.run(
         [sys.executable, "-B", "-m", "chiplib.cli", "headless"],
@@ -376,6 +407,10 @@ class FakeDesignService:
         self.calls.append(("export_verilog", json_file))
         return {"ok": True, "verilog": "module fake();\n"}
 
+    def explain_result(self, json_file: str, *, source_command=None):
+        self.calls.append(("explain_result", json_file, source_command))
+        return {"format": "components.explain_result", "ok": True}
+
 
 def run_cli_main(fake: FakeDesignService, *args: str):
     stdout = io.StringIO()
@@ -396,6 +431,7 @@ def test_cli_design_commands_route_through_service_boundary():
         ("import-block-ui", ["import-block-ui", "small.json"], ("import_block_ui", "small.json")),
         ("export-netlist", ["export-netlist", "small.json"], ("export_netlist", "small.json")),
         ("export-verilog", ["export-verilog", "small.json"], ("export_verilog", "small.json")),
+        ("explain-result", ["explain-result", "--source-command", "run", "result.json"], ("explain_result", "result.json", "run")),
     ]
 
     for command, args, expected_call in commands:

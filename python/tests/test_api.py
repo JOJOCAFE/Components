@@ -70,6 +70,38 @@ def test_json_api_adapter_dispatches_stateful_frontend_commands():
     assert unknown["error"]["code"] == "api.unknown_command"
 
 
+def test_json_api_adapter_explain_result_wraps_structured_summary():
+    service = FrontendDesignService()
+    response = {
+        "contract": "components.service.v1",
+        "command": "run",
+        "ok": False,
+        "result": {
+            "ok": False,
+            "expectations": {
+                "passed": [],
+                "failed": [
+                    {
+                        "name": "nand_both_high",
+                        "errors": [{"type": "expectation_failed", "detail": "Y was 1"}],
+                    }
+                ],
+            },
+        },
+        "warnings": [],
+    }
+
+    explained = handle_request({"command": "explain-result", "input": {"response": response}}, service)
+    assert explained["ok"] is True
+    result = explained["result"]
+    assert result["format"] == "components.explain_result"
+    assert result["source_command"] == "run"
+    assert result["ok"] is False
+    assert result["issues"][0]["code"] == "nand_both_high"
+    assert result["issues"][0]["field_refs"]["name"] == "nand_both_high"
+    assert result["stop_before_hardware_warnings"][0]["reason"] == "run did not report ok=true."
+
+
 def test_json_api_adapter_exposes_component_metadata_without_design():
     service = FrontendDesignService()
 
@@ -77,6 +109,7 @@ def test_json_api_adapter_exposes_component_metadata_without_design():
     assert headless["ok"] is True
     assert headless["result"]["format"] == "components.headless.capabilities"
     assert "student-component-catalog" in headless["result"]["core_commands"]["catalog"]
+    assert "explain-result" in headless["result"]["core_commands"]["simulation"]
     assert "Do not invent pinouts, active-low markers, chip behavior, timing, or procurement facts." in headless["result"]["student_guardrails"]
 
     builder = handle_request({"command": "project-builder", "options": {"part": "74HC00"}}, service)
@@ -132,6 +165,7 @@ def test_json_api_adapter_exposes_component_metadata_without_design():
 def run_all():
     test_frontend_design_service_edits_and_exports_design()
     test_json_api_adapter_dispatches_stateful_frontend_commands()
+    test_json_api_adapter_explain_result_wraps_structured_summary()
     test_json_api_adapter_exposes_component_metadata_without_design()
 
 

@@ -47,6 +47,15 @@ def handle_request(request: JsonMap, service: FrontendDesignService | None = Non
                     goal=str(goal) if goal is not None else None,
                 ),
             )
+        if command == "explain-result":
+            response = input_data.get("response", input_data.get("result", input_data))
+            if not isinstance(response, dict):
+                raise ValueError("input.response must be an object")
+            source_command = options.get("source_command", options.get("sourceCommand"))
+            return service.explain_result(
+                response,
+                source_command=str(source_command) if source_command is not None else None,
+            )
         if command == "load":
             return service.load(_required_map(input_data, "schematic"))
         if command == "create-chip":

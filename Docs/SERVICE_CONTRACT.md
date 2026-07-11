@@ -336,6 +336,103 @@ Result:
 }
 ```
 
+### explain-result
+
+Purpose: summarize an existing `validate`, `run`, `probe`, or
+`circuit-faults` style JSON response for headless CLI/API clients without
+rerunning simulation and without adding new electronics facts. The service only
+uses fields already present in the provided response, such as `ok`, `command`,
+`errors`, `warnings`, `error`, `result.validation`, `snapshot.board.errors`,
+`expectations.failed`, and `findings`.
+
+CLI:
+
+```sh
+python3 -m chiplib.cli run design.json > /tmp/run-result.json
+python3 -m chiplib.cli explain-result /tmp/run-result.json
+python3 -m chiplib.cli explain-result /tmp/legacy-result.json --source-command validate
+```
+
+API:
+
+```json
+{
+  "contract": "components.service.v1",
+  "command": "explain-result",
+  "input": {
+    "response": {
+      "command": "run",
+      "ok": false,
+      "result": {}
+    }
+  },
+  "options": {
+    "source_command": "run"
+  }
+}
+```
+
+Result:
+
+```json
+{
+  "format": "components.explain_result",
+  "version": 1,
+  "contract": "components.service.v1",
+  "source_command": "run",
+  "ok": false,
+  "status": "needs_attention",
+  "summary": {
+    "command": "run",
+    "ok": false,
+    "issue_count": 1,
+    "warning_count": 0,
+    "top_fields": ["command", "ok", "result"]
+  },
+  "issues": [
+    {
+      "severity": "error",
+      "code": "expectation_failed",
+      "summary": "Y was 1",
+      "source_path": "$.result.expectations.failed[0]",
+      "field_refs": {
+        "name": "nand_both_high"
+      }
+    }
+  ],
+  "likely_next_steps": [
+    {
+      "step": "Fix the referenced run fields, then rerun run and explain-result.",
+      "source": "references.issue_fields"
+    }
+  ],
+  "stop_before_hardware_warnings": [
+    {
+      "reason": "run did not report ok=true.",
+      "source": "$.ok"
+    }
+  ],
+  "references": {
+    "command_field": "$.command",
+    "ok_field": "$.ok",
+    "issue_fields": ["$.result.expectations.failed[0]"]
+  }
+}
+```
+
+Rules:
+
+- `explain-result` is a summarizer, not a simulator or circuit checker.
+- It must not invent pinouts, timing, active-low behavior, bus rules, or
+  hardware-ready claims.
+- It may repeat `suggested_fix`, `fix`, or `fix_method` text already present in
+  the source response.
+- It adds generic next steps only when the response does not provide a specific
+  fix.
+- It reports stop-before-hardware warnings when the source result is not
+  `ok=true` for `validate`, `run`, `probe`, or `circuit-faults`, and when the
+  provided issue text mentions bus/output/current risk.
+
 ### export-block-ui / import-block-ui
 
 Purpose: convert between readable schematic JSON and the drawable block-UI
@@ -662,6 +759,26 @@ CLI:
 ```sh
 python3 -m chiplib.cli circuit-faults Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json
 ```
+
+API:
+
+```json
+{
+  "command": "circuit-faults",
+  "input": {
+    "circuit": {
+      "schema": "components.lib.circuit",
+      "id": "student-circuit",
+      "chips": [{"ref": "U1", "part": "74HC04"}],
+      "wiring": [{"net": "Y", "connections": ["U1.1", "U1.2"]}]
+    }
+  }
+}
+```
+
+`circuit-fault-report` is an API alias with the same input and result shape.
+The API accepts the circuit package as JSON data so local HTTP/stdin clients do
+not need filesystem access. The CLI keeps the existing path-based behavior.
 
 Result:
 

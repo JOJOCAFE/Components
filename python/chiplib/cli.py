@@ -44,6 +44,11 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     builder.add_argument("--goal", help="optional project goal text")
     builder.add_argument("-o", "--output")
 
+    explain = sub.add_parser("explain-result", help="explain a prior CLI/API result JSON without rerunning hardware logic")
+    explain.add_argument("json_file")
+    explain.add_argument("--source-command", help="override source command name when the JSON does not include command")
+    explain.add_argument("-o", "--output")
+
     db = sub.add_parser("db")
     db.add_argument("part", nargs="?", help="optional component part, such as 74HC00")
     db.add_argument("--audit", action="store_true", help="audit DB manifests against legacy catalog files")
@@ -65,6 +70,11 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     if args.command == "project-builder":
         return write_json(
             project_builder_workflow(part=getattr(args, "part", None), goal=getattr(args, "goal", None)),
+            output=getattr(args, "output", None),
+        )
+    if args.command == "explain-result":
+        return write_json(
+            designs.explain_result(args.json_file, source_command=getattr(args, "source_command", None)),
             output=getattr(args, "output", None),
         )
 

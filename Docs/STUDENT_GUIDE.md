@@ -72,6 +72,18 @@ That response includes a starter NAND schematic, the catalog -> inspect ->
 draft -> validate -> run -> probe order, and rules for explaining failures to a
 student.
 
+To explain a result that a CLI/API tool already produced:
+
+```sh
+PYTHONPATH=python python3 -B -m chiplib.cli run Examples/nand.json > /tmp/nand.run.json
+PYTHONPATH=python python3 -B -m chiplib.cli explain-result /tmp/nand.run.json
+```
+
+`explain-result` does not run the circuit again. It reads the JSON you give it,
+summarizes `ok`, errors, warnings, findings, failed expectations, and source
+field paths, then gives safe next steps. It must not invent pinouts, timing,
+active-low meaning, or hardware-ready claims.
+
 For a first student session, do not read every reference document. Do this
 short path:
 
@@ -194,6 +206,15 @@ physical-system checker added for RV8GR work.
 PYTHONPATH=python python3 -B -m chiplib.cli circuit-faults Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json
 ```
 
+Through the API, send the circuit package as JSON:
+
+```sh
+printf '%s\n' '{"command":"circuit-faults","input":{"circuit":{"schema":"components.lib.circuit","id":"student-circuit","chips":[{"ref":"U1","part":"74HC04"}],"wiring":[{"net":"Y","connections":["U1.1","U1.2"]}]}}}' \
+  | PYTHONPATH=python python3 -B -m chiplib.api --stdio
+```
+
+`circuit-fault-report` is the same API command under a more explicit name.
+
 It checks four mistake classes:
 
 - wrong pin number, pin name, or active-low marker
@@ -204,6 +225,17 @@ It checks four mistake classes:
 
 If `ok` is `true`, the virtual checker did not find these mistakes. If `ok` is
 `false`, read the `findings` list and the `fix_method` field.
+
+You can also ask for a structured explanation of that report:
+
+```sh
+PYTHONPATH=python python3 -B -m chiplib.cli circuit-faults Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json > /tmp/circuit-faults.json
+PYTHONPATH=python python3 -B -m chiplib.cli explain-result /tmp/circuit-faults.json
+```
+
+If `explain-result` says `stop_before_hardware_warnings` is not empty, do not
+wire or power the real circuit until the referenced result fields are fixed and
+checked again.
 
 ## Use The API From Another Program
 
@@ -233,6 +265,13 @@ printf '%s\n' \
 
 The API is stateful during one stdio session. That means each request can build
 on the previous request.
+
+Explain an API result from another program by sending it as `input.response`:
+
+```sh
+printf '%s\n' '{"command":"explain-result","input":{"response":{"command":"validate","ok":false,"errors":[{"type":"connection_invalid","rule":"A -> U1:99"}]}}}' \
+  | PYTHONPATH=python python3 -B -m chiplib.api --stdio
+```
 
 ### HTTP API
 
@@ -275,6 +314,7 @@ These commands are available through `chiplib.api`:
 - `frontend-snapshot`
 - `run`
 - `probe`
+- `explain-result`
 - `export-json`
 - `export-netlist`
 - `export-verilog`
@@ -286,6 +326,8 @@ These commands are available through `chiplib.api`:
 - `component-digital`
 - `component-package`
 - `component-generate`
+- `circuit-faults`
+- `circuit-fault-report`
 
 All responses include `ok`. Check `ok` before trusting the result:
 
