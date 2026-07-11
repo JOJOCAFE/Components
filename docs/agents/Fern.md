@@ -45,3 +45,9 @@ proof, bus-safety proof, or CI gate evidence.
   errors, missing package files, missing split tests, placeholder truth records,
   duplicate compact layers, memory timing shape, Python factory-delay drift,
   standalone model imports, and all-chip Verilog compile smoke.
+
+## Saved 2026-07-12 Focus
+
+- Gate VirtualTestHelpers as promoted and reject any BusOwnership/FullControl
+  promotion lacking source-backed mappings, negative bus-conflict vectors, and
+  deterministic evidence.

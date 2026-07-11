@@ -38,3 +38,8 @@ generated wrappers, or Python/Verilog equivalence.
   memory turnaround.
 - Maintains the 62-part structural Verilog export/compile smoke as the broad
   HDL readiness check after DB or timing metadata changes.
+
+## Saved 2026-07-12 Focus
+
+- Check that the RV8GR external-Components Verilog wrappers retain both
+  lower-case external and legacy vendored layout compatibility.

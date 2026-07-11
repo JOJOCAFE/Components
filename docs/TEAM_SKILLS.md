@@ -53,6 +53,20 @@ Role-specific detail lives in `docs/agents/`.
 No specialist verifies only their own work. Fern reviews behavior that is meant
 to ship, and Pim keeps the route visible.
 
+## Saved Team Checkpoint: 2026-07-12
+
+- Components `main` is pushed at `01d7ea1 Promote virtual test helper circuit`.
+  `RV8GR_VirtualTestHelpers` is directly promoted through its declared virtual
+  vectors; campaign artifacts and the package gate are execution-derived.
+- RV8 `team-setup` is pushed at `7d2dac5 Support migrated Components layout`.
+  The RV8GR Verilog runners support both external `verilog/` and the retained
+  vendored `Verilog/` snapshot.
+- Next technical boundary: BusOwnership and FullControl cannot be promoted by
+  inferred wiring. Bank and Ohm must establish authoritative gate/child-port
+  mappings from canonical RV8GR RTL and wiring sources; Bam implements only
+  those mappings; Mint checks HDL alignment; Fern gates each promotion; Noon
+  preserves the modeled-versus-physical student boundary.
+
 ## Model Routing
 
 Pim assigns the strongest available Codex coding/reasoning profile to work that

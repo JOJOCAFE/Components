@@ -46,3 +46,9 @@ evidence, or commands that must match executable behavior.
 - Owns the beginner route: students start from `STUDENT_GUIDE.md`,
   `examples/circuits/nand.json`, `lib/standard/STUDENT_CATALOG.md`, and one circuit proof card at
   a time instead of reading every maintainer reference first.
+
+## Saved 2026-07-12 Focus
+
+- Explain that VirtualTestHelpers is modeled test instrumentation, not
+  physical signoff, and keep future BusOwnership/FullControl examples tied to
+  source-backed wiring rather than simplified prose equations.

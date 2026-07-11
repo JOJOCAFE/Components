@@ -51,3 +51,8 @@ generated artifacts can affect live chip behavior.
   `lib/standard/support/*/simulation/model.py` files stay chip-local, import only
   `chiplib.core`, and must be exposed through `load_component_package()` with
   `portable_files` when the package has a local model.
+
+## Saved 2026-07-12 Focus
+
+- Maintain the promoted VirtualTestHelpers adapter proof and implement future
+  BusOwnership/FullControl runtime mappings only after Bank/Ohm source them.

@@ -41,3 +41,8 @@ or hardware-readiness wording is involved.
 - Owns the physical interpretation of the 36-package RV8GR audit: every
   instance must use the real DIP/PDIP pin map and the physical speed claim
   remains blocked until voltage, clock, bus-deadband, and scope evidence exist.
+
+## Saved 2026-07-12 Focus
+
+- Verify every proposed BusOwnership gate/pin mapping against canonical RV8GR
+  wiring and datasheet pin truth before it becomes a Components contract.

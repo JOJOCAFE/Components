@@ -40,3 +40,8 @@ layout decisions could become long-term constraints.
 - Owns count vocabulary and schema placement for RV8GR reports: 36 physical
   board packages belong to the board/netlist layer, while unique part
   definitions and memory options belong to the lib/standard/package layer.
+
+## Saved 2026-07-12 Focus
+
+- Define authoritative gate-level control and child-port mapping contracts for
+  BusOwnership and FullControl before Bam makes them executable.

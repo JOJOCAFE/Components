@@ -38,3 +38,10 @@ pushes, or cross-repo consistency.
   instances, board-used part types, or RV8GR-ready definition options. The
   current verified board mapping is 36 instances, 16 part types, and all
   board-used packages have the required package-local files.
+
+## Saved 2026-07-12 Focus
+
+- Coordinate the source-truth decision for BusOwnership and FullControl;
+  do not mark either promoted from a generated campaign alone.
+- Keep Components `01d7ea1` and RV8 `7d2dac5` visible in handoffs until a
+  later checkpoint supersedes them.

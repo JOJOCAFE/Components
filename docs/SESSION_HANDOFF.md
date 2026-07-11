@@ -12,15 +12,28 @@ Last updated: 2026-07-11
 
 ## Active Verified Worktree
 
+- Last pushed Components checkpoint: `01d7ea1 Promote virtual test helper
+  circuit` on `main`; the worktree was clean after push.
+- Last pushed RV8 compatibility checkpoint: `7d2dac5 Support migrated
+  Components layout` on `team-setup`. With
+  `COMPONENTS_ROOT=/home/jo/kiro/Components`, the RV8GR chip-level bring-up,
+  full, dual-compare, and 16-part/36-package Components verification gates
+  pass.
+- `RV8GR_VirtualTestHelpers` is directly promoted. Its public runner proof
+  executes clock, phase, bus, switch, R/C, delay/noise, and output-assert
+  vectors. The current next direct-execution work is BusOwnership.
+- Do not infer BusOwnership control wiring or FullControl child-port mappings
+  from prose equations. Source them from canonical RV8GR RTL/wiring evidence,
+  then bind DB/Python/Verilog/tests/docs together. Physical timing remains
+  blocked regardless of modeled package promotion.
 - Repository layout migrated on 2026-07-12: packages live in
   `lib/standard/`; circuit examples and proof assets live in
   `examples/circuits/`; documentation, schemas, source evidence, and Verilog
   live in `docs/`, `schemas/`, `source/`, and `verilog/` respectively.
   `tools/verify_repository_layout.py` and its CI/test gate reject stale
   legacy-root references.
-- The lower-case moved roots are intentionally unstaged. Git therefore shows
-  the old tracked roots as deletions and the new roots as untracked until the
-  migration is staged; do not use that display as evidence that files are gone.
+- The lower-case layout migration was staged, committed, and pushed as
+  `cb2a514`; Git rename detection was verified before the commit.
 - The uncommitted circuit-runner implementation is verified by the complete
   Python workflow-equivalent suite, state-behavior cross-check, campaign
   drift gate, and `git diff --check`.
