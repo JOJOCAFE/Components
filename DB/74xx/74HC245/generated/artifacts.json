@@ -587,6 +587,231 @@
               "to": "A or B output transition"
             }
           }
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC245 is not a clocked storage element for this parameter.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC245 is not a clocked storage element for this parameter.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "note": "DIR and /OE setup/hold metadata is source-backed for bus-control use.",
+              "source_field": "definition_layers.timing.setup_hold",
+              "status": "exact",
+              "values_ns": []
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC245 is not a clocked storage element for this parameter.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "note": "DIR and /OE setup/hold metadata is source-backed for bus-control use.",
+              "source_field": "definition_layers.timing.setup_hold",
+              "status": "exact",
+              "values_ns": []
+            },
+            "tPHL": {
+              "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tpd",
+              "status": "exact",
+              "values_ns": {
+                "A_to_B": {
+                  "vcc_2_v": {
+                    "max_25c": 105,
+                    "max_sn54": 160,
+                    "max_sn74": 130,
+                    "typ": 40
+                  },
+                  "vcc_4_5_v": {
+                    "max_25c": 21,
+                    "max_sn54": 32,
+                    "max_sn74": 26,
+                    "typ": 15
+                  },
+                  "vcc_6_v": {
+                    "max_25c": 18,
+                    "max_sn54": 27,
+                    "max_sn74": 22,
+                    "typ": 12
+                  }
+                },
+                "B_to_A": {
+                  "vcc_2_v": {
+                    "max_25c": 105,
+                    "max_sn54": 160,
+                    "max_sn74": 130,
+                    "typ": 40
+                  },
+                  "vcc_4_5_v": {
+                    "max_25c": 21,
+                    "max_sn54": 32,
+                    "max_sn74": 26,
+                    "typ": 15
+                  },
+                  "vcc_6_v": {
+                    "max_25c": 18,
+                    "max_sn54": 27,
+                    "max_sn74": 22,
+                    "typ": 12
+                  }
+                }
+              }
+            },
+            "tPHZ": {
+              "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tdis",
+              "status": "exact",
+              "values_ns": {
+                "vcc_2_v": {
+                  "max_25c": 200,
+                  "max_sn54": 300,
+                  "max_sn74": 250,
+                  "typ": 74
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 40,
+                  "max_sn54": 60,
+                  "max_sn74": 50,
+                  "typ": 25
+                },
+                "vcc_6_v": {
+                  "max_25c": 34,
+                  "max_sn54": 51,
+                  "max_sn74": 43,
+                  "typ": 21
+                }
+              }
+            },
+            "tPLH": {
+              "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tpd",
+              "status": "exact",
+              "values_ns": {
+                "A_to_B": {
+                  "vcc_2_v": {
+                    "max_25c": 105,
+                    "max_sn54": 160,
+                    "max_sn74": 130,
+                    "typ": 40
+                  },
+                  "vcc_4_5_v": {
+                    "max_25c": 21,
+                    "max_sn54": 32,
+                    "max_sn74": 26,
+                    "typ": 15
+                  },
+                  "vcc_6_v": {
+                    "max_25c": 18,
+                    "max_sn54": 27,
+                    "max_sn74": 22,
+                    "typ": 12
+                  }
+                },
+                "B_to_A": {
+                  "vcc_2_v": {
+                    "max_25c": 105,
+                    "max_sn54": 160,
+                    "max_sn74": 130,
+                    "typ": 40
+                  },
+                  "vcc_4_5_v": {
+                    "max_25c": 21,
+                    "max_sn54": 32,
+                    "max_sn74": 26,
+                    "typ": 15
+                  },
+                  "vcc_6_v": {
+                    "max_25c": 18,
+                    "max_sn54": 27,
+                    "max_sn74": 22,
+                    "typ": 12
+                  }
+                }
+              }
+            },
+            "tPLZ": {
+              "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tdis",
+              "status": "exact",
+              "values_ns": {
+                "vcc_2_v": {
+                  "max_25c": 200,
+                  "max_sn54": 300,
+                  "max_sn74": 250,
+                  "typ": 74
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 40,
+                  "max_sn54": 60,
+                  "max_sn74": 50,
+                  "typ": 25
+                },
+                "vcc_6_v": {
+                  "max_25c": 34,
+                  "max_sn54": 51,
+                  "max_sn74": 43,
+                  "typ": 21
+                }
+              }
+            },
+            "tPZH": {
+              "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC245 switching characteristics, CL=50 pF ten",
+              "status": "exact",
+              "values_ns": {
+                "vcc_2_v": {
+                  "max_25c": 230,
+                  "max_sn54": 340,
+                  "max_sn74": 290,
+                  "typ": 125
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 46,
+                  "max_sn54": 68,
+                  "max_sn74": 58,
+                  "typ": 23
+                },
+                "vcc_6_v": {
+                  "max_25c": 39,
+                  "max_sn54": 58,
+                  "max_sn74": 49,
+                  "typ": 20
+                }
+              }
+            },
+            "tPZL": {
+              "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC245 switching characteristics, CL=50 pF ten",
+              "status": "exact",
+              "values_ns": {
+                "vcc_2_v": {
+                  "max_25c": 230,
+                  "max_sn54": 340,
+                  "max_sn74": 290,
+                  "typ": 125
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 46,
+                  "max_sn54": 68,
+                  "max_sn74": 58,
+                  "typ": 23
+                },
+                "vcc_6_v": {
+                  "max_25c": 39,
+                  "max_sn54": 58,
+                  "max_sn74": 49,
+                  "typ": 20
+                }
+              }
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "Octal bus transceiver with 3-state outputs"

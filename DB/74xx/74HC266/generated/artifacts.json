@@ -329,6 +329,71 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": {
+            "load_pf": 50,
+            "ta_c": 25
+          },
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC266 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC266 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC266 is combinational and has no hold-time requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC266 is combinational and has no clock/control pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC266 is combinational and has no setup-time requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "source_field": "timing.datasheet.values.*.tphl_input_to_output",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 20,
+                "max_minus40_to_85c": 25,
+                "typ": 13
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC266 is open-drain and has no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "source_field": "timing.datasheet.values.*.tplh_input_to_output",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 25,
+                "max_minus40_to_85c": 31,
+                "typ": 13
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC266 is open-drain and has no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC266 is open-drain and has no output-enable control; pull-up rise is load-dependent, not a chip tPZH path.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC266 is open-drain and has no output-enable control.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "quad 2-input XNOR gate with open-drain outputs"

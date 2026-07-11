@@ -345,6 +345,136 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "ST M74HC148 feature summary, VCC=5 V.",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC148 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC148 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC148 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC148 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC148 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI SN74HC148 switching characteristics, CL=50 pF; propagation delay rows are tpd and parameter waveform maps tPLH/tPHL to the measured propagation delay.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "ei_to_a": 39,
+                  "ei_to_eo": 33,
+                  "ei_to_gs": 29,
+                  "input_0_7_to_eo": 30,
+                  "input_0_7_to_gs": 38,
+                  "input_1_7_to_a": 36,
+                  "transition": 15
+                },
+                "datasheet_max_ns_sn54": {
+                  "ei_to_a": 59,
+                  "ei_to_eo": 50,
+                  "ei_to_gs": 44,
+                  "input_0_7_to_eo": 45,
+                  "input_0_7_to_gs": 57,
+                  "input_1_7_to_a": 54,
+                  "transition": 22
+                },
+                "datasheet_max_ns_sn74": {
+                  "ei_to_a": 49,
+                  "ei_to_eo": 41,
+                  "ei_to_gs": 36,
+                  "input_0_7_to_eo": 38,
+                  "input_0_7_to_gs": 48,
+                  "input_1_7_to_a": 45,
+                  "transition": 19
+                },
+                "datasheet_typical_ns": {
+                  "ei_to_a": 26,
+                  "ei_to_eo": 22,
+                  "ei_to_gs": 19,
+                  "input_0_7_to_eo": 20,
+                  "input_0_7_to_gs": 25,
+                  "input_1_7_to_a": 23,
+                  "transition": 8
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC148 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI SN74HC148 switching characteristics, CL=50 pF; propagation delay rows are tpd and parameter waveform maps tPLH/tPHL to the measured propagation delay.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "ei_to_a": 39,
+                  "ei_to_eo": 33,
+                  "ei_to_gs": 29,
+                  "input_0_7_to_eo": 30,
+                  "input_0_7_to_gs": 38,
+                  "input_1_7_to_a": 36,
+                  "transition": 15
+                },
+                "datasheet_max_ns_sn54": {
+                  "ei_to_a": 59,
+                  "ei_to_eo": 50,
+                  "ei_to_gs": 44,
+                  "input_0_7_to_eo": 45,
+                  "input_0_7_to_gs": 57,
+                  "input_1_7_to_a": 54,
+                  "transition": 22
+                },
+                "datasheet_max_ns_sn74": {
+                  "ei_to_a": 49,
+                  "ei_to_eo": 41,
+                  "ei_to_gs": 36,
+                  "input_0_7_to_eo": 38,
+                  "input_0_7_to_gs": 48,
+                  "input_1_7_to_a": 45,
+                  "transition": 19
+                },
+                "datasheet_typical_ns": {
+                  "ei_to_a": 26,
+                  "ei_to_eo": 22,
+                  "ei_to_gs": 19,
+                  "input_0_7_to_eo": 20,
+                  "input_0_7_to_gs": 25,
+                  "input_1_7_to_a": 23,
+                  "transition": 8
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC148 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC148 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC148 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "8-to-3 line priority encoder"

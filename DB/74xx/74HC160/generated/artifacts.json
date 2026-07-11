@@ -380,6 +380,129 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": {
+            "load_pf": 50,
+            "vcc_v": 2
+          },
+          "parameters": {
+            "clock_to_q_high": {
+              "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+              "source_field": "timing.datasheet.values.*.clock_to_q",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 160,
+                "max_minus40_to_85c": 200
+              }
+            },
+            "clock_to_q_low": {
+              "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+              "source_field": "timing.datasheet.values.*.clock_to_q",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 160,
+                "max_minus40_to_85c": 200
+              }
+            },
+            "hold": {
+              "note": "Direct hold-time table row after CLK rising edge; the 4.5 V typical value in the source is negative, but the minimum requirement remains 0 ns.",
+              "source_field": "timing requirements hold rows",
+              "status": "exact",
+              "values_ns": {
+                "data_load_clear_after_clk_rise_min": {
+                  "vcc_2_v": 0,
+                  "vcc_4_5_v": 0,
+                  "vcc_6_v": 0
+                }
+              }
+            },
+            "minimum_pulse_width": {
+              "source_field": "timing.datasheet.values.*.pulse_width",
+              "status": "exact",
+              "values_ns": {
+                "clock_or_clear_pulse_min": {
+                  "min_25c": 80,
+                  "min_minus40_to_85c": 100
+                }
+              }
+            },
+            "setup": {
+              "source_field": "timing.datasheet.values.*.setup_data_load_clear_to_clock",
+              "status": "exact",
+              "values_ns": {
+                "data_load_clear_to_clock_min": {
+                  "min_25c": 125,
+                  "min_minus40_to_85c": 156
+                }
+              }
+            },
+            "tPHL": {
+              "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry.",
+              "source_field": "switching characteristics tPLH/tPHL rows",
+              "status": "exact",
+              "values_ns": {
+                "clear_to_q": {
+                  "max_25c": 225,
+                  "max_minus40_to_85c": 280
+                },
+                "clock_to_q": {
+                  "max_25c": 160,
+                  "max_minus40_to_85c": 200
+                },
+                "clock_to_ripple_carry": {
+                  "max_25c": 200,
+                  "max_minus40_to_85c": 250
+                },
+                "enable_t_to_ripple_carry": {
+                  "max_25c": 150,
+                  "max_minus40_to_85c": 190
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC160 has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry.",
+              "source_field": "switching characteristics tPLH/tPHL rows",
+              "status": "exact",
+              "values_ns": {
+                "clear_to_q": {
+                  "max_25c": 225,
+                  "max_minus40_to_85c": 280
+                },
+                "clock_to_q": {
+                  "max_25c": 160,
+                  "max_minus40_to_85c": 200
+                },
+                "clock_to_ripple_carry": {
+                  "max_25c": 200,
+                  "max_minus40_to_85c": 250
+                },
+                "enable_t_to_ripple_carry": {
+                  "max_25c": 150,
+                  "max_minus40_to_85c": 190
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC160 has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC160 has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC160 has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "presettable synchronous BCD decade counter, asynchronous reset"

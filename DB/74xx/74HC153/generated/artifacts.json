@@ -341,6 +341,111 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_timing_model",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC153 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC153 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC153 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC153 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC153 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI SN74HC153 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "data_to_output": 28,
+                  "enable_to_output": 19,
+                  "select_to_output": 30,
+                  "transition": 12
+                },
+                "datasheet_max_ns_sn54": {
+                  "data_to_output": 42,
+                  "enable_to_output": 28,
+                  "select_to_output": 45,
+                  "transition": 18
+                },
+                "datasheet_max_ns_sn74": {
+                  "data_to_output": 35,
+                  "enable_to_output": 24,
+                  "select_to_output": 38,
+                  "transition": 15
+                },
+                "datasheet_typical_ns": {
+                  "data_to_output": 17,
+                  "enable_to_output": 11,
+                  "select_to_output": 21,
+                  "transition": 8
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC153 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI SN74HC153 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "data_to_output": 28,
+                  "enable_to_output": 19,
+                  "select_to_output": 30,
+                  "transition": 12
+                },
+                "datasheet_max_ns_sn54": {
+                  "data_to_output": 42,
+                  "enable_to_output": 28,
+                  "select_to_output": 45,
+                  "transition": 18
+                },
+                "datasheet_max_ns_sn74": {
+                  "data_to_output": 35,
+                  "enable_to_output": 24,
+                  "select_to_output": 38,
+                  "transition": 15
+                },
+                "datasheet_typical_ns": {
+                  "data_to_output": 17,
+                  "enable_to_output": 11,
+                  "select_to_output": 21,
+                  "transition": 8
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC153 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC153 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC153 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "Dual 4-Line to 1-Line Data Selector/Multiplexer"

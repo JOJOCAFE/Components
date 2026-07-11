@@ -4,7 +4,7 @@
   "part": "NE555",
   "applicable": true,
   "edge_criteria": {
-    "clocking": "level_sensitive_latch",
+    "clocking": "level_sensitive",
     "trigger_edge": "none",
     "non_trigger_edge": "not_applicable",
     "notes": "Support IC functional model; reset, threshold, trigger, output, and discharge states are checked after level changes."

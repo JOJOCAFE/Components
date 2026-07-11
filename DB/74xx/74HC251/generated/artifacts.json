@@ -395,6 +395,116 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC251 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC251 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC251 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC251 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC251 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+              "status": "exact",
+              "values_ns": {
+                "data_to_w_y": {
+                  "max_25c": 39,
+                  "max_sn54": 57,
+                  "max_sn74": 49,
+                  "typ": 17
+                },
+                "select_to_w_y": {
+                  "max_25c": 41,
+                  "max_sn54": 60,
+                  "max_sn74": 51,
+                  "typ": 21
+                }
+              }
+            },
+            "tPHZ": {
+              "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 39,
+                "max_sn54": 57,
+                "max_sn74": 49,
+                "typ": 15
+              }
+            },
+            "tPLH": {
+              "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+              "status": "exact",
+              "values_ns": {
+                "data_to_w_y": {
+                  "max_25c": 39,
+                  "max_sn54": 57,
+                  "max_sn74": 49,
+                  "typ": 17
+                },
+                "select_to_w_y": {
+                  "max_25c": 41,
+                  "max_sn54": 60,
+                  "max_sn74": 51,
+                  "typ": 21
+                }
+              }
+            },
+            "tPLZ": {
+              "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 39,
+                "max_sn54": 57,
+                "max_sn74": 49,
+                "typ": 15
+              }
+            },
+            "tPZH": {
+              "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 29,
+                "max_sn54": 42,
+                "max_sn74": 36,
+                "typ": 10
+              }
+            },
+            "tPZL": {
+              "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 29,
+                "max_sn54": 42,
+                "max_sn74": 36,
+                "typ": 10
+              }
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "8-Line to 1-Line Data Selector/Multiplexer"

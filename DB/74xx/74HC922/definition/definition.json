@@ -218,7 +218,7 @@
             "reason": "74HC922 is combinational and has no setup/hold timing requirement."
           },
           "tPHL": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.datasheet.values",
             "values_ns": {
               "datasheet_max_ns": {
@@ -232,10 +232,10 @@
                 "output_to_high_z": 80
               }
             },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            "note": "Fairchild explicitly gives tpd0 and tpd1 for propagation to logical 0 or logical 1; the shared values are exact for tPHL and tPLH."
           },
           "tPHZ": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.datasheet.values",
             "values_ns": {
               "datasheet_max_ns": {
@@ -249,10 +249,10 @@
                 "output_to_high_z": 80
               }
             },
-            "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+            "note": "Fairchild explicitly gives t0H and t1H for logical 0 or logical 1 entering high impedance; the shared values are exact for tPLZ and tPHZ."
           },
           "tPLH": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.datasheet.values",
             "values_ns": {
               "datasheet_max_ns": {
@@ -266,10 +266,10 @@
                 "output_to_high_z": 80
               }
             },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            "note": "Fairchild explicitly gives tpd0 and tpd1 for propagation to logical 0 or logical 1; the shared values are exact for tPHL and tPLH."
           },
           "tPLZ": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.datasheet.values",
             "values_ns": {
               "datasheet_max_ns": {
@@ -283,10 +283,10 @@
                 "output_to_high_z": 80
               }
             },
-            "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+            "note": "Fairchild explicitly gives t0H and t1H for logical 0 or logical 1 entering high impedance; the shared values are exact for tPLZ and tPHZ."
           },
           "tPZH": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.datasheet.values",
             "values_ns": {
               "datasheet_max_ns": {
@@ -300,10 +300,10 @@
                 "output_to_high_z": 80
               }
             },
-            "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+            "note": "Fairchild explicitly gives tH0 and tH1 for high impedance transitioning to logical 0 or logical 1; the shared values are exact for tPZL and tPZH."
           },
           "tPZL": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.datasheet.values",
             "values_ns": {
               "datasheet_max_ns": {
@@ -317,7 +317,7 @@
                 "output_to_high_z": 80
               }
             },
-            "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+            "note": "Fairchild explicitly gives tH0 and tH1 for high impedance transitioning to logical 0 or logical 1; the shared values are exact for tPZL and tPZH."
           }
         }
       }

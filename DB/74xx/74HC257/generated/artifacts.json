@@ -392,6 +392,116 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "TI SN74HC257 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC257 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC257 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC257 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC257 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC257 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "TI SN74HC257 table and measurement notes map tpd to tPLH/tPHL, ten to tPZH/tPZL, and tdis to tPHZ/tPLZ.",
+              "source_field": "TI SN74HC257 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+              "status": "exact",
+              "values_ns": {
+                "a_or_b_to_y": {
+                  "max_25c": 20,
+                  "max_sn54": 30,
+                  "max_sn74": 25,
+                  "typ": 10
+                },
+                "select_to_y": {
+                  "max_25c": 20,
+                  "max_sn54": 30,
+                  "max_sn74": 25,
+                  "typ": 10
+                }
+              }
+            },
+            "tPHZ": {
+              "note": "TI SN74HC257 table and measurement notes map tpd to tPLH/tPHL, ten to tPZH/tPZL, and tdis to tPHZ/tPLZ.",
+              "source_field": "TI SN74HC257 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 15
+              }
+            },
+            "tPLH": {
+              "note": "TI SN74HC257 table and measurement notes map tpd to tPLH/tPHL, ten to tPZH/tPZL, and tdis to tPHZ/tPLZ.",
+              "source_field": "TI SN74HC257 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+              "status": "exact",
+              "values_ns": {
+                "a_or_b_to_y": {
+                  "max_25c": 20,
+                  "max_sn54": 30,
+                  "max_sn74": 25,
+                  "typ": 10
+                },
+                "select_to_y": {
+                  "max_25c": 20,
+                  "max_sn54": 30,
+                  "max_sn74": 25,
+                  "typ": 10
+                }
+              }
+            },
+            "tPLZ": {
+              "note": "TI SN74HC257 table and measurement notes map tpd to tPLH/tPHL, ten to tPZH/tPZL, and tdis to tPHZ/tPLZ.",
+              "source_field": "TI SN74HC257 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 15
+              }
+            },
+            "tPZH": {
+              "note": "TI SN74HC257 table and measurement notes map tpd to tPLH/tPHL, ten to tPZH/tPZL, and tdis to tPHZ/tPLZ.",
+              "source_field": "TI SN74HC257 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 15
+              }
+            },
+            "tPZL": {
+              "note": "TI SN74HC257 table and measurement notes map tpd to tPLH/tPHL, ten to tPZH/tPZL, and tdis to tPHZ/tPLZ.",
+              "source_field": "TI SN74HC257 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 15
+              }
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "Quad 2-Input Multiplexer With 3-State Outputs"

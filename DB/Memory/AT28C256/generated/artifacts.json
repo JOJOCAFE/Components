@@ -595,6 +595,115 @@
           "ce_to_data_valid_ns": 150,
           "oe_to_data_valid_ns": 70
         },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": {
+            "variant": "AT28C256-15"
+          },
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "AT28C256 is asynchronous memory and has no clock-to-Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "AT28C256 is asynchronous memory and has no clock-to-Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "note": "Write hold requirement is source-backed for the selected variant.",
+              "source_field": "definition_layers.timing.delay.public_timing.write",
+              "status": "exact",
+              "values_ns": {
+                "address_hold_min_ns": 50
+              }
+            },
+            "minimum_pulse_width": {
+              "note": "Write pulse width is source-backed for the selected variant.",
+              "source_field": "definition_layers.timing.delay.public_timing.write",
+              "status": "exact",
+              "values_ns": {
+                "write_pulse_min_ns": 100
+              }
+            },
+            "setup": {
+              "note": "Write setup/hold-style requirements are source-backed for the selected variant.",
+              "source_field": "definition_layers.timing.delay.public_timing.write",
+              "status": "exact",
+              "values_ns": {
+                "address_hold_min_ns": 50,
+                "data_setup_min_ns": 50
+              }
+            },
+            "tPHL": {
+              "mapping_basis": "tACC/tCE/tOE read access paths define data valid after address, CE, or OE; EEPROM read timing is not split by output HIGH/LOW transition.",
+              "note": "tACC/tCE/tOE read access paths define data valid after address, CE, or OE; EEPROM read timing is not split by output HIGH/LOW transition.",
+              "source": "Microchip AT28C256 AC read/write characteristics",
+              "source_field": "definition_layers.timing.delay.public_timing.paths",
+              "status": "exact",
+              "values_ns": {
+                "address_to_data_valid_ns": 150,
+                "ce_to_data_valid_ns": 150,
+                "oe_to_data_valid_ns": 70
+              }
+            },
+            "tPHZ": {
+              "mapping_basis": "tDF CE/OE-to-float path defines output-disable timing; not split by previous HIGH/LOW output state.",
+              "note": "tDF CE/OE-to-float path defines output-disable timing; not split by previous HIGH/LOW output state.",
+              "source": "Microchip AT28C256 AC read/write characteristics",
+              "source_field": "definition_layers.timing.delay.public_timing.paths",
+              "status": "exact",
+              "values_ns": {
+                "ce_or_oe_to_high_z_ns": 50
+              }
+            },
+            "tPLH": {
+              "mapping_basis": "tACC/tCE/tOE read access paths define data valid after address, CE, or OE; EEPROM read timing is not split by output HIGH/LOW transition.",
+              "note": "tACC/tCE/tOE read access paths define data valid after address, CE, or OE; EEPROM read timing is not split by output HIGH/LOW transition.",
+              "source": "Microchip AT28C256 AC read/write characteristics",
+              "source_field": "definition_layers.timing.delay.public_timing.paths",
+              "status": "exact",
+              "values_ns": {
+                "address_to_data_valid_ns": 150,
+                "ce_to_data_valid_ns": 150,
+                "oe_to_data_valid_ns": 70
+              }
+            },
+            "tPLZ": {
+              "mapping_basis": "tDF CE/OE-to-float path defines output-disable timing; not split by previous HIGH/LOW output state.",
+              "note": "tDF CE/OE-to-float path defines output-disable timing; not split by previous HIGH/LOW output state.",
+              "source": "Microchip AT28C256 AC read/write characteristics",
+              "source_field": "definition_layers.timing.delay.public_timing.paths",
+              "status": "exact",
+              "values_ns": {
+                "ce_or_oe_to_high_z_ns": 50
+              }
+            },
+            "tPZH": {
+              "mapping_basis": "tOE/tCE read output-enable paths define when the output becomes valid from disabled/read state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+              "note": "tOE/tCE read output-enable paths define when the output becomes valid from disabled/read state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+              "source": "Microchip AT28C256 AC read/write characteristics",
+              "source_field": "definition_layers.timing.delay.public_timing.paths",
+              "status": "exact",
+              "values_ns": {
+                "ce_to_data_valid_ns": 150,
+                "oe_to_data_valid_ns": 70
+              }
+            },
+            "tPZL": {
+              "mapping_basis": "tOE/tCE read output-enable paths define when the output becomes valid from disabled/read state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+              "note": "tOE/tCE read output-enable paths define when the output becomes valid from disabled/read state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+              "source": "Microchip AT28C256 AC read/write characteristics",
+              "source_field": "definition_layers.timing.delay.public_timing.paths",
+              "status": "exact",
+              "values_ns": {
+                "ce_to_data_valid_ns": 150,
+                "oe_to_data_valid_ns": 70
+              }
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        },
         "variant": "AT28C256-15",
         "write": {
           "address_hold_min_ns": 50,

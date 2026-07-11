@@ -290,7 +290,148 @@
             }
           }
         },
-        "delay_ns": 15
+        "delay_ns": 15,
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": {
+            "load_pf": 50,
+            "ta_c": 25
+          },
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC4538 has trigger and reset inputs, not a clocked Q storage path.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC4538 has trigger and reset inputs, not a clocked Q storage path.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC4538 is an asynchronously triggered monostable and has no sampled data hold requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "source_field": "timing.datasheet.values.* pulse-width fields",
+              "status": "exact",
+              "values_ns": {
+                "input_pulse_width": {
+                  "min_25c": 16,
+                  "min_minus40_to_85c": 20,
+                  "min_minus55_to_125c": 24
+                },
+                "reset_low_width": {
+                  "min_25c": 16,
+                  "min_minus40_to_85c": 20,
+                  "min_minus55_to_125c": 24
+                }
+              }
+            },
+            "setup": {
+              "reason": "74HC4538 is an asynchronously triggered monostable and has no sampled data setup requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "Direct switching-specification propagation rows from A,B and R to Q.",
+              "source_field": "switching specifications propagation delay rows",
+              "status": "exact",
+              "values_ns": {
+                "a_b_to_q": {
+                  "vcc_2_v": {
+                    "max_25c": 250,
+                    "max_minus40_to_85c": 315,
+                    "max_minus55_to_125c": 375
+                  },
+                  "vcc_4_5_v": {
+                    "max_25c": 50,
+                    "max_minus40_to_85c": 63,
+                    "max_minus55_to_125c": 75
+                  },
+                  "vcc_6_v": {
+                    "max_25c": 43,
+                    "max_minus40_to_85c": 54,
+                    "max_minus55_to_125c": 64
+                  }
+                },
+                "r_to_q": {
+                  "vcc_2_v": {
+                    "max_25c": 250,
+                    "max_minus40_to_85c": 315,
+                    "max_minus55_to_125c": 375
+                  },
+                  "vcc_4_5_v": {
+                    "max_25c": 50,
+                    "max_minus40_to_85c": 63,
+                    "max_minus55_to_125c": 75
+                  },
+                  "vcc_6_v": {
+                    "max_25c": 43,
+                    "max_minus40_to_85c": 54,
+                    "max_minus55_to_125c": 64
+                  }
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC4538 has no output-enable/high-Z control in the current package definition.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Direct switching-specification propagation rows from A,B and R to Q.",
+              "source_field": "switching specifications propagation delay rows",
+              "status": "exact",
+              "values_ns": {
+                "a_b_to_q": {
+                  "vcc_2_v": {
+                    "max_25c": 250,
+                    "max_minus40_to_85c": 315,
+                    "max_minus55_to_125c": 375
+                  },
+                  "vcc_4_5_v": {
+                    "max_25c": 50,
+                    "max_minus40_to_85c": 63,
+                    "max_minus55_to_125c": 75
+                  },
+                  "vcc_6_v": {
+                    "max_25c": 43,
+                    "max_minus40_to_85c": 54,
+                    "max_minus55_to_125c": 64
+                  }
+                },
+                "r_to_q": {
+                  "vcc_2_v": {
+                    "max_25c": 250,
+                    "max_minus40_to_85c": 315,
+                    "max_minus55_to_125c": 375
+                  },
+                  "vcc_4_5_v": {
+                    "max_25c": 50,
+                    "max_minus40_to_85c": 63,
+                    "max_minus55_to_125c": 75
+                  },
+                  "vcc_6_v": {
+                    "max_25c": 43,
+                    "max_minus40_to_85c": 54,
+                    "max_minus55_to_125c": 64
+                  }
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC4538 has no output-enable/high-Z control in the current package definition.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC4538 has no output-enable/high-Z control in the current package definition.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC4538 has no output-enable/high-Z control in the current package definition.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
       },
       "title": "Dual precision monostable multivibrator"
     },

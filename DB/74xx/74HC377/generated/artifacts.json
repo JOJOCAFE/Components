@@ -427,6 +427,122 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": {
+            "load_pf": 50,
+            "ta_c": 25
+          },
+          "parameters": {
+            "clock_to_q_high": {
+              "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+              "source_field": "timing.datasheet.values.*.clock_to_q",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 32,
+                "max_minus40_to_85c": 40,
+                "max_minus55_to_125c": 48,
+                "typ": 15
+              }
+            },
+            "clock_to_q_low": {
+              "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+              "source_field": "timing.datasheet.values.*.clock_to_q",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 32,
+                "max_minus40_to_85c": 40,
+                "max_minus55_to_125c": 48,
+                "typ": 15
+              }
+            },
+            "hold": {
+              "note": "Direct hold-time table rows from the local datasheet text.",
+              "source_field": "timing requirements hold rows",
+              "status": "exact",
+              "values_ns": {
+                "data_after_clk_rise_min": {
+                  "vcc_2_v": 5,
+                  "vcc_4_5_v": 5,
+                  "vcc_6_v": 5
+                }
+              }
+            },
+            "minimum_pulse_width": {
+              "note": "Direct pulse-width table rows from the local datasheet text.",
+              "source_field": "timing requirements pulse-width rows",
+              "status": "exact",
+              "values_ns": {
+                "clock_high_or_low_min": {
+                  "vcc_2_v": 100,
+                  "vcc_4_5_v": 20,
+                  "vcc_6_v": 17
+                }
+              }
+            },
+            "setup": {
+              "note": "Direct setup-time table rows from the local datasheet text.",
+              "source_field": "timing requirements setup rows",
+              "status": "exact",
+              "values_ns": {
+                "data_before_clk_rise_min": {
+                  "vcc_2_v": 100,
+                  "vcc_4_5_v": 20,
+                  "vcc_6_v": 17
+                },
+                "enable_before_clk_rise_min": {
+                  "vcc_2_v": 100,
+                  "vcc_4_5_v": 20,
+                  "vcc_6_v": 17
+                }
+              }
+            },
+            "tPHL": {
+              "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry.",
+              "source_field": "switching characteristics tpd row",
+              "status": "exact",
+              "values_ns": {
+                "clock_to_q": {
+                  "max_25c": 32,
+                  "max_minus40_to_85c": 40,
+                  "max_minus55_to_125c": 48,
+                  "typ": 15
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry.",
+              "source_field": "switching characteristics tpd row",
+              "status": "exact",
+              "values_ns": {
+                "clock_to_q": {
+                  "max_25c": 32,
+                  "max_minus40_to_85c": 40,
+                  "max_minus55_to_125c": 48,
+                  "typ": 15
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "octal D-type flip-flop with data enable, positive-edge trigger"

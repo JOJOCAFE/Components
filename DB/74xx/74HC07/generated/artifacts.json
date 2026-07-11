@@ -318,6 +318,112 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "ST M74HC07 feature summary, VCC=6 V.",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC07 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC07 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC07 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC07 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC07 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "ST M74HC07 local source text gives only feature/waveform propagation delay; no direct tPLH/tPHL mapping was extracted. Preserved generic canonical timing until polarity-specific evidence is available.",
+              "source_field": "timing.datasheet",
+              "status": "generic",
+              "values_ns": {
+                "datasheet_typical_ns": {
+                  "feature_tpd": 6
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC07 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "ST M74HC07 local source text gives only feature/waveform propagation delay; no direct tPLH/tPHL mapping was extracted. Preserved generic canonical timing until polarity-specific evidence is available.",
+              "source_field": "timing.datasheet",
+              "status": "generic",
+              "values_ns": {
+                "datasheet_typical_ns": {
+                  "feature_tpd": 6
+                }
+              }
+            },
+            "tPLZ": {
+              "note": "ST M74HC07 AC characteristics give a direct tPLZ row for the open-drain output transition; canonical high-Z timing is preserved exactly.",
+              "source_field": "timing.datasheet",
+              "status": "exact",
+              "values_ns": {
+                "vcc_2_v": {
+                  "max_25c": 90,
+                  "max_minus40_to_85c": 115,
+                  "max_minus55_to_125c": 135,
+                  "typ": 10
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 18,
+                  "max_minus40_to_85c": 23,
+                  "max_minus55_to_125c": 27,
+                  "typ": 7
+                },
+                "vcc_6_v": {
+                  "max_25c": 15,
+                  "max_minus40_to_85c": 20,
+                  "max_minus55_to_125c": 23,
+                  "typ": 6
+                }
+              }
+            },
+            "tPZH": {
+              "reason": "74HC07 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "note": "ST M74HC07 AC characteristics give a direct tPZL row for the open-drain output transition; canonical high-Z timing is preserved exactly.",
+              "source_field": "timing.datasheet",
+              "status": "exact",
+              "values_ns": {
+                "vcc_2_v": {
+                  "max_25c": 90,
+                  "max_minus40_to_85c": 115,
+                  "max_minus55_to_125c": 135,
+                  "typ": 17
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 18,
+                  "max_minus40_to_85c": 23,
+                  "max_minus55_to_125c": 27,
+                  "typ": 7
+                },
+                "vcc_6_v": {
+                  "max_25c": 15,
+                  "max_minus40_to_85c": 20,
+                  "max_minus55_to_125c": 23,
+                  "typ": 5
+                }
+              }
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "hex buffer with open-drain outputs"

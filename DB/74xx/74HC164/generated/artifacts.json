@@ -336,6 +336,283 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "parameters": {
+            "clock_to_q_high": {
+              "note": "CLK low-to-high transition clocks data to parallel outputs; table gives CLK-to-Any-Q tpd.",
+              "source_field": "TI SN74HC164 switching characteristics tpd CLK->Any Q",
+              "status": "exact",
+              "values_ns": {
+                "clock_to_any_q": {
+                  "max_25c": {
+                    "vcc_2_v": 175,
+                    "vcc_4_5_v": 35,
+                    "vcc_6_v": 30
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 265,
+                    "vcc_4_5_v": 53,
+                    "vcc_6_v": 45
+                  },
+                  "max_sn74_85c": {
+                    "vcc_2_v": 220,
+                    "vcc_4_5_v": 44,
+                    "vcc_6_v": 38
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 115,
+                    "vcc_4_5_v": 23,
+                    "vcc_6_v": 20
+                  }
+                }
+              }
+            },
+            "clock_to_q_low": {
+              "note": "Includes clocked output fall plus asynchronous clear-to-low propagation.",
+              "source_field": "TI SN74HC164 switching characteristics tpd CLK->Any Q and tPHL CLR->Any Q",
+              "status": "exact",
+              "values_ns": {
+                "clear_to_any_q_low": {
+                  "max_25c": {
+                    "vcc_2_v": 205,
+                    "vcc_4_5_v": 41,
+                    "vcc_6_v": 35
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 295,
+                    "vcc_4_5_v": 59,
+                    "vcc_6_v": 51
+                  },
+                  "max_sn74_85c": {
+                    "vcc_2_v": 255,
+                    "vcc_4_5_v": 51,
+                    "vcc_6_v": 46
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 140,
+                    "vcc_4_5_v": 28,
+                    "vcc_6_v": 24
+                  }
+                },
+                "clock_to_any_q": {
+                  "max_25c": {
+                    "vcc_2_v": 175,
+                    "vcc_4_5_v": 35,
+                    "vcc_6_v": 30
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 265,
+                    "vcc_4_5_v": 53,
+                    "vcc_6_v": 45
+                  },
+                  "max_sn74_85c": {
+                    "vcc_2_v": 220,
+                    "vcc_4_5_v": 44,
+                    "vcc_6_v": 38
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 115,
+                    "vcc_4_5_v": 23,
+                    "vcc_6_v": 20
+                  }
+                }
+              }
+            },
+            "hold": {
+              "note": "Hold row is explicitly data after CLK rising edge.",
+              "source_field": "TI SN74HC164 timing requirements tables 7.8-7.10 th row",
+              "status": "exact",
+              "values_ns": {
+                "data_after_clk_rise_min": {
+                  "vcc_2_v": 5,
+                  "vcc_4_5_v": 5,
+                  "vcc_6_v": 5
+                }
+              }
+            },
+            "minimum_pulse_width": {
+              "note": "Pulse duration rows explicitly cover CLR low and CLK high or low.",
+              "source_field": "TI SN74HC164 timing requirements tables 7.8-7.10 tw rows",
+              "status": "exact",
+              "values_ns": {
+                "clear_low_min": {
+                  "vcc_2_v": {
+                    "sn54": 150,
+                    "sn74_85c": 125,
+                    "ta_25c": 100
+                  },
+                  "vcc_4_5_v": {
+                    "sn54": 30,
+                    "sn74_85c": 25,
+                    "ta_25c": 20
+                  },
+                  "vcc_6_v": {
+                    "sn54": 25,
+                    "sn74_85c": 21,
+                    "ta_25c": 17
+                  }
+                },
+                "clock_high_or_low_min": {
+                  "vcc_2_v": {
+                    "sn54": 120,
+                    "sn74_85c": 100,
+                    "ta_25c": 80
+                  },
+                  "vcc_4_5_v": {
+                    "sn54": 24,
+                    "sn74_85c": 20,
+                    "ta_25c": 16
+                  },
+                  "vcc_6_v": {
+                    "sn54": 20,
+                    "sn74_85c": 18,
+                    "ta_25c": 14
+                  }
+                }
+              }
+            },
+            "setup": {
+              "note": "Setup rows are explicitly before CLK rising edge.",
+              "source_field": "TI SN74HC164 timing requirements tables 7.8-7.10 tsu rows",
+              "status": "exact",
+              "values_ns": {
+                "clear_inactive_before_clk_rise_min": {
+                  "vcc_2_v": {
+                    "sn54": 150,
+                    "sn74_85c": 125,
+                    "ta_25c": 100
+                  },
+                  "vcc_4_5_v": {
+                    "sn54": 30,
+                    "sn74_85c": 25,
+                    "ta_25c": 20
+                  },
+                  "vcc_6_v": {
+                    "sn54": 25,
+                    "sn74_85c": 21,
+                    "ta_25c": 17
+                  }
+                },
+                "data_before_clk_rise_min": {
+                  "vcc_2_v": {
+                    "sn54": 150,
+                    "sn74_85c": 125,
+                    "ta_25c": 100
+                  },
+                  "vcc_4_5_v": {
+                    "sn54": 30,
+                    "sn74_85c": 25,
+                    "ta_25c": 20
+                  },
+                  "vcc_6_v": {
+                    "sn54": 25,
+                    "sn74_85c": 21,
+                    "ta_25c": 17
+                  }
+                }
+              }
+            },
+            "tPHL": {
+              "note": "Clear-to-Q low propagation is explicit tPHL; CLK-to-Q tpd covers both output directions by TI waveform convention.",
+              "source_field": "TI SN74HC164 switching characteristics tPHL CLR->Any Q and tpd CLK->Any Q",
+              "status": "exact",
+              "values_ns": {
+                "clear_to_any_q_low": {
+                  "max_25c": {
+                    "vcc_2_v": 205,
+                    "vcc_4_5_v": 41,
+                    "vcc_6_v": 35
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 295,
+                    "vcc_4_5_v": 59,
+                    "vcc_6_v": 51
+                  },
+                  "max_sn74_85c": {
+                    "vcc_2_v": 255,
+                    "vcc_4_5_v": 51,
+                    "vcc_6_v": 46
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 140,
+                    "vcc_4_5_v": 28,
+                    "vcc_6_v": 24
+                  }
+                },
+                "clock_to_any_q": {
+                  "max_25c": {
+                    "vcc_2_v": 175,
+                    "vcc_4_5_v": 35,
+                    "vcc_6_v": 30
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 265,
+                    "vcc_4_5_v": 53,
+                    "vcc_6_v": 45
+                  },
+                  "max_sn74_85c": {
+                    "vcc_2_v": 220,
+                    "vcc_4_5_v": 44,
+                    "vcc_6_v": 38
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 115,
+                    "vcc_4_5_v": 23,
+                    "vcc_6_v": 20
+                  }
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC164 has push-pull shift-register outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Direct TI table names CLK to Any Q tpd; measurement waveform defines tPLH/tPHL around tpd, while CLR is only tPHL.",
+              "source_field": "TI SN74HC164 switching characteristics tpd CLK->Any Q; tPLH/tPHL share tpd waveform convention",
+              "status": "exact",
+              "values_ns": {
+                "clock_to_any_q": {
+                  "max_25c": {
+                    "vcc_2_v": 175,
+                    "vcc_4_5_v": 35,
+                    "vcc_6_v": 30
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 265,
+                    "vcc_4_5_v": 53,
+                    "vcc_6_v": 45
+                  },
+                  "max_sn74_85c": {
+                    "vcc_2_v": 220,
+                    "vcc_4_5_v": 44,
+                    "vcc_6_v": 38
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 115,
+                    "vcc_4_5_v": 23,
+                    "vcc_6_v": 20
+                  }
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC164 has push-pull shift-register outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC164 has push-pull shift-register outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC164 has push-pull shift-register outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "8-Bit Serial-In Parallel-Out Shift Register"

@@ -368,7 +368,101 @@
             }
           }
         },
-        "delay_ns": 15
+        "delay_ns": 15,
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HCT541 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HCT541 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HCT541 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HCT541 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HCT541 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 23,
+                "max_sn54": 34,
+                "max_sn74": 29,
+                "typ": 13
+              }
+            },
+            "tPHZ": {
+              "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 19
+              }
+            },
+            "tPLH": {
+              "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 23,
+                "max_sn54": 34,
+                "max_sn74": 29,
+                "typ": 13
+              }
+            },
+            "tPLZ": {
+              "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 19
+              }
+            },
+            "tPZH": {
+              "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 21
+              }
+            },
+            "tPZL": {
+              "note": "TI SN74HCT541 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+              "source_field": "TI SN74HCT541 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 21
+              }
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
       },
       "title": "Octal buffer/line driver with 3-state outputs, TTL-compatible inputs"
     },

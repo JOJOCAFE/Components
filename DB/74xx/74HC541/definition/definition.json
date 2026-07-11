@@ -287,27 +287,27 @@
         "basis": "normalized_from_existing_datasheet_timing",
         "parameters": {
           "tPLH": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay",
-            "note": "A-to-Y propagation is source-backed, but output LOW/HIGH polarity split is not extracted.",
+            "note": "TI Figure 7-1 explicitly equates tPLH and tPHL to tpd; the shared tpd row is exact for both canonical terms.",
             "values_ns": {
               "typ": 12,
               "max_25c": 23
             }
           },
           "tPHL": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay",
-            "note": "A-to-Y propagation is source-backed, but output LOW/HIGH polarity split is not extracted.",
+            "note": "TI Figure 7-1 explicitly equates tPLH and tPHL to tpd; the shared tpd row is exact for both canonical terms.",
             "values_ns": {
               "typ": 12,
               "max_25c": 23
             }
           },
           "tPZH": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay",
-            "note": "Output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+            "note": "TI Figure 7-1 explicitly equates tPZH and tPZL to ten; the shared enable-time row is exact for both canonical terms.",
             "values_ns": {
               "typ": 17,
               "max_25c": 30,
@@ -315,9 +315,9 @@
             }
           },
           "tPZL": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay",
-            "note": "Output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+            "note": "TI Figure 7-1 explicitly equates tPZH and tPZL to ten; the shared enable-time row is exact for both canonical terms.",
             "values_ns": {
               "typ": 17,
               "max_25c": 30,
@@ -325,9 +325,9 @@
             }
           },
           "tPHZ": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay",
-            "note": "Output disable timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+            "note": "TI Figure 7-1 explicitly equates tPHZ and tPLZ to tdis; the shared disable-time row is exact for both canonical terms.",
             "values_ns": {
               "typ": 18,
               "max_25c": 30,
@@ -335,9 +335,9 @@
             }
           },
           "tPLZ": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay",
-            "note": "Output disable timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+            "note": "TI Figure 7-1 explicitly equates tPHZ and tPLZ to tdis; the shared disable-time row is exact for both canonical terms.",
             "values_ns": {
               "typ": 18,
               "max_25c": 30,

@@ -415,6 +415,91 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC541 is not a clocked storage element for this parameter.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC541 is not a clocked storage element for this parameter.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC541 is combinational/bus-control logic and has no clocked data hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC541 is not a clocked storage element for this parameter.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC541 is combinational/bus-control logic and has no clocked data setup timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "Figure 7-1 maps tPLH/tPHL directly to tpd for the buffer path; canonical propagation timing is preserved exactly.",
+              "source_field": "definition_layers.timing.delay",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 23,
+                "typ": 12
+              }
+            },
+            "tPHZ": {
+              "note": "Figure 7-1 and note E map tdis directly to tPHZ/tPLZ; disable timing is preserved exactly.",
+              "source_field": "definition_layers.timing.delay",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_minus40_to_85c": 38,
+                "typ": 18
+              }
+            },
+            "tPLH": {
+              "note": "Figure 7-1 maps tPLH/tPHL directly to tpd for the buffer path; canonical propagation timing is preserved exactly.",
+              "source_field": "definition_layers.timing.delay",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 23,
+                "typ": 12
+              }
+            },
+            "tPLZ": {
+              "note": "Figure 7-1 and note E map tdis directly to tPHZ/tPLZ; disable timing is preserved exactly.",
+              "source_field": "definition_layers.timing.delay",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_minus40_to_85c": 38,
+                "typ": 18
+              }
+            },
+            "tPZH": {
+              "note": "Figure 7-1 and note F map ten directly to tPZL/tPZH; enable timing is preserved exactly.",
+              "source_field": "definition_layers.timing.delay",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_minus40_to_85c": 38,
+                "typ": 17
+              }
+            },
+            "tPZL": {
+              "note": "Figure 7-1 and note F map ten directly to tPZL/tPZH; enable timing is preserved exactly.",
+              "source_field": "definition_layers.timing.delay",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_minus40_to_85c": 38,
+                "typ": 17
+              }
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "Octal Buffer/Line Driver"

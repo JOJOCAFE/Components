@@ -410,6 +410,365 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": {
+            "load_pf": 50,
+            "ta_c": 25
+          },
+          "parameters": {
+            "clock_to_q_high": {
+              "note": "UP/DOWN clock inputs update Q outputs; no separate high/low polarity rows are provided.",
+              "source_field": "TI SN74HC193 switching characteristics tpd UP or DOWN -> Any Q",
+              "status": "exact",
+              "values_ns": {
+                "up_or_down_to_any_q": {
+                  "max_25c": {
+                    "vcc_2_v": 250,
+                    "vcc_4_5_v": 50,
+                    "vcc_6_v": 43
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 375,
+                    "vcc_4_5_v": 75,
+                    "vcc_6_v": 64
+                  },
+                  "max_sn74": {
+                    "vcc_2_v": 315,
+                    "vcc_4_5_v": 63,
+                    "vcc_6_v": 54
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 190,
+                    "vcc_4_5_v": 40,
+                    "vcc_6_v": 35
+                  }
+                }
+              }
+            },
+            "clock_to_q_low": {
+              "note": "Includes count clock to Q plus asynchronous CLR-to-low.",
+              "source_field": "TI SN74HC193 switching characteristics tpd UP or DOWN -> Any Q and tPHL CLR->Any Q",
+              "status": "exact",
+              "values_ns": {
+                "clear_to_any_q_low": {
+                  "max_25c": {
+                    "vcc_2_v": 240,
+                    "vcc_4_5_v": 48,
+                    "vcc_6_v": 41
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 360,
+                    "vcc_4_5_v": 72,
+                    "vcc_6_v": 61
+                  },
+                  "max_sn74": {
+                    "vcc_2_v": 300,
+                    "vcc_4_5_v": 60,
+                    "vcc_6_v": 51
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 170,
+                    "vcc_4_5_v": 36,
+                    "vcc_6_v": 31
+                  }
+                },
+                "up_or_down_to_any_q": {
+                  "max_25c": {
+                    "vcc_2_v": 250,
+                    "vcc_4_5_v": 50,
+                    "vcc_6_v": 43
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 375,
+                    "vcc_4_5_v": 75,
+                    "vcc_6_v": 64
+                  },
+                  "max_sn74": {
+                    "vcc_2_v": 315,
+                    "vcc_4_5_v": 63,
+                    "vcc_6_v": 54
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 190,
+                    "vcc_4_5_v": 40,
+                    "vcc_6_v": 35
+                  }
+                }
+              }
+            },
+            "hold": {
+              "note": "Hold row is directly listed for data after LOAD inactive.",
+              "source_field": "TI SN74HC193 timing requirements th row",
+              "status": "exact",
+              "values_ns": {
+                "data_after_load_inactive_min": {
+                  "vcc_2_v": 5,
+                  "vcc_4_5_v": 5,
+                  "vcc_6_v": 5
+                }
+              }
+            },
+            "minimum_pulse_width": {
+              "note": "Pulse duration rows explicitly cover CLR high, LOAD low, and UP/DOWN high or low.",
+              "source_field": "TI SN74HC193 timing requirements tw rows",
+              "status": "exact",
+              "values_ns": {
+                "clear_high_min": {
+                  "vcc_2_v": {
+                    "sn54": 180,
+                    "sn74": 150,
+                    "ta_25c": 120
+                  },
+                  "vcc_4_5_v": {
+                    "sn54": 36,
+                    "sn74": 30,
+                    "ta_25c": 24
+                  },
+                  "vcc_6_v": {
+                    "sn54": 31,
+                    "sn74": 26,
+                    "ta_25c": 21
+                  }
+                },
+                "load_low_min": {
+                  "vcc_2_v": {
+                    "sn54": 180,
+                    "sn74": 150,
+                    "ta_25c": 120
+                  },
+                  "vcc_4_5_v": {
+                    "sn54": 36,
+                    "sn74": 30,
+                    "ta_25c": 24
+                  },
+                  "vcc_6_v": {
+                    "sn54": 31,
+                    "sn74": 26,
+                    "ta_25c": 21
+                  }
+                },
+                "up_or_down_high_or_low_min": {
+                  "vcc_2_v": {
+                    "sn54": 180,
+                    "sn74": 150,
+                    "ta_25c": 120
+                  },
+                  "vcc_4_5_v": {
+                    "sn54": 36,
+                    "sn74": 30,
+                    "ta_25c": 24
+                  },
+                  "vcc_6_v": {
+                    "sn54": 31,
+                    "sn74": 26,
+                    "ta_25c": 21
+                  }
+                }
+              }
+            },
+            "setup": {
+              "note": "Setup rows are named in the timing requirements table.",
+              "source_field": "TI SN74HC193 timing requirements tsu rows",
+              "status": "exact",
+              "values_ns": {
+                "clear_inactive_before_up_or_down_rise_min": {
+                  "vcc_2_v": {
+                    "sn54": 165,
+                    "sn74": 140,
+                    "ta_25c": 110
+                  },
+                  "vcc_4_5_v": {
+                    "sn54": 33,
+                    "sn74": 28,
+                    "ta_25c": 22
+                  },
+                  "vcc_6_v": {
+                    "sn54": 28,
+                    "sn74": 24,
+                    "ta_25c": 19
+                  }
+                },
+                "data_before_load_inactive_min": {
+                  "vcc_2_v": {
+                    "sn54": 165,
+                    "sn74": 140,
+                    "ta_25c": 110
+                  },
+                  "vcc_4_5_v": {
+                    "sn54": 33,
+                    "sn74": 28,
+                    "ta_25c": 22
+                  },
+                  "vcc_6_v": {
+                    "sn54": 28,
+                    "sn74": 24,
+                    "ta_25c": 19
+                  }
+                },
+                "load_inactive_before_up_or_down_rise_min": {
+                  "vcc_2_v": {
+                    "sn54": 165,
+                    "sn74": 140,
+                    "ta_25c": 110
+                  },
+                  "vcc_4_5_v": {
+                    "sn54": 33,
+                    "sn74": 28,
+                    "ta_25c": 22
+                  },
+                  "vcc_6_v": {
+                    "sn54": 28,
+                    "sn74": 24,
+                    "ta_25c": 19
+                  }
+                }
+              }
+            },
+            "tPHL": {
+              "note": "Clear-to-Q low is explicit tPHL; other count/load paths use tpd per TI waveform note.",
+              "source_field": "TI SN74HC193 switching characteristics tpd paths and explicit tPHL CLR->Any Q",
+              "status": "exact",
+              "values_ns": {
+                "clear_to_any_q_low": {
+                  "max_25c": {
+                    "vcc_2_v": 240,
+                    "vcc_4_5_v": 48,
+                    "vcc_6_v": 41
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 360,
+                    "vcc_4_5_v": 72,
+                    "vcc_6_v": 61
+                  },
+                  "max_sn74": {
+                    "vcc_2_v": 300,
+                    "vcc_4_5_v": 60,
+                    "vcc_6_v": 51
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 170,
+                    "vcc_4_5_v": 36,
+                    "vcc_6_v": 31
+                  }
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "TI note says tPLH and tPHL are the same as tpd.",
+              "source_field": "TI SN74HC193 switching characteristics tpd UP/DOWN/LOAD paths; waveform note maps tPLH/tPHL to tpd",
+              "status": "exact",
+              "values_ns": {
+                "down_to_bo": {
+                  "max_25c": {
+                    "vcc_2_v": 165,
+                    "vcc_4_5_v": 33,
+                    "vcc_6_v": 28
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 250,
+                    "vcc_4_5_v": 50,
+                    "vcc_6_v": 43
+                  },
+                  "max_sn74": {
+                    "vcc_2_v": 205,
+                    "vcc_4_5_v": 41,
+                    "vcc_6_v": 35
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 75,
+                    "vcc_4_5_v": 24,
+                    "vcc_6_v": 20
+                  }
+                },
+                "load_to_any_q": {
+                  "max_25c": {
+                    "vcc_2_v": 260,
+                    "vcc_4_5_v": 52,
+                    "vcc_6_v": 44
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 390,
+                    "vcc_4_5_v": 78,
+                    "vcc_6_v": 66
+                  },
+                  "max_sn74": {
+                    "vcc_2_v": 325,
+                    "vcc_4_5_v": 65,
+                    "vcc_6_v": 55
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 190,
+                    "vcc_4_5_v": 40,
+                    "vcc_6_v": 35
+                  }
+                },
+                "up_or_down_to_any_q": {
+                  "max_25c": {
+                    "vcc_2_v": 250,
+                    "vcc_4_5_v": 50,
+                    "vcc_6_v": 43
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 375,
+                    "vcc_4_5_v": 75,
+                    "vcc_6_v": 64
+                  },
+                  "max_sn74": {
+                    "vcc_2_v": 315,
+                    "vcc_4_5_v": 63,
+                    "vcc_6_v": 54
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 190,
+                    "vcc_4_5_v": 40,
+                    "vcc_6_v": 35
+                  }
+                },
+                "up_to_co": {
+                  "max_25c": {
+                    "vcc_2_v": 165,
+                    "vcc_4_5_v": 33,
+                    "vcc_6_v": 28
+                  },
+                  "max_sn54": {
+                    "vcc_2_v": 250,
+                    "vcc_4_5_v": 50,
+                    "vcc_6_v": 43
+                  },
+                  "max_sn74": {
+                    "vcc_2_v": 205,
+                    "vcc_4_5_v": 41,
+                    "vcc_6_v": 35
+                  },
+                  "typ_25c": {
+                    "vcc_2_v": 75,
+                    "vcc_4_5_v": 24,
+                    "vcc_6_v": 20
+                  }
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "4-Bit Synchronous Up/Down Binary Counter"

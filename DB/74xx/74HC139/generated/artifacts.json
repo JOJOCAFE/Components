@@ -371,6 +371,103 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_timing_model",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC139 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC139 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC139 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC139 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC139 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI SN74HC139 switching characteristics, CL=50 pF; tpd rows cover A/B-to-Y and G-to-Y and waveform maps tPLH/tPHL to propagation delay.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "address_to_output": 35,
+                  "enable_to_output": 35,
+                  "transition": 15
+                },
+                "datasheet_max_ns_sn54": {
+                  "address_to_output": 51,
+                  "enable_to_output": 51,
+                  "transition": 22
+                },
+                "datasheet_max_ns_sn74": {
+                  "address_to_output": 44,
+                  "enable_to_output": 44,
+                  "transition": 19
+                },
+                "datasheet_typical_ns": {
+                  "address_to_output": 14,
+                  "enable_to_output": 11,
+                  "transition": 8
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC139 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "TI SN74HC139 switching characteristics, CL=50 pF; tpd rows cover A/B-to-Y and G-to-Y and waveform maps tPLH/tPHL to propagation delay.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "address_to_output": 35,
+                  "enable_to_output": 35,
+                  "transition": 15
+                },
+                "datasheet_max_ns_sn54": {
+                  "address_to_output": 51,
+                  "enable_to_output": 51,
+                  "transition": 22
+                },
+                "datasheet_max_ns_sn74": {
+                  "address_to_output": 44,
+                  "enable_to_output": 44,
+                  "transition": 19
+                },
+                "datasheet_typical_ns": {
+                  "address_to_output": 14,
+                  "enable_to_output": 11,
+                  "transition": 8
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC139 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC139 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC139 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "Dual 2-Line to 4-Line Decoder/Demultiplexer"

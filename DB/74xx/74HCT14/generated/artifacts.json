@@ -290,7 +290,73 @@
             }
           }
         },
-        "delay_ns": 15
+        "delay_ns": 15,
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "TI SN74HCT14 switching characteristics, CL=50 pF, VCC=4.5 V.",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HCT14 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HCT14 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HCT14 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HCT14 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HCT14 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "TI SN74HCT14 switching characteristics list propagation delay tPLH/tPHL for A-to-Y. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged.",
+              "source_field": "timing.datasheet",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 32,
+                "max_minus40_to_85c": 40,
+                "max_minus55_to_125c": 48,
+                "typ": 20
+              }
+            },
+            "tPHZ": {
+              "reason": "74HCT14 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "TI SN74HCT14 switching characteristics list propagation delay tPLH/tPHL for A-to-Y. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged.",
+              "source_field": "timing.datasheet",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 32,
+                "max_minus40_to_85c": 40,
+                "max_minus55_to_125c": 48,
+                "typ": 20
+              }
+            },
+            "tPLZ": {
+              "reason": "74HCT14 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HCT14 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HCT14 has no output-enable/high-Z control in the existing model.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
+        }
       },
       "title": "Hex Schmitt-trigger inverter, TTL-compatible inputs"
     },

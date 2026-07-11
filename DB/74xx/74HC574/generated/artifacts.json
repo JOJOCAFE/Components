@@ -523,6 +523,114 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "parameters": {
+            "clock_to_q_high": {
+              "note": "TI SN74HC574 switching table and waveform notes map CLK-to-Q tpd to tPLH/tPHL and clock-to-Q high/low.",
+              "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+              "status": "exact",
+              "values_ns": {
+                "vcc_4_5_v": 28,
+                "vcc_6_v": 24
+              }
+            },
+            "clock_to_q_low": {
+              "note": "TI SN74HC574 switching table and waveform notes map CLK-to-Q tpd to tPLH/tPHL and clock-to-Q high/low.",
+              "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+              "status": "exact",
+              "values_ns": {
+                "vcc_4_5_v": 28,
+                "vcc_6_v": 24
+              }
+            },
+            "hold": {
+              "note": "Data hold requirement is source-backed.",
+              "source_field": "definition_layers.timing.timing_requirements.hold_after_clock_ns",
+              "status": "exact",
+              "values_ns": {
+                "vcc_4_5_v": 5,
+                "vcc_6_v": 5
+              }
+            },
+            "minimum_pulse_width": {
+              "note": "Clock pulse width requirement is source-backed.",
+              "source_field": "definition_layers.timing.timing_requirements.clock_high_or_low_ns",
+              "status": "exact",
+              "values_ns": {
+                "vcc_4_5_v": 16,
+                "vcc_6_v": 14
+              }
+            },
+            "setup": {
+              "note": "Data setup requirement is source-backed.",
+              "source_field": "definition_layers.timing.timing_requirements.setup_before_clock_ns",
+              "status": "exact",
+              "values_ns": {
+                "data": {
+                  "vcc_4_5_v": 20,
+                  "vcc_6_v": 17
+                }
+              }
+            },
+            "tPHL": {
+              "note": "TI SN74HC574 switching table and waveform notes map CLK-to-Q tpd to tPLH/tPHL and clock-to-Q high/low.",
+              "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+              "status": "exact",
+              "values_ns": {
+                "vcc_4_5_v": 28,
+                "vcc_6_v": 24
+              }
+            },
+            "tPHZ": {
+              "note": "TI SN74HC574 switching table and waveform notes map output disable tdis to tPHZ/tPLZ.",
+              "source_field": "definition_layers.timing.delay.datasheet_typical_ns.disable_to_z",
+              "status": "exact",
+              "values_ns": {
+                "vcc_4_5_v": 24,
+                "vcc_6_v": 22
+              }
+            },
+            "tPLH": {
+              "note": "TI SN74HC574 switching table and waveform notes map CLK-to-Q tpd to tPLH/tPHL and clock-to-Q high/low.",
+              "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
+              "status": "exact",
+              "values_ns": {
+                "vcc_4_5_v": 28,
+                "vcc_6_v": 24
+              }
+            },
+            "tPLZ": {
+              "note": "TI SN74HC574 switching table and waveform notes map output disable tdis to tPHZ/tPLZ.",
+              "source_field": "definition_layers.timing.delay.datasheet_typical_ns.disable_to_z",
+              "status": "exact",
+              "values_ns": {
+                "vcc_4_5_v": 24,
+                "vcc_6_v": 22
+              }
+            },
+            "tPZH": {
+              "note": "TI SN74HC574 switching table and waveform notes map output enable ten to tPZH/tPZL.",
+              "source_field": "definition_layers.timing.delay.datasheet_typical_ns.enable_to_q",
+              "status": "exact",
+              "values_ns": {
+                "vcc_4_5_v": 26,
+                "vcc_6_v": 23
+              }
+            },
+            "tPZL": {
+              "note": "TI SN74HC574 switching table and waveform notes map output enable ten to tPZH/tPZL.",
+              "source_field": "definition_layers.timing.delay.datasheet_typical_ns.enable_to_q",
+              "status": "exact",
+              "values_ns": {
+                "vcc_4_5_v": 26,
+                "vcc_6_v": 23
+              }
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "Octal D-type flip-flop with 3-state outputs"

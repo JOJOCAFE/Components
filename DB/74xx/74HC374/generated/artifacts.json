@@ -478,6 +478,178 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "exact_terms_from_local_ti_datasheet",
+          "conditions": {
+            "load_pf": 50,
+            "ta_c": 25
+          },
+          "parameters": {
+            "clock_to_q_high": {
+              "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF.",
+              "source_field": "TI switching characteristics tpd CLK->Any Q; waveform note maps tPLH to tpd",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 36,
+                "max_sn54": 54,
+                "max_sn74": 45,
+                "typ": 17
+              }
+            },
+            "clock_to_q_low": {
+              "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF.",
+              "source_field": "TI switching characteristics tpd CLK->Any Q; waveform note maps tPHL to tpd",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 36,
+                "max_sn54": 54,
+                "max_sn74": 45,
+                "typ": 17
+              }
+            },
+            "hold": {
+              "note": "TI SN74HC374 timing requirements table: tw CLK high/low, tsu data before CLK rising edge, th data after CLK rising edge.",
+              "source_field": "TI timing requirements th rows",
+              "status": "exact",
+              "values_ns": {
+                "data_after_clk_rise_min": {
+                  "vcc_2_v": {
+                    "sn54": 13,
+                    "sn74": 12,
+                    "ta_25c": 10
+                  },
+                  "vcc_4_5_v": {
+                    "sn54": 5,
+                    "sn74": 5,
+                    "ta_25c": 5
+                  },
+                  "vcc_6_v": {
+                    "sn54": 5,
+                    "sn74": 5,
+                    "ta_25c": 5
+                  }
+                }
+              }
+            },
+            "minimum_pulse_width": {
+              "note": "TI SN74HC374 timing requirements table: tw CLK high/low, tsu data before CLK rising edge, th data after CLK rising edge.",
+              "source_field": "TI timing requirements tw rows",
+              "status": "exact",
+              "values_ns": {
+                "clk_high_or_low_min": {
+                  "vcc_2_v": {
+                    "sn54": 120,
+                    "sn74": 100,
+                    "ta_25c": 80
+                  },
+                  "vcc_4_5_v": {
+                    "sn54": 24,
+                    "sn74": 20,
+                    "ta_25c": 16
+                  },
+                  "vcc_6_v": {
+                    "sn54": 20,
+                    "sn74": 17,
+                    "ta_25c": 14
+                  }
+                }
+              }
+            },
+            "setup": {
+              "note": "TI SN74HC374 timing requirements table: tw CLK high/low, tsu data before CLK rising edge, th data after CLK rising edge.",
+              "source_field": "TI timing requirements tsu rows",
+              "status": "exact",
+              "values_ns": {
+                "data_before_clk_rise_min": {
+                  "vcc_2_v": {
+                    "sn54": 150,
+                    "sn74": 125,
+                    "ta_25c": 100
+                  },
+                  "vcc_4_5_v": {
+                    "sn54": 30,
+                    "sn74": 25,
+                    "ta_25c": 20
+                  },
+                  "vcc_6_v": {
+                    "sn54": 25,
+                    "sn74": 21,
+                    "ta_25c": 17
+                  }
+                }
+              }
+            },
+            "tPHL": {
+              "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF.",
+              "source_field": "TI switching characteristics tpd CLK->Any Q; waveform note maps tPLH/tPHL to tpd",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 36,
+                "max_sn54": 54,
+                "max_sn74": 45,
+                "typ": 17
+              }
+            },
+            "tPHZ": {
+              "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF.",
+              "source_field": "TI switching characteristics tdis OE->Any Q; waveform note maps tPHZ/tPLZ to tdis",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 17
+              }
+            },
+            "tPLH": {
+              "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF.",
+              "source_field": "TI switching characteristics tpd CLK->Any Q; waveform note maps tPLH/tPHL to tpd",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 36,
+                "max_sn54": 54,
+                "max_sn74": 45,
+                "typ": 17
+              }
+            },
+            "tPLZ": {
+              "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF.",
+              "source_field": "TI switching characteristics tdis OE->Any Q; waveform note maps tPHZ/tPLZ to tdis",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 17
+              }
+            },
+            "tPZH": {
+              "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF.",
+              "source_field": "TI switching characteristics ten OE->Any Q; waveform note maps tPZH/tPZL to ten",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 16
+              }
+            },
+            "tPZL": {
+              "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF.",
+              "source_field": "TI switching characteristics ten OE->Any Q; waveform note maps tPZH/tPZL to ten",
+              "status": "exact",
+              "values_ns": {
+                "max_25c": 30,
+                "max_sn54": 45,
+                "max_sn74": 38,
+                "typ": 16
+              }
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "source": "Source/74HC374_TI_SN74HC374.pdf",
+          "version": 1
         }
       },
       "title": "Octal D-Type Flip-Flop With 3-State Outputs"

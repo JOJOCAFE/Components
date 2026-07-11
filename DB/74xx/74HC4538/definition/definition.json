@@ -229,12 +229,20 @@
           "reason": "74HC4538 has no output-enable/high-Z control in the current package definition."
         },
         "setup": {
-          "status": "missing",
-          "reason": "Existing local timing extraction does not include this normalized parameter."
+          "status": "not_applicable",
+          "reason": "74HC4538 is an asynchronously triggered monostable and has no sampled data setup requirement."
         },
         "hold": {
-          "status": "missing",
-          "reason": "Existing local timing extraction does not include this normalized parameter."
+          "status": "not_applicable",
+          "reason": "74HC4538 is an asynchronously triggered monostable and has no sampled data hold requirement."
+        },
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "74HC4538 has trigger and reset inputs, not a clocked Q storage path."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "74HC4538 has trigger and reset inputs, not a clocked Q storage path."
         },
         "minimum_pulse_width": {
           "status": "exact",
@@ -582,12 +590,20 @@
             "reason": "74HC4538 has no output-enable/high-Z control in the current package definition."
           },
           "setup": {
-            "status": "missing",
-            "reason": "Existing local timing extraction does not include this normalized parameter."
+            "status": "not_applicable",
+            "reason": "74HC4538 is an asynchronously triggered monostable and has no sampled data setup requirement."
           },
           "hold": {
-            "status": "missing",
-            "reason": "Existing local timing extraction does not include this normalized parameter."
+            "status": "not_applicable",
+            "reason": "74HC4538 is an asynchronously triggered monostable and has no sampled data hold requirement."
+          },
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "74HC4538 has trigger and reset inputs, not a clocked Q storage path."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "74HC4538 has trigger and reset inputs, not a clocked Q storage path."
           },
           "minimum_pulse_width": {
             "status": "exact",

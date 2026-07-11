@@ -1,0 +1,158 @@
+{
+  "schema": "components.lib.circuit.physical_capture_plan",
+  "version": 1,
+  "scope": "RV8GR physical evidence capture prepared from the canonical real-build timing log",
+  "source_reference": "/home/jo/kiro/RV8/RV8GR/doc/07_real_build_timing_log.md",
+  "status": "prepared_no_board_measurements",
+  "claim_boundary": "This artifact is a blank capture contract. Null measured values and missing capture files are failures of completeness, never passes.",
+  "run_order": {
+    "stage_rule": "Complete stages 1 through 6 in order. A stage must pass at 100 manual ticks and 50 kHz before advancing that stage to MHz profiles or enabling the next stage.",
+    "voltage_order_v": [5.0, 4.5, 5.5],
+    "clock_order": ["manual_push_switch_100_ticks", "50_khz", "1_mhz", "2_mhz", "5_mhz"],
+    "profile_rules": {
+      "manual_push_switch_100_ticks": "Required at every voltage; exactly 100 accepted edges and 100 expected state advances.",
+      "50_khz": "Required at every voltage and must pass before 1 MHz.",
+      "1_mhz": "Required at every voltage; this is the official target qualification profile.",
+      "2_mhz": "Stress profile, attempted only after the same stage passes 1 MHz at that voltage.",
+      "5_mhz": "Optional PCB or short-wire experiment only; never the student baseline and attempted only after 2 MHz passes at that voltage."
+    }
+  },
+  "measurement_record_fields": {
+    "identity": ["record_id", "date_utc", "operator", "board_id", "board_revision", "build_stage_id", "module_or_circuit", "evidence_ids"],
+    "conditions": ["supply_setpoint_v", "supply_at_source_v", "supply_at_far_ic_v", "clock_profile", "clock_source", "measured_frequency_hz", "ambient_temperature_c"],
+    "instrumentation": ["instrument_model", "instrument_asset_id", "probe_model", "probe_mode", "probe_capacitance_pf", "probe_ground_method", "bandwidth_limit_hz", "sample_rate_sps", "channel_to_signal_map", "probe_points"],
+    "observation": ["capture_file", "capture_timestamp_utc", "trigger_source", "trigger_level_v", "threshold_method", "expected", "observed", "worst_suspicious_signal", "anomalies", "changes_before_rerun"],
+    "measurements_ns": ["old_driver_disable_crossing_ns", "old_driver_high_z_ns", "new_driver_enable_crossing_ns", "source_threshold_crossing_ns", "data_stable_ns", "active_clock_edge_ns", "data_last_stable_after_edge_ns", "clock_rise_time_ns", "clock_fall_time_ns", "reset_release_to_clock_ns", "destination_threshold_crossing_ns"],
+    "counts": ["commanded_ticks", "observed_tick_count", "accepted_clock_edges", "state_advances", "double_triggers", "missed_ticks", "one_hot_violations", "bus_overlap_events"],
+    "selected_parts": ["eeprom_top_marking", "eeprom_datasheet_row", "eeprom_output_float_limit_ns", "sram_top_marking", "sram_datasheet_row", "sram_output_float_limit_ns", "selected_old_driver_output_float_limit_ns", "selected_new_driver_enable_skew_limit_ns"],
+    "result": ["formula_results", "result_pass_fail", "failure_reason", "stop_condition_ids", "rerun_of_record_id", "reviewer", "review_date_utc"]
+  },
+  "blank_measurement_values": {
+    "supply_at_source_v": null,
+    "supply_at_far_ic_v": null,
+    "measured_frequency_hz": null,
+    "capture_file": null,
+    "measured_deadband_ns": null,
+    "measured_setup_margin_ns": null,
+    "measured_hold_margin_ns": null,
+    "measured_propagation_ns": null,
+    "result_pass_fail": "not_measured"
+  },
+  "pass_fail_formulas": {
+    "manual_edge_integrity": {
+      "formula": "accepted_clock_edges == commanded_ticks && state_advances == commanded_ticks && double_triggers == 0 && missed_ticks == 0",
+      "required_commanded_ticks": 100
+    },
+    "phase_one_hot": {
+      "formula": "one_hot_violations == 0 && observed_tick_count >= 100 && for_every_sample(sum(T0,T1,T2) == 1)"
+    },
+    "bus_turnaround_deadband": {
+      "formula": "measured_deadband_ns = new_driver_enable_crossing_ns - old_driver_high_z_ns; pass iff measured_deadband_ns > 0 && measured_deadband_ns >= selected_old_driver_output_float_limit_ns + selected_new_driver_enable_skew_limit_ns",
+      "strictness": "Equality is accepted only for the source-backed limits; any negative or unknown margin fails. Record threshold method and both raw timestamps."
+    },
+    "register_setup": {
+      "formula": "measured_setup_margin_ns = active_clock_edge_ns - data_stable_ns - required_setup_ns; pass iff measured_setup_margin_ns >= 0"
+    },
+    "register_hold": {
+      "formula": "measured_hold_margin_ns = data_last_stable_after_edge_ns - active_clock_edge_ns - required_hold_ns; pass iff measured_hold_margin_ns >= 0"
+    },
+    "propagation_to_destination": {
+      "formula": "measured_propagation_ns = destination_threshold_crossing_ns - source_threshold_crossing_ns; pass iff destination data/control is stable by active_clock_edge_ns - required_setup_ns and remains stable through active_clock_edge_ns + required_hold_ns"
+    },
+    "supply_margin": {
+      "formula": "pass iff measured supply at source and far IC remain within the selected installed-part datasheet operating range for the entire capture; setpoint alone is insufficient"
+    },
+    "memory_marking_match": {
+      "formula": "pass iff photographed or transcribed full top marking uniquely maps to the exact datasheet timing row used by every memory formula"
+    },
+    "run_complete": {
+      "formula": "pass iff every required field is non-null, every required capture file exists, every applicable formula passes, and no stop condition is active"
+    }
+  },
+  "stop_conditions": [
+    {"id": "stop_supply_out_of_range", "condition": "VCC at source or far IC leaves the installed-part operating range.", "action": "Stop clock, remove power if needed, correct power distribution, and restart at stage 1 manual 5.0 V."},
+    {"id": "stop_clock_or_reset_edge_fault", "condition": "Clock/reset is non-monotonic, has a runt pulse, double-triggers, misses a tick, or releases reset ambiguously.", "action": "Do not attach downstream stages or increase frequency; repair clock/reset and repeat stage 1."},
+    {"id": "stop_phase_not_one_hot", "condition": "Any T0/T1/T2 sample is zero-hot or multi-hot after reset qualification.", "action": "Stop progression and repeat stage 1 ring-counter diagnosis."},
+    {"id": "stop_bus_contention", "condition": "Two output drivers overlap, measured deadband is negative/unknown, a bus voltage is intermediate unexpectedly, or an IC heats.", "action": "Stop clock and power; do not rerun until ownership/control wiring is corrected, then restart the affected stage at manual 5.0 V."},
+    {"id": "stop_setup_hold_failure", "condition": "Any setup or hold formula is negative or required timestamps are unavailable.", "action": "Do not increase frequency; identify the path and rerun at the previous passing profile after correction."},
+    {"id": "stop_memory_grade_unknown", "condition": "EEPROM or SRAM marking cannot be mapped to the timing row used in calculations.", "action": "Do not run memory stages above 50 kHz and do not claim memory timing pass."},
+    {"id": "stop_functional_mismatch", "condition": "Observed state differs from the stage's expected count/load/instruction/IRQ behavior.", "action": "Stop timing qualification; treat as wiring or logic debug and rerun from that stage's manual profile."},
+    {"id": "stop_missing_record", "condition": "A required field, raw timestamp, probe mapping, or capture file is missing.", "action": "Record result as not_measured or fail; never infer pass from a later functional result."}
+  ],
+  "stages": [
+    {
+      "id": 1,
+      "name": "clock_reset_ring_counter",
+      "circuits": ["RV8GR_ResetClockBringup", "RV8GR_RingCounter"],
+      "required_probes": ["CLK at source", "CLK at U8 clock input", "/RST at source", "/RST at far sequential IC", "T0", "T1", "T2", "VCC at source rail", "VCC at far IC"],
+      "required_checks": ["manual_edge_integrity", "phase_one_hot", "supply_margin"],
+      "evidence_ids": ["clock_reset_scope_capture", "phase_one_hot_scope_capture", "supply_and_edge_quality", "clock_phase_deadband", "breadboard_rc_calibration"],
+      "advance_gate": "All required checks pass at manual 100 ticks and 50 kHz at 5.0 V before stage 2 is connected or qualified."
+    },
+    {
+      "id": 2,
+      "name": "program_counter_branch_jump",
+      "circuits": ["RV8GR_PC16", "RV8GR_BranchJumpControl"],
+      "required_probes": ["CLK at 74HC161", "/RST", "PC_INC", "/PC_LD at 74HC161", "PC0", "PC4", "PC8", "PC12", "PC15", "PG0", "PG7", "IRL0", "IRL7", "74HC161 RCO cascade node"],
+      "required_checks": ["manual_edge_integrity", "register_setup", "register_hold", "propagation_to_destination", "supply_margin"],
+      "formula_parameters": {"74HC161_load_setup_ns": 27, "74HC161_enable_setup_ns": 34, "74HC161_hold_ns": 0},
+      "evidence_ids": ["clock_reset_scope_capture", "phase_one_hot_scope_capture", "edge_register_setup_hold", "counter_setup_hold", "critical_register_setup_margin"],
+      "advance_gate": "Count, hold, direct load, BEQ, BNE, and J each change only on the intended edge with non-negative setup/hold margin."
+    },
+    {
+      "id": 3,
+      "name": "memory_buses_address_mux",
+      "circuits": ["RV8GR_AddressMux16", "RV8GR_BusOwnership", "RV8GR_RomDbusRead", "RV8GR_StorePath", "RV8GR_DataPageMemory"],
+      "required_probes": ["ABUS0", "ABUS15", "A15", "ROM /CE", "ROM /OE", "RAM /CE", "RAM /OE", "RAM /WE", "U7 /OE", "U7 DIR", "U14 /OE", "U34 /OE", "WR_DIR", "DBUS0 at memory", "DBUS0 at U7", "IBUS0 at destination", "destination latch clock", "VCC at memory"],
+      "required_checks": ["memory_marking_match", "bus_turnaround_deadband", "register_setup", "register_hold", "propagation_to_destination", "supply_margin"],
+      "evidence_ids": ["selected_memory_speed_grade_record", "installed_memory_markings", "dbus_turnaround_scope_capture", "memory_output_float_deadband", "bus_turnaround_deadband", "at28c256_read_speed_grade_caveat", "sram_read_and_float_pending", "breadboard_rc_calibration"],
+      "advance_gate": "Memory markings match selected rows, every observed IBUS/DBUS transition has one owner, and read data meets destination setup/hold."
+    },
+    {
+      "id": 4,
+      "name": "instruction_alu_accumulator_zero",
+      "circuits": ["RV8GR_InstructionLatch", "RV8GR_AluAccumulator"],
+      "required_probes": ["T0", "T1", "T2", "/IRL_OE", "U7 /OE", "U14 /OE", "U34 /OE", "IBUS0", "IBUS7", "ACC_CLK", "AC0", "AC7", "Z_flag", "ALU carry-chain representative node"],
+      "required_checks": ["phase_one_hot", "bus_turnaround_deadband", "register_setup", "register_hold", "propagation_to_destination"],
+      "formula_parameters": {"74HC574_setup_ns": 20, "74HC574_hold_ns": 5},
+      "evidence_ids": ["phase_one_hot_scope_capture", "clock_phase_deadband", "edge_register_setup_hold", "critical_register_setup_margin", "ibus_single_driver", "breadboard_rc_calibration"],
+      "advance_gate": "U5/U6 and AC/Z capture only on intended edges; LI, ADDI, SUBI, XORI, and branch-after-Z pass by single-step before oscillator runs."
+    },
+    {
+      "id": 5,
+      "name": "page_store_load_full_system",
+      "circuits": ["RV8GR_PageDataRegisters", "RV8GR_PageJumpTrace", "RV8GR_StoreLoadBranchTrace", "RV8GR_BootSequenceTrace", "RV8GR_Lab13MarkerTrace"],
+      "required_probes": ["PG_CLK", "DP_Load", "/ADDR_MODE", "/AC_BUF", "WR_DIR", "RAM /OE", "RAM /WE", "DBUS0", "IBUS0", "PC0", "PC15", "AC0", "AC7", "PG0", "PG7", "DP0", "DP7"],
+      "required_checks": ["bus_turnaround_deadband", "register_setup", "register_hold", "propagation_to_destination", "supply_margin"],
+      "evidence_ids": ["dbus_turnaround_scope_capture", "memory_output_float_deadband", "clock_phase_deadband", "edge_register_setup_hold", "critical_register_setup_margin", "selected_memory_speed_grade_record"],
+      "advance_gate": "SETPG/SETDP edge behavior, store write setup, RAM read setup, boot, $AA marker, RAM marker, and page-jump marker all pass."
+    },
+    {
+      "id": 6,
+      "name": "irq_and_rv8_bus",
+      "circuits": ["RV8GR_IRQLatch", "RV8GR_InterruptTrace"],
+      "required_probes": ["EI_decode", "/IRQ at source", "/IRQ at latch input", "IE", "IRQ_FF", "RV8-Bus CLK", "RV8-Bus /RST", "RV8-Bus /WR", "RV8-Bus /IRQ", "RV8-Bus address representative bit", "RV8-Bus data representative bit", "CPU DBUS driver enable", "external device output enable"],
+      "required_checks": ["manual_edge_integrity", "bus_turnaround_deadband", "propagation_to_destination", "supply_margin"],
+      "evidence_ids": ["clock_reset_scope_capture", "supply_and_edge_quality", "dbus_turnaround_scope_capture", "memory_output_float_deadband", "breadboard_rc_calibration"],
+      "advance_gate": "EI sets IE, /IRQ LOW holds, release latches IRQ_FF, PC does not auto-jump, and external devices never overlap a CPU or memory DBUS owner."
+    }
+  ],
+  "evidence_id_mapping": {
+    "clock_reset_scope_capture": "timing_margins.json physical_bench_evidence_required",
+    "phase_one_hot_scope_capture": "timing_margins.json physical_bench_evidence_required",
+    "dbus_turnaround_scope_capture": "timing_margins.json physical_bench_evidence_required",
+    "selected_memory_speed_grade_record": "timing_margins.json physical_bench_evidence_required",
+    "installed_memory_markings": "timing_margins.json physical_evidence_plan.required_measurements",
+    "memory_output_float_deadband": "timing_margins.json physical_evidence_plan.required_measurements",
+    "clock_phase_deadband": "timing_margins.json physical_evidence_plan.required_measurements",
+    "supply_and_edge_quality": "timing_margins.json physical_evidence_plan.required_measurements",
+    "breadboard_rc_calibration": "timing_margins.json physical_evidence_plan.required_measurements",
+    "at28c256_read_speed_grade_caveat": "timing_margins.json physical_timing_assumptions",
+    "sram_read_and_float_pending": "timing_margins.json physical_timing_assumptions",
+    "edge_register_setup_hold": "timing_margins.json physical_timing_assumptions",
+    "counter_setup_hold": "timing_margins.json physical_timing_assumptions",
+    "bus_turnaround_deadband": "timing_margins.json physical_timing_assumptions",
+    "critical_register_setup_margin": "physical_test_sweep required_for_each_voltage_and_clock",
+    "ibus_single_driver": "physical_test_sweep required_for_each_voltage_and_clock"
+  }
+}

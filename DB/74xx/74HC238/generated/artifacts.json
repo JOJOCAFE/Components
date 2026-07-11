@@ -363,6 +363,112 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": "NXP 74HC238 dynamic characteristics, CL=50 pF, VCC=4.5 V.",
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "74HC238 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "clock_to_q_low": {
+              "reason": "74HC238 is combinational and has no clocked Q output.",
+              "status": "not_applicable"
+            },
+            "hold": {
+              "reason": "74HC238 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "minimum_pulse_width": {
+              "reason": "74HC238 is combinational and has no clock/reset/write pulse-width requirement.",
+              "status": "not_applicable"
+            },
+            "setup": {
+              "reason": "74HC238 is combinational and has no setup/hold timing requirement.",
+              "status": "not_applicable"
+            },
+            "tPHL": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "NXP 74HC238 dynamic characteristics state tpd is the same as tPHL and tPLH for address/enable paths.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "address_to_output": 30,
+                  "e3_to_output": 32,
+                  "enable_to_output": 31,
+                  "transition": 15
+                },
+                "datasheet_max_ns_minus40_to_125c": {
+                  "address_to_output": 45,
+                  "e3_to_output": 48,
+                  "enable_to_output": 47,
+                  "transition": 22
+                },
+                "datasheet_max_ns_minus40_to_85c": {
+                  "address_to_output": 38,
+                  "e3_to_output": 40,
+                  "enable_to_output": 39,
+                  "transition": 19
+                },
+                "datasheet_typical_ns": {
+                  "address_to_output": 17,
+                  "e3_to_output": 19,
+                  "enable_to_output": 18,
+                  "transition": 7
+                }
+              }
+            },
+            "tPHZ": {
+              "reason": "74HC238 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            },
+            "tPLH": {
+              "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+              "source_field": "NXP 74HC238 dynamic characteristics state tpd is the same as tPHL and tPLH for address/enable paths.",
+              "status": "exact",
+              "values_ns": {
+                "datasheet_max_ns_25c": {
+                  "address_to_output": 30,
+                  "e3_to_output": 32,
+                  "enable_to_output": 31,
+                  "transition": 15
+                },
+                "datasheet_max_ns_minus40_to_125c": {
+                  "address_to_output": 45,
+                  "e3_to_output": 48,
+                  "enable_to_output": 47,
+                  "transition": 22
+                },
+                "datasheet_max_ns_minus40_to_85c": {
+                  "address_to_output": 38,
+                  "e3_to_output": 40,
+                  "enable_to_output": 39,
+                  "transition": 19
+                },
+                "datasheet_typical_ns": {
+                  "address_to_output": 17,
+                  "e3_to_output": 19,
+                  "enable_to_output": 18,
+                  "transition": 7
+                }
+              }
+            },
+            "tPLZ": {
+              "reason": "74HC238 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            },
+            "tPZH": {
+              "reason": "74HC238 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            },
+            "tPZL": {
+              "reason": "74HC238 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package.",
+              "status": "not_applicable"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "3-to-8 line decoder/demultiplexer, active-high outputs"

@@ -35,6 +35,7 @@ BOOT_SEQUENCE_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_BootSequenceTrace"
 LAB13_MARKER_TRACE = ROOT / "Lib" / "Circuits" / "RV8GR_Lab13MarkerTrace"
 WHOLE_SYSTEM_CHIP_LEVEL_VIRTUAL = ROOT / "Lib" / "Circuits" / "RV8GR_WholeSystemChipLevelVirtual"
 TIMING_MARGINS = ROOT / "Lib" / "Circuits" / "timing_margins.json"
+PHYSICAL_CAPTURE_PLAN = ROOT / "Lib" / "Circuits" / "physical_capture_plan.json"
 COMPONENT_TEST_PROTOCOL = ROOT / "DB" / "COMPONENT_TEST_PROTOCOL.md"
 RV8GR_TEST_PROTOCOL = ROOT / "Lib" / "Circuits" / "RV8GR_TEST_PROTOCOL.md"
 RV8GR_COVERAGE_INDEX = ROOT / "Lib" / "Circuits" / "RV8GR_COVERAGE_INDEX.json"
@@ -3341,6 +3342,8 @@ def test_rv8gr_physical_evidence_plan_blocks_speed_claims_until_all_fields_prese
     assert plan["claim_gate"] == "blocked_until_all_required_items_pass"
     assert "hardware_5mhz_ready" in plan["blocked_claims"]
     assert "student_build_speed_recommendation" in plan["blocked_claims"]
+    assert plan["capture_contract"] == "Lib/Circuits/physical_capture_plan.json"
+    assert plan["capture_contract_status"] == "prepared_no_board_measurements"
 
     required = {item["id"]: item for item in plan["required_measurements"]}
     assert {
@@ -3356,6 +3359,49 @@ def test_rv8gr_physical_evidence_plan_blocks_speed_claims_until_all_fields_prese
         assert item["how_to_capture"], item
         assert item["pass_condition"], item
         assert item["student_note"], item
+
+
+def test_rv8gr_physical_capture_plan_is_complete_but_unmeasured():
+    timing = load_json(TIMING_MARGINS)
+    capture = load_json(PHYSICAL_CAPTURE_PLAN)
+
+    assert capture["schema"] == "components.lib.circuit.physical_capture_plan"
+    assert capture["status"] == "prepared_no_board_measurements"
+    assert "Null measured values" in capture["claim_boundary"]
+    assert capture["run_order"]["voltage_order_v"] == [5.0, 4.5, 5.5]
+    assert capture["run_order"]["clock_order"] == [
+        "manual_push_switch_100_ticks", "50_khz", "1_mhz", "2_mhz", "5_mhz"
+    ]
+
+    stages = capture["stages"]
+    assert [stage["id"] for stage in stages] == [1, 2, 3, 4, 5, 6]
+    assert all(stage["required_probes"] for stage in stages)
+    assert all(stage["required_checks"] for stage in stages)
+    assert all(stage["evidence_ids"] for stage in stages)
+    assert all(stage["advance_gate"] for stage in stages)
+
+    formulas = capture["pass_fail_formulas"]
+    assert {"manual_edge_integrity", "phase_one_hot", "bus_turnaround_deadband",
+            "register_setup", "register_hold", "propagation_to_destination",
+            "supply_margin", "memory_marking_match", "run_complete"} <= set(formulas)
+    assert "measured_deadband_ns > 0" in formulas["bus_turnaround_deadband"]["formula"]
+    assert ">= 0" in formulas["register_setup"]["formula"]
+    assert ">= 0" in formulas["register_hold"]["formula"]
+
+    blank = capture["blank_measurement_values"]
+    assert blank["result_pass_fail"] == "not_measured"
+    assert all(value is None for key, value in blank.items() if key != "result_pass_fail")
+    assert len(capture["stop_conditions"]) >= 8
+
+    bench_ids = {item["id"] for item in timing["physical_bench_evidence_required"]}
+    measurement_ids = {item["id"] for item in timing["physical_evidence_plan"]["required_measurements"]}
+    assumption_ids = {item["id"] for item in timing["physical_timing_assumptions"]}
+    sweep_ids = set(timing["physical_test_sweep"]["required_for_each_voltage_and_clock"])
+    known_ids = bench_ids | measurement_ids | assumption_ids | sweep_ids
+    mapped_ids = set(capture["evidence_id_mapping"])
+    used_ids = {evidence_id for stage in stages for evidence_id in stage["evidence_ids"]}
+    assert used_ids <= mapped_ids
+    assert mapped_ids <= known_ids
 
 
 def test_rv8gr_breadboard_rc_model_is_estimate_not_chip_definition_truth():
@@ -3600,6 +3646,7 @@ def run_all():
     test_rv8gr_physical_candidate_paths_keep_5mhz_claim_blocked()
     test_rv8gr_physical_bench_evidence_required_before_hardware_speed_claims()
     test_rv8gr_physical_evidence_plan_blocks_speed_claims_until_all_fields_present()
+    test_rv8gr_physical_capture_plan_is_complete_but_unmeasured()
     test_rv8gr_breadboard_rc_model_is_estimate_not_chip_definition_truth()
     test_rv8gr_page_jump_trace_is_listed_in_circuit_backlog()
     test_all_started_circuit_packages_have_tests()

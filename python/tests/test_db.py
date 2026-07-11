@@ -571,6 +571,29 @@ def test_hc07_open_drain_timing_is_exact_where_the_datasheet_is_direct():
         assert layer_parameters[name]["status"] == "not_applicable"
 
 
+def test_ohm_owned_canonical_timing_evidence_is_consistent():
+    expected = {
+        "74HC07": ({"tPLZ", "tPZL"}, {"tPLH", "tPHL"}, {"tPZH", "tPHZ", "clock_to_q_high", "clock_to_q_low", "setup", "hold", "minimum_pulse_width"}),
+        "74HC147": ({"tPLH", "tPHL"}, set(), {"tPZH", "tPZL", "tPHZ", "tPLZ", "clock_to_q_high", "clock_to_q_low", "setup", "hold", "minimum_pulse_width"}),
+        "74HC155": ({"tPLH", "tPHL"}, set(), {"tPZH", "tPZL", "tPHZ", "tPLZ", "clock_to_q_high", "clock_to_q_low", "setup", "hold", "minimum_pulse_width"}),
+        "74HC283": ({"tPLH", "tPHL"}, set(), {"tPZH", "tPZL", "tPHZ", "tPLZ", "clock_to_q_high", "clock_to_q_low", "setup", "hold", "minimum_pulse_width"}),
+        "74HC541": ({"tPLH", "tPHL", "tPZH", "tPZL", "tPHZ", "tPLZ"}, set(), {"clock_to_q_high", "clock_to_q_low", "setup", "hold", "minimum_pulse_width"}),
+        "74HC74": ({"setup", "hold", "minimum_pulse_width"}, {"tPLH", "tPHL", "clock_to_q_high", "clock_to_q_low"}, {"tPZH", "tPZL", "tPHZ", "tPLZ"}),
+        "74HC922": ({"tPLH", "tPHL", "tPZH", "tPZL", "tPHZ", "tPLZ"}, set(), {"clock_to_q_high", "clock_to_q_low", "setup", "hold", "minimum_pulse_width"}),
+        "74HC4538": ({"tPLH", "tPHL", "minimum_pulse_width"}, set(), {"tPZH", "tPZL", "tPHZ", "tPLZ", "clock_to_q_high", "clock_to_q_low", "setup", "hold"}),
+    }
+
+    for part, (exact, generic, not_applicable) in expected.items():
+        definition = load_digital_definition(part)
+        public = definition["timing"]["timing_parameters"]["parameters"]
+        canonical = definition["definition_layers"]["timing"]["timing_parameters"]["parameters"]
+        assert public.keys() == canonical.keys(), part
+        for status, names in (("exact", exact), ("generic", generic), ("not_applicable", not_applicable)):
+            for name in names:
+                assert public[name]["status"] == status, (part, name)
+                assert canonical[name]["status"] == status, (part, name)
+
+
 def test_bank_bus_timing_extraction_has_exact_terms():
     expected = {
         "74HC240": {

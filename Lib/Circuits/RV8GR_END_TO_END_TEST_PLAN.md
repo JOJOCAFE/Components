@@ -7,13 +7,14 @@ benches and lab docs remain the authority for the full CPU implementation.
 
 ## Current Verification Checkpoint
 
-Last checked from Components session:
+Recorded whole-system gate:
 
 ```sh
 /home/jo/kiro/RV8/RV8GR/tools/run_all_verilog_tb.sh
 ```
 
-Result: pass.
+Result: pass. Components package coverage is also complete at pushed commit
+`8a0de62`; this recorded result is software evidence, not physical signoff.
 
 Covered RV8GR benches:
 
@@ -88,10 +89,11 @@ Policy:
 4. If a chip definition changes from a datasheet row, update the matching
    split records and any affected RV8GR circuit package in the same work item.
 
-Current gaps are visible in `RV8GR/doc/rv8gr_chip_level_readiness.json`. As of this
-checkpoint, functional chip-level records exist for the complete RV8GR set,
-but physical timing remains blocked for chips still marked as model-derived or
-needing electrical extraction.
+Current readiness is visible in `RV8GR/doc/rv8gr_chip_level_readiness.json`.
+The complete RV8GR definition/options set now has datasheet-backed
+timing/electrical records sufficient for functional progression. Physical
+timing remains blocked because definition evidence does not identify the
+installed parts or measure the assembled system.
 
 ### Stage 1 - Circuit Package Integrity
 
@@ -103,8 +105,10 @@ Goal: every reusable RV8GR circuit package has:
 - executable coverage in `python/tests/test_lib_circuits.py`
 - source links to RV8GR docs, labs, RTL, or prior circuit packages
 
-Current status: all started packages under `Lib/Circuits/RV8GR_*` have at
-least one test file and are checked by `test_all_started_circuit_packages_have_tests`.
+Current status: complete. `RV8GR_COVERAGE_INDEX.json` lists every
+`Lib/Circuits/RV8GR_*` package as `Tested`; executable checks require each
+package directory, README, JSON proof file, and Python test prefix, and prevent
+the circuit README, index, and package tree from drifting.
 
 ### Stage 2 - Module Proofs
 
@@ -127,14 +131,8 @@ Covered modules:
 - IRQ latch
 - virtual test helpers
 
-Next hardening:
-
-1. Add explicit package-level coverage index so each RV8GR lab/build stage maps
-   to one or more Components circuit packages.
-2. Mark the old `Started` labels in `Lib/Circuits/README.md` as `Tested` only
-   when package, README, JSON vector, and Python proof are all present.
-3. Add a no-regression check that every circuit named in the README exists and
-   every package directory appears in the README.
+No open package-integrity gap is currently recorded. New packages must enter
+the same index/README/vector/Python gate.
 
 ### Stage 3 - Trace Proofs
 
@@ -147,16 +145,12 @@ Covered traces:
 - SETDP, SETPG, J
 - EI, DI, `/IRQ` assertion/release, sticky IRQ_FF
 - full T2 opcode-control sweep for all 512 opcode/Z cases
+- boot sequence: `SETDP $80`, `SETPG $00`, `LI $00`, and `J self`
+- Lab 13 `$AA` marker program through final pass state
 
-Next trace work:
-
-1. Add a boot sequence trace package for `SETDP $80`, `SETPG $00`, `LI $00`,
-   and `J self`, matching `doc/03_instruction_trace.md` Trace 11 and
-   `doc/06_debug_plan.md` Step 0.
-2. Add a full-system marker trace package for the Lab 13 `$AA` pass program.
-3. Treat IRQ polling carefully: RV8GR v1.0 has no core CPU-visible IRQ status
-   register. Any "polling loop" proof must be an RV8-Bus or external slot
-   visibility proof, not a fake core instruction path.
+Current status: complete for the identified trace set. Treat IRQ polling
+carefully: RV8GR v1.0 has no core CPU-visible IRQ status register. Any polling
+proof must use RV8-Bus or external slot visibility, not a fake core path.
 
 ### Stage 4 - Whole-System Simulation
 
@@ -180,13 +174,10 @@ Required pass lines:
 - `RV8GR chip-level bring-up PASS`
 - `RV8GR chip-level full PASS`
 
-Next hardening:
-
-1. Add a Components-side summary test artifact that records the RV8GR bench
-   names, expected pass markers, and what each bench covers.
-2. Add a small runner wrapper only if it can write outputs outside the repo or
-   into `/tmp`; do not duplicate RV8GR's own testbench logic in Components.
-3. Keep behavioral RTL and chip-level RTL both in the required gate.
+Current status: complete. `RV8GR_WholeSystemChipLevelVirtual` records the
+Components-side whole-system proof scope, while RV8GR retains ownership of the
+behavioral and chip-level Verilog runners. Do not duplicate RV8GR testbench
+logic here; keep both RTL levels in the required gate.
 
 ### Stage 5 - Physical Build Signoff
 

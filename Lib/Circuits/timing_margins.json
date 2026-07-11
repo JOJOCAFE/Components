@@ -238,6 +238,8 @@
     }
   ],
   "physical_evidence_plan": {
+    "capture_contract": "Lib/Circuits/physical_capture_plan.json",
+    "capture_contract_status": "prepared_no_board_measurements",
     "owner_sequence": ["Ohm", "Fern", "Pim"],
     "claim_gate": "blocked_until_all_required_items_pass",
     "blocked_claims": ["hardware_5mhz_ready", "student_build_speed_recommendation"],

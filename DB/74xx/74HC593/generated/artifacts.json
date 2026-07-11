@@ -438,6 +438,91 @@
             }
           },
           "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+        },
+        "timing_parameters": {
+          "basis": "normalized_from_existing_datasheet_timing",
+          "conditions": {
+            "load_pf": 50,
+            "ta_c": 25
+          },
+          "parameters": {
+            "clock_to_q_high": {
+              "reason": "Existing local extraction does not include clock-to-Q.",
+              "status": "missing"
+            },
+            "clock_to_q_low": {
+              "reason": "Existing local extraction does not include clock-to-Q.",
+              "status": "missing"
+            },
+            "hold": {
+              "reason": "Existing local timing extraction has no hold-time table for this part.",
+              "status": "missing"
+            },
+            "minimum_pulse_width": {
+              "reason": "Existing local timing extraction has no minimum pulse-width table for this part.",
+              "status": "missing"
+            },
+            "setup": {
+              "reason": "Existing local timing extraction has no setup-time table for this part.",
+              "status": "missing"
+            },
+            "tPHL": {
+              "note": "M54HC593 switching characteristics give direct propagation-delay rows for Qn and RCO paths; canonical propagation timing is preserved exactly.",
+              "source_field": "timing.datasheet.values",
+              "status": "exact",
+              "values_ns": {
+                "propagation_path_a": {
+                  "max_25c": 42,
+                  "max_minus40_to_85c": 53,
+                  "max_minus55_to_125c": 63,
+                  "typ": 27
+                },
+                "propagation_path_b": {
+                  "max_25c": 44,
+                  "max_minus40_to_85c": 55,
+                  "max_minus55_to_125c": 66,
+                  "typ": 28
+                }
+              }
+            },
+            "tPHZ": {
+              "note": "M54HC593 switching characteristics give direct 3-state disable timing; canonical output-disable timing is preserved exactly.",
+              "status": "exact"
+            },
+            "tPLH": {
+              "note": "M54HC593 switching characteristics give direct propagation-delay rows for Qn and RCO paths; canonical propagation timing is preserved exactly.",
+              "source_field": "timing.datasheet.values",
+              "status": "exact",
+              "values_ns": {
+                "propagation_path_a": {
+                  "max_25c": 42,
+                  "max_minus40_to_85c": 53,
+                  "max_minus55_to_125c": 63,
+                  "typ": 27
+                },
+                "propagation_path_b": {
+                  "max_25c": 44,
+                  "max_minus40_to_85c": 55,
+                  "max_minus55_to_125c": 66,
+                  "typ": 28
+                }
+              }
+            },
+            "tPLZ": {
+              "note": "M54HC593 switching characteristics give direct 3-state disable timing; canonical output-disable timing is preserved exactly.",
+              "status": "exact"
+            },
+            "tPZH": {
+              "note": "M54HC593 switching characteristics give direct 3-state enable timing; canonical output-enable timing is preserved exactly.",
+              "status": "exact"
+            },
+            "tPZL": {
+              "note": "M54HC593 switching characteristics give direct 3-state enable timing; canonical output-enable timing is preserved exactly.",
+              "status": "exact"
+            }
+          },
+          "schema": "db.component.timing_parameters",
+          "version": 1
         }
       },
       "title": "8-Bit Binary Counter With Input Register"
