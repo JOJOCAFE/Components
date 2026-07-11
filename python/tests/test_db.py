@@ -540,6 +540,84 @@ def test_second_non_rv8gr_timing_batch_has_canonical_parameters():
             assert public_parameters[name]["status"] == "not_applicable"
 
 
+def test_deep_ti_timing_extraction_has_exact_terms():
+    expected_exact = {
+        "74HC374": {
+            "clock_to_q": {"typ": 17, "max_25c": 36, "max_sn54": 54, "max_sn74": 45},
+            "enable": {"typ": 16, "max_25c": 30, "max_sn54": 45, "max_sn74": 38},
+            "disable": {"typ": 17, "max_25c": 30, "max_sn54": 45, "max_sn74": 38},
+            "setup_vcc_4_5": 20,
+            "hold_vcc_4_5": 5,
+            "pulse_vcc_4_5": 16,
+        },
+        "74HCT574": {
+            "clock_to_q": {"typ": 30, "max_25c": 36, "max_sn54": 54, "max_sn74": 45},
+            "enable": {"typ": 26, "max_25c": 30, "max_sn54": 45, "max_sn74": 38},
+            "disable": {"typ": 23, "max_25c": 30, "max_sn54": 45, "max_sn74": 38},
+            "setup_vcc_4_5": 20,
+            "hold_vcc_4_5": 5,
+            "pulse_vcc_4_5": 16,
+        },
+    }
+
+    for part, expected in expected_exact.items():
+        definition = load_digital_definition(part)
+        public_parameters = definition["timing"]["timing_parameters"]["parameters"]
+        package = load_digital_package(part)
+        layer_parameters = package["layers"]["definition"]["timing"]["timing_parameters"]["parameters"]
+        assert public_parameters == layer_parameters
+
+        for name in (
+            "tPLH",
+            "tPHL",
+            "tPZH",
+            "tPZL",
+            "tPHZ",
+            "tPLZ",
+            "clock_to_q_high",
+            "clock_to_q_low",
+            "setup",
+            "hold",
+            "minimum_pulse_width",
+        ):
+            assert public_parameters[name]["status"] == "exact"
+
+        assert public_parameters["clock_to_q_high"]["values_ns"] == expected["clock_to_q"]
+        assert public_parameters["tPZH"]["values_ns"] == expected["enable"]
+        assert public_parameters["tPHZ"]["values_ns"] == expected["disable"]
+        assert public_parameters["setup"]["values_ns"]["data_before_clk_rise_min"]["vcc_4_5_v"]["ta_25c"] == expected["setup_vcc_4_5"]
+        assert public_parameters["hold"]["values_ns"]["data_after_clk_rise_min"]["vcc_4_5_v"]["ta_25c"] == expected["hold_vcc_4_5"]
+        assert public_parameters["minimum_pulse_width"]["values_ns"]["clk_high_or_low_min"]["vcc_4_5_v"]["ta_25c"] == expected["pulse_vcc_4_5"]
+
+    hc595 = load_digital_definition("74HC595")
+    params = hc595["timing"]["timing_parameters"]["parameters"]
+    package = load_digital_package("74HC595")
+    assert params == package["layers"]["definition"]["timing"]["timing_parameters"]["parameters"]
+
+    for name in (
+        "tPLH",
+        "tPHL",
+        "tPZH",
+        "tPZL",
+        "tPHZ",
+        "tPLZ",
+        "clock_to_q_high",
+        "clock_to_q_low",
+        "setup",
+        "hold",
+        "minimum_pulse_width",
+    ):
+        assert params[name]["status"] == "exact"
+
+    assert params["clock_to_q_high"]["values_ns"]["srclk_to_qh_prime"]["typ"] == 17
+    assert params["clock_to_q_high"]["values_ns"]["rclk_to_qa_qh"]["max_sn74"] == 37
+    assert params["tPHL"]["values_ns"]["srclr_to_qh_prime_low"]["max_25c"] == 35
+    assert params["tPHZ"]["values_ns"] == {"typ": 23, "max_25c": 40, "max_sn54": 60, "max_sn74": 50}
+    assert params["setup"]["values_ns"]["ser_before_srclk_rise_min"]["vcc_4_5_v"]["ta_25c"] == 20
+    assert params["hold"]["values_ns"]["ser_after_srclk_rise_min"]["vcc_4_5_v"]["ta_25c"] == 0
+    assert params["minimum_pulse_width"]["values_ns"]["srclk_or_rclk_high_or_low_min"]["vcc_4_5_v"]["ta_25c"] == 16
+
+
 def test_virtual_and_passive_components_use_definition_packages():
     assert generic_package_parts() == {
         "InputSource",
@@ -1259,6 +1337,7 @@ def run_all():
     test_starter_chips_have_normalized_timing_parameters()
     test_first_non_rv8gr_timing_batch_has_canonical_parameters()
     test_second_non_rv8gr_timing_batch_has_canonical_parameters()
+    test_deep_ti_timing_extraction_has_exact_terms()
     test_python_chip_factory_delay_matches_public_timing_default()
     test_74hc245_split_tests_and_evidence_are_loaded()
     test_component_generation_artifacts_cover_declared_targets()

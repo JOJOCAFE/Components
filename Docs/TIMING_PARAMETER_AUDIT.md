@@ -15,17 +15,17 @@ matching field was found.
 
 | Parameter | Meaning | Exact | Generic | Not Applicable | Missing |
 |---|---|---:|---:|---:|---:|
-| tPLH | input/output propagation delay for output LOW-to-HIGH | 3 | 65 | 0 | 2 |
-| tPHL | input/output propagation delay for output HIGH-to-LOW | 3 | 65 | 0 | 2 |
-| tPZH | output enable from high-Z to HIGH | 0 | 18 | 52 | 0 |
-| tPZL | output enable from high-Z to LOW | 0 | 18 | 52 | 0 |
-| tPHZ | output disable from HIGH to high-Z | 0 | 16 | 52 | 2 |
-| tPLZ | output disable from LOW to high-Z | 0 | 16 | 52 | 2 |
-| clock-to-Q high | clock edge to Q HIGH | 0 | 13 | 52 | 5 |
-| clock-to-Q low | clock edge to Q LOW | 0 | 13 | 52 | 5 |
-| setup | input setup time before active clock/control edge | 10 | 1 | 46 | 13 |
-| hold | input hold time after active clock/control edge | 9 | 1 | 46 | 14 |
-| minimum pulse width | minimum clock, reset, write, or control pulse width | 11 | 1 | 47 | 11 |
+| tPLH | input/output propagation delay for output LOW-to-HIGH | 6 | 62 | 0 | 2 |
+| tPHL | input/output propagation delay for output HIGH-to-LOW | 6 | 62 | 0 | 2 |
+| tPZH | output enable from high-Z to HIGH | 3 | 15 | 52 | 0 |
+| tPZL | output enable from high-Z to LOW | 3 | 15 | 52 | 0 |
+| tPHZ | output disable from HIGH to high-Z | 3 | 15 | 52 | 0 |
+| tPLZ | output disable from LOW to high-Z | 3 | 15 | 52 | 0 |
+| clock-to-Q high | clock edge to Q HIGH | 3 | 11 | 52 | 4 |
+| clock-to-Q low | clock edge to Q LOW | 3 | 11 | 52 | 4 |
+| setup | input setup time before active clock/control edge | 13 | 1 | 46 | 10 |
+| hold | input hold time after active clock/control edge | 12 | 1 | 46 | 11 |
+| minimum pulse width | minimum clock, reset, write, or control pulse width | 14 | 1 | 47 | 8 |
 
 ## Current Finding
 
@@ -85,7 +85,7 @@ matching field was found.
 | 74HC30 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC32 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC352 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
-| 74HC374 | 74xx | generic | generic | generic | generic | generic | generic | generic | generic | missing | missing | missing |
+| 74HC374 | 74xx | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact |
 | 74HC377 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | generic | generic | missing | missing | missing |
 | 74HC4049 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC4050 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
@@ -95,7 +95,7 @@ matching field was found.
 | 74HC541 | 74xx | generic | generic | generic | generic | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC574 | 74xx | generic | generic | generic | generic | generic | generic | generic | generic | exact | exact | exact |
 | 74HC593 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | missing | missing | missing | missing | missing |
-| 74HC595 | 74xx | generic | generic | generic | generic | missing | missing | missing | missing | missing | missing | missing |
+| 74HC595 | 74xx | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact |
 | 74HC688 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC74 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | generic | generic | exact | exact | exact |
 | 74HC85 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
@@ -105,7 +105,7 @@ matching field was found.
 | 74HCT14 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HCT245 | 74xx | generic | generic | generic | generic | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HCT541 | 74xx | generic | generic | generic | generic | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
-| 74HCT574 | 74xx | generic | generic | generic | generic | missing | missing | generic | generic | missing | missing | missing |
+| 74HCT574 | 74xx | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact |
 | 62256 | Memory | generic | generic | generic | generic | generic | generic | not_applicable | not_applicable | exact | exact | exact |
 | AS6C62256 | Memory | generic | generic | generic | generic | generic | generic | not_applicable | not_applicable | exact | exact | exact |
 | AT28C256 | Memory | generic | generic | generic | generic | generic | generic | not_applicable | not_applicable | exact | exact | exact |

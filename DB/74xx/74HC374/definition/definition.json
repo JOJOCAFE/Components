@@ -225,113 +225,174 @@
       "timing_parameters": {
         "schema": "db.component.timing_parameters",
         "version": 1,
-        "basis": "normalized_from_existing_datasheet_timing",
+        "basis": "exact_terms_from_local_ti_datasheet",
         "parameters": {
           "tPLH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "status": "exact",
+            "source_field": "TI switching characteristics tpd CLK->Any Q; waveform note maps tPLH/tPHL to tpd",
             "values_ns": {
               "typ": 17,
               "max_25c": 36,
-              "max_minus40_to_85c": 45,
-              "max_minus55_to_125c": 54
+              "max_sn54": 54,
+              "max_sn74": 45
             },
-            "note": "Clock-to-Q exists but tPLH/tPHL polarity split is not extracted."
+            "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "status": "exact",
+            "source_field": "TI switching characteristics tpd CLK->Any Q; waveform note maps tPLH/tPHL to tpd",
             "values_ns": {
               "typ": 17,
               "max_25c": 36,
-              "max_minus40_to_85c": 45,
-              "max_minus55_to_125c": 54
+              "max_sn54": 54,
+              "max_sn74": 45
             },
-            "note": "Clock-to-Q exists but tPLH/tPHL polarity split is not extracted."
+            "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
           },
           "tPZH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values.*.enable",
+            "status": "exact",
+            "source_field": "TI switching characteristics ten OE->Any Q; waveform note maps tPZH/tPZL to ten",
             "values_ns": {
               "typ": 16,
               "max_25c": 30,
-              "max_minus40_to_85c": 38,
-              "max_minus55_to_125c": 45
+              "max_sn54": 45,
+              "max_sn74": 38
             },
-            "note": "Existing local extraction names output-enable timing but does not split enable-to-high/low or disable-to-high-Z polarity paths."
+            "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
           },
           "tPZL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values.*.enable",
+            "status": "exact",
+            "source_field": "TI switching characteristics ten OE->Any Q; waveform note maps tPZH/tPZL to ten",
             "values_ns": {
               "typ": 16,
               "max_25c": 30,
-              "max_minus40_to_85c": 38,
-              "max_minus55_to_125c": 45
+              "max_sn54": 45,
+              "max_sn74": 38
             },
-            "note": "Existing local extraction names output-enable timing but does not split enable-to-high/low or disable-to-high-Z polarity paths."
+            "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
           },
           "tPHZ": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values.*.disable",
+            "status": "exact",
+            "source_field": "TI switching characteristics tdis OE->Any Q; waveform note maps tPHZ/tPLZ to tdis",
             "values_ns": {
               "typ": 17,
               "max_25c": 30,
-              "max_minus40_to_85c": 38,
-              "max_minus55_to_125c": 45
+              "max_sn54": 45,
+              "max_sn74": 38
             },
-            "note": "Existing local extraction has output-disable timing but not high/low polarity split."
+            "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
           },
           "tPLZ": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values.*.disable",
+            "status": "exact",
+            "source_field": "TI switching characteristics tdis OE->Any Q; waveform note maps tPHZ/tPLZ to tdis",
             "values_ns": {
               "typ": 17,
               "max_25c": 30,
-              "max_minus40_to_85c": 38,
-              "max_minus55_to_125c": 45
+              "max_sn54": 45,
+              "max_sn74": 38
             },
-            "note": "Existing local extraction has output-disable timing but not high/low polarity split."
+            "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
           },
           "clock_to_q_high": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "status": "exact",
+            "source_field": "TI switching characteristics tpd CLK->Any Q; waveform note maps tPLH to tpd",
             "values_ns": {
               "typ": 17,
               "max_25c": 36,
-              "max_minus40_to_85c": 45,
-              "max_minus55_to_125c": 54
+              "max_sn54": 54,
+              "max_sn74": 45
             },
-            "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+            "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
           },
           "clock_to_q_low": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "status": "exact",
+            "source_field": "TI switching characteristics tpd CLK->Any Q; waveform note maps tPHL to tpd",
             "values_ns": {
               "typ": 17,
               "max_25c": 36,
-              "max_minus40_to_85c": 45,
-              "max_minus55_to_125c": 54
+              "max_sn54": 54,
+              "max_sn74": 45
             },
-            "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+            "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
           },
           "setup": {
-            "status": "missing",
-            "reason": "Existing local timing extraction has no setup-time table for this part."
+            "status": "exact",
+            "source_field": "TI timing requirements tsu rows",
+            "values_ns": {
+              "data_before_clk_rise_min": {
+                "vcc_2_v": {
+                  "ta_25c": 100,
+                  "sn54": 150,
+                  "sn74": 125
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 20,
+                  "sn54": 30,
+                  "sn74": 25
+                },
+                "vcc_6_v": {
+                  "ta_25c": 17,
+                  "sn54": 25,
+                  "sn74": 21
+                }
+              }
+            },
+            "note": "TI SN74HC374 timing requirements table: tw CLK high/low, tsu data before CLK rising edge, th data after CLK rising edge."
           },
           "hold": {
-            "status": "missing",
-            "reason": "Existing local timing extraction has no hold-time table for this part."
+            "status": "exact",
+            "source_field": "TI timing requirements th rows",
+            "values_ns": {
+              "data_after_clk_rise_min": {
+                "vcc_2_v": {
+                  "ta_25c": 10,
+                  "sn54": 13,
+                  "sn74": 12
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 5,
+                  "sn54": 5,
+                  "sn74": 5
+                },
+                "vcc_6_v": {
+                  "ta_25c": 5,
+                  "sn54": 5,
+                  "sn74": 5
+                }
+              }
+            },
+            "note": "TI SN74HC374 timing requirements table: tw CLK high/low, tsu data before CLK rising edge, th data after CLK rising edge."
           },
           "minimum_pulse_width": {
-            "status": "missing",
-            "reason": "Existing local timing extraction has no minimum pulse-width table for this part."
+            "status": "exact",
+            "source_field": "TI timing requirements tw rows",
+            "values_ns": {
+              "clk_high_or_low_min": {
+                "vcc_2_v": {
+                  "ta_25c": 80,
+                  "sn54": 120,
+                  "sn74": 100
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 16,
+                  "sn54": 24,
+                  "sn74": 20
+                },
+                "vcc_6_v": {
+                  "ta_25c": 14,
+                  "sn54": 20,
+                  "sn74": 17
+                }
+              }
+            },
+            "note": "TI SN74HC374 timing requirements table: tw CLK high/low, tsu data before CLK rising edge, th data after CLK rising edge."
           }
         },
         "conditions": {
           "load_pf": 50,
           "ta_c": 25
-        }
+        },
+        "source": "Source/74HC374_TI_SN74HC374.pdf"
       }
     }
   },
@@ -623,113 +684,174 @@
     "timing_parameters": {
       "schema": "db.component.timing_parameters",
       "version": 1,
-      "basis": "normalized_from_existing_datasheet_timing",
+      "basis": "exact_terms_from_local_ti_datasheet",
       "parameters": {
         "tPLH": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "status": "exact",
+          "source_field": "TI switching characteristics tpd CLK->Any Q; waveform note maps tPLH/tPHL to tpd",
           "values_ns": {
             "typ": 17,
             "max_25c": 36,
-            "max_minus40_to_85c": 45,
-            "max_minus55_to_125c": 54
+            "max_sn54": 54,
+            "max_sn74": 45
           },
-          "note": "Clock-to-Q exists but tPLH/tPHL polarity split is not extracted."
+          "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "status": "exact",
+          "source_field": "TI switching characteristics tpd CLK->Any Q; waveform note maps tPLH/tPHL to tpd",
           "values_ns": {
             "typ": 17,
             "max_25c": 36,
-            "max_minus40_to_85c": 45,
-            "max_minus55_to_125c": 54
+            "max_sn54": 54,
+            "max_sn74": 45
           },
-          "note": "Clock-to-Q exists but tPLH/tPHL polarity split is not extracted."
+          "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
         },
         "tPZH": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values.*.enable",
+          "status": "exact",
+          "source_field": "TI switching characteristics ten OE->Any Q; waveform note maps tPZH/tPZL to ten",
           "values_ns": {
             "typ": 16,
             "max_25c": 30,
-            "max_minus40_to_85c": 38,
-            "max_minus55_to_125c": 45
+            "max_sn54": 45,
+            "max_sn74": 38
           },
-          "note": "Existing local extraction names output-enable timing but does not split enable-to-high/low or disable-to-high-Z polarity paths."
+          "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
         },
         "tPZL": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values.*.enable",
+          "status": "exact",
+          "source_field": "TI switching characteristics ten OE->Any Q; waveform note maps tPZH/tPZL to ten",
           "values_ns": {
             "typ": 16,
             "max_25c": 30,
-            "max_minus40_to_85c": 38,
-            "max_minus55_to_125c": 45
+            "max_sn54": 45,
+            "max_sn74": 38
           },
-          "note": "Existing local extraction names output-enable timing but does not split enable-to-high/low or disable-to-high-Z polarity paths."
+          "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
         },
         "tPHZ": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values.*.disable",
+          "status": "exact",
+          "source_field": "TI switching characteristics tdis OE->Any Q; waveform note maps tPHZ/tPLZ to tdis",
           "values_ns": {
             "typ": 17,
             "max_25c": 30,
-            "max_minus40_to_85c": 38,
-            "max_minus55_to_125c": 45
+            "max_sn54": 45,
+            "max_sn74": 38
           },
-          "note": "Existing local extraction has output-disable timing but not high/low polarity split."
+          "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
         },
         "tPLZ": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values.*.disable",
+          "status": "exact",
+          "source_field": "TI switching characteristics tdis OE->Any Q; waveform note maps tPHZ/tPLZ to tdis",
           "values_ns": {
             "typ": 17,
             "max_25c": 30,
-            "max_minus40_to_85c": 38,
-            "max_minus55_to_125c": 45
+            "max_sn54": 45,
+            "max_sn74": 38
           },
-          "note": "Existing local extraction has output-disable timing but not high/low polarity split."
+          "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
         },
         "clock_to_q_high": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "status": "exact",
+          "source_field": "TI switching characteristics tpd CLK->Any Q; waveform note maps tPLH to tpd",
           "values_ns": {
             "typ": 17,
             "max_25c": 36,
-            "max_minus40_to_85c": 45,
-            "max_minus55_to_125c": 54
+            "max_sn54": 54,
+            "max_sn74": 45
           },
-          "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+          "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
         },
         "clock_to_q_low": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "status": "exact",
+          "source_field": "TI switching characteristics tpd CLK->Any Q; waveform note maps tPHL to tpd",
           "values_ns": {
             "typ": 17,
             "max_25c": 36,
-            "max_minus40_to_85c": 45,
-            "max_minus55_to_125c": 54
+            "max_sn54": 54,
+            "max_sn74": 45
           },
-          "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+          "note": "TI SN74HC374 switching table and waveform notes: tPLH/tPHL are tpd, tPZL/tPZH are ten, and tPLZ/tPHZ are tdis at CL=50 pF."
         },
         "setup": {
-          "status": "missing",
-          "reason": "Existing local timing extraction has no setup-time table for this part."
+          "status": "exact",
+          "source_field": "TI timing requirements tsu rows",
+          "values_ns": {
+            "data_before_clk_rise_min": {
+              "vcc_2_v": {
+                "ta_25c": 100,
+                "sn54": 150,
+                "sn74": 125
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 20,
+                "sn54": 30,
+                "sn74": 25
+              },
+              "vcc_6_v": {
+                "ta_25c": 17,
+                "sn54": 25,
+                "sn74": 21
+              }
+            }
+          },
+          "note": "TI SN74HC374 timing requirements table: tw CLK high/low, tsu data before CLK rising edge, th data after CLK rising edge."
         },
         "hold": {
-          "status": "missing",
-          "reason": "Existing local timing extraction has no hold-time table for this part."
+          "status": "exact",
+          "source_field": "TI timing requirements th rows",
+          "values_ns": {
+            "data_after_clk_rise_min": {
+              "vcc_2_v": {
+                "ta_25c": 10,
+                "sn54": 13,
+                "sn74": 12
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 5,
+                "sn54": 5,
+                "sn74": 5
+              },
+              "vcc_6_v": {
+                "ta_25c": 5,
+                "sn54": 5,
+                "sn74": 5
+              }
+            }
+          },
+          "note": "TI SN74HC374 timing requirements table: tw CLK high/low, tsu data before CLK rising edge, th data after CLK rising edge."
         },
         "minimum_pulse_width": {
-          "status": "missing",
-          "reason": "Existing local timing extraction has no minimum pulse-width table for this part."
+          "status": "exact",
+          "source_field": "TI timing requirements tw rows",
+          "values_ns": {
+            "clk_high_or_low_min": {
+              "vcc_2_v": {
+                "ta_25c": 80,
+                "sn54": 120,
+                "sn74": 100
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 16,
+                "sn54": 24,
+                "sn74": 20
+              },
+              "vcc_6_v": {
+                "ta_25c": 14,
+                "sn54": 20,
+                "sn74": 17
+              }
+            }
+          },
+          "note": "TI SN74HC374 timing requirements table: tw CLK high/low, tsu data before CLK rising edge, th data after CLK rising edge."
         }
       },
       "conditions": {
         "load_pf": 50,
         "ta_c": 25
-      }
+      },
+      "source": "Source/74HC374_TI_SN74HC374.pdf"
     }
   },
   "verification": {

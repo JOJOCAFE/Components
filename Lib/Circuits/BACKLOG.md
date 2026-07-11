@@ -133,7 +133,9 @@ Status: complete. Package files live under
 
 - Done: block-UI export now exposes backend editor metadata for palette,
   commands, validation gates, and MCP-ready tool mapping.
-- Next: build the first visual chip-block editor screen against
+- Done: `Docs/VISUAL_MODULE_PLAN.md` defines the first usable visual workbench
+  screen, backend commands, data rules, and student acceptance gate.
+- Next: implement the first visual chip-block editor screen against
   `components.block_ui` instead of creating a second circuit format.
 
 ## Waiting Items
