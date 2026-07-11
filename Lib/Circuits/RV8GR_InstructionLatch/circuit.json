@@ -45,12 +45,14 @@
     "u5_capture": "U5 captures IBUS on the rising edge of T0 only.",
     "u6_capture": "U6 captures IBUS on the rising edge of T1 only.",
     "hold": "Both latches hold through T2 and through phases where their own clock does not rise.",
+    "output_policy": "IR_HIGH and IRL are each driven by one active 74HC574 output bank; U34, not U6, is the only device allowed to place IRL onto IBUS.",
     "output_enable": "U5 and U6 /OE pins are tied LOW; U34, not U6, controls when IRL drives IBUS."
   },
   "timing": {
     "clocking": "edge_sensitive",
     "trigger_edges": ["T0 rising for U5", "T1 rising for U6"],
     "non_trigger_edge": "No rising edge on the owning phase clock holds state.",
+    "setup_hold_boundary": "IBUS must settle before the T0/T1 rising edge and hold after it; physical R/C delay and setup/hold margin are covered by timing_margins.json, not claimed by this latch package alone.",
     "paths": [
       {"name": "ibus_to_ir_high", "from": "IBUS0..IBUS7", "to": "U5 Q outputs", "when": "T0 rising", "source_part": "74HC574"},
       {"name": "ibus_to_ir_low", "from": "IBUS0..IBUS7", "to": "U6 Q outputs", "when": "T1 rising", "source_part": "74HC574"}

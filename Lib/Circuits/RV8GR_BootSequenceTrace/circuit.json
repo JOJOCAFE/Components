@@ -53,11 +53,13 @@
     "setpg_00": "Second instruction initializes PG to $00 so jumps and branches stay on ROM page 0 until changed.",
     "li_00": "Third instruction initializes AC to $00 and Z to 1.",
     "j_self": "Final instruction loads PC with {PG,$06}; because PG is $00, PC returns to $0006.",
-    "bus_policy": "T0/T1 fetch bytes come from ROM; T2 immediate bytes come from U34. No trace vector allows multiple bus drivers."
+    "bus_policy": "T0/T1 fetch bytes come from ROM; T2 immediate bytes come from U34. No trace vector allows multiple bus drivers.",
+    "edge_policy": "U23, U32, U9, and the U1_U4 counter chain only update on their intended rising edges; opposite edges hold in this functional trace."
   },
   "timing": {
     "clocking": "12 manual clock edges: four 2-byte instructions with T0/T1/T2 phases.",
     "frequency_boundary": "Functional and manual single-step proof only; physical speed claims stay blocked until timing_margins.json evidence exists.",
+    "deadband_boundary": "Trace buses still require R/C settling and positive bus-owner deadband before physical signoff; this package records functional row order only.",
     "student_rule": "After 12 clocks, DP=$80, PG=$00, AC=$00, Z=1, and PC is looping at $0006."
   },
   "verification": {

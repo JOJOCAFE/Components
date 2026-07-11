@@ -61,6 +61,7 @@
     "clocking": "15 manual clock edges: five 2-byte instructions with T0/T1/T2 phases.",
     "phase_order": ["T0", "T1", "T2"],
     "frequency_boundary": "Functional and manual single-step proof only; physical 1 MHz or 5 MHz claims require timing_margins.json evidence.",
+    "deadband_boundary": "The marker trace still needs R/C settling, output-disable deadband, and destination setup/hold evidence before physical speed signoff.",
     "student_rule": "Check the bus owners and the branch at clock 12 before trusting the $AA LEDs."
   },
   "verification": {

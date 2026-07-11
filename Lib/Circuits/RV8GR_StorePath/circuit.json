@@ -49,11 +49,13 @@
     "u7": "During store, U7 is enabled and WR_DIR=1, so it drives IBUS onto DBUS.",
     "rom_safety": "WR_DIR=1 drives ROM /OE HIGH, disabling ROM output during CPU store.",
     "ram_safety": "RAM /WE follows /AC_BUF; /WE LOW writes and disables RAM output drivers.",
+    "bus_policy": "Store phases allow exactly one active IBUS driver, U14, and exactly one active DBUS driver, U7; ROM and RAM outputs must be high-Z before U7 writes DBUS.",
     "rom_page_store": "If A15=0, CPU store targets ROM space. ROM output is disabled; normal EEPROM/flash unlock protection means no ordinary RAM write occurs."
   },
   "timing": {
     "clocking": "phase_sensitive_combinational",
     "control_window": "Store controls are valid only inside T2 with STR=1.",
+    "deadband_boundary": "The store path requires measured or source-backed output-float deadband, U7 enable delay, and DBUS R/C settling before any physical-speed claim.",
     "unsafe_states": [
       "ROM output enabled while U7 writes DBUS",
       "RAM output enabled while U7 writes DBUS",

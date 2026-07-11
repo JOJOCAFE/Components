@@ -171,7 +171,71 @@
       },
       "part": "74HC148",
       "schema": "db.component.timing",
-      "version": 1
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "conditions": "ST M74HC148 feature summary, VCC=5 V.",
+        "parameters": {
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "74HC148 is combinational and has no clocked Q output."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "74HC148 is combinational and has no clocked Q output."
+          },
+          "hold": {
+            "status": "not_applicable",
+            "reason": "74HC148 is combinational and has no setup/hold timing requirement."
+          },
+          "minimum_pulse_width": {
+            "status": "not_applicable",
+            "reason": "74HC148 is combinational and has no clock/reset/write pulse-width requirement."
+          },
+          "setup": {
+            "status": "not_applicable",
+            "reason": "74HC148 is combinational and has no setup/hold timing requirement."
+          },
+          "tPHL": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_typical_ns": {
+                "feature_tpd": 15
+              }
+            },
+            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          },
+          "tPHZ": {
+            "status": "not_applicable",
+            "reason": "74HC148 has no output-enable/high-Z control in the existing model."
+          },
+          "tPLH": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_typical_ns": {
+                "feature_tpd": 15
+              }
+            },
+            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          },
+          "tPLZ": {
+            "status": "not_applicable",
+            "reason": "74HC148 has no output-enable/high-Z control in the existing model."
+          },
+          "tPZH": {
+            "status": "not_applicable",
+            "reason": "74HC148 has no output-enable/high-Z control in the existing model."
+          },
+          "tPZL": {
+            "status": "not_applicable",
+            "reason": "74HC148 has no output-enable/high-Z control in the existing model."
+          }
+        }
+      }
     }
   },
   "generation": {
@@ -354,6 +418,70 @@
         }
       },
       "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "conditions": "ST M74HC148 feature summary, VCC=5 V.",
+      "parameters": {
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "74HC148 is combinational and has no clocked Q output."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "74HC148 is combinational and has no clocked Q output."
+        },
+        "hold": {
+          "status": "not_applicable",
+          "reason": "74HC148 is combinational and has no setup/hold timing requirement."
+        },
+        "minimum_pulse_width": {
+          "status": "not_applicable",
+          "reason": "74HC148 is combinational and has no clock/reset/write pulse-width requirement."
+        },
+        "setup": {
+          "status": "not_applicable",
+          "reason": "74HC148 is combinational and has no setup/hold timing requirement."
+        },
+        "tPHL": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_typical_ns": {
+              "feature_tpd": 15
+            }
+          },
+          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+        },
+        "tPHZ": {
+          "status": "not_applicable",
+          "reason": "74HC148 has no output-enable/high-Z control in the existing model."
+        },
+        "tPLH": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_typical_ns": {
+              "feature_tpd": 15
+            }
+          },
+          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+        },
+        "tPLZ": {
+          "status": "not_applicable",
+          "reason": "74HC148 has no output-enable/high-Z control in the existing model."
+        },
+        "tPZH": {
+          "status": "not_applicable",
+          "reason": "74HC148 has no output-enable/high-Z control in the existing model."
+        },
+        "tPZL": {
+          "status": "not_applicable",
+          "reason": "74HC148 has no output-enable/high-Z control in the existing model."
+        }
+      }
     }
   },
   "verification": {

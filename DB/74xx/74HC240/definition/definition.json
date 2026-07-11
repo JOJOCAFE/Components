@@ -212,7 +212,197 @@
       },
       "part": "74HC240",
       "schema": "db.component.timing",
-      "version": 1
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "conditions": "TI SN74HC240 switching characteristics, CL=50 pF, VCC=4.5 V.",
+        "parameters": {
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "74HC240 is combinational and has no clocked Q output."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "74HC240 is combinational and has no clocked Q output."
+          },
+          "hold": {
+            "status": "not_applicable",
+            "reason": "74HC240 is combinational and has no setup/hold timing requirement."
+          },
+          "minimum_pulse_width": {
+            "status": "not_applicable",
+            "reason": "74HC240 is combinational and has no clock/reset/write pulse-width requirement."
+          },
+          "setup": {
+            "status": "not_applicable",
+            "reason": "74HC240 is combinational and has no setup/hold timing requirement."
+          },
+          "tPHL": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns_25c": {
+                "disable": 30,
+                "enable": 30,
+                "input_to_output": 20
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "disable": 38,
+                "enable": 38,
+                "input_to_output": 25
+              },
+              "datasheet_max_ns_minus55_to_125c": {
+                "disable": 45,
+                "enable": 45,
+                "input_to_output": 30
+              },
+              "datasheet_typical_ns": {
+                "disable": 22,
+                "enable": 15,
+                "input_to_output": 10
+              }
+            },
+            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          },
+          "tPHZ": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns_25c": {
+                "disable": 30,
+                "enable": 30,
+                "input_to_output": 20
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "disable": 38,
+                "enable": 38,
+                "input_to_output": 25
+              },
+              "datasheet_max_ns_minus55_to_125c": {
+                "disable": 45,
+                "enable": 45,
+                "input_to_output": 30
+              },
+              "datasheet_typical_ns": {
+                "disable": 22,
+                "enable": 15,
+                "input_to_output": 10
+              }
+            },
+            "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+          },
+          "tPLH": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns_25c": {
+                "disable": 30,
+                "enable": 30,
+                "input_to_output": 20
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "disable": 38,
+                "enable": 38,
+                "input_to_output": 25
+              },
+              "datasheet_max_ns_minus55_to_125c": {
+                "disable": 45,
+                "enable": 45,
+                "input_to_output": 30
+              },
+              "datasheet_typical_ns": {
+                "disable": 22,
+                "enable": 15,
+                "input_to_output": 10
+              }
+            },
+            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          },
+          "tPLZ": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns_25c": {
+                "disable": 30,
+                "enable": 30,
+                "input_to_output": 20
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "disable": 38,
+                "enable": 38,
+                "input_to_output": 25
+              },
+              "datasheet_max_ns_minus55_to_125c": {
+                "disable": 45,
+                "enable": 45,
+                "input_to_output": 30
+              },
+              "datasheet_typical_ns": {
+                "disable": 22,
+                "enable": 15,
+                "input_to_output": 10
+              }
+            },
+            "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+          },
+          "tPZH": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns_25c": {
+                "disable": 30,
+                "enable": 30,
+                "input_to_output": 20
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "disable": 38,
+                "enable": 38,
+                "input_to_output": 25
+              },
+              "datasheet_max_ns_minus55_to_125c": {
+                "disable": 45,
+                "enable": 45,
+                "input_to_output": 30
+              },
+              "datasheet_typical_ns": {
+                "disable": 22,
+                "enable": 15,
+                "input_to_output": 10
+              }
+            },
+            "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+          },
+          "tPZL": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns_25c": {
+                "disable": 30,
+                "enable": 30,
+                "input_to_output": 20
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "disable": 38,
+                "enable": 38,
+                "input_to_output": 25
+              },
+              "datasheet_max_ns_minus55_to_125c": {
+                "disable": 45,
+                "enable": 45,
+                "input_to_output": 30
+              },
+              "datasheet_typical_ns": {
+                "disable": 22,
+                "enable": 15,
+                "input_to_output": 10
+              }
+            },
+            "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+          }
+        }
+      }
     }
   },
   "generation": {
@@ -462,6 +652,196 @@
         }
       },
       "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "conditions": "TI SN74HC240 switching characteristics, CL=50 pF, VCC=4.5 V.",
+      "parameters": {
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "74HC240 is combinational and has no clocked Q output."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "74HC240 is combinational and has no clocked Q output."
+        },
+        "hold": {
+          "status": "not_applicable",
+          "reason": "74HC240 is combinational and has no setup/hold timing requirement."
+        },
+        "minimum_pulse_width": {
+          "status": "not_applicable",
+          "reason": "74HC240 is combinational and has no clock/reset/write pulse-width requirement."
+        },
+        "setup": {
+          "status": "not_applicable",
+          "reason": "74HC240 is combinational and has no setup/hold timing requirement."
+        },
+        "tPHL": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns_25c": {
+              "disable": 30,
+              "enable": 30,
+              "input_to_output": 20
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "disable": 38,
+              "enable": 38,
+              "input_to_output": 25
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "disable": 45,
+              "enable": 45,
+              "input_to_output": 30
+            },
+            "datasheet_typical_ns": {
+              "disable": 22,
+              "enable": 15,
+              "input_to_output": 10
+            }
+          },
+          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+        },
+        "tPHZ": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns_25c": {
+              "disable": 30,
+              "enable": 30,
+              "input_to_output": 20
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "disable": 38,
+              "enable": 38,
+              "input_to_output": 25
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "disable": 45,
+              "enable": 45,
+              "input_to_output": 30
+            },
+            "datasheet_typical_ns": {
+              "disable": 22,
+              "enable": 15,
+              "input_to_output": 10
+            }
+          },
+          "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+        },
+        "tPLH": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns_25c": {
+              "disable": 30,
+              "enable": 30,
+              "input_to_output": 20
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "disable": 38,
+              "enable": 38,
+              "input_to_output": 25
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "disable": 45,
+              "enable": 45,
+              "input_to_output": 30
+            },
+            "datasheet_typical_ns": {
+              "disable": 22,
+              "enable": 15,
+              "input_to_output": 10
+            }
+          },
+          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+        },
+        "tPLZ": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns_25c": {
+              "disable": 30,
+              "enable": 30,
+              "input_to_output": 20
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "disable": 38,
+              "enable": 38,
+              "input_to_output": 25
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "disable": 45,
+              "enable": 45,
+              "input_to_output": 30
+            },
+            "datasheet_typical_ns": {
+              "disable": 22,
+              "enable": 15,
+              "input_to_output": 10
+            }
+          },
+          "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+        },
+        "tPZH": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns_25c": {
+              "disable": 30,
+              "enable": 30,
+              "input_to_output": 20
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "disable": 38,
+              "enable": 38,
+              "input_to_output": 25
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "disable": 45,
+              "enable": 45,
+              "input_to_output": 30
+            },
+            "datasheet_typical_ns": {
+              "disable": 22,
+              "enable": 15,
+              "input_to_output": 10
+            }
+          },
+          "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+        },
+        "tPZL": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns_25c": {
+              "disable": 30,
+              "enable": 30,
+              "input_to_output": 20
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "disable": 38,
+              "enable": 38,
+              "input_to_output": 25
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "disable": 45,
+              "enable": 45,
+              "input_to_output": 30
+            },
+            "datasheet_typical_ns": {
+              "disable": 22,
+              "enable": 15,
+              "input_to_output": 10
+            }
+          },
+          "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+        }
+      }
     }
   },
   "verification": {

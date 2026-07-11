@@ -189,7 +189,107 @@
       },
       "part": "74HC85",
       "schema": "db.component.timing",
-      "version": 1
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "conditions": "Motorola MC74HC85 maximum propagation delays, CL=50 pF, VCC=4.5 V.",
+        "parameters": {
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "74HC85 is combinational and has no clocked Q output."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "74HC85 is combinational and has no clocked Q output."
+          },
+          "hold": {
+            "status": "not_applicable",
+            "reason": "74HC85 is combinational and has no setup/hold timing requirement."
+          },
+          "minimum_pulse_width": {
+            "status": "not_applicable",
+            "reason": "74HC85 is combinational and has no clock/reset/write pulse-width requirement."
+          },
+          "setup": {
+            "status": "not_applicable",
+            "reason": "74HC85 is combinational and has no setup/hold timing requirement."
+          },
+          "tPHL": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns_25c": {
+                "a_or_b_to_equal": 40,
+                "a_or_b_to_greater_or_less": 46,
+                "cascade_to_greater_or_less": 35,
+                "equal_input_to_equal_output": 29,
+                "transition": 15
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "a_or_b_to_equal": 50,
+                "a_or_b_to_greater_or_less": 58,
+                "cascade_to_greater_or_less": 44,
+                "equal_input_to_equal_output": 36,
+                "transition": 19
+              },
+              "datasheet_max_ns_minus55_to_125c": {
+                "a_or_b_to_equal": 60,
+                "a_or_b_to_greater_or_less": 69,
+                "cascade_to_greater_or_less": 53,
+                "equal_input_to_equal_output": 44,
+                "transition": 22
+              }
+            },
+            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          },
+          "tPHZ": {
+            "status": "not_applicable",
+            "reason": "74HC85 has no output-enable/high-Z control in the existing model."
+          },
+          "tPLH": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns_25c": {
+                "a_or_b_to_equal": 40,
+                "a_or_b_to_greater_or_less": 46,
+                "cascade_to_greater_or_less": 35,
+                "equal_input_to_equal_output": 29,
+                "transition": 15
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "a_or_b_to_equal": 50,
+                "a_or_b_to_greater_or_less": 58,
+                "cascade_to_greater_or_less": 44,
+                "equal_input_to_equal_output": 36,
+                "transition": 19
+              },
+              "datasheet_max_ns_minus55_to_125c": {
+                "a_or_b_to_equal": 60,
+                "a_or_b_to_greater_or_less": 69,
+                "cascade_to_greater_or_less": 53,
+                "equal_input_to_equal_output": 44,
+                "transition": 22
+              }
+            },
+            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          },
+          "tPLZ": {
+            "status": "not_applicable",
+            "reason": "74HC85 has no output-enable/high-Z control in the existing model."
+          },
+          "tPZH": {
+            "status": "not_applicable",
+            "reason": "74HC85 has no output-enable/high-Z control in the existing model."
+          },
+          "tPZL": {
+            "status": "not_applicable",
+            "reason": "74HC85 has no output-enable/high-Z control in the existing model."
+          }
+        }
+      }
     }
   },
   "generation": {
@@ -390,6 +490,106 @@
         }
       },
       "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "conditions": "Motorola MC74HC85 maximum propagation delays, CL=50 pF, VCC=4.5 V.",
+      "parameters": {
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "74HC85 is combinational and has no clocked Q output."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "74HC85 is combinational and has no clocked Q output."
+        },
+        "hold": {
+          "status": "not_applicable",
+          "reason": "74HC85 is combinational and has no setup/hold timing requirement."
+        },
+        "minimum_pulse_width": {
+          "status": "not_applicable",
+          "reason": "74HC85 is combinational and has no clock/reset/write pulse-width requirement."
+        },
+        "setup": {
+          "status": "not_applicable",
+          "reason": "74HC85 is combinational and has no setup/hold timing requirement."
+        },
+        "tPHL": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns_25c": {
+              "a_or_b_to_equal": 40,
+              "a_or_b_to_greater_or_less": 46,
+              "cascade_to_greater_or_less": 35,
+              "equal_input_to_equal_output": 29,
+              "transition": 15
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "a_or_b_to_equal": 50,
+              "a_or_b_to_greater_or_less": 58,
+              "cascade_to_greater_or_less": 44,
+              "equal_input_to_equal_output": 36,
+              "transition": 19
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "a_or_b_to_equal": 60,
+              "a_or_b_to_greater_or_less": 69,
+              "cascade_to_greater_or_less": 53,
+              "equal_input_to_equal_output": 44,
+              "transition": 22
+            }
+          },
+          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+        },
+        "tPHZ": {
+          "status": "not_applicable",
+          "reason": "74HC85 has no output-enable/high-Z control in the existing model."
+        },
+        "tPLH": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns_25c": {
+              "a_or_b_to_equal": 40,
+              "a_or_b_to_greater_or_less": 46,
+              "cascade_to_greater_or_less": 35,
+              "equal_input_to_equal_output": 29,
+              "transition": 15
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "a_or_b_to_equal": 50,
+              "a_or_b_to_greater_or_less": 58,
+              "cascade_to_greater_or_less": 44,
+              "equal_input_to_equal_output": 36,
+              "transition": 19
+            },
+            "datasheet_max_ns_minus55_to_125c": {
+              "a_or_b_to_equal": 60,
+              "a_or_b_to_greater_or_less": 69,
+              "cascade_to_greater_or_less": 53,
+              "equal_input_to_equal_output": 44,
+              "transition": 22
+            }
+          },
+          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+        },
+        "tPLZ": {
+          "status": "not_applicable",
+          "reason": "74HC85 has no output-enable/high-Z control in the existing model."
+        },
+        "tPZH": {
+          "status": "not_applicable",
+          "reason": "74HC85 has no output-enable/high-Z control in the existing model."
+        },
+        "tPZL": {
+          "status": "not_applicable",
+          "reason": "74HC85 has no output-enable/high-Z control in the existing model."
+        }
+      }
     }
   },
   "verification": {

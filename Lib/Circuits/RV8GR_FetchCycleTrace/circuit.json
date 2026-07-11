@@ -56,6 +56,7 @@
     "clocking": "three_phase_fetch_execute",
     "phase_order": ["T0", "T1", "T2"],
     "pc_increment": "PC increments only on T0 and T1; T2 holds unless branch/jump loads PC.",
+    "deadband_boundary": "The fetch trace requires ROM/U7 output-float deadband, R/C settling, and latch setup/hold evidence before physical speed signoff; this package is functional only.",
     "frequency_boundary": "Functional trace proof only; physical timing is owned by timing_margins.json."
   },
   "verification": {

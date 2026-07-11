@@ -2948,6 +2948,49 @@ def test_virtual_physical_fault_checker_accepts_good_rv8gr_packages():
         }
 
 
+def test_rv8gr_circuit_fault_sweep_classifies_ready_packages_and_known_blockers():
+    expected_clean = {
+        "RV8GR_AddressMux16",
+        "RV8GR_AluAccumulator",
+        "RV8GR_BranchJumpControl",
+        "RV8GR_BusOwnership",
+        "RV8GR_DataPageMemory",
+        "RV8GR_FullControlOpcodeSweep",
+        "RV8GR_IRQLatch",
+        "RV8GR_InstructionLatch",
+        "RV8GR_InterruptTrace",
+        "RV8GR_PC16",
+        "RV8GR_PageJumpTrace",
+        "RV8GR_RingCounter",
+        "RV8GR_RomDbusRead",
+        "RV8GR_StorePath",
+        "RV8GR_VirtualTestHelpers",
+        "RV8GR_WholeSystemChipLevelVirtual",
+    }
+    known_pin_shorthand_blockers = {
+        "RV8GR_BootSequenceTrace",
+        "RV8GR_FetchCycleTrace",
+        "RV8GR_Lab13MarkerTrace",
+        "RV8GR_PageDataRegisters",
+        "RV8GR_ResetClockBringup",
+        "RV8GR_StoreLoadBranchTrace",
+    }
+
+    clean: set[str] = set()
+    blocked: dict[str, set[str]] = {}
+    for circuit_path in circuit_package_paths():
+        package = circuit_path.parent.name
+        report = check_virtual_physical_faults(load_json(circuit_path))
+        if report["ok"]:
+            clean.add(package)
+            continue
+        blocked[package] = {finding["id"] for finding in report["findings"]}
+
+    assert clean == expected_clean
+    assert set(blocked) == known_pin_shorthand_blockers
+    assert all(ids == {"pin_number_truth"} for ids in blocked.values())
+
+
 def test_virtual_physical_fault_checker_rejects_ai_pin_bus_edge_and_delay_mistakes():
     bad_pin = {
         "id": "bad_pin",
@@ -3541,6 +3584,7 @@ def run_all():
     test_rv8gr_whole_system_chip_level_virtual_stress_nets_are_virtual_only()
     test_rv8gr_whole_system_chip_level_virtual_catches_ai_fault_patterns()
     test_virtual_physical_fault_checker_accepts_good_rv8gr_packages()
+    test_rv8gr_circuit_fault_sweep_classifies_ready_packages_and_known_blockers()
     test_virtual_physical_fault_checker_rejects_ai_pin_bus_edge_and_delay_mistakes()
     test_rv8gr_timing_margin_artifact_checks_slack_and_5mhz_boundary()
     test_rv8gr_timing_coverage_matrix_accounts_for_every_circuit_package()

@@ -52,11 +52,13 @@
     "sb": "Trace 2: opcode 0x04 drives AC through U14 onto IBUS, U7 writes DBUS, and RAM[{DP,IRL}] captures AC when A15 selects RAM.",
     "lb": "Trace 7: opcode 0x38 selects RAM[{DP,IRL}], U7 bridges DBUS to IBUS, and AC captures the RAM byte.",
     "beq": "Trace 4: opcode 0x02 loads PC with {PG,IRL} when Z=1; AC and RAM are unchanged.",
-    "bus_policy": "Each vector must have no more than one active IBUS driver and no more than one active DBUS driver."
+    "bus_policy": "Each vector must have no more than one active IBUS driver and no more than one active DBUS driver.",
+    "edge_policy": "The U1_U4 counter/load chain changes PC only on the intended rising edge; opposite edges hold for these trace rows."
   },
   "timing": {
     "clocking": "T2 execute trace only",
     "frequency_boundary": "Functional trace proof only; physical timing is owned by timing_margins.json.",
+    "deadband_boundary": "SB and LB still require DBUS/IBUS output-float deadband, R/C settling, and destination setup/hold evidence before physical speed signoff.",
     "student_rule": "Check bus ownership before checking the state result, because a correct-looking byte is not acceptable if two chips fought for the bus."
   },
   "verification": {

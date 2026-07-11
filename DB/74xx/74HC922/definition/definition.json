@@ -190,7 +190,137 @@
       },
       "part": "74HC922",
       "schema": "db.component.timing",
-      "version": 1
+      "version": 1,
+      "timing_parameters": {
+        "schema": "db.component.timing_parameters",
+        "version": 1,
+        "basis": "normalized_from_existing_datasheet_timing",
+        "conditions": "MM74C922 timing characteristics, VCC=5 V.",
+        "parameters": {
+          "clock_to_q_high": {
+            "status": "not_applicable",
+            "reason": "74HC922 is combinational and has no clocked Q output."
+          },
+          "clock_to_q_low": {
+            "status": "not_applicable",
+            "reason": "74HC922 is combinational and has no clocked Q output."
+          },
+          "hold": {
+            "status": "not_applicable",
+            "reason": "74HC922 is combinational and has no setup/hold timing requirement."
+          },
+          "minimum_pulse_width": {
+            "status": "not_applicable",
+            "reason": "74HC922 is combinational and has no clock/reset/write pulse-width requirement."
+          },
+          "setup": {
+            "status": "not_applicable",
+            "reason": "74HC922 is combinational and has no setup/hold timing requirement."
+          },
+          "tPHL": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns": {
+                "data_available_to_output": 150,
+                "high_z_to_output": 250,
+                "output_to_high_z": 200
+              },
+              "datasheet_typical_ns": {
+                "data_available_to_output": 60,
+                "high_z_to_output": 100,
+                "output_to_high_z": 80
+              }
+            },
+            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          },
+          "tPHZ": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns": {
+                "data_available_to_output": 150,
+                "high_z_to_output": 250,
+                "output_to_high_z": 200
+              },
+              "datasheet_typical_ns": {
+                "data_available_to_output": 60,
+                "high_z_to_output": 100,
+                "output_to_high_z": 80
+              }
+            },
+            "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+          },
+          "tPLH": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns": {
+                "data_available_to_output": 150,
+                "high_z_to_output": 250,
+                "output_to_high_z": 200
+              },
+              "datasheet_typical_ns": {
+                "data_available_to_output": 60,
+                "high_z_to_output": 100,
+                "output_to_high_z": 80
+              }
+            },
+            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          },
+          "tPLZ": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns": {
+                "data_available_to_output": 150,
+                "high_z_to_output": 250,
+                "output_to_high_z": 200
+              },
+              "datasheet_typical_ns": {
+                "data_available_to_output": 60,
+                "high_z_to_output": 100,
+                "output_to_high_z": 80
+              }
+            },
+            "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+          },
+          "tPZH": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns": {
+                "data_available_to_output": 150,
+                "high_z_to_output": 250,
+                "output_to_high_z": 200
+              },
+              "datasheet_typical_ns": {
+                "data_available_to_output": 60,
+                "high_z_to_output": 100,
+                "output_to_high_z": 80
+              }
+            },
+            "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+          },
+          "tPZL": {
+            "status": "generic",
+            "source_field": "timing.datasheet.values",
+            "values_ns": {
+              "datasheet_max_ns": {
+                "data_available_to_output": 150,
+                "high_z_to_output": 250,
+                "output_to_high_z": 200
+              },
+              "datasheet_typical_ns": {
+                "data_available_to_output": 60,
+                "high_z_to_output": 100,
+                "output_to_high_z": 80
+              }
+            },
+            "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+          }
+        }
+      }
     }
   },
   "generation": {
@@ -390,6 +520,136 @@
         }
       },
       "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "schema": "db.component.timing_parameters",
+      "version": 1,
+      "basis": "normalized_from_existing_datasheet_timing",
+      "conditions": "MM74C922 timing characteristics, VCC=5 V.",
+      "parameters": {
+        "clock_to_q_high": {
+          "status": "not_applicable",
+          "reason": "74HC922 is combinational and has no clocked Q output."
+        },
+        "clock_to_q_low": {
+          "status": "not_applicable",
+          "reason": "74HC922 is combinational and has no clocked Q output."
+        },
+        "hold": {
+          "status": "not_applicable",
+          "reason": "74HC922 is combinational and has no setup/hold timing requirement."
+        },
+        "minimum_pulse_width": {
+          "status": "not_applicable",
+          "reason": "74HC922 is combinational and has no clock/reset/write pulse-width requirement."
+        },
+        "setup": {
+          "status": "not_applicable",
+          "reason": "74HC922 is combinational and has no setup/hold timing requirement."
+        },
+        "tPHL": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          },
+          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+        },
+        "tPHZ": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          },
+          "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+        },
+        "tPLH": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          },
+          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+        },
+        "tPLZ": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          },
+          "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+        },
+        "tPZH": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          },
+          "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+        },
+        "tPZL": {
+          "status": "generic",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "datasheet_max_ns": {
+              "data_available_to_output": 150,
+              "high_z_to_output": 250,
+              "output_to_high_z": 200
+            },
+            "datasheet_typical_ns": {
+              "data_available_to_output": 60,
+              "high_z_to_output": 100,
+              "output_to_high_z": 80
+            }
+          },
+          "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+        }
+      }
     }
   },
   "verification": {

@@ -54,12 +54,14 @@
     "ram_write": "RAM writes when selected and /WE is LOW.",
     "ram_read": "RAM drives DBUS when selected, /WE HIGH, and /OE LOW.",
     "rom_read": "ROM drives DBUS when selected, /OE LOW, and /WE HIGH.",
+    "bus_policy": "DP is driven by the single U32 register output bank. DBUS allows exactly one active memory or U7 driver per phase; ROM/RAM selects are complementary and write phases disable memory outputs.",
     "rom_store_warning": "SETDP<$80 followed by SB is bus-safe but does not behave like RAM storage."
   },
   "timing": {
     "clocking": "mixed_edge_and_combinational",
     "trigger_edge": "DP_Load rising captures U32",
     "control_window": "DP must be stable before SRC/STR data-address T2 operations use {DP,IRL}.",
+    "deadband_boundary": "DBUS read/write turnaround needs positive output-float deadband plus R/C settling evidence; this package is functionally checked, while timing_margins.json blocks physical signoff until measured.",
     "paths": [
       {"name": "setdp", "from": "IBUS0..IBUS7", "to": "DP0..DP7", "when": "DP_Load rising", "source_part": "74HC574"},
       {"name": "data_address", "from": "DP0..DP7 and IRL0..IRL7", "to": "ABUS0..ABUS15", "when": "/ADDR_MODE=0", "source_part": "74HC157"},

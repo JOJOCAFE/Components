@@ -65,6 +65,7 @@
   "timing": {
     "clocking": "phase_sensitive_combinational",
     "control_window": "Bus enables are intended to be stable inside each T0/T1/T2 phase before destination latches sample data.",
+    "deadband_boundary": "A positive disable-to-enable deadband is required between DBUS/IBUS owners; timing_margins.json keeps physical signoff blocked until output-float, enable-delay, R/C, and scope evidence are recorded.",
     "unsafe_states": [
       "U34 and U14 both enabled on IBUS",
       "U34 and U7 both driving IBUS",

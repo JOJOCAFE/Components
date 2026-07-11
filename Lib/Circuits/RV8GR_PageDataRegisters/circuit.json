@@ -54,6 +54,7 @@
     "setpg": "SETPG is MUX_SEL=1 and AC_WR=0; U23 captures IBUS on the PG_CLK rising edge.",
     "setdp": "DP_Load=T2 AND XOR_MODE AND /ADDR_MODE AND /AC_WR; U32 captures IBUS on DP_Load rising.",
     "jump_target": "PC load target is {PG,IRL}; SETPG $10 followed by J $00 targets $1000.",
+    "output_policy": "PG and DP are each driven by one active 74HC574 output bank. The named PC_LOAD bus is a package boundary shorthand, not a second physical driver.",
     "separation": "Normal SETPG and SETDP are separated by XOR_MODE and /ADDR_MODE. Risk vectors still record invalid overlap behavior."
   },
   "timing": {
@@ -62,6 +63,7 @@
       "U23 captures on PG_CLK rising edge",
       "U32 captures on DP_Load rising edge"
     ],
+    "setup_hold_boundary": "IBUS must meet 74HC574 setup/hold around PG_CLK and DP_Load rising edges; physical R/C delay and destination deadband remain blocked by timing_margins.json evidence.",
     "unsafe_states": [
       "Treating PG_CLK LOW level as the latch event",
       "PG_CLK stuck LOW after SETPG",

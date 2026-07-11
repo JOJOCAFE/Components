@@ -489,6 +489,57 @@ def test_first_non_rv8gr_timing_batch_has_canonical_parameters():
             assert public_parameters[name]["status"] == "not_applicable"
 
 
+def test_second_non_rv8gr_timing_batch_has_canonical_parameters():
+    expected = {
+        "74HC07": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC138": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC139": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC147": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC148": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC151": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC153": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC155": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC20": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC238": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC240": {"propagation": "generic", "high_z": "generic"},
+        "74HC244": {"propagation": "generic", "high_z": "generic"},
+        "74HC251": {"propagation": "generic", "high_z": "generic"},
+        "74HC257": {"propagation": "generic", "high_z": "generic"},
+        "74HC27": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC30": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC32": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC4049": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC4050": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC85": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC922": {"propagation": "generic", "high_z": "generic"},
+        "74HCT245": {"propagation": "generic", "high_z": "generic"},
+        "74HCT541": {"propagation": "generic", "high_z": "generic"},
+    }
+
+    for part, statuses in expected.items():
+        definition = load_digital_definition(part)
+        public_parameters = definition["timing"]["timing_parameters"]["parameters"]
+        package = load_digital_package(part)
+        layer_parameters = package["layers"]["definition"]["timing"]["timing_parameters"]["parameters"]
+        assert public_parameters.keys() == layer_parameters.keys()
+        assert public_parameters["tPLH"]["status"] == statuses["propagation"]
+        assert public_parameters["tPHL"]["status"] == statuses["propagation"]
+        assert public_parameters["tPLH"]["values_ns"]
+        assert public_parameters["tPHL"]["values_ns"]
+
+        for name in ("tPZH", "tPZL", "tPHZ", "tPLZ"):
+            assert public_parameters[name]["status"] == statuses["high_z"]
+
+        for name in (
+            "clock_to_q_high",
+            "clock_to_q_low",
+            "hold",
+            "minimum_pulse_width",
+            "setup",
+        ):
+            assert public_parameters[name]["status"] == "not_applicable"
+
+
 def test_virtual_and_passive_components_use_definition_packages():
     assert generic_package_parts() == {
         "InputSource",
@@ -1206,6 +1257,8 @@ def run_all():
     test_generation_seed_packages_have_required_layers()
     test_physical_digital_definitions_omit_exact_duplicate_layers()
     test_starter_chips_have_normalized_timing_parameters()
+    test_first_non_rv8gr_timing_batch_has_canonical_parameters()
+    test_second_non_rv8gr_timing_batch_has_canonical_parameters()
     test_python_chip_factory_delay_matches_public_timing_default()
     test_74hc245_split_tests_and_evidence_are_loaded()
     test_component_generation_artifacts_cover_declared_targets()

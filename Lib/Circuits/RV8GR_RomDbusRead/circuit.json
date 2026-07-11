@@ -43,11 +43,13 @@
     "rom_write": "ROM /WE is held HIGH for ordinary CPU reads.",
     "u7_read": "Physical U7 A side is IBUS and B side is DBUS. With /OE=0 and DIR=0, standard 74HC245 behavior is DBUS_TO_IBUS: B drives A, so DBUS reaches IBUS.",
     "u7_disabled": "BUF_OE_N=1 releases both U7 sides.",
+    "bus_policy": "Read phases allow exactly one active DBUS driver, ROM1, and one active IBUS bridge driver, U7; write/disabled phases force ROM output high-Z before another DBUS driver may take ownership.",
     "write_safety": "WR_DIR=1 disables ROM output before U7 is used as an IBUS to DBUS write bridge."
   },
   "timing": {
     "clocking": "combinational_control_window",
     "read_window": "T0/T1 fetch and T2 memory load require ROM selected, ROM /OE LOW, and U7 /OE LOW with DIR=0.",
+    "deadband_boundary": "ROM /OE high-Z time, U7 enable delay, DBUS R/C delay, and positive disable-to-enable deadband are required before treating this as a physical speed signoff.",
     "unsafe_states": [
       "ROM output enabled while U7 writes IBUS to DBUS",
       "U7 disabled while an instruction byte is expected on IBUS",

@@ -57,6 +57,7 @@
   "timing": {
     "clocking": "combinational",
     "control_window": "ADDR_REQ must be stable before T2 data-access use; T0/T1 fetches ignore SRC/STR because T2=0 keeps /ADDR_MODE HIGH.",
+    "deadband_boundary": "ABUS is not a shared tri-state bus in this package, but 74HC157 propagation delay and downstream setup/hold settle time are still covered by timing_margins.json before any physical speed claim.",
     "paths": [
       {"name": "pc_to_abus", "from": "PC0..PC15", "to": "ABUS0..ABUS15", "when": "/ADDR_MODE=1", "source_part": "74HC157"},
       {"name": "data_to_abus", "from": "DP0..DP7 and IRL0..IRL7", "to": "ABUS0..ABUS15", "when": "/ADDR_MODE=0", "source_part": "74HC157"},

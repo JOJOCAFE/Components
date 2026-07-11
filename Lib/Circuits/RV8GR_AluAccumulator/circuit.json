@@ -58,7 +58,7 @@
     {"net": "AC_D0..AC_D7", "connections": ["U17/U18.Y", "U9.2..9"]},
     {"net": "ACC_CLK", "connections": ["U27.11", "U9.11", "U21.3"]},
     {"net": "/AC_BUF", "connections": ["U14.1", "U14.19"]},
-    {"net": "ZERO_COMPARE", "connections": ["U22.Y", "U21.4"]},
+    {"net": "ZERO_COMPARE", "connections": ["U22./Y", "U21.4"]},
     {"net": "Z_flag", "connections": ["U21.5", "branch/control Z input"]}
   ],
   "behavior": {
@@ -68,7 +68,7 @@
     "ac_mux": "MUX_SEL=0 selects SUM. MUX_SEL=1 selects XOR_Y.",
     "li": "LI works with XOR_MODE=0, ALU_SUB=0, MUX_SEL=1, so AC receives IBUS.",
     "accumulator": "U9 captures the selected result on ACC_CLK rising. ACC_CLK is valid only during T2 when AC_WR=1.",
-    "z_flag": "Z is cleared by the ACC_CLK edge and then U22.Y asynchronously presets it when the new AC equals zero. U22.Y is active LOW when AC equals zero.",
+    "z_flag": "Z is cleared by the ACC_CLK edge and then U22./Y asynchronously presets it when the new AC equals zero. U22./Y is active LOW when AC equals zero.",
     "ac_buffer": "U14 may drive AC onto IBUS only when /AC_BUF is LOW during store."
   },
   "timing": {
