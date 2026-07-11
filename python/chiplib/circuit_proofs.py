@@ -10,6 +10,7 @@ from typing import Any, Mapping
 
 from .circuit_package import CIRCUIT_ROOT, CircuitPackage, load_circuit_package
 from .circuit_runner import CircuitRunnerError, load_circuit_runner
+from .virtual_runtime import OutputAssertionFailure, VirtualTransition
 
 
 PROMOTION_BATCHES: Mapping[str, tuple[str, ...]] = {
@@ -161,6 +162,7 @@ def _execute_live_smoke(
         return {"reset": reset, "sequence": sequence, "snapshot": runner.snapshot()}
 
     adapters = {
+        "RV8GR_VirtualTestHelpers": _prove_virtual_helpers,
         "RV8GR_AluAccumulator": _prove_alu_accumulator,
         "RV8GR_BranchJumpControl": _prove_branch_jump,
         "RV8GR_IRQLatch": _prove_irq_latch,
@@ -179,6 +181,92 @@ def _execute_live_smoke(
         f"{proof_paths[0]}#$",
         f"{package} loads, but no package-specific adapter executes its declared proof vectors",
     ))
+
+
+def _prove_virtual_helpers(runner: Any, proof_path: Path) -> Mapping[str, Any]:
+    """Execute every virtual-helper vector through the loaded named adapters."""
+
+    data = json.loads(proof_path.read_text(encoding="utf-8"))
+    adapters = runner.virtual_adapters
+    checks: list[dict[str, Any]] = []
+
+    clock = adapters["VCLK"]
+    for vector in data["clock_profiles"]:
+        events = clock.ticks(vector["expect_ticks"])
+        checks.append({"name": vector["name"], "passed": len(events) == 2 * vector["expect_ticks"]})
+
+    for vector in data["phase_vectors"]:
+        for name in ("T0", "T1", "T2"):
+            runner.set_input(name, vector[name])
+            adapters[{"T0": "PH0", "T1": "PH1", "T2": "PH2"}[name]].sample(
+                runner.board.net(name).value
+            )
+        active = [name for name in ("T0", "T1", "T2") if vector[name] == 1]
+        actual_valid = len(active) == 1
+        actual_phase = active[0] if actual_valid else None
+        checks.append({
+            "name": vector["name"],
+            "passed": actual_valid == vector["expect_valid"]
+            and (not actual_valid or actual_phase == vector["expect_phase"]),
+        })
+
+    for vector in data["bus_vectors"]:
+        probe = adapters["IBUSMON" if vector["bus"] == "IBUS" else "DBUSMON"]
+        drivers = {name: index % 2 for index, name in enumerate(vector["drivers"])}
+        sample = probe.sample(drivers)
+        checks.append({"name": vector["name"], "passed": sample["conflict"] == vector["expect_conflict"]})
+
+    switch = adapters["SW1"]
+    for vector in data["switch_vectors"]:
+        mode = vector["mode"]
+        if mode.startswith("stable_"):
+            sequence = [switch.set_state(1 if mode == "stable_on" else 0).value]
+        elif mode == "preset_pulse_train":
+            sequence = [event.value for index in range(vector["pulses"]) for event in switch.pulse(1, start_ps=index * 2)]
+        else:
+            sequence = [0, *[event.value for event in switch.pulse(1)]] if mode == "one_shot_push_on_release_off" else [event.value for event in switch.pulse(1)]
+        expected = vector.get("expect_sequence")
+        passed = sequence == expected if expected is not None else sequence.count(1) == vector["expect_edges"]
+        checks.append({"name": vector["name"], "passed": passed})
+
+    for vector in data["rc_parasitic_vectors"]:
+        adapter = type(adapters["CLKRC"])(
+            "RC", source_resistance_ohm=vector["source_resistance_ohm"],
+            wire_capacitance_pf=vector["wire_capacitance_pf"],
+            chip_input_capacitance_pf=vector["chip_input_capacitance_pf"],
+            probe_capacitance_pf=vector["probe_capacitance_pf"],
+            extra_capacitance_pf=vector["extra_capacitance_pf"],
+        )
+        estimate = adapter.estimate()
+        checks.append({
+            "name": vector["name"],
+            "passed": abs(estimate["tau_ns"] - vector["expect_tau_ns"]) < 1e-9
+            and abs(estimate["settling_10_90_ns"] - vector["expect_settling_10_90_ns"]) < 1e-9,
+        })
+
+    for vector in data["delay_noise_vectors"]:
+        adapter = type(adapters["DLY1"])(
+            "DLY", seed=vector["seed"], base_delay_ps=vector["base_delay_ns"] * 1000,
+            jitter_ps=vector["jitter_ns"] * 1000,
+            glitch_probability=vector["glitch_probability"], glitch_width_ps=vector["glitch_width_ns"] * 1000,
+        )
+        output = adapter.transform(tuple(VirtualTransition(index, value) for index, value in enumerate(vector["input_sequence"])))
+        observed = [event.value for event in output if event.kind == "delayed_drive"]
+        checks.append({"name": vector["name"], "passed": observed == vector["expect_sequence"]})
+
+    assertion = adapters["ASSERT1"]
+    for vector in data["output_assert_vectors"]:
+        try:
+            assertion.check(vector["observed"], vector["expected"], mode=vector["mode"])
+            passed = vector["expect_pass"]
+        except OutputAssertionFailure:
+            passed = not vector["expect_pass"]
+        checks.append({"name": vector["name"], "passed": passed})
+
+    if not all(check["passed"] for check in checks):
+        failed = [check["name"] for check in checks if not check["passed"]]
+        raise AssertionError(f"{runner.package.id}: virtual helper vector mismatch: {failed}")
+    return {"proof": str(proof_path), "vectors_executed": len(checks), "checks": checks, "snapshot": runner.snapshot()}
 
 
 def _prove_branch_jump(runner: Any, proof_path: Path) -> Mapping[str, Any]:

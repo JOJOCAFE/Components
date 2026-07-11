@@ -18,7 +18,7 @@ Allowed outcomes: `pass`, `not_applicable`, `not_directly_executed`, and `physic
 | RV8GR_AluAccumulator | pass | not_directly_executed | pass | not_directly_executed | physical_measurement_required |
 | RV8GR_PageDataRegisters | pass | not_directly_executed | pass | not_directly_executed | physical_measurement_required |
 | RV8GR_BranchJumpControl | pass | pass | pass | not_directly_executed | physical_measurement_required |
-| RV8GR_VirtualTestHelpers | pass | not_directly_executed | pass | not_applicable | not_applicable |
+| RV8GR_VirtualTestHelpers | pass | pass | pass | not_applicable | not_applicable |
 | RV8GR_FullControlOpcodeSweep | pass | not_directly_executed | pass | not_directly_executed | physical_measurement_required |
 | RV8GR_ResetClockBringup | pass | pass | pass | not_directly_executed | physical_measurement_required |
 | RV8GR_FetchCycleTrace | pass | not_directly_executed | pass | not_directly_executed | physical_measurement_required |
@@ -216,15 +216,15 @@ Allowed outcomes: `pass`, `not_applicable`, `not_directly_executed`, and `physic
 - Stage: `test_infrastructure`
 - Focus: clock profiles, phase probes, bus contention observation, R/C estimates
 - Logical: `pass` (named_logical_test_executed)
-- Direct live model: `not_directly_executed` (runtime_package_proof_blocked)
+- Direct live model: `pass` (runtime_package_proof_passed)
 - Composition/static: `pass` (executable_static_package_check)
 - Modeled timing: `not_applicable` (runtime_timing_not_applicable)
 - Physical: `not_applicable` (not_applicable)
 - Evidence: `examples/circuits/RV8GR_COVERAGE_INDEX.json`, `examples/circuits/RV8GR_VirtualTestHelpers/circuit.json`, `examples/circuits/RV8GR_VirtualTestHelpers/tests/virtual_test_helpers.json`, `python/tests/test_lib_circuits.py::test_rv8gr_virtual_clock_profiles_execute`, `python/tests/test_lib_circuits.py::test_rv8gr_virtual_test_helpers_package_shape`, `examples/circuits/timing_margins.json`, `examples/circuits/physical_capture_plan.json`, `examples/circuits/RV8GR_CIRCUIT_RUNTIME_EVIDENCE.json`
 - Logical blockers: `[]`
-- Functional blockers: `[{"code": "unsupported_port_direction", "path": "$.ports[6].direction", "message": "direction 'passive' is not executable"}, {"code": "unsupported_port_direction", "path": "$.ports[7].direction", "message": "direction 'passive' is not executable"}, {"code": "unsupported_port_direction", "path": "$.ports[8].direction", "message": "direction 'passive' is not executable"}, {"code": "unsupported_port_direction", "path": "$.ports[9].direction", "message": "direction 'passive' is not executable"}, {"code": "unresolved_output", "path": "$.ports[11].name", "message": "port 'NOISE_OUT' has no concrete net"}]`
+- Functional blockers: `[]`
 - Timing blockers: `[]`
-- Limitations: virtual observation helpers do not prove hardware timing Direct live execution is blocked; see runtime_evidence.functional.blocks. Composition/static pass is package-shape validation, not composed-system execution. Virtual test infrastructure has no independent physical package to measure.
+- Limitations: virtual observation helpers do not prove hardware timing Composition/static pass is package-shape validation, not composed-system execution. Virtual test infrastructure has no independent physical package to measure.
 
 ### RV8GR_FullControlOpcodeSweep
 

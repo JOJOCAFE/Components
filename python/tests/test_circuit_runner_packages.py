@@ -16,7 +16,7 @@ from chiplib.circuit_proofs import (
 ROOT = Path(__file__).resolve().parents[2]
 
 EXPECTED_BATCH_BLOCK_CODES = {
-    "A": {"unresolved_output", "unsupported_port_direction"},
+    "A": set(),
     "B": set(),
     "C": {"ambiguous_symbolic_width", "composite_not_executable"},
     "D": {"unresolved_output"},
@@ -52,7 +52,8 @@ class CircuitRunnerPackagePromotionTests(unittest.TestCase):
         promoted = [result for result in self.results if result.promoted]
         self.assertEqual(
             ["RV8GR_BranchJumpControl", "RV8GR_IRQLatch", "RV8GR_ResetClockBringup",
-             "RV8GR_RingCounter", "RV8GR_RomDbusRead", "RV8GR_StorePath"],
+             "RV8GR_RingCounter", "RV8GR_RomDbusRead", "RV8GR_StorePath",
+             "RV8GR_VirtualTestHelpers"],
             [result.package for result in promoted],
         )
         branch = self.by_name["RV8GR_BranchJumpControl"].observations
@@ -120,7 +121,7 @@ class CircuitRunnerPackagePromotionTests(unittest.TestCase):
                 codes = {block.code for item in results for block in item.blocks}
                 self.assertEqual(EXPECTED_BATCH_BLOCK_CODES[batch], codes)
         self.assertEqual(
-            ["RV8GR_BranchJumpControl", "RV8GR_StorePath", "RV8GR_ResetClockBringup"],
+            ["RV8GR_VirtualTestHelpers", "RV8GR_BranchJumpControl", "RV8GR_StorePath", "RV8GR_ResetClockBringup"],
             [
                 item.package
                 for results in batches.values()

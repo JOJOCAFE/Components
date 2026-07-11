@@ -2041,40 +2041,626 @@
         "blocks": []
       },
       "functional": {
-        "status": "blocked",
+        "status": "promoted",
         "circuit_id": "rv8gr_virtual_test_helpers",
         "circuit_path": "examples/circuits/RV8GR_VirtualTestHelpers/circuit.json",
         "proof_paths": [
           "examples/circuits/RV8GR_VirtualTestHelpers/tests/virtual_test_helpers.json"
         ],
-        "observations": {},
-        "blocks": [
-          {
-            "code": "unsupported_port_direction",
-            "path": "$.ports[6].direction",
-            "message": "direction 'passive' is not executable"
-          },
-          {
-            "code": "unsupported_port_direction",
-            "path": "$.ports[7].direction",
-            "message": "direction 'passive' is not executable"
-          },
-          {
-            "code": "unsupported_port_direction",
-            "path": "$.ports[8].direction",
-            "message": "direction 'passive' is not executable"
-          },
-          {
-            "code": "unsupported_port_direction",
-            "path": "$.ports[9].direction",
-            "message": "direction 'passive' is not executable"
-          },
-          {
-            "code": "unresolved_output",
-            "path": "$.ports[11].name",
-            "message": "port 'NOISE_OUT' has no concrete net"
+        "observations": {
+          "proof": "examples/circuits/RV8GR_VirtualTestHelpers/tests/virtual_test_helpers.json",
+          "vectors_executed": 30,
+          "checks": [
+            {
+              "name": "push_switch_single_step",
+              "passed": true
+            },
+            {
+              "name": "push_switch_random_100",
+              "passed": true
+            },
+            {
+              "name": "50_khz",
+              "passed": true
+            },
+            {
+              "name": "1_mhz",
+              "passed": true
+            },
+            {
+              "name": "2_mhz",
+              "passed": true
+            },
+            {
+              "name": "5_mhz",
+              "passed": true
+            },
+            {
+              "name": "t0_one_hot",
+              "passed": true
+            },
+            {
+              "name": "t1_one_hot",
+              "passed": true
+            },
+            {
+              "name": "t2_one_hot",
+              "passed": true
+            },
+            {
+              "name": "zero_hot_fault",
+              "passed": true
+            },
+            {
+              "name": "multi_hot_fault",
+              "passed": true
+            },
+            {
+              "name": "ibus_single_u7",
+              "passed": true
+            },
+            {
+              "name": "ibus_single_u34",
+              "passed": true
+            },
+            {
+              "name": "dbus_single_rom",
+              "passed": true
+            },
+            {
+              "name": "ibus_u7_u34_conflict",
+              "passed": true
+            },
+            {
+              "name": "dbus_rom_u7_conflict",
+              "passed": true
+            },
+            {
+              "name": "stable_off",
+              "passed": true
+            },
+            {
+              "name": "stable_on",
+              "passed": true
+            },
+            {
+              "name": "one_shot_push_on_release_off",
+              "passed": true
+            },
+            {
+              "name": "one_shot_on_off",
+              "passed": true
+            },
+            {
+              "name": "preset_100_pulses_10ms_interval",
+              "passed": true
+            },
+            {
+              "name": "short_control_net",
+              "passed": true
+            },
+            {
+              "name": "long_bus_net_with_probe",
+              "passed": true
+            },
+            {
+              "name": "weak_pull_reset_net",
+              "passed": true
+            },
+            {
+              "name": "no_noise_control",
+              "passed": true
+            },
+            {
+              "name": "breadboard_slow_edge_estimate",
+              "passed": true
+            },
+            {
+              "name": "control_line_glitch_stress",
+              "passed": true
+            },
+            {
+              "name": "truth_output_pass",
+              "passed": true
+            },
+            {
+              "name": "truth_output_fail",
+              "passed": true
+            },
+            {
+              "name": "tri_state_high_z_pass",
+              "passed": true
+            }
+          ],
+          "snapshot": {
+            "circuit": "rv8gr_virtual_test_helpers",
+            "source": "examples/circuits/RV8GR_VirtualTestHelpers/circuit.json",
+            "ports": {
+              "inputs": {
+                "T0": 1,
+                "T1": 1,
+                "T2": 0,
+                "IBUS": "Z",
+                "DBUS": "Z",
+                "NOISE_IN": 0,
+                "EXPECT_IN": 0
+              },
+              "outputs": {
+                "CLK": 0,
+                "IBUS": "Z",
+                "DBUS": "Z",
+                "NOISE_OUT": "Z"
+              }
+            },
+            "provenance": {},
+            "virtual_adapters": {
+              "VCLK": {
+                "ref": "VCLK",
+                "part": "ClockSource",
+                "role": "stimulus",
+                "modeled_only": true,
+                "claim_boundary": "modeled virtual instrument only; physical signoff requires measurement",
+                "nets": [
+                  "CLK"
+                ]
+              },
+              "SW1": {
+                "ref": "SW1",
+                "part": "Switch",
+                "role": "stimulus",
+                "modeled_only": true,
+                "claim_boundary": "modeled virtual instrument only; physical signoff requires measurement",
+                "nets": [
+                  "CLK"
+                ]
+              },
+              "PH0": {
+                "ref": "PH0",
+                "part": "Probe",
+                "role": "observation",
+                "modeled_only": true,
+                "claim_boundary": "modeled virtual instrument only; physical signoff requires measurement",
+                "samples": [
+                  {
+                    "time_ps": 0,
+                    "value": 1,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": 0,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": 0,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": 0,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": 1,
+                    "modeled_only": true
+                  }
+                ],
+                "nets": [
+                  "T0"
+                ]
+              },
+              "PH1": {
+                "ref": "PH1",
+                "part": "Probe",
+                "role": "observation",
+                "modeled_only": true,
+                "claim_boundary": "modeled virtual instrument only; physical signoff requires measurement",
+                "samples": [
+                  {
+                    "time_ps": 0,
+                    "value": 0,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": 1,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": 0,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": 0,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": 1,
+                    "modeled_only": true
+                  }
+                ],
+                "nets": [
+                  "T1"
+                ]
+              },
+              "PH2": {
+                "ref": "PH2",
+                "part": "Probe",
+                "role": "observation",
+                "modeled_only": true,
+                "claim_boundary": "modeled virtual instrument only; physical signoff requires measurement",
+                "samples": [
+                  {
+                    "time_ps": 0,
+                    "value": 0,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": 0,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": 1,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": 0,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": 0,
+                    "modeled_only": true
+                  }
+                ],
+                "nets": [
+                  "T2"
+                ]
+              },
+              "IBUSMON": {
+                "ref": "IBUSMON",
+                "part": "BusProbe",
+                "role": "observation",
+                "modeled_only": true,
+                "claim_boundary": "modeled virtual instrument only; physical signoff requires measurement",
+                "samples": [
+                  {
+                    "time_ps": 0,
+                    "value": 0,
+                    "drivers": {
+                      "U7": 0
+                    },
+                    "active_drivers": [
+                      "U7"
+                    ],
+                    "conflict": false,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": 0,
+                    "drivers": {
+                      "U34": 0
+                    },
+                    "active_drivers": [
+                      "U34"
+                    ],
+                    "conflict": false,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": "X",
+                    "drivers": {
+                      "U34": 1,
+                      "U7": 0
+                    },
+                    "active_drivers": [
+                      "U34",
+                      "U7"
+                    ],
+                    "conflict": true,
+                    "modeled_only": true
+                  }
+                ],
+                "nets": [
+                  "IBUS"
+                ]
+              },
+              "DBUSMON": {
+                "ref": "DBUSMON",
+                "part": "BusProbe",
+                "role": "observation",
+                "modeled_only": true,
+                "claim_boundary": "modeled virtual instrument only; physical signoff requires measurement",
+                "samples": [
+                  {
+                    "time_ps": 0,
+                    "value": 0,
+                    "drivers": {
+                      "ROM1": 0
+                    },
+                    "active_drivers": [
+                      "ROM1"
+                    ],
+                    "conflict": false,
+                    "modeled_only": true
+                  },
+                  {
+                    "time_ps": 0,
+                    "value": "X",
+                    "drivers": {
+                      "ROM1": 0,
+                      "U7": 1
+                    },
+                    "active_drivers": [
+                      "ROM1",
+                      "U7"
+                    ],
+                    "conflict": true,
+                    "modeled_only": true
+                  }
+                ],
+                "nets": [
+                  "DBUS"
+                ]
+              },
+              "CLKRC": {
+                "ref": "CLKRC",
+                "part": "RCParasitic",
+                "role": "timing_stress",
+                "modeled_only": true,
+                "claim_boundary": "modeled virtual instrument only; physical signoff requires measurement",
+                "nets": [
+                  "CLK_RC"
+                ]
+              },
+              "BUSRC": {
+                "ref": "BUSRC",
+                "part": "RCParasitic",
+                "role": "timing_stress",
+                "modeled_only": true,
+                "claim_boundary": "modeled virtual instrument only; physical signoff requires measurement",
+                "nets": [
+                  "BUS_RC"
+                ]
+              },
+              "DLY1": {
+                "ref": "DLY1",
+                "part": "DelayNoise",
+                "role": "timing_stress",
+                "modeled_only": true,
+                "claim_boundary": "modeled virtual instrument only; physical signoff requires measurement",
+                "nets": [
+                  "NOISE_OUT"
+                ]
+              },
+              "ASSERT1": {
+                "ref": "ASSERT1",
+                "part": "OutputAssert",
+                "role": "assertion",
+                "modeled_only": true,
+                "claim_boundary": "modeled virtual instrument only; physical signoff requires measurement",
+                "checks": [
+                  {
+                    "time_ps": 0,
+                    "mode": "equals",
+                    "actual": 1,
+                    "expected": 1,
+                    "passed": true,
+                    "modeled_only": true,
+                    "window_start_ps": null,
+                    "window_end_ps": null
+                  },
+                  {
+                    "time_ps": 0,
+                    "mode": "equals",
+                    "actual": 0,
+                    "expected": 1,
+                    "passed": false,
+                    "modeled_only": true,
+                    "window_start_ps": null,
+                    "window_end_ps": null
+                  },
+                  {
+                    "time_ps": 0,
+                    "mode": "is_high_z",
+                    "actual": "Z",
+                    "expected": "Z",
+                    "passed": true,
+                    "modeled_only": true,
+                    "window_start_ps": null,
+                    "window_end_ps": null
+                  }
+                ],
+                "nets": [
+                  "EXPECT_TEST"
+                ]
+              }
+            },
+            "board": {
+              "time_ns": 0,
+              "chips": [],
+              "nets": [
+                {
+                  "name": "CLK",
+                  "value": 0,
+                  "pins": [],
+                  "pulls": [],
+                  "sources": [
+                    {
+                      "name": "virtual:VCLK",
+                      "value": 0,
+                      "enabled": true
+                    },
+                    {
+                      "name": "virtual:SW1",
+                      "value": 0,
+                      "enabled": true
+                    }
+                  ]
+                },
+                {
+                  "name": "T0",
+                  "value": 1,
+                  "pins": [],
+                  "pulls": [],
+                  "sources": [
+                    {
+                      "name": "port:T0",
+                      "value": 1,
+                      "enabled": true
+                    }
+                  ]
+                },
+                {
+                  "name": "T1",
+                  "value": 1,
+                  "pins": [],
+                  "pulls": [],
+                  "sources": [
+                    {
+                      "name": "port:T1",
+                      "value": 1,
+                      "enabled": true
+                    }
+                  ]
+                },
+                {
+                  "name": "T2",
+                  "value": 0,
+                  "pins": [],
+                  "pulls": [],
+                  "sources": [
+                    {
+                      "name": "port:T2",
+                      "value": 0,
+                      "enabled": true
+                    }
+                  ]
+                },
+                {
+                  "name": "IBUS",
+                  "value": "Z",
+                  "pins": [],
+                  "pulls": [],
+                  "sources": [
+                    {
+                      "name": "port:IBUS",
+                      "value": "Z",
+                      "enabled": true
+                    }
+                  ]
+                },
+                {
+                  "name": "DBUS",
+                  "value": "Z",
+                  "pins": [],
+                  "pulls": [],
+                  "sources": [
+                    {
+                      "name": "port:DBUS",
+                      "value": "Z",
+                      "enabled": true
+                    }
+                  ]
+                },
+                {
+                  "name": "NOISE_IN",
+                  "value": 0,
+                  "pins": [],
+                  "pulls": [],
+                  "sources": [
+                    {
+                      "name": "port:NOISE_IN",
+                      "value": 0,
+                      "enabled": true
+                    }
+                  ]
+                },
+                {
+                  "name": "EXPECT_TEST",
+                  "value": 0,
+                  "pins": [],
+                  "pulls": [],
+                  "sources": [
+                    {
+                      "name": "port:EXPECT_IN",
+                      "value": 0,
+                      "enabled": true
+                    }
+                  ]
+                },
+                {
+                  "name": "NOISE_OUT",
+                  "value": "Z",
+                  "pins": [],
+                  "pulls": [],
+                  "sources": []
+                }
+              ],
+              "buses": [],
+              "rails": [],
+              "sources": [
+                {
+                  "name": "virtual:VCLK",
+                  "value": 0,
+                  "enabled": true
+                },
+                {
+                  "name": "virtual:SW1",
+                  "value": 0,
+                  "enabled": true
+                },
+                {
+                  "name": "port:T0",
+                  "value": 1,
+                  "enabled": true
+                },
+                {
+                  "name": "port:T1",
+                  "value": 1,
+                  "enabled": true
+                },
+                {
+                  "name": "port:T2",
+                  "value": 0,
+                  "enabled": true
+                },
+                {
+                  "name": "port:IBUS",
+                  "value": "Z",
+                  "enabled": true
+                },
+                {
+                  "name": "port:DBUS",
+                  "value": "Z",
+                  "enabled": true
+                },
+                {
+                  "name": "port:NOISE_IN",
+                  "value": 0,
+                  "enabled": true
+                },
+                {
+                  "name": "port:EXPECT_IN",
+                  "value": 0,
+                  "enabled": true
+                }
+              ],
+              "errors": []
+            }
           }
-        ]
+        },
+        "blocks": []
       },
       "timing": {
         "status": "not_applicable",

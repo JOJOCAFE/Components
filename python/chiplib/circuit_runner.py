@@ -22,6 +22,7 @@ from .core import Board, Logic, LogicSource, X, Z, normalize_logic
 from .model_loader import ModelLoadError, create_live_db_chip, load_live_chip_memory
 from .virtual_runtime import (
     ClockSourceAdapter,
+    DelayNoiseAdapter,
     SwitchAdapter,
     VirtualAdapter,
     VirtualRuntimeError,
@@ -135,7 +136,12 @@ class CircuitRunner:
                     chips[e.ref].pin(pin) for e in endpoints
                     if isinstance(e, NumericEndpoint) and e.ref in chips for pin in e.pins
                 ]
-                if not any(pin.direction in {"out", "bidir"} for pin in drivers):
+                virtual_driver = any(
+                    isinstance(endpoint, NumericEndpoint)
+                    and isinstance(self.virtual_adapters.get(endpoint.ref), (ClockSourceAdapter, SwitchAdapter, DelayNoiseAdapter))
+                    for endpoint in endpoints
+                )
+                if not virtual_driver and not any(pin.direction in {"out", "bidir"} for pin in drivers):
                     issues.append(CircuitRunnerIssue(
                         "unresolved_output",
                         f"$.ports[{index}].name",
@@ -244,7 +250,7 @@ class CircuitRunner:
         net_names = set(numeric_by_net)
         for index, port in enumerate(self.package.ports):
             path = f"$.ports[{index}]"
-            if port.direction in {"internal", "absent"}:
+            if port.direction in {"internal", "absent", "passive"}:
                 continue
             if port.direction not in {"input", "output", *self._INOUT_DIRECTIONS}:
                 issues.append(CircuitRunnerIssue("unsupported_port_direction", f"{path}.direction", f"direction {port.direction!r} is not executable"))

@@ -66,12 +66,13 @@ in the task plan; campaign generation alone cannot promote either item.
 
 Current promotion boundary:
 
-- Seven packages are loadable by the functional runner:
+- Eight packages are loadable by the functional runner:
   `RV8GR_AluAccumulator`, `RV8GR_BranchJumpControl`, `RV8GR_IRQLatch`,
   `RV8GR_ResetClockBringup`, `RV8GR_RingCounter`, `RV8GR_RomDbusRead`, and
-  `RV8GR_StorePath`.
+  `RV8GR_StorePath`, and `RV8GR_VirtualTestHelpers`.
 - `RV8GR_RingCounter`, `RV8GR_BranchJumpControl`, `RV8GR_IRQLatch`,
-  `RV8GR_ResetClockBringup`, `RV8GR_RomDbusRead`, and `RV8GR_StorePath` are
+  `RV8GR_ResetClockBringup`, `RV8GR_RomDbusRead`, `RV8GR_StorePath`, and
+  `RV8GR_VirtualTestHelpers` are
   directly promoted;
   BranchJumpControl passes all nine declared vectors after the package gained
   its required `/JUMP` inversion. Loadability is not proof completion. The

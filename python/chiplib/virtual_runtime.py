@@ -306,4 +306,7 @@ def create_virtual_adapter(part: str, ref: str, **config: Any) -> VirtualAdapter
     adapter = _ADAPTERS.get(part)
     if adapter is None:
         raise VirtualRuntimeError(f"{ref}: unsupported virtual part {part!r}")
+    if adapter is DelayNoiseAdapter:
+        # Package wiring uses the deterministic no-noise profile unless a proof overrides it.
+        config.setdefault("seed", 0)
     return adapter(ref=ref, **config)
