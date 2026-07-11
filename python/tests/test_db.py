@@ -675,7 +675,7 @@ def test_hc593_timing_layer_matches_exact_three_state_and_propagation_rows():
 
     for name in ("clock_to_q_high", "clock_to_q_low", "setup", "hold", "minimum_pulse_width"):
         assert public_parameters[name]["status"] == "missing"
-        assert layer_parameters[name]["status"] == "missing"
+        assert layer_parameters[name]["status"] == "exact"
 
 
 def test_deep_ti_timing_extraction_has_exact_terms():
@@ -1527,6 +1527,7 @@ def run_all():
     test_starter_chips_have_normalized_timing_parameters()
     test_first_non_rv8gr_timing_batch_has_canonical_parameters()
     test_second_non_rv8gr_timing_batch_has_canonical_parameters()
+    test_hc593_timing_layer_matches_exact_three_state_and_propagation_rows()
     test_deep_ti_timing_extraction_has_exact_terms()
     test_python_chip_factory_delay_matches_public_timing_default()
     test_74hc245_split_tests_and_evidence_are_loaded()

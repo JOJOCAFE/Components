@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .db import audit_db, component_catalog, component_detail, component_summary, db_status_report, generate_component_artifacts, load_component, load_component_package, load_digital_definition, student_component_catalog
-from .services import DesignCommandService, headless_capabilities, project_builder_workflow
+from .services import CircuitCommandService, DesignCommandService, headless_capabilities, project_builder_workflow
 from .virtual_faults import load_circuit_fault_report
 
 
@@ -24,6 +24,16 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
             cmd.add_argument("--steps", default="all", help="'all' or 'none'")
         if name in ("export-json", "export-block-ui", "import-block-ui"):
             cmd.add_argument("-o", "--output")
+
+    for name in ("circuit-validate", "circuit-run", "circuit-step", "circuit-probe"):
+        cmd = sub.add_parser(name)
+        cmd.add_argument("json_file")
+        if name == "circuit-run":
+            cmd.add_argument("--op", action="append", default=[], help="operation; repeat for multiple operations")
+        if name == "circuit-step":
+            cmd.add_argument("--op", required=True, help="one operation")
+        if name == "circuit-probe":
+            cmd.add_argument("--name", help="one output/probe name; omit to read all outputs")
 
     for name in ("export-netlist", "export-verilog"):
         cmd = sub.add_parser(name)
@@ -64,6 +74,7 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
 
     args = parser.parse_args(argv)
     designs = design_service or DesignCommandService()
+    circuits = CircuitCommandService()
 
     if args.command == "headless":
         return write_json(headless_capabilities(), output=getattr(args, "output", None))
@@ -118,6 +129,18 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     if args.command == "circuit-faults":
         data = load_circuit_fault_report(args.json_file)
         return write_json(data, output=getattr(args, "output", None), status=0 if data["ok"] else 2)
+    if args.command == "circuit-validate":
+        data = circuits.validate(args.json_file)
+        return write_json(data, status=0 if data["ok"] else 2)
+    if args.command == "circuit-run":
+        data = circuits.run(args.json_file, operations=args.op)
+        return write_json(data, status=0 if data["ok"] else 2)
+    if args.command == "circuit-step":
+        data = circuits.step(args.op, args.json_file)
+        return write_json(data, status=0 if data["ok"] else 2)
+    if args.command == "circuit-probe":
+        data = circuits.probe(args.name, args.json_file)
+        return write_json(data, status=0 if data["ok"] else 2)
     if args.command == "validate":
         return write_json(designs.validate(args.json_file))
     if args.command == "snapshot":

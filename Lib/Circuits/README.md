@@ -21,6 +21,58 @@ Student stop conditions:
 - a shared bus has no clear owner
 - a fast-clock test is attempted before manual-clock behavior is clean
 
+## Circuit Runner
+
+The reusable functional runner is public through the
+`python3 -m chiplib.cli circuit-validate`, `circuit-run`, `circuit-step`, and
+`circuit-probe` commands. The local JSON API also provides `circuit-load` and
+matching functional commands. Support is package-dependent: unsupported
+ranges, parts, composition, or other runtime features must produce a structured
+blocked result rather than a pass.
+
+This is not a blanket promotion of the circuit library. Broader direct package
+execution is staged, and `timed-run` is not currently a public command.
+Package-level modeled timing remains staged or blocked until the requested
+constraints are executed and proven. No simulated result is physical evidence.
+
+- [`CIRCUIT_RUNNER_ARCHITECTURE.md`](../../Docs/CIRCUIT_RUNNER_ARCHITECTURE.md)
+  - net, timing, execution, and future interface architecture.
+- [`CIRCUIT_RUNNER_STUDENT_CONTRACT.md`](../../Docs/CIRCUIT_RUNNER_STUDENT_CONTRACT.md)
+  - current functional commands, staged commands, results, and error language.
+- [`CIRCUIT_RUNNER_TASK_PLAN.md`](CIRCUIT_RUNNER_TASK_PLAN.md) - staged
+  implementation checklist and current status.
+- [`CIRCUIT_RUNNER_VERIFICATION_PLAN.md`](CIRCUIT_RUNNER_VERIFICATION_PLAN.md)
+  - package batches, negative tests, CI lanes, and promotion gates.
+
+## RV8GR Circuit Test Campaign Reports
+
+The generated campaign has two matching views in this directory:
+
+- [`RV8GR_CIRCUIT_TEST_CAMPAIGN.md`](RV8GR_CIRCUIT_TEST_CAMPAIGN.md): the
+  beginner-readable summary.
+- [`RV8GR_CIRCUIT_TEST_CAMPAIGN.json`](RV8GR_CIRCUIT_TEST_CAMPAIGN.json): the
+  machine-readable evidence and status data behind that summary.
+
+Report presence is not a blanket pass. Read each result together with the
+coverage index and executable package tests below.
+
+Read each campaign result as a stack of separate checks:
+
+- **Logical pass:** the expected inputs produce the expected outputs or state.
+  This checks the circuit idea, not every chip model or real wire.
+- **Part-model smoke/direct model:** smoke means the package can exercise its
+  available DB chip models without a basic failure; direct means a test checks
+  the model's behavior itself. A smoke pass is useful but weaker than a direct
+  behavior test.
+- **Composed/static checks:** composed checks run connected circuit behavior;
+  static checks inspect wiring, package shape, vectors, or equations without
+  proving that every connected chip changed state correctly.
+- **Modeled timing:** delays and setup/hold rules pass using values represented
+  by the simulator. This is a virtual timing result, not a measured board speed.
+- **Physical measurement required:** the remaining proof needs the built board,
+  installed chip markings, and instruments such as a meter or oscilloscope.
+  No virtual pass can replace this step.
+
 ## RV8GR Coverage Status
 
 Coverage is layered. `C` means an executable Python test directly covers that

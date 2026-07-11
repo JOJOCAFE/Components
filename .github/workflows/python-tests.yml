@@ -25,11 +25,23 @@ jobs:
           python3 -B -m tests.test_design
           python3 -B -m tests.test_block_ui
           python3 -B -m tests.test_netlist
+          python3 -B -m tests.test_model_loader
+          python3 -B -m tests.test_circuit_package
+          python3 -B -m tests.test_circuit_runner
+          python3 -B -m tests.test_circuit_runner_student_contract
+          python3 -B -m tests.test_circuit_runner_packages
+          python3 -B -m tests.test_circuit_hierarchy
+          python3 -B -m tests.test_timing_profile
+          python3 -B -m tests.test_event_scheduler
+          python3 -B -m tests.test_timed_runner
+          python3 -B -m tests.test_circuit_timing
+          python3 -B -m tests.test_virtual_runtime
           python3 -B -m tests.test_lib_circuits
           python3 -B -m tests.test_lib_circuit_sources
           python3 -B -m tests.test_lib_circuit_coverage
           python3 -B -m tests.test_lib_circuit_endpoints
           python3 -B -m tests.test_lib_circuit_models
+          python3 -B -m tests.test_lib_circuit_campaign
           python3 -B -m tests.test_cli
           python3 -B -m tests.test_api
           python3 -B -m tests.test_db

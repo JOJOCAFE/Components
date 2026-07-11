@@ -5,8 +5,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import re
+from threading import RLock
 from time import perf_counter
-from typing import Any
+from typing import Any, Callable
 
 from .db import component_catalog, component_detail, generate_component_artifacts, load_component_package, load_digital_definition, load_digital_package, student_component_catalog
 from .netlist import _verilog_mapping, design_to_verilog
@@ -14,6 +15,174 @@ from .netlist import _verilog_mapping, design_to_verilog
 
 JsonMap = dict[str, Any]
 CONTRACT = "components.service.v1"
+CIRCUIT_STUDENT_CONTRACT = "components.circuit_runner.student.v1"
+
+
+class CircuitCommandService:
+    """Stateful service adapter for executable circuit-library packages."""
+
+    contract = CONTRACT
+
+    def __init__(self) -> None:
+        self.runner: Any | None = None
+
+    def load(self, path: str | Path) -> JsonMap:
+        from .circuit_runner import load_circuit_runner
+
+        try:
+            self.runner = load_circuit_runner(path)
+            return self._response("circuit-load", self.runner.snapshot())
+        except Exception as exc:
+            return self._failure("circuit-load", exc)
+
+    def validate(self, path: str | Path | None = None) -> JsonMap:
+        loaded = self._load_if_requested(path, "circuit-validate")
+        if loaded is not None:
+            return loaded
+        runner = self._require_runner()
+        snapshot = runner.snapshot()
+        result = self._student_result(
+            "validate",
+            runner,
+            summary=f"{len(runner.board.chips)} chips, {len(runner.board.nets)} nets, 0 errors, 0 warnings.",
+            details={"snapshot": snapshot},
+        )
+        return self._response("circuit-validate", result)
+
+    def run(self, path: str | Path | None = None, *, operations: list[str] | None = None) -> JsonMap:
+        loaded = self._load_if_requested(path, "circuit-run")
+        if loaded is not None:
+            return loaded
+        runner = self._require_runner()
+        executed: list[JsonMap] = []
+        try:
+            for operation in operations or []:
+                executed.append(self._apply_operation(runner, operation))
+            result = self._student_result(
+                "run", runner, summary=f"Functional run completed with {len(executed)} operation(s).",
+                details={"executed_steps": executed, "snapshot": runner.snapshot()},
+            )
+            return self._response("circuit-run", result)
+        except Exception as exc:
+            return self._failure("circuit-run", exc, student_command="run")
+
+    def step(self, operation: str, path: str | Path | None = None) -> JsonMap:
+        loaded = self._load_if_requested(path, "circuit-step")
+        if loaded is not None:
+            return loaded
+        runner = self._require_runner()
+        before = runner.snapshot()
+        try:
+            executed = self._apply_operation(runner, operation)
+            result = self._student_result(
+                "step", runner, summary=f"Completed one operation: {operation}",
+                details={"operation": operation, "action": executed["action"], "before": before, "snapshot": runner.snapshot()},
+            )
+            return self._response("circuit-step", result)
+        except Exception as exc:
+            return self._failure("circuit-step", exc, student_command="step")
+
+    def probe(self, name: str | None = None, path: str | Path | None = None) -> JsonMap:
+        loaded = self._load_if_requested(path, "circuit-probe")
+        if loaded is not None:
+            return loaded
+        runner = self._require_runner()
+        try:
+            values = {name: runner.read(name)} if name else runner.read()
+            samples = [{"name": key, "target": key, "value": value, "time_ns": 0} for key, value in values.items()]
+            result = self._student_result(
+                "probe", runner, summary=f"Read {len(samples)} probe(s).",
+                details={"samples": samples, "snapshot": runner.snapshot()},
+            )
+            return self._response("circuit-probe", result)
+        except Exception as exc:
+            return self._failure("circuit-probe", exc, student_command="probe")
+
+    def _load_if_requested(self, path: str | Path | None, command: str) -> JsonMap | None:
+        if path is None:
+            return None
+        loaded = self.load(path)
+        if not loaded["ok"]:
+            loaded["command"] = command
+            if isinstance(loaded.get("result"), dict):
+                loaded["result"]["command"] = command.removeprefix("circuit-")
+            return loaded
+        return None
+
+    def _require_runner(self) -> Any:
+        if self.runner is None:
+            raise ValueError("no circuit loaded; call circuit-load or provide input.path")
+        return self.runner
+
+    def _apply_operation(self, runner: Any, operation: str) -> JsonMap:
+        words = str(operation).strip().split()
+        if len(words) == 3 and words[0] == "set":
+            value = runner.set_input(words[1], words[2])
+            return {"operation": operation, "action": "set", "port": words[1], "value": value}
+        if len(words) in {1, 2} and words[0] == "clock":
+            name = words[1] if len(words) == 2 else "CLK"
+            return {"operation": operation, "action": "clock", "port": name, "outputs": runner.pulse_clock(name)}
+        if words == ["reset"]:
+            return {"operation": operation, "action": "reset", "outputs": runner.reset()}
+        if words == ["settle"]:
+            runner.board.settle()
+            return {"operation": operation, "action": "settle"}
+        from .circuit_runner import CircuitRunnerError, CircuitRunnerIssue
+        raise CircuitRunnerError([CircuitRunnerIssue(
+            "runner.unsupported_step", "operation",
+            f"unsupported operation {operation!r}; use 'set PORT VALUE', 'clock [PORT]', 'reset', or 'settle'",
+        )], runner.package.source_path)
+
+    def _student_result(self, command: str, runner: Any, *, summary: str, details: JsonMap) -> JsonMap:
+        return {
+            "contract": CIRCUIT_STUDENT_CONTRACT,
+            "command": command,
+            "ok": True,
+            "status": "pass",
+            "design": {"id": runner.package.id, "source": str(runner.package.source_path)},
+            "summary": summary,
+            "violations": [],
+            "warnings": [],
+            **details,
+            "evidence_boundary": {
+                "proves": ["the listed functional checks passed in the Python simulator"],
+                "does_not_prove": ["physical wiring", "electrical safety", "physical timing"],
+            },
+            "metadata": {"engine": "python", "engine_version": None, "components_version": None, "elapsed_ms": 0},
+        }
+
+    def _response(self, command: str, result: JsonMap) -> JsonMap:
+        return {"contract": CONTRACT, "command": command, "ok": True, "result": result, "warnings": [], "metadata": {"engine": "python", "components_version": None, "elapsed_ms": 0}}
+
+    def _failure(self, command: str, exc: Exception, *, student_command: str | None = None) -> JsonMap:
+        issues = [issue.to_dict() for issue in getattr(exc, "issues", ())]
+        code = issues[0]["code"] if issues else "runner.request_failed"
+        status = "blocked" if code in {"unsupported_part", "composite_not_executable", "virtual_part_not_executable", "symbolic_aggregate_not_executable", "range_not_executable"} else "error"
+        violation = {"code": code, "message": str(exc), "location": {"source_path": issues[0].get("path") if issues else None}, "details": {"issues": issues, "exception": exc.__class__.__name__}}
+        result = {"contract": CIRCUIT_STUDENT_CONTRACT, "command": student_command or command.removeprefix("circuit-"), "ok": False, "status": status, "summary": str(exc), "violations": [violation], "warnings": [], "evidence_boundary": {"proves": [], "does_not_prove": ["physical wiring", "electrical safety", "physical timing"]}, "metadata": {"engine": "python", "engine_version": None, "components_version": None, "elapsed_ms": 0}}
+        return {"contract": CONTRACT, "command": command, "ok": False, "result": result, "warnings": [], "error": {"code": code, "message": str(exc), "severity": "error", "details": violation["details"]}, "metadata": {"engine": "python", "components_version": None, "elapsed_ms": 0}}
+
+
+class CircuitSessionRegistry:
+    """Thread-safe circuit services isolated by caller-provided session ID."""
+
+    _SESSION_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$")
+
+    def __init__(self) -> None:
+        self._sessions: dict[str, tuple[CircuitCommandService, RLock]] = {}
+        self._lock = RLock()
+
+    def execute(self, session_id: str, operation: Callable[[CircuitCommandService], JsonMap]) -> JsonMap:
+        if not self._SESSION_ID.fullmatch(session_id):
+            raise ValueError("session_id must be 1-64 letters, digits, '.', '_', or '-' and start with a letter or digit")
+        with self._lock:
+            service, session_lock = self._sessions.setdefault(
+                session_id, (CircuitCommandService(), RLock())
+            )
+        with session_lock:
+            response = operation(service)
+            response["session_id"] = session_id
+            return response
 
 
 def headless_capabilities() -> JsonMap:
@@ -52,7 +221,7 @@ def headless_capabilities() -> JsonMap:
             },
             {
                 "name": "http-api",
-                "state": "stateful while the local server process is running",
+                "state": "stateful per explicit session_id while the local server process is running",
                 "output": "JSON POST response",
             },
         ],
@@ -76,6 +245,7 @@ def headless_capabilities() -> JsonMap:
             "catalog": ["component-catalog", "student-component-catalog", "component-detail", "component-package"],
             "design": ["create-design", "load", "create-chip", "delete-chip", "connect", "disconnect", "add-bus", "set-inputs"],
             "simulation": ["validate", "snapshot", "frontend-snapshot", "run", "step", "probe", "explain-result"],
+            "circuit_simulation": ["circuit-load", "circuit-validate", "circuit-run", "circuit-step", "circuit-probe"],
             "export": ["export-json", "export-netlist", "export-verilog", "export-block-ui", "import-block-ui"],
             "verification": ["circuit-faults", "db --audit", "db --status"],
         },

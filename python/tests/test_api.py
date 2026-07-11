@@ -2,8 +2,14 @@
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
 from chiplib.api import handle_request
-from chiplib.services import FrontendDesignService
+from chiplib.services import CircuitSessionRegistry, FrontendDesignService
+
+
+CIRCUIT = Path(__file__).resolve().parents[2] / "Lib" / "Circuits" / "RV8GR_RingCounter" / "circuit.json"
 
 
 def test_frontend_design_service_edits_and_exports_design():
@@ -110,6 +116,7 @@ def test_json_api_adapter_exposes_component_metadata_without_design():
     assert headless["result"]["format"] == "components.headless.capabilities"
     assert "student-component-catalog" in headless["result"]["core_commands"]["catalog"]
     assert "explain-result" in headless["result"]["core_commands"]["simulation"]
+    assert "circuit-step" in headless["result"]["core_commands"]["circuit_simulation"]
     assert "Do not invent pinouts, active-low markers, chip behavior, timing, or procurement facts." in headless["result"]["student_guardrails"]
 
     builder = handle_request({"command": "project-builder", "options": {"part": "74HC00"}}, service)
@@ -162,11 +169,73 @@ def test_json_api_adapter_exposes_component_metadata_without_design():
     assert generated["result"]["artifacts"]["interactive_demo"]["probes"] == ["A", "B"]
 
 
+def test_json_api_adapter_runs_stateful_circuit_session():
+    service = FrontendDesignService()
+    loaded = handle_request({"command": "circuit-load", "input": {"path": str(CIRCUIT)}}, service)
+    assert loaded["ok"] is True
+    assert handle_request({"command": "circuit-step", "input": {"operation": "clock CLK"}}, service)["ok"] is True
+    probe = handle_request({"command": "circuit-probe", "input": {"name": "T0"}}, service)
+    assert probe["result"]["samples"][0]["name"] == "T0"
+    failed = handle_request({"command": "circuit-step", "input": {"operation": "guess"}}, service)
+    assert failed["ok"] is False
+    assert failed["error"]["code"] == "runner.unsupported_step"
+
+
+def test_http_mode_requires_explicit_circuit_session_id():
+    response = handle_request(
+        {"command": "circuit-load", "input": {"path": str(CIRCUIT)}},
+        FrontendDesignService(),
+        circuit_sessions=CircuitSessionRegistry(),
+        require_circuit_session=True,
+    )
+    assert response["ok"] is False
+    assert response["error"]["code"] == "api.session_id_required"
+
+
+def test_http_circuit_sessions_are_isolated_under_concurrency():
+    sessions = CircuitSessionRegistry()
+    service = FrontendDesignService()
+
+    def request(session_id: str, command: str, **input_data):
+        return handle_request(
+            {"command": command, "session_id": session_id, "input": input_data},
+            service,
+            circuit_sessions=sessions,
+            require_circuit_session=True,
+        )
+
+    loaded = request("student-a", "circuit-load", path=str(CIRCUIT))
+    assert loaded["ok"] is True
+    assert loaded["session_id"] == "student-a"
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        probe_a, missing = list(pool.map(
+            lambda sid: request(sid, "circuit-probe", name="T0"),
+            ("student-a", "student-b"),
+        ))
+    assert probe_a["ok"] is True
+    assert probe_a["session_id"] == "student-a"
+    assert missing["ok"] is False
+    assert missing["session_id"] == "student-b"
+    assert "no circuit loaded" in missing["error"]["message"]
+
+    loaded_b = request("student-b", "circuit-load", path=str(CIRCUIT))
+    assert loaded_b["ok"] is True
+    identities = {
+        sid: sessions.execute(sid, lambda selected: {"service_id": id(selected)})["service_id"]
+        for sid in ("student-a", "student-b")
+    }
+    assert identities["student-a"] != identities["student-b"]
+
+
 def run_all():
     test_frontend_design_service_edits_and_exports_design()
     test_json_api_adapter_dispatches_stateful_frontend_commands()
     test_json_api_adapter_explain_result_wraps_structured_summary()
     test_json_api_adapter_exposes_component_metadata_without_design()
+    test_json_api_adapter_runs_stateful_circuit_session()
+    test_http_mode_requires_explicit_circuit_session_id()
+    test_http_circuit_sessions_are_isolated_under_concurrency()
 
 
 if __name__ == "__main__":

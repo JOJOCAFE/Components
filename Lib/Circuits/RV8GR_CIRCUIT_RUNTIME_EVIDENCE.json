@@ -1,0 +1,1726 @@
+{
+  "schema": "components.lib.rv8gr.circuit_runtime_evidence",
+  "version": 1,
+  "generation_policy": {
+    "execution_derived": true,
+    "logical_tests_executed": true,
+    "fail_closed": true,
+    "modeled_timing_is_physical_evidence": false
+  },
+  "package_count": 22,
+  "packages": {
+    "RV8GR_AddressMux16": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_address_mux16_vectors_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_address_mux16",
+        "circuit_path": "Lib/Circuits/RV8GR_AddressMux16/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_AddressMux16/tests/address_mux16.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[6].name",
+            "message": "port 'ABUS0..ABUS15' has no concrete net"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[7].name",
+            "message": "port 'A15' has no concrete net"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_AddressMux16/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_AluAccumulator": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_alu_accumulator_vectors_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_alu_accumulator",
+        "circuit_path": "Lib/Circuits/RV8GR_AluAccumulator/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_AluAccumulator/tests/alu_accumulator.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "proof_state_not_executable",
+            "path": "Lib/Circuits/RV8GR_AluAccumulator/tests/alu_accumulator.json#$.vectors[*].start_ac",
+            "message": "declared vectors require accumulator state injection, but the public runner has no state-load API; IBUS stimulus also conflicts with the initially enabled U14 output"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_AluAccumulator/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_BootSequenceTrace": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_boot_sequence_trace_vectors_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_boot_sequence_trace",
+        "circuit_path": "Lib/Circuits/RV8GR_BootSequenceTrace/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_BootSequenceTrace/tests/boot_sequence_trace.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.chips[0].symbolic_endpoints",
+            "message": "symbolic endpoints on 'U1_U4' are not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[0].connections[0]",
+            "message": "symbolic endpoint 'DBUS0..DBUS7' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[1].connections[3]",
+            "message": "symbolic endpoint 'IBUS0..IBUS7' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[4].connections[0]",
+            "message": "symbolic endpoint 'AC0..AC7' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[5].connections[0]",
+            "message": "symbolic endpoint 'U1_U4./LOAD' is not executable"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_BootSequenceTrace/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_BranchJumpControl": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_branch_jump_opcode_sweep_matches_verilog_bench_equation",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_branch_jump_control",
+        "circuit_path": "Lib/Circuits/RV8GR_BranchJumpControl/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_BranchJumpControl/tests/branch_jump_control.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "proof_vector_mismatch",
+            "path": "Lib/Circuits/RV8GR_BranchJumpControl/tests/branch_jump_control.json#$.vectors[0]",
+            "message": "live result for 't0_no_load_even_jmp' does not match the declared vector"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_BranchJumpControl/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_BusOwnership": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_bus_ownership_phase_vectors_are_conflict_free",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_bus_ownership",
+        "circuit_path": "Lib/Circuits/RV8GR_BusOwnership/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_BusOwnership/tests/bus_ownership.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[0].connections[3]",
+            "message": "symbolic endpoint 'IBUS0..IBUS7' is not executable"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_BusOwnership/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_DataPageMemory": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_data_page_memory_vectors_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_data_page_memory",
+        "circuit_path": "Lib/Circuits/RV8GR_DataPageMemory/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_DataPageMemory/tests/data_page_memory.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[7].name",
+            "message": "port 'DP0..DP7' has no concrete net"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[8].name",
+            "message": "port 'ABUS0..ABUS15' has no concrete net"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_DataPageMemory/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_FetchCycleTrace": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_fetch_cycle_basic_fetch_matches_verilog_task",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_fetch_cycle_trace",
+        "circuit_path": "Lib/Circuits/RV8GR_FetchCycleTrace/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_FetchCycleTrace/tests/fetch_cycle_trace.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.chips[0].symbolic_endpoints",
+            "message": "symbolic endpoints on 'U1_U4' are not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[0].connections[0]",
+            "message": "symbolic endpoint 'U1_U4.Q' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[0].connections[1]",
+            "message": "symbolic endpoint 'ABUS0..ABUS15' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[6].connections[0]",
+            "message": "symbolic endpoint 'U1_U4.ENP/ENT' is not executable"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[4].name",
+            "message": "output 'PC0..PC15' has no concrete chip endpoint"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[5].name",
+            "message": "port 'ABUS0..ABUS15' has no concrete net"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[8].name",
+            "message": "port 'IRH0..IRH7' has no concrete net"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[9].name",
+            "message": "port 'IRL0..IRL7' has no concrete net"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[10].name",
+            "message": "port 'AC0..AC7' has no concrete net"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_FetchCycleTrace/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_FullControlOpcodeSweep": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_full_control_opcode_sweep_all_512_cases_match_verilog_equation",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_full_control_opcode_sweep",
+        "circuit_path": "Lib/Circuits/RV8GR_FullControlOpcodeSweep/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_FullControlOpcodeSweep/tests/full_control_opcode_sweep.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "composite_not_executable",
+            "path": "$.chips[1].part",
+            "message": "nested circuit 'RV8GR_BusOwnership' is not executable"
+          },
+          {
+            "code": "composite_not_executable",
+            "path": "$.chips[2].part",
+            "message": "nested circuit 'RV8GR_AluAccumulator' is not executable"
+          },
+          {
+            "code": "composite_not_executable",
+            "path": "$.chips[3].part",
+            "message": "nested circuit 'RV8GR_PageDataRegisters' is not executable"
+          },
+          {
+            "code": "composite_not_executable",
+            "path": "$.chips[4].part",
+            "message": "nested circuit 'RV8GR_BranchJumpControl' is not executable"
+          },
+          {
+            "code": "composite_not_executable",
+            "path": "$.chips[5].part",
+            "message": "nested circuit 'RV8GR_VirtualTestHelpers' is not executable"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_FullControlOpcodeSweep/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_IRQLatch": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_irq_latch_vectors_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_irq_latch",
+        "circuit_path": "Lib/Circuits/RV8GR_IRQLatch/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_IRQLatch/tests/irq_latch.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "proof_clock_driver_conflict",
+            "path": "Lib/Circuits/RV8GR_IRQLatch/tests/irq_latch.json#$.vectors[1].event",
+            "message": "EI_decode rising cannot be driven through the public runner because package net EI_decode is also driven LOW by U33.8"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_IRQLatch/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_InstructionLatch": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_instruction_latch_vectors_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_instruction_latch",
+        "circuit_path": "Lib/Circuits/RV8GR_InstructionLatch/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_InstructionLatch/tests/instruction_latch.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[4].name",
+            "message": "port 'IR_HIGH0..7' has no concrete net"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_InstructionLatch/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_InterruptTrace": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_interrupt_trace_vectors_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_interrupt_trace",
+        "circuit_path": "Lib/Circuits/RV8GR_InterruptTrace/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_InterruptTrace/tests/interrupt_trace.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "unsupported_port_direction",
+            "path": "$.ports[11].direction",
+            "message": "direction 'power' is not executable"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_InterruptTrace/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_Lab13MarkerTrace": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_lab13_marker_trace_rom_and_rows_match_source_program",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_lab13_marker_trace",
+        "circuit_path": "Lib/Circuits/RV8GR_Lab13MarkerTrace/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_Lab13MarkerTrace/tests/lab13_marker_trace.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.chips[0].symbolic_endpoints",
+            "message": "symbolic endpoints on 'U1_U4' are not executable"
+          },
+          {
+            "code": "ambiguous_range_width",
+            "path": "$.wiring[0]",
+            "message": "scalar net 'ROM_DBUS' cannot bind a multi-pin range"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[1].connections[2]",
+            "message": "symbolic endpoint 'IBUS0..IBUS7' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[3].connections[0]",
+            "message": "symbolic endpoint 'U1_U4./LOAD' is not executable"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[13].name",
+            "message": "output '/PC_LD' has no concrete chip endpoint"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[14].name",
+            "message": "output 'ACC_CLK' has no concrete chip endpoint"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_Lab13MarkerTrace/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_PC16": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_pc16_vectors_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_pc16",
+        "circuit_path": "Lib/Circuits/RV8GR_PC16/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_PC16/tests/pc16.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[6].name",
+            "message": "port 'PC0..PC15' has no concrete net"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_PC16/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_PageDataRegisters": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_page_register_setpg_edge_vectors_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_page_data_registers",
+        "circuit_path": "Lib/Circuits/RV8GR_PageDataRegisters/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_PageDataRegisters/tests/page_data_registers.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[3].connections[4]",
+            "message": "symbolic endpoint 'PG0..PG3' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[4].connections[4]",
+            "message": "symbolic endpoint 'PG4..PG7' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[5].connections[0]",
+            "message": "symbolic endpoint 'IRL0..IRL7' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[6].connections[0]",
+            "message": "symbolic endpoint 'IRL0..IRL7' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[6].connections[1]",
+            "message": "symbolic endpoint 'PG0..PG7' is not executable"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[11].name",
+            "message": "port 'PG0..PG7' has no concrete net"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[12].name",
+            "message": "port 'DP0..DP7' has no concrete net"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[14].name",
+            "message": "output 'PC_LOAD0..PC_LOAD15' has no concrete chip endpoint"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_PageDataRegisters/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_PageJumpTrace": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_page_jump_trace_vectors_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_page_jump_trace",
+        "circuit_path": "Lib/Circuits/RV8GR_PageJumpTrace/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_PageJumpTrace/tests/page_jump_trace.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.chips[0].symbolic_endpoints",
+            "message": "symbolic endpoints on 'U1_U4' are not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[3].connections[0]",
+            "message": "symbolic endpoint 'U1_U4./LOAD' is not executable"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[7].name",
+            "message": "output '/PC_LD' has no concrete chip endpoint"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_PageJumpTrace/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_ResetClockBringup": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_reset_clock_bringup_reset_idle_and_release",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_reset_clock_bringup",
+        "circuit_path": "Lib/Circuits/RV8GR_ResetClockBringup/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_ResetClockBringup/tests/reset_clock_bringup.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "proof_adapter_not_implemented",
+            "path": "Lib/Circuits/RV8GR_ResetClockBringup/tests/reset_clock_bringup.json#$",
+            "message": "RV8GR_ResetClockBringup loads, but no package-specific adapter executes its declared proof vectors"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_ResetClockBringup/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_RingCounter": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_ring_counter_sequence_and_reset",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "promoted",
+        "circuit_id": "rv8gr_ring_counter",
+        "circuit_path": "Lib/Circuits/RV8GR_RingCounter/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_RingCounter/tests/ring_counter.json"
+        ],
+        "observations": {
+          "reset": {
+            "T0": 0,
+            "T1": 0,
+            "T2": 0
+          },
+          "sequence": [
+            {
+              "T0": 1,
+              "T1": 0,
+              "T2": 0
+            },
+            {
+              "T0": 0,
+              "T1": 1,
+              "T2": 0
+            },
+            {
+              "T0": 0,
+              "T1": 0,
+              "T2": 1
+            }
+          ],
+          "snapshot": {
+            "circuit": "rv8gr_ring_counter",
+            "source": "Lib/Circuits/RV8GR_RingCounter/circuit.json",
+            "ports": {
+              "inputs": {
+                "CLK": 1,
+                "/CLR": 1
+              },
+              "outputs": {
+                "T0": 0,
+                "T1": 0,
+                "T2": 1
+              }
+            },
+            "provenance": {
+              "U8": {
+                "source": "live_db_package",
+                "part": "74HC164",
+                "group": "74xx",
+                "model_path": "DB/74xx/74HC164/simulation/model.py",
+                "definition_path": "DB/74xx/74HC164/definition/definition.json"
+              },
+              "U24": {
+                "source": "live_db_package",
+                "part": "74HC04",
+                "group": "74xx",
+                "model_path": "DB/74xx/74HC04/simulation/model.py",
+                "definition_path": "DB/74xx/74HC04/definition/definition.json"
+              }
+            },
+            "virtual_adapters": {},
+            "board": {
+              "time_ns": 128,
+              "chips": [
+                {
+                  "ref": "U8",
+                  "name": "U8",
+                  "part": "74HC164",
+                  "pins": [
+                    {
+                      "chip": "U8",
+                      "number": 1,
+                      "name": "A",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "NOT_T0"
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 2,
+                      "name": "B",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "NOT_T1"
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 3,
+                      "name": "QA",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": "T0"
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 4,
+                      "name": "QB",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": "T1"
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 5,
+                      "name": "QC",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "T2"
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 6,
+                      "name": "QD",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 7,
+                      "name": "GND",
+                      "direction": "power",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 8,
+                      "name": "CLK",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "CLK"
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 9,
+                      "name": "/CLR",
+                      "direction": "in",
+                      "active_low": true,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "/CLR"
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 10,
+                      "name": "QE",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 11,
+                      "name": "QF",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 12,
+                      "name": "QG",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 13,
+                      "name": "QH",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 14,
+                      "name": "VCC",
+                      "direction": "power",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": null
+                    }
+                  ]
+                },
+                {
+                  "ref": "U24",
+                  "name": "U24",
+                  "part": "74HC04",
+                  "pins": [
+                    {
+                      "chip": "U24",
+                      "number": 1,
+                      "name": "1A",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": "T0"
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 2,
+                      "name": "1Y",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "NOT_T0"
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 3,
+                      "name": "2A",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": "T1"
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 4,
+                      "name": "2Y",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "NOT_T1"
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 5,
+                      "name": "3A",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 6,
+                      "name": "3Y",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 7,
+                      "name": "GND",
+                      "direction": "power",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 8,
+                      "name": "4Y",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 9,
+                      "name": "4A",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 10,
+                      "name": "5Y",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 11,
+                      "name": "5A",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 12,
+                      "name": "6Y",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 13,
+                      "name": "6A",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": null
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 14,
+                      "name": "VCC",
+                      "direction": "power",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": null
+                    }
+                  ]
+                }
+              ],
+              "nets": [
+                {
+                  "name": "T0",
+                  "value": 0,
+                  "pins": [
+                    {
+                      "chip": "U8",
+                      "number": 3,
+                      "name": "QA",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": "T0"
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 1,
+                      "name": "1A",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": "T0"
+                    }
+                  ],
+                  "pulls": [],
+                  "sources": []
+                },
+                {
+                  "name": "NOT_T0",
+                  "value": 1,
+                  "pins": [
+                    {
+                      "chip": "U24",
+                      "number": 2,
+                      "name": "1Y",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "NOT_T0"
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 1,
+                      "name": "A",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "NOT_T0"
+                    }
+                  ],
+                  "pulls": [],
+                  "sources": []
+                },
+                {
+                  "name": "T1",
+                  "value": 0,
+                  "pins": [
+                    {
+                      "chip": "U8",
+                      "number": 4,
+                      "name": "QB",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": "T1"
+                    },
+                    {
+                      "chip": "U24",
+                      "number": 3,
+                      "name": "2A",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 0,
+                      "drive_value": 0,
+                      "pull": null,
+                      "net": "T1"
+                    }
+                  ],
+                  "pulls": [],
+                  "sources": []
+                },
+                {
+                  "name": "NOT_T1",
+                  "value": 1,
+                  "pins": [
+                    {
+                      "chip": "U24",
+                      "number": 4,
+                      "name": "2Y",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "NOT_T1"
+                    },
+                    {
+                      "chip": "U8",
+                      "number": 2,
+                      "name": "B",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "NOT_T1"
+                    }
+                  ],
+                  "pulls": [],
+                  "sources": []
+                },
+                {
+                  "name": "T2",
+                  "value": 1,
+                  "pins": [
+                    {
+                      "chip": "U8",
+                      "number": 5,
+                      "name": "QC",
+                      "direction": "out",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "T2"
+                    }
+                  ],
+                  "pulls": [],
+                  "sources": []
+                },
+                {
+                  "name": "CLK",
+                  "value": 1,
+                  "pins": [
+                    {
+                      "chip": "U8",
+                      "number": 8,
+                      "name": "CLK",
+                      "direction": "in",
+                      "active_low": false,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "CLK"
+                    }
+                  ],
+                  "pulls": [],
+                  "sources": [
+                    {
+                      "name": "port:CLK",
+                      "value": 1,
+                      "enabled": true
+                    }
+                  ]
+                },
+                {
+                  "name": "/CLR",
+                  "value": 1,
+                  "pins": [
+                    {
+                      "chip": "U8",
+                      "number": 9,
+                      "name": "/CLR",
+                      "direction": "in",
+                      "active_low": true,
+                      "value": 1,
+                      "drive_value": 1,
+                      "pull": null,
+                      "net": "/CLR"
+                    }
+                  ],
+                  "pulls": [],
+                  "sources": [
+                    {
+                      "name": "port:/CLR",
+                      "value": 1,
+                      "enabled": true
+                    }
+                  ]
+                }
+              ],
+              "buses": [],
+              "rails": [],
+              "sources": [
+                {
+                  "name": "port:CLK",
+                  "value": 1,
+                  "enabled": true
+                },
+                {
+                  "name": "port:/CLR",
+                  "value": 1,
+                  "enabled": true
+                }
+              ],
+              "errors": []
+            }
+          }
+        },
+        "blocks": []
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "package_timing_thresholds_not_enforced",
+            "path": "Lib/Circuits/RV8GR_RingCounter/circuit.json",
+            "message": "package execution schedules clock-to-Q but does not enforce setup, hold, and minimum-pulse-width thresholds; modeled timing remains blocked"
+          }
+        ]
+      }
+    },
+    "RV8GR_RomDbusRead": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_rom_dbus_read_vectors_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_rom_dbus_read",
+        "circuit_path": "Lib/Circuits/RV8GR_RomDbusRead/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_RomDbusRead/tests/rom_dbus_read.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "proof_rom_image_not_loadable",
+            "path": "Lib/Circuits/RV8GR_RomDbusRead/tests/rom_dbus_read.json#$.rom_image",
+            "message": "declared ROM bytes cannot be loaded through the public runner API, so fetch-byte vectors cannot be executed"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_RomDbusRead/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_StoreLoadBranchTrace": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_store_load_branch_trace_vectors_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_store_load_branch_trace",
+        "circuit_path": "Lib/Circuits/RV8GR_StoreLoadBranchTrace/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_StoreLoadBranchTrace/tests/store_load_branch_trace.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.chips[0].symbolic_endpoints",
+            "message": "symbolic endpoints on 'U1_U4' are not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.chips[3].symbolic_endpoints",
+            "message": "symbolic endpoints on 'U15_U16_U29_U30' are not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[0].connections[0]",
+            "message": "symbolic endpoint 'U1_U4.Q' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[0].connections[1]",
+            "message": "symbolic endpoint 'U15_U16_U29_U30.Y' is not executable"
+          },
+          {
+            "code": "ambiguous_range_width",
+            "path": "$.wiring[0]",
+            "message": "vector net 'ABUS0..ABUS15' has 15 scalar endpoints; expected a multiple of width 16"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[6].connections[0]",
+            "message": "symbolic endpoint 'U1_U4./LOAD' is not executable"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_StoreLoadBranchTrace/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_StorePath": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_store_path_vectors_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_store_path",
+        "circuit_path": "Lib/Circuits/RV8GR_StorePath/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_StorePath/tests/store_path.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "proof_internal_control_undriven",
+            "path": "Lib/Circuits/RV8GR_StorePath/tests/store_path.json#$.vectors[*]",
+            "message": "declared /AC_BUF, WR_DIR, and RAM /WE expectations are not executable because their package nets have no concrete control drivers; AC stimulus produces live bus contention"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_StorePath/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
+    "RV8GR_VirtualTestHelpers": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_virtual_clock_profiles_execute",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_virtual_test_helpers",
+        "circuit_path": "Lib/Circuits/RV8GR_VirtualTestHelpers/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_VirtualTestHelpers/tests/virtual_test_helpers.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[4].connections[1]",
+            "message": "symbolic endpoint 'IBUS0..IBUS7' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[5].connections[1]",
+            "message": "symbolic endpoint 'DBUS0..DBUS7' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[6].connections[2]",
+            "message": "boundary alias 'CLK_RC_IN' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[6].connections[3]",
+            "message": "boundary alias 'CLK_RC_OUT' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[7].connections[2]",
+            "message": "boundary alias 'BUS_RC_IN' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[7].connections[3]",
+            "message": "boundary alias 'BUS_RC_OUT' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[8].connections[2]",
+            "message": "boundary alias 'NOISE_IN' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[8].connections[3]",
+            "message": "boundary alias 'NOISE_OUT' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[9].connections[1]",
+            "message": "boundary alias 'EXPECT_IN' is not executable"
+          },
+          {
+            "code": "unsupported_port_direction",
+            "path": "$.ports[6].direction",
+            "message": "direction 'passive' is not executable"
+          },
+          {
+            "code": "unsupported_port_direction",
+            "path": "$.ports[7].direction",
+            "message": "direction 'passive' is not executable"
+          },
+          {
+            "code": "unsupported_port_direction",
+            "path": "$.ports[8].direction",
+            "message": "direction 'passive' is not executable"
+          },
+          {
+            "code": "unsupported_port_direction",
+            "path": "$.ports[9].direction",
+            "message": "direction 'passive' is not executable"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[11].name",
+            "message": "port 'NOISE_OUT' has no concrete net"
+          }
+        ]
+      },
+      "timing": {
+        "status": "not_applicable",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": []
+      }
+    },
+    "RV8GR_WholeSystemChipLevelVirtual": {
+      "logical": {
+        "status": "passed",
+        "test_ref": "python/tests/test_lib_circuits.py::test_rv8gr_whole_system_chip_level_virtual_includes_required_gates",
+        "runner": "direct_python_test_function",
+        "blocks": []
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_whole_system_chip_level_virtual",
+        "circuit_path": "Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json",
+        "proof_paths": [
+          "Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/tests/whole_system_chip_level_virtual.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "composite_not_executable",
+            "path": "$.chips[1].part",
+            "message": "nested circuit 'RV8GR_BootSequenceTrace' is not executable"
+          },
+          {
+            "code": "composite_not_executable",
+            "path": "$.chips[2].part",
+            "message": "nested circuit 'RV8GR_Lab13MarkerTrace' is not executable"
+          },
+          {
+            "code": "composite_not_executable",
+            "path": "$.chips[3].part",
+            "message": "nested circuit 'RV8GR_StoreLoadBranchTrace' is not executable"
+          },
+          {
+            "code": "composite_not_executable",
+            "path": "$.chips[4].part",
+            "message": "nested circuit 'RV8GR_PageJumpTrace' is not executable"
+          },
+          {
+            "code": "composite_not_executable",
+            "path": "$.chips[5].part",
+            "message": "nested circuit 'RV8GR_InterruptTrace' is not executable"
+          },
+          {
+            "code": "composite_not_executable",
+            "path": "$.chips[6].part",
+            "message": "nested circuit 'RV8GR_BusOwnership' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[0].connections[3]",
+            "message": "symbolic endpoint 'BOOT.CLK' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[0].connections[4]",
+            "message": "symbolic endpoint 'LAB13.CLK' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[1].connections[2]",
+            "message": "symbolic endpoint 'IRQ./RST' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[2].connections[3]",
+            "message": "symbolic endpoint 'BUS.IBUS0..IBUS7' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[3].connections[2]",
+            "message": "symbolic endpoint 'BUS.DBUS0..DBUS7' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[4].connections[1]",
+            "message": "symbolic endpoint 'BOOT.PC0..PC15' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[4].connections[2]",
+            "message": "symbolic endpoint 'BOOT.AC0..AC7' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[4].connections[3]",
+            "message": "symbolic endpoint 'BOOT.Z' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[4].connections[4]",
+            "message": "symbolic endpoint 'BOOT.PG0..PG7' is not executable"
+          },
+          {
+            "code": "symbolic_aggregate_not_executable",
+            "path": "$.wiring[4].connections[5]",
+            "message": "symbolic endpoint 'BOOT.DP0..DP7' is not executable"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[4].name",
+            "message": "port 'ABUS0..ABUS15' has no concrete net"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[10].name",
+            "message": "port 'RAM_/OE' has no concrete net"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[11].name",
+            "message": "port 'RAM_/WE' has no concrete net"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[12].name",
+            "message": "port 'ROM_/OE' has no concrete net"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "Lib/Circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    }
+  }
+}

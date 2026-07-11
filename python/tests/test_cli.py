@@ -209,6 +209,7 @@ def test_cli_db_summary_and_part_lookup():
     assert headless_data["format"] == "components.headless.capabilities"
     assert headless_data["entrypoints"]["api_stdio"].endswith("chiplib.api --stdio")
     assert "validate" in headless_data["core_commands"]["simulation"]
+    assert "circuit-run" in headless_data["core_commands"]["circuit_simulation"]
 
     builder = subprocess.run(
         [sys.executable, "-B", "-m", "chiplib.cli", "project-builder", "--part", "74HC00"],
@@ -446,10 +447,27 @@ def test_cli_design_commands_route_through_service_boundary():
     assert fake.calls[-1] == ("export_verilog", "small.json")
 
 
+def test_cli_functional_circuit_commands_are_structured_and_fail_loudly():
+    path = Path(__file__).resolve().parents[2] / "Lib" / "Circuits" / "RV8GR_RingCounter" / "circuit.json"
+    validated = run_cli(path, "circuit-validate")
+    assert validated.returncode == 0, validated.stderr
+    assert json.loads(validated.stdout)["result"]["status"] == "pass"
+    run = run_cli(path, "circuit-run", "--op", "clock CLK")
+    assert run.returncode == 0, run.stderr
+    assert json.loads(run.stdout)["result"]["executed_steps"][0]["action"] == "clock"
+    probe = run_cli(path, "circuit-probe", "--name", "T0")
+    assert probe.returncode == 0, probe.stderr
+    assert json.loads(probe.stdout)["result"]["samples"][0]["target"] == "T0"
+    bad = run_cli(path, "circuit-step", "--op", "invent magic")
+    assert bad.returncode == 2
+    assert json.loads(bad.stdout)["error"]["code"] == "runner.unsupported_step"
+
+
 def run_all():
     test_cli_validate_snapshot_run_probe_and_export_json()
     test_cli_db_summary_and_part_lookup()
     test_cli_design_commands_route_through_service_boundary()
+    test_cli_functional_circuit_commands_are_structured_and_fail_loudly()
 
 
 if __name__ == "__main__":

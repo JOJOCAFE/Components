@@ -1,6 +1,84 @@
 # Circuit Library Backlog
 
-Last reconciled: 2026-07-11 at pushed commit `8a0de62`.
+Last reconciled: 2026-07-11 against the current worktree; last pushed baseline
+was commit `8a0de62`.
+
+## Active Circuit Runner Work
+
+The durable implementation checklist for logical item 2 and modeled-timing item
+3 is `Lib/Circuits/CIRCUIT_RUNNER_TASK_PLAN.md`. Fern owns promotion gates; Pim
+coordinates implementation across specialists.
+
+Current state:
+
+- `completed`: design sprint; Phase 1A (`2.1`, live DB model loading); Phase 1B
+  (`2.2`, strict typed circuit-package compilation); and T1 (`3.1`,
+  scheduler-independent timing normalization/path selection).
+- `completed`: RingCounter direct execution (`VS1`), functional stateful
+  service/CLI/API commands (`2.3`), and the range/vector, bidirectional, rail,
+  named-virtual, fail-closed audit, and hierarchy foundations (`2.4`).
+- `in-progress`: T2 (`3.2`). The deterministic scheduler and timing checks have
+  landed, and package timing is bound to RingCounter only.
+- `pending` or `blocked`: all later package promotion batches, timed CLI/API,
+  CI promotion lanes, and campaign status reconciliation.
+
+Current focused verification commands are:
+
+```sh
+cd python
+python3 -B -m tests.test_model_loader
+python3 -B -m tests.test_circuit_package
+python3 -B -m tests.test_timing_profile
+python3 -B -m tests.test_circuit_runner
+python3 -B -m tests.test_circuit_runner_packages
+python3 -B -m tests.test_circuit_runner_student_contract
+python3 -B -m tests.test_event_scheduler
+python3 -B -m tests.test_timed_runner
+python3 -B -m tests.test_circuit_timing
+python3 -B -m tests.test_circuit_hierarchy
+python3 -B -m tests.test_virtual_runtime
+python3 -B -m tests.test_simulation_service
+python3 -B -m tests.test_cli
+python3 -B -m tests.test_api
+python3 -B -m tests.test_db
+```
+
+The first two focused modules report 8 and 7 passing tests respectively, the
+timing command covers all six transition classes and all 70 active digital
+definitions, and the runner reports 10 passing focused tests. Service, CLI,
+API, virtual-runtime, hierarchy, package-audit, scheduler, timed-runner, and
+RingCounter timing-binding modules use standard-library commands. T2 remains
+in progress because package-level timing is bound only to RingCounter. The
+integrated DB worktree command passes with `Components DB tests passed`, and its
+manual runner includes the focused 74HC593 public/layer timing assertion. That assertion
+currently verifies exact propagation and three-state rows in both views while
+recording clock-to-Q, setup, hold, and minimum-pulse-width rows as `missing` in
+the public timing view and `exact` in the definition timing layer; it does not
+claim full public/layer parity or T2 completion.
+
+Logical item 2 requires direct live-model execution for the 13 campaign gaps.
+Timing item 3 requires deterministic modeled-timing execution for the 12 timing
+gaps. Package order, owners, dependencies, exact files, and acceptance tests are
+in the task plan; campaign generation alone cannot promote either item.
+
+Current promotion boundary:
+
+- Seven packages are loadable by the functional runner:
+  `RV8GR_AluAccumulator`, `RV8GR_BranchJumpControl`, `RV8GR_IRQLatch`,
+  `RV8GR_ResetClockBringup`, `RV8GR_RingCounter`, `RV8GR_RomDbusRead`, and
+  `RV8GR_StorePath`.
+- Only `RV8GR_RingCounter` is directly promoted. Loadability is not proof
+  completion; BranchJumpControl currently has five declared-vector mismatches,
+  and other loadable packages still need proof adapters or passing gates.
+- `RV8GR_FullControlOpcodeSweep` and
+  `RV8GR_WholeSystemChipLevelVirtual` remain blocked by absent authoritative
+  child-port mappings. Same-name connections are not inferred.
+- RingCounter is the only package with live package-level modeled timing
+  binding. All later timing batches remain pending or blocked.
+
+These are software gates. `physical_status` remains unchanged until the real
+RV8GR build completes `physical_capture_plan.json` and
+`RV8GR_END_TO_END_TEST_PLAN.md` measurements.
 
 ## Completed Software Work
 

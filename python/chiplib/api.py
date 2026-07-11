@@ -8,16 +8,25 @@ import json
 import sys
 from typing import Any
 
-from .services import CONTRACT, FrontendDesignService, headless_capabilities, project_builder_workflow
+from .services import CONTRACT, CircuitCommandService, CircuitSessionRegistry, FrontendDesignService, headless_capabilities, project_builder_workflow
 
 
 JsonMap = dict[str, Any]
 
 
-def handle_request(request: JsonMap, service: FrontendDesignService | None = None) -> JsonMap:
+def handle_request(
+    request: JsonMap,
+    service: FrontendDesignService | None = None,
+    circuit_service: CircuitCommandService | None = None,
+    *,
+    circuit_sessions: CircuitSessionRegistry | None = None,
+    require_circuit_session: bool = False,
+) -> JsonMap:
     """Handle one service request for stdio or HTTP adapters."""
 
     service = service or FrontendDesignService()
+    circuit_service = circuit_service or getattr(service, "_circuit_service", None) or CircuitCommandService()
+    service._circuit_service = circuit_service
     try:
         command = str(request.get("command", ""))
         input_data = request.get("input", {})
@@ -35,6 +44,26 @@ def handle_request(request: JsonMap, service: FrontendDesignService | None = Non
                 str(options.get("name", input_data.get("name", "untitled"))),
                 description=str(options.get("description", input_data.get("description", ""))),
             )
+        if command.startswith("circuit-") and command in {
+            "circuit-load", "circuit-validate", "circuit-run", "circuit-step", "circuit-probe"
+        }:
+            def dispatch(selected: CircuitCommandService) -> JsonMap:
+                return _handle_circuit_command(command, input_data, options, selected)
+
+            session_id = request.get("session_id", options.get("session_id", input_data.get("session_id")))
+            if circuit_sessions is not None:
+                if session_id is None:
+                    return _error(command, "api.session_id_required", "HTTP circuit commands require session_id")
+                session_text = str(session_id)
+                try:
+                    return circuit_sessions.execute(session_text, dispatch)
+                except Exception as exc:
+                    response = _error(command, "api.request_failed", str(exc), exception=exc.__class__.__name__)
+                    response["session_id"] = session_text
+                    return response
+            if require_circuit_session:
+                return _error(command, "api.session_id_required", "HTTP circuit commands require session_id")
+            return dispatch(circuit_service)
         if command in {"headless-capabilities", "ai-capabilities"}:
             return _ok(command, headless_capabilities())
         if command in {"project-builder", "ai-project-builder"}:
@@ -131,6 +160,7 @@ def run_stdio(service: FrontendDesignService | None = None) -> int:
 
 def run_http(host: str = "127.0.0.1", port: int = 8765, service: FrontendDesignService | None = None) -> int:
     service = service or FrontendDesignService()
+    circuit_sessions = CircuitSessionRegistry()
 
     class Handler(BaseHTTPRequestHandler):
         def do_POST(self) -> None:  # noqa: N802 - stdlib API name
@@ -138,7 +168,9 @@ def run_http(host: str = "127.0.0.1", port: int = 8765, service: FrontendDesignS
             raw = self.rfile.read(length)
             try:
                 request = json.loads(raw.decode("utf-8"))
-                response = handle_request(request, service)
+                response = handle_request(
+                    request, service, circuit_sessions=circuit_sessions, require_circuit_session=True
+                )
                 status = 200 if response.get("ok", False) else 400
             except Exception as exc:  # pragma: no cover - defensive HTTP boundary
                 response = _error("http", "api.bad_request", str(exc), exception=exc.__class__.__name__)
@@ -179,6 +211,29 @@ def _required_map(data: JsonMap, key: str) -> JsonMap:
     if not isinstance(value, dict):
         raise ValueError(f"input.{key} must be an object")
     return value
+
+
+def _handle_circuit_command(
+    command: str, input_data: JsonMap, options: JsonMap, service: CircuitCommandService
+) -> JsonMap:
+    path = options.get("path", input_data.get("path"))
+    path_text = str(path) if path is not None else None
+    if command == "circuit-load":
+        return service.load(path_text or "")
+    if command == "circuit-validate":
+        return service.validate(path_text)
+    if command == "circuit-run":
+        operations = options.get("operations", input_data.get("operations", []))
+        if not isinstance(operations, list):
+            raise ValueError("input.operations must be an array")
+        return service.run(path_text, operations=[str(item) for item in operations])
+    if command == "circuit-step":
+        operation = options.get("operation", input_data.get("operation"))
+        if operation is None:
+            raise ValueError("input.operation is required")
+        return service.step(str(operation), path_text)
+    name = options.get("name", input_data.get("name"))
+    return service.probe(str(name) if name is not None else None, path_text)
 
 
 def _ok(command: str, result: JsonMap) -> JsonMap:

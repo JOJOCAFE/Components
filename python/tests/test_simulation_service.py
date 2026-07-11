@@ -4,12 +4,16 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
+from time import sleep
 
 from chiplib import SimulationService
+from chiplib.services import CircuitCommandService, CircuitSessionRegistry
 from chiplib.design import Design
 
 
 ROOT = Path(__file__).resolve().parents[2]
+CIRCUIT = ROOT / "Lib" / "Circuits" / "RV8GR_RingCounter" / "circuit.json"
 
 
 def load_example(name: str = "nand") -> Design:
@@ -140,6 +144,42 @@ def test_simulation_service_frontend_snapshot_contract():
     assert result["errors"] == []
 
 
+def test_circuit_command_service_keeps_state_and_fails_loudly():
+    service = CircuitCommandService()
+    validated = service.validate(CIRCUIT)
+    assert validated["contract"] == "components.service.v1"
+    assert validated["result"]["contract"] == "components.circuit_runner.student.v1"
+    assert validated["ok"] is True
+    assert service.step("clock CLK")["ok"] is True
+    assert service.probe("T0")["result"]["samples"][0]["name"] == "T0"
+    failed = service.step("invent magic")
+    assert failed["ok"] is False
+    assert failed["error"]["code"] == "runner.unsupported_step"
+
+
+def test_circuit_session_registry_serializes_each_session():
+    registry = CircuitSessionRegistry()
+    assert registry.execute("same-session", lambda service: service.load(CIRCUIT))["ok"] is True
+    active = 0
+    peak = 0
+
+    def guarded(_service):
+        nonlocal active, peak
+        active += 1
+        peak = max(peak, active)
+        sleep(0.01)
+        active -= 1
+        return {"ok": True}
+
+    def overlap(_index: int):
+        return registry.execute("same-session", guarded)
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        responses = list(pool.map(overlap, range(4)))
+    assert all(response["ok"] for response in responses)
+    assert peak == 1
+
+
 def run_all():
     test_simulation_service_validate_wraps_design_validation()
     test_simulation_service_validate_reports_structured_errors()
@@ -149,6 +189,8 @@ def run_all():
     test_simulation_service_probe_samples_named_probe_set_after_steps()
     test_simulation_service_probe_reports_missing_set()
     test_simulation_service_frontend_snapshot_contract()
+    test_circuit_command_service_keeps_state_and_fails_loudly()
+    test_circuit_session_registry_serializes_each_session()
 
 
 if __name__ == "__main__":
