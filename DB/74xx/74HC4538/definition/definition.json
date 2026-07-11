@@ -131,12 +131,86 @@
       "basis": "normalized_from_existing_datasheet_timing",
       "parameters": {
         "tPLH": {
-          "status": "missing",
-          "reason": "Existing local timing extraction does not include this normalized parameter."
+          "status": "exact",
+          "source_field": "switching specifications propagation delay rows",
+          "values_ns": {
+            "a_b_to_q": {
+              "vcc_2_v": {
+                "max_25c": 250,
+                "max_minus40_to_85c": 315,
+                "max_minus55_to_125c": 375
+              },
+              "vcc_4_5_v": {
+                "max_25c": 50,
+                "max_minus40_to_85c": 63,
+                "max_minus55_to_125c": 75
+              },
+              "vcc_6_v": {
+                "max_25c": 43,
+                "max_minus40_to_85c": 54,
+                "max_minus55_to_125c": 64
+              }
+            },
+            "r_to_q": {
+              "vcc_2_v": {
+                "max_25c": 250,
+                "max_minus40_to_85c": 315,
+                "max_minus55_to_125c": 375
+              },
+              "vcc_4_5_v": {
+                "max_25c": 50,
+                "max_minus40_to_85c": 63,
+                "max_minus55_to_125c": 75
+              },
+              "vcc_6_v": {
+                "max_25c": 43,
+                "max_minus40_to_85c": 54,
+                "max_minus55_to_125c": 64
+              }
+            }
+          },
+          "note": "Direct switching-specification propagation rows from A,B and R to Q."
         },
         "tPHL": {
-          "status": "missing",
-          "reason": "Existing local timing extraction does not include this normalized parameter."
+          "status": "exact",
+          "source_field": "switching specifications propagation delay rows",
+          "values_ns": {
+            "a_b_to_q": {
+              "vcc_2_v": {
+                "max_25c": 250,
+                "max_minus40_to_85c": 315,
+                "max_minus55_to_125c": 375
+              },
+              "vcc_4_5_v": {
+                "max_25c": 50,
+                "max_minus40_to_85c": 63,
+                "max_minus55_to_125c": 75
+              },
+              "vcc_6_v": {
+                "max_25c": 43,
+                "max_minus40_to_85c": 54,
+                "max_minus55_to_125c": 64
+              }
+            },
+            "r_to_q": {
+              "vcc_2_v": {
+                "max_25c": 250,
+                "max_minus40_to_85c": 315,
+                "max_minus55_to_125c": 375
+              },
+              "vcc_4_5_v": {
+                "max_25c": 50,
+                "max_minus40_to_85c": 63,
+                "max_minus55_to_125c": 75
+              },
+              "vcc_6_v": {
+                "max_25c": 43,
+                "max_minus40_to_85c": 54,
+                "max_minus55_to_125c": 64
+              }
+            }
+          },
+          "note": "Direct switching-specification propagation rows from A,B and R to Q."
         },
         "tPZH": {
           "status": "not_applicable",
@@ -153,14 +227,6 @@
         "tPLZ": {
           "status": "not_applicable",
           "reason": "74HC4538 has no output-enable/high-Z control in the current package definition."
-        },
-        "clock_to_q_high": {
-          "status": "missing",
-          "reason": "Existing local timing extraction does not include this normalized parameter."
-        },
-        "clock_to_q_low": {
-          "status": "missing",
-          "reason": "Existing local timing extraction does not include this normalized parameter."
         },
         "setup": {
           "status": "missing",
@@ -418,12 +484,86 @@
         "basis": "normalized_from_existing_datasheet_timing",
         "parameters": {
           "tPLH": {
-            "status": "missing",
-            "reason": "Existing local timing extraction does not include this normalized parameter."
+            "status": "exact",
+            "source_field": "switching specifications propagation delay rows",
+            "values_ns": {
+              "a_b_to_q": {
+                "vcc_2_v": {
+                  "max_25c": 250,
+                  "max_minus40_to_85c": 315,
+                  "max_minus55_to_125c": 375
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 50,
+                  "max_minus40_to_85c": 63,
+                  "max_minus55_to_125c": 75
+                },
+                "vcc_6_v": {
+                  "max_25c": 43,
+                  "max_minus40_to_85c": 54,
+                  "max_minus55_to_125c": 64
+                }
+              },
+              "r_to_q": {
+                "vcc_2_v": {
+                  "max_25c": 250,
+                  "max_minus40_to_85c": 315,
+                  "max_minus55_to_125c": 375
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 50,
+                  "max_minus40_to_85c": 63,
+                  "max_minus55_to_125c": 75
+                },
+                "vcc_6_v": {
+                  "max_25c": 43,
+                  "max_minus40_to_85c": 54,
+                  "max_minus55_to_125c": 64
+                }
+              }
+            },
+            "note": "Direct switching-specification propagation rows from A,B and R to Q."
           },
           "tPHL": {
-            "status": "missing",
-            "reason": "Existing local timing extraction does not include this normalized parameter."
+            "status": "exact",
+            "source_field": "switching specifications propagation delay rows",
+            "values_ns": {
+              "a_b_to_q": {
+                "vcc_2_v": {
+                  "max_25c": 250,
+                  "max_minus40_to_85c": 315,
+                  "max_minus55_to_125c": 375
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 50,
+                  "max_minus40_to_85c": 63,
+                  "max_minus55_to_125c": 75
+                },
+                "vcc_6_v": {
+                  "max_25c": 43,
+                  "max_minus40_to_85c": 54,
+                  "max_minus55_to_125c": 64
+                }
+              },
+              "r_to_q": {
+                "vcc_2_v": {
+                  "max_25c": 250,
+                  "max_minus40_to_85c": 315,
+                  "max_minus55_to_125c": 375
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 50,
+                  "max_minus40_to_85c": 63,
+                  "max_minus55_to_125c": 75
+                },
+                "vcc_6_v": {
+                  "max_25c": 43,
+                  "max_minus40_to_85c": 54,
+                  "max_minus55_to_125c": 64
+                }
+              }
+            },
+            "note": "Direct switching-specification propagation rows from A,B and R to Q."
           },
           "tPZH": {
             "status": "not_applicable",
@@ -440,14 +580,6 @@
           "tPLZ": {
             "status": "not_applicable",
             "reason": "74HC4538 has no output-enable/high-Z control in the current package definition."
-          },
-          "clock_to_q_high": {
-            "status": "missing",
-            "reason": "Existing local timing extraction does not include this normalized parameter."
-          },
-          "clock_to_q_low": {
-            "status": "missing",
-            "reason": "Existing local timing extraction does not include this normalized parameter."
           },
           "setup": {
             "status": "missing",

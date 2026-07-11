@@ -203,8 +203,8 @@
         },
         "parameters": {
           "tPLH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "switching characteristics tPLH/tPHL rows",
             "values_ns": {
               "clear_to_q": {
                 "max_25c": 225,
@@ -223,11 +223,11 @@
                 "max_minus40_to_85c": 190
               }
             },
-            "note": "Existing local extraction has counter propagation values but not a polarity-specific tPLH/tPHL split."
+            "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "switching characteristics tPLH/tPHL rows",
             "values_ns": {
               "clear_to_q": {
                 "max_25c": 225,
@@ -246,7 +246,7 @@
                 "max_minus40_to_85c": 190
               }
             },
-            "note": "Existing local extraction has counter propagation values but not a polarity-specific tPLH/tPHL split."
+            "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry."
           },
           "tPZH": {
             "status": "not_applicable",
@@ -265,22 +265,22 @@
             "reason": "74HC160 has push-pull outputs and no output-enable/high-Z control."
           },
           "clock_to_q_high": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.datasheet.values.*.clock_to_q",
             "values_ns": {
               "max_25c": 160,
               "max_minus40_to_85c": 200
             },
-            "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+            "note": "Direct clock-to-Q table row; no polarity split is printed in the source."
           },
           "clock_to_q_low": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.datasheet.values.*.clock_to_q",
             "values_ns": {
               "max_25c": 160,
               "max_minus40_to_85c": 200
             },
-            "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+            "note": "Direct clock-to-Q table row; no polarity split is printed in the source."
           },
           "setup": {
             "status": "exact",
@@ -293,8 +293,16 @@
             }
           },
           "hold": {
-            "status": "missing",
-            "reason": "Existing local extraction has removal timing but not a hold-after-clock table."
+            "status": "exact",
+            "source_field": "timing requirements hold rows",
+            "values_ns": {
+              "data_load_clear_after_clk_rise_min": {
+                "vcc_2_v": 0,
+                "vcc_4_5_v": 0,
+                "vcc_6_v": 0
+              }
+            },
+            "note": "Direct hold-time table row after CLK rising edge; the 4.5 V typical value in the source is negative, but the minimum requirement remains 0 ns."
           },
           "minimum_pulse_width": {
             "status": "exact",
@@ -536,8 +544,8 @@
       },
       "parameters": {
         "tPLH": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "switching characteristics tPLH/tPHL rows",
           "values_ns": {
             "clear_to_q": {
               "max_25c": 225,
@@ -556,11 +564,11 @@
               "max_minus40_to_85c": 190
             }
           },
-          "note": "Existing local extraction has counter propagation values but not a polarity-specific tPLH/tPHL split."
+          "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "switching characteristics tPLH/tPHL rows",
           "values_ns": {
             "clear_to_q": {
               "max_25c": 225,
@@ -579,7 +587,7 @@
               "max_minus40_to_85c": 190
             }
           },
-          "note": "Existing local extraction has counter propagation values but not a polarity-specific tPLH/tPHL split."
+          "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry."
         },
         "tPZH": {
           "status": "not_applicable",
@@ -598,22 +606,22 @@
           "reason": "74HC160 has push-pull outputs and no output-enable/high-Z control."
         },
         "clock_to_q_high": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values.*.clock_to_q",
           "values_ns": {
             "max_25c": 160,
             "max_minus40_to_85c": 200
           },
-          "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+          "note": "Direct clock-to-Q table row; no polarity split is printed in the source."
         },
         "clock_to_q_low": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values.*.clock_to_q",
           "values_ns": {
             "max_25c": 160,
             "max_minus40_to_85c": 200
           },
-          "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+          "note": "Direct clock-to-Q table row; no polarity split is printed in the source."
         },
         "setup": {
           "status": "exact",
@@ -626,8 +634,16 @@
           }
         },
         "hold": {
-          "status": "missing",
-          "reason": "Existing local extraction has removal timing but not a hold-after-clock table."
+          "status": "exact",
+          "source_field": "timing requirements hold rows",
+          "values_ns": {
+            "data_load_clear_after_clk_rise_min": {
+              "vcc_2_v": 0,
+              "vcc_4_5_v": 0,
+              "vcc_6_v": 0
+            }
+          },
+          "note": "Direct hold-time table row after CLK rising edge; the 4.5 V typical value in the source is negative, but the minimum requirement remains 0 ns."
         },
         "minimum_pulse_width": {
           "status": "exact",

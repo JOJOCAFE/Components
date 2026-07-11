@@ -474,28 +474,28 @@
           "reason": "74HC147 is combinational and has no setup/hold timing requirement."
         },
         "tPHL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values",
           "values_ns": {
             "datasheet_typical_ns": {
               "feature_tpd": 13
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "TI switching characteristics table gives direct propagation-delay timing for the priority encoder outputs; canonical propagation timing is preserved exactly."
         },
         "tPHZ": {
           "status": "not_applicable",
           "reason": "74HC147 has no output-enable/high-Z control in the existing model."
         },
         "tPLH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values",
           "values_ns": {
             "datasheet_typical_ns": {
               "feature_tpd": 13
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "TI switching characteristics table gives direct propagation-delay timing for the priority encoder outputs; canonical propagation timing is preserved exactly."
         },
         "tPLZ": {
           "status": "not_applicable",

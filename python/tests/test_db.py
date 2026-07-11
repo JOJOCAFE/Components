@@ -414,8 +414,7 @@ def test_starter_chips_have_normalized_timing_parameters():
             },
         },
         "74HC161": {
-            "exact": {"hold", "minimum_pulse_width", "setup"},
-            "generic": {"clock_to_q_high", "clock_to_q_low", "tPLH", "tPHL"},
+            "exact": {"clock_to_q_high", "clock_to_q_low", "hold", "minimum_pulse_width", "setup", "tPLH", "tPHL"},
             "not_applicable": {"tPHZ", "tPLZ", "tPZH", "tPZL"},
         },
     }
@@ -491,14 +490,13 @@ def test_first_non_rv8gr_timing_batch_has_canonical_parameters():
 
 def test_second_non_rv8gr_timing_batch_has_canonical_parameters():
     expected = {
-        "74HC07": {"propagation": "generic", "high_z": "not_applicable"},
         "74HC138": {"propagation": "exact", "high_z": "not_applicable"},
         "74HC139": {"propagation": "exact", "high_z": "not_applicable"},
-        "74HC147": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC147": {"propagation": "exact", "high_z": "not_applicable"},
         "74HC148": {"propagation": "exact", "high_z": "not_applicable"},
         "74HC151": {"propagation": "exact", "high_z": "not_applicable"},
         "74HC153": {"propagation": "exact", "high_z": "not_applicable"},
-        "74HC155": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC155": {"propagation": "exact", "high_z": "not_applicable"},
         "74HC20": {"propagation": "exact", "high_z": "not_applicable"},
         "74HC238": {"propagation": "exact", "high_z": "not_applicable"},
         "74HC240": {"propagation": "exact", "high_z": "exact"},
@@ -511,7 +509,7 @@ def test_second_non_rv8gr_timing_batch_has_canonical_parameters():
         "74HC4049": {"propagation": "exact", "high_z": "not_applicable"},
         "74HC4050": {"propagation": "exact", "high_z": "not_applicable"},
         "74HC85": {"propagation": "exact", "high_z": "not_applicable"},
-        "74HC922": {"propagation": "generic", "high_z": "generic"},
+        "74HC922": {"propagation": "exact", "high_z": "exact"},
         "74HCT245": {"propagation": "exact", "high_z": "exact"},
         "74HCT541": {"propagation": "exact", "high_z": "exact"},
     }
@@ -538,6 +536,39 @@ def test_second_non_rv8gr_timing_batch_has_canonical_parameters():
             "setup",
         ):
             assert public_parameters[name]["status"] == "not_applicable"
+
+
+def test_hc07_open_drain_timing_is_exact_where_the_datasheet_is_direct():
+    definition = load_digital_definition("74HC07")
+    public_parameters = definition["timing"]["timing_parameters"]["parameters"]
+    layer_parameters = definition["definition_layers"]["timing"]["timing_parameters"]["parameters"]
+    assert public_parameters.keys() == layer_parameters.keys()
+
+    assert public_parameters["tPLH"]["status"] == "generic"
+    assert public_parameters["tPHL"]["status"] == "generic"
+    assert public_parameters["tPLH"]["values_ns"] == {"datasheet_typical_ns": {"feature_tpd": 6}}
+    assert public_parameters["tPHL"]["values_ns"] == {"datasheet_typical_ns": {"feature_tpd": 6}}
+
+    for name in ("tPLZ", "tPZL"):
+        assert public_parameters[name]["status"] == "exact"
+        assert layer_parameters[name]["status"] == "exact"
+
+    assert public_parameters["tPLZ"]["values_ns"]["vcc_4_5_v"] == {
+        "typ": 7,
+        "max_25c": 18,
+        "max_minus40_to_85c": 23,
+        "max_minus55_to_125c": 27,
+    }
+    assert public_parameters["tPZL"]["values_ns"]["vcc_4_5_v"] == {
+        "typ": 7,
+        "max_25c": 18,
+        "max_minus40_to_85c": 23,
+        "max_minus55_to_125c": 27,
+    }
+
+    for name in ("tPZH", "tPHZ", "clock_to_q_high", "clock_to_q_low", "setup", "hold", "minimum_pulse_width"):
+        assert public_parameters[name]["status"] == "not_applicable"
+        assert layer_parameters[name]["status"] == "not_applicable"
 
 
 def test_bank_bus_timing_extraction_has_exact_terms():
@@ -605,8 +636,23 @@ def test_bank_bus_timing_extraction_has_exact_terms():
     }
 
     hc541 = load_digital_definition("74HC541")["timing"]["timing_parameters"]["parameters"]
-    assert hc541["tPLH"]["status"] == "generic"
-    assert hc541["tPZH"]["status"] == "generic"
+    assert hc541["tPLH"]["status"] == "exact"
+    assert hc541["tPZH"]["status"] == "exact"
+
+
+def test_hc593_timing_layer_matches_exact_three_state_and_propagation_rows():
+    definition = load_digital_definition("74HC593")
+    public_parameters = definition["timing"]["timing_parameters"]["parameters"]
+    layer_parameters = definition["definition_layers"]["timing"]["timing_parameters"]["parameters"]
+    assert public_parameters.keys() == layer_parameters.keys()
+
+    for name in ("tPLH", "tPHL", "tPZH", "tPZL", "tPHZ", "tPLZ"):
+        assert public_parameters[name]["status"] == "exact"
+        assert layer_parameters[name]["status"] == "exact"
+
+    for name in ("clock_to_q_high", "clock_to_q_low", "setup", "hold", "minimum_pulse_width"):
+        assert public_parameters[name]["status"] == "missing"
+        assert layer_parameters[name]["status"] == "missing"
 
 
 def test_deep_ti_timing_extraction_has_exact_terms():
@@ -685,6 +731,58 @@ def test_deep_ti_timing_extraction_has_exact_terms():
     assert params["setup"]["values_ns"]["ser_before_srclk_rise_min"]["vcc_4_5_v"]["ta_25c"] == 20
     assert params["hold"]["values_ns"]["ser_after_srclk_rise_min"]["vcc_4_5_v"]["ta_25c"] == 0
     assert params["minimum_pulse_width"]["values_ns"]["srclk_or_rclk_high_or_low_min"]["vcc_4_5_v"]["ta_25c"] == 16
+
+
+def test_sequential_owned_timing_parts_promote_exact_timing():
+    hc160 = load_digital_definition("74HC160")["timing"]["timing_parameters"]["parameters"]
+    assert hc160["tPLH"]["status"] == "exact"
+    assert hc160["tPHL"]["status"] == "exact"
+    assert hc160["clock_to_q_high"]["status"] == "exact"
+    assert hc160["clock_to_q_low"]["status"] == "exact"
+    assert hc160["hold"]["status"] == "exact"
+    assert hc160["hold"]["values_ns"]["data_load_clear_after_clk_rise_min"]["vcc_4_5_v"] == 0
+
+    hc163 = load_digital_definition("74HC163")["timing"]["timing_parameters"]["parameters"]
+    assert hc163["tPLH"]["status"] == "exact"
+    assert hc163["tPHL"]["status"] == "exact"
+    assert hc163["clock_to_q_high"]["status"] == "exact"
+    assert hc163["clock_to_q_low"]["status"] == "exact"
+    assert hc163["setup"]["status"] == "exact"
+    assert hc163["hold"]["status"] == "exact"
+    assert hc163["minimum_pulse_width"]["status"] == "exact"
+    assert hc163["setup"]["values_ns"]["enable_before_clk_rise_min"]["vcc_4_5_v"] == 34
+    assert hc163["hold"]["values_ns"]["synchronous_inputs_after_clk_rise_min"]["vcc_4_5_v"] == 0
+    assert hc163["minimum_pulse_width"]["values_ns"]["clock_high_or_low_min"]["vcc_4_5_v"] == 16
+
+    hc162 = load_digital_definition("74HC162")["timing"]["timing_parameters"]["parameters"]
+    assert hc162["tPLH"]["status"] == "exact"
+    assert hc162["tPHL"]["status"] == "exact"
+    assert hc162["clock_to_q_high"]["status"] == "exact"
+    assert hc162["clock_to_q_low"]["status"] == "exact"
+    assert hc162["setup"]["status"] == "exact"
+    assert hc162["hold"]["status"] == "exact"
+    assert hc162["minimum_pulse_width"]["status"] == "exact"
+    assert hc162["setup"]["values_ns"]["data_before_clk_rise_min"]["vcc_4_5_v"] == 20
+    assert hc162["hold"]["values_ns"]["data_after_clk_rise_min"]["vcc_4_5_v"] == 0
+    assert hc162["minimum_pulse_width"]["values_ns"]["clock_high_or_low_min"]["vcc_4_5_v"] == 16
+
+    hc377 = load_digital_definition("74HC377")["timing"]["timing_parameters"]["parameters"]
+    assert hc377["tPLH"]["status"] == "exact"
+    assert hc377["tPHL"]["status"] == "exact"
+    assert hc377["clock_to_q_high"]["status"] == "exact"
+    assert hc377["clock_to_q_low"]["status"] == "exact"
+    assert hc377["setup"]["status"] == "exact"
+    assert hc377["hold"]["status"] == "exact"
+    assert hc377["minimum_pulse_width"]["status"] == "exact"
+    assert hc377["setup"]["values_ns"]["data_before_clk_rise_min"]["vcc_4_5_v"] == 20
+    assert hc377["hold"]["values_ns"]["data_after_clk_rise_min"]["vcc_4_5_v"] == 5
+    assert hc377["minimum_pulse_width"]["values_ns"]["clock_high_or_low_min"]["vcc_4_5_v"] == 20
+
+    hc4538 = load_digital_definition("74HC4538")["timing"]["timing_parameters"]["parameters"]
+    assert hc4538["tPLH"]["status"] == "exact"
+    assert hc4538["tPHL"]["status"] == "exact"
+    assert hc4538["tPLH"]["values_ns"]["a_b_to_q"]["vcc_4_5_v"]["max_25c"] == 50
+    assert hc4538["minimum_pulse_width"]["status"] == "exact"
 
 
 def test_virtual_and_passive_components_use_definition_packages():

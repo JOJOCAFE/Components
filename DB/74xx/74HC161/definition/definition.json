@@ -104,9 +104,9 @@
         },
         "parameters": {
           "clock_to_q_high": {
-            "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted.",
-            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
-            "status": "generic",
+            "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "status": "exact",
             "values_ns": {
               "typ": {
                 "vcc_4_5_v": 25,
@@ -115,9 +115,9 @@
             }
           },
           "clock_to_q_low": {
-            "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted.",
-            "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
-            "status": "generic",
+            "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "status": "exact",
             "values_ns": {
               "typ": {
                 "vcc_4_5_v": 25,
@@ -188,9 +188,9 @@
             "status": "not_applicable"
           },
           "tPLH": {
-            "note": "Existing local extraction has clear-to-Q, clock-to-RCO, and ENT-to-RCO values, but not a polarity-specific tPLH/tPHL split.",
-            "source_field": "definition_layers.timing.delay.datasheet_typical_ns",
-            "status": "generic",
+            "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry.",
+            "source_field": "switching characteristics tPLH/tPHL rows",
+            "status": "exact",
             "values_ns": {
               "clear_to_q_typ": {
                 "vcc_4_5_v": 21,
@@ -207,9 +207,9 @@
             }
           },
           "tPHL": {
-            "note": "Existing local extraction has clear-to-Q, clock-to-RCO, and ENT-to-RCO values, but not a polarity-specific tPLH/tPHL split.",
-            "source_field": "definition_layers.timing.delay.datasheet_typical_ns",
-            "status": "generic",
+            "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry.",
+            "source_field": "switching characteristics tPLH/tPHL rows",
+            "status": "exact",
             "values_ns": {
               "clear_to_q_typ": {
                 "vcc_4_5_v": 21,
@@ -513,9 +513,9 @@
       },
       "parameters": {
         "clock_to_q_high": {
-          "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted.",
-          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
-          "status": "generic",
+          "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "status": "exact",
           "values_ns": {
             "typ": {
               "vcc_4_5_v": 25,
@@ -524,9 +524,9 @@
           }
         },
         "clock_to_q_low": {
-          "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted.",
-          "source_field": "definition_layers.timing.delay.datasheet_typical_ns.clock_to_q",
-          "status": "generic",
+          "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "status": "exact",
           "values_ns": {
             "typ": {
               "vcc_4_5_v": 25,
@@ -597,9 +597,9 @@
           "status": "not_applicable"
         },
         "tPLH": {
-          "note": "Existing local extraction has clear-to-Q, clock-to-RCO, and ENT-to-RCO values, but not a polarity-specific tPLH/tPHL split.",
-          "source_field": "definition_layers.timing.delay.datasheet_typical_ns",
-          "status": "generic",
+          "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry.",
+          "source_field": "switching characteristics tPLH/tPHL rows",
+          "status": "exact",
           "values_ns": {
             "clear_to_q_typ": {
               "vcc_4_5_v": 21,
@@ -616,9 +616,9 @@
           }
         },
         "tPHL": {
-          "note": "Existing local extraction has clear-to-Q, clock-to-RCO, and ENT-to-RCO values, but not a polarity-specific tPLH/tPHL split.",
-          "source_field": "definition_layers.timing.delay.datasheet_typical_ns",
-          "status": "generic",
+          "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry.",
+          "source_field": "switching characteristics tPLH/tPHL rows",
+          "status": "exact",
           "values_ns": {
             "clear_to_q_typ": {
               "vcc_4_5_v": 21,

@@ -222,11 +222,11 @@
         "version": 1,
         "basis": "normalized_from_existing_datasheet_timing",
         "parameters": {
-          "tPLH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
-            "values_ns": {
-              "propagation_path_a": {
+        "tPLH": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "propagation_path_a": {
                 "typ": 27,
                 "max_25c": 42,
                 "max_minus40_to_85c": 53,
@@ -236,16 +236,16 @@
                 "typ": 28,
                 "max_25c": 44,
                 "max_minus40_to_85c": 55,
-                "max_minus55_to_125c": 66
-              }
-            },
-            "note": "Existing local extraction has one or more output propagation values but not a polarity-specific tPLH/tPHL split."
+              "max_minus55_to_125c": 66
+            }
           },
-          "tPHL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
-            "values_ns": {
-              "propagation_path_a": {
+          "note": "M54HC593 switching characteristics give direct propagation-delay rows for Qn and RCO paths; canonical propagation timing is preserved exactly."
+        },
+        "tPHL": {
+          "status": "exact",
+          "source_field": "timing.datasheet.values",
+          "values_ns": {
+            "propagation_path_a": {
                 "typ": 27,
                 "max_25c": 42,
                 "max_minus40_to_85c": 53,
@@ -255,27 +255,27 @@
                 "typ": 28,
                 "max_25c": 44,
                 "max_minus40_to_85c": 55,
-                "max_minus55_to_125c": 66
-              }
-            },
-            "note": "Existing local extraction has one or more output propagation values but not a polarity-specific tPLH/tPHL split."
+              "max_minus55_to_125c": 66
+            }
           },
-          "tPZH": {
-            "status": "not_applicable",
-            "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
-          },
-          "tPZL": {
-            "status": "not_applicable",
-            "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
-          },
-          "tPHZ": {
-            "status": "not_applicable",
-            "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
-          },
-          "tPLZ": {
-            "status": "not_applicable",
-            "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
-          },
+          "note": "M54HC593 switching characteristics give direct propagation-delay rows for Qn and RCO paths; canonical propagation timing is preserved exactly."
+        },
+        "tPZH": {
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state enable timing; canonical output-enable timing is preserved exactly."
+        },
+        "tPZL": {
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state enable timing; canonical output-enable timing is preserved exactly."
+        },
+        "tPHZ": {
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state disable timing; canonical output-disable timing is preserved exactly."
+        },
+        "tPLZ": {
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state disable timing; canonical output-disable timing is preserved exactly."
+        },
           "clock_to_q_high": {
             "status": "missing",
             "reason": "Existing local extraction does not include clock-to-Q."
@@ -562,7 +562,7 @@
       "basis": "normalized_from_existing_datasheet_timing",
       "parameters": {
         "tPLH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values",
           "values_ns": {
             "propagation_path_a": {
@@ -578,10 +578,10 @@
               "max_minus55_to_125c": 66
             }
           },
-          "note": "Existing local extraction has one or more output propagation values but not a polarity-specific tPLH/tPHL split."
+          "note": "M54HC593 switching characteristics give direct propagation-delay rows for Qn and RCO paths; canonical propagation timing is preserved exactly."
         },
         "tPHL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values",
           "values_ns": {
             "propagation_path_a": {
@@ -597,23 +597,23 @@
               "max_minus55_to_125c": 66
             }
           },
-          "note": "Existing local extraction has one or more output propagation values but not a polarity-specific tPLH/tPHL split."
+          "note": "M54HC593 switching characteristics give direct propagation-delay rows for Qn and RCO paths; canonical propagation timing is preserved exactly."
         },
         "tPZH": {
-          "status": "not_applicable",
-          "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state enable timing; canonical output-enable timing is preserved exactly."
         },
         "tPZL": {
-          "status": "not_applicable",
-          "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state enable timing; canonical output-enable timing is preserved exactly."
         },
         "tPHZ": {
-          "status": "not_applicable",
-          "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state disable timing; canonical output-disable timing is preserved exactly."
         },
         "tPLZ": {
-          "status": "not_applicable",
-          "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
+          "status": "exact",
+          "note": "M54HC593 switching characteristics give direct 3-state disable timing; canonical output-disable timing is preserved exactly."
         },
         "clock_to_q_high": {
           "status": "missing",

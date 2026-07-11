@@ -213,16 +213,58 @@
             "note": "ST M74HC07 local source text gives only feature/waveform propagation delay; no direct tPLH/tPHL mapping was extracted. Preserved generic canonical timing until polarity-specific evidence is available."
           },
           "tPLZ": {
-            "status": "not_applicable",
-            "reason": "74HC07 has no output-enable/high-Z control in the existing model."
+            "status": "exact",
+            "source_field": "timing.datasheet",
+            "values_ns": {
+              "vcc_2_v": {
+                "typ": 10,
+                "max_25c": 90,
+                "max_minus40_to_85c": 115,
+                "max_minus55_to_125c": 135
+              },
+              "vcc_4_5_v": {
+                "typ": 7,
+                "max_25c": 18,
+                "max_minus40_to_85c": 23,
+                "max_minus55_to_125c": 27
+              },
+              "vcc_6_v": {
+                "typ": 6,
+                "max_25c": 15,
+                "max_minus40_to_85c": 20,
+                "max_minus55_to_125c": 23
+              }
+            },
+            "note": "ST M74HC07 AC characteristics give a direct tPLZ row for the open-drain output transition; canonical high-Z timing is preserved exactly."
           },
           "tPZH": {
             "status": "not_applicable",
             "reason": "74HC07 has no output-enable/high-Z control in the existing model."
           },
           "tPZL": {
-            "status": "not_applicable",
-            "reason": "74HC07 has no output-enable/high-Z control in the existing model."
+            "status": "exact",
+            "source_field": "timing.datasheet",
+            "values_ns": {
+              "vcc_2_v": {
+                "typ": 17,
+                "max_25c": 90,
+                "max_minus40_to_85c": 115,
+                "max_minus55_to_125c": 135
+              },
+              "vcc_4_5_v": {
+                "typ": 7,
+                "max_25c": 18,
+                "max_minus40_to_85c": 23,
+                "max_minus55_to_125c": 27
+              },
+              "vcc_6_v": {
+                "typ": 5,
+                "max_25c": 15,
+                "max_minus40_to_85c": 20,
+                "max_minus55_to_125c": 23
+              }
+            },
+            "note": "ST M74HC07 AC characteristics give a direct tPZL row for the open-drain output transition; canonical high-Z timing is preserved exactly."
           }
         }
       }
@@ -450,16 +492,58 @@
           "note": "ST M74HC07 local source text gives only feature/waveform propagation delay; no direct tPLH/tPHL mapping was extracted. Preserved generic canonical timing until polarity-specific evidence is available."
         },
         "tPLZ": {
-          "status": "not_applicable",
-          "reason": "74HC07 has no output-enable/high-Z control in the existing model."
+          "status": "exact",
+          "source_field": "timing.datasheet",
+          "values_ns": {
+            "vcc_2_v": {
+              "typ": 10,
+              "max_25c": 90,
+              "max_minus40_to_85c": 115,
+              "max_minus55_to_125c": 135
+            },
+            "vcc_4_5_v": {
+              "typ": 7,
+              "max_25c": 18,
+              "max_minus40_to_85c": 23,
+              "max_minus55_to_125c": 27
+            },
+            "vcc_6_v": {
+              "typ": 6,
+              "max_25c": 15,
+              "max_minus40_to_85c": 20,
+              "max_minus55_to_125c": 23
+            }
+          },
+          "note": "ST M74HC07 AC characteristics give a direct tPLZ row for the open-drain output transition; canonical high-Z timing is preserved exactly."
         },
         "tPZH": {
           "status": "not_applicable",
           "reason": "74HC07 has no output-enable/high-Z control in the existing model."
         },
         "tPZL": {
-          "status": "not_applicable",
-          "reason": "74HC07 has no output-enable/high-Z control in the existing model."
+          "status": "exact",
+          "source_field": "timing.datasheet",
+          "values_ns": {
+            "vcc_2_v": {
+              "typ": 17,
+              "max_25c": 90,
+              "max_minus40_to_85c": 115,
+              "max_minus55_to_125c": 135
+            },
+            "vcc_4_5_v": {
+              "typ": 7,
+              "max_25c": 18,
+              "max_minus40_to_85c": 23,
+              "max_minus55_to_125c": 27
+            },
+            "vcc_6_v": {
+              "typ": 5,
+              "max_25c": 15,
+              "max_minus40_to_85c": 20,
+              "max_minus55_to_125c": 23
+            }
+          },
+          "note": "ST M74HC07 AC characteristics give a direct tPZL row for the open-drain output transition; canonical high-Z timing is preserved exactly."
         }
       }
     }

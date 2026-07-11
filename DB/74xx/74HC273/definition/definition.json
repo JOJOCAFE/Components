@@ -206,8 +206,8 @@
         "basis": "normalized_from_existing_datasheet_timing",
         "parameters": {
           "tPLH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "switching characteristics tPHL/tpd rows",
             "values_ns": {
               "clock_to_q": {
                 "max_minus40_to_85c": 40
@@ -216,11 +216,11 @@
                 "max_minus40_to_85c": 40
               }
             },
-            "note": "Existing local extraction has one or more output propagation values but not a polarity-specific tPLH/tPHL split."
+            "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the CLK-to-Q and CLR-to-Q entries."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "switching characteristics tPHL/tpd rows",
             "values_ns": {
               "clock_to_q": {
                 "max_minus40_to_85c": 40
@@ -229,7 +229,7 @@
                 "max_minus40_to_85c": 40
               }
             },
-            "note": "Existing local extraction has one or more output propagation values but not a polarity-specific tPLH/tPHL split."
+            "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the CLK-to-Q and CLR-to-Q entries."
           },
           "tPZH": {
             "status": "not_applicable",
@@ -248,20 +248,20 @@
             "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
           },
           "clock_to_q_high": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.datasheet.values.*.clock_to_q",
             "values_ns": {
               "max_minus40_to_85c": 40
             },
-            "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+            "note": "Direct clock-to-Q table row; no polarity split is printed in the source."
           },
           "clock_to_q_low": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.datasheet.values.*.clock_to_q",
             "values_ns": {
               "max_minus40_to_85c": 40
             },
-            "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+            "note": "Direct clock-to-Q table row; no polarity split is printed in the source."
           },
           "setup": {
             "status": "exact",
@@ -606,8 +606,8 @@
       "basis": "normalized_from_existing_datasheet_timing",
       "parameters": {
         "tPLH": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "switching characteristics tPHL/tpd rows",
           "values_ns": {
             "clock_to_q": {
               "max_minus40_to_85c": 40
@@ -616,11 +616,11 @@
               "max_minus40_to_85c": 40
             }
           },
-          "note": "Existing local extraction has one or more output propagation values but not a polarity-specific tPLH/tPHL split."
+          "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the CLK-to-Q and CLR-to-Q entries."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "switching characteristics tPHL/tpd rows",
           "values_ns": {
             "clock_to_q": {
               "max_minus40_to_85c": 40
@@ -629,7 +629,7 @@
               "max_minus40_to_85c": 40
             }
           },
-          "note": "Existing local extraction has one or more output propagation values but not a polarity-specific tPLH/tPHL split."
+          "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the CLK-to-Q and CLR-to-Q entries."
         },
         "tPZH": {
           "status": "not_applicable",
@@ -648,20 +648,20 @@
           "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
         },
         "clock_to_q_high": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values.*.clock_to_q",
           "values_ns": {
             "max_minus40_to_85c": 40
           },
-          "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+          "note": "Direct clock-to-Q table row; no polarity split is printed in the source."
         },
         "clock_to_q_low": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values.*.clock_to_q",
           "values_ns": {
             "max_minus40_to_85c": 40
           },
-          "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+          "note": "Direct clock-to-Q table row; no polarity split is printed in the source."
         },
         "setup": {
           "status": "exact",

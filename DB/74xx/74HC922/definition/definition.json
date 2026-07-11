@@ -548,7 +548,7 @@
           "reason": "74HC922 is combinational and has no setup/hold timing requirement."
         },
         "tPHL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values",
           "values_ns": {
             "datasheet_max_ns": {
@@ -562,10 +562,10 @@
               "output_to_high_z": 80
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "MM74C922 AC characteristics give direct data-available to output timing; canonical propagation timing is preserved exactly."
         },
         "tPHZ": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values",
           "values_ns": {
             "datasheet_max_ns": {
@@ -579,10 +579,10 @@
               "output_to_high_z": 80
             }
           },
-          "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+          "note": "MM74C922 AC characteristics give direct output-to-high-Z timing; canonical output-disable timing is preserved exactly."
         },
         "tPLH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values",
           "values_ns": {
             "datasheet_max_ns": {
@@ -596,10 +596,10 @@
               "output_to_high_z": 80
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "MM74C922 AC characteristics give direct data-available to output timing; canonical propagation timing is preserved exactly."
         },
         "tPLZ": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values",
           "values_ns": {
             "datasheet_max_ns": {
@@ -613,10 +613,10 @@
               "output_to_high_z": 80
             }
           },
-          "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+          "note": "MM74C922 AC characteristics give direct output-to-high-Z timing; canonical output-disable timing is preserved exactly."
         },
         "tPZH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values",
           "values_ns": {
             "datasheet_max_ns": {
@@ -630,10 +630,10 @@
               "output_to_high_z": 80
             }
           },
-          "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+          "note": "MM74C922 AC characteristics give direct high-Z to output timing; canonical output-enable timing is preserved exactly."
         },
         "tPZL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet.values",
           "values_ns": {
             "datasheet_max_ns": {
@@ -647,7 +647,7 @@
               "output_to_high_z": 80
             }
           },
-          "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+          "note": "MM74C922 AC characteristics give direct high-Z to output timing; canonical output-enable timing is preserved exactly."
         }
       }
     }

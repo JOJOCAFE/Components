@@ -498,9 +498,9 @@
       },
       "parameters": {
         "tPLH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay",
-          "note": "Existing local extraction has propagation timing for adder_input_to_sum_or_carry; output polarity split is not extracted.",
+          "note": "TI switching characteristics table gives direct tPLH/tPHL rows for the adder paths; canonical propagation timing is preserved exactly.",
           "values_ns": {
             "typ_paths": {
               "a_or_b_to_cout": 19,
@@ -523,9 +523,9 @@
           }
         },
         "tPHL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay",
-          "note": "Existing local extraction has propagation timing for adder_input_to_sum_or_carry; output polarity split is not extracted.",
+          "note": "TI switching characteristics table gives direct tPLH/tPHL rows for the adder paths; canonical propagation timing is preserved exactly.",
           "values_ns": {
             "typ_paths": {
               "a_or_b_to_cout": 19,

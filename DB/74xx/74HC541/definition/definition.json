@@ -596,27 +596,27 @@
       "basis": "normalized_from_existing_datasheet_timing",
       "parameters": {
         "tPLH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay",
-          "note": "A-to-Y propagation is source-backed, but output LOW/HIGH polarity split is not extracted.",
+          "note": "Figure 7-1 maps tPLH/tPHL directly to tpd for the buffer path; canonical propagation timing is preserved exactly.",
           "values_ns": {
             "typ": 12,
             "max_25c": 23
           }
         },
         "tPHL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay",
-          "note": "A-to-Y propagation is source-backed, but output LOW/HIGH polarity split is not extracted.",
+          "note": "Figure 7-1 maps tPLH/tPHL directly to tpd for the buffer path; canonical propagation timing is preserved exactly.",
           "values_ns": {
             "typ": 12,
             "max_25c": 23
           }
         },
         "tPZH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay",
-          "note": "Output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+          "note": "Figure 7-1 and note F map ten directly to tPZL/tPZH; enable timing is preserved exactly.",
           "values_ns": {
             "typ": 17,
             "max_25c": 30,
@@ -624,9 +624,9 @@
           }
         },
         "tPZL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay",
-          "note": "Output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+          "note": "Figure 7-1 and note F map ten directly to tPZL/tPZH; enable timing is preserved exactly.",
           "values_ns": {
             "typ": 17,
             "max_25c": 30,
@@ -634,9 +634,9 @@
           }
         },
         "tPHZ": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay",
-          "note": "Output disable timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+          "note": "Figure 7-1 and note E map tdis directly to tPHZ/tPLZ; disable timing is preserved exactly.",
           "values_ns": {
             "typ": 18,
             "max_25c": 30,
@@ -644,9 +644,9 @@
           }
         },
         "tPLZ": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay",
-          "note": "Output disable timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+          "note": "Figure 7-1 and note E map tdis directly to tPHZ/tPLZ; disable timing is preserved exactly.",
           "values_ns": {
             "typ": 18,
             "max_25c": 30,

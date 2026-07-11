@@ -15,17 +15,17 @@ matching field was found.
 
 | Parameter | Meaning | Exact | Generic | Not Applicable | Missing |
 |---|---|---:|---:|---:|---:|
-| tPLH | input/output propagation delay for output LOW-to-HIGH | 55 | 14 | 0 | 1 |
-| tPHL | input/output propagation delay for output HIGH-to-LOW | 55 | 14 | 0 | 1 |
-| tPZH | output enable from high-Z to HIGH | 16 | 2 | 52 | 0 |
-| tPZL | output enable from high-Z to LOW | 16 | 2 | 52 | 0 |
-| tPHZ | output disable from HIGH to high-Z | 16 | 2 | 52 | 0 |
-| tPLZ | output disable from LOW to high-Z | 16 | 2 | 52 | 0 |
-| clock-to-Q high | clock edge to Q HIGH | 9 | 7 | 52 | 2 |
-| clock-to-Q low | clock edge to Q LOW | 9 | 7 | 52 | 2 |
-| setup | input setup time before active clock/control edge | 19 | 0 | 46 | 5 |
-| hold | input hold time after active clock/control edge | 18 | 0 | 46 | 6 |
-| minimum pulse width | minimum clock, reset, write, or control pulse width | 19 | 0 | 47 | 4 |
+| tPLH | input/output propagation delay for output LOW-to-HIGH | 63 | 7 | 0 | 0 |
+| tPHL | input/output propagation delay for output HIGH-to-LOW | 63 | 7 | 0 | 0 |
+| tPZH | output enable from high-Z to HIGH | 17 | 2 | 51 | 0 |
+| tPZL | output enable from high-Z to LOW | 18 | 2 | 50 | 0 |
+| tPHZ | output disable from HIGH to high-Z | 17 | 2 | 51 | 0 |
+| tPLZ | output disable from LOW to high-Z | 18 | 2 | 50 | 0 |
+| clock-to-Q high | clock edge to Q HIGH | 15 | 1 | 52 | 2 |
+| clock-to-Q low | clock edge to Q LOW | 15 | 1 | 52 | 2 |
+| setup | input setup time before active clock/control edge | 22 | 0 | 46 | 2 |
+| hold | input hold time after active clock/control edge | 22 | 0 | 46 | 2 |
+| minimum pulse width | minimum clock, reset, write, or control pulse width | 22 | 0 | 47 | 1 |
 
 ## Current Finding
 
@@ -46,7 +46,7 @@ matching field was found.
 | 74HC03 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC04 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC05 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
-| 74HC07 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
+| 74HC07 | 74xx | generic | generic | not_applicable | exact | not_applicable | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC08 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC10 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC11 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
@@ -62,10 +62,10 @@ matching field was found.
 | 74HC155 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC157 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC158 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
-| 74HC160 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | generic | generic | exact | missing | exact |
-| 74HC161 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | generic | generic | exact | exact | exact |
-| 74HC162 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | generic | generic | missing | missing | missing |
-| 74HC163 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | generic | generic | missing | missing | missing |
+| 74HC160 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
+| 74HC161 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
+| 74HC162 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
+| 74HC163 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
 | 74HC164 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
 | 74HC165 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
 | 74HC166 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
@@ -80,21 +80,21 @@ matching field was found.
 | 74HC257 | 74xx | exact | exact | exact | exact | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC266 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC27 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
-| 74HC273 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | generic | generic | exact | exact | exact |
+| 74HC273 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
 | 74HC283 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC30 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC32 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC352 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC374 | 74xx | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact |
-| 74HC377 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | generic | generic | missing | missing | missing |
+| 74HC377 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
 | 74HC4049 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC4050 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC4078 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC4520 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
-| 74HC4538 | 74xx | missing | missing | not_applicable | not_applicable | not_applicable | not_applicable | missing | missing | missing | missing | exact |
+| 74HC4538 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | missing | missing | missing | missing | exact |
 | 74HC541 | 74xx | generic | generic | generic | generic | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC574 | 74xx | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact |
-| 74HC593 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | missing | missing | missing | missing | missing |
+| 74HC593 | 74xx | exact | exact | exact | exact | exact | exact | missing | missing | missing | missing | missing |
 | 74HC595 | 74xx | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact |
 | 74HC688 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC74 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | generic | generic | exact | exact | exact |
