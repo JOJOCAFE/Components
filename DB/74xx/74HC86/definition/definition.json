@@ -226,9 +226,9 @@
         },
         "parameters": {
           "tPLH": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay",
-            "note": "Existing local extraction has propagation timing for A_or_B_to_Y; output polarity split is not extracted.",
+            "note": "TI SN74HC86 switching characteristics list propagation delay tPLH/tPHL for A/B-to-Y. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged.",
             "values_ns": {
               "typ": 12,
               "max_25c": 20,
@@ -236,9 +236,9 @@
             }
           },
           "tPHL": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay",
-            "note": "Existing local extraction has propagation timing for A_or_B_to_Y; output polarity split is not extracted.",
+            "note": "TI SN74HC86 switching characteristics list propagation delay tPLH/tPHL for A/B-to-Y. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged.",
             "values_ns": {
               "typ": 12,
               "max_25c": 20,
@@ -458,9 +458,9 @@
       },
       "parameters": {
         "tPLH": {
-          "status": "generic",
-          "source_field": "definition_layers.timing.delay",
-          "note": "Existing local extraction has propagation timing for A_or_B_to_Y; output polarity split is not extracted.",
+          "status": "exact",
+          "source_field": "timing.datasheet",
+          "note": "TI SN74HC86 switching characteristics list propagation delay tPLH/tPHL for A/B-to-Y. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged.",
           "values_ns": {
             "typ": 12,
             "max_25c": 20,
@@ -468,9 +468,9 @@
           }
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "definition_layers.timing.delay",
-          "note": "Existing local extraction has propagation timing for A_or_B_to_Y; output polarity split is not extracted.",
+          "status": "exact",
+          "source_field": "timing.datasheet",
+          "note": "TI SN74HC86 switching characteristics list propagation delay tPLH/tPHL for A/B-to-Y. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged.",
           "values_ns": {
             "typ": 12,
             "max_25c": 20,

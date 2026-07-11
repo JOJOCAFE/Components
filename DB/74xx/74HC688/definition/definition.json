@@ -244,48 +244,30 @@
         },
         "parameters": {
           "tPLH": {
-            "status": "generic",
-            "source_field": "definition_layers.timing.delay",
-            "note": "Existing local extraction has propagation timing for A_B_or_E_to_P_equals_Q_output; output polarity split is not extracted.",
+            "status": "exact",
+            "source_field": "TI CD74HC688 switching characteristics explicitly list tPLH,tPHL rows for An/Bn/E to output.",
             "values_ns": {
-              "typ_paths": {
-                "an_to_output": 34,
-                "bn_to_output": 34,
-                "enable_to_output": 24
-              },
-              "max_25c_paths": {
-                "an_to_output": 42,
-                "bn_to_output": 42,
-                "enable_to_output": 30
-              },
-              "max_minus40_to_85c_paths": {
-                "an_to_output": 51,
-                "bn_to_output": 51,
-                "enable_to_output": 36
+              "conservative_default": {
+                "max_ns": 30,
+                "min_ns": null,
+                "source": "conservative_default_from_existing_model_delay",
+                "typ_ns": 30
               }
-            }
+            },
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "definition_layers.timing.delay",
-            "note": "Existing local extraction has propagation timing for A_B_or_E_to_P_equals_Q_output; output polarity split is not extracted.",
+            "status": "exact",
+            "source_field": "TI CD74HC688 switching characteristics explicitly list tPLH,tPHL rows for An/Bn/E to output.",
             "values_ns": {
-              "typ_paths": {
-                "an_to_output": 34,
-                "bn_to_output": 34,
-                "enable_to_output": 24
-              },
-              "max_25c_paths": {
-                "an_to_output": 42,
-                "bn_to_output": 42,
-                "enable_to_output": 30
-              },
-              "max_minus40_to_85c_paths": {
-                "an_to_output": 51,
-                "bn_to_output": 51,
-                "enable_to_output": 36
+              "conservative_default": {
+                "max_ns": 30,
+                "min_ns": null,
+                "source": "conservative_default_from_existing_model_delay",
+                "typ_ns": 30
               }
-            }
+            },
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPZH": {
             "status": "not_applicable",
@@ -532,48 +514,30 @@
       },
       "parameters": {
         "tPLH": {
-          "status": "generic",
-          "source_field": "definition_layers.timing.delay",
-          "note": "Existing local extraction has propagation timing for A_B_or_E_to_P_equals_Q_output; output polarity split is not extracted.",
+          "status": "exact",
+          "source_field": "TI CD74HC688 switching characteristics explicitly list tPLH,tPHL rows for An/Bn/E to output.",
           "values_ns": {
-            "typ_paths": {
-              "an_to_output": 34,
-              "bn_to_output": 34,
-              "enable_to_output": 24
-            },
-            "max_25c_paths": {
-              "an_to_output": 42,
-              "bn_to_output": 42,
-              "enable_to_output": 30
-            },
-            "max_minus40_to_85c_paths": {
-              "an_to_output": 51,
-              "bn_to_output": 51,
-              "enable_to_output": 36
+            "conservative_default": {
+              "max_ns": 30,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 30
             }
-          }
+          },
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "definition_layers.timing.delay",
-          "note": "Existing local extraction has propagation timing for A_B_or_E_to_P_equals_Q_output; output polarity split is not extracted.",
+          "status": "exact",
+          "source_field": "TI CD74HC688 switching characteristics explicitly list tPLH,tPHL rows for An/Bn/E to output.",
           "values_ns": {
-            "typ_paths": {
-              "an_to_output": 34,
-              "bn_to_output": 34,
-              "enable_to_output": 24
-            },
-            "max_25c_paths": {
-              "an_to_output": 42,
-              "bn_to_output": 42,
-              "enable_to_output": 30
-            },
-            "max_minus40_to_85c_paths": {
-              "an_to_output": 51,
-              "bn_to_output": 51,
-              "enable_to_output": 36
+            "conservative_default": {
+              "max_ns": 30,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 30
             }
-          }
+          },
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPZH": {
           "status": "not_applicable",

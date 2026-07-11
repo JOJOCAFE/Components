@@ -202,8 +202,8 @@
             "reason": "74HC20 is combinational and has no setup/hold timing requirement."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay",
             "values_ns": {
               "datasheet_max_ns_25c": {
                 "input_to_output": 22,
@@ -222,15 +222,15 @@
                 "transition": 9
               }
             },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            "note": "TI SN74HC20 switching characteristics list propagation delay tPLH/tPHL for A/B/C/D-to-Y. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged."
           },
           "tPHZ": {
             "status": "not_applicable",
             "reason": "74HC20 has no output-enable/high-Z control in the existing model."
           },
           "tPLH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay",
             "values_ns": {
               "datasheet_max_ns_25c": {
                 "input_to_output": 22,
@@ -249,7 +249,7 @@
                 "transition": 9
               }
             },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            "note": "TI SN74HC20 switching characteristics list propagation delay tPLH/tPHL for A/B/C/D-to-Y. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged."
           },
           "tPLZ": {
             "status": "not_applicable",
@@ -478,8 +478,8 @@
           "reason": "74HC20 is combinational and has no setup/hold timing requirement."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "timing.datasheet",
           "values_ns": {
             "datasheet_max_ns_25c": {
               "input_to_output": 22,
@@ -498,15 +498,15 @@
               "transition": 9
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "TI SN74HC20 switching characteristics list propagation delay tPLH/tPHL for A/B/C/D-to-Y. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged."
         },
         "tPHZ": {
           "status": "not_applicable",
           "reason": "74HC20 has no output-enable/high-Z control in the existing model."
         },
         "tPLH": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "timing.datasheet",
           "values_ns": {
             "datasheet_max_ns_25c": {
               "input_to_output": 22,
@@ -525,7 +525,7 @@
               "transition": 9
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "TI SN74HC20 switching characteristics list propagation delay tPLH/tPHL for A/B/C/D-to-Y. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged."
         },
         "tPLZ": {
           "status": "not_applicable",

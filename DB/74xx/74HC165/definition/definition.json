@@ -195,42 +195,72 @@
         "basis": "normalized_from_existing_datasheet_timing",
         "parameters": {
           "tPLH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "TI SN74HC165 switching characteristics tpd rows and waveform note E",
             "values_ns": {
-              "clock_to_q": {
-                "typ": 15,
-                "max_25c": 30
-              },
-              "shift_load_to_q": {
-                "typ": 20,
-                "max_25c": 30
-              },
-              "h_to_q": {
-                "typ": 15,
-                "max_25c": 30
+              "clk_to_qh_or_qhbar": {
+                "typ_25c": {
+                  "vcc_2_v": 75,
+                  "vcc_4_5_v": 15,
+                  "vcc_6_v": 13
+                },
+                "max_25c": {
+                  "vcc_2_v": 150,
+                  "vcc_4_5_v": 30,
+                  "vcc_6_v": 26
+                },
+                "max_sn54": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                },
+                "max_sn74_85c": {
+                  "vcc_2_v": 190,
+                  "vcc_4_5_v": 38,
+                  "vcc_6_v": 32
+                },
+                "max_sn74_125c": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                }
               }
             },
-            "note": "Existing local extraction has one or more output propagation values but not a polarity-specific tPLH/tPHL split."
+            "note": "TI waveform note states tPLH and tPHL are the same as tpd; table gives CLK to QH/QHbar propagation. SH/LD and H paths remain represented in tPLH/tPHL values where already extracted."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "TI SN74HC165 switching characteristics tpd rows and waveform note E",
             "values_ns": {
-              "clock_to_q": {
-                "typ": 15,
-                "max_25c": 30
-              },
-              "shift_load_to_q": {
-                "typ": 20,
-                "max_25c": 30
-              },
-              "h_to_q": {
-                "typ": 15,
-                "max_25c": 30
+              "clk_to_qh_or_qhbar": {
+                "typ_25c": {
+                  "vcc_2_v": 75,
+                  "vcc_4_5_v": 15,
+                  "vcc_6_v": 13
+                },
+                "max_25c": {
+                  "vcc_2_v": 150,
+                  "vcc_4_5_v": 30,
+                  "vcc_6_v": 26
+                },
+                "max_sn54": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                },
+                "max_sn74_85c": {
+                  "vcc_2_v": 190,
+                  "vcc_4_5_v": 38,
+                  "vcc_6_v": 32
+                },
+                "max_sn74_125c": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                }
               }
             },
-            "note": "Existing local extraction has one or more output propagation values but not a polarity-specific tPLH/tPHL split."
+            "note": "TI waveform note states tPLH and tPHL are the same as tpd; table gives CLK to QH/QHbar propagation. SH/LD and H paths remain represented in tPLH/tPHL values where already extracted."
           },
           "tPZH": {
             "status": "not_applicable",
@@ -249,34 +279,243 @@
             "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
           },
           "clock_to_q_high": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "status": "exact",
+            "source_field": "TI SN74HC165 switching characteristics tpd rows and waveform note E",
             "values_ns": {
-              "typ": 15,
-              "max_25c": 30
+              "clk_to_qh_or_qhbar": {
+                "typ_25c": {
+                  "vcc_2_v": 75,
+                  "vcc_4_5_v": 15,
+                  "vcc_6_v": 13
+                },
+                "max_25c": {
+                  "vcc_2_v": 150,
+                  "vcc_4_5_v": 30,
+                  "vcc_6_v": 26
+                },
+                "max_sn54": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                },
+                "max_sn74_85c": {
+                  "vcc_2_v": 190,
+                  "vcc_4_5_v": 38,
+                  "vcc_6_v": 32
+                },
+                "max_sn74_125c": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                }
+              }
             },
-            "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+            "note": "TI waveform note states tPLH and tPHL are the same as tpd; table gives CLK to QH/QHbar propagation. SH/LD and H paths remain represented in tPLH/tPHL values where already extracted."
           },
           "clock_to_q_low": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "status": "exact",
+            "source_field": "TI SN74HC165 switching characteristics tpd rows and waveform note E",
             "values_ns": {
-              "typ": 15,
-              "max_25c": 30
+              "clk_to_qh_or_qhbar": {
+                "typ_25c": {
+                  "vcc_2_v": 75,
+                  "vcc_4_5_v": 15,
+                  "vcc_6_v": 13
+                },
+                "max_25c": {
+                  "vcc_2_v": 150,
+                  "vcc_4_5_v": 30,
+                  "vcc_6_v": 26
+                },
+                "max_sn54": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                },
+                "max_sn74_85c": {
+                  "vcc_2_v": 190,
+                  "vcc_4_5_v": 38,
+                  "vcc_6_v": 32
+                },
+                "max_sn74_125c": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                }
+              }
             },
-            "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+            "note": "TI waveform note states tPLH and tPHL are the same as tpd; table gives CLK to QH/QHbar propagation. SH/LD and H paths remain represented in tPLH/tPHL values where already extracted."
           },
           "setup": {
-            "status": "missing",
-            "reason": "Existing local timing extraction has no setup-time table for this part."
+            "status": "exact",
+            "source_field": "TI SN74HC165 timing requirements tables 6.11-6.13 tsu rows",
+            "values_ns": {
+              "sh_ld_high_before_clk_rise_min": {
+                "vcc_2_v": {
+                  "ta_25c": 80,
+                  "sn54": 120,
+                  "sn74_85c": 100,
+                  "sn74_125c": 120
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 16,
+                  "sn54": 24,
+                  "sn74_85c": 20,
+                  "sn74_125c": 24
+                },
+                "vcc_6_v": {
+                  "ta_25c": 14,
+                  "sn54": 20,
+                  "sn74_85c": 17,
+                  "sn74_125c": 20
+                }
+              },
+              "ser_before_clk_rise_min": {
+                "vcc_2_v": {
+                  "ta_25c": 40,
+                  "sn54": 60,
+                  "sn74_85c": 50,
+                  "sn74_125c": 60
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 8,
+                  "sn54": 12,
+                  "sn74_85c": 10,
+                  "sn74_125c": 12
+                },
+                "vcc_6_v": {
+                  "ta_25c": 7,
+                  "sn54": 10,
+                  "sn74_85c": 9,
+                  "sn74_125c": 10
+                }
+              },
+              "clk_inh_low_before_clk_rise_min": {
+                "vcc_2_v": {
+                  "ta_25c": 100,
+                  "sn54": 150,
+                  "sn74_85c": 125,
+                  "sn74_125c": 150
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 20,
+                  "sn54": 30,
+                  "sn74_85c": 25,
+                  "sn74_125c": 30
+                },
+                "vcc_6_v": {
+                  "ta_25c": 17,
+                  "sn54": 25,
+                  "sn74_85c": 21,
+                  "sn74_125c": 25
+                }
+              },
+              "clk_inh_high_before_clk_rise_min": {
+                "vcc_2_v": {
+                  "ta_25c": 40,
+                  "sn54": 60,
+                  "sn74_85c": 50,
+                  "sn74_125c": 60
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 8,
+                  "sn54": 12,
+                  "sn74_85c": 10,
+                  "sn74_125c": 12
+                },
+                "vcc_6_v": {
+                  "ta_25c": 7,
+                  "sn54": 10,
+                  "sn74_85c": 9,
+                  "sn74_125c": 10
+                }
+              },
+              "data_before_sh_ld_fall_min": {
+                "vcc_2_v": {
+                  "ta_25c": 100,
+                  "sn54": 150,
+                  "sn74_85c": 125,
+                  "sn74_125c": 150
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 20,
+                  "sn54": 30,
+                  "sn74_85c": 25,
+                  "sn74_125c": 30
+                },
+                "vcc_6_v": {
+                  "ta_25c": 17,
+                  "sn54": 26,
+                  "sn74_85c": 21,
+                  "sn74_125c": 26
+                }
+              }
+            },
+            "note": "All setup paths are directly named in TI timing requirements tables."
           },
           "hold": {
-            "status": "missing",
-            "reason": "Existing local timing extraction has no hold-time table for this part."
+            "status": "exact",
+            "source_field": "TI SN74HC165 timing requirements tables 6.11-6.13 th rows",
+            "values_ns": {
+              "ser_data_after_clk_rise_min": {
+                "vcc_2_v": 5,
+                "vcc_4_5_v": 5,
+                "vcc_6_v": 5
+              },
+              "parallel_data_after_sh_ld_fall_min": {
+                "vcc_2_v": 5,
+                "vcc_4_5_v": 5,
+                "vcc_6_v": 5
+              }
+            },
+            "note": "Hold rows are directly listed for serial data after CLK rising edge and parallel data after SH/LD falling edge."
           },
           "minimum_pulse_width": {
-            "status": "missing",
-            "reason": "Existing local timing extraction has no minimum pulse-width table for this part."
+            "status": "exact",
+            "source_field": "TI SN74HC165 timing requirements tables 6.11-6.13 tw rows",
+            "values_ns": {
+              "sh_ld_low_min": {
+                "vcc_2_v": {
+                  "ta_25c": 80,
+                  "sn54": 120,
+                  "sn74_85c": 100,
+                  "sn74_125c": 120
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 16,
+                  "sn54": 24,
+                  "sn74_85c": 20,
+                  "sn74_125c": 24
+                },
+                "vcc_6_v": {
+                  "ta_25c": 14,
+                  "sn54": 20,
+                  "sn74_85c": 17,
+                  "sn74_125c": 20
+                }
+              },
+              "clock_high_or_low_min": {
+                "vcc_2_v": {
+                  "ta_25c": 80,
+                  "sn54": 120,
+                  "sn74_85c": 100,
+                  "sn74_125c": 120
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 16,
+                  "sn54": 24,
+                  "sn74_85c": 20,
+                  "sn74_125c": 24
+                },
+                "vcc_6_v": {
+                  "ta_25c": 14,
+                  "sn54": 20,
+                  "sn74_85c": 17,
+                  "sn74_125c": 20
+                }
+              }
+            },
+            "note": "Pulse duration rows explicitly cover SH/LD low and CLK high or low."
           }
         },
         "conditions": {
@@ -516,42 +755,72 @@
       "basis": "normalized_from_existing_datasheet_timing",
       "parameters": {
         "tPLH": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "TI SN74HC165 switching characteristics tpd rows and waveform note E",
           "values_ns": {
-            "clock_to_q": {
-              "typ": 15,
-              "max_25c": 30
-            },
-            "shift_load_to_q": {
-              "typ": 20,
-              "max_25c": 30
-            },
-            "h_to_q": {
-              "typ": 15,
-              "max_25c": 30
+            "clk_to_qh_or_qhbar": {
+              "typ_25c": {
+                "vcc_2_v": 75,
+                "vcc_4_5_v": 15,
+                "vcc_6_v": 13
+              },
+              "max_25c": {
+                "vcc_2_v": 150,
+                "vcc_4_5_v": 30,
+                "vcc_6_v": 26
+              },
+              "max_sn54": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              },
+              "max_sn74_85c": {
+                "vcc_2_v": 190,
+                "vcc_4_5_v": 38,
+                "vcc_6_v": 32
+              },
+              "max_sn74_125c": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              }
             }
           },
-          "note": "Existing local extraction has one or more output propagation values but not a polarity-specific tPLH/tPHL split."
+          "note": "TI waveform note states tPLH and tPHL are the same as tpd; table gives CLK to QH/QHbar propagation. SH/LD and H paths remain represented in tPLH/tPHL values where already extracted."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "TI SN74HC165 switching characteristics tpd rows and waveform note E",
           "values_ns": {
-            "clock_to_q": {
-              "typ": 15,
-              "max_25c": 30
-            },
-            "shift_load_to_q": {
-              "typ": 20,
-              "max_25c": 30
-            },
-            "h_to_q": {
-              "typ": 15,
-              "max_25c": 30
+            "clk_to_qh_or_qhbar": {
+              "typ_25c": {
+                "vcc_2_v": 75,
+                "vcc_4_5_v": 15,
+                "vcc_6_v": 13
+              },
+              "max_25c": {
+                "vcc_2_v": 150,
+                "vcc_4_5_v": 30,
+                "vcc_6_v": 26
+              },
+              "max_sn54": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              },
+              "max_sn74_85c": {
+                "vcc_2_v": 190,
+                "vcc_4_5_v": 38,
+                "vcc_6_v": 32
+              },
+              "max_sn74_125c": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              }
             }
           },
-          "note": "Existing local extraction has one or more output propagation values but not a polarity-specific tPLH/tPHL split."
+          "note": "TI waveform note states tPLH and tPHL are the same as tpd; table gives CLK to QH/QHbar propagation. SH/LD and H paths remain represented in tPLH/tPHL values where already extracted."
         },
         "tPZH": {
           "status": "not_applicable",
@@ -570,34 +839,243 @@
           "reason": "This clocked package has push-pull outputs and no output-enable/high-Z control."
         },
         "clock_to_q_high": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "status": "exact",
+          "source_field": "TI SN74HC165 switching characteristics tpd rows and waveform note E",
           "values_ns": {
-            "typ": 15,
-            "max_25c": 30
+            "clk_to_qh_or_qhbar": {
+              "typ_25c": {
+                "vcc_2_v": 75,
+                "vcc_4_5_v": 15,
+                "vcc_6_v": 13
+              },
+              "max_25c": {
+                "vcc_2_v": 150,
+                "vcc_4_5_v": 30,
+                "vcc_6_v": 26
+              },
+              "max_sn54": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              },
+              "max_sn74_85c": {
+                "vcc_2_v": 190,
+                "vcc_4_5_v": 38,
+                "vcc_6_v": 32
+              },
+              "max_sn74_125c": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              }
+            }
           },
-          "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+          "note": "TI waveform note states tPLH and tPHL are the same as tpd; table gives CLK to QH/QHbar propagation. SH/LD and H paths remain represented in tPLH/tPHL values where already extracted."
         },
         "clock_to_q_low": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "status": "exact",
+          "source_field": "TI SN74HC165 switching characteristics tpd rows and waveform note E",
           "values_ns": {
-            "typ": 15,
-            "max_25c": 30
+            "clk_to_qh_or_qhbar": {
+              "typ_25c": {
+                "vcc_2_v": 75,
+                "vcc_4_5_v": 15,
+                "vcc_6_v": 13
+              },
+              "max_25c": {
+                "vcc_2_v": 150,
+                "vcc_4_5_v": 30,
+                "vcc_6_v": 26
+              },
+              "max_sn54": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              },
+              "max_sn74_85c": {
+                "vcc_2_v": 190,
+                "vcc_4_5_v": 38,
+                "vcc_6_v": 32
+              },
+              "max_sn74_125c": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              }
+            }
           },
-          "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
+          "note": "TI waveform note states tPLH and tPHL are the same as tpd; table gives CLK to QH/QHbar propagation. SH/LD and H paths remain represented in tPLH/tPHL values where already extracted."
         },
         "setup": {
-          "status": "missing",
-          "reason": "Existing local timing extraction has no setup-time table for this part."
+          "status": "exact",
+          "source_field": "TI SN74HC165 timing requirements tables 6.11-6.13 tsu rows",
+          "values_ns": {
+            "sh_ld_high_before_clk_rise_min": {
+              "vcc_2_v": {
+                "ta_25c": 80,
+                "sn54": 120,
+                "sn74_85c": 100,
+                "sn74_125c": 120
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 16,
+                "sn54": 24,
+                "sn74_85c": 20,
+                "sn74_125c": 24
+              },
+              "vcc_6_v": {
+                "ta_25c": 14,
+                "sn54": 20,
+                "sn74_85c": 17,
+                "sn74_125c": 20
+              }
+            },
+            "ser_before_clk_rise_min": {
+              "vcc_2_v": {
+                "ta_25c": 40,
+                "sn54": 60,
+                "sn74_85c": 50,
+                "sn74_125c": 60
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 8,
+                "sn54": 12,
+                "sn74_85c": 10,
+                "sn74_125c": 12
+              },
+              "vcc_6_v": {
+                "ta_25c": 7,
+                "sn54": 10,
+                "sn74_85c": 9,
+                "sn74_125c": 10
+              }
+            },
+            "clk_inh_low_before_clk_rise_min": {
+              "vcc_2_v": {
+                "ta_25c": 100,
+                "sn54": 150,
+                "sn74_85c": 125,
+                "sn74_125c": 150
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 20,
+                "sn54": 30,
+                "sn74_85c": 25,
+                "sn74_125c": 30
+              },
+              "vcc_6_v": {
+                "ta_25c": 17,
+                "sn54": 25,
+                "sn74_85c": 21,
+                "sn74_125c": 25
+              }
+            },
+            "clk_inh_high_before_clk_rise_min": {
+              "vcc_2_v": {
+                "ta_25c": 40,
+                "sn54": 60,
+                "sn74_85c": 50,
+                "sn74_125c": 60
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 8,
+                "sn54": 12,
+                "sn74_85c": 10,
+                "sn74_125c": 12
+              },
+              "vcc_6_v": {
+                "ta_25c": 7,
+                "sn54": 10,
+                "sn74_85c": 9,
+                "sn74_125c": 10
+              }
+            },
+            "data_before_sh_ld_fall_min": {
+              "vcc_2_v": {
+                "ta_25c": 100,
+                "sn54": 150,
+                "sn74_85c": 125,
+                "sn74_125c": 150
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 20,
+                "sn54": 30,
+                "sn74_85c": 25,
+                "sn74_125c": 30
+              },
+              "vcc_6_v": {
+                "ta_25c": 17,
+                "sn54": 26,
+                "sn74_85c": 21,
+                "sn74_125c": 26
+              }
+            }
+          },
+          "note": "All setup paths are directly named in TI timing requirements tables."
         },
         "hold": {
-          "status": "missing",
-          "reason": "Existing local timing extraction has no hold-time table for this part."
+          "status": "exact",
+          "source_field": "TI SN74HC165 timing requirements tables 6.11-6.13 th rows",
+          "values_ns": {
+            "ser_data_after_clk_rise_min": {
+              "vcc_2_v": 5,
+              "vcc_4_5_v": 5,
+              "vcc_6_v": 5
+            },
+            "parallel_data_after_sh_ld_fall_min": {
+              "vcc_2_v": 5,
+              "vcc_4_5_v": 5,
+              "vcc_6_v": 5
+            }
+          },
+          "note": "Hold rows are directly listed for serial data after CLK rising edge and parallel data after SH/LD falling edge."
         },
         "minimum_pulse_width": {
-          "status": "missing",
-          "reason": "Existing local timing extraction has no minimum pulse-width table for this part."
+          "status": "exact",
+          "source_field": "TI SN74HC165 timing requirements tables 6.11-6.13 tw rows",
+          "values_ns": {
+            "sh_ld_low_min": {
+              "vcc_2_v": {
+                "ta_25c": 80,
+                "sn54": 120,
+                "sn74_85c": 100,
+                "sn74_125c": 120
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 16,
+                "sn54": 24,
+                "sn74_85c": 20,
+                "sn74_125c": 24
+              },
+              "vcc_6_v": {
+                "ta_25c": 14,
+                "sn54": 20,
+                "sn74_85c": 17,
+                "sn74_125c": 20
+              }
+            },
+            "clock_high_or_low_min": {
+              "vcc_2_v": {
+                "ta_25c": 80,
+                "sn54": 120,
+                "sn74_85c": 100,
+                "sn74_125c": 120
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 16,
+                "sn54": 24,
+                "sn74_85c": 20,
+                "sn74_125c": 24
+              },
+              "vcc_6_v": {
+                "ta_25c": 14,
+                "sn54": 20,
+                "sn74_85c": 17,
+                "sn74_125c": 20
+              }
+            }
+          },
+          "note": "Pulse duration rows explicitly cover SH/LD low and CLK high or low."
         }
       },
       "conditions": {

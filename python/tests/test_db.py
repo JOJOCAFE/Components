@@ -386,7 +386,7 @@ def test_logic_family_model_variants_are_validated_and_catalog_visible():
 def test_starter_chips_have_normalized_timing_parameters():
     expected = {
         "74HC00": {
-            "generic": {"tPLH", "tPHL"},
+            "exact": {"tPLH", "tPHL"},
             "not_applicable": {
                 "clock_to_q_high",
                 "clock_to_q_low",
@@ -400,7 +400,7 @@ def test_starter_chips_have_normalized_timing_parameters():
             },
         },
         "74HC04": {
-            "generic": {"tPLH", "tPHL"},
+            "exact": {"tPLH", "tPHL"},
             "not_applicable": {
                 "clock_to_q_high",
                 "clock_to_q_low",
@@ -448,20 +448,20 @@ def test_starter_chips_have_normalized_timing_parameters():
 
 def test_first_non_rv8gr_timing_batch_has_canonical_parameters():
     expected = {
-        "74HC02": "generic",
+        "74HC02": "exact",
         "74HC03": "exact",
         "74HC05": "exact",
-        "74HC08": "generic",
-        "74HC10": "generic",
-        "74HC11": "generic",
-        "74HC14": "generic",
-        "74HC132": "generic",
-        "74HC154": "generic",
-        "74HC158": "generic",
-        "74HC352": "generic",
-        "74HC4078": "generic",
-        "74HCT04": "generic",
-        "74HCT14": "generic",
+        "74HC08": "exact",
+        "74HC10": "exact",
+        "74HC11": "exact",
+        "74HC14": "exact",
+        "74HC132": "exact",
+        "74HC154": "exact",
+        "74HC158": "exact",
+        "74HC352": "exact",
+        "74HC4078": "exact",
+        "74HCT04": "exact",
+        "74HCT14": "exact",
     }
 
     for part, propagation_status in expected.items():
@@ -492,28 +492,28 @@ def test_first_non_rv8gr_timing_batch_has_canonical_parameters():
 def test_second_non_rv8gr_timing_batch_has_canonical_parameters():
     expected = {
         "74HC07": {"propagation": "generic", "high_z": "not_applicable"},
-        "74HC138": {"propagation": "generic", "high_z": "not_applicable"},
-        "74HC139": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC138": {"propagation": "exact", "high_z": "not_applicable"},
+        "74HC139": {"propagation": "exact", "high_z": "not_applicable"},
         "74HC147": {"propagation": "generic", "high_z": "not_applicable"},
-        "74HC148": {"propagation": "generic", "high_z": "not_applicable"},
-        "74HC151": {"propagation": "generic", "high_z": "not_applicable"},
-        "74HC153": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC148": {"propagation": "exact", "high_z": "not_applicable"},
+        "74HC151": {"propagation": "exact", "high_z": "not_applicable"},
+        "74HC153": {"propagation": "exact", "high_z": "not_applicable"},
         "74HC155": {"propagation": "generic", "high_z": "not_applicable"},
-        "74HC20": {"propagation": "generic", "high_z": "not_applicable"},
-        "74HC238": {"propagation": "generic", "high_z": "not_applicable"},
-        "74HC240": {"propagation": "generic", "high_z": "generic"},
-        "74HC244": {"propagation": "generic", "high_z": "generic"},
-        "74HC251": {"propagation": "generic", "high_z": "generic"},
-        "74HC257": {"propagation": "generic", "high_z": "generic"},
-        "74HC27": {"propagation": "generic", "high_z": "not_applicable"},
-        "74HC30": {"propagation": "generic", "high_z": "not_applicable"},
-        "74HC32": {"propagation": "generic", "high_z": "not_applicable"},
-        "74HC4049": {"propagation": "generic", "high_z": "not_applicable"},
-        "74HC4050": {"propagation": "generic", "high_z": "not_applicable"},
-        "74HC85": {"propagation": "generic", "high_z": "not_applicable"},
+        "74HC20": {"propagation": "exact", "high_z": "not_applicable"},
+        "74HC238": {"propagation": "exact", "high_z": "not_applicable"},
+        "74HC240": {"propagation": "exact", "high_z": "exact"},
+        "74HC244": {"propagation": "exact", "high_z": "exact"},
+        "74HC251": {"propagation": "exact", "high_z": "exact"},
+        "74HC257": {"propagation": "exact", "high_z": "exact"},
+        "74HC27": {"propagation": "exact", "high_z": "not_applicable"},
+        "74HC30": {"propagation": "exact", "high_z": "not_applicable"},
+        "74HC32": {"propagation": "exact", "high_z": "not_applicable"},
+        "74HC4049": {"propagation": "exact", "high_z": "not_applicable"},
+        "74HC4050": {"propagation": "exact", "high_z": "not_applicable"},
+        "74HC85": {"propagation": "exact", "high_z": "not_applicable"},
         "74HC922": {"propagation": "generic", "high_z": "generic"},
-        "74HCT245": {"propagation": "generic", "high_z": "generic"},
-        "74HCT541": {"propagation": "generic", "high_z": "generic"},
+        "74HCT245": {"propagation": "exact", "high_z": "exact"},
+        "74HCT541": {"propagation": "exact", "high_z": "exact"},
     }
 
     for part, statuses in expected.items():
@@ -538,6 +538,75 @@ def test_second_non_rv8gr_timing_batch_has_canonical_parameters():
             "setup",
         ):
             assert public_parameters[name]["status"] == "not_applicable"
+
+
+def test_bank_bus_timing_extraction_has_exact_terms():
+    expected = {
+        "74HC240": {
+            "tpd": {"typ": 10, "max_25c": 20, "max_sn54": 30, "max_sn74": 25},
+            "ten": {"typ": 15, "max_25c": 30, "max_sn54": 45, "max_sn74": 38},
+            "tdis": {"typ": 22, "max_25c": 30, "max_sn54": 45, "max_sn74": 38},
+        },
+        "74HC244": {
+            "tpd": {"typ": 13, "max_25c": 23, "max_sn54": 34, "max_sn74": 29},
+            "ten": {"typ": 15, "max_25c": 30, "max_sn54": 45, "max_sn74": 38},
+            "tdis": {"typ": 15, "max_25c": 30, "max_sn54": 45, "max_sn74": 38},
+        },
+        "74HC251": {
+            "tpd": {
+                "select_to_w_y": {"typ": 21, "max_25c": 41, "max_sn54": 60, "max_sn74": 51},
+                "data_to_w_y": {"typ": 17, "max_25c": 39, "max_sn54": 57, "max_sn74": 49},
+            },
+            "ten": {"typ": 10, "max_25c": 29, "max_sn54": 42, "max_sn74": 36},
+            "tdis": {"typ": 15, "max_25c": 39, "max_sn54": 57, "max_sn74": 49},
+        },
+        "74HC257": {
+            "tpd": {
+                "a_or_b_to_y": {"typ": 10, "max_25c": 20, "max_sn54": 30, "max_sn74": 25},
+                "select_to_y": {"typ": 10, "max_25c": 20, "max_sn54": 30, "max_sn74": 25},
+            },
+            "ten": {"typ": 15, "max_25c": 30, "max_sn54": 45, "max_sn74": 38},
+            "tdis": {"typ": 15, "max_25c": 30, "max_sn54": 45, "max_sn74": 38},
+        },
+        "74HCT541": {
+            "tpd": {"typ": 13, "max_25c": 23, "max_sn54": 34, "max_sn74": 29},
+            "ten": {"typ": 21, "max_25c": 30, "max_sn54": 45, "max_sn74": 38},
+            "tdis": {"typ": 19, "max_25c": 30, "max_sn54": 45, "max_sn74": 38},
+        },
+    }
+
+    for part, values in expected.items():
+        params = load_digital_definition(part)["timing"]["timing_parameters"]["parameters"]
+        assert params["tPLH"]["status"] == "exact"
+        assert params["tPHL"]["status"] == "exact"
+        assert params["tPLH"]["values_ns"] == values["tpd"]
+        assert params["tPHL"]["values_ns"] == values["tpd"]
+        assert params["tPZH"]["values_ns"] == values["ten"]
+        assert params["tPZL"]["values_ns"] == values["ten"]
+        assert params["tPHZ"]["values_ns"] == values["tdis"]
+        assert params["tPLZ"]["values_ns"] == values["tdis"]
+
+    hc245 = load_digital_definition("74HC245")["timing"]["timing_parameters"]["parameters"]
+    assert hc245["tPLH"]["status"] == "exact"
+    assert hc245["tPZH"]["values_ns"]["vcc_4_5_v"] == {
+        "typ": 23,
+        "max_25c": 46,
+        "max_sn54": 68,
+        "max_sn74": 58,
+    }
+
+    hct245 = load_digital_definition("74HCT245")["timing"]["timing_parameters"]["parameters"]
+    assert hct245["tPLH"]["status"] == "exact"
+    assert hct245["tPLZ"]["values_ns"]["vcc_4_5_v"] == {
+        "typ": 26,
+        "max_25c": 40,
+        "max_sn54": 60,
+        "max_sn74": 50,
+    }
+
+    hc541 = load_digital_definition("74HC541")["timing"]["timing_parameters"]["parameters"]
+    assert hc541["tPLH"]["status"] == "generic"
+    assert hc541["tPZH"]["status"] == "generic"
 
 
 def test_deep_ti_timing_extraction_has_exact_terms():

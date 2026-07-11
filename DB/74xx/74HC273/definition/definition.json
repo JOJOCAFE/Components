@@ -264,16 +264,98 @@
             "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
           },
           "setup": {
-            "status": "missing",
-            "reason": "Existing local timing extraction has no setup-time table for this part."
+            "status": "exact",
+            "source_field": "TI SN74HC273 timing requirements tables 6.8-6.10 tsu rows",
+            "values_ns": {
+              "data_before_clk_rise_min": {
+                "vcc_2_v": {
+                  "ta_25c": 100,
+                  "sn54": 150,
+                  "sn74_85c": 125
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 20,
+                  "sn54": 30,
+                  "sn74_85c": 25
+                },
+                "vcc_6_v": {
+                  "ta_25c": 17,
+                  "sn54": 25,
+                  "sn74_85c": 21
+                }
+              },
+              "clear_inactive_before_clk_rise_min": {
+                "vcc_2_v": {
+                  "ta_25c": 100,
+                  "sn54": 150,
+                  "sn74_85c": 125
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 20,
+                  "sn54": 30,
+                  "sn74_85c": 25
+                },
+                "vcc_6_v": {
+                  "ta_25c": 17,
+                  "sn54": 25,
+                  "sn74_85c": 21
+                }
+              }
+            },
+            "note": "Setup rows are directly listed before CLK rising edge."
           },
           "hold": {
-            "status": "missing",
-            "reason": "Existing local timing extraction has no hold-time table for this part."
+            "status": "exact",
+            "source_field": "TI SN74HC273 timing requirements tables 6.8-6.10 th row",
+            "values_ns": {
+              "data_after_clk_rise_min": {
+                "vcc_2_v": 0,
+                "vcc_4_5_v": 0,
+                "vcc_6_v": 0
+              }
+            },
+            "note": "Hold row is data after CLK rising edge."
           },
           "minimum_pulse_width": {
-            "status": "missing",
-            "reason": "Existing local timing extraction has no minimum pulse-width table for this part."
+            "status": "exact",
+            "source_field": "TI SN74HC273 timing requirements tables 6.8-6.10 tw rows",
+            "values_ns": {
+              "clear_low_min": {
+                "vcc_2_v": {
+                  "ta_25c": 80,
+                  "sn54": 120,
+                  "sn74_85c": 100
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 16,
+                  "sn54": 24,
+                  "sn74_85c": 20
+                },
+                "vcc_6_v": {
+                  "ta_25c": 14,
+                  "sn54": 20,
+                  "sn74_85c": 17
+                }
+              },
+              "clock_high_or_low_min": {
+                "vcc_2_v": {
+                  "ta_25c": 80,
+                  "sn54": 120,
+                  "sn74_85c": 100
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 16,
+                  "sn54": 24,
+                  "sn74_85c": 20
+                },
+                "vcc_6_v": {
+                  "ta_25c": 14,
+                  "sn54": 20,
+                  "sn74_85c": 17
+                }
+              }
+            },
+            "note": "Pulse duration rows explicitly cover CLR low and CLK high or low."
           }
         },
         "conditions": {
@@ -582,16 +664,98 @@
           "note": "Existing local extraction has one clock-to-Q value; output polarity split is not extracted."
         },
         "setup": {
-          "status": "missing",
-          "reason": "Existing local timing extraction has no setup-time table for this part."
+          "status": "exact",
+          "source_field": "TI SN74HC273 timing requirements tables 6.8-6.10 tsu rows",
+          "values_ns": {
+            "data_before_clk_rise_min": {
+              "vcc_2_v": {
+                "ta_25c": 100,
+                "sn54": 150,
+                "sn74_85c": 125
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 20,
+                "sn54": 30,
+                "sn74_85c": 25
+              },
+              "vcc_6_v": {
+                "ta_25c": 17,
+                "sn54": 25,
+                "sn74_85c": 21
+              }
+            },
+            "clear_inactive_before_clk_rise_min": {
+              "vcc_2_v": {
+                "ta_25c": 100,
+                "sn54": 150,
+                "sn74_85c": 125
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 20,
+                "sn54": 30,
+                "sn74_85c": 25
+              },
+              "vcc_6_v": {
+                "ta_25c": 17,
+                "sn54": 25,
+                "sn74_85c": 21
+              }
+            }
+          },
+          "note": "Setup rows are directly listed before CLK rising edge."
         },
         "hold": {
-          "status": "missing",
-          "reason": "Existing local timing extraction has no hold-time table for this part."
+          "status": "exact",
+          "source_field": "TI SN74HC273 timing requirements tables 6.8-6.10 th row",
+          "values_ns": {
+            "data_after_clk_rise_min": {
+              "vcc_2_v": 0,
+              "vcc_4_5_v": 0,
+              "vcc_6_v": 0
+            }
+          },
+          "note": "Hold row is data after CLK rising edge."
         },
         "minimum_pulse_width": {
-          "status": "missing",
-          "reason": "Existing local timing extraction has no minimum pulse-width table for this part."
+          "status": "exact",
+          "source_field": "TI SN74HC273 timing requirements tables 6.8-6.10 tw rows",
+          "values_ns": {
+            "clear_low_min": {
+              "vcc_2_v": {
+                "ta_25c": 80,
+                "sn54": 120,
+                "sn74_85c": 100
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 16,
+                "sn54": 24,
+                "sn74_85c": 20
+              },
+              "vcc_6_v": {
+                "ta_25c": 14,
+                "sn54": 20,
+                "sn74_85c": 17
+              }
+            },
+            "clock_high_or_low_min": {
+              "vcc_2_v": {
+                "ta_25c": 80,
+                "sn54": 120,
+                "sn74_85c": 100
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 16,
+                "sn54": 24,
+                "sn74_85c": 20
+              },
+              "vcc_6_v": {
+                "ta_25c": 14,
+                "sn54": 20,
+                "sn74_85c": 17
+              }
+            }
+          },
+          "note": "Pulse duration rows explicitly cover CLR low and CLK high or low."
         }
       },
       "conditions": {

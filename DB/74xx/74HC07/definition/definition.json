@@ -190,13 +190,13 @@
           },
           "tPHL": {
             "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "source_field": "definition_layers.timing.delay",
             "values_ns": {
               "datasheet_typical_ns": {
                 "feature_tpd": 6
               }
             },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            "note": "ST M74HC07 local source text gives only feature/waveform propagation delay; no direct tPLH/tPHL mapping was extracted. Preserved generic canonical timing until polarity-specific evidence is available."
           },
           "tPHZ": {
             "status": "not_applicable",
@@ -204,13 +204,13 @@
           },
           "tPLH": {
             "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "source_field": "definition_layers.timing.delay",
             "values_ns": {
               "datasheet_typical_ns": {
                 "feature_tpd": 6
               }
             },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            "note": "ST M74HC07 local source text gives only feature/waveform propagation delay; no direct tPLH/tPHL mapping was extracted. Preserved generic canonical timing until polarity-specific evidence is available."
           },
           "tPLZ": {
             "status": "not_applicable",
@@ -427,13 +427,13 @@
         },
         "tPHL": {
           "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "source_field": "timing.datasheet",
           "values_ns": {
             "datasheet_typical_ns": {
               "feature_tpd": 6
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "ST M74HC07 local source text gives only feature/waveform propagation delay; no direct tPLH/tPHL mapping was extracted. Preserved generic canonical timing until polarity-specific evidence is available."
         },
         "tPHZ": {
           "status": "not_applicable",
@@ -441,13 +441,13 @@
         },
         "tPLH": {
           "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "source_field": "timing.datasheet",
           "values_ns": {
             "datasheet_typical_ns": {
               "feature_tpd": 6
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "ST M74HC07 local source text gives only feature/waveform propagation delay; no direct tPLH/tPHL mapping was extracted. Preserved generic canonical timing until polarity-specific evidence is available."
         },
         "tPLZ": {
           "status": "not_applicable",

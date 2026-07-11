@@ -186,58 +186,70 @@
       },
       "parameters": {
         "tPLH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay.public_timing.paths",
-          "note": "Memory read valid timing is source-backed by address/CE/OE path, but output LOW/HIGH polarity split is not extracted.",
+          "note": "tAA/tCO/tOE read access paths define data valid after address, chip select, or output enable; memory datasheet does not split by output HIGH/LOW transition.",
           "values_ns": {
             "address_to_data_valid_ns": 70,
             "ce_to_data_valid_ns": 70,
             "oe_to_data_valid_ns": 35
-          }
+          },
+          "mapping_basis": "tAA/tCO/tOE read access paths define data valid after address, chip select, or output enable; memory datasheet does not split by output HIGH/LOW transition.",
+          "source": "Samsung KM62256C AC characteristics"
         },
         "tPHL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay.public_timing.paths",
-          "note": "Memory read valid timing is source-backed by address/CE/OE path, but output LOW/HIGH polarity split is not extracted.",
+          "note": "tAA/tCO/tOE read access paths define data valid after address, chip select, or output enable; memory datasheet does not split by output HIGH/LOW transition.",
           "values_ns": {
             "address_to_data_valid_ns": 70,
             "ce_to_data_valid_ns": 70,
             "oe_to_data_valid_ns": 35
-          }
+          },
+          "mapping_basis": "tAA/tCO/tOE read access paths define data valid after address, chip select, or output enable; memory datasheet does not split by output HIGH/LOW transition.",
+          "source": "Samsung KM62256C AC characteristics"
         },
         "tPZH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay.public_timing.paths",
-          "note": "Memory output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+          "note": "tLZ/tOLZ low-Z/active-output paths define output enable from CE/OE; same timing applies before either output polarity is known.",
           "values_ns": {
             "oe_to_data_valid_ns": 35,
             "ce_to_data_valid_ns": 70
-          }
+          },
+          "mapping_basis": "tLZ/tOLZ low-Z/active-output paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+          "source": "Samsung KM62256C AC characteristics"
         },
         "tPZL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay.public_timing.paths",
-          "note": "Memory output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+          "note": "tLZ/tOLZ low-Z/active-output paths define output enable from CE/OE; same timing applies before either output polarity is known.",
           "values_ns": {
             "oe_to_data_valid_ns": 35,
             "ce_to_data_valid_ns": 70
-          }
+          },
+          "mapping_basis": "tLZ/tOLZ low-Z/active-output paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+          "source": "Samsung KM62256C AC characteristics"
         },
         "tPHZ": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay.public_timing.paths",
-          "note": "Memory output-disable-to-float timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+          "note": "tHZ/tOHZ high-Z paths define CE/OE disable to open-circuit output; not split by previous HIGH/LOW output state.",
           "values_ns": {
             "ce_or_oe_to_high_z_ns": 30
-          }
+          },
+          "mapping_basis": "tHZ/tOHZ high-Z paths define CE/OE disable to open-circuit output; not split by previous HIGH/LOW output state.",
+          "source": "Samsung KM62256C AC characteristics"
         },
         "tPLZ": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "definition_layers.timing.delay.public_timing.paths",
-          "note": "Memory output-disable-to-float timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+          "note": "tHZ/tOHZ high-Z paths define CE/OE disable to open-circuit output; not split by previous HIGH/LOW output state.",
           "values_ns": {
             "ce_or_oe_to_high_z_ns": 30
-          }
+          },
+          "mapping_basis": "tHZ/tOHZ high-Z paths define CE/OE disable to open-circuit output; not split by previous HIGH/LOW output state.",
+          "source": "Samsung KM62256C AC characteristics"
         },
         "clock_to_q_high": {
           "status": "not_applicable",
@@ -596,58 +608,70 @@
         },
         "parameters": {
           "tPLH": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay.public_timing.paths",
-            "note": "Memory read valid timing is source-backed by address/CE/OE path, but output LOW/HIGH polarity split is not extracted.",
+            "note": "tAA/tCO/tOE read access paths define data valid after address, chip select, or output enable; memory datasheet does not split by output HIGH/LOW transition.",
             "values_ns": {
               "address_to_data_valid_ns": 70,
               "ce_to_data_valid_ns": 70,
               "oe_to_data_valid_ns": 35
-            }
+            },
+            "mapping_basis": "tAA/tCO/tOE read access paths define data valid after address, chip select, or output enable; memory datasheet does not split by output HIGH/LOW transition.",
+            "source": "Samsung KM62256C AC characteristics"
           },
           "tPHL": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay.public_timing.paths",
-            "note": "Memory read valid timing is source-backed by address/CE/OE path, but output LOW/HIGH polarity split is not extracted.",
+            "note": "tAA/tCO/tOE read access paths define data valid after address, chip select, or output enable; memory datasheet does not split by output HIGH/LOW transition.",
             "values_ns": {
               "address_to_data_valid_ns": 70,
               "ce_to_data_valid_ns": 70,
               "oe_to_data_valid_ns": 35
-            }
+            },
+            "mapping_basis": "tAA/tCO/tOE read access paths define data valid after address, chip select, or output enable; memory datasheet does not split by output HIGH/LOW transition.",
+            "source": "Samsung KM62256C AC characteristics"
           },
           "tPZH": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay.public_timing.paths",
-            "note": "Memory output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+            "note": "tLZ/tOLZ low-Z/active-output paths define output enable from CE/OE; same timing applies before either output polarity is known.",
             "values_ns": {
               "oe_to_data_valid_ns": 35,
               "ce_to_data_valid_ns": 70
-            }
+            },
+            "mapping_basis": "tLZ/tOLZ low-Z/active-output paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+            "source": "Samsung KM62256C AC characteristics"
           },
           "tPZL": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay.public_timing.paths",
-            "note": "Memory output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+            "note": "tLZ/tOLZ low-Z/active-output paths define output enable from CE/OE; same timing applies before either output polarity is known.",
             "values_ns": {
               "oe_to_data_valid_ns": 35,
               "ce_to_data_valid_ns": 70
-            }
+            },
+            "mapping_basis": "tLZ/tOLZ low-Z/active-output paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+            "source": "Samsung KM62256C AC characteristics"
           },
           "tPHZ": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay.public_timing.paths",
-            "note": "Memory output-disable-to-float timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+            "note": "tHZ/tOHZ high-Z paths define CE/OE disable to open-circuit output; not split by previous HIGH/LOW output state.",
             "values_ns": {
               "ce_or_oe_to_high_z_ns": 30
-            }
+            },
+            "mapping_basis": "tHZ/tOHZ high-Z paths define CE/OE disable to open-circuit output; not split by previous HIGH/LOW output state.",
+            "source": "Samsung KM62256C AC characteristics"
           },
           "tPLZ": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "definition_layers.timing.delay.public_timing.paths",
-            "note": "Memory output-disable-to-float timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+            "note": "tHZ/tOHZ high-Z paths define CE/OE disable to open-circuit output; not split by previous HIGH/LOW output state.",
             "values_ns": {
               "ce_or_oe_to_high_z_ns": 30
-            }
+            },
+            "mapping_basis": "tHZ/tOHZ high-Z paths define CE/OE disable to open-circuit output; not split by previous HIGH/LOW output state.",
+            "source": "Samsung KM62256C AC characteristics"
           },
           "clock_to_q_high": {
             "status": "not_applicable",

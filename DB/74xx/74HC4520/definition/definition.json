@@ -132,12 +132,126 @@
       "basis": "normalized_from_existing_datasheet_timing",
       "parameters": {
         "tPLH": {
-          "status": "missing",
-          "reason": "Existing local timing extraction does not include this normalized parameter."
+          "status": "exact",
+          "source_field": "TI CD74HC4520 switching specifications tPLH/tPHL rows",
+          "values_ns": {
+            "cp_to_qn": {
+              "max_25c": {
+                "vcc_2_v": 240,
+                "vcc_4_5_v": 48,
+                "vcc_6_v": 41
+              },
+              "typ_5v_15pf": 20,
+              "max_85c": {
+                "vcc_2_v": 300,
+                "vcc_4_5_v": 60,
+                "vcc_6_v": 51
+              },
+              "max_125c": {
+                "vcc_2_v": 360,
+                "vcc_4_5_v": 72,
+                "vcc_6_v": 61
+              }
+            },
+            "enable_to_qn": {
+              "max_25c": {
+                "vcc_2_v": 240,
+                "vcc_4_5_v": 48,
+                "vcc_6_v": 41
+              },
+              "typ_5v_15pf": 20,
+              "max_85c": {
+                "vcc_2_v": 300,
+                "vcc_4_5_v": 60,
+                "vcc_6_v": 51
+              },
+              "max_125c": {
+                "vcc_2_v": 360,
+                "vcc_4_5_v": 72,
+                "vcc_6_v": 61
+              }
+            },
+            "mr_to_qn": {
+              "max_25c": {
+                "vcc_2_v": 150,
+                "vcc_4_5_v": 30,
+                "vcc_6_v": 26
+              },
+              "typ_5v_15pf": 12,
+              "max_85c": {
+                "vcc_2_v": 190,
+                "vcc_4_5_v": 38,
+                "vcc_6_v": 33
+              },
+              "max_125c": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              }
+            }
+          },
+          "note": "HC switching table groups tPLH and tPHL for CP, Enable, and MR to Qn paths."
         },
         "tPHL": {
-          "status": "missing",
-          "reason": "Existing local timing extraction does not include this normalized parameter."
+          "status": "exact",
+          "source_field": "TI CD74HC4520 switching specifications tPLH/tPHL rows",
+          "values_ns": {
+            "cp_to_qn": {
+              "max_25c": {
+                "vcc_2_v": 240,
+                "vcc_4_5_v": 48,
+                "vcc_6_v": 41
+              },
+              "typ_5v_15pf": 20,
+              "max_85c": {
+                "vcc_2_v": 300,
+                "vcc_4_5_v": 60,
+                "vcc_6_v": 51
+              },
+              "max_125c": {
+                "vcc_2_v": 360,
+                "vcc_4_5_v": 72,
+                "vcc_6_v": 61
+              }
+            },
+            "enable_to_qn": {
+              "max_25c": {
+                "vcc_2_v": 240,
+                "vcc_4_5_v": 48,
+                "vcc_6_v": 41
+              },
+              "typ_5v_15pf": 20,
+              "max_85c": {
+                "vcc_2_v": 300,
+                "vcc_4_5_v": 60,
+                "vcc_6_v": 51
+              },
+              "max_125c": {
+                "vcc_2_v": 360,
+                "vcc_4_5_v": 72,
+                "vcc_6_v": 61
+              }
+            },
+            "mr_to_qn": {
+              "max_25c": {
+                "vcc_2_v": 150,
+                "vcc_4_5_v": 30,
+                "vcc_6_v": 26
+              },
+              "typ_5v_15pf": 12,
+              "max_85c": {
+                "vcc_2_v": 190,
+                "vcc_4_5_v": 38,
+                "vcc_6_v": 33
+              },
+              "max_125c": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              }
+            }
+          },
+          "note": "Same table explicitly labels grouped tPLH/tPHL propagation delay."
         },
         "tPZH": {
           "status": "not_applicable",
@@ -156,36 +270,171 @@
           "reason": "74HC4520 has no output-enable/high-Z control in the current package definition."
         },
         "clock_to_q_high": {
-          "status": "missing",
-          "reason": "Existing local timing extraction does not include this normalized parameter."
+          "status": "exact",
+          "source_field": "TI CD74HC4520 switching specifications CP->Qn tPLH/tPHL",
+          "values_ns": {
+            "cp_to_qn": {
+              "max_25c": {
+                "vcc_2_v": 240,
+                "vcc_4_5_v": 48,
+                "vcc_6_v": 41
+              },
+              "typ_5v_15pf": 20,
+              "max_85c": {
+                "vcc_2_v": 300,
+                "vcc_4_5_v": 60,
+                "vcc_6_v": 51
+              },
+              "max_125c": {
+                "vcc_2_v": 360,
+                "vcc_4_5_v": 72,
+                "vcc_6_v": 61
+              }
+            }
+          },
+          "note": "CP-to-Qn propagation row is the counter clock-to-output path."
         },
         "clock_to_q_low": {
-          "status": "missing",
-          "reason": "Existing local timing extraction does not include this normalized parameter."
+          "status": "exact",
+          "source_field": "TI CD74HC4520 switching specifications CP->Qn and MR->Qn",
+          "values_ns": {
+            "cp_to_qn": {
+              "max_25c": {
+                "vcc_2_v": 240,
+                "vcc_4_5_v": 48,
+                "vcc_6_v": 41
+              },
+              "typ_5v_15pf": 20,
+              "max_85c": {
+                "vcc_2_v": 300,
+                "vcc_4_5_v": 60,
+                "vcc_6_v": 51
+              },
+              "max_125c": {
+                "vcc_2_v": 360,
+                "vcc_4_5_v": 72,
+                "vcc_6_v": 61
+              }
+            },
+            "mr_to_qn": {
+              "max_25c": {
+                "vcc_2_v": 150,
+                "vcc_4_5_v": 30,
+                "vcc_6_v": 26
+              },
+              "typ_5v_15pf": 12,
+              "max_85c": {
+                "vcc_2_v": 190,
+                "vcc_4_5_v": 38,
+                "vcc_6_v": 33
+              },
+              "max_125c": {
+                "vcc_2_v": 225,
+                "vcc_4_5_v": 45,
+                "vcc_6_v": 38
+              }
+            }
+          },
+          "note": "Includes clocked output propagation plus master-reset-to-low output path."
         },
         "setup": {
-          "status": "missing",
-          "reason": "Existing local timing extraction does not include this normalized parameter."
+          "status": "exact",
+          "source_field": "TI CD74HC4520 prerequisite switching specifications tSU rows",
+          "values_ns": {
+            "enable_to_cp_min": {
+              "vcc_2_v": {
+                "ta_25c": 80,
+                "max_85c": 100,
+                "max_125c": 120
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 16,
+                "max_85c": 20,
+                "max_125c": 24
+              },
+              "vcc_6_v": {
+                "ta_25c": 14,
+                "max_85c": 17,
+                "max_125c": 20
+              }
+            },
+            "cp_to_enable_min": {
+              "vcc_2_v": {
+                "ta_25c": 80,
+                "max_85c": 100,
+                "max_125c": 120
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 16,
+                "max_85c": 20,
+                "max_125c": 24
+              },
+              "vcc_6_v": {
+                "ta_25c": 14,
+                "max_85c": 17,
+                "max_125c": 20
+              }
+            }
+          },
+          "note": "Setup rows are listed for Enable to CP and CP to Enable."
         },
         "hold": {
-          "status": "missing",
-          "reason": "Existing local timing extraction does not include this normalized parameter."
+          "status": "exact",
+          "source_field": "TI CD74HC4520 prerequisite switching specifications tREM rows",
+          "values_ns": {
+            "mr_to_cp_removal_min": {
+              "vcc_2_v": 0,
+              "vcc_4_5_v": 0,
+              "vcc_6_v": 0
+            },
+            "mr_to_enable_removal_min": {
+              "vcc_2_v": 0,
+              "vcc_4_5_v": 0,
+              "vcc_6_v": 0
+            }
+          },
+          "note": "The table gives removal time rather than ordinary data hold; stored here as the reset/removal hold-side requirement."
         },
         "minimum_pulse_width": {
           "status": "exact",
-          "source_field": "timing.datasheet.values.* pulse-width fields",
+          "source_field": "TI CD74HC4520 prerequisite switching specifications tW rows",
           "values_ns": {
-            "clock_pulse_width": {
-              "min_25c": 16,
-              "min_minus40_to_85c": 20,
-              "min_minus55_to_125c": 24
+            "clock_pulse_width_min": {
+              "vcc_2_v": {
+                "ta_25c": 80,
+                "max_85c": 100,
+                "max_125c": 120
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 16,
+                "max_85c": 20,
+                "max_125c": 24
+              },
+              "vcc_6_v": {
+                "ta_25c": 14,
+                "max_85c": 17,
+                "max_125c": 20
+              }
             },
-            "reset_pulse_width": {
-              "min_25c": 20,
-              "min_minus40_to_85c": 25,
-              "min_minus55_to_125c": 30
+            "reset_pulse_width_min": {
+              "vcc_2_v": {
+                "ta_25c": 100,
+                "max_85c": 125,
+                "max_125c": 150
+              },
+              "vcc_4_5_v": {
+                "ta_25c": 20,
+                "max_85c": 25,
+                "max_125c": 30
+              },
+              "vcc_6_v": {
+                "ta_25c": 17,
+                "max_85c": 21,
+                "max_125c": 26
+              }
             }
-          }
+          },
+          "note": "Pulse-width rows explicitly cover CP and MR."
         }
       },
       "conditions": {
@@ -425,12 +674,126 @@
         "basis": "normalized_from_existing_datasheet_timing",
         "parameters": {
           "tPLH": {
-            "status": "missing",
-            "reason": "Existing local timing extraction does not include this normalized parameter."
+            "status": "exact",
+            "source_field": "TI CD74HC4520 switching specifications tPLH/tPHL rows",
+            "values_ns": {
+              "cp_to_qn": {
+                "max_25c": {
+                  "vcc_2_v": 240,
+                  "vcc_4_5_v": 48,
+                  "vcc_6_v": 41
+                },
+                "typ_5v_15pf": 20,
+                "max_85c": {
+                  "vcc_2_v": 300,
+                  "vcc_4_5_v": 60,
+                  "vcc_6_v": 51
+                },
+                "max_125c": {
+                  "vcc_2_v": 360,
+                  "vcc_4_5_v": 72,
+                  "vcc_6_v": 61
+                }
+              },
+              "enable_to_qn": {
+                "max_25c": {
+                  "vcc_2_v": 240,
+                  "vcc_4_5_v": 48,
+                  "vcc_6_v": 41
+                },
+                "typ_5v_15pf": 20,
+                "max_85c": {
+                  "vcc_2_v": 300,
+                  "vcc_4_5_v": 60,
+                  "vcc_6_v": 51
+                },
+                "max_125c": {
+                  "vcc_2_v": 360,
+                  "vcc_4_5_v": 72,
+                  "vcc_6_v": 61
+                }
+              },
+              "mr_to_qn": {
+                "max_25c": {
+                  "vcc_2_v": 150,
+                  "vcc_4_5_v": 30,
+                  "vcc_6_v": 26
+                },
+                "typ_5v_15pf": 12,
+                "max_85c": {
+                  "vcc_2_v": 190,
+                  "vcc_4_5_v": 38,
+                  "vcc_6_v": 33
+                },
+                "max_125c": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                }
+              }
+            },
+            "note": "HC switching table groups tPLH and tPHL for CP, Enable, and MR to Qn paths."
           },
           "tPHL": {
-            "status": "missing",
-            "reason": "Existing local timing extraction does not include this normalized parameter."
+            "status": "exact",
+            "source_field": "TI CD74HC4520 switching specifications tPLH/tPHL rows",
+            "values_ns": {
+              "cp_to_qn": {
+                "max_25c": {
+                  "vcc_2_v": 240,
+                  "vcc_4_5_v": 48,
+                  "vcc_6_v": 41
+                },
+                "typ_5v_15pf": 20,
+                "max_85c": {
+                  "vcc_2_v": 300,
+                  "vcc_4_5_v": 60,
+                  "vcc_6_v": 51
+                },
+                "max_125c": {
+                  "vcc_2_v": 360,
+                  "vcc_4_5_v": 72,
+                  "vcc_6_v": 61
+                }
+              },
+              "enable_to_qn": {
+                "max_25c": {
+                  "vcc_2_v": 240,
+                  "vcc_4_5_v": 48,
+                  "vcc_6_v": 41
+                },
+                "typ_5v_15pf": 20,
+                "max_85c": {
+                  "vcc_2_v": 300,
+                  "vcc_4_5_v": 60,
+                  "vcc_6_v": 51
+                },
+                "max_125c": {
+                  "vcc_2_v": 360,
+                  "vcc_4_5_v": 72,
+                  "vcc_6_v": 61
+                }
+              },
+              "mr_to_qn": {
+                "max_25c": {
+                  "vcc_2_v": 150,
+                  "vcc_4_5_v": 30,
+                  "vcc_6_v": 26
+                },
+                "typ_5v_15pf": 12,
+                "max_85c": {
+                  "vcc_2_v": 190,
+                  "vcc_4_5_v": 38,
+                  "vcc_6_v": 33
+                },
+                "max_125c": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                }
+              }
+            },
+            "note": "Same table explicitly labels grouped tPLH/tPHL propagation delay."
           },
           "tPZH": {
             "status": "not_applicable",
@@ -449,36 +812,171 @@
             "reason": "74HC4520 has no output-enable/high-Z control in the current package definition."
           },
           "clock_to_q_high": {
-            "status": "missing",
-            "reason": "Existing local timing extraction does not include this normalized parameter."
+            "status": "exact",
+            "source_field": "TI CD74HC4520 switching specifications CP->Qn tPLH/tPHL",
+            "values_ns": {
+              "cp_to_qn": {
+                "max_25c": {
+                  "vcc_2_v": 240,
+                  "vcc_4_5_v": 48,
+                  "vcc_6_v": 41
+                },
+                "typ_5v_15pf": 20,
+                "max_85c": {
+                  "vcc_2_v": 300,
+                  "vcc_4_5_v": 60,
+                  "vcc_6_v": 51
+                },
+                "max_125c": {
+                  "vcc_2_v": 360,
+                  "vcc_4_5_v": 72,
+                  "vcc_6_v": 61
+                }
+              }
+            },
+            "note": "CP-to-Qn propagation row is the counter clock-to-output path."
           },
           "clock_to_q_low": {
-            "status": "missing",
-            "reason": "Existing local timing extraction does not include this normalized parameter."
+            "status": "exact",
+            "source_field": "TI CD74HC4520 switching specifications CP->Qn and MR->Qn",
+            "values_ns": {
+              "cp_to_qn": {
+                "max_25c": {
+                  "vcc_2_v": 240,
+                  "vcc_4_5_v": 48,
+                  "vcc_6_v": 41
+                },
+                "typ_5v_15pf": 20,
+                "max_85c": {
+                  "vcc_2_v": 300,
+                  "vcc_4_5_v": 60,
+                  "vcc_6_v": 51
+                },
+                "max_125c": {
+                  "vcc_2_v": 360,
+                  "vcc_4_5_v": 72,
+                  "vcc_6_v": 61
+                }
+              },
+              "mr_to_qn": {
+                "max_25c": {
+                  "vcc_2_v": 150,
+                  "vcc_4_5_v": 30,
+                  "vcc_6_v": 26
+                },
+                "typ_5v_15pf": 12,
+                "max_85c": {
+                  "vcc_2_v": 190,
+                  "vcc_4_5_v": 38,
+                  "vcc_6_v": 33
+                },
+                "max_125c": {
+                  "vcc_2_v": 225,
+                  "vcc_4_5_v": 45,
+                  "vcc_6_v": 38
+                }
+              }
+            },
+            "note": "Includes clocked output propagation plus master-reset-to-low output path."
           },
           "setup": {
-            "status": "missing",
-            "reason": "Existing local timing extraction does not include this normalized parameter."
+            "status": "exact",
+            "source_field": "TI CD74HC4520 prerequisite switching specifications tSU rows",
+            "values_ns": {
+              "enable_to_cp_min": {
+                "vcc_2_v": {
+                  "ta_25c": 80,
+                  "max_85c": 100,
+                  "max_125c": 120
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 16,
+                  "max_85c": 20,
+                  "max_125c": 24
+                },
+                "vcc_6_v": {
+                  "ta_25c": 14,
+                  "max_85c": 17,
+                  "max_125c": 20
+                }
+              },
+              "cp_to_enable_min": {
+                "vcc_2_v": {
+                  "ta_25c": 80,
+                  "max_85c": 100,
+                  "max_125c": 120
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 16,
+                  "max_85c": 20,
+                  "max_125c": 24
+                },
+                "vcc_6_v": {
+                  "ta_25c": 14,
+                  "max_85c": 17,
+                  "max_125c": 20
+                }
+              }
+            },
+            "note": "Setup rows are listed for Enable to CP and CP to Enable."
           },
           "hold": {
-            "status": "missing",
-            "reason": "Existing local timing extraction does not include this normalized parameter."
+            "status": "exact",
+            "source_field": "TI CD74HC4520 prerequisite switching specifications tREM rows",
+            "values_ns": {
+              "mr_to_cp_removal_min": {
+                "vcc_2_v": 0,
+                "vcc_4_5_v": 0,
+                "vcc_6_v": 0
+              },
+              "mr_to_enable_removal_min": {
+                "vcc_2_v": 0,
+                "vcc_4_5_v": 0,
+                "vcc_6_v": 0
+              }
+            },
+            "note": "The table gives removal time rather than ordinary data hold; stored here as the reset/removal hold-side requirement."
           },
           "minimum_pulse_width": {
             "status": "exact",
-            "source_field": "timing.datasheet.values.* pulse-width fields",
+            "source_field": "TI CD74HC4520 prerequisite switching specifications tW rows",
             "values_ns": {
-              "clock_pulse_width": {
-                "min_25c": 16,
-                "min_minus40_to_85c": 20,
-                "min_minus55_to_125c": 24
+              "clock_pulse_width_min": {
+                "vcc_2_v": {
+                  "ta_25c": 80,
+                  "max_85c": 100,
+                  "max_125c": 120
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 16,
+                  "max_85c": 20,
+                  "max_125c": 24
+                },
+                "vcc_6_v": {
+                  "ta_25c": 14,
+                  "max_85c": 17,
+                  "max_125c": 20
+                }
               },
-              "reset_pulse_width": {
-                "min_25c": 20,
-                "min_minus40_to_85c": 25,
-                "min_minus55_to_125c": 30
+              "reset_pulse_width_min": {
+                "vcc_2_v": {
+                  "ta_25c": 100,
+                  "max_85c": 125,
+                  "max_125c": 150
+                },
+                "vcc_4_5_v": {
+                  "ta_25c": 20,
+                  "max_85c": 25,
+                  "max_125c": 30
+                },
+                "vcc_6_v": {
+                  "ta_25c": 17,
+                  "max_85c": 21,
+                  "max_125c": 26
+                }
               }
-            }
+            },
+            "note": "Pulse-width rows explicitly cover CP and MR."
           }
         },
         "conditions": {

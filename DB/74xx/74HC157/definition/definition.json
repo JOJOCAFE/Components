@@ -98,42 +98,66 @@
         "basis": "normalized_from_existing_datasheet_timing",
         "parameters": {
           "tPLH": {
-            "status": "generic",
-            "source_field": "definition_layers.timing.delay.datasheet_typical_ns",
-            "note": "Mux output timing is source-backed by data/select/enable path, but output LOW/HIGH polarity split is not extracted.",
+            "status": "exact",
+            "source_field": "TI SN74HC157 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
             "values_ns": {
-              "data_to_y": {
-                "vcc_4_5_v": 13,
-                "vcc_6_v": 11
+              "datasheet_typical_ns": {
+                "data_to_output": 13,
+                "select_to_output": 18,
+                "strobe_to_output": 16,
+                "transition": 8
               },
-              "select_to_y": {
-                "vcc_4_5_v": 18,
-                "vcc_6_v": 14
+              "datasheet_max_ns_25c": {
+                "data_to_output": 25,
+                "select_to_output": 25,
+                "strobe_to_output": 23,
+                "transition": 12
               },
-              "enable_to_y": {
-                "vcc_4_5_v": 16,
-                "vcc_6_v": 13
+              "datasheet_max_ns_sn74": {
+                "data_to_output": 38,
+                "select_to_output": 38,
+                "strobe_to_output": 34,
+                "transition": 18
+              },
+              "datasheet_max_ns_sn54": {
+                "data_to_output": 38,
+                "select_to_output": 38,
+                "strobe_to_output": 34,
+                "transition": 18
               }
-            }
+            },
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "definition_layers.timing.delay.datasheet_typical_ns",
-            "note": "Mux output timing is source-backed by data/select/enable path, but output LOW/HIGH polarity split is not extracted.",
+            "status": "exact",
+            "source_field": "TI SN74HC157 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
             "values_ns": {
-              "data_to_y": {
-                "vcc_4_5_v": 13,
-                "vcc_6_v": 11
+              "datasheet_typical_ns": {
+                "data_to_output": 13,
+                "select_to_output": 18,
+                "strobe_to_output": 16,
+                "transition": 8
               },
-              "select_to_y": {
-                "vcc_4_5_v": 18,
-                "vcc_6_v": 14
+              "datasheet_max_ns_25c": {
+                "data_to_output": 25,
+                "select_to_output": 25,
+                "strobe_to_output": 23,
+                "transition": 12
               },
-              "enable_to_y": {
-                "vcc_4_5_v": 16,
-                "vcc_6_v": 13
+              "datasheet_max_ns_sn74": {
+                "data_to_output": 38,
+                "select_to_output": 38,
+                "strobe_to_output": 34,
+                "transition": 18
+              },
+              "datasheet_max_ns_sn54": {
+                "data_to_output": 38,
+                "select_to_output": 38,
+                "strobe_to_output": 34,
+                "transition": 18
               }
-            }
+            },
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPZH": {
             "status": "not_applicable",
@@ -390,42 +414,66 @@
       "basis": "normalized_from_existing_datasheet_timing",
       "parameters": {
         "tPLH": {
-          "status": "generic",
-          "source_field": "definition_layers.timing.delay.datasheet_typical_ns",
-          "note": "Mux output timing is source-backed by data/select/enable path, but output LOW/HIGH polarity split is not extracted.",
+          "status": "exact",
+          "source_field": "TI SN74HC157 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
           "values_ns": {
-            "data_to_y": {
-              "vcc_4_5_v": 13,
-              "vcc_6_v": 11
+            "datasheet_typical_ns": {
+              "data_to_output": 13,
+              "select_to_output": 18,
+              "strobe_to_output": 16,
+              "transition": 8
             },
-            "select_to_y": {
-              "vcc_4_5_v": 18,
-              "vcc_6_v": 14
+            "datasheet_max_ns_25c": {
+              "data_to_output": 25,
+              "select_to_output": 25,
+              "strobe_to_output": 23,
+              "transition": 12
             },
-            "enable_to_y": {
-              "vcc_4_5_v": 16,
-              "vcc_6_v": 13
+            "datasheet_max_ns_sn74": {
+              "data_to_output": 38,
+              "select_to_output": 38,
+              "strobe_to_output": 34,
+              "transition": 18
+            },
+            "datasheet_max_ns_sn54": {
+              "data_to_output": 38,
+              "select_to_output": 38,
+              "strobe_to_output": 34,
+              "transition": 18
             }
-          }
+          },
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "definition_layers.timing.delay.datasheet_typical_ns",
-          "note": "Mux output timing is source-backed by data/select/enable path, but output LOW/HIGH polarity split is not extracted.",
+          "status": "exact",
+          "source_field": "TI SN74HC157 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
           "values_ns": {
-            "data_to_y": {
-              "vcc_4_5_v": 13,
-              "vcc_6_v": 11
+            "datasheet_typical_ns": {
+              "data_to_output": 13,
+              "select_to_output": 18,
+              "strobe_to_output": 16,
+              "transition": 8
             },
-            "select_to_y": {
-              "vcc_4_5_v": 18,
-              "vcc_6_v": 14
+            "datasheet_max_ns_25c": {
+              "data_to_output": 25,
+              "select_to_output": 25,
+              "strobe_to_output": 23,
+              "transition": 12
             },
-            "enable_to_y": {
-              "vcc_4_5_v": 16,
-              "vcc_6_v": 13
+            "datasheet_max_ns_sn74": {
+              "data_to_output": 38,
+              "select_to_output": 38,
+              "strobe_to_output": 34,
+              "transition": 18
+            },
+            "datasheet_max_ns_sn54": {
+              "data_to_output": 38,
+              "select_to_output": 38,
+              "strobe_to_output": 34,
+              "transition": 18
             }
-          }
+          },
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPZH": {
           "status": "not_applicable",

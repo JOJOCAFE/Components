@@ -286,7 +286,7 @@
         "basis": "normalized_from_existing_datasheet_timing",
         "parameters": {
           "tPLH": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
             "values_ns": {
               "address_to_data_valid_ns": 70,
@@ -294,10 +294,12 @@
               "ce_to_data_valid_ns": 70,
               "oe_to_data_valid_ns": 70
             },
-            "note": "Memory read access values are not polarity-specific output transition paths."
+            "note": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+            "mapping_basis": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+            "source": "Cypress CY7C199 switching characteristics"
           },
           "tPHL": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
             "values_ns": {
               "address_to_data_valid_ns": 70,
@@ -305,41 +307,51 @@
               "ce_to_data_valid_ns": 70,
               "oe_to_data_valid_ns": 70
             },
-            "note": "Memory read access values are not polarity-specific output transition paths."
+            "note": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+            "mapping_basis": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+            "source": "Cypress CY7C199 switching characteristics"
           },
           "tPZH": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
             "values_ns": {
               "ce_to_data_valid_ns": 70,
               "oe_to_data_valid_ns": 70
             },
-            "note": "Memory output-enable/read access is not split into high/low polarity."
+            "note": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+            "mapping_basis": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+            "source": "Cypress CY7C199 switching characteristics"
           },
           "tPZL": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
             "values_ns": {
               "ce_to_data_valid_ns": 70,
               "oe_to_data_valid_ns": 70
             },
-            "note": "Memory output-enable/read access is not split into high/low polarity."
+            "note": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+            "mapping_basis": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+            "source": "Cypress CY7C199 switching characteristics"
           },
           "tPHZ": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
             "values_ns": {
               "max": 70
             },
-            "note": "Memory high-Z timing is not split by previous output polarity."
+            "note": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+            "mapping_basis": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+            "source": "Cypress CY7C199 switching characteristics"
           },
           "tPLZ": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
             "values_ns": {
               "max": 70
             },
-            "note": "Memory high-Z timing is not split by previous output polarity."
+            "note": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+            "mapping_basis": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+            "source": "Cypress CY7C199 switching characteristics"
           },
           "clock_to_q_high": {
             "status": "not_applicable",
@@ -645,7 +657,7 @@
       "basis": "normalized_from_existing_datasheet_timing",
       "parameters": {
         "tPLH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
           "values_ns": {
             "address_to_data_valid_ns": 70,
@@ -653,10 +665,12 @@
             "ce_to_data_valid_ns": 70,
             "oe_to_data_valid_ns": 70
           },
-          "note": "Memory read access values are not polarity-specific output transition paths."
+          "note": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+          "mapping_basis": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+          "source": "Cypress CY7C199 switching characteristics"
         },
         "tPHL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
           "values_ns": {
             "address_to_data_valid_ns": 70,
@@ -664,41 +678,51 @@
             "ce_to_data_valid_ns": 70,
             "oe_to_data_valid_ns": 70
           },
-          "note": "Memory read access values are not polarity-specific output transition paths."
+          "note": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+          "mapping_basis": "tAA/tACE/tDOE read access paths define data valid after address, CE, or OE; SRAM datasheet does not split by output HIGH/LOW transition.",
+          "source": "Cypress CY7C199 switching characteristics"
         },
         "tPZH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
           "values_ns": {
             "ce_to_data_valid_ns": 70,
             "oe_to_data_valid_ns": 70
           },
-          "note": "Memory output-enable/read access is not split into high/low polarity."
+          "note": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+          "mapping_basis": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+          "source": "Cypress CY7C199 switching characteristics"
         },
         "tPZL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
           "values_ns": {
             "ce_to_data_valid_ns": 70,
             "oe_to_data_valid_ns": 70
           },
-          "note": "Memory output-enable/read access is not split into high/low polarity."
+          "note": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+          "mapping_basis": "tLZCE/tLZOE low-Z paths define output enable from CE/OE; same timing applies before either output polarity is known.",
+          "source": "Cypress CY7C199 switching characteristics"
         },
         "tPHZ": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
           "values_ns": {
             "max": 70
           },
-          "note": "Memory high-Z timing is not split by previous output polarity."
+          "note": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+          "mapping_basis": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+          "source": "Cypress CY7C199 switching characteristics"
         },
         "tPLZ": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
           "values_ns": {
             "max": 70
           },
-          "note": "Memory high-Z timing is not split by previous output polarity."
+          "note": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+          "mapping_basis": "tHZCE/tHZOE high-Z paths define CE/OE disable to high-Z; not split by previous HIGH/LOW output state.",
+          "source": "Cypress CY7C199 switching characteristics"
         },
         "clock_to_q_high": {
           "status": "not_applicable",

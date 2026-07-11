@@ -220,166 +220,86 @@
             "reason": "74HC251 is combinational and has no setup/hold timing requirement."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+            "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
             "values_ns": {
-              "datasheet_max_ns_25c": {
-                "disable": 39,
-                "enable": 29,
-                "transition": 15
+              "select_to_w_y": {
+                "typ": 21,
+                "max_25c": 41,
+                "max_sn54": 60,
+                "max_sn74": 51
               },
-              "datasheet_max_ns_minus40_to_85c": {
-                "disable": 49,
-                "enable": 36,
-                "transition": 19
-              },
-              "datasheet_max_ns_minus55_to_125c": {
-                "disable": 57,
-                "enable": 42,
-                "transition": 22
-              },
-              "datasheet_typical_ns": {
-                "disable": 15,
-                "enable": 10,
-                "transition": 8
+              "data_to_w_y": {
+                "typ": 17,
+                "max_25c": 39,
+                "max_sn54": 57,
+                "max_sn74": 49
               }
-            },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            }
           },
           "tPHZ": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+            "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
             "values_ns": {
-              "datasheet_max_ns_25c": {
-                "disable": 39,
-                "enable": 29,
-                "transition": 15
-              },
-              "datasheet_max_ns_minus40_to_85c": {
-                "disable": 49,
-                "enable": 36,
-                "transition": 19
-              },
-              "datasheet_max_ns_minus55_to_125c": {
-                "disable": 57,
-                "enable": 42,
-                "transition": 22
-              },
-              "datasheet_typical_ns": {
-                "disable": 15,
-                "enable": 10,
-                "transition": 8
-              }
-            },
-            "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+              "typ": 15,
+              "max_25c": 39,
+              "max_sn54": 57,
+              "max_sn74": 49
+            }
           },
           "tPLH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+            "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
             "values_ns": {
-              "datasheet_max_ns_25c": {
-                "disable": 39,
-                "enable": 29,
-                "transition": 15
+              "select_to_w_y": {
+                "typ": 21,
+                "max_25c": 41,
+                "max_sn54": 60,
+                "max_sn74": 51
               },
-              "datasheet_max_ns_minus40_to_85c": {
-                "disable": 49,
-                "enable": 36,
-                "transition": 19
-              },
-              "datasheet_max_ns_minus55_to_125c": {
-                "disable": 57,
-                "enable": 42,
-                "transition": 22
-              },
-              "datasheet_typical_ns": {
-                "disable": 15,
-                "enable": 10,
-                "transition": 8
+              "data_to_w_y": {
+                "typ": 17,
+                "max_25c": 39,
+                "max_sn54": 57,
+                "max_sn74": 49
               }
-            },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            }
           },
           "tPLZ": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+            "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
             "values_ns": {
-              "datasheet_max_ns_25c": {
-                "disable": 39,
-                "enable": 29,
-                "transition": 15
-              },
-              "datasheet_max_ns_minus40_to_85c": {
-                "disable": 49,
-                "enable": 36,
-                "transition": 19
-              },
-              "datasheet_max_ns_minus55_to_125c": {
-                "disable": 57,
-                "enable": 42,
-                "transition": 22
-              },
-              "datasheet_typical_ns": {
-                "disable": 15,
-                "enable": 10,
-                "transition": 8
-              }
-            },
-            "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+              "typ": 15,
+              "max_25c": 39,
+              "max_sn54": 57,
+              "max_sn74": 49
+            }
           },
           "tPZH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+            "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
             "values_ns": {
-              "datasheet_max_ns_25c": {
-                "disable": 39,
-                "enable": 29,
-                "transition": 15
-              },
-              "datasheet_max_ns_minus40_to_85c": {
-                "disable": 49,
-                "enable": 36,
-                "transition": 19
-              },
-              "datasheet_max_ns_minus55_to_125c": {
-                "disable": 57,
-                "enable": 42,
-                "transition": 22
-              },
-              "datasheet_typical_ns": {
-                "disable": 15,
-                "enable": 10,
-                "transition": 8
-              }
-            },
-            "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+              "typ": 10,
+              "max_25c": 29,
+              "max_sn54": 42,
+              "max_sn74": 36
+            }
           },
           "tPZL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+            "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
             "values_ns": {
-              "datasheet_max_ns_25c": {
-                "disable": 39,
-                "enable": 29,
-                "transition": 15
-              },
-              "datasheet_max_ns_minus40_to_85c": {
-                "disable": 49,
-                "enable": 36,
-                "transition": 19
-              },
-              "datasheet_max_ns_minus55_to_125c": {
-                "disable": 57,
-                "enable": 42,
-                "transition": 22
-              },
-              "datasheet_typical_ns": {
-                "disable": 15,
-                "enable": 10,
-                "transition": 8
-              }
-            },
-            "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+              "typ": 10,
+              "max_25c": 29,
+              "max_sn54": 42,
+              "max_sn74": 36
+            }
           }
         }
       }
@@ -640,166 +560,86 @@
           "reason": "74HC251 is combinational and has no setup/hold timing requirement."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+          "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
           "values_ns": {
-            "datasheet_max_ns_25c": {
-              "disable": 39,
-              "enable": 29,
-              "transition": 15
+            "select_to_w_y": {
+              "typ": 21,
+              "max_25c": 41,
+              "max_sn54": 60,
+              "max_sn74": 51
             },
-            "datasheet_max_ns_minus40_to_85c": {
-              "disable": 49,
-              "enable": 36,
-              "transition": 19
-            },
-            "datasheet_max_ns_minus55_to_125c": {
-              "disable": 57,
-              "enable": 42,
-              "transition": 22
-            },
-            "datasheet_typical_ns": {
-              "disable": 15,
-              "enable": 10,
-              "transition": 8
+            "data_to_w_y": {
+              "typ": 17,
+              "max_25c": 39,
+              "max_sn54": 57,
+              "max_sn74": 49
             }
-          },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          }
         },
         "tPHZ": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+          "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
           "values_ns": {
-            "datasheet_max_ns_25c": {
-              "disable": 39,
-              "enable": 29,
-              "transition": 15
-            },
-            "datasheet_max_ns_minus40_to_85c": {
-              "disable": 49,
-              "enable": 36,
-              "transition": 19
-            },
-            "datasheet_max_ns_minus55_to_125c": {
-              "disable": 57,
-              "enable": 42,
-              "transition": 22
-            },
-            "datasheet_typical_ns": {
-              "disable": 15,
-              "enable": 10,
-              "transition": 8
-            }
-          },
-          "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+            "typ": 15,
+            "max_25c": 39,
+            "max_sn54": 57,
+            "max_sn74": 49
+          }
         },
         "tPLH": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V tpd",
+          "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
           "values_ns": {
-            "datasheet_max_ns_25c": {
-              "disable": 39,
-              "enable": 29,
-              "transition": 15
+            "select_to_w_y": {
+              "typ": 21,
+              "max_25c": 41,
+              "max_sn54": 60,
+              "max_sn74": 51
             },
-            "datasheet_max_ns_minus40_to_85c": {
-              "disable": 49,
-              "enable": 36,
-              "transition": 19
-            },
-            "datasheet_max_ns_minus55_to_125c": {
-              "disable": 57,
-              "enable": 42,
-              "transition": 22
-            },
-            "datasheet_typical_ns": {
-              "disable": 15,
-              "enable": 10,
-              "transition": 8
+            "data_to_w_y": {
+              "typ": 17,
+              "max_25c": 39,
+              "max_sn54": 57,
+              "max_sn74": 49
             }
-          },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          }
         },
         "tPLZ": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V tdis",
+          "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
           "values_ns": {
-            "datasheet_max_ns_25c": {
-              "disable": 39,
-              "enable": 29,
-              "transition": 15
-            },
-            "datasheet_max_ns_minus40_to_85c": {
-              "disable": 49,
-              "enable": 36,
-              "transition": 19
-            },
-            "datasheet_max_ns_minus55_to_125c": {
-              "disable": 57,
-              "enable": 42,
-              "transition": 22
-            },
-            "datasheet_typical_ns": {
-              "disable": 15,
-              "enable": 10,
-              "transition": 8
-            }
-          },
-          "note": "Existing local extraction has source-backed output-disable/high-Z timing, but HIGH-to-Z versus LOW-to-Z split is not extracted."
+            "typ": 15,
+            "max_25c": 39,
+            "max_sn54": 57,
+            "max_sn74": 49
+          }
         },
         "tPZH": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+          "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
           "values_ns": {
-            "datasheet_max_ns_25c": {
-              "disable": 39,
-              "enable": 29,
-              "transition": 15
-            },
-            "datasheet_max_ns_minus40_to_85c": {
-              "disable": 49,
-              "enable": 36,
-              "transition": 19
-            },
-            "datasheet_max_ns_minus55_to_125c": {
-              "disable": 57,
-              "enable": 42,
-              "transition": 22
-            },
-            "datasheet_typical_ns": {
-              "disable": 15,
-              "enable": 10,
-              "transition": 8
-            }
-          },
-          "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+            "typ": 10,
+            "max_25c": 29,
+            "max_sn54": 42,
+            "max_sn74": 36
+          }
         },
         "tPZL": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "TI SN74HC251 switching characteristics, CL=50 pF, VCC=4.5 V ten",
+          "note": "TI SN74HC251 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
           "values_ns": {
-            "datasheet_max_ns_25c": {
-              "disable": 39,
-              "enable": 29,
-              "transition": 15
-            },
-            "datasheet_max_ns_minus40_to_85c": {
-              "disable": 49,
-              "enable": 36,
-              "transition": 19
-            },
-            "datasheet_max_ns_minus55_to_125c": {
-              "disable": 57,
-              "enable": 42,
-              "transition": 22
-            },
-            "datasheet_typical_ns": {
-              "disable": 15,
-              "enable": 10,
-              "transition": 8
-            }
-          },
-          "note": "Existing local extraction has source-backed output-enable timing, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted."
+            "typ": 10,
+            "max_25c": 29,
+            "max_sn54": 42,
+            "max_sn74": 36
+          }
         }
       }
     }

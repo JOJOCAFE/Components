@@ -349,224 +349,196 @@
       "basis": "normalized_from_existing_datasheet_timing",
       "parameters": {
         "tPLH": {
-          "status": "generic",
-          "source_field": "definition_layers.timing.delay.timed.paths",
-          "note": "Bidirectional propagation is source-backed by path, but output LOW/HIGH polarity split is not extracted.",
+          "status": "exact",
+          "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tpd",
+          "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
           "values_ns": {
-            "paths": {
-              "A_to_B": {
-                "vcc_2_v": {
-                  "min_ns": null,
-                  "typ_ns": 40,
-                  "max_ns_25c": 105,
-                  "max_ns_sn54": 160,
-                  "max_ns_sn74": 130
-                },
-                "vcc_4_5_v": {
-                  "min_ns": null,
-                  "typ_ns": 15,
-                  "max_ns_25c": 21,
-                  "max_ns_sn54": 32,
-                  "max_ns_sn74": 26
-                },
-                "vcc_6_v": {
-                  "min_ns": null,
-                  "typ_ns": 12,
-                  "max_ns_25c": 18,
-                  "max_ns_sn54": 27,
-                  "max_ns_sn74": 22
-                }
+            "A_to_B": {
+              "vcc_2_v": {
+                "typ": 40,
+                "max_25c": 105,
+                "max_sn54": 160,
+                "max_sn74": 130
               },
-              "B_to_A": {
-                "vcc_2_v": {
-                  "min_ns": null,
-                  "typ_ns": 40,
-                  "max_ns_25c": 105,
-                  "max_ns_sn54": 160,
-                  "max_ns_sn74": 130
-                },
-                "vcc_4_5_v": {
-                  "min_ns": null,
-                  "typ_ns": 15,
-                  "max_ns_25c": 21,
-                  "max_ns_sn54": 32,
-                  "max_ns_sn74": 26
-                },
-                "vcc_6_v": {
-                  "min_ns": null,
-                  "typ_ns": 12,
-                  "max_ns_25c": 18,
-                  "max_ns_sn54": 27,
-                  "max_ns_sn74": 22
-                }
+              "vcc_4_5_v": {
+                "typ": 15,
+                "max_25c": 21,
+                "max_sn54": 32,
+                "max_sn74": 26
+              },
+              "vcc_6_v": {
+                "typ": 12,
+                "max_25c": 18,
+                "max_sn54": 27,
+                "max_sn74": 22
+              }
+            },
+            "B_to_A": {
+              "vcc_2_v": {
+                "typ": 40,
+                "max_25c": 105,
+                "max_sn54": 160,
+                "max_sn74": 130
+              },
+              "vcc_4_5_v": {
+                "typ": 15,
+                "max_25c": 21,
+                "max_sn54": 32,
+                "max_sn74": 26
+              },
+              "vcc_6_v": {
+                "typ": 12,
+                "max_25c": 18,
+                "max_sn54": 27,
+                "max_sn74": 22
               }
             }
           }
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "definition_layers.timing.delay.timed.paths",
-          "note": "Bidirectional propagation is source-backed by path, but output LOW/HIGH polarity split is not extracted.",
+          "status": "exact",
+          "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tpd",
+          "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
           "values_ns": {
-            "paths": {
-              "A_to_B": {
-                "vcc_2_v": {
-                  "min_ns": null,
-                  "typ_ns": 40,
-                  "max_ns_25c": 105,
-                  "max_ns_sn54": 160,
-                  "max_ns_sn74": 130
-                },
-                "vcc_4_5_v": {
-                  "min_ns": null,
-                  "typ_ns": 15,
-                  "max_ns_25c": 21,
-                  "max_ns_sn54": 32,
-                  "max_ns_sn74": 26
-                },
-                "vcc_6_v": {
-                  "min_ns": null,
-                  "typ_ns": 12,
-                  "max_ns_25c": 18,
-                  "max_ns_sn54": 27,
-                  "max_ns_sn74": 22
-                }
+            "A_to_B": {
+              "vcc_2_v": {
+                "typ": 40,
+                "max_25c": 105,
+                "max_sn54": 160,
+                "max_sn74": 130
               },
-              "B_to_A": {
-                "vcc_2_v": {
-                  "min_ns": null,
-                  "typ_ns": 40,
-                  "max_ns_25c": 105,
-                  "max_ns_sn54": 160,
-                  "max_ns_sn74": 130
-                },
-                "vcc_4_5_v": {
-                  "min_ns": null,
-                  "typ_ns": 15,
-                  "max_ns_25c": 21,
-                  "max_ns_sn54": 32,
-                  "max_ns_sn74": 26
-                },
-                "vcc_6_v": {
-                  "min_ns": null,
-                  "typ_ns": 12,
-                  "max_ns_25c": 18,
-                  "max_ns_sn54": 27,
-                  "max_ns_sn74": 22
-                }
+              "vcc_4_5_v": {
+                "typ": 15,
+                "max_25c": 21,
+                "max_sn54": 32,
+                "max_sn74": 26
+              },
+              "vcc_6_v": {
+                "typ": 12,
+                "max_25c": 18,
+                "max_sn54": 27,
+                "max_sn74": 22
+              }
+            },
+            "B_to_A": {
+              "vcc_2_v": {
+                "typ": 40,
+                "max_25c": 105,
+                "max_sn54": 160,
+                "max_sn74": 130
+              },
+              "vcc_4_5_v": {
+                "typ": 15,
+                "max_25c": 21,
+                "max_sn54": 32,
+                "max_sn74": 26
+              },
+              "vcc_6_v": {
+                "typ": 12,
+                "max_25c": 18,
+                "max_sn54": 27,
+                "max_sn74": 22
               }
             }
           }
         },
         "tPZH": {
-          "status": "generic",
-          "source_field": "definition_layers.timing.delay.timed.paths.OE_to_output_enable",
-          "note": "Output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+          "status": "exact",
+          "source_field": "TI SN74HC245 switching characteristics, CL=50 pF ten",
+          "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
           "values_ns": {
             "vcc_2_v": {
-              "min_ns": null,
-              "typ_ns": 125,
-              "max_ns_25c": 230,
-              "max_ns_sn54": 340,
-              "max_ns_sn74": 290
+              "typ": 125,
+              "max_25c": 230,
+              "max_sn54": 340,
+              "max_sn74": 290
             },
             "vcc_4_5_v": {
-              "min_ns": null,
-              "typ_ns": 23,
-              "max_ns_25c": 46,
-              "max_ns_sn54": 68,
-              "max_ns_sn74": 58
+              "typ": 23,
+              "max_25c": 46,
+              "max_sn54": 68,
+              "max_sn74": 58
             },
             "vcc_6_v": {
-              "min_ns": null,
-              "typ_ns": 20,
-              "max_ns_25c": 39,
-              "max_ns_sn54": 58,
-              "max_ns_sn74": 49
+              "typ": 20,
+              "max_25c": 39,
+              "max_sn54": 58,
+              "max_sn74": 49
             }
           }
         },
         "tPZL": {
-          "status": "generic",
-          "source_field": "definition_layers.timing.delay.timed.paths.OE_to_output_enable",
-          "note": "Output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+          "status": "exact",
+          "source_field": "TI SN74HC245 switching characteristics, CL=50 pF ten",
+          "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
           "values_ns": {
             "vcc_2_v": {
-              "min_ns": null,
-              "typ_ns": 125,
-              "max_ns_25c": 230,
-              "max_ns_sn54": 340,
-              "max_ns_sn74": 290
+              "typ": 125,
+              "max_25c": 230,
+              "max_sn54": 340,
+              "max_sn74": 290
             },
             "vcc_4_5_v": {
-              "min_ns": null,
-              "typ_ns": 23,
-              "max_ns_25c": 46,
-              "max_ns_sn54": 68,
-              "max_ns_sn74": 58
+              "typ": 23,
+              "max_25c": 46,
+              "max_sn54": 68,
+              "max_sn74": 58
             },
             "vcc_6_v": {
-              "min_ns": null,
-              "typ_ns": 20,
-              "max_ns_25c": 39,
-              "max_ns_sn54": 58,
-              "max_ns_sn74": 49
+              "typ": 20,
+              "max_25c": 39,
+              "max_sn54": 58,
+              "max_sn74": 49
             }
           }
         },
         "tPHZ": {
-          "status": "generic",
-          "source_field": "definition_layers.timing.delay.timed.paths.OE_to_high_Z",
-          "note": "Output disable timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+          "status": "exact",
+          "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tdis",
+          "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
           "values_ns": {
             "vcc_2_v": {
-              "min_ns": null,
-              "typ_ns": 74,
-              "max_ns_25c": 200,
-              "max_ns_sn54": 300,
-              "max_ns_sn74": 250
+              "typ": 74,
+              "max_25c": 200,
+              "max_sn54": 300,
+              "max_sn74": 250
             },
             "vcc_4_5_v": {
-              "min_ns": null,
-              "typ_ns": 25,
-              "max_ns_25c": 40,
-              "max_ns_sn54": 60,
-              "max_ns_sn74": 50
+              "typ": 25,
+              "max_25c": 40,
+              "max_sn54": 60,
+              "max_sn74": 50
             },
             "vcc_6_v": {
-              "min_ns": null,
-              "typ_ns": 21,
-              "max_ns_25c": 34,
-              "max_ns_sn54": 51,
-              "max_ns_sn74": 43
+              "typ": 21,
+              "max_25c": 34,
+              "max_sn54": 51,
+              "max_sn74": 43
             }
           }
         },
         "tPLZ": {
-          "status": "generic",
-          "source_field": "definition_layers.timing.delay.timed.paths.OE_to_high_Z",
-          "note": "Output disable timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+          "status": "exact",
+          "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tdis",
+          "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
           "values_ns": {
             "vcc_2_v": {
-              "min_ns": null,
-              "typ_ns": 74,
-              "max_ns_25c": 200,
-              "max_ns_sn54": 300,
-              "max_ns_sn74": 250
+              "typ": 74,
+              "max_25c": 200,
+              "max_sn54": 300,
+              "max_sn74": 250
             },
             "vcc_4_5_v": {
-              "min_ns": null,
-              "typ_ns": 25,
-              "max_ns_25c": 40,
-              "max_ns_sn54": 60,
-              "max_ns_sn74": 50
+              "typ": 25,
+              "max_25c": 40,
+              "max_sn54": 60,
+              "max_sn74": 50
             },
             "vcc_6_v": {
-              "min_ns": null,
-              "typ_ns": 21,
-              "max_ns_25c": 34,
-              "max_ns_sn54": 51,
-              "max_ns_sn74": 43
+              "typ": 21,
+              "max_25c": 34,
+              "max_sn54": 51,
+              "max_sn74": 43
             }
           }
         },
@@ -1307,224 +1279,196 @@
         "basis": "normalized_from_existing_datasheet_timing",
         "parameters": {
           "tPLH": {
-            "status": "generic",
-            "source_field": "definition_layers.timing.delay.timed.paths",
-            "note": "Bidirectional propagation is source-backed by path, but output LOW/HIGH polarity split is not extracted.",
+            "status": "exact",
+            "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tpd",
+            "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
             "values_ns": {
-              "paths": {
-                "A_to_B": {
-                  "vcc_2_v": {
-                    "min_ns": null,
-                    "typ_ns": 40,
-                    "max_ns_25c": 105,
-                    "max_ns_sn54": 160,
-                    "max_ns_sn74": 130
-                  },
-                  "vcc_4_5_v": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns_25c": 21,
-                    "max_ns_sn54": 32,
-                    "max_ns_sn74": 26
-                  },
-                  "vcc_6_v": {
-                    "min_ns": null,
-                    "typ_ns": 12,
-                    "max_ns_25c": 18,
-                    "max_ns_sn54": 27,
-                    "max_ns_sn74": 22
-                  }
+              "A_to_B": {
+                "vcc_2_v": {
+                  "typ": 40,
+                  "max_25c": 105,
+                  "max_sn54": 160,
+                  "max_sn74": 130
                 },
-                "B_to_A": {
-                  "vcc_2_v": {
-                    "min_ns": null,
-                    "typ_ns": 40,
-                    "max_ns_25c": 105,
-                    "max_ns_sn54": 160,
-                    "max_ns_sn74": 130
-                  },
-                  "vcc_4_5_v": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns_25c": 21,
-                    "max_ns_sn54": 32,
-                    "max_ns_sn74": 26
-                  },
-                  "vcc_6_v": {
-                    "min_ns": null,
-                    "typ_ns": 12,
-                    "max_ns_25c": 18,
-                    "max_ns_sn54": 27,
-                    "max_ns_sn74": 22
-                  }
+                "vcc_4_5_v": {
+                  "typ": 15,
+                  "max_25c": 21,
+                  "max_sn54": 32,
+                  "max_sn74": 26
+                },
+                "vcc_6_v": {
+                  "typ": 12,
+                  "max_25c": 18,
+                  "max_sn54": 27,
+                  "max_sn74": 22
+                }
+              },
+              "B_to_A": {
+                "vcc_2_v": {
+                  "typ": 40,
+                  "max_25c": 105,
+                  "max_sn54": 160,
+                  "max_sn74": 130
+                },
+                "vcc_4_5_v": {
+                  "typ": 15,
+                  "max_25c": 21,
+                  "max_sn54": 32,
+                  "max_sn74": 26
+                },
+                "vcc_6_v": {
+                  "typ": 12,
+                  "max_25c": 18,
+                  "max_sn54": 27,
+                  "max_sn74": 22
                 }
               }
             }
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "definition_layers.timing.delay.timed.paths",
-            "note": "Bidirectional propagation is source-backed by path, but output LOW/HIGH polarity split is not extracted.",
+            "status": "exact",
+            "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tpd",
+            "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
             "values_ns": {
-              "paths": {
-                "A_to_B": {
-                  "vcc_2_v": {
-                    "min_ns": null,
-                    "typ_ns": 40,
-                    "max_ns_25c": 105,
-                    "max_ns_sn54": 160,
-                    "max_ns_sn74": 130
-                  },
-                  "vcc_4_5_v": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns_25c": 21,
-                    "max_ns_sn54": 32,
-                    "max_ns_sn74": 26
-                  },
-                  "vcc_6_v": {
-                    "min_ns": null,
-                    "typ_ns": 12,
-                    "max_ns_25c": 18,
-                    "max_ns_sn54": 27,
-                    "max_ns_sn74": 22
-                  }
+              "A_to_B": {
+                "vcc_2_v": {
+                  "typ": 40,
+                  "max_25c": 105,
+                  "max_sn54": 160,
+                  "max_sn74": 130
                 },
-                "B_to_A": {
-                  "vcc_2_v": {
-                    "min_ns": null,
-                    "typ_ns": 40,
-                    "max_ns_25c": 105,
-                    "max_ns_sn54": 160,
-                    "max_ns_sn74": 130
-                  },
-                  "vcc_4_5_v": {
-                    "min_ns": null,
-                    "typ_ns": 15,
-                    "max_ns_25c": 21,
-                    "max_ns_sn54": 32,
-                    "max_ns_sn74": 26
-                  },
-                  "vcc_6_v": {
-                    "min_ns": null,
-                    "typ_ns": 12,
-                    "max_ns_25c": 18,
-                    "max_ns_sn54": 27,
-                    "max_ns_sn74": 22
-                  }
+                "vcc_4_5_v": {
+                  "typ": 15,
+                  "max_25c": 21,
+                  "max_sn54": 32,
+                  "max_sn74": 26
+                },
+                "vcc_6_v": {
+                  "typ": 12,
+                  "max_25c": 18,
+                  "max_sn54": 27,
+                  "max_sn74": 22
+                }
+              },
+              "B_to_A": {
+                "vcc_2_v": {
+                  "typ": 40,
+                  "max_25c": 105,
+                  "max_sn54": 160,
+                  "max_sn74": 130
+                },
+                "vcc_4_5_v": {
+                  "typ": 15,
+                  "max_25c": 21,
+                  "max_sn54": 32,
+                  "max_sn74": 26
+                },
+                "vcc_6_v": {
+                  "typ": 12,
+                  "max_25c": 18,
+                  "max_sn54": 27,
+                  "max_sn74": 22
                 }
               }
             }
           },
           "tPZH": {
-            "status": "generic",
-            "source_field": "definition_layers.timing.delay.timed.paths.OE_to_output_enable",
-            "note": "Output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+            "status": "exact",
+            "source_field": "TI SN74HC245 switching characteristics, CL=50 pF ten",
+            "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
             "values_ns": {
               "vcc_2_v": {
-                "min_ns": null,
-                "typ_ns": 125,
-                "max_ns_25c": 230,
-                "max_ns_sn54": 340,
-                "max_ns_sn74": 290
+                "typ": 125,
+                "max_25c": 230,
+                "max_sn54": 340,
+                "max_sn74": 290
               },
               "vcc_4_5_v": {
-                "min_ns": null,
-                "typ_ns": 23,
-                "max_ns_25c": 46,
-                "max_ns_sn54": 68,
-                "max_ns_sn74": 58
+                "typ": 23,
+                "max_25c": 46,
+                "max_sn54": 68,
+                "max_sn74": 58
               },
               "vcc_6_v": {
-                "min_ns": null,
-                "typ_ns": 20,
-                "max_ns_25c": 39,
-                "max_ns_sn54": 58,
-                "max_ns_sn74": 49
+                "typ": 20,
+                "max_25c": 39,
+                "max_sn54": 58,
+                "max_sn74": 49
               }
             }
           },
           "tPZL": {
-            "status": "generic",
-            "source_field": "definition_layers.timing.delay.timed.paths.OE_to_output_enable",
-            "note": "Output enable timing is source-backed, but high-Z-to-HIGH versus high-Z-to-LOW split is not extracted.",
+            "status": "exact",
+            "source_field": "TI SN74HC245 switching characteristics, CL=50 pF ten",
+            "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
             "values_ns": {
               "vcc_2_v": {
-                "min_ns": null,
-                "typ_ns": 125,
-                "max_ns_25c": 230,
-                "max_ns_sn54": 340,
-                "max_ns_sn74": 290
+                "typ": 125,
+                "max_25c": 230,
+                "max_sn54": 340,
+                "max_sn74": 290
               },
               "vcc_4_5_v": {
-                "min_ns": null,
-                "typ_ns": 23,
-                "max_ns_25c": 46,
-                "max_ns_sn54": 68,
-                "max_ns_sn74": 58
+                "typ": 23,
+                "max_25c": 46,
+                "max_sn54": 68,
+                "max_sn74": 58
               },
               "vcc_6_v": {
-                "min_ns": null,
-                "typ_ns": 20,
-                "max_ns_25c": 39,
-                "max_ns_sn54": 58,
-                "max_ns_sn74": 49
+                "typ": 20,
+                "max_25c": 39,
+                "max_sn54": 58,
+                "max_sn74": 49
               }
             }
           },
           "tPHZ": {
-            "status": "generic",
-            "source_field": "definition_layers.timing.delay.timed.paths.OE_to_high_Z",
-            "note": "Output disable timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+            "status": "exact",
+            "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tdis",
+            "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
             "values_ns": {
               "vcc_2_v": {
-                "min_ns": null,
-                "typ_ns": 74,
-                "max_ns_25c": 200,
-                "max_ns_sn54": 300,
-                "max_ns_sn74": 250
+                "typ": 74,
+                "max_25c": 200,
+                "max_sn54": 300,
+                "max_sn74": 250
               },
               "vcc_4_5_v": {
-                "min_ns": null,
-                "typ_ns": 25,
-                "max_ns_25c": 40,
-                "max_ns_sn54": 60,
-                "max_ns_sn74": 50
+                "typ": 25,
+                "max_25c": 40,
+                "max_sn54": 60,
+                "max_sn74": 50
               },
               "vcc_6_v": {
-                "min_ns": null,
-                "typ_ns": 21,
-                "max_ns_25c": 34,
-                "max_ns_sn54": 51,
-                "max_ns_sn74": 43
+                "typ": 21,
+                "max_25c": 34,
+                "max_sn54": 51,
+                "max_sn74": 43
               }
             }
           },
           "tPLZ": {
-            "status": "generic",
-            "source_field": "definition_layers.timing.delay.timed.paths.OE_to_high_Z",
-            "note": "Output disable timing is source-backed, but HIGH-to-Z versus LOW-to-Z split is not extracted.",
+            "status": "exact",
+            "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tdis",
+            "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
             "values_ns": {
               "vcc_2_v": {
-                "min_ns": null,
-                "typ_ns": 74,
-                "max_ns_25c": 200,
-                "max_ns_sn54": 300,
-                "max_ns_sn74": 250
+                "typ": 74,
+                "max_25c": 200,
+                "max_sn54": 300,
+                "max_sn74": 250
               },
               "vcc_4_5_v": {
-                "min_ns": null,
-                "typ_ns": 25,
-                "max_ns_25c": 40,
-                "max_ns_sn54": 60,
-                "max_ns_sn74": 50
+                "typ": 25,
+                "max_25c": 40,
+                "max_sn54": 60,
+                "max_sn74": 50
               },
               "vcc_6_v": {
-                "min_ns": null,
-                "typ_ns": 21,
-                "max_ns_25c": 34,
-                "max_ns_sn54": 51,
-                "max_ns_sn74": 43
+                "typ": 21,
+                "max_25c": 34,
+                "max_sn54": 51,
+                "max_sn74": 43
               }
             }
           },

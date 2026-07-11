@@ -289,82 +289,70 @@
             "reason": "74HC153 is combinational and has no setup/hold timing requirement."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "timing.timed.paths",
+            "status": "exact",
+            "source_field": "TI SN74HC153 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
             "values_ns": {
-              "paths": {
-                "input_to_output_ns": {
-                  "condition": "input or select changes",
-                  "from": "input",
-                  "parameter": "tpd",
-                  "ranges_ns": {
-                    "conservative_default": {
-                      "max_ns": 15,
-                      "min_ns": null,
-                      "source": "conservative_default_from_existing_model_delay",
-                      "typ_ns": 15
-                    }
-                  },
-                  "to": "output"
-                },
-                "transition_time_ns": {
-                  "condition": "enabled output switches",
-                  "from": "output transition",
-                  "parameter": "tt",
-                  "ranges_ns": {
-                    "conservative_default": {
-                      "max_ns": 15,
-                      "min_ns": null,
-                      "source": "conservative_default_from_existing_model_delay",
-                      "typ_ns": 15
-                    }
-                  },
-                  "to": "output transition"
-                }
+              "datasheet_typical_ns": {
+                "select_to_output": 21,
+                "data_to_output": 17,
+                "enable_to_output": 11,
+                "transition": 8
+              },
+              "datasheet_max_ns_25c": {
+                "select_to_output": 30,
+                "data_to_output": 28,
+                "enable_to_output": 19,
+                "transition": 12
+              },
+              "datasheet_max_ns_sn74": {
+                "select_to_output": 38,
+                "data_to_output": 35,
+                "enable_to_output": 24,
+                "transition": 15
+              },
+              "datasheet_max_ns_sn54": {
+                "select_to_output": 45,
+                "data_to_output": 42,
+                "enable_to_output": 28,
+                "transition": 18
               }
             },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPHZ": {
             "status": "not_applicable",
             "reason": "74HC153 has no output-enable/high-Z control in the existing model."
           },
           "tPLH": {
-            "status": "generic",
-            "source_field": "timing.timed.paths",
+            "status": "exact",
+            "source_field": "TI SN74HC153 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
             "values_ns": {
-              "paths": {
-                "input_to_output_ns": {
-                  "condition": "input or select changes",
-                  "from": "input",
-                  "parameter": "tpd",
-                  "ranges_ns": {
-                    "conservative_default": {
-                      "max_ns": 15,
-                      "min_ns": null,
-                      "source": "conservative_default_from_existing_model_delay",
-                      "typ_ns": 15
-                    }
-                  },
-                  "to": "output"
-                },
-                "transition_time_ns": {
-                  "condition": "enabled output switches",
-                  "from": "output transition",
-                  "parameter": "tt",
-                  "ranges_ns": {
-                    "conservative_default": {
-                      "max_ns": 15,
-                      "min_ns": null,
-                      "source": "conservative_default_from_existing_model_delay",
-                      "typ_ns": 15
-                    }
-                  },
-                  "to": "output transition"
-                }
+              "datasheet_typical_ns": {
+                "select_to_output": 21,
+                "data_to_output": 17,
+                "enable_to_output": 11,
+                "transition": 8
+              },
+              "datasheet_max_ns_25c": {
+                "select_to_output": 30,
+                "data_to_output": 28,
+                "enable_to_output": 19,
+                "transition": 12
+              },
+              "datasheet_max_ns_sn74": {
+                "select_to_output": 38,
+                "data_to_output": 35,
+                "enable_to_output": 24,
+                "transition": 15
+              },
+              "datasheet_max_ns_sn54": {
+                "select_to_output": 45,
+                "data_to_output": 42,
+                "enable_to_output": 28,
+                "transition": 18
               }
             },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPLZ": {
             "status": "not_applicable",
@@ -582,82 +570,70 @@
           "reason": "74HC153 is combinational and has no setup/hold timing requirement."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "timing.timed.paths",
+          "status": "exact",
+          "source_field": "TI SN74HC153 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
           "values_ns": {
-            "paths": {
-              "input_to_output_ns": {
-                "condition": "input or select changes",
-                "from": "input",
-                "parameter": "tpd",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "max_ns": 15,
-                    "min_ns": null,
-                    "source": "conservative_default_from_existing_model_delay",
-                    "typ_ns": 15
-                  }
-                },
-                "to": "output"
-              },
-              "transition_time_ns": {
-                "condition": "enabled output switches",
-                "from": "output transition",
-                "parameter": "tt",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "max_ns": 15,
-                    "min_ns": null,
-                    "source": "conservative_default_from_existing_model_delay",
-                    "typ_ns": 15
-                  }
-                },
-                "to": "output transition"
-              }
+            "datasheet_typical_ns": {
+              "select_to_output": 21,
+              "data_to_output": 17,
+              "enable_to_output": 11,
+              "transition": 8
+            },
+            "datasheet_max_ns_25c": {
+              "select_to_output": 30,
+              "data_to_output": 28,
+              "enable_to_output": 19,
+              "transition": 12
+            },
+            "datasheet_max_ns_sn74": {
+              "select_to_output": 38,
+              "data_to_output": 35,
+              "enable_to_output": 24,
+              "transition": 15
+            },
+            "datasheet_max_ns_sn54": {
+              "select_to_output": 45,
+              "data_to_output": 42,
+              "enable_to_output": 28,
+              "transition": 18
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPHZ": {
           "status": "not_applicable",
           "reason": "74HC153 has no output-enable/high-Z control in the existing model."
         },
         "tPLH": {
-          "status": "generic",
-          "source_field": "timing.timed.paths",
+          "status": "exact",
+          "source_field": "TI SN74HC153 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
           "values_ns": {
-            "paths": {
-              "input_to_output_ns": {
-                "condition": "input or select changes",
-                "from": "input",
-                "parameter": "tpd",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "max_ns": 15,
-                    "min_ns": null,
-                    "source": "conservative_default_from_existing_model_delay",
-                    "typ_ns": 15
-                  }
-                },
-                "to": "output"
-              },
-              "transition_time_ns": {
-                "condition": "enabled output switches",
-                "from": "output transition",
-                "parameter": "tt",
-                "ranges_ns": {
-                  "conservative_default": {
-                    "max_ns": 15,
-                    "min_ns": null,
-                    "source": "conservative_default_from_existing_model_delay",
-                    "typ_ns": 15
-                  }
-                },
-                "to": "output transition"
-              }
+            "datasheet_typical_ns": {
+              "select_to_output": 21,
+              "data_to_output": 17,
+              "enable_to_output": 11,
+              "transition": 8
+            },
+            "datasheet_max_ns_25c": {
+              "select_to_output": 30,
+              "data_to_output": 28,
+              "enable_to_output": 19,
+              "transition": 12
+            },
+            "datasheet_max_ns_sn74": {
+              "select_to_output": 38,
+              "data_to_output": 35,
+              "enable_to_output": 24,
+              "transition": 15
+            },
+            "datasheet_max_ns_sn54": {
+              "select_to_output": 45,
+              "data_to_output": 42,
+              "enable_to_output": 28,
+              "transition": 18
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPLZ": {
           "status": "not_applicable",

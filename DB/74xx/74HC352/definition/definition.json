@@ -228,78 +228,86 @@
             "reason": "74HC352 is combinational and has no setup/hold timing requirement."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "ST M74HC352 switching characteristics list tPLH/tPHL propagation rows for input/select/enable paths.",
             "values_ns": {
-              "typ": {
-                "path_1": 14,
-                "path_2": 20,
-                "path_3": 10,
-                "path_4": 16,
-                "path_5": 21
-              },
-              "max_25c": {
+              "datasheet_max_ns_25c": {
                 "path_1": 23,
                 "path_2": 30,
                 "path_3": 17,
                 "path_4": 25,
-                "path_5": 30
+                "path_5": 30,
+                "transition": 15
               },
-              "max_minus40_to_85c": {
+              "datasheet_max_ns_minus40_to_85c": {
                 "path_1": 29,
                 "path_2": 38,
                 "path_3": 21,
                 "path_4": 31,
-                "path_5": 38
+                "path_5": 38,
+                "transition": 19
               },
-              "max_minus55_to_125c": {
+              "datasheet_max_ns_minus55_to_125c": {
                 "path_1": 35,
                 "path_2": 45,
                 "path_3": 26,
                 "path_4": 38,
-                "path_5": 45
+                "path_5": 45,
+                "transition": 22
+              },
+              "datasheet_typical_ns": {
+                "path_1": 14,
+                "path_2": 20,
+                "path_3": 10,
+                "path_4": 16,
+                "path_5": 21,
+                "transition": 8
               }
             },
-            "note": "Existing local extraction has multiple propagation paths but not output polarity split."
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPHZ": {
             "status": "not_applicable",
             "reason": "74HC352 has no output-enable/high-Z control in the existing model."
           },
           "tPLH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "ST M74HC352 switching characteristics list tPLH/tPHL propagation rows for input/select/enable paths.",
             "values_ns": {
-              "typ": {
-                "path_1": 14,
-                "path_2": 20,
-                "path_3": 10,
-                "path_4": 16,
-                "path_5": 21
-              },
-              "max_25c": {
+              "datasheet_max_ns_25c": {
                 "path_1": 23,
                 "path_2": 30,
                 "path_3": 17,
                 "path_4": 25,
-                "path_5": 30
+                "path_5": 30,
+                "transition": 15
               },
-              "max_minus40_to_85c": {
+              "datasheet_max_ns_minus40_to_85c": {
                 "path_1": 29,
                 "path_2": 38,
                 "path_3": 21,
                 "path_4": 31,
-                "path_5": 38
+                "path_5": 38,
+                "transition": 19
               },
-              "max_minus55_to_125c": {
+              "datasheet_max_ns_minus55_to_125c": {
                 "path_1": 35,
                 "path_2": 45,
                 "path_3": 26,
                 "path_4": 38,
-                "path_5": 45
+                "path_5": 45,
+                "transition": 22
+              },
+              "datasheet_typical_ns": {
+                "path_1": 14,
+                "path_2": 20,
+                "path_3": 10,
+                "path_4": 16,
+                "path_5": 21,
+                "transition": 8
               }
             },
-            "note": "Existing local extraction has multiple propagation paths but not output polarity split."
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPLZ": {
             "status": "not_applicable",
@@ -554,78 +562,86 @@
           "reason": "74HC352 is combinational and has no setup/hold timing requirement."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "ST M74HC352 switching characteristics list tPLH/tPHL propagation rows for input/select/enable paths.",
           "values_ns": {
-            "typ": {
-              "path_1": 14,
-              "path_2": 20,
-              "path_3": 10,
-              "path_4": 16,
-              "path_5": 21
-            },
-            "max_25c": {
+            "datasheet_max_ns_25c": {
               "path_1": 23,
               "path_2": 30,
               "path_3": 17,
               "path_4": 25,
-              "path_5": 30
+              "path_5": 30,
+              "transition": 15
             },
-            "max_minus40_to_85c": {
+            "datasheet_max_ns_minus40_to_85c": {
               "path_1": 29,
               "path_2": 38,
               "path_3": 21,
               "path_4": 31,
-              "path_5": 38
+              "path_5": 38,
+              "transition": 19
             },
-            "max_minus55_to_125c": {
+            "datasheet_max_ns_minus55_to_125c": {
               "path_1": 35,
               "path_2": 45,
               "path_3": 26,
               "path_4": 38,
-              "path_5": 45
+              "path_5": 45,
+              "transition": 22
+            },
+            "datasheet_typical_ns": {
+              "path_1": 14,
+              "path_2": 20,
+              "path_3": 10,
+              "path_4": 16,
+              "path_5": 21,
+              "transition": 8
             }
           },
-          "note": "Existing local extraction has multiple propagation paths but not output polarity split."
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPHZ": {
           "status": "not_applicable",
           "reason": "74HC352 has no output-enable/high-Z control in the existing model."
         },
         "tPLH": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "ST M74HC352 switching characteristics list tPLH/tPHL propagation rows for input/select/enable paths.",
           "values_ns": {
-            "typ": {
-              "path_1": 14,
-              "path_2": 20,
-              "path_3": 10,
-              "path_4": 16,
-              "path_5": 21
-            },
-            "max_25c": {
+            "datasheet_max_ns_25c": {
               "path_1": 23,
               "path_2": 30,
               "path_3": 17,
               "path_4": 25,
-              "path_5": 30
+              "path_5": 30,
+              "transition": 15
             },
-            "max_minus40_to_85c": {
+            "datasheet_max_ns_minus40_to_85c": {
               "path_1": 29,
               "path_2": 38,
               "path_3": 21,
               "path_4": 31,
-              "path_5": 38
+              "path_5": 38,
+              "transition": 19
             },
-            "max_minus55_to_125c": {
+            "datasheet_max_ns_minus55_to_125c": {
               "path_1": 35,
               "path_2": 45,
               "path_3": 26,
               "path_4": 38,
-              "path_5": 45
+              "path_5": 45,
+              "transition": 22
+            },
+            "datasheet_typical_ns": {
+              "path_1": 14,
+              "path_2": 20,
+              "path_3": 10,
+              "path_4": 16,
+              "path_5": 21,
+              "transition": 8
             }
           },
-          "note": "Existing local extraction has multiple propagation paths but not output polarity split."
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPLZ": {
           "status": "not_applicable",

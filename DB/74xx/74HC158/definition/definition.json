@@ -208,28 +208,46 @@
             "reason": "74HC158 is combinational and has no setup/hold timing requirement."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values.input_to_output",
+            "status": "exact",
+            "source_field": "TI SN74HC158 switching characteristics and waveform note state tPLH and tPHL are the same as tpd.",
             "values_ns": {
-              "typ": 18,
-              "max_25c": 25,
-              "max_minus40_to_85c": 31
+              "datasheet_max_ns_25c": {
+                "input_to_output": 25,
+                "transition": 12
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "input_to_output": 31,
+                "transition": 15
+              },
+              "datasheet_typical_ns": {
+                "input_to_output": 18,
+                "transition": 8
+              }
             },
-            "note": "Existing local extraction has one input-to-output propagation value; output polarity split is not extracted."
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPHZ": {
             "status": "not_applicable",
             "reason": "74HC158 has no output-enable/high-Z control in the existing model."
           },
           "tPLH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values.input_to_output",
+            "status": "exact",
+            "source_field": "TI SN74HC158 switching characteristics and waveform note state tPLH and tPHL are the same as tpd.",
             "values_ns": {
-              "typ": 18,
-              "max_25c": 25,
-              "max_minus40_to_85c": 31
+              "datasheet_max_ns_25c": {
+                "input_to_output": 25,
+                "transition": 12
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "input_to_output": 31,
+                "transition": 15
+              },
+              "datasheet_typical_ns": {
+                "input_to_output": 18,
+                "transition": 8
+              }
             },
-            "note": "Existing local extraction has one input-to-output propagation value; output polarity split is not extracted."
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPLZ": {
             "status": "not_applicable",
@@ -464,28 +482,46 @@
           "reason": "74HC158 is combinational and has no setup/hold timing requirement."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values.input_to_output",
+          "status": "exact",
+          "source_field": "TI SN74HC158 switching characteristics and waveform note state tPLH and tPHL are the same as tpd.",
           "values_ns": {
-            "typ": 18,
-            "max_25c": 25,
-            "max_minus40_to_85c": 31
+            "datasheet_max_ns_25c": {
+              "input_to_output": 25,
+              "transition": 12
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "input_to_output": 31,
+              "transition": 15
+            },
+            "datasheet_typical_ns": {
+              "input_to_output": 18,
+              "transition": 8
+            }
           },
-          "note": "Existing local extraction has one input-to-output propagation value; output polarity split is not extracted."
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPHZ": {
           "status": "not_applicable",
           "reason": "74HC158 has no output-enable/high-Z control in the existing model."
         },
         "tPLH": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values.input_to_output",
+          "status": "exact",
+          "source_field": "TI SN74HC158 switching characteristics and waveform note state tPLH and tPHL are the same as tpd.",
           "values_ns": {
-            "typ": 18,
-            "max_25c": 25,
-            "max_minus40_to_85c": 31
+            "datasheet_max_ns_25c": {
+              "input_to_output": 25,
+              "transition": 12
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "input_to_output": 31,
+              "transition": 15
+            },
+            "datasheet_typical_ns": {
+              "input_to_output": 18,
+              "transition": 8
+            }
           },
-          "note": "Existing local extraction has one input-to-output propagation value; output polarity split is not extracted."
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPLZ": {
           "status": "not_applicable",

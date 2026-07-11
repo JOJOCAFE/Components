@@ -220,8 +220,8 @@
             "reason": "74HC238 is combinational and has no setup/hold timing requirement."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "NXP 74HC238 dynamic characteristics state tpd is the same as tPHL and tPLH for address/enable paths.",
             "values_ns": {
               "datasheet_max_ns_25c": {
                 "address_to_output": 30,
@@ -248,15 +248,15 @@
                 "transition": 7
               }
             },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPHZ": {
             "status": "not_applicable",
             "reason": "74HC238 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package."
           },
           "tPLH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "NXP 74HC238 dynamic characteristics state tpd is the same as tPHL and tPLH for address/enable paths.",
             "values_ns": {
               "datasheet_max_ns_25c": {
                 "address_to_output": 30,
@@ -283,7 +283,7 @@
                 "transition": 7
               }
             },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPLZ": {
             "status": "not_applicable",
@@ -530,8 +530,8 @@
           "reason": "74HC238 is combinational and has no setup/hold timing requirement."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "NXP 74HC238 dynamic characteristics state tpd is the same as tPHL and tPLH for address/enable paths.",
           "values_ns": {
             "datasheet_max_ns_25c": {
               "address_to_output": 30,
@@ -558,15 +558,15 @@
               "transition": 7
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPHZ": {
           "status": "not_applicable",
           "reason": "74HC238 has enable/control inputs but no tri-state output-enable/high-Z behavior in the physical package."
         },
         "tPLH": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "NXP 74HC238 dynamic characteristics state tpd is the same as tPHL and tPLH for address/enable paths.",
           "values_ns": {
             "datasheet_max_ns_25c": {
               "address_to_output": 30,
@@ -593,7 +593,7 @@
               "transition": 7
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPLZ": {
           "status": "not_applicable",

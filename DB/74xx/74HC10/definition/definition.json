@@ -258,28 +258,28 @@
             "reason": "74HC10 is combinational and has no setup/hold timing requirement."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "timing.datasheet",
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay",
             "values_ns": {
               "typ": 10,
               "max_25c": 19,
               "max_minus40_to_85c": 24
             },
-            "note": "Existing local extraction has one propagation value; output polarity split is not extracted."
+            "note": "TI SN74HC10 switching characteristics note says tPLH and tPHL are the same as tpd. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged."
           },
           "tPHZ": {
             "status": "not_applicable",
             "reason": "74HC10 has no output-enable/high-Z control in the existing model."
           },
           "tPLH": {
-            "status": "generic",
-            "source_field": "timing.datasheet",
+            "status": "exact",
+            "source_field": "definition_layers.timing.delay",
             "values_ns": {
               "typ": 10,
               "max_25c": 19,
               "max_minus40_to_85c": 24
             },
-            "note": "Existing local extraction has one propagation value; output polarity split is not extracted."
+            "note": "TI SN74HC10 switching characteristics note says tPLH and tPHL are the same as tpd. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged."
           },
           "tPLZ": {
             "status": "not_applicable",
@@ -495,28 +495,28 @@
           "reason": "74HC10 is combinational and has no setup/hold timing requirement."
         },
         "tPHL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet",
           "values_ns": {
             "typ": 10,
             "max_25c": 19,
             "max_minus40_to_85c": 24
           },
-          "note": "Existing local extraction has one propagation value; output polarity split is not extracted."
+          "note": "TI SN74HC10 switching characteristics note says tPLH and tPHL are the same as tpd. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged."
         },
         "tPHZ": {
           "status": "not_applicable",
           "reason": "74HC10 has no output-enable/high-Z control in the existing model."
         },
         "tPLH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.datasheet",
           "values_ns": {
             "typ": 10,
             "max_25c": 19,
             "max_minus40_to_85c": 24
           },
-          "note": "Existing local extraction has one propagation value; output polarity split is not extracted."
+          "note": "TI SN74HC10 switching characteristics note says tPLH and tPHL are the same as tpd. Existing source-backed numeric propagation values apply to both output transitions; path-specific simulator delays are unchanged."
         },
         "tPLZ": {
           "status": "not_applicable",

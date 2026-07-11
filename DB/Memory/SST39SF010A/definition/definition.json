@@ -317,7 +317,7 @@
         "basis": "normalized_from_existing_datasheet_timing",
         "parameters": {
           "tPLH": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
             "values_ns": {
               "address_to_data_valid_ns": 70,
@@ -325,10 +325,12 @@
               "ce_to_data_valid_ns": 70,
               "oe_to_data_valid_ns": 35
             },
-            "note": "Memory read access values are not polarity-specific output transition paths."
+            "note": "TAA/TCE/TOE read access paths define data valid after address, CE#, or OE#; flash read timing is not split by output HIGH/LOW transition.",
+            "mapping_basis": "TAA/TCE/TOE read access paths define data valid after address, CE#, or OE#; flash read timing is not split by output HIGH/LOW transition.",
+            "source": "Microchip SST39SF010A AC characteristics"
           },
           "tPHL": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
             "values_ns": {
               "address_to_data_valid_ns": 70,
@@ -336,41 +338,51 @@
               "ce_to_data_valid_ns": 70,
               "oe_to_data_valid_ns": 35
             },
-            "note": "Memory read access values are not polarity-specific output transition paths."
+            "note": "TAA/TCE/TOE read access paths define data valid after address, CE#, or OE#; flash read timing is not split by output HIGH/LOW transition.",
+            "mapping_basis": "TAA/TCE/TOE read access paths define data valid after address, CE#, or OE#; flash read timing is not split by output HIGH/LOW transition.",
+            "source": "Microchip SST39SF010A AC characteristics"
           },
           "tPZH": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
             "values_ns": {
               "ce_to_data_valid_ns": 70,
               "oe_to_data_valid_ns": 35
             },
-            "note": "Memory output-enable/read access is not split into high/low polarity."
+            "note": "CE# low/OE# low active-output timing defines output enable from high-Z/read-disabled state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+            "mapping_basis": "CE# low/OE# low active-output timing defines output enable from high-Z/read-disabled state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+            "source": "Microchip SST39SF010A AC characteristics"
           },
           "tPZL": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
             "values_ns": {
               "ce_to_data_valid_ns": 70,
               "oe_to_data_valid_ns": 35
             },
-            "note": "Memory output-enable/read access is not split into high/low polarity."
+            "note": "CE# low/OE# low active-output timing defines output enable from high-Z/read-disabled state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+            "mapping_basis": "CE# low/OE# low active-output timing defines output enable from high-Z/read-disabled state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+            "source": "Microchip SST39SF010A AC characteristics"
           },
           "tPHZ": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
             "values_ns": {
               "max": 25
             },
-            "note": "Memory high-Z timing is not split by previous output polarity."
+            "note": "TOHZ CE#/OE# high-to-high-Z timing defines output-disable timing; not split by previous HIGH/LOW output state.",
+            "mapping_basis": "TOHZ CE#/OE# high-to-high-Z timing defines output-disable timing; not split by previous HIGH/LOW output state.",
+            "source": "Microchip SST39SF010A AC characteristics"
           },
           "tPLZ": {
-            "status": "generic",
+            "status": "exact",
             "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
             "values_ns": {
               "max": 25
             },
-            "note": "Memory high-Z timing is not split by previous output polarity."
+            "note": "TOHZ CE#/OE# high-to-high-Z timing defines output-disable timing; not split by previous HIGH/LOW output state.",
+            "mapping_basis": "TOHZ CE#/OE# high-to-high-Z timing defines output-disable timing; not split by previous HIGH/LOW output state.",
+            "source": "Microchip SST39SF010A AC characteristics"
           },
           "clock_to_q_high": {
             "status": "not_applicable",
@@ -644,7 +656,7 @@
       "basis": "normalized_from_existing_datasheet_timing",
       "parameters": {
         "tPLH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
           "values_ns": {
             "address_to_data_valid_ns": 70,
@@ -652,10 +664,12 @@
             "ce_to_data_valid_ns": 70,
             "oe_to_data_valid_ns": 35
           },
-          "note": "Memory read access values are not polarity-specific output transition paths."
+          "note": "TAA/TCE/TOE read access paths define data valid after address, CE#, or OE#; flash read timing is not split by output HIGH/LOW transition.",
+          "mapping_basis": "TAA/TCE/TOE read access paths define data valid after address, CE#, or OE#; flash read timing is not split by output HIGH/LOW transition.",
+          "source": "Microchip SST39SF010A AC characteristics"
         },
         "tPHL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.paths.address_to_data_valid_ns / ce_to_data_valid_ns / oe_to_data_valid_ns",
           "values_ns": {
             "address_to_data_valid_ns": 70,
@@ -663,41 +677,51 @@
             "ce_to_data_valid_ns": 70,
             "oe_to_data_valid_ns": 35
           },
-          "note": "Memory read access values are not polarity-specific output transition paths."
+          "note": "TAA/TCE/TOE read access paths define data valid after address, CE#, or OE#; flash read timing is not split by output HIGH/LOW transition.",
+          "mapping_basis": "TAA/TCE/TOE read access paths define data valid after address, CE#, or OE#; flash read timing is not split by output HIGH/LOW transition.",
+          "source": "Microchip SST39SF010A AC characteristics"
         },
         "tPZH": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
           "values_ns": {
             "ce_to_data_valid_ns": 70,
             "oe_to_data_valid_ns": 35
           },
-          "note": "Memory output-enable/read access is not split into high/low polarity."
+          "note": "CE# low/OE# low active-output timing defines output enable from high-Z/read-disabled state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+          "mapping_basis": "CE# low/OE# low active-output timing defines output enable from high-Z/read-disabled state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+          "source": "Microchip SST39SF010A AC characteristics"
         },
         "tPZL": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.paths.oe_to_data_valid_ns and ce_to_data_valid_ns",
           "values_ns": {
             "ce_to_data_valid_ns": 70,
             "oe_to_data_valid_ns": 35
           },
-          "note": "Memory output-enable/read access is not split into high/low polarity."
+          "note": "CE# low/OE# low active-output timing defines output enable from high-Z/read-disabled state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+          "mapping_basis": "CE# low/OE# low active-output timing defines output enable from high-Z/read-disabled state; datasheet does not split high-Z-to-HIGH versus high-Z-to-LOW.",
+          "source": "Microchip SST39SF010A AC characteristics"
         },
         "tPHZ": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
           "values_ns": {
             "max": 25
           },
-          "note": "Memory high-Z timing is not split by previous output polarity."
+          "note": "TOHZ CE#/OE# high-to-high-Z timing defines output-disable timing; not split by previous HIGH/LOW output state.",
+          "mapping_basis": "TOHZ CE#/OE# high-to-high-Z timing defines output-disable timing; not split by previous HIGH/LOW output state.",
+          "source": "Microchip SST39SF010A AC characteristics"
         },
         "tPLZ": {
-          "status": "generic",
+          "status": "exact",
           "source_field": "timing.paths.ce_or_oe_to_high_z_ns",
           "values_ns": {
             "max": 25
           },
-          "note": "Memory high-Z timing is not split by previous output polarity."
+          "note": "TOHZ CE#/OE# high-to-high-Z timing defines output-disable timing; not split by previous HIGH/LOW output state.",
+          "mapping_basis": "TOHZ CE#/OE# high-to-high-Z timing defines output-disable timing; not split by previous HIGH/LOW output state.",
+          "source": "Microchip SST39SF010A AC characteristics"
         },
         "clock_to_q_high": {
           "status": "not_applicable",

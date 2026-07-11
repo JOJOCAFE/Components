@@ -217,8 +217,8 @@
             "reason": "74HC85 is combinational and has no setup/hold timing requirement."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "Motorola MC74HC85 switching table names tPLH/tPHL maximum propagation delays for A/B/cascade/equality paths.",
             "values_ns": {
               "datasheet_max_ns_25c": {
                 "a_or_b_to_equal": 40,
@@ -242,15 +242,15 @@
                 "transition": 22
               }
             },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPHZ": {
             "status": "not_applicable",
             "reason": "74HC85 has no output-enable/high-Z control in the existing model."
           },
           "tPLH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "Motorola MC74HC85 switching table names tPLH/tPHL maximum propagation delays for A/B/cascade/equality paths.",
             "values_ns": {
               "datasheet_max_ns_25c": {
                 "a_or_b_to_equal": 40,
@@ -274,7 +274,7 @@
                 "transition": 22
               }
             },
-            "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPLZ": {
             "status": "not_applicable",
@@ -518,8 +518,8 @@
           "reason": "74HC85 is combinational and has no setup/hold timing requirement."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "Motorola MC74HC85 switching table names tPLH/tPHL maximum propagation delays for A/B/cascade/equality paths.",
           "values_ns": {
             "datasheet_max_ns_25c": {
               "a_or_b_to_equal": 40,
@@ -543,15 +543,15 @@
               "transition": 22
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPHZ": {
           "status": "not_applicable",
           "reason": "74HC85 has no output-enable/high-Z control in the existing model."
         },
         "tPLH": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "Motorola MC74HC85 switching table names tPLH/tPHL maximum propagation delays for A/B/cascade/equality paths.",
           "values_ns": {
             "datasheet_max_ns_25c": {
               "a_or_b_to_equal": 40,
@@ -575,7 +575,7 @@
               "transition": 22
             }
           },
-          "note": "Existing local extraction has source-backed propagation timing but not output LOW/HIGH polarity split."
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPLZ": {
           "status": "not_applicable",

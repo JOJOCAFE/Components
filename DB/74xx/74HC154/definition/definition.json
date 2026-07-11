@@ -256,54 +256,62 @@
             "reason": "74HC154 is combinational and has no setup/hold timing requirement."
           },
           "tPHL": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "NXP/TI 74HC154 dynamic characteristics list tPLH,tPHL for address-to-output and enable-to-output paths.",
             "values_ns": {
-              "typ": {
-                "address_to_output": 13,
-                "enable_to_output": 14
-              },
-              "max_25c": {
+              "datasheet_max_ns_25c": {
                 "address_to_output": 30,
-                "enable_to_output": 30
+                "enable_to_output": 30,
+                "transition": 15
               },
-              "max_minus40_to_85c": {
-                "address_to_output": 38,
-                "enable_to_output": 38
-              },
-              "max_minus40_to_125c": {
+              "datasheet_max_ns_minus40_to_125c": {
                 "address_to_output": 45,
-                "enable_to_output": 45
+                "enable_to_output": 45,
+                "transition": 22
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "address_to_output": 38,
+                "enable_to_output": 38,
+                "transition": 19
+              },
+              "datasheet_typical_ns": {
+                "address_to_output": 13,
+                "enable_to_output": 14,
+                "transition": 7
               }
             },
-            "note": "Existing local extraction has multiple propagation paths but not output polarity split."
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPHZ": {
             "status": "not_applicable",
             "reason": "74HC154 has no output-enable/high-Z control in the existing model."
           },
           "tPLH": {
-            "status": "generic",
-            "source_field": "timing.datasheet.values",
+            "status": "exact",
+            "source_field": "NXP/TI 74HC154 dynamic characteristics list tPLH,tPHL for address-to-output and enable-to-output paths.",
             "values_ns": {
-              "typ": {
-                "address_to_output": 13,
-                "enable_to_output": 14
-              },
-              "max_25c": {
+              "datasheet_max_ns_25c": {
                 "address_to_output": 30,
-                "enable_to_output": 30
+                "enable_to_output": 30,
+                "transition": 15
               },
-              "max_minus40_to_85c": {
-                "address_to_output": 38,
-                "enable_to_output": 38
-              },
-              "max_minus40_to_125c": {
+              "datasheet_max_ns_minus40_to_125c": {
                 "address_to_output": 45,
-                "enable_to_output": 45
+                "enable_to_output": 45,
+                "transition": 22
+              },
+              "datasheet_max_ns_minus40_to_85c": {
+                "address_to_output": 38,
+                "enable_to_output": 38,
+                "transition": 19
+              },
+              "datasheet_typical_ns": {
+                "address_to_output": 13,
+                "enable_to_output": 14,
+                "transition": 7
               }
             },
-            "note": "Existing local extraction has multiple propagation paths but not output polarity split."
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
           },
           "tPLZ": {
             "status": "not_applicable",
@@ -586,54 +594,62 @@
           "reason": "74HC154 is combinational and has no setup/hold timing requirement."
         },
         "tPHL": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "NXP/TI 74HC154 dynamic characteristics list tPLH,tPHL for address-to-output and enable-to-output paths.",
           "values_ns": {
-            "typ": {
-              "address_to_output": 13,
-              "enable_to_output": 14
-            },
-            "max_25c": {
+            "datasheet_max_ns_25c": {
               "address_to_output": 30,
-              "enable_to_output": 30
+              "enable_to_output": 30,
+              "transition": 15
             },
-            "max_minus40_to_85c": {
-              "address_to_output": 38,
-              "enable_to_output": 38
-            },
-            "max_minus40_to_125c": {
+            "datasheet_max_ns_minus40_to_125c": {
               "address_to_output": 45,
-              "enable_to_output": 45
+              "enable_to_output": 45,
+              "transition": 22
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "address_to_output": 38,
+              "enable_to_output": 38,
+              "transition": 19
+            },
+            "datasheet_typical_ns": {
+              "address_to_output": 13,
+              "enable_to_output": 14,
+              "transition": 7
             }
           },
-          "note": "Existing local extraction has multiple propagation paths but not output polarity split."
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPHZ": {
           "status": "not_applicable",
           "reason": "74HC154 has no output-enable/high-Z control in the existing model."
         },
         "tPLH": {
-          "status": "generic",
-          "source_field": "timing.datasheet.values",
+          "status": "exact",
+          "source_field": "NXP/TI 74HC154 dynamic characteristics list tPLH,tPHL for address-to-output and enable-to-output paths.",
           "values_ns": {
-            "typ": {
-              "address_to_output": 13,
-              "enable_to_output": 14
-            },
-            "max_25c": {
+            "datasheet_max_ns_25c": {
               "address_to_output": 30,
-              "enable_to_output": 30
+              "enable_to_output": 30,
+              "transition": 15
             },
-            "max_minus40_to_85c": {
-              "address_to_output": 38,
-              "enable_to_output": 38
-            },
-            "max_minus40_to_125c": {
+            "datasheet_max_ns_minus40_to_125c": {
               "address_to_output": 45,
-              "enable_to_output": 45
+              "enable_to_output": 45,
+              "transition": 22
+            },
+            "datasheet_max_ns_minus40_to_85c": {
+              "address_to_output": 38,
+              "enable_to_output": 38,
+              "transition": 19
+            },
+            "datasheet_typical_ns": {
+              "address_to_output": 13,
+              "enable_to_output": 14,
+              "transition": 7
             }
           },
-          "note": "Existing local extraction has multiple propagation paths but not output polarity split."
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part."
         },
         "tPLZ": {
           "status": "not_applicable",
