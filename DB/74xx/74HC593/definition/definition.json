@@ -277,24 +277,84 @@
           "note": "M54HC593 switching characteristics give direct 3-state disable timing; canonical output-disable timing is preserved exactly."
         },
           "clock_to_q_high": {
-            "status": "missing",
-            "reason": "Existing local extraction does not include clock-to-Q."
+            "status": "exact",
+            "source_field": "M54HC593 AC electrical characteristics CCK-Qn tPLH/tPHL",
+            "values_ns": {
+              "cck_to_qn": {
+                "typ": {
+                  "vcc_2_v": 108,
+                  "vcc_4_5_v": 27,
+                  "vcc_6_v": 23
+                },
+                "max_25c": {
+                  "vcc_2_v": 210,
+                  "vcc_4_5_v": 42,
+                  "vcc_6_v": 36
+                },
+                "max_minus40_to_85c": {
+                  "vcc_2_v": 265,
+                  "vcc_4_5_v": 53,
+                  "vcc_6_v": 45
+                },
+                "max_minus55_to_125c": {
+                  "vcc_2_v": 315,
+                  "vcc_4_5_v": 63,
+                  "vcc_6_v": 54
+                }
+              }
+            }
           },
           "clock_to_q_low": {
-            "status": "missing",
-            "reason": "Existing local extraction does not include clock-to-Q."
+            "status": "exact",
+            "source_field": "M54HC593 AC electrical characteristics CCK-Qn tPLH/tPHL",
+            "values_ns": {
+              "cck_to_qn": {
+                "typ": {
+                  "vcc_2_v": 108,
+                  "vcc_4_5_v": 27,
+                  "vcc_6_v": 23
+                },
+                "max_25c": {
+                  "vcc_2_v": 210,
+                  "vcc_4_5_v": 42,
+                  "vcc_6_v": 36
+                },
+                "max_minus40_to_85c": {
+                  "vcc_2_v": 265,
+                  "vcc_4_5_v": 53,
+                  "vcc_6_v": 45
+                },
+                "max_minus55_to_125c": {
+                  "vcc_2_v": 315,
+                  "vcc_4_5_v": 63,
+                  "vcc_6_v": 54
+                }
+              }
+            }
           },
           "setup": {
-            "status": "missing",
-            "reason": "Existing local timing extraction has no setup-time table for this part."
+            "status": "exact",
+            "source_field": "M54HC593 AC electrical characteristics ts rows",
+            "values_ns": {
+              "ccken_before_cck_min": {"vcc_2_v": {"typ": 56, "max_25c": 125, "max_minus40_to_85c": 160, "max_minus55_to_125c": 195}, "vcc_4_5_v": {"typ": 14, "max_25c": 25, "max_minus40_to_85c": 32, "max_minus55_to_125c": 39}, "vcc_6_v": {"typ": 12, "max_25c": 21, "max_minus40_to_85c": 27, "max_minus55_to_125c": 33}},
+              "rcken_before_rck_min": {"vcc_2_v": {"typ": 32, "max_25c": 75, "max_minus40_to_85c": 95, "max_minus55_to_125c": 110}, "vcc_4_5_v": {"typ": 8, "max_25c": 15, "max_minus40_to_85c": 19, "max_minus55_to_125c": 22}, "vcc_6_v": {"typ": 7, "max_25c": 13, "max_minus40_to_85c": 16, "max_minus55_to_125c": 19}},
+              "rck_before_cload_min": {"vcc_2_v": {"typ": 56, "max_25c": 125, "max_minus40_to_85c": 160, "max_minus55_to_125c": 195}, "vcc_4_5_v": {"typ": 14, "max_25c": 25, "max_minus40_to_85c": 32, "max_minus55_to_125c": 39}, "vcc_6_v": {"typ": 12, "max_25c": 21, "max_minus40_to_85c": 27, "max_minus55_to_125c": 33}}
+            }
           },
           "hold": {
-            "status": "missing",
-            "reason": "Existing local timing extraction has no hold-time table for this part."
+            "status": "exact",
+            "source_field": "M54HC593 AC electrical characteristics th row",
+            "values_ns": {
+              "a_to_h_after_rck_min": {"vcc_2_v": 0, "vcc_4_5_v": 0, "vcc_6_v": 0}
+            }
           },
           "minimum_pulse_width": {
-            "status": "missing",
-            "reason": "Existing local timing extraction has no minimum pulse-width table for this part."
+            "status": "exact",
+            "source_field": "M54HC593 AC electrical characteristics tW rows",
+            "values_ns": {
+              "cck_or_rck_high_or_low_min": {"vcc_2_v": {"typ": 44, "max_25c": 100, "max_minus40_to_85c": 125, "max_minus55_to_125c": 150}, "vcc_4_5_v": {"typ": 11, "max_25c": 20, "max_minus40_to_85c": 25, "max_minus55_to_125c": 30}, "vcc_6_v": {"typ": 9, "max_25c": 17, "max_minus40_to_85c": 21, "max_minus55_to_125c": 26}},
+              "cclr_or_cload_low_min": {"vcc_2_v": {"typ": 40, "max_25c": 100, "max_minus40_to_85c": 125, "max_minus55_to_125c": 150}, "vcc_4_5_v": {"typ": 10, "max_25c": 20, "max_minus40_to_85c": 25, "max_minus55_to_125c": 30}, "vcc_6_v": {"typ": 9, "max_25c": 17, "max_minus40_to_85c": 21, "max_minus55_to_125c": 26}}
+            }
           }
         },
         "conditions": {
