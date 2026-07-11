@@ -69,6 +69,22 @@ PARAMETERS = {
     },
 }
 
+PARAMETER_KEYS = {
+    "tPLH": "tPLH",
+    "tPHL": "tPHL",
+    "tPZH": "tPZH",
+    "tPZL": "tPZL",
+    "tPHZ": "tPHZ",
+    "tPLZ": "tPLZ",
+    "clock-to-Q high": "clock_to_q_high",
+    "clock-to-Q low": "clock_to_q_low",
+    "setup": "setup",
+    "hold": "hold",
+    "minimum pulse width": "minimum_pulse_width",
+}
+
+SUMMARY_STATUSES = ("exact", "generic", "not_applicable", "missing")
+
 
 def timing_payload(data: dict[str, Any]) -> dict[str, Any]:
     layer = data.get("definition_layers", {}).get("timing")
@@ -84,6 +100,21 @@ def has_any(text: str, needles: tuple[str, ...]) -> bool:
 
 def classify(payload: dict[str, Any], parameter: str) -> str:
     spec = PARAMETERS[parameter]
+    timing_parameters = payload.get("timing_parameters", {})
+    if isinstance(timing_parameters, dict):
+        parameters = timing_parameters.get("parameters", {})
+        key = PARAMETER_KEYS[parameter]
+        entry = parameters.get(key) if isinstance(parameters, dict) else None
+        if isinstance(entry, dict):
+            status = entry.get("status")
+            if status == "exact":
+                return "exact"
+            if status in {"generic", "default"}:
+                return "generic"
+            if status == "not_applicable":
+                return "not_applicable"
+            if status == "missing":
+                return "missing"
     text = json.dumps(payload, sort_keys=True).lower()
     if has_any(text, spec["exact"]):
         return "exact"
@@ -115,7 +146,7 @@ def audit_rows() -> list[dict[str, Any]]:
 
 
 def summary(rows: list[dict[str, Any]]) -> dict[str, dict[str, int]]:
-    counts = {parameter: {"exact": 0, "generic": 0, "missing": 0} for parameter in PARAMETERS}
+    counts = {parameter: {status: 0 for status in SUMMARY_STATUSES} for parameter in PARAMETERS}
     for row in rows:
         for parameter, status in row["result"].items():
             counts[parameter][status] += 1
@@ -134,17 +165,19 @@ def write_report(rows: list[dict[str, Any]]) -> None:
         "review. `exact` means the canonical polarity-specific term is present;",
         "`generic` means the DB has related timing such as `tpd`, `enable`,",
         "`disable`, `clock_to_q`, or memory high-Z timing but does not split the",
-        "requested HIGH/LOW polarity; `missing` means no matching field was found.",
+        "requested HIGH/LOW polarity; `not_applicable` means the chip has no such",
+        "clocked, setup/hold, pulse-width, or high-Z behavior; `missing` means no",
+        "matching field was found.",
         "",
         "## Summary",
         "",
-        "| Parameter | Meaning | Exact | Generic | Missing |",
-        "|---|---|---:|---:|---:|",
+        "| Parameter | Meaning | Exact | Generic | Not Applicable | Missing |",
+        "|---|---|---:|---:|---:|---:|",
     ]
     for parameter, spec in PARAMETERS.items():
         row = counts[parameter]
         lines.append(
-            f"| {parameter} | {spec['meaning']} | {row['exact']} | {row['generic']} | {row['missing']} |"
+            f"| {parameter} | {spec['meaning']} | {row['exact']} | {row['generic']} | {row['not_applicable']} | {row['missing']} |"
         )
     lines.extend([
         "",

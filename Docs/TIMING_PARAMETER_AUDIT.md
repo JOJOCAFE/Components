@@ -7,23 +7,25 @@ parameter names requested for component selection and physical timing
 review. `exact` means the canonical polarity-specific term is present;
 `generic` means the DB has related timing such as `tpd`, `enable`,
 `disable`, `clock_to_q`, or memory high-Z timing but does not split the
-requested HIGH/LOW polarity; `missing` means no matching field was found.
+requested HIGH/LOW polarity; `not_applicable` means the chip has no such
+clocked, setup/hold, pulse-width, or high-Z behavior; `missing` means no
+matching field was found.
 
 ## Summary
 
-| Parameter | Meaning | Exact | Generic | Missing |
-|---|---|---:|---:|---:|
-| tPLH | input/output propagation delay for output LOW-to-HIGH | 3 | 56 | 11 |
-| tPHL | input/output propagation delay for output HIGH-to-LOW | 3 | 56 | 11 |
-| tPZH | output enable from high-Z to HIGH | 0 | 22 | 48 |
-| tPZL | output enable from high-Z to LOW | 0 | 22 | 48 |
-| tPHZ | output disable from HIGH to high-Z | 1 | 12 | 57 |
-| tPLZ | output disable from LOW to high-Z | 0 | 13 | 57 |
-| clock-to-Q high | clock edge to Q HIGH | 0 | 13 | 57 |
-| clock-to-Q low | clock edge to Q LOW | 0 | 13 | 57 |
-| setup | input setup time before active clock/control edge | 9 | 0 | 61 |
-| hold | input hold time after active clock/control edge | 9 | 0 | 61 |
-| minimum pulse width | minimum clock, reset, write, or control pulse width | 9 | 0 | 61 |
+| Parameter | Meaning | Exact | Generic | Not Applicable | Missing |
+|---|---|---:|---:|---:|---:|
+| tPLH | input/output propagation delay for output LOW-to-HIGH | 3 | 58 | 0 | 9 |
+| tPHL | input/output propagation delay for output HIGH-to-LOW | 3 | 58 | 0 | 9 |
+| tPZH | output enable from high-Z to HIGH | 0 | 22 | 3 | 45 |
+| tPZL | output enable from high-Z to LOW | 0 | 22 | 3 | 45 |
+| tPHZ | output disable from HIGH to high-Z | 1 | 12 | 3 | 54 |
+| tPLZ | output disable from LOW to high-Z | 0 | 13 | 3 | 54 |
+| clock-to-Q high | clock edge to Q HIGH | 0 | 13 | 2 | 55 |
+| clock-to-Q low | clock edge to Q LOW | 0 | 13 | 2 | 55 |
+| setup | input setup time before active clock/control edge | 9 | 0 | 2 | 59 |
+| hold | input hold time after active clock/control edge | 9 | 0 | 2 | 59 |
+| minimum pulse width | minimum clock, reset, write, or control pulse width | 9 | 0 | 2 | 59 |
 
 ## Current Finding
 
@@ -39,10 +41,10 @@ requested HIGH/LOW polarity; `missing` means no matching field was found.
 
 | Part | Group | tPLH | tPHL | tPZH | tPZL | tPHZ | tPLZ | clock-to-Q high | clock-to-Q low | setup | hold | minimum pulse width |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 74HC00 | 74xx | missing | missing | missing | missing | missing | missing | missing | missing | missing | missing | missing |
+| 74HC00 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC02 | 74xx | generic | generic | missing | missing | missing | missing | missing | missing | missing | missing | missing |
 | 74HC03 | 74xx | exact | exact | missing | missing | missing | missing | missing | missing | missing | missing | missing |
-| 74HC04 | 74xx | missing | missing | missing | missing | missing | missing | missing | missing | missing | missing | missing |
+| 74HC04 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC05 | 74xx | exact | exact | missing | missing | missing | missing | missing | missing | missing | missing | missing |
 | 74HC07 | 74xx | generic | generic | missing | missing | missing | missing | missing | missing | missing | missing | missing |
 | 74HC08 | 74xx | generic | generic | missing | missing | missing | missing | missing | missing | missing | missing | missing |
@@ -61,7 +63,7 @@ requested HIGH/LOW polarity; `missing` means no matching field was found.
 | 74HC157 | 74xx | generic | generic | generic | generic | missing | missing | missing | missing | missing | missing | missing |
 | 74HC158 | 74xx | generic | generic | missing | missing | missing | missing | missing | missing | missing | missing | missing |
 | 74HC160 | 74xx | generic | generic | generic | generic | missing | missing | generic | generic | exact | missing | exact |
-| 74HC161 | 74xx | generic | generic | missing | missing | missing | missing | generic | generic | exact | exact | exact |
+| 74HC161 | 74xx | generic | generic | not_applicable | not_applicable | not_applicable | not_applicable | generic | generic | exact | exact | exact |
 | 74HC162 | 74xx | generic | generic | missing | missing | missing | missing | generic | generic | missing | missing | missing |
 | 74HC163 | 74xx | generic | generic | missing | missing | missing | missing | generic | generic | missing | missing | missing |
 | 74HC164 | 74xx | generic | generic | missing | missing | missing | missing | generic | generic | missing | missing | missing |

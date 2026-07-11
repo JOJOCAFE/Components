@@ -183,6 +183,28 @@ source provides them:
 - `setup`, `hold`, and `minimum_pulse_width` for clock, reset, write, or
   control timing windows.
 
+Use a `timing_parameters` block inside the timing layer when a chip has been
+normalized. Keep the block machine-readable:
+
+- `schema`: `db.component.timing_parameters`
+- `basis`: how the block was derived, for example
+  `normalized_from_existing_datasheet_timing`
+- `conditions`: source conditions such as VCC, load capacitance, or ambient
+  temperature
+- `parameters`: one entry per canonical parameter name, with `status`,
+  `source_field`, optional `values_ns`, and a short note or reason when needed
+
+Allowed parameter statuses are:
+
+- `exact`: the source directly supports the canonical timing parameter.
+- `generic`: the source has a related timing value, but not the requested
+  polarity or path split.
+- `default`: simulator default only; not a datasheet claim.
+- `missing`: the chip likely needs the value, but no local source-backed value
+  has been extracted yet.
+- `not_applicable`: the chip does not have that behavior, such as high-Z
+  enable timing on a push-pull gate.
+
 Generic fields such as `tpd`, `enable`, `disable`, `clock_to_q`, and memory
 high-Z timing are allowed only as source-backed intermediate data or simulator
 defaults. `Docs/TIMING_PARAMETER_AUDIT.md` tracks which active physical ICs

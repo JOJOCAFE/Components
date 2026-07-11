@@ -383,6 +383,69 @@ def test_logic_family_model_variants_are_validated_and_catalog_visible():
     assert detail["variants"] == definition["variants"]
 
 
+def test_starter_chips_have_normalized_timing_parameters():
+    expected = {
+        "74HC00": {
+            "generic": {"tPLH", "tPHL"},
+            "not_applicable": {
+                "clock_to_q_high",
+                "clock_to_q_low",
+                "hold",
+                "minimum_pulse_width",
+                "setup",
+                "tPHZ",
+                "tPLZ",
+                "tPZH",
+                "tPZL",
+            },
+        },
+        "74HC04": {
+            "generic": {"tPLH", "tPHL"},
+            "not_applicable": {
+                "clock_to_q_high",
+                "clock_to_q_low",
+                "hold",
+                "minimum_pulse_width",
+                "setup",
+                "tPHZ",
+                "tPLZ",
+                "tPZH",
+                "tPZL",
+            },
+        },
+        "74HC161": {
+            "exact": {"hold", "minimum_pulse_width", "setup"},
+            "generic": {"clock_to_q_high", "clock_to_q_low", "tPLH", "tPHL"},
+            "not_applicable": {"tPHZ", "tPLZ", "tPZH", "tPZL"},
+        },
+    }
+
+    for part, statuses in expected.items():
+        definition = load_digital_definition(part)
+        public_parameters = definition["timing"]["timing_parameters"]["parameters"]
+        package = load_digital_package(part)
+        layer_parameters = package["layers"]["definition"]["timing"]["timing_parameters"]["parameters"]
+        assert public_parameters.keys() == layer_parameters.keys()
+
+        for status, names in statuses.items():
+            assert {name for name in names if public_parameters[name]["status"] == status} == names
+
+    hc00 = load_digital_definition("74HC00")["timing"]["timing_parameters"]["parameters"]
+    assert hc00["tPLH"]["values_ns"] == {"typ": 9, "max_25c": 18, "max_minus40_to_85c": 23}
+    assert hc00["tPHL"]["values_ns"] == hc00["tPLH"]["values_ns"]
+
+    hc04 = load_digital_definition("74HC04")["timing"]["timing_parameters"]["parameters"]
+    assert hc04["tPLH"]["values_ns"] == {"typ": 9, "max_25c": 19, "max_minus40_to_85c": 24}
+    assert hc04["tPHL"]["values_ns"] == hc04["tPLH"]["values_ns"]
+
+    hc161 = load_digital_definition("74HC161")["timing"]["timing_parameters"]["parameters"]
+    assert hc161["clock_to_q_high"]["values_ns"]["typ"]["vcc_4_5_v"] == 25
+    assert hc161["clock_to_q_low"]["values_ns"] == hc161["clock_to_q_high"]["values_ns"]
+    assert hc161["setup"]["values_ns"]["data_min"]["vcc_4_5_v"] == 30
+    assert hc161["hold"]["values_ns"]["min"]["vcc_4_5_v"] == 0
+    assert hc161["minimum_pulse_width"]["values_ns"]["clock_high_or_low_min"]["vcc_4_5_v"] == 16
+
+
 def test_virtual_and_passive_components_use_definition_packages():
     assert generic_package_parts() == {
         "InputSource",
@@ -1100,6 +1163,7 @@ def run_all():
     test_generation_seed_digital_packages_load_split_tests()
     test_generation_seed_packages_have_required_layers()
     test_physical_digital_definitions_omit_exact_duplicate_layers()
+    test_starter_chips_have_normalized_timing_parameters()
     test_python_chip_factory_delay_matches_public_timing_default()
     test_74hc245_split_tests_and_evidence_are_loaded()
     test_component_generation_artifacts_cover_declared_targets()

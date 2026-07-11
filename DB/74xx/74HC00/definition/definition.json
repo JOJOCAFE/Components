@@ -230,6 +230,74 @@
       },
       "part": "74HC00",
       "schema": "db.component.timing",
+      "timing_parameters": {
+        "basis": "normalized_from_existing_datasheet_timing",
+        "conditions": {
+          "load_pf": 50,
+          "path": "A_or_B_to_Y",
+          "vcc_v": 4.5
+        },
+        "parameters": {
+          "clock_to_q_high": {
+            "reason": "74HC00 is combinational and has no clocked Q output.",
+            "status": "not_applicable"
+          },
+          "clock_to_q_low": {
+            "reason": "74HC00 is combinational and has no clocked Q output.",
+            "status": "not_applicable"
+          },
+          "hold": {
+            "reason": "74HC00 is combinational and has no setup/hold timing requirement.",
+            "status": "not_applicable"
+          },
+          "minimum_pulse_width": {
+            "reason": "74HC00 is combinational and has no clock/reset/write pulse-width requirement.",
+            "status": "not_applicable"
+          },
+          "setup": {
+            "reason": "74HC00 is combinational and has no setup/hold timing requirement.",
+            "status": "not_applicable"
+          },
+          "tPLH": {
+            "note": "Existing local extraction has one A/B-to-Y propagation value; output polarity split is not extracted.",
+            "source_field": "definition_layers.timing.delay",
+            "status": "generic",
+            "values_ns": {
+              "max_25c": 18,
+              "max_minus40_to_85c": 23,
+              "typ": 9
+            }
+          },
+          "tPHL": {
+            "note": "Existing local extraction has one A/B-to-Y propagation value; output polarity split is not extracted.",
+            "source_field": "definition_layers.timing.delay",
+            "status": "generic",
+            "values_ns": {
+              "max_25c": 18,
+              "max_minus40_to_85c": 23,
+              "typ": 9
+            }
+          },
+          "tPHZ": {
+            "reason": "74HC00 has push-pull outputs and no output-enable/high-Z control.",
+            "status": "not_applicable"
+          },
+          "tPLZ": {
+            "reason": "74HC00 has push-pull outputs and no output-enable/high-Z control.",
+            "status": "not_applicable"
+          },
+          "tPZH": {
+            "reason": "74HC00 has push-pull outputs and no output-enable/high-Z control.",
+            "status": "not_applicable"
+          },
+          "tPZL": {
+            "reason": "74HC00 has push-pull outputs and no output-enable/high-Z control.",
+            "status": "not_applicable"
+          }
+        },
+        "schema": "db.component.timing_parameters",
+        "version": 1
+      },
       "version": 1
     }
   },
@@ -403,6 +471,74 @@
         }
       },
       "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "basis": "normalized_from_existing_datasheet_timing",
+      "conditions": {
+        "load_pf": 50,
+        "path": "A_or_B_to_Y",
+        "vcc_v": 4.5
+      },
+      "parameters": {
+        "clock_to_q_high": {
+          "reason": "74HC00 is combinational and has no clocked Q output.",
+          "status": "not_applicable"
+        },
+        "clock_to_q_low": {
+          "reason": "74HC00 is combinational and has no clocked Q output.",
+          "status": "not_applicable"
+        },
+        "hold": {
+          "reason": "74HC00 is combinational and has no setup/hold timing requirement.",
+          "status": "not_applicable"
+        },
+        "minimum_pulse_width": {
+          "reason": "74HC00 is combinational and has no clock/reset/write pulse-width requirement.",
+          "status": "not_applicable"
+        },
+        "setup": {
+          "reason": "74HC00 is combinational and has no setup/hold timing requirement.",
+          "status": "not_applicable"
+        },
+        "tPLH": {
+          "note": "Existing local extraction has one A/B-to-Y propagation value; output polarity split is not extracted.",
+          "source_field": "timing.datasheet",
+          "status": "generic",
+          "values_ns": {
+            "max_25c": 18,
+            "max_minus40_to_85c": 23,
+            "typ": 9
+          }
+        },
+        "tPHL": {
+          "note": "Existing local extraction has one A/B-to-Y propagation value; output polarity split is not extracted.",
+          "source_field": "timing.datasheet",
+          "status": "generic",
+          "values_ns": {
+            "max_25c": 18,
+            "max_minus40_to_85c": 23,
+            "typ": 9
+          }
+        },
+        "tPHZ": {
+          "reason": "74HC00 has push-pull outputs and no output-enable/high-Z control.",
+          "status": "not_applicable"
+        },
+        "tPLZ": {
+          "reason": "74HC00 has push-pull outputs and no output-enable/high-Z control.",
+          "status": "not_applicable"
+        },
+        "tPZH": {
+          "reason": "74HC00 has push-pull outputs and no output-enable/high-Z control.",
+          "status": "not_applicable"
+        },
+        "tPZL": {
+          "reason": "74HC00 has push-pull outputs and no output-enable/high-Z control.",
+          "status": "not_applicable"
+        }
+      },
+      "schema": "db.component.timing_parameters",
+      "version": 1
     }
   },
   "verification": {
