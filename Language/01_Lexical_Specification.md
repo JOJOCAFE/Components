@@ -19,14 +19,13 @@ Identifier = [A-Za-z_] [A-Za-z0-9_]*
 ```
 
 Examples are `LED`, `Counter`, `ROM`, `_RAM`, and `counter123`. Identifiers
-are case-sensitive. A pin spelling such as `/OE` is a quoted pin selector, not
-an identifier.
+are case-sensitive. A pin spelling such as `/OE` is a quoted pin selector if used after . or after pin name in part, circuit or system to refer to an active low pin, not an identifier. '/' still used as a path separator for folder/file and '//' for comments. In text strings, '/' is treated as a literal character.
 
 | Kind | Form | Examples |
 |---|---|---|
 | integer | decimal, `0x` hexadecimal, `0b` binary | `12`, `0xFF`, `0b0101` |
 | string | double quoted, JSON escapes | `"74HC245"`, `"/OE"` |
-| boolean | reserved literal | `true`, `false` |
+| boolean | reserved literal | TRUE`, `FALSE` | reserved constant use capital letters first (lowercase is optional)
 
 Numbers have no implicit time, voltage, or width unit. Unit-bearing values are
 typed properties in the resolved object model, never guessed from a bare token.
