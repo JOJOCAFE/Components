@@ -2,13 +2,55 @@
 
 Last updated: 2026-07-13
 
+> **Current authority.** This section supersedes the older RV8GR checkpoint
+> notes below when they disagree. The pushed `main` baseline is `de1438c Add
+> Component language text IDE foundation`. The shared worktree also contains
+> the next, uncommitted Component-runtime and student-documentation work; do
+> not describe it as pushed until its owner commits it. `Language.zip` is
+> user-owned and remains untracked/untouched.
+
+## Current Component Text Route
+
+- A human writes one readable `component:component` source. Components turns
+  it into AST, resolved topology, and result JSON for CLI/API/AI or a later
+  visual Board client. JSON is interchange, not a second source students must
+  edit.
+- The pushed foundation provides `component-parse`, `component-resolve`,
+  `component-validate`, and `component-ide`, plus AST/resolved golden fixtures.
+  The current shared worktree adds `component-student` and a bounded
+  `component-run` leaf digital-model path with declared beginner actions.
+- Start a 10–15-year-old learner with
+  `docs/COMPONENT_BUILD_NOT_GATE.md`. The learner view shows parts, explicit
+  wire count, observations, and named tests before showing full JSON.
+- A Component result is a digital-model result only. It does not create a
+  `component:board`, select physical placement/routing, bind Resources, prove
+  electrical safety, or sign off timing/speed on a breadboard.
+- The next implementation boundaries remain: broaden only the frozen leaf
+  parser/resolver contract, finish deterministic runtime traces and CLI/API
+  probe/export contracts, add text Resource inspection/binding, then let the
+  Board/editor consume—not alter—the resolved topology.
+
+## Resume Checks For This Lane
+
+```sh
+git status --short --branch
+PYTHONPATH=python python3 -B -m tests.test_component_language
+PYTHONPATH=python python3 -B -m chiplib.cli component-student \
+  Language/fixtures/component-v1.1/digital_inverter.component
+PYTHONPATH=python python3 -B -m chiplib.cli component-run \
+  Language/fixtures/component-v1.1/digital_inverter.component --test inversion
+python3 -B tools/check_language_spec.py
+git diff --check
+```
+
 ## Current State
 
 - Repo: `/home/jo/kiro/Components`
 - Branch: `main`
-- Base pushed state: `55d7eb3 Harden RV8GR composed control verification`
-- This handoff describes the compact-definition, Component-model, and RV8GR
-  software-closeout checkpoint that is ready to be committed and pushed.
+- Base pushed state: `de1438c Add Component language text IDE foundation`
+- The sections below preserve the prior compact-definition and RV8GR evidence
+  context. Consult the Current Component Text Route above for active language
+  and student-tool status.
 
 ## Active Verified Worktree
 

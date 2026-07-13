@@ -67,6 +67,33 @@ to ship, and Pim keeps the route visible.
   those mappings; Mint checks HDL alignment; Fern gates each promotion; Noon
   preserves the modeled-versus-physical student boundary.
 
+## Active Component Text, JSON, And Student Route: 2026-07-13
+
+The pushed base is `de1438c Add Component language text IDE foundation`.
+`component:component` is the readable authored model. AST, resolved topology,
+runtime results, Resource bindings, and later Board profiles are JSON contracts
+for machine clients (CLI/API/AI/editor); none replaces the readable Component
+source as electrical/topology authority.
+
+- **Pim + Noon:** keep the 10–15 learner route short: parts, explicit wires,
+  observations, one test, then diagnostics. Keep
+  `COMPONENT_BUILD_NOT_GATE.md`, `COMPONENT_TEXT_IDE.md`, task plan, and
+  handoff synchronized.
+- **Bam + Bank:** a runtime or client consumes validated resolved topology. It
+  never executes raw AST, invents a wire, or lets a Board/Resource change a
+  Device, net, pin, timing fact, or behavior.
+- **Fern:** golden AST/resolved/topology/runtime-trace contracts must be
+  deterministic and fail on drift. A bounded leaf digital-model pass is not
+  circuit-package promotion or physical evidence.
+- **Ohm + Mint:** review every exposed port/pin, power/clock edge, tri-state,
+  and timing statement. A student-facing success message must say what the
+  digital model proves and what real hardware still needs.
+
+`component-student` is the preferred first command. `component-run` may run
+only the supported bounded leaf digital-model actions. `component:board`,
+Resource binding commands, physical layout/routing, electrical safety, and
+breadboard timing signoff remain distinct work; never imply otherwise.
+
 ## Active RV8GR Software Differential-Hardening Lane: 2026-07-13
 
 The passing directed, opcode-control, and chip-level gates remain the baseline.

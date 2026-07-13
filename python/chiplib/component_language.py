@@ -22,6 +22,7 @@ from .db import load_component
 JsonMap = dict[str, Any]
 _ROOT = Path(__file__).resolve().parents[2]
 _HEADER = re.compile(r"component:component\s+([A-Za-z_][A-Za-z0-9_]*)\s+(?:is\s+([A-Za-z_][A-Za-z0-9_.]*))?\s*\{")
+_USE = re.compile(r"\buse\s+([A-Za-z_][A-Za-z0-9_.]*)(?:\s+as\s+([A-Za-z_][A-Za-z0-9_]*))?\s*;")
 _DEVICE = re.compile(r"device\s+([A-Za-z_][A-Za-z0-9_]*)\s*(?:is|,)\s*([A-Za-z_][A-Za-z0-9_.]*)(?:\s*,\s*(\{.*\}))?$")
 _NET = re.compile(r"net\s+([A-Za-z_][A-Za-z0-9_]*)\s*:\s*([A-Za-z_][A-Za-z0-9_]*)$")
 _BUS = re.compile(r"bus\s+([A-Za-z_][A-Za-z0-9_]*)\[(\d+)\]\s*:\s*([A-Za-z_][A-Za-z0-9_]*)$")
@@ -95,7 +96,7 @@ def parse_component_text(source: str, *, source_name: str = "<memory>") -> JsonM
         diagnostics.append(Diagnostic("parser.component_header", "expected 'component:component Name is profile {'", 1))
         return {"schema": "components.component-ast@1", "source": source_name, "ok": False, "uses": [], "component": None, "diagnostics": [d.as_dict() for d in diagnostics]}
     uses = []
-    for use in re.finditer(r"\buse\s+([A-Za-z_][A-Za-z0-9_.]*)\s+as\s+([A-Za-z_][A-Za-z0-9_]*)\s*;", clean):
+    for use in _USE.finditer(clean):
         uses.append({"kind": "use", "library": use.group(1), "alias": use.group(2), "span": {"line": _line(clean, use.start())}})
     statements, errors = _body_statements(clean, match.end())
     diagnostics.extend(errors)
@@ -170,6 +171,18 @@ def _endpoint(token: str, *, nets: dict[str, JsonMap], buses: dict[str, JsonMap]
     if device is None:
         diagnostics.append(Diagnostic("resolver.unknown_device", f"unknown Device instance {instance!r}", line))
         return None
+    # Quoted selectors keep punctuation-heavy, datasheet-authentic names such
+    # as ``RAM.\"/CE\"`` readable without inventing a safer-looking alias.
+    if selector.startswith('"'):
+        try:
+            decoded = json.loads(selector)
+        except json.JSONDecodeError:
+            diagnostics.append(Diagnostic("resolver.invalid_port_selector", f"invalid quoted port selector {selector!r}", line))
+            return None
+        if not isinstance(decoded, str):
+            diagnostics.append(Diagnostic("resolver.invalid_port_selector", f"quoted port selector must be a string: {selector!r}", line))
+            return None
+        selector = decoded
     pins = device["pins"]
     if selector.startswith("@"):
         try:
@@ -201,11 +214,39 @@ def resolve_component(ast: JsonMap) -> JsonMap:
     displays: list[JsonMap] = []
     connections: list[JsonMap] = []
     tests: list[JsonMap] = []
+    # Imports are part of the authored contract.  Do not treat the first
+    # locator segment as decorative text: a typo must not silently select a
+    # similarly named part from the local DB.
+    imports: dict[str, str] = {}
+    for use in ast.get("uses", []):
+        alias = use.get("alias")
+        library = use.get("library")
+        line = use.get("span", {}).get("line", 1)
+        if not alias or not library:
+            diagnostics.append(Diagnostic("resolver.import_alias_required", "leaf Components require 'use Library as alias;'", line))
+        elif alias in imports:
+            diagnostics.append(Diagnostic("resolver.duplicate_import_alias", f"duplicate import alias {alias!r}", line))
+        else:
+            imports[alias] = library
+
+    def _declare(name: str, category: str, line: int) -> bool:
+        """Keep the leaf Component's one local namespace unambiguous."""
+        if name in devices or name in nets or name in buses or any(item["id"] == name for item in observations):
+            diagnostics.append(Diagnostic("resolver.duplicate_symbol", f"duplicate {category} symbol {name!r}", line))
+            return False
+        if name in imports:
+            diagnostics.append(Diagnostic("resolver.local_shadows_import", f"{category} symbol {name!r} shadows import alias", line))
+            return False
+        return True
+
     for node in component["body"]:
         kind, line = node["kind"], node["span"]["line"]
         if kind == "device":
-            if node["name"] in devices:
-                diagnostics.append(Diagnostic("resolver.duplicate_symbol", f"duplicate Device instance {node['name']!r}", line)); continue
+            if not _declare(node["name"], "Device instance", line):
+                continue
+            locator_alias, separator, _ = node["locator"].partition(".")
+            if not separator or locator_alias not in imports:
+                diagnostics.append(Diagnostic("resolver.unknown_import_alias", f"Device locator {node['locator']!r} must start with a declared import alias", line)); continue
             part = _part(node["locator"])
             try:
                 definition = load_component(part)
@@ -231,21 +272,25 @@ def resolve_component(ast: JsonMap) -> JsonMap:
                 "provenance": {"source_span": node["span"], "resolved_definition": definition_path},
             }
         elif kind == "net":
-            if node["name"] in nets or node["name"] in buses:
-                diagnostics.append(Diagnostic("resolver.duplicate_symbol", f"duplicate net {node['name']!r}", line)); continue
+            if not _declare(node["name"], "net", line):
+                continue
             nets[node["name"]] = {"id": node["name"], "kind": node["signal_kind"]}
         elif kind == "bus":
-            if node["name"] in nets or node["name"] in buses:
-                diagnostics.append(Diagnostic("resolver.duplicate_symbol", f"duplicate bus {node['name']!r}", line)); continue
+            if not _declare(node["name"], "bus", line):
+                continue
+            if node["width"] < 1:
+                diagnostics.append(Diagnostic("validation.bus_width", f"bus {node['name']!r} must have width of at least 1", line)); continue
             buses[node["name"]] = {"id": node["name"], "width": node["width"], "kind": node["signal_kind"]}
             for bit in range(node["width"]):
                 nets[f"{node['name']}[{bit}]"] = {"id": f"{node['name']}[{bit}]", "kind": node["signal_kind"], "bus": node["name"], "bit": bit}
         elif kind in {"probe", "watch"}:
+            if not _declare(node["name"], kind, line):
+                continue
             observations.append({"id": node["name"], "target": node["target"], "read_only": True, "declared_as": kind})
         elif kind == "display":
             displays.append({"target": node["target"], "kind": node["display_kind"], "read_only": True})
         elif kind == "test":
-            tests.append({"id": node["name"], "bounded": True, "execution": "deferred-operation-runtime", "provenance": {"source_span": node["span"]}})
+            tests.append({"id": node["name"], "text": node["text"], "bounded": True, "execution": "bounded-component-runtime", "provenance": {"source_span": node["span"]}})
     for node in component["body"]:
         if node["kind"] != "connect":
             continue
@@ -253,7 +298,12 @@ def resolve_component(ast: JsonMap) -> JsonMap:
         source = _endpoint(node["source"], nets=nets, buses=buses, devices=devices, line=line, diagnostics=diagnostics)
         target = _endpoint(node["target"], nets=nets, buses=buses, devices=devices, line=line, diagnostics=diagnostics)
         if source and target:
-            connections.append({"from": node["source"], "to": node["target"], "source_endpoint": source, "target_endpoint": target, "provenance": {"source_span": node["span"]}})
+            if node["source"] == node["target"]:
+                diagnostics.append(Diagnostic("validation.self_connection", f"connection {node['source']!r} cannot target itself", line))
+            elif source["kind"] == target["kind"] == "net":
+                diagnostics.append(Diagnostic("validation.net_alias_unsupported", "leaf Components require a Device port on every connection; net aliases are not implicit wiring", line))
+            else:
+                connections.append({"from": node["source"], "to": node["target"], "source_endpoint": source, "target_endpoint": target, "provenance": {"source_span": node["span"]}})
     for observation in observations:
         # A probe/watch may observe an ordered bus as one read-only value.  A
         # connection may not use that shorthand because it would hide bit

@@ -71,6 +71,7 @@ def test_runtime_instantiates_resolved_inverter_and_reads_probe():
     runtime = ComponentRuntimeSession(resolved)
     runtime.drive("clock", 0)
     assert runtime.probe("inverted_level")["probes"]["inverted_level"] == 1
+    assert runtime.run_declared_test("inversion")["ok"] is True
 
 
 def test_checked_golden_pipeline_has_stable_spans_and_resolved_contract():
@@ -117,6 +118,62 @@ component:component Invalid is components.digital {
     assert {item["code"] for item in result["diagnostics"]} >= {"validation.power_isolation", "validation.output_ownership"}
 
 
+def test_leaf_resolver_requires_real_imports_and_a_single_local_namespace():
+    source = """
+use standard.digital as digital;
+use standard.virtual as digital;
+component:component Imports is components.digital {
+ device digital, digital.74HC04;
+ device U1, missing.74HC04;
+ net U1 : digital;
+ probe U1, U1;
+}
+"""
+    result = resolve_component(parse_component_text(source))
+    assert result["ok"] is False
+    assert {item["code"] for item in result["diagnostics"]} >= {
+        "resolver.duplicate_import_alias",
+        "resolver.local_shadows_import",
+        "resolver.unknown_import_alias",
+        "resolver.duplicate_symbol",
+    }
+
+
+def test_leaf_resolver_rejects_zero_width_self_wiring_and_net_aliases():
+    source = """
+use standard.digital as digital;
+component:component Unsafe is components.digital {
+ device U1, digital.74HC04;
+ bus empty[0] : digital;
+ net a : digital;
+ net b : digital;
+ connect a -> a;
+ connect a -> b;
+}
+"""
+    result = resolve_component(parse_component_text(source))
+    assert result["ok"] is False
+    assert {item["code"] for item in result["diagnostics"]} >= {
+        "validation.bus_width",
+        "validation.self_connection",
+        "validation.net_alias_unsupported",
+    }
+
+
+def test_leaf_resolver_keeps_quoted_datasheet_port_names_exact():
+    source = '''
+use standard.memory as memory;
+component:component MemoryPin is components.digital {
+ device RAM, memory.62256;
+ net chip_enable : digital;
+ connect chip_enable -> RAM."/CE";
+}
+'''
+    result = resolve_component(parse_component_text(source))
+    assert result["ok"], result["diagnostics"]
+    assert result["edges"][0]["target_endpoint"]["port"] == "/CE"
+
+
 def main() -> None:
     test_counter_fixture_has_ast_to_resolved_topology_pipeline()
     test_text_ide_snapshot_is_parse_resolve_validate_not_runtime()
@@ -126,6 +183,9 @@ def main() -> None:
     test_checked_golden_pipeline_has_stable_spans_and_resolved_contract()
     test_resolved_cli_is_hash_seed_deterministic()
     test_leaf_validation_rejects_power_misuse_and_multiple_outputs()
+    test_leaf_resolver_requires_real_imports_and_a_single_local_namespace()
+    test_leaf_resolver_rejects_zero_width_self_wiring_and_net_aliases()
+    test_leaf_resolver_keeps_quoted_datasheet_port_names_exact()
     print("Components Component-language tests passed")
 
 

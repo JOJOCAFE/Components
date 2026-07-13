@@ -9,6 +9,9 @@ import sys
 from typing import Any
 
 from .services import CONTRACT, CircuitCommandService, CircuitSessionRegistry, FrontendDesignService, headless_capabilities, project_builder_workflow
+from .component_language import parse_component_text, resolve_component
+from .component_runtime import ComponentRuntimeError, ComponentRuntimeSession
+from .component_transport import board_view
 
 
 JsonMap = dict[str, Any]
@@ -76,6 +79,23 @@ def handle_request(
             return circuit_service.export_evidence(response, include_traces=bool(options.get("include_traces", input_data.get("include_traces", False))))
         if command in {"headless-capabilities", "ai-capabilities"}:
             return _ok(command, headless_capabilities())
+        if command in {"component-language-parse", "component-language-resolve", "component-language-board-view", "component-language-run", "component-language-student"}:
+            source = input_data.get("source")
+            if not isinstance(source, str):
+                raise ValueError("input.source must be readable component:component text")
+            ast = parse_component_text(source, source_name=str(input_data.get("source_name", "<api>")))
+            resolved = resolve_component(ast)
+            if command == "component-language-parse": return _ok(command, ast)
+            if command == "component-language-resolve": return _ok(command, resolved)
+            if command == "component-language-board-view": return _ok(command, board_view(resolved))
+            if command == "component-language-student":
+                return _ok(command, {"format": "components.component-student@1", "component": resolved.get("component_id"), "parts": [{"name": item["id"], "part": item["part"]} for item in resolved.get("instances", [])], "wires": len(resolved.get("edges", [])), "tests": [item["id"] for item in resolved.get("tests", [])], "diagnostics": resolved.get("diagnostics", [])})
+            try:
+                runtime = ComponentRuntimeSession(resolved)
+                test = options.get("test")
+                return _ok(command, {"runtime": runtime.snapshot(), "test": runtime.run_declared_test(str(test)) if test else None, "probes": runtime.probe()})
+            except ComponentRuntimeError as exc:
+                return _error(command, "component.runtime_blocked", str(exc))
         if command in {"project-builder", "ai-project-builder"}:
             part = options.get("part", input_data.get("part"))
             goal = options.get("goal", input_data.get("goal"))

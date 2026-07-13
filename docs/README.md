@@ -7,6 +7,8 @@ documentation lives here.
 ## Start Here
 
 - `STUDENT_GUIDE.md` - beginner-first CLI/API path for students.
+- `COMPONENT_BUILD_NOT_GATE.md` - first text Component lesson: read, run, and
+  explain one NOT gate without a Board.
 - `CHIP_STATUS.md` - 74xx/memory status baseline used by DB status checks.
 - `SESSION_HANDOFF.md` - latest work state, verification, and next lanes.
 - `TEAM_SKILLS.md` - compact Components team routing and quality-gate contract.
@@ -42,9 +44,10 @@ recorded in the task plan and campaign reports.
 ## Component Text IDE
 
 [`COMPONENT_TEXT_IDE.md`](COMPONENT_TEXT_IDE.md) documents the text-first
-`component:component` CLI.  It parses and resolves Component fixtures against
-the active library before any Board or visual editor exists; runtime execution
-of newly authored Component topology remains deferred.
+`component:component` CLI. It parses and resolves Component fixtures against
+the active library before any Board or visual editor exists. The supported leaf
+digital-model subset can run its bounded declared tests; Board editing,
+Resource commands, and physical claims remain separate.
 
 - [`COMPONENT_PROGRAM_TASKS.md`](COMPONENT_PROGRAM_TASKS.md) - delivery order
   and owned acceptance gates from the text IDE through Runtime, Resources, and

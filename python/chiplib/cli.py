@@ -13,6 +13,7 @@ from .services import CircuitCommandService, DesignCommandService, headless_capa
 from .virtual_faults import load_circuit_fault_report
 from .component_language import component_ide_snapshot, parse_component_file, resolve_component
 from .component_runtime import ComponentRuntimeError, ComponentRuntimeSession
+from .component_resources import bind_resource, inspect_resource
 
 
 def main(argv: list[str] | None = None, *, design_service: DesignCommandService | None = None) -> int:
@@ -35,7 +36,21 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     component_run.add_argument("component_file")
     component_run.add_argument("--drive", action="append", default=[], help="target=value; repeat for several explicit operation drivers")
     component_run.add_argument("--probe", help="one probe/watch name; omit for all")
+    component_run.add_argument("--test", help="run one declared beginner test")
     component_run.add_argument("-o", "--output")
+    component_student = sub.add_parser("component-student", help="show a short learner-friendly Component summary")
+    component_student.add_argument("component_file")
+    component_student.add_argument("-o", "--output")
+    resource_inspect = sub.add_parser("component-resource-inspect", help="show a presentation Resource without changing a Device")
+    resource_inspect.add_argument("part", help="component part, such as 74HC04")
+    resource_inspect.add_argument("-o", "--output")
+    resource_bind = sub.add_parser("component-resource-bind", help="create presentation-only Resource binding JSON for one resolved Device")
+    resource_bind.add_argument("component_file")
+    resource_bind.add_argument("--target", required=True, help="existing Device instance ID, such as U1")
+    resource_bind.add_argument("--resource", required=True, help="matching library part, such as 74HC04")
+    resource_bind.add_argument("--view", required=True, help="declared Resource view, such as dip")
+    resource_bind.add_argument("--label", help="optional student-facing label")
+    resource_bind.add_argument("-o", "--output")
 
     for name in ("circuit-validate", "circuit-run", "circuit-step", "circuit-probe", "timed-run"):
         cmd = sub.add_parser(name)
@@ -115,10 +130,31 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
             for operation in args.drive:
                 if "=" not in operation: raise ComponentRuntimeError("--drive must be target=value")
                 target, value = operation.split("=", 1); runtime.drive(target.strip(), value.strip())
-            data = {"ok": True, "runtime": runtime.snapshot(), "probe": runtime.probe(args.probe)}
+            test = runtime.run_declared_test(args.test) if args.test else None
+            data = {"ok": True, "runtime": runtime.snapshot(), "probe": runtime.probe(args.probe), "test": test}
             return write_json(data, output=args.output)
         except ComponentRuntimeError as exc:
             return write_json({"ok": False, "diagnostics": [{"code": "runtime.blocked", "message": str(exc)}]}, output=args.output, status=2)
+    if args.command == "component-student":
+        resolved = resolve_component(parse_component_file(args.component_file))
+        data = {
+            "format": "components.component-student@1", "ok": bool(resolved.get("ok")),
+            "component": resolved.get("component_id"),
+            "parts": [{"name": item["id"], "part": item["part"]} for item in resolved.get("instances", [])],
+            "wires": len(resolved.get("edges", [])), "things_to_watch": [item["id"] for item in resolved.get("observations", [])],
+            "try_tests": [item["id"] for item in resolved.get("tests", [])],
+            "message": "A Component is a small machine. Read the parts, follow each named wire, then run one test.",
+            "safety": "A passing simulation helps you learn logic. It does not prove breadboard wiring, voltage, or speed.",
+            "diagnostics": resolved.get("diagnostics", []),
+        }
+        return write_json(data, output=args.output, status=0 if data["ok"] else 2)
+    if args.command == "component-resource-inspect":
+        data = inspect_resource(args.part)
+        return write_json(data, output=args.output, status=0 if data["ok"] else 2)
+    if args.command == "component-resource-bind":
+        resolved = resolve_component(parse_component_file(args.component_file))
+        data = bind_resource(resolved, target_id=args.target, part=args.resource, view=args.view, label=args.label)
+        return write_json(data, output=args.output, status=0 if data["ok"] else 2)
     if args.command == "project-builder":
         return write_json(
             project_builder_workflow(part=getattr(args, "part", None), goal=getattr(args, "goal", None)),

@@ -87,7 +87,8 @@ active-low meaning, or hardware-ready claims.
 For a first student session, do not read every reference document. Do this
 short path:
 
-1. Run the NAND example.
+1. Build and run the text NOT-gate lesson:
+   [`COMPONENT_BUILD_NOT_GATE.md`](COMPONENT_BUILD_NOT_GATE.md).
 2. Look up one chip in the student catalog.
 3. Read one circuit proof card only if it matches what you are building.
 4. Ask a teacher before changing real wiring, power, or clock speed.
@@ -95,6 +96,27 @@ short path:
 Stop the real build if a chip is hot, the supply current is unexpected, a bus
 conflict appears, or two outputs are connected together without a bus-owner
 rule.
+
+## Read and Run a Text Component
+
+A `component:component` file is the human-readable source for one small
+machine. Components wraps its AST, resolved topology, and run result in JSON
+so the CLI, an API/AI client, and a later Board editor can exchange the same
+machine facts. Students normally read and edit the `.component` text, not the
+generated JSON.
+
+Start with the NOT-gate lesson:
+
+```sh
+PYTHONPATH=python python3 -B -m chiplib.cli component-student \
+  Language/fixtures/component-v1.1/digital_inverter.component
+PYTHONPATH=python python3 -B -m chiplib.cli component-run \
+  Language/fixtures/component-v1.1/digital_inverter.component --test inversion
+```
+
+`component-student` shows parts, wires, things to watch, and a suggested test.
+`component-run` runs only the supported bounded digital-model actions. A pass
+does not make a Board, choose breadboard wires, or prove a physical build.
 
 ## Look Up Components
 

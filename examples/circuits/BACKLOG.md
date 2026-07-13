@@ -1,7 +1,32 @@
 # Circuit Library Backlog
 
-Last reconciled: 2026-07-11 against the current worktree; last pushed baseline
-was commit `8a0de62`.
+Last reconciled: 2026-07-13; pushed Components baseline is
+`de1438c Add Component language text IDE foundation`.
+
+## Component Language And Learner Runtime
+
+This section is separate from the RV8GR circuit-runner promotion lane below.
+The author-facing source is readable `component:component` text. AST, resolved
+topology, runtime results, Resource bindings, and future Board profiles are
+machine-readable JSON interchange for the CLI, API/AI clients, and visual
+clients. Generated JSON is not a second authored circuit source.
+
+- **Completed/pushed:** text parse, resolve, validate, IDE snapshot, and
+  checked AST/resolved golden contracts.
+- **Current shared-worktree slice:** learner summary and bounded leaf
+  digital-model test execution for the inverter fixture. It is not a general
+  circuit-runner replacement and is not a physical claim.
+- **Next:** frozen leaf parser/resolver coverage; deterministic runtime traces,
+  declared-test limits, and probe/trace CLI/API; text Resource inspect/bind;
+  then Board/editor round-trip over the same resolved Component.
+- **Student route:** `docs/COMPONENT_BUILD_NOT_GATE.md` begins with named
+  parts, wires, probes, and one test. Do not require a student to read AST or
+  JSON before they can explain the signal path.
+
+The authoritative task order and acceptance gates are in
+[`docs/COMPONENT_PROGRAM_TASKS.md`](../../docs/COMPONENT_PROGRAM_TASKS.md).
+Board/Resource work must not create topology, alter Device truth, or bypass
+resolver diagnostics.
 
 ## Active Circuit Runner Work
 
