@@ -1,0 +1,14 @@
+{
+  "component": {
+    "body": [
+      {"kind": "title", "span": {"end_line": 4, "line": 4}, "value": "Golden leaf parser contract"},
+      {"kind": "device", "locator": "digital.74HC04", "name": "U1", "parameters": {}, "span": {"end_line": 5, "line": 5}},
+      {"kind": "net", "name": "observed", "signal_kind": "digital", "span": {"end_line": 6, "line": 6}},
+      {"kind": "probe", "name": "output", "span": {"end_line": 7, "line": 7}, "target": "observed"},
+      {"display_kind": "value", "kind": "display", "options": {"label": "unwired observation"}, "span": {"end_line": 8, "line": 8}, "target": "output"}
+    ],
+    "kind": "component", "name": "GoldenLeaf", "profile": "components.digital", "span": {"end_line": 3, "line": 3}
+  },
+  "diagnostics": [], "ok": true, "schema": "components.component-ast@1", "source": "golden_leaf.component",
+  "uses": [{"alias": "digital", "kind": "use", "library": "standard.digital", "span": {"line": 1}}]
+}

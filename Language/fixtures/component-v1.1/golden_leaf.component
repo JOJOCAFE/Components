@@ -1,0 +1,9 @@
+use standard.digital as digital;
+
+component:component GoldenLeaf is components.digital {
+  title "Golden leaf parser contract";
+  device U1, digital.74HC04;
+  net observed : digital;
+  probe output, observed;
+  display output as value, { "label": "unwired observation" };
+}

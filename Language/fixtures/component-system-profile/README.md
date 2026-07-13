@@ -9,6 +9,10 @@ the required ownership split: Component has all machine-composition facts;
 unpublished child interfaces, missing Devices, Operation execution, Board,
 and physical signoff remain explicit deferred work.
 
+Component is the source-shaped machine; Components is the library/runtime host
+it will resolve against.  This fixture cannot claim that the complete machine
+runs until child interfaces and the Components Runtime are implemented.
+
 Run from the repository root:
 
 ```bash

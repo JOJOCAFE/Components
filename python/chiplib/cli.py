@@ -11,6 +11,8 @@ from typing import Any
 from .db import audit_db, component_catalog, component_detail, component_summary, db_status_report, generate_component_artifacts, load_component, load_component_package, load_digital_definition, student_component_catalog
 from .services import CircuitCommandService, DesignCommandService, headless_capabilities, project_builder_workflow
 from .virtual_faults import load_circuit_fault_report
+from .component_language import component_ide_snapshot, parse_component_file, resolve_component
+from .component_runtime import ComponentRuntimeError, ComponentRuntimeSession
 
 
 def main(argv: list[str] | None = None, *, design_service: DesignCommandService | None = None) -> int:
@@ -24,6 +26,16 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
             cmd.add_argument("--steps", default="all", help="'all' or 'none'")
         if name in ("export-json", "export-block-ui", "import-block-ui"):
             cmd.add_argument("-o", "--output")
+
+    for name in ("component-parse", "component-resolve", "component-validate", "component-ide"):
+        cmd = sub.add_parser(name, help="parse/resolve a text component:component source file")
+        cmd.add_argument("component_file")
+        cmd.add_argument("-o", "--output")
+    component_run = sub.add_parser("component-run", help="instantiate a validated leaf Component in the digital model")
+    component_run.add_argument("component_file")
+    component_run.add_argument("--drive", action="append", default=[], help="target=value; repeat for several explicit operation drivers")
+    component_run.add_argument("--probe", help="one probe/watch name; omit for all")
+    component_run.add_argument("-o", "--output")
 
     for name in ("circuit-validate", "circuit-run", "circuit-step", "circuit-probe", "timed-run"):
         cmd = sub.add_parser(name)
@@ -87,6 +99,26 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
 
     if args.command == "headless":
         return write_json(headless_capabilities(), output=getattr(args, "output", None))
+    if args.command == "component-parse":
+        data = parse_component_file(args.component_file)
+        return write_json(data, output=args.output, status=0 if data["ok"] else 2)
+    if args.command in {"component-resolve", "component-validate"}:
+        data = resolve_component(parse_component_file(args.component_file))
+        return write_json(data, output=args.output, status=0 if data["ok"] else 2)
+    if args.command == "component-ide":
+        data = component_ide_snapshot(args.component_file)
+        return write_json(data, output=args.output, status=0 if data["ok"] else 2)
+    if args.command == "component-run":
+        resolved = resolve_component(parse_component_file(args.component_file))
+        try:
+            runtime = ComponentRuntimeSession(resolved)
+            for operation in args.drive:
+                if "=" not in operation: raise ComponentRuntimeError("--drive must be target=value")
+                target, value = operation.split("=", 1); runtime.drive(target.strip(), value.strip())
+            data = {"ok": True, "runtime": runtime.snapshot(), "probe": runtime.probe(args.probe)}
+            return write_json(data, output=args.output)
+        except ComponentRuntimeError as exc:
+            return write_json({"ok": False, "diagnostics": [{"code": "runtime.blocked", "message": str(exc)}]}, output=args.output, status=2)
     if args.command == "project-builder":
         return write_json(
             project_builder_workflow(part=getattr(args, "part", None), goal=getattr(args, "goal", None)),

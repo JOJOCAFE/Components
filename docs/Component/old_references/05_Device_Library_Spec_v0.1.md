@@ -889,7 +889,7 @@ Example:
     {
       "type": "datasheet",
       "vendor": "Texas Instruments",
-      "file": "Source/74HC161_TI_SN74HC161.pdf",
+      "file": "source/74HC161_TI_SN74HC161.pdf",
       "verified": true
     }
   ]

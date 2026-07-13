@@ -15,17 +15,17 @@ matching field was found.
 
 | Parameter | Meaning | Exact | Generic | Not Applicable | Missing |
 |---|---|---:|---:|---:|---:|
-| tPLH | input/output propagation delay for output LOW-to-HIGH | 68 | 2 | 0 | 0 |
-| tPHL | input/output propagation delay for output HIGH-to-LOW | 68 | 2 | 0 | 0 |
-| tPZH | output enable from high-Z to HIGH | 19 | 0 | 51 | 0 |
-| tPZL | output enable from high-Z to LOW | 20 | 0 | 50 | 0 |
-| tPHZ | output disable from HIGH to high-Z | 19 | 0 | 51 | 0 |
-| tPLZ | output disable from LOW to high-Z | 20 | 0 | 50 | 0 |
-| clock-to-Q high | clock edge to Q HIGH | 16 | 1 | 53 | 0 |
-| clock-to-Q low | clock edge to Q LOW | 16 | 1 | 53 | 0 |
-| setup | input setup time before active clock/control edge | 23 | 0 | 47 | 0 |
-| hold | input hold time after active clock/control edge | 23 | 0 | 47 | 0 |
-| minimum pulse width | minimum clock, reset, write, or control pulse width | 23 | 0 | 47 | 0 |
+| tPLH | input/output propagation delay for output LOW-to-HIGH | 61 | 2 | 0 | 0 |
+| tPHL | input/output propagation delay for output HIGH-to-LOW | 61 | 2 | 0 | 0 |
+| tPZH | output enable from high-Z to HIGH | 16 | 0 | 47 | 0 |
+| tPZL | output enable from high-Z to LOW | 17 | 0 | 46 | 0 |
+| tPHZ | output disable from HIGH to high-Z | 16 | 0 | 47 | 0 |
+| tPLZ | output disable from LOW to high-Z | 17 | 0 | 46 | 0 |
+| clock-to-Q high | clock edge to Q HIGH | 14 | 1 | 48 | 0 |
+| clock-to-Q low | clock edge to Q LOW | 14 | 1 | 48 | 0 |
+| setup | input setup time before active clock/control edge | 19 | 0 | 44 | 0 |
+| hold | input hold time after active clock/control edge | 19 | 0 | 44 | 0 |
+| minimum pulse width | minimum clock, reset, write, or control pulse width | 20 | 0 | 43 | 0 |
 
 ## Current Finding
 
@@ -41,10 +41,8 @@ matching field was found.
 
 | Part | Group | tPLH | tPHL | tPZH | tPZL | tPHZ | tPLZ | clock-to-Q high | clock-to-Q low | setup | hold | minimum pulse width |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 74HC00 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC02 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC03 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
-| 74HC04 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC05 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC07 | 74xx | generic | generic | not_applicable | exact | not_applicable | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC08 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
@@ -60,10 +58,8 @@ matching field was found.
 | 74HC153 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC154 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC155 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
-| 74HC157 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC158 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC160 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
-| 74HC161 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
 | 74HC162 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
 | 74HC163 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
 | 74HC164 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
@@ -75,7 +71,6 @@ matching field was found.
 | 74HC238 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC240 | 74xx | exact | exact | exact | exact | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC244 | 74xx | exact | exact | exact | exact | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
-| 74HC245 | 74xx | exact | exact | exact | exact | exact | exact | not_applicable | not_applicable | exact | exact | not_applicable |
 | 74HC251 | 74xx | exact | exact | exact | exact | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC257 | 74xx | exact | exact | exact | exact | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
 | 74HC266 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
@@ -93,7 +88,6 @@ matching field was found.
 | 74HC4520 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | exact | exact | exact | exact | exact |
 | 74HC4538 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | exact |
 | 74HC541 | 74xx | exact | exact | exact | exact | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
-| 74HC574 | 74xx | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact |
 | 74HC593 | 74xx | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact |
 | 74HC595 | 74xx | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact |
 | 74HC688 | 74xx | exact | exact | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable | not_applicable |
@@ -108,6 +102,5 @@ matching field was found.
 | 74HCT574 | 74xx | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact | exact |
 | 62256 | memory | exact | exact | exact | exact | exact | exact | not_applicable | not_applicable | exact | exact | exact |
 | AS6C62256 | memory | exact | exact | exact | exact | exact | exact | not_applicable | not_applicable | exact | exact | exact |
-| AT28C256 | memory | exact | exact | exact | exact | exact | exact | not_applicable | not_applicable | exact | exact | exact |
 | CY7C199 | memory | exact | exact | exact | exact | exact | exact | not_applicable | not_applicable | exact | exact | exact |
 | SST39SF010A | memory | exact | exact | exact | exact | exact | exact | not_applicable | not_applicable | exact | exact | exact |

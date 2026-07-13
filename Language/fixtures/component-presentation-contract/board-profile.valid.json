@@ -1,0 +1,29 @@
+{
+  "schema": "components.board-profile@1",
+  "version": 1,
+  "topology_ref": {
+    "component_id": "digital-inverter",
+    "schema": "components.resolved-component@1",
+    "digest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  },
+  "resource_bindings": ["U1-dip", "inverted-led"],
+  "placements": [
+    {"target": {"kind": "device-instance", "id": "U1"}, "position": {"x": 100, "y": 60}, "rotation": 0},
+    {"target": {"kind": "probe", "id": "inverted_level"}, "position": {"x": 220, "y": 60}}
+  ],
+  "routes": [
+    {"edge_id": "edge:U1.1Y->Observe.IN", "points": [{"x": 160, "y": 60}, {"x": 220, "y": 60}]}
+  ],
+  "widgets": [
+    {"target": {"kind": "probe", "id": "inverted_level"}, "kind": "led", "read_only": true}
+  ],
+  "physical_captures": [
+    {
+      "id": "breadboard-photo",
+      "artifact": "evidence/digital-inverter-breadboard-photo.png",
+      "scope": "physical-observation",
+      "status": "not-signoff"
+    }
+  ],
+  "view": {"title": "Digital inverter teaching view", "theme": "light"}
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "components.resolved-component@1",
+  "type": "object",
+  "required": ["schema", "schema_version", "ok", "component_id", "library_lock", "instances", "nets", "buses", "edges", "diagnostics", "provenance"],
+  "properties": {
+    "schema": {"const": "components.resolved-component@1"},
+    "schema_version": {"const": 1},
+    "library_lock": {"type": "array", "items": {"type": "object", "required": ["instance", "locator", "resolved_definition", "definition_digest"]}},
+    "instances": {"type": "array", "items": {"type": "object", "required": ["id", "part", "locator", "definition_path", "definition_digest", "provenance"]}},
+    "edges": {"type": "array", "items": {"type": "object", "required": ["from", "to", "source_endpoint", "target_endpoint", "provenance"]}},
+    "provenance": {"type": "object"}
+  }
+}

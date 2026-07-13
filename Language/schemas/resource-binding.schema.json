@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jojocafe.github.io/Components/Language/schemas/resource-binding.schema.json",
+  "title": "Components Resource binding",
+  "$comment": "Presentation-only. This closed shape intentionally excludes Device truth, timing, behavior, and Component topology.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "topology_ref", "bindings"],
+  "properties": {
+    "schema": {"const": "components.resource-binding@1"},
+    "version": {"const": 1},
+    "topology_ref": {"$ref": "#/$defs/topology_ref"},
+    "bindings": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/binding"}
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1},
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "topology_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component_id", "schema", "digest"],
+      "properties": {
+        "component_id": {"$ref": "#/$defs/id"},
+        "schema": {"const": "components.resolved-component@1"},
+        "digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "target", "resource"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "id"],
+          "properties": {
+            "kind": {"enum": ["device-instance", "probe", "display"]},
+            "id": {"$ref": "#/$defs/id"}
+          }
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "digest", "view"],
+          "properties": {
+            "id": {"$ref": "#/$defs/id"},
+            "digest": {"$ref": "#/$defs/digest"},
+            "view": {"$ref": "#/$defs/id"}
+          }
+        },
+        "presentation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "label": {"type": "string"},
+            "symbol": {"type": "string"},
+            "display_kind": {"enum": ["label", "value", "led", "scope"]},
+            "package": {"type": "string"}
+          }
+        }
+      }
+    }
+  }
+}

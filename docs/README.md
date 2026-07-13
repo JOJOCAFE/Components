@@ -39,6 +39,17 @@ promoted as verified.
 broader package execution, and physical evidence remain staged or blocked as
 recorded in the task plan and campaign reports.
 
+## Component Text IDE
+
+[`COMPONENT_TEXT_IDE.md`](COMPONENT_TEXT_IDE.md) documents the text-first
+`component:component` CLI.  It parses and resolves Component fixtures against
+the active library before any Board or visual editor exists; runtime execution
+of newly authored Component topology remains deferred.
+
+- [`COMPONENT_PROGRAM_TASKS.md`](COMPONENT_PROGRAM_TASKS.md) - delivery order
+  and owned acceptance gates from the text IDE through Runtime, Resources, and
+  the deferred `component:board` editor.
+
 - [`CIRCUIT_RUNNER_ARCHITECTURE.md`](CIRCUIT_RUNNER_ARCHITECTURE.md) - net,
   timing, execution, and future interface architecture.
 - [`CIRCUIT_RUNNER_STUDENT_CONTRACT.md`](CIRCUIT_RUNNER_STUDENT_CONTRACT.md) -

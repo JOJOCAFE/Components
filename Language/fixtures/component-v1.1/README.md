@@ -5,6 +5,10 @@ These are deliberately small, machine-readable fixtures for the proposal in
 They are not a parser implementation and they do not add a second editable
 Device definition format.
 
+In this documentation, **Component** means the authored machine and
+**Components** means the library it resolves against.  These fixtures prove
+resolution/topology facts only: they do not yet run on a Components Runtime.
+
 Each positive case has:
 
 - a readable proposed Component source (`*.component`);

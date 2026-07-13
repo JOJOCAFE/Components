@@ -1,0 +1,37 @@
+{
+  "schema": "components.presentation-negative-ownership@1",
+  "resource_cases": [
+    {
+      "id": "resource-cannot-change-device-behavior",
+      "candidate": {"id": "U1", "target": {"kind": "device-instance", "id": "U1"}, "resource": {"id": "r", "digest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", "view": "dip"}, "behavior": {"kind": "nand"}},
+      "expected_diagnostic": "E_RESOURCE_OWNERSHIP"
+    },
+    {
+      "id": "resource-cannot-change-pin-truth",
+      "candidate": {"id": "U1", "target": {"kind": "device-instance", "id": "U1"}, "resource": {"id": "r", "digest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", "view": "dip"}, "pins": [{"name": "1A"}]},
+      "expected_diagnostic": "E_RESOURCE_OWNERSHIP"
+    },
+    {
+      "id": "resource-cannot-change-timing-or-topology",
+      "candidate": {"id": "U1", "target": {"kind": "device-instance", "id": "U1"}, "resource": {"id": "r", "digest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", "view": "dip"}, "timing": {"delay": "0ns"}},
+      "expected_diagnostic": "E_RESOURCE_OWNERSHIP"
+    }
+  ],
+  "board_cases": [
+    {
+      "id": "board-cannot-create-device",
+      "candidate": {"schema": "components.board-profile@1", "version": 1, "topology_ref": {"component_id": "x", "schema": "components.resolved-component@1", "digest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}, "resource_bindings": [], "placements": [], "routes": [], "widgets": [], "physical_captures": [], "instances": [{"id": "U2"}]},
+      "expected_diagnostic": "E_BOARD_OWNERSHIP"
+    },
+    {
+      "id": "board-cannot-add-hidden-net",
+      "candidate": {"schema": "components.board-profile@1", "version": 1, "topology_ref": {"component_id": "x", "schema": "components.resolved-component@1", "digest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}, "resource_bindings": [], "placements": [], "routes": [], "widgets": [], "physical_captures": [], "nets": [{"id": "secret"}]},
+      "expected_diagnostic": "E_BOARD_OWNERSHIP"
+    },
+    {
+      "id": "board-cannot-supply-behavior",
+      "candidate": {"schema": "components.board-profile@1", "version": 1, "topology_ref": {"component_id": "x", "schema": "components.resolved-component@1", "digest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}, "resource_bindings": [], "placements": [], "routes": [], "widgets": [], "physical_captures": [], "behavior": {"U1": "inverter"}},
+      "expected_diagnostic": "E_BOARD_OWNERSHIP"
+    }
+  ]
+}

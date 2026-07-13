@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jojocafe.github.io/Components/Language/schemas/board-profile.schema.json",
+  "title": "Components deferred Board profile",
+  "$comment": "Presentation and evidence references only. This closed shape intentionally excludes Device behavior and hidden topology.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "topology_ref", "resource_bindings", "placements", "routes", "widgets", "physical_captures"],
+  "properties": {
+    "schema": {"const": "components.board-profile@1"},
+    "version": {"const": 1},
+    "topology_ref": {"$ref": "#/$defs/topology_ref"},
+    "resource_bindings": {"type": "array", "items": {"$ref": "#/$defs/id"}},
+    "placements": {"type": "array", "items": {"$ref": "#/$defs/placement"}},
+    "routes": {"type": "array", "items": {"$ref": "#/$defs/route"}},
+    "widgets": {"type": "array", "items": {"$ref": "#/$defs/widget"}},
+    "physical_captures": {"type": "array", "items": {"$ref": "#/$defs/capture"}},
+    "view": {"$ref": "#/$defs/view"}
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1},
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "topology_ref": {
+      "type": "object", "additionalProperties": false,
+      "required": ["component_id", "schema", "digest"],
+      "properties": {
+        "component_id": {"$ref": "#/$defs/id"},
+        "schema": {"const": "components.resolved-component@1"},
+        "digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": {"enum": ["device-instance", "boundary-port", "probe", "display"]},
+        "id": {"$ref": "#/$defs/id"}
+      }
+    },
+    "point": {
+      "type": "object", "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": {"x": {"type": "number"}, "y": {"type": "number"}}
+    },
+    "placement": {
+      "type": "object", "additionalProperties": false,
+      "required": ["target", "position"],
+      "properties": {"target": {"$ref": "#/$defs/target"}, "position": {"$ref": "#/$defs/point"}, "rotation": {"type": "number"}}
+    },
+    "route": {
+      "type": "object", "additionalProperties": false,
+      "required": ["edge_id", "points"],
+      "properties": {"edge_id": {"$ref": "#/$defs/id"}, "points": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/point"}}}
+    },
+    "widget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["target", "kind", "read_only"],
+      "properties": {"target": {"$ref": "#/$defs/target"}, "kind": {"enum": ["label", "value", "led", "scope"]}, "read_only": {"const": true}}
+    },
+    "capture": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "artifact", "scope", "status"],
+      "properties": {"id": {"$ref": "#/$defs/id"}, "artifact": {"type": "string", "minLength": 1}, "scope": {"enum": ["physical-observation", "physical-measurement"]}, "status": {"enum": ["recorded", "unverified", "not-signoff"]}}
+    },
+    "view": {
+      "type": "object", "additionalProperties": false,
+      "properties": {"title": {"type": "string"}, "theme": {"type": "string"}}
+    }
+  }
+}

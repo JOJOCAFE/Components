@@ -69,5 +69,5 @@ rising-edge behavior, terminal-count meaning, and timing remain Device-owned.
 `AT28C256` is the active asynchronous-memory Device source. It validates as
 `db.component.memory.compact` with `memory.async@0.2`, rather than being
 authored as a generic digital part. The compatibility resolver emits the legacy
-digital runtime record required by current DB/Python/Verilog consumers; that is
+digital runtime record required by current database/Python/verilog consumers; that is
 a runtime adapter, not a Device-class claim.

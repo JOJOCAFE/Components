@@ -1,0 +1,12 @@
+{
+  "buses": [], "component_id": "GoldenLeaf", "diagnostics": [],
+  "display_bindings": [{"kind": "value", "read_only": true, "target": "output"}], "edges": [],
+  "execution": "deferred-operation-runtime",
+  "instances": [{"definition_digest": "sha256:9d43050a12ad657e7a8a57a2b02eeeaa597c631733bd225deb19183188d44f04", "definition_path": "lib/standard/74xx/74HC04/definition/definition.json", "id": "U1", "locator": "digital.74HC04", "parameters": {}, "part": "74HC04", "provenance": {"resolved_definition": "lib/standard/74xx/74HC04/definition/definition.json", "source_span": {"end_line": 5, "line": 5}}}],
+  "library_lock": [{"definition_digest": "sha256:9d43050a12ad657e7a8a57a2b02eeeaa597c631733bd225deb19183188d44f04", "instance": "U1", "locator": "digital.74HC04", "resolved_definition": "lib/standard/74xx/74HC04/definition/definition.json"}],
+  "nets": [{"id": "observed", "kind": "digital"}],
+  "observations": [{"declared_as": "probe", "id": "output", "read_only": true, "target": "observed"}],
+  "ok": true, "profile": "components.digital",
+  "provenance": {"ast_schema": "components.component-ast@1", "component_span": {"end_line": 3, "line": 3}},
+  "schema": "components.resolved-component@1", "schema_version": 1, "source": "golden_leaf.component", "tests": []
+}

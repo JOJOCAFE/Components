@@ -1,0 +1,133 @@
+"""Golden-pipeline tests for the text-first Component language slice."""
+
+from __future__ import annotations
+
+from pathlib import Path
+import json
+import subprocess
+import sys
+
+from chiplib.component_language import component_ide_snapshot, parse_component_file, parse_component_text, resolve_component
+from chiplib.component_runtime import ComponentRuntimeSession
+
+
+ROOT = Path(__file__).resolve().parents[2]
+FIXTURES = ROOT / "Language" / "fixtures"
+
+
+def test_counter_fixture_has_ast_to_resolved_topology_pipeline():
+    ast = parse_component_file(FIXTURES / "component-first-draft" / "counter_first_draft.component")
+    assert ast["ok"], ast["diagnostics"]
+    assert ast["component"]["name"] == "CounterFirstDraft"
+    assert [node["kind"] for node in ast["component"]["body"]].count("device") == 3
+    resolved = resolve_component(ast)
+    assert resolved["ok"], resolved["diagnostics"]
+    assert resolved["component_id"] == "CounterFirstDraft"
+    assert {edge["to"] for edge in resolved["edges"]} >= {"Counter.VCC", "Counter.GND", "Counter.CLK", "Counter./CLR"}
+    assert any(net["id"] == "count[3]" for net in resolved["nets"])
+    assert resolved["execution"] == "deferred-operation-runtime"
+
+
+def test_text_ide_snapshot_is_parse_resolve_validate_not_runtime():
+    snapshot = component_ide_snapshot(FIXTURES / "component-v1.1" / "digital_inverter.component")
+    assert snapshot["ok"], snapshot["resolved"]["diagnostics"]
+    assert snapshot["format"] == "components.text_ide@1"
+    assert snapshot["capabilities"] == {"parse": True, "resolve": True, "validate": True, "run": False, "board": False}
+
+
+def test_resolver_reports_unknown_port_and_scalar_bus_without_guessing():
+    source = """
+use standard.digital as digital;
+use standard.virtual as virtual;
+component:component Bad is components.digital {
+  device Clock is virtual.ClockSource;
+  device U1 is digital.74HC04;
+  bus q[4] : digital;
+  connect Clock.CLK -> U1.NOT_A_PORT;
+  connect Clock.CLK -> q;
+}
+"""
+    result = resolve_component(parse_component_text(source))
+    assert result["ok"] is False
+    assert {item["code"] for item in result["diagnostics"]} >= {"resolver.unknown_port", "topology.width_mismatch"}
+
+
+def test_component_ide_cli_emits_both_contracts():
+    result = subprocess.run(
+        [sys.executable, "-B", "-m", "chiplib.cli", "component-ide", str(FIXTURES / "component-v1.1" / "digital_inverter.component")],
+        cwd=ROOT / "python",
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    data = json.loads(result.stdout)
+    assert data["ast"]["schema"] == "components.component-ast@1"
+    assert data["resolved"]["schema"] == "components.resolved-component@1"
+
+
+def test_runtime_instantiates_resolved_inverter_and_reads_probe():
+    resolved = resolve_component(parse_component_file(FIXTURES / "component-v1.1" / "digital_inverter.component"))
+    runtime = ComponentRuntimeSession(resolved)
+    runtime.drive("clock", 0)
+    assert runtime.probe("inverted_level")["probes"]["inverted_level"] == 1
+
+
+def test_checked_golden_pipeline_has_stable_spans_and_resolved_contract():
+    root = FIXTURES / "component-v1.1"
+    source = root / "golden_leaf.component"
+    ast = parse_component_text(source.read_text(encoding="utf-8"), source_name=source.name)
+    resolved = resolve_component(ast)
+    assert ast == json.loads((root / "golden_leaf.ast.json").read_text(encoding="utf-8"))
+    assert resolved == json.loads((root / "golden_leaf.resolved.json").read_text(encoding="utf-8"))
+    schema = json.loads((ROOT / "schemas" / "resolved-component.schema.json").read_text(encoding="utf-8"))
+    for field in schema["required"]:
+        assert field in resolved
+    assert all("definition_digest" in lock for lock in resolved["library_lock"])
+
+
+def test_resolved_cli_is_hash_seed_deterministic():
+    fixture = FIXTURES / "component-v1.1" / "golden_leaf.component"
+    outputs = []
+    for seed in ("0", "1"):
+        env = {**__import__("os").environ, "PYTHONHASHSEED": seed, "PYTHONPATH": str(ROOT / "python")}
+        result = subprocess.run([sys.executable, "-B", "-m", "chiplib.cli", "component-resolve", str(fixture)], cwd=ROOT, text=True, capture_output=True, env=env, check=False)
+        assert result.returncode == 0, result.stderr
+        outputs.append(result.stdout)
+    assert outputs[0] == outputs[1]
+
+
+def test_leaf_validation_rejects_power_misuse_and_multiple_outputs():
+    source = """
+use standard.digital as digital;
+use standard.virtual as virtual;
+component:component Invalid is components.digital {
+ device A, virtual.ClockSource;
+ device B, virtual.ClockSource;
+ device U1, digital.74HC04;
+ net rail : power;
+ net driven : digital;
+ connect A.CLK -> rail;
+ connect A.CLK -> driven;
+ connect B.CLK -> driven;
+}
+"""
+    result = resolve_component(parse_component_text(source))
+    assert result["ok"] is False
+    assert {item["code"] for item in result["diagnostics"]} >= {"validation.power_isolation", "validation.output_ownership"}
+
+
+def main() -> None:
+    test_counter_fixture_has_ast_to_resolved_topology_pipeline()
+    test_text_ide_snapshot_is_parse_resolve_validate_not_runtime()
+    test_resolver_reports_unknown_port_and_scalar_bus_without_guessing()
+    test_component_ide_cli_emits_both_contracts()
+    test_runtime_instantiates_resolved_inverter_and_reads_probe()
+    test_checked_golden_pipeline_has_stable_spans_and_resolved_contract()
+    test_resolved_cli_is_hash_seed_deterministic()
+    test_leaf_validation_rejects_power_misuse_and_multiple_outputs()
+    print("Components Component-language tests passed")
+
+
+if __name__ == "__main__":
+    main()

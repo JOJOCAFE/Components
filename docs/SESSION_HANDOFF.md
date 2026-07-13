@@ -21,7 +21,7 @@ Last updated: 2026-07-13
   eight RV8GR digital records and three SRAM records; the audit reports seven
   compact-ready, eleven bridge-ready, and zero blocked RV8GR definitions.
 - The complete Components quality gate passed: Python chip/design/UI/netlist/
-  CLI/API/DB/contracts/simulation/equivalence/circuit suites, DB audit/status,
+  CLI/API/database/contracts/simulation/equivalence/circuit suites, database audit/status,
   six source/behavior crosschecks, 74xx and memory Verilog smoke benches,
   migration gates, and Component-language fixtures.  Direct package-file
   crosschecks now resolve compact sources through the same DB boundary.
@@ -40,7 +40,7 @@ Last updated: 2026-07-13
   U24/U25/U26/U28, U7/U14/U34, ROM, and RAM from canonical RV8GR evidence.
 - Do not infer FullControl child-port mappings from prose equations. Source
   them from canonical RV8GR RTL/wiring evidence, then bind
-  DB/Python/Verilog/tests/docs together. BusOwnership functional promotion does
+  database/Python/verilog/tests/docs together. BusOwnership functional promotion does
   not prove package-level timing or physical hardware timing.
 - Repository layout migrated on 2026-07-12: packages live in
   `lib/standard/`; circuit examples and proof assets live in

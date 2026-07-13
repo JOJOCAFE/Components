@@ -1,0 +1,31 @@
+{
+  "schema": "components.resource-binding@1",
+  "version": 1,
+  "topology_ref": {
+    "component_id": "digital-inverter",
+    "schema": "components.resolved-component@1",
+    "digest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  },
+  "bindings": [
+    {
+      "id": "U1-dip",
+      "target": {"kind": "device-instance", "id": "U1"},
+      "resource": {
+        "id": "standard.74xx.74HC04.resource@1",
+        "digest": "sha256:abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
+        "view": "dip"
+      },
+      "presentation": {"label": "Inverter U1", "symbol": "dip", "package": "PDIP-14"}
+    },
+    {
+      "id": "inverted-led",
+      "target": {"kind": "probe", "id": "inverted_level"},
+      "resource": {
+        "id": "standard.virtual.Probe.resource@1",
+        "digest": "sha256:fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210",
+        "view": "display"
+      },
+      "presentation": {"label": "Inverted output", "display_kind": "led"}
+    }
+  ]
+}

@@ -60,7 +60,7 @@ to ship, and Pim keeps the route visible.
   vectors; campaign artifacts and the package gate are execution-derived.
 - RV8 `team-setup` is pushed at `7d2dac5 Support migrated Components layout`.
   The RV8GR Verilog runners support both external `verilog/` and the retained
-  vendored `Verilog/` snapshot.
+  vendored `verilog/` snapshot.
 - Next technical boundary: BusOwnership and FullControl cannot be promoted by
   inferred wiring. Bank and Ohm must establish authoritative gate/child-port
   mappings from canonical RV8GR RTL and wiring sources; Bam implements only
