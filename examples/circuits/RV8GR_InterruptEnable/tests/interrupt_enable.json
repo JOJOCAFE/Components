@@ -1,0 +1,12 @@
+{
+  "schema": "components.lib.circuit.test.interrupt_enable",
+  "version": 1,
+  "circuit": "rv8gr_interrupt_enable",
+  "source": "examples/circuits/RV8GR_InterruptEnable/circuit.json",
+  "vectors": [
+    {"name": "reset_clears_ie", "inputs": {"/RST": 0}, "expect": {"IE": 0}},
+    {"name": "ei_only", "inputs": {"T2": 1, "SRC": 1, "XOR_MODE": 0, "AC_WR": 0}, "expect": {"EI_decode_rising": true, "IE": 1}},
+    {"name": "di_is_not_ei", "inputs": {"T2": 1, "SRC": 1, "XOR_MODE": 1, "AC_WR": 0}, "expect": {"EI_decode_rising": false}}
+  ],
+  "scope": "Functional composition vectors; they do not establish PCB timing or IRQ-vector behavior."
+}

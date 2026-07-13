@@ -95,6 +95,15 @@
       }
     },
     {
+      "circuit": "RV8GR_InterruptEnable", "stage": "interrupt_enable", "proof_focus": "U33 EI decode and U31 IE flip-flop clock contract",
+      "coverage": {
+        "structural": {"status": "covered", "evidence_refs": ["examples/circuits/RV8GR_InterruptEnable/circuit.json", "python/tests/test_circuit_hierarchy.py::test_full_control_hierarchy_has_explicit_child_port_mappings"]},
+        "vector_equation": {"status": "not_covered", "evidence_refs": []},
+        "live_component_model": {"status": "not_covered", "evidence_refs": []},
+        "composed_system": {"status": "not_covered", "evidence_refs": []}, "physical": {"status": "planned_not_measured", "evidence_refs": ["examples/circuits/physical_capture_plan.json"]}
+      }
+    },
+    {
       "circuit": "RV8GR_RomDbusRead", "stage": "memory_read", "proof_focus": "DBUS to IBUS read direction and ROM /OE safety",
       "coverage": {
         "structural": {"status": "covered", "evidence_refs": ["examples/circuits/RV8GR_RomDbusRead/circuit.json", "python/tests/test_lib_circuits.py::test_rv8gr_rom_dbus_read_package_shape"]},

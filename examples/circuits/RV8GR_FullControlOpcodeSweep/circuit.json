@@ -18,6 +18,8 @@
     {"ref": "ALU", "part": "RV8GR_AluAccumulator", "role": "AC, Z, ALU result, and store buffer effect"},
     {"ref": "PGDP", "part": "RV8GR_PageDataRegisters", "role": "PG and DP register load side effects"},
     {"ref": "PC", "part": "RV8GR_BranchJumpControl", "role": "PC load control from JMP/BR/Z"},
+    {"ref": "PC16", "part": "RV8GR_PC16", "role": "Concrete U1-U4 sink for /PC_LD and {PG,IRL}"},
+    {"ref": "IEFF", "part": "RV8GR_InterruptEnable", "role": "Concrete U33/U31 EI decode and IE state sink"},
     {"ref": "VT", "part": "RV8GR_VirtualTestHelpers", "role": "Opcode-sweep observation, phase, clock, and bus-conflict monitors"}
   ],
   "executable_boundaries": [
@@ -30,10 +32,14 @@
       "derived_signals": ["ALU_SUB", "XOR_MODE", "MUX_SEL", "AC_WR", "SRC", "STR", "BR", "JMP"],
       "source": "/home/jo/kiro/RV8/RV8GR/tb/tb_rv8gr_opcode_sweep.v",
       "contract": "The opcode sweep drives IRH and T2 at the package boundary; control bits are the latched IRH bits documented by the ISA and wiring guide, not a physical or virtual chip.",
-      "blocked_until": "Child-package port mappings bind each derived control signal to its authoritative destination."
+      "mapping_rule": "IRH[7:0] is the latched U5 control byte: [7]=ALU_SUB, [6]=XOR_MODE, [5]=MUX_SEL, [4]=AC_WR, [3]=SRC, [2]=STR, [1]=BR, [0]=JMP. Parent wires below bind each child port explicitly; no child port is connected by a matching-name rule.",
+      "source_detail": "/home/jo/kiro/RV8/RV8GR/doc/00_design_isa.md control-byte table; /home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md:504-510, 823-870, 1093-1103; /home/jo/kiro/RV8/RV8GR/rtl/rv8gr_cpu.v control/decode equations."
     }
   ],
   "ports": [
+    {"name": "/RST", "direction": "input", "active_low": true},
+    {"name": "CLK", "direction": "input", "edge": "rising"},
+    {"name": "PC_INC", "direction": "input"},
     {"name": "IRH0..IRH7", "direction": "input"},
     {"name": "IRL0..IRL7", "direction": "input"},
     {"name": "T2", "direction": "input"},
@@ -43,8 +49,53 @@
     {"name": "DP0..DP7", "direction": "input_output"},
     {"name": "IE", "direction": "input_output"},
     {"name": "PC0..PC15", "direction": "input_output"},
+    {"name": "/PC_LD", "direction": "output", "active_low": true},
     {"name": "IBUS0..IBUS7", "direction": "bidirectional"},
     {"name": "DBUS0..DBUS7", "direction": "bidirectional"}
+  ],
+  "wiring": [
+    {"net": "T2", "connections": ["T2", "BUS.T2", "ALU.T2", "PGDP.T2", "PC.T2", "IEFF.T2", "VT.T2"], "description": "U8 Q2 T2 drives every T2 consumer; VT observes only."},
+    {"net": "T0", "connections": ["BUS.T0", "PC.T0", "VT.T0"], "description": "Opcode sweep bypasses fetch; this declared phase observation net is not a synthetic fetch proof."},
+    {"net": "T1", "connections": ["BUS.T1", "PC.T1", "VT.T1"], "description": "Opcode sweep bypasses fetch; this declared phase observation net is not a synthetic fetch proof."},
+
+    {"net": "ALU_SUB", "connections": ["IRH0..IRH7[7]", "ALU.ALU_SUB", "PC.ALU_SUB"], "description": "U5 Q8 / IRH[7]."},
+    {"net": "XOR_MODE", "connections": ["IRH0..IRH7[6]", "ALU.XOR_MODE", "PGDP.XOR_MODE", "IEFF.XOR_MODE"], "description": "U5 Q7 / IRH[6]."},
+    {"net": "MUX_SEL", "connections": ["IRH0..IRH7[5]", "ALU.MUX_SEL", "PGDP.MUX_SEL"], "description": "U5 Q6 / IRH[5]."},
+    {"net": "AC_WR", "connections": ["IRH0..IRH7[4]", "ALU.AC_WR", "PGDP.AC_WR", "IEFF.AC_WR"], "description": "U5 Q5 / IRH[4]."},
+    {"net": "SRC", "connections": ["IRH0..IRH7[3]", "BUS.SRC", "IEFF.SRC"], "description": "U5 Q4 / IRH[3]."},
+    {"net": "STR", "connections": ["IRH0..IRH7[2]", "BUS.STR", "ALU.STR"], "description": "U5 Q3 / IRH[2]."},
+    {"net": "BR", "connections": ["IRH0..IRH7[1]", "PC.BR"], "description": "U5 Q2 / IRH[1]."},
+    {"net": "JMP", "connections": ["IRH0..IRH7[0]", "PC.JMP"], "description": "U5 Q1 / IRH[0]."},
+
+    {"net": "IRL0..IRL7", "connections": ["IRL0..IRL7", "BUS.IRL0..IRL7", "PGDP.IRL0..IRL7", "PC16.IRL0..IRL7"], "description": "Latched U6 operand byte feeds U34, page/data controls, and the concrete PC load inputs."},
+    {"net": "AC0..AC7", "connections": ["AC0..AC7", "ALU.AC0..AC7", "BUS.AC0..AC7"], "description": "U9 accumulator outputs feed the ALU feedback and U14 store buffer."},
+    {"net": "Z_flag", "connections": ["Z_flag", "ALU.Z_flag", "PC.Z_flag"], "description": "U21 Z output feeds the branch XOR path."},
+    {"net": "PG0..PG7", "connections": ["PG0..PG7", "PGDP.PG0..PG7", "PC16.PG0..PG7"], "description": "U23 page-register output boundary and concrete PC high-byte load input."},
+    {"net": "DP0..DP7", "connections": ["DP0..DP7", "PGDP.DP0..DP7"], "description": "U32 data-page-register output boundary."},
+    {"net": "IBUS0..IBUS7", "connections": ["IBUS0..IBUS7", "BUS.IBUS0..IBUS7", "ALU.IBUS0..IBUS7", "PGDP.IBUS0..IBUS7"], "description": "Shared physical IBUS."},
+    {"net": "DBUS0..DBUS7", "connections": ["DBUS0..DBUS7", "BUS.DBUS0..DBUS7"], "description": "Shared physical DBUS."},
+
+    {"net": "DP0..DP6", "connections": ["DP0..DP7[0..6]"], "description": "Explicit lower-seven-bit DP selection used by the address concatenation."},
+    {"net": "A0..A14", "connections": ["{IRL0..IRL7,DP0..DP6}", "BUS.A0..A14"], "description": "Explicit low-to-high address-wire concatenation: logical {DP,IRL} maps A0..A7=IRL and A8..A14=DP0..DP6."},
+    {"net": "A15", "connections": ["DP0..DP7[7]", "BUS.A15"], "description": "Explicit DP[7] memory-select mapping."},
+    {"net": "/ADDR_MODE", "connections": ["BUS./ADDR_MODE", "PGDP./ADDR_MODE"], "description": "Explicit U26-6 output export from BUS into the U33 page/data decode input."},
+    {"net": "/PC_LD", "connections": ["PC./PC_LD", "PC16./PC_LD", "/PC_LD"], "description": "U26-11 active-low PC-load strobe drives the concrete U1-U4 PC16 sink."},
+    {"net": "/RST", "connections": ["/RST", "PC16./RST", "IEFF./RST"], "description": "Shared documented reset input for PC and IE state."},
+    {"net": "CLK", "connections": ["CLK", "PC16.CLK"], "description": "PC16 state edge; T2 opcode vectors do not claim full fetch timing."},
+    {"net": "PC_INC", "connections": ["PC_INC", "PC16.PC_INC"], "description": "Documented PC increment input."},
+    {"net": "PC0..PC15", "connections": ["PC0..PC15", "PC16.PC0..PC15"], "description": "Concrete PC register boundary."},
+    {"net": "IE", "connections": ["IE", "IEFF.IE"], "description": "Concrete U31 IE state boundary."},
+
+    {"net": "VT_CLK", "connections": ["VT.CLK"], "description": "Virtual clock helper is isolated from functional control; it cannot supply a CPU state edge."},
+    {"net": "VT_IBUS_OBSERVE", "connections": ["VT.IBUS"], "description": "The current virtual BusProbe boundary is scalar; it remains isolated until it has an explicit eight-bit probe contract."},
+    {"net": "VT_DBUS_OBSERVE", "connections": ["VT.DBUS"], "description": "The current virtual BusProbe boundary is scalar; it remains isolated until it has an explicit eight-bit probe contract."},
+    {"net": "VT_CLK_RC_IN", "connections": ["VT.CLK_RC_IN"], "description": "Observation-only RC input."},
+    {"net": "VT_CLK_RC_OUT", "connections": ["VT.CLK_RC_OUT"], "description": "Observation-only RC output."},
+    {"net": "VT_BUS_RC_IN", "connections": ["VT.BUS_RC_IN"], "description": "Observation-only bus RC input."},
+    {"net": "VT_BUS_RC_OUT", "connections": ["VT.BUS_RC_OUT"], "description": "Observation-only bus RC output."},
+    {"net": "VT_NOISE_IN", "connections": ["VT.NOISE_IN"], "description": "Observation-only deterministic noise input."},
+    {"net": "VT_NOISE_OUT", "connections": ["VT.NOISE_OUT"], "description": "Observation-only deterministic noise output."},
+    {"net": "VT_EXPECT_IN", "connections": ["VT.EXPECT_IN"], "description": "Observation-only assertion input; it has no authority to change CPU state."}
   ],
   "behavior": {
     "scope": "This circuit tests pure T2 execution logic and intentionally bypasses T0/T1 fetch.",
@@ -57,6 +108,27 @@
     "ie": "IE sets when SRC=1, XOR_MODE=0, and AC_WR=0.",
     "pc": "PC loads {PG,IRL} when JMP=1 or BR=1 and Z matches ALU_SUB.",
     "ram": "STR=1 writes AC to RAM when the data address is in RAM page."
+  },
+  "runtime": {
+    "operation_harness": {
+      "kind": "source_owned_t2",
+      "source_inputs": ["/RST", "PC_INC", "IRH0..IRH7", "IRL0..IRL7", "T2"],
+      "scope": "control_and_ie_only",
+      "rule": "The operation harness may drive only these real direction=input boundaries. It must not drive IBUS, DBUS, AC, Z, PG, DP, IE, or PC boundaries because they are shared buses or state outputs.",
+      "coverage": ["/PC_LD control strobe", "IE state edge"],
+      "not_covered": ["AC/Z initialization", "PG/DP initialization", "PC state observation", "RAM/ROM driver phase", "512 opcode live promotion", "physical timing"]
+    },
+    "declared_clock_edges": [
+      {
+        "id": "ei_decode_to_ie",
+        "trigger_input": "T2",
+        "edge": "rising",
+        "source": {"chip": "IEFF_U33", "pin": 8},
+        "sinks": [{"chip": "IEFF_U31", "pin": 3, "kind": "clock"}],
+        "source_detail": "RV8GR wiring guide EI Decode: U33-8 EI_decode is wired to U31-3 1CLK. This flattened execution reference is valid only after explicit IEFF child materialization.",
+        "scope": "Functional simulator edge delivery only. It does not infer arbitrary output clocks or establish board-edge timing."
+      }
+    ]
   },
   "timing": {
     "clocking": "T2_single_edge_contract",

@@ -7,7 +7,7 @@
     "fail_closed": true,
     "modeled_timing_is_physical_evidence": false
   },
-  "package_count": 22,
+  "package_count": 23,
   "packages": {
     "RV8GR_AddressMux16": {
       "logical": {
@@ -58,7 +58,7 @@
         "blocks": []
       },
       "functional": {
-        "status": "blocked",
+        "status": "promoted",
         "circuit_id": "rv8gr_alu_accumulator",
         "circuit_path": "examples/circuits/RV8GR_AluAccumulator/circuit.json",
         "proof_paths": [
@@ -66,29 +66,172 @@
         ],
         "observations": {
           "proof": "examples/circuits/RV8GR_AluAccumulator/tests/alu_accumulator.json",
-          "vectors_executed": 1,
+          "vectors_executed": 13,
           "checks": [
             {
               "name": "li_42",
-              "passed": false,
+              "passed": true,
               "expected": {
                 "ac": 66,
                 "z": 0
               },
               "actual": {
+                "ac": 66,
+                "z": 0
+              }
+            },
+            {
+              "name": "addi_05_after_42",
+              "passed": true,
+              "expected": {
+                "ac": 71,
+                "z": 0
+              },
+              "actual": {
+                "ac": 71,
+                "z": 0
+              }
+            },
+            {
+              "name": "subi_47_sets_zero",
+              "passed": true,
+              "expected": {
                 "ac": 0,
                 "z": 1
+              },
+              "actual": {
+                "ac": 0,
+                "z": 1
+              }
+            },
+            {
+              "name": "sub_borrow_wraps",
+              "passed": true,
+              "expected": {
+                "ac": 254,
+                "z": 0
+              },
+              "actual": {
+                "ac": 254,
+                "z": 0
+              }
+            },
+            {
+              "name": "xori_aa_after_ff",
+              "passed": true,
+              "expected": {
+                "ac": 85,
+                "z": 0
+              },
+              "actual": {
+                "ac": 85,
+                "z": 0
+              }
+            },
+            {
+              "name": "xori_self_sets_zero",
+              "passed": true,
+              "expected": {
+                "ac": 0,
+                "z": 1
+              },
+              "actual": {
+                "ac": 0,
+                "z": 1
+              }
+            },
+            {
+              "name": "t1_no_capture",
+              "passed": true,
+              "expected": {
+                "ac": 18,
+                "z": 0
+              },
+              "actual": {
+                "ac": 18,
+                "z": 0
+              }
+            },
+            {
+              "name": "t2_ac_wr_zero_holds",
+              "passed": true,
+              "expected": {
+                "ac": 18,
+                "z": 0
+              },
+              "actual": {
+                "ac": 18,
+                "z": 0
+              }
+            },
+            {
+              "name": "zero_to_nonzero_after_modeled_sample",
+              "settle_vector_index": 0,
+              "passed": true,
+              "expected": {
+                "ac": 66,
+                "z": 0
+              },
+              "actual": {
+                "ac": 66,
+                "z": 0
+              }
+            },
+            {
+              "name": "nonzero_to_zero_after_modeled_sample",
+              "settle_vector_index": 1,
+              "passed": true,
+              "expected": {
+                "ac": 0,
+                "z": 1
+              },
+              "actual": {
+                "ac": 0,
+                "z": 1
+              }
+            },
+            {
+              "name": "repeated_zero_after_modeled_sample",
+              "settle_vector_index": 2,
+              "passed": true,
+              "expected": {
+                "ac": 0,
+                "z": 1
+              },
+              "actual": {
+                "ac": 0,
+                "z": 1
+              }
+            },
+            {
+              "name": "no_edge_holds_z",
+              "settle_vector_index": 3,
+              "passed": true,
+              "expected": {
+                "ac": 0,
+                "z": 1
+              },
+              "actual": {
+                "ac": 0,
+                "z": 1
+              }
+            },
+            {
+              "name": "non_ac_write_holds_z",
+              "settle_vector_index": 4,
+              "passed": true,
+              "expected": {
+                "ac": 66,
+                "z": 0
+              },
+              "actual": {
+                "ac": 66,
+                "z": 0
               }
             }
           ]
         },
-        "blocks": [
-          {
-            "code": "proof_state_not_executable",
-            "path": "examples/circuits/RV8GR_AluAccumulator/tests/alu_accumulator.json#$.vectors[3].start_ac",
-            "message": "remaining independent vectors require loading accumulator state through a public API; CircuitRunner exposes no chip-state injection"
-          }
-        ]
+        "blocks": []
       },
       "timing": {
         "status": "blocked",
@@ -96,9 +239,9 @@
         "physical_status": "not_measured",
         "blocks": [
           {
-            "code": "functional_promotion_required",
+            "code": "timing_execution_failed",
             "path": "examples/circuits/RV8GR_AluAccumulator/circuit.json",
-            "message": "package timing cannot pass before its live functional proof is promoted"
+            "message": "no package-specific threshold-enforcing timing execution adapter"
           }
         ]
       }
@@ -374,20 +517,315 @@
         "blocks": []
       },
       "functional": {
-        "status": "blocked",
+        "status": "promoted",
         "circuit_id": "rv8gr_bus_ownership",
         "circuit_path": "examples/circuits/RV8GR_BusOwnership/circuit.json",
         "proof_paths": [
           "examples/circuits/RV8GR_BusOwnership/tests/bus_ownership.json"
         ],
-        "observations": {},
-        "blocks": [
-          {
-            "code": "ambiguous_symbolic_width",
-            "path": "$.wiring[0].connections[3]",
-            "message": "symbolic endpoint 'IBUS0..IBUS7' has no concrete live chip instance"
+        "observations": {
+          "proof": "examples/circuits/RV8GR_BusOwnership/tests/bus_ownership.json",
+          "vectors_executed": 12,
+          "checks": [
+            {
+              "name": "t0_fetch_rom",
+              "passed": true,
+              "expected": {
+                "ibus_drivers": [
+                  "U7"
+                ],
+                "dbus_drivers": [
+                  "ROM1"
+                ],
+                "u7_direction": "DBUS_TO_IBUS",
+                "conflict": false,
+                "rom_ce_n": 0,
+                "ram_ce_n": 1
+              },
+              "actual": {
+                "ibus_drivers": [
+                  "U7"
+                ],
+                "dbus_drivers": [
+                  "ROM1"
+                ],
+                "u7_direction": "DBUS_TO_IBUS",
+                "conflict": false,
+                "rom_ce_n": 0,
+                "ram_ce_n": 1
+              }
+            },
+            {
+              "name": "t1_fetch_rom",
+              "passed": true,
+              "expected": {
+                "ibus_drivers": [
+                  "U7"
+                ],
+                "dbus_drivers": [
+                  "ROM1"
+                ],
+                "u7_direction": "DBUS_TO_IBUS",
+                "conflict": false,
+                "rom_ce_n": 0,
+                "ram_ce_n": 1
+              },
+              "actual": {
+                "ibus_drivers": [
+                  "U7"
+                ],
+                "dbus_drivers": [
+                  "ROM1"
+                ],
+                "u7_direction": "DBUS_TO_IBUS",
+                "conflict": false,
+                "rom_ce_n": 0,
+                "ram_ce_n": 1
+              }
+            },
+            {
+              "name": "t2_immediate",
+              "passed": true,
+              "expected": {
+                "ibus_drivers": [
+                  "U34"
+                ],
+                "dbus_drivers": [
+                  "ROM1"
+                ],
+                "u7_direction": "DISABLED",
+                "conflict": false,
+                "rom_ce_n": 0,
+                "ram_ce_n": 1
+              },
+              "actual": {
+                "ibus_drivers": [
+                  "U34"
+                ],
+                "dbus_drivers": [
+                  "ROM1"
+                ],
+                "u7_direction": "DISABLED",
+                "conflict": false,
+                "rom_ce_n": 0,
+                "ram_ce_n": 1
+              }
+            },
+            {
+              "name": "t2_load_rom",
+              "passed": true,
+              "expected": {
+                "ibus_drivers": [
+                  "U7"
+                ],
+                "dbus_drivers": [
+                  "ROM1"
+                ],
+                "u7_direction": "DBUS_TO_IBUS",
+                "conflict": false,
+                "rom_ce_n": 0,
+                "ram_ce_n": 1
+              },
+              "actual": {
+                "ibus_drivers": [
+                  "U7"
+                ],
+                "dbus_drivers": [
+                  "ROM1"
+                ],
+                "u7_direction": "DBUS_TO_IBUS",
+                "conflict": false,
+                "rom_ce_n": 0,
+                "ram_ce_n": 1
+              }
+            },
+            {
+              "name": "t2_load_ram",
+              "passed": true,
+              "expected": {
+                "ibus_drivers": [
+                  "U7"
+                ],
+                "dbus_drivers": [
+                  "RAM1"
+                ],
+                "u7_direction": "DBUS_TO_IBUS",
+                "conflict": false,
+                "rom_ce_n": 1,
+                "ram_ce_n": 0
+              },
+              "actual": {
+                "ibus_drivers": [
+                  "U7"
+                ],
+                "dbus_drivers": [
+                  "RAM1"
+                ],
+                "u7_direction": "DBUS_TO_IBUS",
+                "conflict": false,
+                "rom_ce_n": 1,
+                "ram_ce_n": 0
+              }
+            },
+            {
+              "name": "t2_store_ram",
+              "passed": true,
+              "expected": {
+                "ibus_drivers": [
+                  "U14"
+                ],
+                "dbus_drivers": [
+                  "U7"
+                ],
+                "u7_direction": "IBUS_TO_DBUS",
+                "conflict": false,
+                "rom_ce_n": 1,
+                "ram_ce_n": 0
+              },
+              "actual": {
+                "ibus_drivers": [
+                  "U14"
+                ],
+                "dbus_drivers": [
+                  "U7"
+                ],
+                "u7_direction": "IBUS_TO_DBUS",
+                "conflict": false,
+                "rom_ce_n": 1,
+                "ram_ce_n": 0
+              }
+            },
+            {
+              "name": "t2_reserved_src_str_store_dominant",
+              "passed": true,
+              "expected": {
+                "ibus_drivers": [
+                  "U14"
+                ],
+                "dbus_drivers": [
+                  "U7"
+                ],
+                "u7_direction": "IBUS_TO_DBUS",
+                "conflict": false,
+                "rom_ce_n": 1,
+                "ram_ce_n": 0
+              },
+              "actual": {
+                "ibus_drivers": [
+                  "U14"
+                ],
+                "dbus_drivers": [
+                  "U7"
+                ],
+                "u7_direction": "IBUS_TO_DBUS",
+                "conflict": false,
+                "rom_ce_n": 1,
+                "ram_ce_n": 0
+              }
+            },
+            {
+              "name": "forced_u34_and_u14_ibus_conflict",
+              "passed": true,
+              "expected": true,
+              "actual": true,
+              "mode": "forced_control_fault_model"
+            },
+            {
+              "name": "forced_u34_and_u7_ibus_conflict",
+              "passed": true,
+              "expected": true,
+              "actual": true,
+              "mode": "forced_control_fault_model"
+            },
+            {
+              "name": "forced_rom_and_u7_dbus_conflict",
+              "passed": true,
+              "expected": true,
+              "actual": true,
+              "mode": "forced_control_fault_model"
+            },
+            {
+              "name": "forced_ram_and_u7_dbus_conflict",
+              "passed": true,
+              "expected": true,
+              "actual": true,
+              "mode": "forced_control_fault_model"
+            },
+            {
+              "name": "forced_rom_ram_select_conflict",
+              "passed": true,
+              "expected": true,
+              "actual": true,
+              "mode": "forced_control_fault_model"
+            }
+          ],
+          "provenance": {
+            "U7": {
+              "source": "live_db_package",
+              "part": "74HC245",
+              "group": "74xx",
+              "model_path": "standard/74xx/74HC245/simulation/model.py",
+              "definition_path": "standard/74xx/74HC245/definition/definition.json"
+            },
+            "U14": {
+              "source": "live_db_package",
+              "part": "74HC541",
+              "group": "74xx",
+              "model_path": "standard/74xx/74HC541/simulation/model.py",
+              "definition_path": "standard/74xx/74HC541/definition/definition.json"
+            },
+            "U34": {
+              "source": "live_db_package",
+              "part": "74HC541",
+              "group": "74xx",
+              "model_path": "standard/74xx/74HC541/simulation/model.py",
+              "definition_path": "standard/74xx/74HC541/definition/definition.json"
+            },
+            "U24": {
+              "source": "live_db_package",
+              "part": "74HC04",
+              "group": "74xx",
+              "model_path": "standard/74xx/74HC04/simulation/model.py",
+              "definition_path": "standard/74xx/74HC04/definition/definition.json"
+            },
+            "U25": {
+              "source": "live_db_package",
+              "part": "74HC32",
+              "group": "74xx",
+              "model_path": "standard/74xx/74HC32/simulation/model.py",
+              "definition_path": "standard/74xx/74HC32/definition/definition.json"
+            },
+            "U26": {
+              "source": "live_db_package",
+              "part": "74HC00",
+              "group": "74xx",
+              "model_path": "standard/74xx/74HC00/simulation/model.py",
+              "definition_path": "standard/74xx/74HC00/definition/definition.json"
+            },
+            "U28": {
+              "source": "live_db_package",
+              "part": "74HC86",
+              "group": "74xx",
+              "model_path": "standard/74xx/74HC86/simulation/model.py",
+              "definition_path": "standard/74xx/74HC86/definition/definition.json"
+            },
+            "ROM1": {
+              "source": "live_db_package",
+              "part": "AT28C256",
+              "group": "memory",
+              "model_path": "standard/memory/AT28C256/simulation/model.py",
+              "definition_path": "standard/memory/AT28C256/definition/definition.json"
+            },
+            "RAM1": {
+              "source": "live_db_package",
+              "part": "62256",
+              "group": "memory",
+              "model_path": "standard/memory/62256/simulation/model.py",
+              "definition_path": "standard/memory/62256/definition/definition.json"
+            }
           }
-        ]
+        },
+        "blocks": []
       },
       "timing": {
         "status": "blocked",
@@ -395,9 +833,9 @@
         "physical_status": "not_measured",
         "blocks": [
           {
-            "code": "functional_promotion_required",
+            "code": "timing_execution_failed",
             "path": "examples/circuits/RV8GR_BusOwnership/circuit.json",
-            "message": "package timing cannot pass before its live functional proof is promoted"
+            "message": "no package-specific threshold-enforcing timing execution adapter"
           }
         ]
       }
@@ -538,7 +976,77 @@
           {
             "code": "composite_not_executable",
             "path": "$.chips[4].part",
+            "message": "nested circuit 'RV8GR_PC16' is not executable"
+          },
+          {
+            "code": "composite_not_executable",
+            "path": "$.chips[5].part",
+            "message": "nested circuit 'RV8GR_InterruptEnable' is not executable"
+          },
+          {
+            "code": "composite_not_executable",
+            "path": "$.chips[6].part",
             "message": "nested circuit 'RV8GR_VirtualTestHelpers' is not executable"
+          },
+          {
+            "code": "boundary_transform_not_executable",
+            "path": "$.wiring[3].connections[0]",
+            "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"
+          },
+          {
+            "code": "boundary_transform_not_executable",
+            "path": "$.wiring[4].connections[0]",
+            "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"
+          },
+          {
+            "code": "boundary_transform_not_executable",
+            "path": "$.wiring[5].connections[0]",
+            "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"
+          },
+          {
+            "code": "boundary_transform_not_executable",
+            "path": "$.wiring[6].connections[0]",
+            "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"
+          },
+          {
+            "code": "boundary_transform_not_executable",
+            "path": "$.wiring[7].connections[0]",
+            "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"
+          },
+          {
+            "code": "boundary_transform_not_executable",
+            "path": "$.wiring[8].connections[0]",
+            "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"
+          },
+          {
+            "code": "boundary_transform_not_executable",
+            "path": "$.wiring[9].connections[0]",
+            "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"
+          },
+          {
+            "code": "boundary_transform_not_executable",
+            "path": "$.wiring[10].connections[0]",
+            "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"
+          },
+          {
+            "code": "boundary_transform_not_executable",
+            "path": "$.wiring[18].connections[0]",
+            "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"
+          },
+          {
+            "code": "boundary_transform_not_executable",
+            "path": "$.wiring[19].connections[0]",
+            "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"
+          },
+          {
+            "code": "boundary_transform_not_executable",
+            "path": "$.wiring[20].connections[0]",
+            "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"
+          },
+          {
+            "code": "unresolved_output",
+            "path": "$.ports[12].name",
+            "message": "output '/PC_LD' has no concrete chip endpoint"
           }
         ]
       },
@@ -698,6 +1206,46 @@
         ]
       }
     },
+    "RV8GR_InterruptEnable": {
+      "logical": {
+        "status": "blocked",
+        "blocks": [
+          {
+            "code": "logical_test_reference_invalid",
+            "path": "examples/circuits/RV8GR_COVERAGE_INDEX.json",
+            "message": "expected one named logical test for RV8GR_InterruptEnable; found 0"
+          }
+        ]
+      },
+      "functional": {
+        "status": "blocked",
+        "circuit_id": "rv8gr_interrupt_enable",
+        "circuit_path": "examples/circuits/RV8GR_InterruptEnable/circuit.json",
+        "proof_paths": [
+          "examples/circuits/RV8GR_InterruptEnable/tests/interrupt_enable.json"
+        ],
+        "observations": {},
+        "blocks": [
+          {
+            "code": "proof_adapter_not_implemented",
+            "path": "examples/circuits/RV8GR_InterruptEnable/tests/interrupt_enable.json#$",
+            "message": "RV8GR_InterruptEnable loads, but no package-specific adapter executes its declared proof vectors"
+          }
+        ]
+      },
+      "timing": {
+        "status": "blocked",
+        "modeled_only": true,
+        "physical_status": "not_measured",
+        "blocks": [
+          {
+            "code": "functional_promotion_required",
+            "path": "examples/circuits/RV8GR_InterruptEnable/circuit.json",
+            "message": "package timing cannot pass before its live functional proof is promoted"
+          }
+        ]
+      }
+    },
     "RV8GR_InterruptTrace": {
       "logical": {
         "status": "passed",
@@ -807,9 +1355,19 @@
         "observations": {},
         "blocks": [
           {
-            "code": "unresolved_output",
-            "path": "$.ports[6].name",
-            "message": "port 'PC0..PC15' has no concrete net"
+            "code": "ambiguous_symbolic_width",
+            "path": "$.wiring[9].connections[8]",
+            "message": "symbolic endpoint 'IRL0..IRL7' has no concrete live chip instance"
+          },
+          {
+            "code": "ambiguous_symbolic_width",
+            "path": "$.wiring[10].connections[8]",
+            "message": "symbolic endpoint 'PG0..PG7' has no concrete live chip instance"
+          },
+          {
+            "code": "ambiguous_symbolic_width",
+            "path": "$.wiring[11].connections[16]",
+            "message": "symbolic endpoint 'PC0..PC15' has no concrete live chip instance"
           }
         ]
       },
@@ -851,11 +1409,6 @@
             "code": "unresolved_output",
             "path": "$.ports[12].name",
             "message": "port 'DP0..DP7' has no concrete net"
-          },
-          {
-            "code": "unresolved_output",
-            "path": "$.ports[14].name",
-            "message": "output 'PC_LOAD0..PC_LOAD15' has no concrete chip endpoint"
           }
         ]
       },

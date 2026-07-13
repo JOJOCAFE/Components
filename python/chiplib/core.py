@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from contextlib import contextmanager
 from heapq import heappop, heappush
 from itertools import count
 from typing import Callable
@@ -90,8 +91,9 @@ class Pin:
 
 
 class Net:
-    def __init__(self, name: str):
+    def __init__(self, name: str, board: "Board | None" = None):
         self.name = name
+        self.board = board
         self.pins: list[Pin] = []
         self.pulls: list[tuple[str, Logic]] = []
         self.sources: list[LogicSource] = []
@@ -136,6 +138,14 @@ class Net:
                 [f"{p.chip.name}.{p.number}:{p.value}" for p in pin_drivers]
                 + [f"{s.name}:{s.value}" for s in source_drivers]
             )
+            if self.board is not None and self.board._settlement_depth:
+                # A declared simulation transaction may cross a transient
+                # handoff while its delayed events drain.  Do not silently
+                # accept it: final resolution at transaction exit checks this
+                # net again and raises if two drivers remain enabled.
+                self.board._transient_conflicts[self.name] = detail
+                self.value = X
+                return self.value
             raise BusConflictError(f"{self.name} has conflicting drivers: {detail}")
         if driver_values:
             self.value = driver_values[0]
@@ -255,6 +265,8 @@ class Board:
         self.sources: dict[str, LogicSource] = {}
         self._events: list[tuple[int, int, Callable[[], None]]] = []
         self._counter = count()
+        self._settlement_depth = 0
+        self._transient_conflicts: dict[str, str] = {}
 
     def add_chip(self, ref: str, chip: Chip) -> Chip:
         self.chips[ref] = chip
@@ -262,8 +274,32 @@ class Board:
 
     def net(self, name: str) -> Net:
         if name not in self.nets:
-            self.nets[name] = Net(name)
+            self.nets[name] = Net(name, self)
         return self.nets[name]
+
+    @contextmanager
+    def atomic_settlement(self):
+        """Defer transient driver-conflict reporting until event quiescence.
+
+        This is for a declared operation whose source RTL treats a bus handoff
+        as one simulation transaction.  It never masks a persistent bus fight:
+        after nested transactions close, every net is resolved again and any
+        remaining multi-driver condition raises ``BusConflictError``.
+        """
+        self._settlement_depth += 1
+        try:
+            yield
+        finally:
+            self._settlement_depth -= 1
+            if self._settlement_depth:
+                return
+            self.settle()
+            remaining = self.errors()
+            self._transient_conflicts.clear()
+            conflicts = [item for item in remaining if item["type"] == "driver_conflict"]
+            if conflicts:
+                first = conflicts[0]
+                raise BusConflictError(f"{first['net']} has conflicting drivers: {first['detail']}")
 
     def bus(self, name: str, width: int = 128) -> Bus:
         if name in self.buses:

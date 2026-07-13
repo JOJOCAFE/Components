@@ -92,6 +92,7 @@ component-model, composed-system, or physical pass. Evidence references are in
 | `RV8GR_StorePath` | C | C | - | - | P/NM |
 | `RV8GR_DataPageMemory` | C | C | C | - | P/NM |
 | `RV8GR_IRQLatch` | C | C | C | - | P/NM |
+| `RV8GR_InterruptEnable` | C | - | - | - | P/NM |
 | `RV8GR_RomDbusRead` | C | C | C | - | P/NM |
 | `RV8GR_AluAccumulator` | C | C | C | - | P/NM |
 | `RV8GR_PageDataRegisters` | C | C | C | - | P/NM |

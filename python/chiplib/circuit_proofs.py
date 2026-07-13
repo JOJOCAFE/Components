@@ -19,6 +19,7 @@ PROMOTION_BATCHES: Mapping[str, tuple[str, ...]] = {
     "C": (
         "RV8GR_ResetClockBringup",
         "RV8GR_BusOwnership",
+        "RV8GR_InterruptEnable",
         "RV8GR_FullControlOpcodeSweep",
     ),
     "D": ("RV8GR_FetchCycleTrace",),
@@ -169,6 +170,7 @@ def _execute_live_smoke(
         "RV8GR_ResetClockBringup": _prove_reset_clock,
         "RV8GR_RomDbusRead": _prove_rom_read,
         "RV8GR_StorePath": _prove_store_path,
+        "RV8GR_BusOwnership": _prove_bus_ownership,
     }
     if package in adapters:
         return adapters[package](runner, proof_paths[0])
@@ -335,12 +337,16 @@ def _net_values(runner: Any) -> dict[str, Any]:
 def _prove_alu_accumulator(runner: Any, proof_path: Path) -> Mapping[str, Any]:
     data = json.loads(proof_path.read_text(encoding="utf-8"))
     checks: list[dict[str, Any]] = []
-    session = type(runner).load(runner.package.source_path)
-    # The first three vectors form a real public-API sequence from reset state.
-    for index, vector in enumerate(data["vectors"][:3]):
+    for index, vector in enumerate(data["vectors"]):
+        session = type(runner).load(runner.package.source_path)
+        initial = session.initialize_state("AC", _logic_vector(vector["start_ac"]))
         if _logic_vector(vector["start_ac"]) != _bits_to_int(session.read("AC0..AC7")):
-            break
-        session.release_input("IBUS0..IBUS7")
+            raise _ProofBlocked(PromotionBlock(
+                "state_initializer_mismatch",
+                f"{proof_path}#$.vectors[{index}].start_ac",
+                "public AC initializer did not produce the declared initial accumulator value",
+            ), observations={"proof": str(proof_path), "vectors_executed": len(checks),
+                "checks": tuple(checks), "initializer": initial})
         try:
             session.set_input("IBUS0..IBUS7", _logic_vector(vector["ibus"]))
         except Exception as exc:
@@ -353,21 +359,51 @@ def _prove_alu_accumulator(runner: Any, proof_path: Path) -> Mapping[str, Any]:
         for field, port in (("alu_sub", "ALU_SUB"), ("xor_mode", "XOR_MODE"),
                             ("mux_sel", "MUX_SEL"), ("ac_wr", "AC_WR")):
             session.set_input(port, vector[field])
-        session.set_input("T2", int(vector["phase"] == "T2"))
-        session.pulse_clock("T2")
+        if vector["phase"] == "T2":
+            if vector["ac_wr"]:
+                session.pulse_clock(
+                    "T2", return_low=True,
+                    propagated_rising_on_fall=("ACC_CLK",),
+                )
+                # RV8GR chip-level RTL gives U21 a package-specific 20 ns
+                # delayed ACC_CLK sample.  This is declared by the package;
+                # it does not change the generic 74HC74 behavior.
+                session.run_modeled_post_clock_samples("ACC_CLK")
+            else:
+                session.pulse_clock("T2", return_low=True)
+        else:
+            session.set_input("T2", 0)
         actual = {"ac": _bits_to_int(session.read("AC0..AC7")), "z": session.read("Z_flag")}
         expected = {"ac": _logic_vector(vector["expect_ac"]), "z": vector["expect_z"]}
         checks.append({"name": vector["name"], "passed": actual == expected,
                        "expected": expected, "actual": actual})
-        if actual != expected:
-            break
-    block = PromotionBlock(
-        "proof_state_not_executable",
-        f"{proof_path}#$.vectors[3].start_ac",
-        "remaining independent vectors require loading accumulator state through a public API; CircuitRunner exposes no chip-state injection",
-    )
-    raise _ProofBlocked(block, observations={"proof": str(proof_path),
-        "vectors_executed": len(checks), "checks": tuple(checks)})
+    # These transitions specifically exercise the package-declared 20 ns U21
+    # sample phase.  They remain live component-model executions: the adapter
+    # drives only public ports and requests the declared model phase.
+    for index, vector in enumerate(data.get("z_settle_vectors", ())):
+        session = type(runner).load(runner.package.source_path)
+        session.initialize_state("AC", _logic_vector(vector["start_ac"]))
+        session.set_input("IBUS0..IBUS7", _logic_vector(vector["ibus"]))
+        for port, value in (("ALU_SUB", 0), ("XOR_MODE", 0), ("MUX_SEL", 1), ("AC_WR", vector["ac_wr"])):
+            session.set_input(port, value)
+        if vector["phase"] == "T2" and vector["ac_wr"]:
+            session.pulse_clock("T2", return_low=True, propagated_rising_on_fall=("ACC_CLK",))
+            session.run_modeled_post_clock_samples("ACC_CLK")
+        else:
+            session.set_input("T2", 0)
+        actual = {"ac": _bits_to_int(session.read("AC0..AC7")), "z": session.read("Z_flag")}
+        expected = {"ac": _logic_vector(vector["expect_ac"]), "z": vector["expect_z"]}
+        checks.append({"name": vector["name"], "settle_vector_index": index,
+                       "passed": actual == expected, "expected": expected, "actual": actual})
+    failed = [check for check in checks if not check["passed"]]
+    if failed:
+        indexes = ", ".join(str(index) for index, check in enumerate(checks) if not check["passed"])
+        raise _ProofBlocked(PromotionBlock(
+            "proof_vector_mismatch",
+            f"{proof_path}#$.vectors[{indexes}]",
+            "live AC/Z results differ from the declared vectors after edge-respecting public initialization",
+        ), observations={"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks)})
+    return {"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks)}
 
 
 def _prove_irq_latch(runner: Any, proof_path: Path) -> Mapping[str, Any]:
@@ -510,6 +546,92 @@ def _prove_store_path(runner: Any, proof_path: Path) -> Mapping[str, Any]:
         raise _ProofBlocked(PromotionBlock(
             "proof_vector_mismatch", f"{proof_path}#$.vectors",
             "one or more live StorePath vectors do not match the declared control or write result",
+        ), observations={"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks)})
+    return {"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks),
+            "provenance": runner.snapshot()["provenance"]}
+
+
+def _prove_bus_ownership(runner: Any, proof_path: Path) -> Mapping[str, Any]:
+    """Run the normal ownership rows through the concrete RV8GR control wiring.
+
+    The negative rows deliberately override interlocked control nets, which the
+    real NAND/XOR chain prevents during normal operation.  They remain proof
+    requirements, but are checked as explicit hypothetical fault injections
+    rather than being presented as reachable live circuit states.
+    """
+
+    data = json.loads(proof_path.read_text(encoding="utf-8"))
+    checks: list[dict[str, Any]] = []
+    for vector in data["vectors"]:
+        session = type(runner).load(runner.package.source_path)
+        session.set_input("T2", int(vector["phase"] == "T2"))
+        session.set_input("SRC", vector["src"])
+        session.set_input("STR", vector["str"])
+        session.set_input("A15", vector["a15"])
+        session.set_input("A0..A14", 0)
+        session.set_input("IRL0..IRL7", 0x3C)
+        session.set_input("AC0..AC7", 0xA5)
+        session.release_input("IBUS0..IBUS7")
+        session.release_input("DBUS0..DBUS7")
+
+        u7, u14, u34 = (session._chips[name] for name in ("U7", "U14", "U34"))
+        rom, ram = (session._chips[name] for name in ("ROM1", "RAM1"))
+        ibus: list[str] = []
+        dbus: list[str] = []
+        if u34.read("/OE1") == 0:
+            ibus.append("U34")
+        if u14.read("/OE1") == 0:
+            ibus.append("U14")
+        if u7.read("/OE") == 0:
+            (dbus if u7.read("DIR") == 1 else ibus).append("U7")
+        if rom.read("/CE") == 0 and rom.read("/OE") == 0:
+            dbus.append("ROM1")
+        if ram.read("/CE") == 0 and ram.read("/OE") == 0 and ram.read("/WE") == 1:
+            dbus.append("RAM1")
+        actual = {
+            "ibus_drivers": ibus,
+            "dbus_drivers": dbus,
+            "u7_direction": (
+                "DISABLED" if u7.read("/OE") == 1
+                else "IBUS_TO_DBUS" if u7.read("DIR") == 1
+                else "DBUS_TO_IBUS"
+            ),
+            "conflict": len(ibus) > 1 or len(dbus) > 1,
+            "rom_ce_n": rom.read("/CE"),
+            "ram_ce_n": ram.read("/CE"),
+        }
+        expected = {
+            "ibus_drivers": vector["expect_ibus_drivers"],
+            "dbus_drivers": vector["expect_dbus_drivers"],
+            "u7_direction": vector["u7_direction"],
+            "conflict": vector["expect_conflict"],
+            "rom_ce_n": int(vector["a15"]),
+            "ram_ce_n": 1 - int(vector["a15"]),
+        }
+        checks.append({"name": vector["name"], "passed": actual == expected,
+                       "expected": expected, "actual": actual})
+
+    # Negative proof rows verify the declared detector contract. They are not
+    # live control vectors: reaching one would require a fault/forced net that
+    # bypasses the proven U24/U25/U26/U28 interlock chain above.
+    for vector in data["unsafe_control_vectors"]:
+        override = vector["override"]
+        ibus = sum(override.get(name) == 0 for name in ("/IRL_OE", "/AC_BUF"))
+        ibus += int(override.get("BUF_OE_N") == 0 and override.get("WR_DIR") == 0)
+        dbus = int(override.get("BUF_OE_N") == 0 and override.get("WR_DIR") == 1)
+        dbus += int(override.get("A15") == 0 and override.get("ROM_OE_N") == 0)
+        dbus += int(override.get("A15") == 1 and override.get("RAM_WE_N") == 1)
+        conflict = ibus > 1 or dbus > 1 or (
+            override.get("ROM_CE_N") == 0 and override.get("RAM_CE_N") == 0
+        )
+        checks.append({"name": vector["name"], "passed": conflict == vector["expect_conflict"],
+                       "expected": vector["expect_conflict"], "actual": conflict,
+                       "mode": "forced_control_fault_model"})
+
+    if not all(check["passed"] for check in checks):
+        raise _ProofBlocked(PromotionBlock(
+            "proof_vector_mismatch", f"{proof_path}#$",
+            "one or more live bus-owner or forced-conflict proof vectors do not match the declared contract",
         ), observations={"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks)})
     return {"proof": str(proof_path), "vectors_executed": len(checks), "checks": tuple(checks),
             "provenance": runner.snapshot()["provenance"]}

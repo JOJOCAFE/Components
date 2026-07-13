@@ -30,7 +30,7 @@ PASS = "pass"
 NOT_APPLICABLE = "not_applicable"
 NOT_DIRECT = "not_directly_executed"
 PHYSICAL_REQUIRED = "physical_measurement_required"
-EXPECTED_PACKAGE_COUNT = 22
+EXPECTED_PACKAGE_COUNT = 23
 
 
 def load_json(path: Path) -> dict[str, Any]:

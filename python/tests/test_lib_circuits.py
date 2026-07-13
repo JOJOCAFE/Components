@@ -8,6 +8,7 @@ import random
 import re
 
 from chiplib import Z, create_chip
+from chiplib.db import load_package_definition
 from chiplib.virtual_faults import check_virtual_physical_faults
 
 
@@ -1041,6 +1042,8 @@ def test_rv8gr_pc16_package_shape():
     assert list((ROOT / "lib" / "standard").glob("*/74HC161/definition/definition.json"))
 
     wiring = {item["net"]: item["connections"] for item in circuit["wiring"]}
+    assert wiring["VCC"] == ["VCC", "U1.16", "U2.16", "U3.16", "U4.16"]
+    assert wiring["GND"] == ["GND", "U1.8", "U2.8", "U3.8", "U4.8"]
     assert "U1.15" in wiring["RCO0"] and "U2.10" in wiring["RCO0"]
     assert "U2.15" in wiring["RCO1"] and "U3.10" in wiring["RCO1"]
     assert "U3.15" in wiring["RCO2"] and "U4.10" in wiring["RCO2"]
@@ -1250,11 +1253,20 @@ def test_rv8gr_bus_ownership_package_shape():
         "U7": "74HC245",
         "U14": "74HC541",
         "U34": "74HC541",
+        "U24": "74HC04",
+        "U25": "74HC32",
+        "U26": "74HC00",
+        "U28": "74HC86",
         "ROM1": "AT28C256",
         "RAM1": "62256",
     }
-    for part in {"74HC245", "74HC541", "AT28C256", "62256"}:
+    for part in {"74HC00", "74HC04", "74HC32", "74HC86", "74HC245", "74HC541", "AT28C256", "62256"}:
         assert list((ROOT / "lib" / "standard").glob(f"*/*{part}/definition/definition.json")), part
+
+    wiring = {item["net"]: item["connections"] for item in circuit["wiring"]}
+    assert wiring["IBUS0..IBUS7"] == ["U7.2..9", "U14.18..11", "U34.18..11"]
+    assert wiring["DBUS0..DBUS7"][:2] == ["U7.18..11", "ROM1.11"]
+    assert wiring["WR_DIR"] == ["U28.8", "U7.1", "ROM1.22"]
 
     assert "U34 and U14 both enabled on IBUS" in circuit["timing"]["unsafe_states"]
     assert circuit["behavior"]["addr_req"] == "ADDR_REQ=SRC OR STR."
@@ -2271,6 +2283,11 @@ def test_rv8gr_full_control_opcode_sweep_package_shape():
 
     refs = {chip["ref"] for chip in circuit["chips"]}
     assert {"BUS", "ALU", "PGDP", "PC", "VT"} <= refs
+    wiring = {row["net"]: row["connections"] for row in circuit["wiring"]}
+    assert wiring["ALU_SUB"] == ["IRH0..IRH7[7]", "ALU.ALU_SUB", "PC.ALU_SUB"]
+    assert wiring["IBUS0..IBUS7"] == ["IBUS0..IBUS7", "BUS.IBUS0..IBUS7", "ALU.IBUS0..IBUS7", "PGDP.IBUS0..IBUS7"]
+    assert wiring["VT_IBUS_OBSERVE"] == ["VT.IBUS"]
+    assert wiring["VT_DBUS_OBSERVE"] == ["VT.DBUS"]
     boundaries = {item["id"] for item in circuit["executable_boundaries"]}
     assert "opcode_control_inputs" in boundaries
     assert "reserved opcode mix" in " ".join(circuit["timing"]["unsafe_states"])
@@ -3004,6 +3021,7 @@ def test_virtual_physical_fault_checker_accepts_package_level_symbolic_refs():
         "wiring": [
             {"net": "PC0..PC15", "connections": ["U1_U4.Q", "ABUS0..ABUS15", "PHASE_MON.T0"]},
             {"net": "/AC_BUF", "connections": ["U14./OE"]},
+            {"net": "ALU_SUB", "connections": ["IRH0..IRH7[7]"]},
         ],
         "timing": {
             "clocking": "rising edge functional trace",
@@ -3232,7 +3250,10 @@ def test_rv8gr_timing_physical_assumptions_are_source_backed_and_not_proven():
             assert (ROOT / item["source"]).exists(), item
 
     at28 = assumptions["at28c256_read_speed_grade_caveat"]
-    at28_source = load_json(ROOT / at28["source"])
+    # The active AT28 source is compact memory authoring.  Timing consumers
+    # intentionally use the resolved canonical Device view.
+    at28_source = load_package_definition("AT28C256")
+    assert at28_source is not None
     assert at28["model_read_delay_ns"] == nested_value(at28_source, "definition_layers.timing.delay.default_ns")
     assert at28["datasheet_read_ns"] == nested_value(
         at28_source,
@@ -3274,7 +3295,10 @@ def test_rv8gr_timing_physical_assumptions_are_source_backed_and_not_proven():
     } <= set(sram["missing_physical_fields"])
 
     edge = assumptions["edge_register_setup_hold"]
-    edge_source = load_json(ROOT / edge["source"])
+    # Active compact definitions are human-authored sources.  Timing consumers
+    # read their resolved canonical view, just as the runtime does.
+    edge_source = load_package_definition(edge["part"])
+    assert edge_source is not None
     assert edge["setup_before_clock_ns"] == nested_value(
         edge_source,
         "definition_layers.timing.timing_requirements.setup_before_clock_ns.data.vcc_4_5_v",
@@ -3285,7 +3309,8 @@ def test_rv8gr_timing_physical_assumptions_are_source_backed_and_not_proven():
     )
 
     counter = assumptions["counter_setup_hold"]
-    counter_source = load_json(ROOT / counter["source"])
+    counter_source = load_package_definition(counter["part"])
+    assert counter_source is not None
     assert counter["setup_before_clock_ns"] == {
         name: values["vcc_4_5_v"]
         for name, values in nested_value(
@@ -3306,7 +3331,7 @@ def test_rv8gr_timing_physical_assumptions_are_source_backed_and_not_proven():
 def test_rv8gr_physical_candidate_paths_keep_5mhz_claim_blocked():
     timing = load_json(TIMING_MARGINS)
     candidates = {item["id"]: item for item in timing["physical_candidate_paths"]}
-    at28 = load_json(ROOT / "lib" / "standard" / "memory" / "AT28C256" / "definition" / "definition.json")
+    at28 = load_package_definition("AT28C256")
     tacc = nested_value(at28, "definition_layers.timing.delay.datasheet_read_ns.tacc_address_to_output")
     tfloat = nested_value(at28, "definition_layers.timing.delay.datasheet_read_ns.tdf_ce_or_oe_to_float")
     period_5mhz = next(profile["period_ns"] for profile in timing["clock_profiles"] if profile["name"] == "5_mhz")
@@ -3509,7 +3534,11 @@ def test_all_started_circuit_packages_resolve_current_chip_parts_and_numeric_pin
             definition_path = db_definition_path_for_part(part)
             if definition_path is None:
                 continue
-            definition = load_json(definition_path)
+            # A compact active source deliberately stores pins keyed by their
+            # physical number.  Validate circuit wiring against the same
+            # resolved canonical definition that Components loads at runtime.
+            definition = load_package_definition(part)
+            assert definition is not None
             pins = definition.get("pins") or definition.get("definition_layers", {}).get("physical", {}).get("pins", [])
             exact_ref_pins[ref] = {int(pin["number"]) for pin in pins}
 

@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 EXPECTED_BATCH_BLOCK_CODES = {
     "A": set(),
     "B": set(),
-    "C": {"ambiguous_symbolic_width", "composite_not_executable"},
+    "C": {"boundary_transform_not_executable", "composite_not_executable", "proof_adapter_not_implemented", "unresolved_output"},
     "D": {"unresolved_output"},
     "E": {"ambiguous_range_width", "composite_not_executable", "unresolved_output", "unsupported_port_direction"},
     "F": {"ambiguous_range_width", "composite_not_executable", "unresolved_output"},
@@ -39,7 +39,7 @@ class CircuitRunnerPackagePromotionTests(unittest.TestCase):
         cls.by_name = {result.package: result for result in cls.results}
 
     def test_inventory_audits_all_22_packages_and_declared_proofs(self) -> None:
-        self.assertEqual(22, len(circuit_package_names()))
+        self.assertEqual(23, len(circuit_package_names()))
         self.assertEqual(circuit_package_names(), tuple(result.package for result in self.results))
         for result in self.results:
             with self.subTest(package=result.package):
@@ -51,7 +51,7 @@ class CircuitRunnerPackagePromotionTests(unittest.TestCase):
     def test_promotions_require_declared_live_execution(self) -> None:
         promoted = [result for result in self.results if result.promoted]
         self.assertEqual(
-            ["RV8GR_BranchJumpControl", "RV8GR_IRQLatch", "RV8GR_ResetClockBringup",
+            ["RV8GR_AluAccumulator", "RV8GR_BranchJumpControl", "RV8GR_BusOwnership", "RV8GR_IRQLatch", "RV8GR_ResetClockBringup",
              "RV8GR_RingCounter", "RV8GR_RomDbusRead", "RV8GR_StorePath",
              "RV8GR_VirtualTestHelpers"],
             [result.package for result in promoted],
@@ -70,9 +70,7 @@ class CircuitRunnerPackagePromotionTests(unittest.TestCase):
             for item in proof["snapshot"]["provenance"].values()
         ))
     def test_loadable_but_unproved_packages_remain_explicitly_blocked(self) -> None:
-        expected = {
-            "RV8GR_AluAccumulator": "proof_state_not_executable",
-        }
+        expected = {}
         for package, code in expected.items():
             with self.subTest(package=package):
                 result = self.by_name[package]
@@ -101,16 +99,14 @@ class CircuitRunnerPackagePromotionTests(unittest.TestCase):
             if result.status == "blocked" and result.observations
         }
         self.assertEqual(
-            {
-                "RV8GR_AluAccumulator",
-            },
+            set(),
             set(observed),
         )
         self.assertTrue(all(not result.promoted for result in observed.values()))
 
     def test_batches_a_through_g_are_complete_and_explicitly_blocked(self) -> None:
         self.assertEqual(tuple("ABCDEFG"), tuple(PROMOTION_BATCHES))
-        self.assertEqual(13, sum(len(packages) for packages in PROMOTION_BATCHES.values()))
+        self.assertEqual(14, sum(len(packages) for packages in PROMOTION_BATCHES.values()))
         batches = audit_promotion_batches()
         observed_packages = {item.package for results in batches.values() for item in results}
         self.assertEqual(EXPECTED_BATCH_PACKAGES, observed_packages)
@@ -121,7 +117,7 @@ class CircuitRunnerPackagePromotionTests(unittest.TestCase):
                 codes = {block.code for item in results for block in item.blocks}
                 self.assertEqual(EXPECTED_BATCH_BLOCK_CODES[batch], codes)
         self.assertEqual(
-            ["RV8GR_VirtualTestHelpers", "RV8GR_BranchJumpControl", "RV8GR_StorePath", "RV8GR_ResetClockBringup"],
+            ["RV8GR_VirtualTestHelpers", "RV8GR_BranchJumpControl", "RV8GR_StorePath", "RV8GR_ResetClockBringup", "RV8GR_BusOwnership"],
             [
                 item.package
                 for results in batches.values()

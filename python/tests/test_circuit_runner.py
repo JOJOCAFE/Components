@@ -16,6 +16,7 @@ from chiplib.circuit_package import parse_circuit_package
 
 ROOT = Path(__file__).resolve().parents[2]
 RING = ROOT / "examples" / "circuits" / "RV8GR_RingCounter" / "circuit.json"
+ALU_ACCUMULATOR = ROOT / "examples" / "circuits" / "RV8GR_AluAccumulator" / "circuit.json"
 PACKAGE_ROOT = ROOT / "examples" / "circuits"
 
 
@@ -64,6 +65,24 @@ class CircuitRunnerTests(unittest.TestCase):
         self.assertEqual(before, runner.read())
         runner.set_input("CLK", 0)
         self.assertEqual(before, runner.read())
+
+    def test_alu_accumulator_initializes_through_public_t2_cycle(self) -> None:
+        runner = load_circuit_runner(ALU_ACCUMULATOR)
+        result = runner.initialize_state("AC", 0x42)
+        self.assertEqual("AC", result["state"])
+        self.assertEqual((0, 1, 0, 0, 0, 0, 1, 0), result["observed"])
+        self.assertEqual("ACC_CLK", result["clock"])
+        self.assertEqual(({
+            "name": "u21_z_flag_sample", "clock": "ACC_CLK", "delay_ns": 20,
+            "targets": ("U21",),
+        },), result["modeled_samples"])
+        self.assertEqual((0, 1, 0, 0, 0, 0, 1, 0), runner.read("AC0..AC7"))
+        self.assertEqual(0, runner.snapshot()["ports"]["inputs"]["T2"])
+        self.assertFalse(any(source["name"].startswith("state:") for source in runner.snapshot()["board"]["sources"]))
+
+        with self.assertRaises(CircuitRunnerError) as caught:
+            runner.pulse_clock("T2", propagated_rising_on_fall=("ACC_CLK",))
+        self.assertEqual("propagated_clock_requires_return_low", caught.exception.issues[0].code)
 
     def test_sessions_are_isolated(self) -> None:
         first = load_circuit_runner(RING)
@@ -168,6 +187,14 @@ class CircuitRunnerTests(unittest.TestCase):
                 CircuitRunner(parse_circuit_package(data, source_path=ROOT / "fixture.json"))
             self.assertIn(code, {issue.code for issue in caught.exception.issues})
             self.assertEqual("circuit_runner_error", caught.exception.to_dict()["error"])
+
+    def test_rejects_unflattened_boundary_selector_instead_of_inferring_a_net_bridge(self) -> None:
+        data = package_data()
+        data["ports"][0]["name"] = "IRH0..IRH7"
+        data["wiring"][0] = {"net": "CTRL", "connections": ["IRH0..IRH7[3]", "U1.1"]}
+        with self.assertRaises(CircuitRunnerError) as caught:
+            CircuitRunner(parse_circuit_package(data, source_path=ROOT / "fixture.json"))
+        self.assertIn("boundary_transform_not_executable", {item.code for item in caught.exception.issues})
 
     def test_symbolic_endpoint_resolves_exact_public_pin_name(self) -> None:
         data = package_data()

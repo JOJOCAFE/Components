@@ -368,6 +368,13 @@
       "claim_boundary": "functional edge behavior only; external switch edge quality must be measured"
     },
     {
+      "circuit": "RV8GR_InterruptEnable",
+      "coverage": "functional_decode_and_gated_edge",
+      "timing_checks": ["EI decode", "U33 to U31 gated clock", "IE flip-flop edge", "non-EI hold"],
+      "physical_status": "not_proven",
+      "claim_boundary": "source-backed interrupt-enable path; live proof requires an explicit U31 clock event and physical edge quality remains unmeasured"
+    },
+    {
       "circuit": "RV8GR_RomDbusRead",
       "coverage": "bus_ownership_and_physical_deadband_required",
       "timing_checks": ["ROM output enable", "U7 DBUS-to-IBUS direction", "U7 disable", "ROM-vs-U7 contention rejection"],

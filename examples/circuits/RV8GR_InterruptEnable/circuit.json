@@ -1,0 +1,63 @@
+{
+  "schema": "components.lib.circuit",
+  "version": 1,
+  "id": "rv8gr_interrupt_enable",
+  "title": "RV8GR EI decode and interrupt-enable flag",
+  "source_project": {
+    "name": "RV8GR",
+    "paths": [
+      "/home/jo/kiro/RV8/RV8GR/doc/01_wiring_guide.md",
+      "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_chip_level.v"
+    ]
+  },
+  "purpose": "Execute only the v1.0 EI decode and U31 IE flip-flop state path; IRQ_FF and polling software remain outside this child.",
+  "chips": [
+    {"ref": "U24", "part": "74HC04", "role": "Inverts AC_WR to /AC_WR for EI decode"},
+    {"ref": "U33", "part": "74HC21", "role": "Four-input EI decoder"},
+    {"ref": "U31", "part": "74HC74", "role": "IE flag flip-flop"}
+  ],
+  "ports": [
+    {"name": "/RST", "direction": "input", "active_low": true},
+    {"name": "T2", "direction": "input"},
+    {"name": "SRC", "direction": "input"},
+    {"name": "XOR_MODE", "direction": "input"},
+    {"name": "AC_WR", "direction": "input"},
+    {"name": "/AC_WR", "direction": "internal", "active_low": true},
+    {"name": "/XOR_MODE", "direction": "internal", "active_low": true},
+    {"name": "EI_decode", "direction": "internal", "edge": "rising"},
+    {"name": "IE", "direction": "output"}
+  ],
+  "wiring": [
+    {"net": "/RST", "connections": ["U31.1"], "rule": "LOW asynchronously clears IE."},
+    {"net": "AC_WR", "connections": ["U24.11"]},
+    {"net": "/AC_WR", "connections": ["U24.10", "U33.13"]},
+    {"net": "XOR_MODE", "connections": ["U24.9"]},
+    {"net": "/XOR_MODE", "connections": ["U24.8", "U33.12"]},
+    {"net": "T2", "connections": ["U33.9"]},
+    {"net": "SRC", "connections": ["U33.10"]},
+    {"net": "EI_decode", "connections": ["U33.8", "U31.3"], "rule": "A rising decode edge clocks constant 1 into IE."},
+    {"net": "IE_D", "connections": ["U31.2", "VCC"]},
+    {"net": "IE", "connections": ["U31.5", "IE"]},
+    {"net": "VCC", "connections": ["U24.14", "U33.14", "U31.4", "U31.14"]},
+    {"net": "GND", "connections": ["U24.7", "U33.7", "U31.7"]}
+  ],
+  "behavior": {
+    "ei_decode": "EI_decode=T2 AND SRC AND NOT(XOR_MODE) AND NOT(AC_WR).",
+    "ie": "U31 captures constant 1 on the EI_decode rising edge; /RST LOW clears IE.",
+    "v1_boundary": "DI has no v1.0 hardware clear path; this child does not create IRQ acknowledgement, automatic vectoring, or a physical timing claim."
+  },
+  "timing": {
+    "clocking": "edge_sensitive",
+    "trigger_edges": ["EI_decode rising sets IE", "/RST LOW clears IE asynchronously"],
+    "scope": "functional composition only; physical setup/hold and board-edge quality remain separate evidence."
+  },
+  "verification": {
+    "tests": ["tests/interrupt_enable.json"],
+    "guarantees": [
+      "Only T2/SRC/XOR_MODE/AC_WR=1/1/0/0 produces the EI decode edge",
+      "EI sets IE through U31 rather than a virtual state override",
+      "Reset clears IE"
+    ]
+  },
+  "audience": "students ages 10-15, still useful for older learners"
+}

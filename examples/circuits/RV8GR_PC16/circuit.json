@@ -32,6 +32,8 @@
     {"name": "RCO0..RCO2", "direction": "internal"}
   ],
   "wiring": [
+    {"net": "VCC", "connections": ["VCC", "U1.16", "U2.16", "U3.16", "U4.16"], "description": "Documented 74HC161 positive supply rail."},
+    {"net": "GND", "connections": ["GND", "U1.8", "U2.8", "U3.8", "U4.8"], "description": "Documented 74HC161 ground rail."},
     {"net": "CLK", "connections": ["U1.2", "U2.2", "U3.2", "U4.2"]},
     {"net": "/RST", "connections": ["U1.1", "U2.1", "U3.1", "U4.1"]},
     {"net": "/PC_LD", "connections": ["U1.9", "U2.9", "U3.9", "U4.9"]},
@@ -39,10 +41,9 @@
     {"net": "RCO0", "connections": ["U1.15", "U2.10"]},
     {"net": "RCO1", "connections": ["U2.15", "U3.10"]},
     {"net": "RCO2", "connections": ["U3.15", "U4.10"]},
-    {"net": "IRL0..IRL3", "connections": ["U1.3", "U1.4", "U1.5", "U1.6"]},
-    {"net": "IRL4..IRL7", "connections": ["U2.3", "U2.4", "U2.5", "U2.6"]},
-    {"net": "PG0..PG3", "connections": ["U3.3", "U3.4", "U3.5", "U3.6"]},
-    {"net": "PG4..PG7", "connections": ["U4.3", "U4.4", "U4.5", "U4.6"]}
+    {"net": "IRL0..IRL7", "connections": ["U1.3", "U1.4", "U1.5", "U1.6", "U2.3", "U2.4", "U2.5", "U2.6", "IRL0..IRL7"]},
+    {"net": "PG0..PG7", "connections": ["U3.3", "U3.4", "U3.5", "U3.6", "U4.3", "U4.4", "U4.5", "U4.6", "PG0..PG7"]},
+    {"net": "PC0..PC15", "connections": ["U1.14", "U1.13", "U1.12", "U1.11", "U2.14", "U2.13", "U2.12", "U2.11", "U3.14", "U3.13", "U3.12", "U3.11", "U4.14", "U4.13", "U4.12", "U4.11", "PC0..PC15"]}
   ],
   "behavior": {
     "reset": "/RST LOW asynchronously clears PC to 0x0000.",

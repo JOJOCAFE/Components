@@ -37,7 +37,7 @@
     {"name": "PG0..PG7", "direction": "output"},
     {"name": "DP0..DP7", "direction": "output"},
     {"name": "IRL0..IRL7", "direction": "input"},
-    {"name": "PC_LOAD0..PC_LOAD15", "direction": "output"}
+    {"name": "PC_LOAD0..PC_LOAD15", "direction": "internal", "description": "Documentation-only {PG,IRL} target shorthand; the executable PC16 child receives PG and IRL directly."}
   ],
   "wiring": [
     {"net": "IBUS0..IBUS7", "connections": ["U23.2..9", "U32.2..9"]},

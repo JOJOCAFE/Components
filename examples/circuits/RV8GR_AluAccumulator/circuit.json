@@ -76,19 +76,19 @@
     "adder": "SUM = AC + XOR_Y + ALU_SUB. With XOR_MODE=0 this gives ADD or two's-complement SUB.",
     "ac_mux": "MUX_SEL=0 selects SUM. MUX_SEL=1 selects XOR_Y.",
     "li": "LI works with XOR_MODE=0, ALU_SUB=0, MUX_SEL=1, so AC receives IBUS.",
-    "accumulator": "U9 captures the selected result on ACC_CLK rising. ACC_CLK is valid only during T2 when AC_WR=1.",
-    "z_flag": "Z is cleared by the ACC_CLK edge and then U22./Y asynchronously presets it when the new AC equals zero. U22./Y is active LOW when AC equals zero.",
+    "accumulator": "U9 captures the selected result on ACC_CLK rising. U27 makes ACC_CLK=NAND(T2, AC_WR), so the rising capture edge occurs when T2 returns LOW after an asserted T2/AC_WR phase.",
+    "z_flag": "The modeled RV8GR contract samples U21 on ACC_CLK after 20 ns, then U22./Y asynchronously presets Z when the newly captured AC equals zero. U22./Y is active LOW when AC equals zero. This is chip-level RTL behavior, not a physical-board timing claim.",
     "ac_buffer": "U14 may drive AC onto IBUS only when /AC_BUF is LOW during store."
   },
   "timing": {
     "clocking": "mixed_combinational_and_edge_triggered",
     "trigger_edges": [
-      "U9 captures on ACC_CLK rising edge",
-      "U21 updates Z on the same ACC_CLK edge plus U22 async preset when AC=0"
+      "U9 captures on ACC_CLK rising edge at the asserted T2 phase's high-to-low return",
+      "U21 modeled sample occurs 20 ns after ACC_CLK, matching rv8gr_chip_level.v SAMPLE_DELAY=20; U22 async preset then represents AC=0"
     ],
     "propagation_checks": [
       "xor_b_to_ac_d_model_path: 74HC157 + 74HC86 + two 74HC283 stages + 74HC157 = 121 ns model delay",
-      "ac_to_z_settle_model_path: 74HC574 + 74HC688 + 74HC74 = 70 ns model delay",
+      "ac_to_z_settle_model_path: 74HC574 + 74HC688 + 20 ns U21 modeled sample = 70 ns model delay",
       "ac_store_buffer_to_ibus: 74HC541 = 12 ns model delay"
     ],
     "virtual_test_helpers": [
@@ -100,7 +100,37 @@
       "AC captures outside T2 AC_WR",
       "AC feedback treated as a combinational loop instead of registered feedback",
       "U14 drives IBUS outside store",
-      "Z sampled before the comparator/preset path settles"
+      "Z sampled before the package-specific 20 ns modeled comparator/sample phase settles"
+    ]
+  },
+  "runtime": {
+    "state_initializers": [
+      {
+        "state": "AC",
+        "kind": "clocked_write",
+        "data_input": "IBUS0..IBUS7",
+        "controls": {
+          "ALU_SUB": 0,
+          "XOR_MODE": 0,
+          "MUX_SEL": 1,
+          "AC_WR": 1
+        },
+        "clock_input": "T2",
+        "gated_clock": "ACC_CLK",
+        "observe": "AC0..AC7",
+        "description": "Drive LI controls and IBUS, then complete T2 high-to-low so NAND ACC_CLK rises and U9/U21 capture normally."
+      }
+    ],
+    "modeled_post_clock_samples": [
+      {
+        "name": "u21_z_flag_sample",
+        "clock": "ACC_CLK",
+        "delay_ns": 20,
+        "targets": [{"chip": "U21", "pin": 3}],
+        "source": "/home/jo/kiro/RV8/RV8GR/rtl/rv8gr_chip_level.v: ttl_74hc74 #(.SAMPLE_DELAY(20)) U21",
+        "scope": "modeled_only",
+        "description": "Explicit delayed U21 sample used only to reproduce the canonical RV8GR chip-level RTL ordering after AC changes. It is not a generated PCB pulse and does not prove a hardware clock limit."
+      }
     ]
   },
   "verification": {
@@ -109,7 +139,7 @@
       "ADD, SUB, XOR, and LI datapath equations match RV8GR RTL and opcode sweep",
       "AC captures only when T2 and AC_WR create ACC_CLK",
       "No-edge and non-AC_WR cases hold AC",
-      "Z flag follows the captured AC value",
+      "Z flag follows the captured AC value after the modeled 20 ns U21 sample phase",
       "U14 store buffer drives IBUS only when enabled",
       "Clock profiles cover manual push, random 100 pushes, 50 kHz, 1 MHz, 2 MHz, and 5 MHz functional simulation"
     ]

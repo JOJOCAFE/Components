@@ -20,6 +20,17 @@ NUMERIC_ENDPOINT_RE = re.compile(
 SYMBOLIC_ENDPOINT_RE = re.compile(
     r"^(?P<ref>[A-Za-z][A-Za-z0-9_]*)\.(?P<name>[^\s,]+)$"
 )
+# A boundary selector is deliberately separate from a chip endpoint.  It makes
+# the source order visible in a parent-to-child mapping without pretending that
+# same-named signals are electrically connected.
+BOUNDARY_SELECTOR_RE = re.compile(
+    r"^(?P<base>.+)\[(?P<start>[0-9]+)(?:\.\.(?P<end>[0-9]+))?\]$"
+)
+# Ordered concatenation is intentionally restricted to package boundaries.  It
+# is not an expression language: each term is an already-declared port or net,
+# and its order is the destination wire order.  This is enough to describe the
+# RV8GR address wiring without inferring a connection from matching names.
+BOUNDARY_CONCAT_RE = re.compile(r"^\{(?P<terms>[^{}]+)\}$")
 PORT_DIRECTIONS = {
     "input", "output", "input/output", "input_output", "bidirectional", "internal", "passive", "power", "absent", "unknown"
 }
@@ -96,7 +107,40 @@ class BoundaryEndpoint:
     text: str
 
 
-CircuitEndpoint = NumericEndpoint | SymbolicEndpoint | BoundaryEndpoint
+@dataclass(frozen=True)
+class BoundarySelectorEndpoint:
+    """An ordered bit selection from a declared package boundary or net.
+
+    ``IRH0..IRH7[3]`` selects the fourth expanded IRH line.  ``A0..A15[15..8]``
+    is an explicitly descending selection.  It is source-side syntax only:
+    it never implies a same-name child binding or a hidden width conversion.
+    """
+
+    text: str
+    base: str
+    start: int
+    end: int
+
+    @property
+    def indices(self) -> tuple[int, ...]:
+        step = 1 if self.end >= self.start else -1
+        return tuple(range(self.start, self.end + step, step))
+
+
+@dataclass(frozen=True)
+class BoundaryConcatEndpoint:
+    """An ordered join of declared boundaries for one parent wire.
+
+    ``{IRL0..IRL7,DP0..DP6}`` is the low-to-high destination order for the
+    RV8GR A0..A14 address wire.  It deliberately has no operators, constants,
+    inversions, or implicit width conversion.
+    """
+
+    text: str
+    terms: tuple[str, ...]
+
+
+CircuitEndpoint = NumericEndpoint | SymbolicEndpoint | BoundaryEndpoint | BoundarySelectorEndpoint | BoundaryConcatEndpoint
 
 
 def expand_boundary_name(name: str) -> tuple[str, ...]:
@@ -330,8 +374,22 @@ def _parse_wiring(value: Any, issue: Any) -> list[CircuitWiring]:
             seen.add(text)
             numeric = NUMERIC_ENDPOINT_RE.fullmatch(text)
             symbolic = SYMBOLIC_ENDPOINT_RE.fullmatch(text)
+            selector = BOUNDARY_SELECTOR_RE.fullmatch(text)
+            concat = BOUNDARY_CONCAT_RE.fullmatch(text)
             if numeric:
                 endpoints.append(NumericEndpoint(text, numeric["ref"], int(numeric["start"]), int(numeric["end"] or numeric["start"])))
+            elif selector:
+                endpoints.append(BoundarySelectorEndpoint(
+                    text,
+                    selector["base"],
+                    int(selector["start"]),
+                    int(selector["end"] or selector["start"]),
+                ))
+            elif concat:
+                terms = tuple(term.strip() for term in concat["terms"].split(","))
+                if not terms or any(not term for term in terms):
+                    issue("invalid_boundary_concat", path, "concatenation must contain non-empty boundary terms")
+                endpoints.append(BoundaryConcatEndpoint(text, terms))
             elif symbolic:
                 endpoints.append(SymbolicEndpoint(text, symbolic["ref"], symbolic["name"]))
             else:
@@ -379,6 +437,40 @@ def _validate_endpoints(chips: list[CircuitChip], ports: list[CircuitPort], wiri
     for wire_index, wire in enumerate(wiring):
         for endpoint_index, endpoint in enumerate(wire.connections):
             path = f"$.wiring[{wire_index}].connections[{endpoint_index}]"
+            if isinstance(endpoint, BoundarySelectorEndpoint):
+                if endpoint.base not in boundaries:
+                    issue("undeclared_selector_boundary", path, f"selector base {endpoint.base!r} is not a declared port or net")
+                    continue
+                base_width = len(expand_boundary_name(endpoint.base))
+                invalid = [index for index in endpoint.indices if index >= base_width]
+                if invalid:
+                    issue(
+                        "selector_index_out_of_range", path,
+                        f"selector {endpoint.text!r} addresses {invalid}; {endpoint.base!r} has width {base_width}",
+                    )
+                net_width = len(expand_boundary_name(wire.net))
+                if len(endpoint.indices) != net_width:
+                    issue(
+                        "selector_width_mismatch", path,
+                        f"selector {endpoint.text!r} has width {len(endpoint.indices)}, expected {net_width} for {wire.net!r}",
+                    )
+                continue
+            if isinstance(endpoint, BoundaryConcatEndpoint):
+                if len(endpoint.terms) < 2:
+                    issue("invalid_boundary_concat", path, "concatenation requires at least two boundary terms")
+                    continue
+                unknown = [term for term in endpoint.terms if term not in boundaries]
+                if unknown:
+                    issue("undeclared_concat_boundary", path, f"concatenation references undeclared boundaries {unknown!r}")
+                    continue
+                total_width = sum(len(expand_boundary_name(term)) for term in endpoint.terms)
+                net_width = len(expand_boundary_name(wire.net))
+                if total_width != net_width:
+                    issue(
+                        "concat_width_mismatch", path,
+                        f"concatenation {endpoint.text!r} has width {total_width}, expected {net_width} for {wire.net!r}",
+                    )
+                continue
             if endpoint.text in boundaries:
                 if isinstance(endpoint, BoundaryEndpoint) and endpoint.text.upper() not in {"VCC", "GND"}:
                     lines = expand_boundary_name(wire.net)

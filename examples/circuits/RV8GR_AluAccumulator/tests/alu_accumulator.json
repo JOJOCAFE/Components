@@ -26,6 +26,13 @@
     {"name": "zero_presets_z", "ac": "0x00", "expect_compare_n": 0, "expect_z": 1},
     {"name": "toggle_back_to_zero", "sequence": ["0x00", "0x01", "0x00"], "expect_z_sequence": [1, 0, 1]}
   ],
+  "z_settle_vectors": [
+    {"name": "zero_to_nonzero_after_modeled_sample", "start_ac": "0x00", "ibus": "0x42", "ac_wr": 1, "phase": "T2", "expect_ac": "0x42", "expect_z": 0},
+    {"name": "nonzero_to_zero_after_modeled_sample", "start_ac": "0x42", "ibus": "0x00", "ac_wr": 1, "phase": "T2", "expect_ac": "0x00", "expect_z": 1},
+    {"name": "repeated_zero_after_modeled_sample", "start_ac": "0x00", "ibus": "0x00", "ac_wr": 1, "phase": "T2", "expect_ac": "0x00", "expect_z": 1},
+    {"name": "no_edge_holds_z", "start_ac": "0x00", "ibus": "0x42", "ac_wr": 1, "phase": "T1", "expect_ac": "0x00", "expect_z": 1},
+    {"name": "non_ac_write_holds_z", "start_ac": "0x42", "ibus": "0x00", "ac_wr": 0, "phase": "T2", "expect_ac": "0x42", "expect_z": 0}
+  ],
   "propagation_checks": [
     {"name": "xor_b_to_ac_d_model_path", "parts": ["74HC157", "74HC86", "74HC283", "74HC283", "74HC157"], "expect_delay_ns": 121, "limit_ns": 200},
     {"name": "ac_to_z_settle_model_path", "parts": ["74HC574", "74HC688", "74HC74"], "expect_delay_ns": 70, "limit_ns": 200},

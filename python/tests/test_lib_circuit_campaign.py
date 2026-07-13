@@ -15,7 +15,7 @@ CAMPAIGN_JSON = ROOT / "examples" / "circuits" / "RV8GR_CIRCUIT_TEST_CAMPAIGN.js
 CAMPAIGN_MD = ROOT / "examples" / "circuits" / "RV8GR_CIRCUIT_TEST_CAMPAIGN.md"
 RUNTIME_JSON = ROOT / "examples" / "circuits" / "RV8GR_CIRCUIT_RUNTIME_EVIDENCE.json"
 PHYSICAL_PLAN = ROOT / "examples" / "circuits" / "physical_capture_plan.json"
-EXPECTED_PACKAGE_COUNT = 22
+EXPECTED_PACKAGE_COUNT = 23
 ALLOWED_OUTCOMES = {
     "pass",
     "not_applicable",

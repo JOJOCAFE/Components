@@ -9,6 +9,8 @@ import unittest
 
 from chiplib.circuit_package import (
     BoundaryEndpoint,
+    BoundaryConcatEndpoint,
+    BoundarySelectorEndpoint,
     CircuitPackageValidationError,
     NumericEndpoint,
     SymbolicEndpoint,
@@ -42,11 +44,11 @@ def valid_package() -> dict:
 
 
 class CircuitPackageTests(unittest.TestCase):
-    def test_all_22_library_packages_parse(self) -> None:
-        self.assertEqual(22, len(CIRCUIT_FILES))
+    def test_all_23_library_packages_parse(self) -> None:
+        self.assertEqual(23, len(CIRCUIT_FILES))
         packages = [load_circuit_package(path) for path in CIRCUIT_FILES]
-        self.assertEqual(22, len(packages))
-        self.assertEqual(22, len({package.id for package in packages}))
+        self.assertEqual(23, len(packages))
+        self.assertEqual(23, len({package.id for package in packages}))
         self.assertTrue(all(package.schema == "components.lib.circuit" for package in packages))
 
     def test_returns_typed_chips_ports_wiring_and_verification(self) -> None:
@@ -66,6 +68,49 @@ class CircuitPackageTests(unittest.TestCase):
         endpoint = package.wiring[0].connections[1]
         self.assertIsInstance(endpoint, NumericEndpoint)
         self.assertEqual((1, 2, 3, 4, 5, 6), endpoint.pins)
+
+    def test_boundary_selector_is_explicit_ordered_source_mapping(self) -> None:
+        data = valid_package()
+        data["ports"][0]["name"] = "IRH0..IRH7"
+        data["wiring"][0] = {"net": "CTRL", "connections": ["IRH0..IRH7[3]", "U1.1"]}
+        package = parse_circuit_package(data, source_path=ROOT / "fixture.json")
+        endpoint = package.wiring[0].connections[0]
+        self.assertIsInstance(endpoint, BoundarySelectorEndpoint)
+        self.assertEqual("IRH0..IRH7", endpoint.base)
+        self.assertEqual((3,), endpoint.indices)
+
+    def test_rejects_selector_width_and_index_errors(self) -> None:
+        data = valid_package()
+        data["ports"][0]["name"] = "IRH0..IRH7"
+        data["wiring"][0] = {"net": "CTRL0..CTRL1", "connections": ["IRH0..IRH7[9]", "U1.1"]}
+        with self.assertRaises(CircuitPackageValidationError) as caught:
+            parse_circuit_package(data, source_path=ROOT / "fixture.json")
+        self.assertEqual(
+            {"selector_index_out_of_range", "selector_width_mismatch"},
+            {item.code for item in caught.exception.issues},
+        )
+
+    def test_boundary_concat_is_an_explicit_ordered_mapping(self) -> None:
+        data = valid_package()
+        data["ports"] = [
+            {"name": "IRL0..IRL7", "direction": "input"},
+            {"name": "DP0..DP6", "direction": "input"},
+            {"name": "OUT", "direction": "output"},
+        ]
+        data["wiring"][0] = {"net": "A0..A14", "connections": ["{IRL0..IRL7,DP0..DP6}"]}
+        package = parse_circuit_package(data, source_path=ROOT / "fixture.json")
+        endpoint = package.wiring[0].connections[0]
+        self.assertIsInstance(endpoint, BoundaryConcatEndpoint)
+        self.assertEqual(("IRL0..IRL7", "DP0..DP6"), endpoint.terms)
+
+    def test_rejects_concat_with_wrong_total_width(self) -> None:
+        data = valid_package()
+        data["ports"][0]["name"] = "IRL0..IRL7"
+        data["ports"].append({"name": "DP0..DP7", "direction": "input"})
+        data["wiring"][0] = {"net": "A0..A14", "connections": ["{IRL0..IRL7,DP0..DP7}"]}
+        with self.assertRaises(CircuitPackageValidationError) as caught:
+            parse_circuit_package(data, source_path=ROOT / "fixture.json")
+        self.assertEqual({"concat_width_mismatch"}, {item.code for item in caught.exception.issues})
 
     def test_collects_structured_duplicate_and_reference_errors(self) -> None:
         data = valid_package()

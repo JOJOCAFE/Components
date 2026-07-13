@@ -76,14 +76,16 @@ Current promotion boundary:
   directly promoted;
   BranchJumpControl passes all nine declared vectors after the package gained
   its required `/JUMP` inversion. Loadability is not proof completion. The
-  public proof audit executes all 22 packages fail-closed. AluAccumulator
+  public proof audit executes all 23 packages fail-closed. AluAccumulator
   reaches a later state/write-observation blocker after live checks.
   Partial observations remain blocked evidence and cannot count as promotion.
 - Batches A-G all have current structured public-runner results. D-F are now
   explicitly blocked by unresolved outputs, width/port contracts, or
   non-executable composition rather than left as generic pending work.
-- `RV8GR_FullControlOpcodeSweep` and
-  `RV8GR_WholeSystemChipLevelVirtual` remain blocked by absent authoritative
+- `RV8GR_BusOwnership` is directly promoted through seven live phase vectors
+  and five labelled forced-control conflict checks. Its package-level modeled
+  timing is still pending. `RV8GR_FullControlOpcodeSweep` and
+  `RV8GR_WholeSystemChipLevelVirtual` remain blocked by absent executable
   child-port mappings. Same-name connections are not inferred.
 - RingCounter is the only package with promoted live package-level modeled
   timing. Its nine before/at/after setup, hold, and pulse-width checks execute

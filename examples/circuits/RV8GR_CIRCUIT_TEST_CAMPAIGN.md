@@ -9,13 +9,14 @@ Allowed outcomes: `pass`, `not_applicable`, `not_directly_executed`, and `physic
 | RV8GR_RingCounter | pass | pass | pass | pass | physical_measurement_required |
 | RV8GR_PC16 | pass | not_directly_executed | pass | not_directly_executed | physical_measurement_required |
 | RV8GR_AddressMux16 | pass | not_directly_executed | pass | not_directly_executed | physical_measurement_required |
-| RV8GR_BusOwnership | pass | not_directly_executed | pass | not_directly_executed | physical_measurement_required |
+| RV8GR_BusOwnership | pass | pass | pass | not_directly_executed | physical_measurement_required |
 | RV8GR_InstructionLatch | pass | not_directly_executed | pass | not_directly_executed | physical_measurement_required |
 | RV8GR_StorePath | pass | pass | pass | not_directly_executed | physical_measurement_required |
 | RV8GR_DataPageMemory | pass | not_directly_executed | pass | not_directly_executed | physical_measurement_required |
 | RV8GR_IRQLatch | pass | pass | pass | not_directly_executed | physical_measurement_required |
+| RV8GR_InterruptEnable | not_directly_executed | not_directly_executed | pass | not_directly_executed | physical_measurement_required |
 | RV8GR_RomDbusRead | pass | pass | pass | not_directly_executed | physical_measurement_required |
-| RV8GR_AluAccumulator | pass | not_directly_executed | pass | not_directly_executed | physical_measurement_required |
+| RV8GR_AluAccumulator | pass | pass | pass | not_directly_executed | physical_measurement_required |
 | RV8GR_PageDataRegisters | pass | not_directly_executed | pass | not_directly_executed | physical_measurement_required |
 | RV8GR_BranchJumpControl | pass | pass | pass | not_directly_executed | physical_measurement_required |
 | RV8GR_VirtualTestHelpers | pass | pass | pass | not_applicable | not_applicable |
@@ -57,7 +58,7 @@ Allowed outcomes: `pass`, `not_applicable`, `not_directly_executed`, and `physic
 - Physical: `physical_measurement_required` (not_proven)
 - Evidence: `examples/circuits/RV8GR_COVERAGE_INDEX.json`, `examples/circuits/RV8GR_PC16/circuit.json`, `examples/circuits/RV8GR_PC16/tests/pc16.json`, `python/tests/test_lib_circuits.py::test_rv8gr_pc16_vectors_execute`, `python/tests/test_lib_circuits.py::test_rv8gr_pc16_vectors_execute_with_component_models`, `python/tests/test_lib_circuits.py::test_rv8gr_pc16_package_shape`, `examples/circuits/timing_margins.json`, `examples/circuits/physical_capture_plan.json`, `examples/circuits/RV8GR_CIRCUIT_RUNTIME_EVIDENCE.json`
 - Logical blockers: `[]`
-- Functional blockers: `[{"code": "unresolved_output", "path": "$.ports[6].name", "message": "port 'PC0..PC15' has no concrete net"}]`
+- Functional blockers: `[{"code": "ambiguous_symbolic_width", "path": "$.wiring[9].connections[8]", "message": "symbolic endpoint 'IRL0..IRL7' has no concrete live chip instance"}, {"code": "ambiguous_symbolic_width", "path": "$.wiring[10].connections[8]", "message": "symbolic endpoint 'PG0..PG7' has no concrete live chip instance"}, {"code": "ambiguous_symbolic_width", "path": "$.wiring[11].connections[16]", "message": "symbolic endpoint 'PC0..PC15' has no concrete live chip instance"}]`
 - Timing blockers: `[{"code": "functional_promotion_required", "path": "examples/circuits/RV8GR_PC16/circuit.json", "message": "package timing cannot pass before its live functional proof is promoted"}]`
 - Limitations: functional timing plus model slack Direct live execution is blocked; see runtime_evidence.functional.blocks. Package-level modeled timing is blocked; see runtime_evidence.timing.blocks. Composition/static pass is package-shape validation, not composed-system execution. Physical stage 2 (program_counter_branch_jump) remains an unmeasured capture contract.
 
@@ -81,15 +82,15 @@ Allowed outcomes: `pass`, `not_applicable`, `not_directly_executed`, and `physic
 - Stage: `bus_safety`
 - Focus: T0/T1/T2 IBUS/DBUS drivers and bus-fight detection
 - Logical: `pass` (named_logical_test_executed)
-- Direct live model: `not_directly_executed` (runtime_package_proof_blocked)
+- Direct live model: `pass` (runtime_package_proof_passed)
 - Composition/static: `pass` (executable_static_package_check)
 - Modeled timing: `not_directly_executed` (runtime_package_timing_blocked)
 - Physical: `physical_measurement_required` (blocked_missing_deadband)
 - Evidence: `examples/circuits/RV8GR_COVERAGE_INDEX.json`, `examples/circuits/RV8GR_BusOwnership/circuit.json`, `examples/circuits/RV8GR_BusOwnership/tests/bus_ownership.json`, `python/tests/test_lib_circuits.py::test_rv8gr_bus_ownership_phase_vectors_are_conflict_free`, `python/tests/test_lib_circuits.py::test_rv8gr_bus_ownership_package_shape`, `examples/circuits/timing_margins.json`, `examples/circuits/physical_capture_plan.json`, `examples/circuits/RV8GR_CIRCUIT_RUNTIME_EVIDENCE.json`
 - Logical blockers: `[]`
-- Functional blockers: `[{"code": "ambiguous_symbolic_width", "path": "$.wiring[0].connections[3]", "message": "symbolic endpoint 'IBUS0..IBUS7' has no concrete live chip instance"}]`
-- Timing blockers: `[{"code": "functional_promotion_required", "path": "examples/circuits/RV8GR_BusOwnership/circuit.json", "message": "package timing cannot pass before its live functional proof is promoted"}]`
-- Limitations: bus logic proven; physical overlap timing still requires scope/source evidence Direct live execution is blocked; see runtime_evidence.functional.blocks. Package-level modeled timing is blocked; see runtime_evidence.timing.blocks. Composition/static pass is package-shape validation, not composed-system execution. Physical stage 3 (memory_buses_address_mux) remains an unmeasured capture contract.
+- Functional blockers: `[]`
+- Timing blockers: `[{"code": "timing_execution_failed", "path": "examples/circuits/RV8GR_BusOwnership/circuit.json", "message": "no package-specific threshold-enforcing timing execution adapter"}]`
+- Limitations: bus logic proven; physical overlap timing still requires scope/source evidence Package-level modeled timing is blocked; see runtime_evidence.timing.blocks. Composition/static pass is package-shape validation, not composed-system execution. Physical stage 3 (memory_buses_address_mux) remains an unmeasured capture contract.
 
 ### RV8GR_InstructionLatch
 
@@ -151,6 +152,21 @@ Allowed outcomes: `pass`, `not_applicable`, `not_directly_executed`, and `physic
 - Timing blockers: `[{"code": "timing_execution_failed", "path": "examples/circuits/RV8GR_IRQLatch/circuit.json", "message": "no package-specific threshold-enforcing timing execution adapter"}]`
 - Limitations: functional edge behavior only; external switch edge quality must be measured Package-level modeled timing is blocked; see runtime_evidence.timing.blocks. Composition/static pass is package-shape validation, not composed-system execution. Physical stage 6 (irq_and_rv8_bus) remains an unmeasured capture contract.
 
+### RV8GR_InterruptEnable
+
+- Stage: `interrupt_enable`
+- Focus: U33 EI decode and U31 IE flip-flop clock contract
+- Logical: `not_directly_executed` (named_logical_test_blocked)
+- Direct live model: `not_directly_executed` (runtime_package_proof_blocked)
+- Composition/static: `pass` (executable_static_package_check)
+- Modeled timing: `not_directly_executed` (runtime_package_timing_blocked)
+- Physical: `physical_measurement_required` (not_proven)
+- Evidence: `examples/circuits/RV8GR_COVERAGE_INDEX.json`, `examples/circuits/RV8GR_InterruptEnable/circuit.json`, `examples/circuits/RV8GR_InterruptEnable/tests/interrupt_enable.json`, `python/tests/test_circuit_hierarchy.py::test_full_control_hierarchy_has_explicit_child_port_mappings`, `examples/circuits/timing_margins.json`, `examples/circuits/physical_capture_plan.json`, `examples/circuits/RV8GR_CIRCUIT_RUNTIME_EVIDENCE.json`
+- Logical blockers: `[{"code": "logical_test_reference_invalid", "path": "examples/circuits/RV8GR_COVERAGE_INDEX.json", "message": "expected one named logical test for RV8GR_InterruptEnable; found 0"}]`
+- Functional blockers: `[{"code": "proof_adapter_not_implemented", "path": "examples/circuits/RV8GR_InterruptEnable/tests/interrupt_enable.json#$", "message": "RV8GR_InterruptEnable loads, but no package-specific adapter executes its declared proof vectors"}]`
+- Timing blockers: `[{"code": "functional_promotion_required", "path": "examples/circuits/RV8GR_InterruptEnable/circuit.json", "message": "package timing cannot pass before its live functional proof is promoted"}]`
+- Limitations: source-backed interrupt-enable path; live proof requires an explicit U31 clock event and physical edge quality remains unmeasured Logical proof execution is blocked; see runtime_evidence.logical.blocks. Direct live execution is blocked; see runtime_evidence.functional.blocks. Package-level modeled timing is blocked; see runtime_evidence.timing.blocks. Composition/static pass is package-shape validation, not composed-system execution. No package-specific physical stage exists; shared board captures still gate physical claims.
+
 ### RV8GR_RomDbusRead
 
 - Stage: `memory_read`
@@ -171,15 +187,15 @@ Allowed outcomes: `pass`, `not_applicable`, `not_directly_executed`, and `physic
 - Stage: `alu`
 - Focus: ALU path timing, AC latch edge, Z flag settle
 - Logical: `pass` (named_logical_test_executed)
-- Direct live model: `not_directly_executed` (runtime_package_proof_blocked)
+- Direct live model: `pass` (runtime_package_proof_passed)
 - Composition/static: `pass` (executable_static_package_check)
 - Modeled timing: `not_directly_executed` (runtime_package_timing_blocked)
 - Physical: `physical_measurement_required` (not_proven)
 - Evidence: `examples/circuits/RV8GR_COVERAGE_INDEX.json`, `examples/circuits/RV8GR_AluAccumulator/circuit.json`, `examples/circuits/RV8GR_AluAccumulator/tests/alu_accumulator.json`, `python/tests/test_lib_circuits.py::test_rv8gr_alu_accumulator_vectors_execute`, `python/tests/test_lib_circuits.py::test_rv8gr_alu_adder_vectors_execute_with_component_models`, `python/tests/test_lib_circuits.py::test_rv8gr_alu_accumulator_package_shape`, `examples/circuits/timing_margins.json`, `examples/circuits/physical_capture_plan.json`, `examples/circuits/RV8GR_CIRCUIT_RUNTIME_EVIDENCE.json`
 - Logical blockers: `[]`
-- Functional blockers: `[{"code": "proof_state_not_executable", "path": "examples/circuits/RV8GR_AluAccumulator/tests/alu_accumulator.json#$.vectors[3].start_ac", "message": "remaining independent vectors require loading accumulator state through a public API; CircuitRunner exposes no chip-state injection"}]`
-- Timing blockers: `[{"code": "functional_promotion_required", "path": "examples/circuits/RV8GR_AluAccumulator/circuit.json", "message": "package timing cannot pass before its live functional proof is promoted"}]`
-- Limitations: tightest listed model path; physical 5 MHz still not proven Direct live execution is blocked; see runtime_evidence.functional.blocks. Package-level modeled timing is blocked; see runtime_evidence.timing.blocks. Composition/static pass is package-shape validation, not composed-system execution. Physical stage 4 (instruction_alu_accumulator_zero) remains an unmeasured capture contract.
+- Functional blockers: `[]`
+- Timing blockers: `[{"code": "timing_execution_failed", "path": "examples/circuits/RV8GR_AluAccumulator/circuit.json", "message": "no package-specific threshold-enforcing timing execution adapter"}]`
+- Limitations: tightest listed model path; physical 5 MHz still not proven Package-level modeled timing is blocked; see runtime_evidence.timing.blocks. Composition/static pass is package-shape validation, not composed-system execution. Physical stage 4 (instruction_alu_accumulator_zero) remains an unmeasured capture contract.
 
 ### RV8GR_PageDataRegisters
 
@@ -192,7 +208,7 @@ Allowed outcomes: `pass`, `not_applicable`, `not_directly_executed`, and `physic
 - Physical: `physical_measurement_required` (not_proven)
 - Evidence: `examples/circuits/RV8GR_COVERAGE_INDEX.json`, `examples/circuits/RV8GR_PageDataRegisters/circuit.json`, `examples/circuits/RV8GR_PageDataRegisters/tests/page_data_registers.json`, `python/tests/test_lib_circuits.py::test_rv8gr_page_register_setpg_edge_vectors_execute`, `python/tests/test_lib_circuits.py::test_rv8gr_page_register_setpg_executes_with_component_model`, `python/tests/test_lib_circuits.py::test_rv8gr_page_data_registers_package_shape`, `examples/circuits/timing_margins.json`, `examples/circuits/physical_capture_plan.json`, `examples/circuits/RV8GR_CIRCUIT_RUNTIME_EVIDENCE.json`
 - Logical blockers: `[]`
-- Functional blockers: `[{"code": "unresolved_output", "path": "$.ports[11].name", "message": "port 'PG0..PG7' has no concrete net"}, {"code": "unresolved_output", "path": "$.ports[12].name", "message": "port 'DP0..DP7' has no concrete net"}, {"code": "unresolved_output", "path": "$.ports[14].name", "message": "output 'PC_LOAD0..PC_LOAD15' has no concrete chip endpoint"}]`
+- Functional blockers: `[{"code": "unresolved_output", "path": "$.ports[11].name", "message": "port 'PG0..PG7' has no concrete net"}, {"code": "unresolved_output", "path": "$.ports[12].name", "message": "port 'DP0..DP7' has no concrete net"}]`
 - Timing blockers: `[{"code": "functional_promotion_required", "path": "examples/circuits/RV8GR_PageDataRegisters/circuit.json", "message": "package timing cannot pass before its live functional proof is promoted"}]`
 - Limitations: functional timing plus model slack Direct live execution is blocked; see runtime_evidence.functional.blocks. Package-level modeled timing is blocked; see runtime_evidence.timing.blocks. Composition/static pass is package-shape validation, not composed-system execution. Physical stage 5 (page_store_load_full_system) remains an unmeasured capture contract.
 
@@ -237,7 +253,7 @@ Allowed outcomes: `pass`, `not_applicable`, `not_directly_executed`, and `physic
 - Physical: `physical_measurement_required` (not_proven)
 - Evidence: `examples/circuits/RV8GR_COVERAGE_INDEX.json`, `examples/circuits/RV8GR_FullControlOpcodeSweep/circuit.json`, `examples/circuits/RV8GR_FullControlOpcodeSweep/tests/full_control_opcode_sweep.json`, `python/tests/test_lib_circuits.py::test_rv8gr_full_control_opcode_sweep_all_512_cases_match_verilog_equation`, `python/tests/test_lib_circuits.py::test_rv8gr_full_control_opcode_sweep_package_shape`, `examples/circuits/timing_margins.json`, `examples/circuits/physical_capture_plan.json`, `examples/circuits/RV8GR_CIRCUIT_RUNTIME_EVIDENCE.json`
 - Logical blockers: `[]`
-- Functional blockers: `[{"code": "composite_not_executable", "path": "$.chips[0].part", "message": "nested circuit 'RV8GR_BusOwnership' is not executable"}, {"code": "composite_not_executable", "path": "$.chips[1].part", "message": "nested circuit 'RV8GR_AluAccumulator' is not executable"}, {"code": "composite_not_executable", "path": "$.chips[2].part", "message": "nested circuit 'RV8GR_PageDataRegisters' is not executable"}, {"code": "composite_not_executable", "path": "$.chips[3].part", "message": "nested circuit 'RV8GR_BranchJumpControl' is not executable"}, {"code": "composite_not_executable", "path": "$.chips[4].part", "message": "nested circuit 'RV8GR_VirtualTestHelpers' is not executable"}]`
+- Functional blockers: `[{"code": "composite_not_executable", "path": "$.chips[0].part", "message": "nested circuit 'RV8GR_BusOwnership' is not executable"}, {"code": "composite_not_executable", "path": "$.chips[1].part", "message": "nested circuit 'RV8GR_AluAccumulator' is not executable"}, {"code": "composite_not_executable", "path": "$.chips[2].part", "message": "nested circuit 'RV8GR_PageDataRegisters' is not executable"}, {"code": "composite_not_executable", "path": "$.chips[3].part", "message": "nested circuit 'RV8GR_BranchJumpControl' is not executable"}, {"code": "composite_not_executable", "path": "$.chips[4].part", "message": "nested circuit 'RV8GR_PC16' is not executable"}, {"code": "composite_not_executable", "path": "$.chips[5].part", "message": "nested circuit 'RV8GR_InterruptEnable' is not executable"}, {"code": "composite_not_executable", "path": "$.chips[6].part", "message": "nested circuit 'RV8GR_VirtualTestHelpers' is not executable"}, {"code": "boundary_transform_not_executable", "path": "$.wiring[3].connections[0]", "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"}, {"code": "boundary_transform_not_executable", "path": "$.wiring[4].connections[0]", "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"}, {"code": "boundary_transform_not_executable", "path": "$.wiring[5].connections[0]", "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"}, {"code": "boundary_transform_not_executable", "path": "$.wiring[6].connections[0]", "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"}, {"code": "boundary_transform_not_executable", "path": "$.wiring[7].connections[0]", "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"}, {"code": "boundary_transform_not_executable", "path": "$.wiring[8].connections[0]", "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"}, {"code": "boundary_transform_not_executable", "path": "$.wiring[9].connections[0]", "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"}, {"code": "boundary_transform_not_executable", "path": "$.wiring[10].connections[0]", "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"}, {"code": "boundary_transform_not_executable", "path": "$.wiring[18].connections[0]", "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"}, {"code": "boundary_transform_not_executable", "path": "$.wiring[19].connections[0]", "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"}, {"code": "boundary_transform_not_executable", "path": "$.wiring[20].connections[0]", "message": "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins"}, {"code": "unresolved_output", "path": "$.ports[12].name", "message": "output '/PC_LD' has no concrete chip endpoint"}]`
 - Timing blockers: `[{"code": "functional_promotion_required", "path": "examples/circuits/RV8GR_FullControlOpcodeSweep/circuit.json", "message": "package timing cannot pass before its live functional proof is promoted"}]`
 - Limitations: control equations proven functionally; gate delay timing remains covered by specific paths Direct live execution is blocked; see runtime_evidence.functional.blocks. Package-level modeled timing is blocked; see runtime_evidence.timing.blocks. Composition/static pass is package-shape validation, not composed-system execution. No package-specific physical stage exists; shared board captures still gate physical claims.
 

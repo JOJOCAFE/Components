@@ -16,6 +16,9 @@ CONNECTION_RE = re.compile(r"^(?P<ref>[A-Za-z][A-Za-z0-9_]*)\.(?P<pin>[^,\s]+)$"
 NUMERIC_RANGE_RE = re.compile(r"^(?P<start>\d+)\.\.(?P<end>\d+)$")
 NAME_RANGE_RE = re.compile(r"^(?P<prefix>/?[A-Za-z_]+)(?P<start>\d+)\.\.(?P=prefix)(?P<end>\d+)$")
 BUS_RANGE_RE = re.compile(r"^/?[A-Za-z_]+\d+\.\./?[A-Za-z_]+\d+$")
+# Parent boundary bit selection, for example ``IRH0..IRH7[7]``.  This is not
+# a physical component reference and therefore has no DB pin to validate.
+BOUNDARY_SELECTOR_RE = re.compile(r"^/?[A-Za-z_]+\d+\.\./?[A-Za-z_]+\d+\[\d+(?:\.\.\d+)?\]$")
 ACTIVE_LOW_WORDS = ("active-low", "active low", "low enables", "low only", "low-to-high")
 BUS_PROOF_WORDS = (
     "one active",
@@ -144,6 +147,8 @@ def _resolve_wiring(
 def _resolve_connection(connection: str, ref_parts: dict[str, str], component_pins: dict[str, JsonMap]) -> list[PinRef]:
     if BUS_RANGE_RE.match(connection):
         return []
+    if BOUNDARY_SELECTOR_RE.match(connection):
+        return []
     match = CONNECTION_RE.match(connection)
     if not match:
         return []
@@ -200,6 +205,8 @@ def _resolve_connection(connection: str, ref_parts: dict[str, str], component_pi
 def _check_output_output_contention(circuit: JsonMap, pin_refs_by_net: dict[str, list[PinRef]], findings: list[JsonMap]) -> None:
     circuit_text = _text_blob(circuit)
     for net, refs in pin_refs_by_net.items():
+        if _is_declared_aggregate_output_port(circuit, net):
+            continue
         drivers = [ref for ref in refs if ref.direction in {"output", "bidirectional"}]
         if len(drivers) < 2:
             continue
@@ -257,7 +264,8 @@ def _check_propagation_delay(circuit: JsonMap, pin_refs_by_net: dict[str, list[P
     text = _text_blob(circuit).lower()
     has_shared_bus = any(
         len([ref for ref in refs if ref.direction in {"output", "bidirectional"}]) >= 2
-        for refs in pin_refs_by_net.values()
+        for net, refs in pin_refs_by_net.items()
+        if not _is_declared_aggregate_output_port(circuit, net)
     )
     timing = circuit.get("timing", {})
     stress_nets = timing.get("stress_nets", []) if isinstance(timing, dict) else []
@@ -271,6 +279,24 @@ def _check_propagation_delay(circuit: JsonMap, pin_refs_by_net: dict[str, list[P
         "shared bus or stress nets lack R/C, DelayNoise, setup/hold, or deadband coverage",
         "Add virtual R/C or delay-noise coverage and document the positive disable-to-enable deadband.",
     ))
+
+
+def _is_declared_aggregate_output_port(circuit: JsonMap, net: str) -> bool:
+    """A package output bus is a bundle of separate device output wires.
+
+    Circuit JSON keeps such a bundle on one readable row (for example
+    ``PC0..PC15``), but that must not be mistaken for several outputs tied to
+    one shared physical conductor.  Bidirectional and internal buses retain
+    the normal contention/deadband checks.
+    """
+    if not NAME_RANGE_RE.match(net):
+        return False
+    return any(
+        isinstance(port, dict)
+        and port.get("name") == net
+        and port.get("direction") == "output"
+        for port in circuit.get("ports", [])
+    )
 
 
 def _trap_coverage(findings: list[JsonMap]) -> JsonMap:
@@ -307,6 +333,11 @@ def _generic_family_pins(token: str, pin_map: JsonMap) -> list[JsonMap]:
 
 
 def _is_symbolic_boundary_ref(ref: str, token: str) -> bool:
+    # A declared parent bus may select one named bit before it enters a child
+    # package.  It is a package boundary, not an unresolved chip pin; e.g.
+    # ``IRH0..IRH7[7]`` is the documented U5 control-bit source.
+    if re.match(r"^\[\d+\]$", token) and NAME_RANGE_RE.match(ref):
+        return True
     if NUMERIC_RANGE_RE.match(token) or token.isdigit():
         return False
     if "_" in ref:

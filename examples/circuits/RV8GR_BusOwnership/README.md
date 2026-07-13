@@ -3,6 +3,12 @@
 This proof isolates the RV8GR bus-driver rules. It is not a new chip; it is a
 standalone circuit contract for the real U7, U14, U34, ROM, and RAM paths.
 
+The executable package uses the canonical per-bit wiring: `U7 A1..A8` are
+`IBUS0..IBUS7`, `U7 B1..B8` are `DBUS0..DBUS7`; `U14` and `U34` output pins
+`Y1..Y8` connect to `IBUS0..IBUS7`. U24, U25, U26, and U28 are included so
+the runner exercises the real `/IRL_OE`, `BUF_OE_N`, `/AC_BUF`, and `WR_DIR`
+control chain instead of accepting a same-name or symbolic bus binding.
+
 ## Normal Ownership
 
 | Phase | Case | IBUS driver | DBUS driver |
@@ -25,7 +31,8 @@ The circuit proof checks:
 - T2 memory load has exactly one IBUS driver: U7.
 - T2 store has U14 driving IBUS and U7 driving DBUS.
 - ROM and RAM selects are complementary from A15.
-- Forced unsafe states are detected as conflicts.
+- Forced unsafe states are detected as conflicts. These are fault-injection
+  rows: they bypass the normal interlock and are not reachable normal phases.
 
 Run:
 

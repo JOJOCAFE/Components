@@ -10,6 +10,8 @@ from typing import Any, Mapping
 
 from .circuit_package import (
     BoundaryEndpoint,
+    BoundaryConcatEndpoint,
+    BoundarySelectorEndpoint,
     CIRCUIT_ROOT,
     ROOT,
     CircuitPackage,
@@ -62,7 +64,7 @@ class CircuitRunner:
 
     _INOUT_DIRECTIONS = {"input/output", "input_output", "bidirectional"}
 
-    def __init__(self, package: CircuitPackage):
+    def __init__(self, package: CircuitPackage, *, boundary_lines: Mapping[str, tuple[str, ...]] | None = None):
         self.package = package
         self.board = Board()
         self.inputs: dict[str, LogicSource | tuple[LogicSource, ...]] = {}
@@ -73,7 +75,7 @@ class CircuitRunner:
         self.virtual_bindings: dict[str, tuple[str, ...]] = {}
         self._chips: dict[str, Any] = {}
         self._virtual_sources_by_line: dict[str, list[LogicSource]] = {}
-        self._boundary_lines: dict[str, tuple[str, ...]] = {}
+        self._boundary_lines: dict[str, tuple[str, ...]] = dict(boundary_lines or {})
         self._virtual_refs = {
             item.ref for item in package.chips
             if item.part == "Virtual" or (ROOT / "lib" / "standard" / "virtual" / item.part).is_dir()
@@ -83,6 +85,17 @@ class CircuitRunner:
     @classmethod
     def load(cls, path: str | Path) -> "CircuitRunner":
         return cls(load_circuit_package(path))
+
+    @classmethod
+    def from_hierarchy(cls, package: CircuitPackage, catalog: Mapping[str, CircuitPackage] | None = None) -> "CircuitRunner":
+        """Execute an explicitly mapped composite package on one shared Board.
+
+        The hierarchy compiler supplies all joins.  This method deliberately
+        has no fallback that connects child ports by matching their names.
+        """
+        from .circuit_hierarchy import flatten_circuit_for_execution
+        flattened = flatten_circuit_for_execution(package, catalog)
+        return cls(flattened.package, boundary_lines=flattened.boundary_lines)
 
     def _build(self) -> None:
         issues = self._validate_executable_subset()
@@ -130,6 +143,8 @@ class CircuitRunner:
                     continue
                 wire = next((w for w in self.package.wiring if w.net == port.name), None)
                 if wire is None or port.direction in self._INOUT_DIRECTIONS:
+                    if port.name in self._boundary_lines:
+                        continue
                     continue
                 endpoints = wire.connections
                 drivers = [
@@ -216,6 +231,7 @@ class CircuitRunner:
                 self.probes[port.name] = lines
         self.board.settle()
 
+
     def _validate_executable_subset(self) -> list[CircuitRunnerIssue]:
         issues: list[CircuitRunnerIssue] = []
         circuit_root = CIRCUIT_ROOT
@@ -235,6 +251,14 @@ class CircuitRunner:
                 path = f"$.wiring[{wire_index}].connections[{endpoint_index}]"
                 if isinstance(endpoint, NumericEndpoint):
                     numeric_by_net[wire.net].append(endpoint)
+                elif isinstance(endpoint, (BoundarySelectorEndpoint, BoundaryConcatEndpoint)):
+                    # Selectors are an explicit hierarchy-planning construct.
+                    # A live runner must not silently turn one net into another
+                    # via an inferred directional source.
+                    issues.append(CircuitRunnerIssue(
+                        "boundary_transform_not_executable", path,
+                        "boundary selectors and concatenations require flattened child execution; this runner only executes concrete DB pins",
+                    ))
                 elif isinstance(endpoint, SymbolicEndpoint):
                     # Width and pin-name resolution require the live model and are
                     # checked immediately after model construction.
@@ -254,10 +278,10 @@ class CircuitRunner:
                 continue
             if port.direction not in {"input", "output", *self._INOUT_DIRECTIONS}:
                 issues.append(CircuitRunnerIssue("unsupported_port_direction", f"{path}.direction", f"direction {port.direction!r} is not executable"))
-            if port.name not in net_names and port.direction == "output":
+            if port.name not in net_names and port.name not in self._boundary_lines and port.direction == "output":
                 code = "unresolved_output" if port.direction == "output" else "unresolved_input"
                 issues.append(CircuitRunnerIssue(code, f"{path}.name", f"port {port.name!r} has no concrete net"))
-            elif port.direction == "output" and not numeric_by_net[port.name]:
+            elif port.name in numeric_by_net and port.direction == "output" and not numeric_by_net[port.name]:
                 issues.append(CircuitRunnerIssue("unresolved_output", f"{path}.name", f"output {port.name!r} has no concrete chip endpoint"))
         return issues
 
@@ -341,8 +365,34 @@ class CircuitRunner:
         return result
 
     def set_input(self, name: str, value: Logic | int | tuple[Logic, ...] | list[Logic]) -> Any:
+        return self._set_input(name, value, run_declared_clock_edges=False)
+
+    def set_input_with_declared_clock_edges(
+        self, name: str, value: Logic | int | tuple[Logic, ...] | list[Logic]
+    ) -> Any:
+        """Drive one public input and deliver only its declared derived edges.
+
+        This is deliberately narrower than automatic edge propagation.  A
+        package must enumerate a source output pin, its concrete clock-sink
+        pins, and the public input that may cause that edge in
+        ``runtime.declared_clock_edges``.  The runner validates that every
+        source and sink is physically joined on the flattened Board before it
+        invokes ``clock_edge``.  Ordinary data outputs never become clocks by
+        inference.
+        """
+        return self._set_input(name, value, run_declared_clock_edges=True)
+
+    def _set_input(
+        self, name: str, value: Logic | int | tuple[Logic, ...] | list[Logic], *,
+        run_declared_clock_edges: bool,
+    ) -> Any:
         if name not in self.inputs:
             self._operation_error("unknown_input", name, f"input port {name!r} is not bound")
+        declared_edges = self._declared_clock_edges_for_trigger(name) if run_declared_clock_edges else ()
+        before = {
+            edge["id"]: self.board.net(edge["source_line"]).value
+            for edge in declared_edges
+        }
         binding = self.inputs[name]
         sources = (binding,) if isinstance(binding, LogicSource) else binding
         values = self._coerce_vector(name, value, len(sources))
@@ -355,7 +405,79 @@ class CircuitRunner:
             self.board.set_source(source.name, item, enabled=True) for source, item in zip(sources, values)
         )
         self.board.settle()
+        for edge in declared_edges:
+            if before[edge["id"]] != 0 or self.board.net(edge["source_line"]).value != 1:
+                continue
+            for chip, pin in edge["targets"]:
+                chip.clock_edge(pin)
+        if declared_edges:
+            self.board.settle()
         return result[0] if len(result) == 1 else result
+
+    def _declared_clock_edges_for_trigger(self, trigger: str) -> tuple[dict[str, Any], ...]:
+        """Validate and resolve the package's explicit derived-clock clauses.
+
+        The schema is intentionally runtime-local rather than a general net
+        expression language::
+
+            {"id": "...", "trigger_input": "T2", "edge": "rising",
+             "source": {"chip": "U33", "pin": 8},
+             "sinks": [{"chip": "U31", "pin": 3, "kind": "clock"}]}
+
+        A source must be an output/bidirectional pin.  Each declared sink must
+        be an input pin named as a clock and share the exact concrete net with
+        that source.  These checks make a bad topology fail loudly and prevent
+        arbitrary output transitions from being treated as clock events.
+        """
+        runtime = self.package.raw.get("runtime", {})
+        specs = runtime.get("declared_clock_edges", []) if isinstance(runtime, Mapping) else []
+        if not isinstance(specs, list):
+            self._operation_error("invalid_declared_clock_edges", "runtime.declared_clock_edges", "must be a list")
+        resolved: list[dict[str, Any]] = []
+        ids: set[str] = set()
+        for index, spec in enumerate(specs):
+            path = f"runtime.declared_clock_edges[{index}]"
+            if not isinstance(spec, Mapping):
+                self._operation_error("invalid_declared_clock_edge", path, "edge must be an object")
+            edge_id, trigger_input, edge = spec.get("id"), spec.get("trigger_input"), spec.get("edge")
+            if not isinstance(edge_id, str) or not edge_id:
+                self._operation_error("invalid_declared_clock_edge", path, "edge must have a non-empty id")
+            if edge_id in ids:
+                self._operation_error("duplicate_declared_clock_edge", path, f"duplicate edge id {edge_id!r}")
+            ids.add(edge_id)
+            if trigger_input != trigger:
+                continue
+            if trigger_input not in self.inputs:
+                self._operation_error("invalid_declared_clock_edge", path, "trigger_input must name a public input")
+            if edge != "rising":
+                self._operation_error("invalid_declared_clock_edge", path, "only source-backed rising edges are supported")
+            source = spec.get("source")
+            sinks = spec.get("sinks")
+            if not isinstance(source, Mapping) or not isinstance(sinks, list) or not sinks:
+                self._operation_error("invalid_declared_clock_edge", path, "edge must declare source and non-empty sinks")
+            source_chip, source_pin = source.get("chip"), source.get("pin")
+            if not isinstance(source_chip, str) or not isinstance(source_pin, int) or source_chip not in self._chips:
+                self._operation_error("invalid_declared_clock_edge", path, "source must name a live chip and numeric pin")
+            source_obj = self._chips[source_chip].pin(source_pin)
+            if source_obj.direction not in {"out", "bidir"} or source_obj.net is None:
+                self._operation_error("invalid_declared_clock_edge", path, "source must be a connected output/bidirectional pin")
+            targets: list[tuple[Any, int]] = []
+            for sink_index, sink in enumerate(sinks):
+                sink_path = f"{path}.sinks[{sink_index}]"
+                if not isinstance(sink, Mapping) or sink.get("kind") != "clock":
+                    self._operation_error("invalid_declared_clock_sink", sink_path, "sink must explicitly declare kind=clock")
+                chip_ref, pin = sink.get("chip"), sink.get("pin")
+                if not isinstance(chip_ref, str) or not isinstance(pin, int) or chip_ref not in self._chips:
+                    self._operation_error("invalid_declared_clock_sink", sink_path, "sink must name a live chip and numeric pin")
+                target = self._chips[chip_ref].pin(pin)
+                if target.direction != "in" or "CLK" not in target.name.upper() or target.net is not source_obj.net:
+                    self._operation_error(
+                        "invalid_declared_clock_sink", sink_path,
+                        "sink must be a connected CLK input on the declared source net",
+                    )
+                targets.append((self._chips[chip_ref], pin))
+            resolved.append({"id": edge_id, "source_line": source_obj.net.name, "targets": tuple(targets)})
+        return tuple(resolved)
 
     def release_input(self, name: str) -> Any:
         """Release an input or inout boundary to high impedance."""
@@ -411,19 +533,170 @@ class CircuitRunner:
             self.set_input(name, value)
         return self.read()
 
-    def pulse_clock(self, name: str = "CLK") -> dict[str, Logic]:
+    def pulse_clock(
+        self, name: str = "CLK", *, return_low: bool = False,
+        propagated_rising_on_fall: tuple[str, ...] = (),
+    ) -> dict[str, Logic]:
+        """Pulse a public clock input, optionally completing its low phase.
+
+        ``propagated_rising_on_fall`` names real gated-clock nets which must
+        rise while the public source returns low.  It is explicit because the
+        event scheduler must not infer clock events from arbitrary data-net
+        transitions.  This supports active-low gated clocks such as RV8GR
+        ``ACC_CLK = NAND(T2, AC_WR)`` without forcing a register output or
+        private model state.
+        """
         if name not in self.inputs:
             self._operation_error("unknown_clock", name, f"clock port {name!r} is not bound")
+        unknown_edges = [edge for edge in propagated_rising_on_fall if edge not in self._net_lines]
+        if unknown_edges:
+            self._operation_error(
+                "unknown_propagated_clock", unknown_edges[0],
+                f"clock net {unknown_edges[0]!r} is not a concrete circuit net",
+            )
         self.set_input(name, 0)
         binding = self.inputs[name]
         if not isinstance(binding, LogicSource):
             self._operation_error("vector_clock", name, f"clock port {name!r} must be scalar")
         self.board.set_source(binding.name, 1)
-        net = self.board.net(name)
-        for pin in tuple(net.pins):
-            pin.chip.clock_edge(pin.number)
+        # A hierarchy compiler is free to qualify the physical net name.  The
+        # public port name is only a boundary label, so never use it to locate
+        # clock receivers.  This mattered first for RV8GR_PC16: its flattened
+        # clock is ``__flat_PC16_CLK...``, not the root boundary label ``CLK``.
+        # Drive the public source above, then deliver the edge to every real
+        # pin attached to that resolved boundary line.
+        clock_lines = self._boundary_lines.get(name, self._net_lines.get(name, (name,)))
+        for line in clock_lines:
+            net = self.board.net(line)
+            for pin in tuple(net.pins):
+                pin.chip.clock_edge(pin.number)
+        self.board.settle()
+        if not return_low:
+            if propagated_rising_on_fall:
+                self._operation_error(
+                    "propagated_clock_requires_return_low", name,
+                    "gated clocks declared on the falling phase require return_low=True",
+                )
+            return self.read()
+
+        before = {
+            edge: tuple(self.board.net(line).value for line in self._net_lines[edge])
+            for edge in propagated_rising_on_fall
+        }
+        self.board.set_source(binding.name, 0)
+        self.board.settle()
+        for edge in propagated_rising_on_fall:
+            after = tuple(self.board.net(line).value for line in self._net_lines[edge])
+            if not any(old == 0 and new == 1 for old, new in zip(before[edge], after)):
+                self._operation_error(
+                    "propagated_clock_no_rising_edge", edge,
+                    f"declared gated clock {edge!r} did not rise during {name!r} pulse",
+                )
+            for line, old, new in zip(self._net_lines[edge], before[edge], after):
+                if old != 0 or new != 1:
+                    continue
+                for pin in tuple(self.board.net(line).pins):
+                    pin.chip.clock_edge(pin.number)
         self.board.settle()
         return self.read()
+
+    def run_modeled_post_clock_samples(self, clock: str) -> tuple[dict[str, Any], ...]:
+        """Run package-declared delayed sampling that is part of a model contract.
+
+        This is deliberately *not* a general clock inference feature.  A package
+        must name each target pin and its source-backed delay in
+        ``runtime.modeled_post_clock_samples``.  It is useful where the
+        authoritative chip-level RTL samples a real clock after a model delay
+        (RV8GR U21 is the first case).  The generic chip model remains an
+        ordinary edge-triggered device; only the owning circuit opts in.
+        """
+        runtime = self.package.raw.get("runtime", {})
+        specs = runtime.get("modeled_post_clock_samples", []) if isinstance(runtime, Mapping) else []
+        results: list[dict[str, Any]] = []
+        for index, spec in enumerate(specs):
+            if not isinstance(spec, Mapping) or spec.get("clock") != clock:
+                continue
+            delay_ns = spec.get("delay_ns")
+            targets = spec.get("targets")
+            if (not isinstance(delay_ns, int) or isinstance(delay_ns, bool) or delay_ns < 0
+                    or not isinstance(targets, list) or not targets):
+                self._operation_error(
+                    "invalid_modeled_post_clock_sample", f"runtime.modeled_post_clock_samples[{index}]",
+                    "sample must declare a non-negative delay_ns and one or more targets",
+                )
+            resolved: list[tuple[Any, int, str]] = []
+            for target in targets:
+                if not isinstance(target, Mapping):
+                    self._operation_error("invalid_modeled_post_clock_sample", f"runtime.modeled_post_clock_samples[{index}].targets", "target must name a chip and pin")
+                chip_ref, pin = target.get("chip"), target.get("pin")
+                if not isinstance(chip_ref, str) or not isinstance(pin, int) or chip_ref not in self._chips:
+                    self._operation_error("invalid_modeled_post_clock_sample", f"runtime.modeled_post_clock_samples[{index}].targets", "target chip/pin is not a live component")
+                if clock not in self._net_lines or not any(
+                    candidate.chip is self._chips[chip_ref] and candidate.number == pin
+                    for line in self._net_lines[clock] for candidate in self.board.net(line).pins
+                ):
+                    self._operation_error("invalid_modeled_post_clock_sample", f"runtime.modeled_post_clock_samples[{index}].targets", "target pin must be connected to the declared clock net")
+                resolved.append((self._chips[chip_ref], pin, chip_ref))
+
+            # Board time is advanced through its event queue; no output or
+            # private state is forced.  The explicit clock_edge is the delayed
+            # sample event specified by the package's authoritative RTL model.
+            for chip, pin, _chip_ref in resolved:
+                self.board.schedule(delay_ns, lambda c=chip, p=pin: c.clock_edge(p))
+            self.board.settle()
+            results.append({"name": spec.get("name", f"sample_{index}"), "clock": clock,
+                            "delay_ns": delay_ns, "targets": tuple(ref for _, _, ref in resolved)})
+        return tuple(results)
+
+    def initialize_state(self, state: str, value: Logic | int | tuple[Logic, ...] | list[Logic]) -> dict[str, Any]:
+        """Load a declared state through public inputs and its real clock edge.
+
+        Packages opt in using ``runtime.state_initializers``.  The contract is
+        deliberately limited to a named data boundary, fixed public controls,
+        and a declared gated-clock transition; it cannot reach into a chip
+        model or force an output.  This makes an independent proof vector's
+        initial register state reproducible through the same edge behavior used
+        by the circuit.
+        """
+        runtime = self.package.raw.get("runtime", {})
+        initializers = runtime.get("state_initializers", []) if isinstance(runtime, Mapping) else []
+        spec = next((item for item in initializers if isinstance(item, Mapping) and item.get("state") == state), None)
+        if spec is None:
+            self._operation_error("unknown_state_initializer", state, f"state {state!r} has no declared public initializer")
+        required = ("data_input", "controls", "clock_input", "gated_clock", "observe")
+        missing = [key for key in required if key not in spec]
+        if spec.get("kind") != "clocked_write" or missing:
+            self._operation_error("invalid_state_initializer", state, "initializer must declare clocked_write data, controls, clock, gated_clock, and observe")
+        data_input = spec["data_input"]
+        controls = spec["controls"]
+        clock_input = spec["clock_input"]
+        gated_clock = spec["gated_clock"]
+        observe = spec["observe"]
+        if not all(isinstance(item, str) and item in self.inputs for item in (data_input, clock_input)):
+            self._operation_error("invalid_state_initializer", state, "initializer data_input and clock_input must be public input ports")
+        if not isinstance(controls, Mapping) or any(name not in self.inputs for name in controls):
+            self._operation_error("invalid_state_initializer", state, "initializer controls must name public input ports")
+        if not isinstance(gated_clock, str) or gated_clock not in self._net_lines:
+            self._operation_error("invalid_state_initializer", state, "initializer gated_clock must name a concrete circuit net")
+        if not isinstance(observe, str) or observe not in self.probes:
+            self._operation_error("invalid_state_initializer", state, "initializer observe must name a public output or bidirectional port")
+        self.set_input(clock_input, 0)
+        self.set_input(data_input, value)
+        for name, control_value in controls.items():
+            self.set_input(name, control_value)
+        self.pulse_clock(
+            clock_input, return_low=True,
+            propagated_rising_on_fall=(gated_clock,),
+        )
+        samples = self.run_modeled_post_clock_samples(gated_clock)
+        observed = self.read(observe)
+        expected = self._coerce_vector(data_input, value, len(self._expand_name(observe)))
+        if observed != (expected[0] if len(expected) == 1 else expected):
+            self._operation_error(
+                "state_initializer_mismatch", state,
+                f"{state!r} initializer observed {observed!r}, expected {expected!r}",
+            )
+        return {"state": state, "observed": observed, "clock": gated_clock, "modeled_samples": samples}
 
     def run_package_proofs(self) -> dict[str, Any]:
         """Execute supported declared proof vectors through fresh live sessions."""
