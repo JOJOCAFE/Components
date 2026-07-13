@@ -68,3 +68,14 @@ evidence, or commands that must match executable behavior.
 - Create small no-Board examples showing device choice, named nets, explicit
   wiring, probes, display intent, and one deterministic test without hiding
   real pins, timing, or active-low behavior.
+
+## Student-first explanation discipline — 2026-07-14
+
+- Own the Learning Lens wording: each selected part, wire, input, output, or
+  result answers what it is, what it does here, its real name, one safe next
+  action, and what happened after that action.
+- Test the NOT-gate first-sight route with a 10–15-year-old and an adult
+  beginner. If either needs a guide to explain, run, change, or recover from
+  an error, simplify the screen and language before adding a lesson.
+- Keep advanced vocabulary, datasheets, traces, and real package detail one
+  short **See details** action away; never make them prerequisites.

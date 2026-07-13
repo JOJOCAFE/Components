@@ -31,3 +31,9 @@ behavior; Resource Library defines presentation/physical mapping; Component
 describes a machine and resolves against Components; a future Components
 Runtime executes it; Operation acts on that runtime. Board/UI is explicitly
 deferred.  Board/UI is explicitly deferred from the frozen language core.
+
+Later presentation proposals are separate from the frozen core:
+`21_Resource_Binding_Contract.md` selects presentation for resolved targets,
+`22_Board_Profile_Contract.md` stores an optional Board view, and
+`23_Resource_Definition_Contract.md` describes text, 2D, 3D, and future
+Resource views without redefining electrical truth.

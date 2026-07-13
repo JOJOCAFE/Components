@@ -74,6 +74,18 @@ generated artifacts can affect live chip behavior.
   Component contract.  Resolve compact Device records into immutable topology;
   never put Board state or direct imperative mutations into source resolution.
 
+## Student-first implementation discipline — 2026-07-14
+
+- Build the smallest real path before a framework layer: readable source or
+  pointer/Terminal intent -> checked service request -> source patch or trace
+  -> refreshed JSON for the Board.
+- Keep Drawing/Terminal edits revision-checked, serializable, deterministic,
+  and undoable through source patches; runtime commands remain bounded and do
+  not rewrite source.
+- For a defect, first create a focused failing command/test, trace the actual
+  service path, and test a disproof of the leading hypothesis before changing
+  parser, resolver, runtime, or UI adapter code.
+
 ## Saved 2026-07-13 RV8GR Software Closeout
 
 - Differential runners and reserved-opcode characterization are compatibility

@@ -17,6 +17,18 @@
       "expected_diagnostic": "E_RESOURCE_OWNERSHIP"
     }
   ],
+  "resource_definition_cases": [
+    {
+      "id": "resource-definition-cannot-change-device-behavior",
+      "candidate": {"schema": "components.resource-definition@1", "version": 1, "id": "r", "digest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", "target": {"kind": "device", "library": "standard.74xx", "id": "74HC04"}, "views": [{"id": "read", "type": "text", "kind": "student.explanation", "accessibility": {"label": "Read", "description": "Read it"}, "payload": {"title": "Title", "body": "Body"}}], "behavior": {"kind": "nand"}},
+      "expected_diagnostic": "E_RESOURCE_DEFINITION_OWNERSHIP"
+    },
+    {
+      "id": "resource-definition-cannot-add-wire",
+      "candidate": {"schema": "components.resource-definition@1", "version": 1, "id": "r", "digest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", "target": {"kind": "device", "library": "standard.74xx", "id": "74HC04"}, "views": [{"id": "read", "type": "text", "kind": "student.explanation", "accessibility": {"label": "Read", "description": "Read it"}, "payload": {"title": "Title", "body": "Body"}}], "connections": [{"from": "A", "to": "Y"}]},
+      "expected_diagnostic": "E_RESOURCE_DEFINITION_OWNERSHIP"
+    }
+  ],
   "board_cases": [
     {
       "id": "board-cannot-create-device",

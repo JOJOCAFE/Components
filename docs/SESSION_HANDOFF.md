@@ -1,13 +1,67 @@
 # Components Session Handoff
 
-Last updated: 2026-07-13
+Last updated: 2026-07-14
 
 > **Current authority.** This section supersedes the older RV8GR checkpoint
-> notes below when they disagree. The pushed `main` baseline is `de1438c Add
-> Component language text IDE foundation`. The shared worktree also contains
+> notes below when they disagree. The pushed `main` baseline is `5409405 Extend
+> Component runtime and JSON bridge`. The shared worktree also contains
 > the next, uncommitted Component-runtime and student-documentation work; do
 > not describe it as pushed until its owner commits it. `Language.zip` is
 > user-owned and remains untracked/untouched.
+
+## Current student-first Board/desktop checkpoint: 2026-07-14
+
+This student-first Board/Resource/team-contract checkpoint contains
+documentation, schemas, fixtures, and a contract checker only; the separate
+local `component_language.py` and component-language test work remains
+unstaged and must not be described as included in this checkpoint.
+
+The next Component client is a lightweight, offline-first three-pane
+workbench: **Drawing** and readable **Component text** sit left/right; a small
+bounded **Terminal** is at the bottom. Panes can resize, collapse, detach, or
+go full-screen. The default UI is pointer/stylus-first and contextual, not a
+ribbon/menu-heavy professional CAD application.
+
+- One readable `.component` source remains the electrical/topology authority.
+  Drawing and Terminal *source edits* send revision-checked intents and return
+  visible source patches; bounded runtime commands return trace/results and do
+  not rewrite source.
+- The first route is a NOT gate. A 10–15-year-old learner and an adult
+  beginner must understand `IN -> U1 -> OUT`, run one example, make one safe
+  change, and recover from an invalid connection without a reference guide.
+- `docs/COMPONENT_FIRST_SIGHT_DESIGN.md` owns this usability promise;
+  `docs/COMPONENT_LEARNING_LENS.md` defines the selected-object explanation:
+  what it is, what it does here, real name, safe action, and outcome. Resource
+  views can offer teaching/2D/3D detail but never change Device truth.
+- Windows, Linux, and iOS are product targets. Windows/Linux use the current
+  local Python service adapter; iOS must retain the same JSON contract through
+  a tested iOS-compatible adapter before release. Android/iPad refinement is
+  later. Launch, interaction, memory, package size, autosave, and crash
+  recovery are release gates, not polish.
+- Auto-update and plugins are contracts only: signed/compatible/recoverable
+  updates; optional capability-limited plugins; no startup dependency and no
+  hidden electrical authority.
+
+### Working method now required
+
+`docs/TEAM_SKILLS.md` and every role guide now use the adapted 9arm-style
+engineering loop: **intent -> trace -> verify -> report**. New work must name
+the smallest learner outcome, trace the real path to source/runtime and the
+visible result, prove success/failure/ownership/performance cases, and retain
+compact evidence. Defects require reproduce -> trace -> falsify -> breadcrumb
+ledger before a proposed fix.
+
+### Resume this lane
+
+1. Start C3.5.1 with a one-window NOT-gate proof, no plugins and no network.
+2. First implement/test the `component-edit` source-patch and bounded Terminal
+   request contracts against the existing Python service; do not build a hidden
+   canvas model.
+3. Add the small Rust/Tauri + Preact shell only around that proved path, then
+   measure startup, pointer response, autosave/recovery, and memory on modest
+   student hardware.
+4. Run the first-sight learner test before adding timeline/waveform, 3D,
+   multiwindow, updater endpoint, or plugin host.
 
 ## Current Component Text Route
 
@@ -47,7 +101,7 @@ git diff --check
 
 - Repo: `/home/jo/kiro/Components`
 - Branch: `main`
-- Base pushed state: `de1438c Add Component language text IDE foundation`
+- Base pushed state: `5409405 Extend Component runtime and JSON bridge`
 - The sections below preserve the prior compact-definition and RV8GR evidence
   context. Consult the Current Component Text Route above for active language
   and student-tool status.

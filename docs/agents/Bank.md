@@ -61,3 +61,15 @@ layout decisions could become long-term constraints.
   into instances, typed nets/buses, explicit topology, tests, and observation
   declarations without copying Device behavior.
 - Keep Board placement and imperative Operation transport out of this profile.
+
+## Student-first review discipline — 2026-07-14
+
+- For a new UI/service/schema proposal, test the simplest alternative first:
+  reuse the readable Component, resolved JSON, Resource, and Operation
+  boundaries before creating another model or protocol.
+- Trace every proposed learner action from pointer/text/Terminal input through
+  source ownership, resolver/runtime, and returned visible result. Reject any
+  route that silently changes topology or Device truth.
+- Own the Learning Lens boundary: beginner explanation and Resource views are
+  presentation; real names, pins, behavior, timing, and diagnostics remain
+  locked facts from their existing owners.

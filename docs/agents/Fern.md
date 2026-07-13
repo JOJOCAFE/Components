@@ -68,6 +68,18 @@ proof, bus-safety proof, or CI gate evidence.
   width/direction/power conflicts, read-only probes/displays, and deterministic
   bounded test failures before a parser/resolver prototype is promoted.
 
+## Student-first verification discipline — 2026-07-14
+
+- Review a Board/Terminal claim end-to-end: user action -> service request ->
+  source/runtime result -> learner-visible explanation. A mock-only screen is
+  not evidence.
+- Require a reproducible failure before diagnosing a defect; trace the failing
+  path, try to disprove the leading hypothesis, and retain each test run as a
+  breadcrumb.
+- Gate the first-sight NOT-gate route with both valid and invalid actions:
+  learners must see the exact source patch or trace, and an illegal action must
+  leave topology unchanged with an actionable explanation.
+
 ## Saved 2026-07-13 RV8GR Software Closeout
 
 - The reset, U34/U7, ROM `/WE`, store-direction, and OE-order negative tests

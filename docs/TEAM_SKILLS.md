@@ -199,6 +199,34 @@ official Codex model names in the running environment.
 - Keep handoffs compact and evidence-based: changed files, tests run, known
   gaps, and next owner.
 
+### Intent, trace, and verification gate
+
+For any new service, UI workflow, schema, or student-facing contract, use this
+small review loop before calling it ready:
+
+1. **Intent:** state the learner/system goal in one sentence. Name the
+   smallest solution that reaches it; prefer existing Components contracts over
+   a new abstraction.
+2. **Trace:** follow the real path from user action or API entry through source
+   ownership, resolver/runtime/service, state change, and visible result.
+   For a design, trace the proposed flow against code and contracts already in
+   the repository.
+3. **Verify:** test the claimed path plus failure, stale/invalid input,
+   autosave/restart, performance, and ownership boundaries that apply. A UI
+   claim is incomplete unless the learner can see the returned result or next
+   action.
+4. **Report:** record the smallest concrete finding/decision, its evidence,
+   and the next change. Do not use a broad “looks good” conclusion.
+
+For a defect, use the same discipline in this order: reproduce reliably,
+trace the failing path, try to falsify the leading hypothesis, and retain each
+test/run as a breadcrumb. Do not propose a fix before there is a runnable
+reproduction or clearly state why a reproduction is unavailable.
+
+This is the Components adaptation of the external `9arm-skills` engineering
+guidelines. It strengthens our evidence-first team contract; it does not
+replace the ownership, student-clarity, or physical-signoff rules above.
+
 ## Natural Pairings
 
 - Bank + Ohm: architecture and physical truth.

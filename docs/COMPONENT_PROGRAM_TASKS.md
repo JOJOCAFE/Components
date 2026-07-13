@@ -53,13 +53,25 @@ Passing digital simulation is never physical wiring or timing signoff.
 |---|---|---|---|---|
 | C3.1 | Define a Resource binding contract for labels, symbols, display kinds, and optional physical/package presentation. Resource data remains presentation-only and cannot change Device pins, behavior, timing, or Component topology. | Bank + Noon / Ohm, Fern | schema and negative ownership tests prove Resource cannot alter electrical truth. | completed 2026-07-13 |
 | C3.2 | Add text commands to inspect and bind Resources to a resolved Component, with readable student output. Do not add coordinates, routing, or Board state. | Bam + Noon / Fern | resource CLI tests prove stable bindings and clear missing-resource diagnostics. | completed in current worktree |
+| C3.3 | Define versioned Resource Definitions for readable text, optional 2D, optional 3D, and other presentation assets. Keep Resource Definitions presentation-only; a missing asset must fall back to text. | Bank + Noon / Ohm, Fern | schema fixtures prove a resource cannot alter Device truth or topology and can be selected by a binding. | completed 2026-07-13 (contract/fixtures; no renderer yet) |
+| C3.4 | Freeze the Learning Lens contract: beginner explanation, real technical name, source/trace links, safe contextual actions, and text fallback for every visible resolved target. | Noon + Bank / Bam, Fern | NOT-gate lens fixture proves the lens consumes locked facts only and cannot mutate topology/runtime directly. | completed 2026-07-14 (design contract; no renderer yet) |
+
+## P3.5 — Desktop foundations before a visual client
+
+| ID | Work | Owner / review | Acceptance | Status |
+|---|---|---|---|---|
+| C3.5.1 | Build the lightweight three-pane foundation: Drawing, readable Component text, and bounded Terminal over one Rust/Tauri + small Preact/TypeScript session. Use the desktop Python adapter, preserve a portable JSON service boundary for iOS, and keep source authoritative while Drawing emits checked source patches. | Bank + Bam / Noon, Fern | First pass the intent/trace/verification gate; then NOT-gate no-network/no-plugin launch proves text -> Drawing sync, legal/illegal Drawing connection handling, one bounded Terminal trace, atomic autosave/recovery, recorded startup/interaction baseline, and a first-sight test with a 10–15-year-old plus an adult beginner; no pane has alternate electrical state. | design completed 2026-07-14; implementation next |
+| C3.5.1a | Build the NOT-gate first-sight route inside the three-pane shell: title/meaning, visible `IN -> U1 -> OUT`, one suggested action, result sentence, selection-to-source highlight, and error recovery. | Bam + Noon / Bank, Fern | unprepared 10–15-year-old and adult-beginner test each complete the five-minute Learning Lens path without a guide. | queued with C3.5.1 |
+| C3.5.2 | Define signed auto-update compatibility, channel, safe-restart, recovery, and rollback contracts before enabling an update endpoint. | Bank + Bam / Fern, Noon | tampered/incompatible manifest fixtures are rejected; update preserves drafts and waits for runtime idle. | contract completed 2026-07-13; implementation deferred |
+| C3.5.3 | Define the versioned plugin manifest, capability policy, integrity checks, safe mode, and no-plugin core operation before accepting third-party code. | Bank + Bam / Fern, Noon | plugin contract proves no hidden topology/model mutation and rejects incompatible/tampered plugins. | contract completed 2026-07-13; host implementation deferred |
 
 ## P4 — `component:board` and visual editor
 
 | ID | Work | Owner / review | Acceptance | Status |
 |---|---|---|---|---|
 | C4.1 | Freeze the Board profile only after C1–C3: placement, routing/view metadata, widgets, and physical-capture references. Board consumes resolved topology and Resources; it cannot create behavior. | Bank / Ohm, Noon, Fern | Board schema has no Device-behavior or hidden-net fields; round-trip tests preserve Component identity. | contract completed 2026-07-13; resolver/editor integration waits on C2/C3.2 |
-| C4.2 | Build a minimal visual editor over the same text/AST/resolved-topology service. It must round-trip without changing source-owned topology and expose diagnostics in student language. | Bam + Noon / Bank, Fern | source -> editor -> source/topology deterministic round-trip; no edit can bypass validation. | in progress: read-only `component-language-board-view` JSON bridge exists; editable visual client waits on complete runtime/resource flow |
+| C4.2 | Extend the minimal Drawing pane into a learner-ready Board: compatible Resources, Learning Lens depths, placement/profile editing, diagnostics, and source-patch preview for electrical edits. | Bam + Noon / Bank, Fern | text -> Drawing -> checked source patch -> resolver round-trip is deterministic; each Board target has a readable fallback and no visual edit bypasses validation or mutates Device truth. | queued after C3.5.1 |
+| C4.3 | Add optional Board plugins only after C4.2: first a sandboxed Resource/trace viewer, then any integration under the plugin policy. | Bam / Bank, Fern, Noon | disabled/safe-mode client remains fully usable; plugin receives only declared JSON capabilities. | deferred |
 
 ## Parallel RV8GR and physical lanes
 
@@ -72,5 +84,6 @@ Passing digital simulation is never physical wiring or timing signoff.
 
 ## Next command
 
-Start with **C0.1**.  It is the smallest finished vertical slice and makes the
-new text IDE safe to commit before expanding its language or runtime scope.
+Start with **C3.5.1**. Build the smallest no-plugin three-pane session for a
+NOT gate: Drawing, readable text, and bounded Terminal commands. Do not
+enable the updater or a plugin host yet.

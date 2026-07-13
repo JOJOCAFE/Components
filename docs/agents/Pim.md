@@ -62,6 +62,18 @@ pushes, or cross-repo consistency.
 - Route parser/resolver/runtime work only after Bank's source/AST contract and
   Fern's conformance cases agree; Board and Operation remain deferred.
 
+## Student-first delivery discipline — 2026-07-14
+
+- Before routing a Board, CLI, or service task, state the one learner outcome
+  and the smallest shippable path; reject a larger platform plan that does not
+  improve that outcome.
+- Keep an intent/trace/verification decision in the task and handoff: action
+  entered, service path, source/runtime effect, learner-visible result, and
+  focused proof.
+- Coordinate the three-pane first-sight workbench as one source-owning session:
+  Drawing and Terminal edits must return readable source patches; runtime work
+  must return a trace; no pane gets a hidden circuit model.
+
 ## Saved 2026-07-13 RV8GR Software Closeout
 
 - Treat `run_all_verilog_tb.sh` as the required one-command regression: it now

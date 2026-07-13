@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jojocafe.github.io/Components/Language/schemas/resource-definition.schema.json",
+  "title": "Components presentation-only Resource definition",
+  "$comment": "A closed, non-executable presentation contract. Device truth, topology, runtime, and Board data are intentionally excluded.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "id", "digest", "target", "views"],
+  "properties": {
+    "schema": {"const": "components.resource-definition@1"},
+    "version": {"const": 1},
+    "id": {"$ref": "#/$defs/id"},
+    "digest": {"$ref": "#/$defs/digest"},
+    "target": {"$ref": "#/$defs/target"},
+    "views": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/view"}
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9][A-Za-z0-9._@/-]*$"},
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "library", "id"],
+      "properties": {
+        "kind": {"enum": ["device", "probe", "display"]},
+        "library": {"$ref": "#/$defs/id"},
+        "id": {"$ref": "#/$defs/id"}
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "description"],
+      "properties": {
+        "label": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1}
+      }
+    },
+    "text_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "body"],
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "body": {"type": "string", "minLength": 1}
+      }
+    },
+    "artifact_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uri", "media_type"],
+      "properties": {
+        "uri": {"type": "string", "minLength": 1},
+        "media_type": {"type": "string", "minLength": 1},
+        "digest": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0}
+      }
+    },
+    "view": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "kind", "accessibility", "payload"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "type": {"enum": ["text", "visual-2d", "model-3d", "data"]},
+        "kind": {"type": "string", "minLength": 1, "pattern": "^[a-z][a-z0-9-]*(\\.[a-z0-9-]+)*$"},
+        "accessibility": {"$ref": "#/$defs/accessibility"},
+        "payload": {"oneOf": [{"$ref": "#/$defs/text_payload"}, {"$ref": "#/$defs/artifact_payload"}]}
+      }
+    }
+  }
+}

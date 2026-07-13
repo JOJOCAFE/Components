@@ -62,6 +62,17 @@ or hardware-readiness wording is involved.
   diagnostics exposed by Component source; presentation intent must not alter
   Device pin truth.
 
+## Student-first review discipline — 2026-07-14
+
+- Review Learning Lens and Resource wording against the real Device record:
+  a friendly label may simplify first sight but may not reverse active-low,
+  pin, power, direction, timing, or safety truth.
+- Ensure a learner can choose **See real part** to find the actual package/pin
+  facts, while the default view stays simple and clearly says that a digital
+  result is not a physical wiring or safety result.
+- Treat a visual/physical mismatch as a reproducible evidence problem: trace
+  Resource artifact -> resolved Device fact -> displayed label before fixing it.
+
 ## Saved 2026-07-13 RV8GR Software Closeout
 
 - Software now detects the modeled ROM-write, store-direction, and ownership

@@ -1,0 +1,48 @@
+[
+  {
+    "schema": "components.resource-definition@1",
+    "version": 1,
+    "id": "standard.74xx.74HC04.resource@1",
+    "digest": "sha256:abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
+    "target": {"kind": "device", "library": "standard.74xx", "id": "74HC04"},
+    "views": [
+      {
+        "id": "read-first",
+        "type": "text",
+        "kind": "student.explanation",
+        "accessibility": {"label": "Read about the NOT gate", "description": "A short explanation of the inverter."},
+        "payload": {"title": "74HC04 NOT gate", "body": "Each gate changes 0 to 1 and 1 to 0."}
+      },
+      {
+        "id": "dip",
+        "type": "visual-2d",
+        "kind": "package.dip",
+        "accessibility": {"label": "DIP-14 picture", "description": "A two-dimensional package picture. Read the Device facts for real pins."},
+        "payload": {"uri": "lib/standard/74xx/74HC04/symbol/dip.json", "media_type": "application/json", "digest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}
+      },
+      {
+        "id": "package-3d",
+        "type": "model-3d",
+        "kind": "model.glb",
+        "accessibility": {"label": "3D package model", "description": "An optional three-dimensional package view; it does not prove wiring."},
+        "payload": {"uri": "resources/74HC04/dip-14.glb", "media_type": "model/gltf-binary", "bytes": 12000}
+      }
+    ]
+  },
+  {
+    "schema": "components.resource-definition@1",
+    "version": 1,
+    "id": "standard.virtual.Probe.resource@1",
+    "digest": "sha256:fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210",
+    "target": {"kind": "probe", "library": "standard.virtual", "id": "Probe"},
+    "views": [
+      {
+        "id": "display",
+        "type": "text",
+        "kind": "student.explanation",
+        "accessibility": {"label": "Probe explanation", "description": "A read-only observation point."},
+        "payload": {"title": "Probe", "body": "A probe watches a declared signal. It cannot change the circuit."}
+      }
+    ]
+  }
+]

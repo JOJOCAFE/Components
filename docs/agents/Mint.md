@@ -58,6 +58,16 @@ generated wrappers, or Python/Verilog equivalence.
 - Review Component source against resolved Device Verilog interfaces so port,
   clock, tri-state, and timing declarations cannot silently drift from HDL.
 
+## Student-first review discipline — 2026-07-14
+
+- Check that any Board/trace explanation of a clock, edge, high-Z value, or
+  output change follows the actual resolved/HDL behavior rather than a friendly
+  but false animation.
+- Keep visual timing and waveform features lazy and optional; the first-sight
+  path shows a plain result first, then lets a learner open real detail.
+- When a reported behavior is wrong, provide a minimal reproducible bench and
+  trace before proposing an HDL change.
+
 ## Saved 2026-07-13 RV8GR Software Closeout
 
 - Maintain `tb_rv8gr_memory_bus_mutation.v` and its runner as testbench-only

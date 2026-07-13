@@ -35,6 +35,11 @@ Targets are references, never embedded Device records.  A resolver or future
 presentation client must reject a missing target, missing Resource view, or a
 Resource that does not map the target's resolved Device identity.
 
+`23_Resource_Definition_Contract.md` defines the Resource document selected
+by the locked `resource.id`, `resource.digest`, and `resource.view` triple.
+All three values must match one declared Resource Definition and compatible
+target; a binding never supplies its own view data.
+
 ## Hard exclusions
 
 Resource bindings must reject fields or equivalent aliases for:
