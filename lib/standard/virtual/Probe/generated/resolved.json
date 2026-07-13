@@ -1,0 +1,101 @@
+{
+  "authoring": {
+    "profile": "virtual.probe@0.2",
+    "schema": "db.component.virtual.compact",
+    "source": "definition/definition.json"
+  },
+  "definition_layers": {
+    "component": {
+      "family": "Virtual",
+      "group": "virtual",
+      "kind": "virtual",
+      "part": "Probe",
+      "role": "probe",
+      "schema": "db.component.definition",
+      "title": "Single logic probe",
+      "version": 1
+    },
+    "package": {
+      "default_package": "virtual",
+      "packages": [
+        {
+          "id": "virtual",
+          "kind": "virtual",
+          "pins": 1
+        }
+      ],
+      "part": "Probe",
+      "schema": "db.component.package",
+      "version": 1
+    },
+    "pins": {
+      "buses": {},
+      "part": "Probe",
+      "pins": [
+        {
+          "direction": "input",
+          "name": "IN",
+          "number": 1
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "simulation": {
+      "part": "Probe",
+      "schema": "db.component.simulation",
+      "simulation": {
+        "service": "sim.probe"
+      },
+      "version": 1
+    },
+    "ui": {
+      "part": "Probe",
+      "schema": "db.component.ui",
+      "ui": {
+        "symbol": "probe",
+        "widget": "probe"
+      },
+      "version": 1
+    }
+  },
+  "family": "Virtual",
+  "group": "virtual",
+  "id": "Probe",
+  "kind": "virtual",
+  "package": {
+    "kind": "virtual",
+    "pins": 1
+  },
+  "part": "Probe",
+  "pins": [
+    {
+      "direction": "input",
+      "name": "IN",
+      "number": 1
+    }
+  ],
+  "role": "probe",
+  "schema": "db.component.definition",
+  "simulation": {
+    "service": "sim.probe"
+  },
+  "status": {
+    "datasheet": "not_applicable",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "tests": "modeled",
+    "verilog_export": "not_applicable",
+    "verilog_model": "not_applicable"
+  },
+  "title": "Single logic probe",
+  "ui": {
+    "symbol": "probe",
+    "widget": "probe"
+  },
+  "version": 1,
+  "virtual": {
+    "event_model": "sample_on_operation",
+    "kind": "probe"
+  }
+}

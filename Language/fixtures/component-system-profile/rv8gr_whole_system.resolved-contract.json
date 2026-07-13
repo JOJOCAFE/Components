@@ -1,0 +1,47 @@
+{
+  "schema": "components.resolved-component-contract@1",
+  "status": "contract-only; no parser, child interface, or execution claim",
+  "component_id": "components.examples.RV8GRWholeSystemChipLevelVirtual",
+  "source": "Language/fixtures/component-system-profile/rv8gr_whole_system.component",
+  "public_interface": {
+    "digest": "pending-parent-resolution",
+    "ports": [
+      {"id": "CLK", "kind": "digital", "direction": "input"},
+      {"id": "/RST", "kind": "digital", "direction": "input"},
+      {"id": "IBUS", "kind": "digital", "direction": "bidirectional", "width": 8, "bit_order": "0..7"},
+      {"id": "DBUS", "kind": "digital", "direction": "bidirectional", "width": 8, "bit_order": "0..7"},
+      {"id": "ABUS", "kind": "digital", "direction": "output", "width": 16, "bit_order": "0..15"},
+      {"id": "PC", "kind": "digital", "direction": "bidirectional", "width": 16, "bit_order": "0..15"},
+      {"id": "AC", "kind": "digital", "direction": "bidirectional", "width": 8, "bit_order": "0..7"},
+      {"id": "Z", "kind": "digital", "direction": "bidirectional"},
+      {"id": "PG", "kind": "digital", "direction": "bidirectional", "width": 8, "bit_order": "0..7"},
+      {"id": "DP", "kind": "digital", "direction": "bidirectional", "width": 8, "bit_order": "0..7"},
+      {"id": "RAM_/OE", "kind": "digital", "direction": "output"},
+      {"id": "RAM_/WE", "kind": "digital", "direction": "output"},
+      {"id": "ROM_/OE", "kind": "digital", "direction": "output"}
+    ]
+  },
+  "child_locks": [
+    {"instance": "Boot", "component": "rv8gr.BootSequenceTrace", "interface": "pending-interface-publication"},
+    {"instance": "StoreLoadBranch", "component": "rv8gr.StoreLoadBranchTrace", "interface": "pending-interface-publication"},
+    {"instance": "PageJump", "component": "rv8gr.PageJumpTrace", "interface": "pending-interface-publication"},
+    {"instance": "IRQ", "component": "rv8gr.InterruptTrace", "interface": "pending-interface-publication"},
+    {"instance": "BusPolicy", "component": "rv8gr.BusOwnership", "interface": "pending-interface-publication"}
+  ],
+  "component_owned": ["boundary_ports", "hierarchy_locks", "typed_topology", "circuit_metadata", "timing_contracts", "evidence", "test_suite_references", "read_only_observations"],
+  "deferred_capabilities": [
+    {"owner": "Device Library", "item": "compact resolved records for every legacy RV8GR chip and virtual helper"},
+    {"owner": "Component publication", "item": "resolved child interfaces and real interface digests"},
+    {"owner": "Runtime", "item": "analog/passive execution semantics"},
+    {"owner": "component:operation", "item": "test-suite execution, seeded campaigns, trace replay, and stress scheduling"},
+    {"owner": "component:board", "item": "coordinates, routing, widgets, and physical capture"},
+    {"owner": "Legacy compatibility", "item": "existing JSON campaigns, reports, and coverage indexes remain readable evidence until an importer is separately approved"},
+    {"owner": "Lab evidence", "item": "physical timing, voltage, scope, and PCB signoff"}
+  ],
+  "test_suites": [
+    {"path": "examples/circuits/RV8GR_WholeSystemChipLevelVirtual/tests/whole_system_chip_level_virtual.json", "kind": "declarative_vectors", "execution": "deferred-operation"}
+  ],
+  "diagnostics": [
+    {"code": "COMPONENT_CONTRACT_ONLY", "severity": "info", "message": "This target establishes coverage, not current executability."}
+  ]
+}

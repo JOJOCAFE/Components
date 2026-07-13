@@ -1,0 +1,546 @@
+{
+  "authoring": {
+    "profile": "74hc.digital@0.2",
+    "schema": "db.component.digital.compact",
+    "source": "definition/definition.json"
+  },
+  "datasheet": {
+    "part": "74HC157",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC157",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc157.pdf",
+        "used_for": [
+          "pins",
+          "package",
+          "logic",
+          "electrical_characteristics",
+          "switching_characteristics"
+        ]
+      }
+    ],
+    "version": 1
+  },
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "output_drive": {
+          "status": "extracted",
+          "vcc_4_5_v": {
+            "ioh_ma": -6,
+            "iol_ma": 6
+          },
+          "vcc_6_v": {
+            "ioh_ma": -7.8,
+            "iol_ma": 7.8
+          }
+        },
+        "supply_current": {
+          "status": "extracted",
+          "vcc_6_v_max_ua": 160
+        }
+      },
+      "evidence": {
+        "source": "Texas Instruments SN74HC157 datasheet, electrical characteristics",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc157.pdf"
+      },
+      "loading": {
+        "input_capacitance": {
+          "max_pf": 10,
+          "status": "extracted",
+          "typ_pf": 3
+        }
+      },
+      "logic_family": "74HC",
+      "part": "74HC157",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "max_v": 6.0,
+          "min_v": 2.0,
+          "status": "extracted",
+          "typ_v": 5.0
+        }
+      }
+    },
+    "timing": {
+      "delay": {
+        "datasheet_typical_ns": {
+          "condition": "SN74HC157, CL=50 pF, TA=25 C",
+          "data_to_y": {
+            "vcc_4_5_v": 13,
+            "vcc_6_v": 11
+          },
+          "enable_to_y": {
+            "vcc_4_5_v": 16,
+            "vcc_6_v": 13
+          },
+          "select_to_y": {
+            "vcc_4_5_v": 18,
+            "vcc_6_v": 14
+          },
+          "transition_y": {
+            "vcc_4_5_v": 8,
+            "vcc_6_v": 6
+          }
+        },
+        "default_ns": 18,
+        "source": "simulation default from Python model"
+      },
+      "evidence": {
+        "source": "Texas Instruments SN74HC157 datasheet, switching characteristics, CL = 50 pF",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc157.pdf"
+      },
+      "part": "74HC157",
+      "schema": "db.component.timing",
+      "timing_parameters": {
+        "basis": "normalized_from_existing_datasheet_timing",
+        "parameters": {
+          "clock_to_q_high": {
+            "reason": "74HC157 is not a clocked storage element for this parameter.",
+            "status": "not_applicable"
+          },
+          "clock_to_q_low": {
+            "reason": "74HC157 is not a clocked storage element for this parameter.",
+            "status": "not_applicable"
+          },
+          "hold": {
+            "reason": "74HC157 is combinational/bus-control logic and has no clocked data hold timing requirement.",
+            "status": "not_applicable"
+          },
+          "minimum_pulse_width": {
+            "reason": "74HC157 is not a clocked storage element for this parameter.",
+            "status": "not_applicable"
+          },
+          "setup": {
+            "reason": "74HC157 is combinational/bus-control logic and has no clocked data setup timing requirement.",
+            "status": "not_applicable"
+          },
+          "tPHL": {
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+            "source_field": "TI SN74HC157 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
+            "status": "exact",
+            "values_ns": {
+              "datasheet_max_ns_25c": {
+                "data_to_output": 25,
+                "select_to_output": 25,
+                "strobe_to_output": 23,
+                "transition": 12
+              },
+              "datasheet_max_ns_sn54": {
+                "data_to_output": 38,
+                "select_to_output": 38,
+                "strobe_to_output": 34,
+                "transition": 18
+              },
+              "datasheet_max_ns_sn74": {
+                "data_to_output": 38,
+                "select_to_output": 38,
+                "strobe_to_output": 34,
+                "transition": 18
+              },
+              "datasheet_typical_ns": {
+                "data_to_output": 13,
+                "select_to_output": 18,
+                "strobe_to_output": 16,
+                "transition": 8
+              }
+            }
+          },
+          "tPHZ": {
+            "reason": "74HC157 has no high-Z output-enable control in this DB model; /G affects logic output selection/enabling, not tri-state bus release.",
+            "status": "not_applicable"
+          },
+          "tPLH": {
+            "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+            "source_field": "TI SN74HC157 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
+            "status": "exact",
+            "values_ns": {
+              "datasheet_max_ns_25c": {
+                "data_to_output": 25,
+                "select_to_output": 25,
+                "strobe_to_output": 23,
+                "transition": 12
+              },
+              "datasheet_max_ns_sn54": {
+                "data_to_output": 38,
+                "select_to_output": 38,
+                "strobe_to_output": 34,
+                "transition": 18
+              },
+              "datasheet_max_ns_sn74": {
+                "data_to_output": 38,
+                "select_to_output": 38,
+                "strobe_to_output": 34,
+                "transition": 18
+              },
+              "datasheet_typical_ns": {
+                "data_to_output": 13,
+                "select_to_output": 18,
+                "strobe_to_output": 16,
+                "transition": 8
+              }
+            }
+          },
+          "tPLZ": {
+            "reason": "74HC157 has no high-Z output-enable control in this DB model; /G affects logic output selection/enabling, not tri-state bus release.",
+            "status": "not_applicable"
+          },
+          "tPZH": {
+            "reason": "74HC157 has no high-Z output-enable control in this DB model; /G affects logic output selection/enabling, not tri-state bus release.",
+            "status": "not_applicable"
+          },
+          "tPZL": {
+            "reason": "74HC157 has no high-Z output-enable control in this DB model; /G affects logic output selection/enabling, not tri-state bus release.",
+            "status": "not_applicable"
+          }
+        },
+        "schema": "db.component.timing_parameters",
+        "version": 1
+      },
+      "version": 1
+    }
+  },
+  "evidence": {
+    "datasheet_status": "historical-or-current",
+    "dip_pinout_verified": true,
+    "manufacturer": "Texas Instruments"
+  },
+  "generation": {
+    "python": {
+      "class": "HC157",
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC157/simulation/model.py",
+      "part": "74HC157"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "lib/standard/74xx/74HC157/simulation/model.v",
+      "module": "ttl_74hc157",
+      "netlist": "lib/standard/74xx/74HC157/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "disabled_output": 0,
+    "enable": {
+      "active_low": true,
+      "pin": "/G"
+    },
+    "select": {
+      "0": "A",
+      "1": "B",
+      "pin": "A/B"
+    },
+    "type": "quad_2_to_1_mux",
+    "width": 4
+  },
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "multiplexer",
+    "title": "Quad 2-Line to 1-Line Multiplexer"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 16
+  },
+  "part": "74HC157",
+  "pins": [
+    {
+      "direction": "input",
+      "function": "select",
+      "name": "A/B",
+      "number": 1
+    },
+    {
+      "bit": 0,
+      "bus": "A",
+      "direction": "input",
+      "name": "1A",
+      "number": 2
+    },
+    {
+      "bit": 0,
+      "bus": "B",
+      "direction": "input",
+      "name": "1B",
+      "number": 3
+    },
+    {
+      "bit": 0,
+      "bus": "Y",
+      "direction": "output",
+      "name": "1Y",
+      "number": 4
+    },
+    {
+      "bit": 1,
+      "bus": "A",
+      "direction": "input",
+      "name": "2A",
+      "number": 5
+    },
+    {
+      "bit": 1,
+      "bus": "B",
+      "direction": "input",
+      "name": "2B",
+      "number": 6
+    },
+    {
+      "bit": 1,
+      "bus": "Y",
+      "direction": "output",
+      "name": "2Y",
+      "number": 7
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 8,
+      "rail": "GND"
+    },
+    {
+      "bit": 2,
+      "bus": "Y",
+      "direction": "output",
+      "name": "3Y",
+      "number": 9
+    },
+    {
+      "bit": 2,
+      "bus": "B",
+      "direction": "input",
+      "name": "3B",
+      "number": 10
+    },
+    {
+      "bit": 2,
+      "bus": "A",
+      "direction": "input",
+      "name": "3A",
+      "number": 11
+    },
+    {
+      "bit": 3,
+      "bus": "Y",
+      "direction": "output",
+      "name": "4Y",
+      "number": 12
+    },
+    {
+      "bit": 3,
+      "bus": "B",
+      "direction": "input",
+      "name": "4B",
+      "number": 13
+    },
+    {
+      "bit": 3,
+      "bus": "A",
+      "direction": "input",
+      "name": "4A",
+      "number": 14
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "function": "enable",
+      "name": "/G",
+      "number": 15
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 16,
+      "rail": "VCC"
+    }
+  ],
+  "procurement": {
+    "availability_class": "legacy",
+    "last_checked": "2026-07-11",
+    "recommended_for_new_design": false,
+    "stock_basis": "nos-or-limited"
+  },
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "delay_ns": 18,
+    "simple": {
+      "default_delay_ns": 18,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "input_to_output_ns": {
+          "condition": "input or select changes",
+          "from": "input",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 18,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 18
+            }
+          },
+          "to": "output"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 18,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 18
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "basis": "normalized_from_existing_datasheet_timing",
+      "parameters": {
+        "clock_to_q_high": {
+          "reason": "74HC157 is not a clocked storage element for this parameter.",
+          "status": "not_applicable"
+        },
+        "clock_to_q_low": {
+          "reason": "74HC157 is not a clocked storage element for this parameter.",
+          "status": "not_applicable"
+        },
+        "hold": {
+          "reason": "74HC157 is combinational/bus-control logic and has no clocked data hold timing requirement.",
+          "status": "not_applicable"
+        },
+        "minimum_pulse_width": {
+          "reason": "74HC157 is not a clocked storage element for this parameter.",
+          "status": "not_applicable"
+        },
+        "setup": {
+          "reason": "74HC157 is combinational/bus-control logic and has no clocked data setup timing requirement.",
+          "status": "not_applicable"
+        },
+        "tPHL": {
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+          "source_field": "TI SN74HC157 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
+          "status": "exact",
+          "values_ns": {
+            "datasheet_max_ns_25c": {
+              "data_to_output": 25,
+              "select_to_output": 25,
+              "strobe_to_output": 23,
+              "transition": 12
+            },
+            "datasheet_max_ns_sn54": {
+              "data_to_output": 38,
+              "select_to_output": 38,
+              "strobe_to_output": 34,
+              "transition": 18
+            },
+            "datasheet_max_ns_sn74": {
+              "data_to_output": 38,
+              "select_to_output": 38,
+              "strobe_to_output": 34,
+              "transition": 18
+            },
+            "datasheet_typical_ns": {
+              "data_to_output": 13,
+              "select_to_output": 18,
+              "strobe_to_output": 16,
+              "transition": 8
+            }
+          }
+        },
+        "tPHZ": {
+          "reason": "74HC157 has no high-Z output-enable control in this DB model; /G affects logic output selection/enabling, not tri-state bus release.",
+          "status": "not_applicable"
+        },
+        "tPLH": {
+          "note": "Exact canonical tPLH/tPHL uses the datasheet propagation-delay row because the local source maps those waveform terms to tpd for this combinational push-pull part.",
+          "source_field": "TI SN74HC157 switching characteristics, CL=50 pF; tpd is the maximum between tPLH and tPHL.",
+          "status": "exact",
+          "values_ns": {
+            "datasheet_max_ns_25c": {
+              "data_to_output": 25,
+              "select_to_output": 25,
+              "strobe_to_output": 23,
+              "transition": 12
+            },
+            "datasheet_max_ns_sn54": {
+              "data_to_output": 38,
+              "select_to_output": 38,
+              "strobe_to_output": 34,
+              "transition": 18
+            },
+            "datasheet_max_ns_sn74": {
+              "data_to_output": 38,
+              "select_to_output": 38,
+              "strobe_to_output": 34,
+              "transition": 18
+            },
+            "datasheet_typical_ns": {
+              "data_to_output": 13,
+              "select_to_output": 18,
+              "strobe_to_output": 16,
+              "transition": 8
+            }
+          }
+        },
+        "tPLZ": {
+          "reason": "74HC157 has no high-Z output-enable control in this DB model; /G affects logic output selection/enabling, not tri-state bus release.",
+          "status": "not_applicable"
+        },
+        "tPZH": {
+          "reason": "74HC157 has no high-Z output-enable control in this DB model; /G affects logic output selection/enabling, not tri-state bus release.",
+          "status": "not_applicable"
+        },
+        "tPZL": {
+          "reason": "74HC157 has no high-Z output-enable control in this DB model; /G affects logic output selection/enabling, not tri-state bus release.",
+          "status": "not_applicable"
+        }
+      },
+      "schema": "db.component.timing_parameters",
+      "version": 1
+    }
+  },
+  "verification": {
+    "required_vectors": [
+      "select_a",
+      "select_b",
+      "disabled_low"
+    ],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1
+}

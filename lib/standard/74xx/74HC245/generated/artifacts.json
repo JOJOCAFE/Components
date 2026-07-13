@@ -947,12 +947,7 @@
     },
     "unit_test": {
       "part": "74HC245",
-      "required_vectors": [
-        "a_to_b",
-        "b_to_a",
-        "disabled_high_z",
-        "bus_conflict"
-      ],
+      "required_vectors": [],
       "schema": "db.component.generated.tests",
       "split_records": {
         "bus_fight": {

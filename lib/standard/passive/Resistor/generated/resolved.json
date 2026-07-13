@@ -1,0 +1,113 @@
+{
+  "authoring": {
+    "profile": "passive.resistor@0.2",
+    "schema": "db.component.passive.compact",
+    "source": "definition/definition.json"
+  },
+  "definition_layers": {
+    "component": {
+      "family": "Passive",
+      "group": "passive",
+      "kind": "physical",
+      "part": "Resistor",
+      "role": "passive",
+      "schema": "db.component.definition",
+      "title": "Resistor",
+      "version": 1
+    },
+    "package": {
+      "default_package": "two_terminal",
+      "packages": [
+        {
+          "id": "two_terminal",
+          "kind": "two_terminal",
+          "pins": 2
+        }
+      ],
+      "part": "Resistor",
+      "schema": "db.component.package",
+      "version": 1
+    },
+    "pins": {
+      "buses": {},
+      "part": "Resistor",
+      "pins": [
+        {
+          "direction": "passive",
+          "name": "1",
+          "number": 1
+        },
+        {
+          "direction": "passive",
+          "name": "2",
+          "number": 2
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "simulation": {
+      "part": "Resistor",
+      "schema": "db.component.simulation",
+      "simulation": {
+        "default_ohms": 10000,
+        "service": "sim.resistor"
+      },
+      "version": 1
+    },
+    "ui": {
+      "part": "Resistor",
+      "schema": "db.component.ui",
+      "ui": {
+        "symbol": "resistor",
+        "widget": "resistor"
+      },
+      "version": 1
+    }
+  },
+  "family": "Passive",
+  "group": "passive",
+  "id": "Resistor",
+  "kind": "physical",
+  "package": {
+    "kind": "two_terminal",
+    "pins": 2
+  },
+  "part": "Resistor",
+  "passive": {
+    "default_ohms": 10000,
+    "kind": "resistor"
+  },
+  "pins": [
+    {
+      "direction": "passive",
+      "name": "1",
+      "number": 1
+    },
+    {
+      "direction": "passive",
+      "name": "2",
+      "number": 2
+    }
+  ],
+  "role": "passive",
+  "schema": "db.component.definition",
+  "simulation": {
+    "default_ohms": 10000,
+    "service": "sim.resistor"
+  },
+  "status": {
+    "datasheet": "not_applicable",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "tests": "modeled",
+    "verilog_export": "not_applicable",
+    "verilog_model": "not_applicable"
+  },
+  "title": "Resistor",
+  "ui": {
+    "symbol": "resistor",
+    "widget": "resistor"
+  },
+  "version": 1
+}

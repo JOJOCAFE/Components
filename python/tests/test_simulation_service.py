@@ -17,7 +17,7 @@ CIRCUIT = ROOT / "examples" / "circuits" / "RV8GR_RingCounter" / "circuit.json"
 
 
 def load_example(name: str = "nand") -> Design:
-    return Design.from_dict(json.loads((ROOT / "examples" / f"{name}.json").read_text(encoding="utf-8")))
+    return Design.from_dict(json.loads((ROOT / "examples" / "circuits" / f"{name}.json").read_text(encoding="utf-8")))
 
 
 def assert_service_response(response: dict, command: str) -> None:

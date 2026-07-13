@@ -14,6 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "docs" / "POLARITY_CROSSCHECK_REPORT.md"
 sys.path.insert(0, str(ROOT / "python"))
 
+from chiplib.db import resolve_definition_source  # noqa: E402
+
 
 DB_TO_PY_DIR = {
     "input": "in",
@@ -46,7 +48,7 @@ def main() -> int:
         group = definition.relative_to(ROOT / "lib" / "standard").parts[0]
         if group not in {"74xx", "memory"}:
             continue
-        data = json.loads(definition.read_text(encoding="utf-8"))
+        data = resolve_definition_source(json.loads(definition.read_text(encoding="utf-8")), definition)
         part = str(data.get("part") or definition.parents[1].name)
         model_path = definition.parents[1] / "simulation" / "model.py"
         if not model_path.exists():

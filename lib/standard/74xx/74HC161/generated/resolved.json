@@ -1,0 +1,802 @@
+{
+  "authoring": {
+    "profile": "74hc.digital@0.2",
+    "schema": "db.component.digital.compact",
+    "source": "definition/definition.json"
+  },
+  "datasheet": {
+    "part": "74HC161",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC161",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc161.pdf"
+      }
+    ],
+    "version": 1
+  },
+  "definition_layers": {
+    "electrical": {
+      "current": {
+        "output_drive": {
+          "status": "extracted",
+          "vcc_4_5_v": {
+            "ioh_ma": -4,
+            "iol_ma": 4
+          },
+          "vcc_6_v": {
+            "ioh_ma": -5.2,
+            "iol_ma": 5.2
+          }
+        },
+        "supply_current": {
+          "status": "extracted",
+          "vcc_6_v_max_ua": 80
+        }
+      },
+      "evidence": {
+        "label": "Texas Instruments SN74HC161",
+        "package_evidence": "N, 16-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc161.pdf"
+      },
+      "loading": {
+        "input_capacitance": {
+          "max_pf": 10,
+          "status": "extracted",
+          "typ_pf": 3
+        }
+      },
+      "logic_family": "74HC",
+      "part": "74HC161",
+      "schema": "db.component.electrical",
+      "version": 1,
+      "voltage": {
+        "vcc": {
+          "max_v": 6.0,
+          "min_v": 2.0,
+          "status": "extracted",
+          "typ_v": 5.0
+        }
+      }
+    },
+    "pins": {
+      "part": "74HC161",
+      "pins": [
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/CLR",
+          "number": 1
+        },
+        {
+          "clock": true,
+          "direction": "input",
+          "name": "CLK",
+          "number": 2
+        },
+        {
+          "bit": 0,
+          "bus": "D",
+          "direction": "input",
+          "name": "A",
+          "number": 3
+        },
+        {
+          "bit": 1,
+          "bus": "D",
+          "direction": "input",
+          "name": "B",
+          "number": 4
+        },
+        {
+          "bit": 2,
+          "bus": "D",
+          "direction": "input",
+          "name": "C",
+          "number": 5
+        },
+        {
+          "bit": 3,
+          "bus": "D",
+          "direction": "input",
+          "name": "D",
+          "number": 6
+        },
+        {
+          "direction": "input",
+          "name": "ENP",
+          "number": 7
+        },
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "active_low": true,
+          "direction": "input",
+          "name": "/LOAD",
+          "number": 9
+        },
+        {
+          "direction": "input",
+          "name": "ENT",
+          "number": 10
+        },
+        {
+          "bit": 3,
+          "bus": "Q",
+          "direction": "output",
+          "name": "QD",
+          "number": 11
+        },
+        {
+          "bit": 2,
+          "bus": "Q",
+          "direction": "output",
+          "name": "QC",
+          "number": 12
+        },
+        {
+          "bit": 1,
+          "bus": "Q",
+          "direction": "output",
+          "name": "QB",
+          "number": 13
+        },
+        {
+          "bit": 0,
+          "bus": "Q",
+          "direction": "output",
+          "name": "QA",
+          "number": 14
+        },
+        {
+          "direction": "output",
+          "name": "RCO",
+          "number": 15
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "power": {
+      "part": "74HC161",
+      "rails": [
+        {
+          "direction": "power",
+          "name": "GND",
+          "number": 8,
+          "rail": "GND"
+        },
+        {
+          "direction": "power",
+          "name": "VCC",
+          "number": 16,
+          "rail": "VCC"
+        }
+      ],
+      "schema": "db.component.power",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "datasheet_typical_ns": {
+          "clear_to_q": {
+            "vcc_4_5_v": 21,
+            "vcc_6_v": 18
+          },
+          "clock_to_q": {
+            "vcc_4_5_v": 25,
+            "vcc_6_v": 21
+          },
+          "clock_to_rco": {
+            "vcc_4_5_v": 24,
+            "vcc_6_v": 20
+          },
+          "condition": "SN74HC161, CL=50 pF, TA=25 C",
+          "ent_to_rco": {
+            "vcc_4_5_v": 17,
+            "vcc_6_v": 14
+          },
+          "transition_any": {
+            "vcc_4_5_v": 8,
+            "vcc_6_v": 6
+          }
+        },
+        "default_ns": 22,
+        "source": "simulation default from Python model"
+      },
+      "evidence": {
+        "source": "Texas Instruments SN74HC161 datasheet, timing requirements and switching characteristics",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc161.pdf"
+      },
+      "part": "74HC161",
+      "schema": "db.component.timing",
+      "timing_parameters": {
+        "basis": "normalized_from_existing_datasheet_timing",
+        "conditions": {
+          "load_pf": 50,
+          "ta_c": 25
+        },
+        "parameters": {
+          "clock_to_q_high": {
+            "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "status": "exact",
+            "values_ns": {
+              "typ": {
+                "vcc_4_5_v": 25,
+                "vcc_6_v": 21
+              }
+            }
+          },
+          "clock_to_q_low": {
+            "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+            "source_field": "timing.datasheet.values.*.clock_to_q",
+            "status": "exact",
+            "values_ns": {
+              "typ": {
+                "vcc_4_5_v": 25,
+                "vcc_6_v": 21
+              }
+            }
+          },
+          "hold": {
+            "source_field": "definition_layers.timing.timing_requirements.hold_after_clock_ns",
+            "status": "exact",
+            "values_ns": {
+              "min": {
+                "vcc_4_5_v": 0,
+                "vcc_6_v": 0
+              }
+            }
+          },
+          "minimum_pulse_width": {
+            "source_field": "definition_layers.timing.timing_requirements.clock_high_or_low_ns and clear_low_ns",
+            "status": "exact",
+            "values_ns": {
+              "clear_low_min": {
+                "vcc_4_5_v": 16,
+                "vcc_6_v": 14
+              },
+              "clock_high_or_low_min": {
+                "vcc_4_5_v": 16,
+                "vcc_6_v": 14
+              }
+            }
+          },
+          "setup": {
+            "source_field": "definition_layers.timing.timing_requirements.setup_before_clock_ns",
+            "status": "exact",
+            "values_ns": {
+              "clear_inactive_min": {
+                "vcc_4_5_v": 25,
+                "vcc_6_v": 21
+              },
+              "data_min": {
+                "vcc_4_5_v": 30,
+                "vcc_6_v": 26
+              },
+              "enp_ent_min": {
+                "vcc_4_5_v": 34,
+                "vcc_6_v": 29
+              },
+              "load_low_min": {
+                "vcc_4_5_v": 27,
+                "vcc_6_v": 23
+              }
+            }
+          },
+          "tPHL": {
+            "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry.",
+            "source_field": "switching characteristics tPLH/tPHL rows",
+            "status": "exact",
+            "values_ns": {
+              "clear_to_q_typ": {
+                "vcc_4_5_v": 21,
+                "vcc_6_v": 18
+              },
+              "clock_to_rco_typ": {
+                "vcc_4_5_v": 24,
+                "vcc_6_v": 20
+              },
+              "ent_to_rco_typ": {
+                "vcc_4_5_v": 17,
+                "vcc_6_v": 14
+              }
+            }
+          },
+          "tPHZ": {
+            "reason": "74HC161 has push-pull Q/RCO outputs and no output-enable/high-Z control.",
+            "status": "not_applicable"
+          },
+          "tPLH": {
+            "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry.",
+            "source_field": "switching characteristics tPLH/tPHL rows",
+            "status": "exact",
+            "values_ns": {
+              "clear_to_q_typ": {
+                "vcc_4_5_v": 21,
+                "vcc_6_v": 18
+              },
+              "clock_to_rco_typ": {
+                "vcc_4_5_v": 24,
+                "vcc_6_v": 20
+              },
+              "ent_to_rco_typ": {
+                "vcc_4_5_v": 17,
+                "vcc_6_v": 14
+              }
+            }
+          },
+          "tPLZ": {
+            "reason": "74HC161 has push-pull Q/RCO outputs and no output-enable/high-Z control.",
+            "status": "not_applicable"
+          },
+          "tPZH": {
+            "reason": "74HC161 has push-pull Q/RCO outputs and no output-enable/high-Z control.",
+            "status": "not_applicable"
+          },
+          "tPZL": {
+            "reason": "74HC161 has push-pull Q/RCO outputs and no output-enable/high-Z control.",
+            "status": "not_applicable"
+          }
+        },
+        "schema": "db.component.timing_parameters",
+        "version": 1
+      },
+      "timing_requirements": {
+        "clear_low_ns": {
+          "vcc_4_5_v": 16,
+          "vcc_6_v": 14
+        },
+        "clock_frequency_mhz": {
+          "vcc_4_5_v": 31,
+          "vcc_6_v": 36
+        },
+        "clock_high_or_low_ns": {
+          "vcc_4_5_v": 16,
+          "vcc_6_v": 14
+        },
+        "hold_after_clock_ns": {
+          "vcc_4_5_v": 0,
+          "vcc_6_v": 0
+        },
+        "setup_before_clock_ns": {
+          "clear_inactive": {
+            "vcc_4_5_v": 25,
+            "vcc_6_v": 21
+          },
+          "data": {
+            "vcc_4_5_v": 30,
+            "vcc_6_v": 26
+          },
+          "enp_ent": {
+            "vcc_4_5_v": 34,
+            "vcc_6_v": 29
+          },
+          "load_low": {
+            "vcc_4_5_v": 27,
+            "vcc_6_v": 23
+          }
+        }
+      },
+      "version": 1
+    }
+  },
+  "evidence": {
+    "datasheet_status": "historical-or-current",
+    "dip_pinout_verified": true,
+    "manufacturer": "Texas Instruments SN74HC161"
+  },
+  "generation": {
+    "python": {
+      "class": "HC161",
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC161/simulation/model.py",
+      "part": "74HC161"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "lib/standard/74xx/74HC161/simulation/model.v",
+      "module": "ttl_74hc161",
+      "netlist": "lib/standard/74xx/74HC161/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "async_clear": {
+      "active_low": true,
+      "pin": "/CLR"
+    },
+    "count_enable": [
+      "ENP",
+      "ENT"
+    ],
+    "parallel_load": {
+      "active_low": true,
+      "input_bus": "D",
+      "pin": "/LOAD"
+    },
+    "terminal_count": {
+      "condition": "Q=15 and ENT=1",
+      "output": "RCO"
+    },
+    "type": "sync_binary_counter",
+    "width": 4
+  },
+  "logic_family_model": "74HC161",
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "counter",
+    "title": "4-bit binary counter with parallel load and asynchronous clear"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 16
+  },
+  "part": "74HC161",
+  "pins": [
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/CLR",
+      "number": 1
+    },
+    {
+      "clock": true,
+      "direction": "input",
+      "name": "CLK",
+      "number": 2
+    },
+    {
+      "bit": 0,
+      "bus": "D",
+      "direction": "input",
+      "name": "A",
+      "number": 3
+    },
+    {
+      "bit": 1,
+      "bus": "D",
+      "direction": "input",
+      "name": "B",
+      "number": 4
+    },
+    {
+      "bit": 2,
+      "bus": "D",
+      "direction": "input",
+      "name": "C",
+      "number": 5
+    },
+    {
+      "bit": 3,
+      "bus": "D",
+      "direction": "input",
+      "name": "D",
+      "number": 6
+    },
+    {
+      "direction": "input",
+      "name": "ENP",
+      "number": 7
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 8,
+      "rail": "GND"
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "name": "/LOAD",
+      "number": 9
+    },
+    {
+      "direction": "input",
+      "name": "ENT",
+      "number": 10
+    },
+    {
+      "bit": 3,
+      "bus": "Q",
+      "direction": "output",
+      "name": "QD",
+      "number": 11
+    },
+    {
+      "bit": 2,
+      "bus": "Q",
+      "direction": "output",
+      "name": "QC",
+      "number": 12
+    },
+    {
+      "bit": 1,
+      "bus": "Q",
+      "direction": "output",
+      "name": "QB",
+      "number": 13
+    },
+    {
+      "bit": 0,
+      "bus": "Q",
+      "direction": "output",
+      "name": "QA",
+      "number": 14
+    },
+    {
+      "direction": "output",
+      "name": "RCO",
+      "number": 15
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 16,
+      "rail": "VCC"
+    }
+  ],
+  "procurement": {
+    "availability_class": "legacy",
+    "last_checked": "2026-07-11",
+    "recommended_for_new_design": false,
+    "stock_basis": "nos-or-limited"
+  },
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "clock_edge": "rising",
+    "delay_ns": 22,
+    "simple": {
+      "default_delay_ns": 22,
+      "source": "legacy functional simulator default"
+    },
+    "timed": {
+      "paths": {
+        "async_control_to_output_ns": {
+          "condition": "async control asserted or released",
+          "from": "asynchronous control",
+          "parameter": "tremap",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 22,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 22
+            }
+          },
+          "to": "Q/output"
+        },
+        "clock_to_output_ns": {
+          "condition": "active clock edge",
+          "from": "CLK/clock control",
+          "parameter": "tco",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 22,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 22
+            }
+          },
+          "to": "Q/output"
+        },
+        "input_setup_margin_ns": {
+          "condition": "conservative setup placeholder from model delay",
+          "from": "D/input",
+          "parameter": "tsu",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 22,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 22
+            }
+          },
+          "to": "CLK/clock control"
+        },
+        "transition_time_ns": {
+          "condition": "enabled output switches",
+          "from": "output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "conservative_default": {
+              "max_ns": 22,
+              "min_ns": null,
+              "source": "conservative_default_from_existing_model_delay",
+              "typ_ns": 22
+            }
+          },
+          "to": "output transition"
+        }
+      },
+      "status": "conservative_default_until_part_specific_datasheet_timing_extracted"
+    },
+    "timing_parameters": {
+      "basis": "normalized_from_existing_datasheet_timing",
+      "conditions": {
+        "load_pf": 50,
+        "ta_c": 25
+      },
+      "parameters": {
+        "clock_to_q_high": {
+          "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "status": "exact",
+          "values_ns": {
+            "typ": {
+              "vcc_4_5_v": 25,
+              "vcc_6_v": 21
+            }
+          }
+        },
+        "clock_to_q_low": {
+          "note": "Direct clock-to-Q table row; no polarity split is printed in the source.",
+          "source_field": "timing.datasheet.values.*.clock_to_q",
+          "status": "exact",
+          "values_ns": {
+            "typ": {
+              "vcc_4_5_v": 25,
+              "vcc_6_v": 21
+            }
+          }
+        },
+        "hold": {
+          "source_field": "definition_layers.timing.timing_requirements.hold_after_clock_ns",
+          "status": "exact",
+          "values_ns": {
+            "min": {
+              "vcc_4_5_v": 0,
+              "vcc_6_v": 0
+            }
+          }
+        },
+        "minimum_pulse_width": {
+          "source_field": "definition_layers.timing.timing_requirements.clock_high_or_low_ns and clear_low_ns",
+          "status": "exact",
+          "values_ns": {
+            "clear_low_min": {
+              "vcc_4_5_v": 16,
+              "vcc_6_v": 14
+            },
+            "clock_high_or_low_min": {
+              "vcc_4_5_v": 16,
+              "vcc_6_v": 14
+            }
+          }
+        },
+        "setup": {
+          "source_field": "definition_layers.timing.timing_requirements.setup_before_clock_ns",
+          "status": "exact",
+          "values_ns": {
+            "clear_inactive_min": {
+              "vcc_4_5_v": 25,
+              "vcc_6_v": 21
+            },
+            "data_min": {
+              "vcc_4_5_v": 30,
+              "vcc_6_v": 26
+            },
+            "enp_ent_min": {
+              "vcc_4_5_v": 34,
+              "vcc_6_v": 29
+            },
+            "load_low_min": {
+              "vcc_4_5_v": 27,
+              "vcc_6_v": 23
+            }
+          }
+        },
+        "tPHL": {
+          "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry.",
+          "source_field": "switching characteristics tPLH/tPHL rows",
+          "status": "exact",
+          "values_ns": {
+            "clear_to_q_typ": {
+              "vcc_4_5_v": 21,
+              "vcc_6_v": 18
+            },
+            "clock_to_rco_typ": {
+              "vcc_4_5_v": 24,
+              "vcc_6_v": 20
+            },
+            "ent_to_rco_typ": {
+              "vcc_4_5_v": 17,
+              "vcc_6_v": 14
+            }
+          }
+        },
+        "tPHZ": {
+          "reason": "74HC161 has push-pull Q/RCO outputs and no output-enable/high-Z control.",
+          "status": "not_applicable"
+        },
+        "tPLH": {
+          "note": "Direct switching-characteristics table rows; tPLH/tPHL follow the clock-to-Q table entry.",
+          "source_field": "switching characteristics tPLH/tPHL rows",
+          "status": "exact",
+          "values_ns": {
+            "clear_to_q_typ": {
+              "vcc_4_5_v": 21,
+              "vcc_6_v": 18
+            },
+            "clock_to_rco_typ": {
+              "vcc_4_5_v": 24,
+              "vcc_6_v": 20
+            },
+            "ent_to_rco_typ": {
+              "vcc_4_5_v": 17,
+              "vcc_6_v": 14
+            }
+          }
+        },
+        "tPLZ": {
+          "reason": "74HC161 has push-pull Q/RCO outputs and no output-enable/high-Z control.",
+          "status": "not_applicable"
+        },
+        "tPZH": {
+          "reason": "74HC161 has push-pull Q/RCO outputs and no output-enable/high-Z control.",
+          "status": "not_applicable"
+        },
+        "tPZL": {
+          "reason": "74HC161 has push-pull Q/RCO outputs and no output-enable/high-Z control.",
+          "status": "not_applicable"
+        }
+      },
+      "schema": "db.component.timing_parameters",
+      "version": 1
+    }
+  },
+  "variants": [
+    {
+      "manufacturer": "Texas Instruments",
+      "part": "SN74HC161N"
+    },
+    {
+      "manufacturer": "Texas Instruments",
+      "part": "CD74HC161E"
+    },
+    {
+      "manufacturer": "Renesas/Hitachi",
+      "part": "HD74HC161P"
+    }
+  ],
+  "verification": {
+    "required_vectors": [],
+    "tests": [
+      "truth_table",
+      "timing",
+      "propagation"
+    ]
+  },
+  "version": 1
+}

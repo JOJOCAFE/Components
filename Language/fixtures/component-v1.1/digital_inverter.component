@@ -1,0 +1,30 @@
+use standard.digital as digital;
+use standard.virtual as virtual;
+
+component:component DigitalInverterFixture is components.digital {
+  device Clock, virtual.ClockSource;
+  device U1, digital.74HC04;
+  device Observe, virtual.Probe;
+
+  net vcc : power;
+  net gnd : power;
+  net clock : digital;
+  net inverted : digital;
+
+  connect vcc -> U1.VCC;
+  connect gnd -> U1.GND;
+  connect Clock.CLK -> clock;
+  connect clock -> U1.1A;
+  connect U1.1Y -> inverted;
+  connect inverted -> Observe.IN;
+
+  probe input_level, clock;
+  probe inverted_level, inverted;
+  display inverted_level as value, { "label": "inverted output" };
+
+  test inversion {
+    arrange { set Clock.CLK = 0; }
+    settle;
+    assert inverted_level == 1;
+  }
+}

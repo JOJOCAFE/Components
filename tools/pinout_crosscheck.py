@@ -14,12 +14,16 @@ from __future__ import annotations
 import json
 import re
 import subprocess
+import sys
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "source"
 REPORT = ROOT / "docs" / "PINOUT_CROSSCHECK_REPORT.md"
+sys.path.insert(0, str(ROOT / "python"))
+
+from chiplib.db import resolve_definition_source  # noqa: E402
 
 
 MANUAL_PINOUTS: dict[str, dict[int, str]] = {
@@ -471,7 +475,7 @@ def main() -> int:
     source_problems = []
 
     for definition in sorted((ROOT / "lib" / "standard").glob("*/**/definition/definition.json")):
-        data = json.loads(definition.read_text(encoding="utf-8"))
+        data = resolve_definition_source(json.loads(definition.read_text(encoding="utf-8")), definition)
         part = str(data.get("part") or definition.parents[1].name)
         group = group_from_definition(definition, data)
         pins = db_pin_map(data)

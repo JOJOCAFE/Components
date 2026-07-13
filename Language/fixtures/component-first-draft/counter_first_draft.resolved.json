@@ -1,0 +1,65 @@
+{
+  "schema": "components.resolved-component@1",
+  "component_id": "fixtures.CounterFirstDraft",
+  "source": "Language/fixtures/component-first-draft/counter_first_draft.component",
+  "profile": "components.digital",
+  "library_lock": [
+    {
+      "instance": "Clock",
+      "locator": "standard.virtual.ClockSource",
+      "resolved_definition": "lib/standard/virtual/ClockSource/generated/resolved.json"
+    },
+    {
+      "instance": "Counter",
+      "locator": "standard.digital.74HC161",
+      "resolved_definition": "lib/standard/74xx/74HC161/generated/resolved.json"
+    },
+    {
+      "instance": "Observe",
+      "locator": "standard.virtual.Probe",
+      "resolved_definition": "lib/standard/virtual/Probe/generated/resolved.json"
+    }
+  ],
+  "instances": [
+    { "id": "Clock", "definition": "standard.virtual.ClockSource", "parameters": {} },
+    { "id": "Counter", "definition": "standard.digital.74HC161", "parameters": {} },
+    { "id": "Observe", "definition": "standard.virtual.Probe", "parameters": {} }
+  ],
+  "nets": [
+    { "id": "vcc", "kind": "power" },
+    { "id": "gnd", "kind": "power" },
+    { "id": "reset_n", "kind": "digital" },
+    { "id": "count[0]", "kind": "digital", "bus": "count", "bit": 0 },
+    { "id": "count[1]", "kind": "digital", "bus": "count", "bit": 1 },
+    { "id": "count[2]", "kind": "digital", "bus": "count", "bit": 2 },
+    { "id": "count[3]", "kind": "digital", "bus": "count", "bit": 3 }
+  ],
+  "edges": [
+    { "from": "vcc", "to": "Counter.VCC", "kind": "power" },
+    { "from": "gnd", "to": "Counter.GND", "kind": "power" },
+    { "from": "Clock.CLK", "to": "Counter.CLK", "kind": "digital" },
+    { "from": "reset_n", "to": "Counter./CLR", "kind": "digital" },
+    { "from": "Counter.QA", "to": "count[0]", "kind": "digital" },
+    { "from": "Counter.QB", "to": "count[1]", "kind": "digital" },
+    { "from": "Counter.QC", "to": "count[2]", "kind": "digital" },
+    { "from": "Counter.QD", "to": "count[3]", "kind": "digital" },
+    { "from": "count[0]", "to": "Observe.IN", "kind": "digital" }
+  ],
+  "observations": [
+    { "id": "count_value", "target": ["count[0]", "count[1]", "count[2]", "count[3]"], "read_only": true },
+    { "id": "least_bit", "target": ["count[0]"], "read_only": true, "declared_as": "watch" }
+  ],
+  "display_bindings": [
+    { "target": "count_value", "kind": "waveform", "options": { "label": "Counter Q", "radix": 2 }, "read_only": true }
+  ],
+  "tests": [
+    {
+      "id": "reset_then_count",
+      "bounded": true,
+      "execution": "deferred-operation-runtime",
+      "steps": ["set reset_n = 0", "settle", "assert count_value == 0", "set reset_n = 1", "pulse Clock.CLK", "wait 25 ns", "assert least_bit == 1"]
+    }
+  ],
+  "diagnostics": [],
+  "execution_limits": []
+}

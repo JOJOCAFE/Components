@@ -9,7 +9,7 @@ import shutil
 import subprocess
 import tempfile
 
-from chiplib.db import generate_component_artifacts
+from chiplib.db import generate_component_artifacts, load_digital_definition
 from chiplib import Board, BusConflictError, Z, create_chip
 
 
@@ -150,9 +150,11 @@ def active_ic_test_roots() -> dict[str, Path]:
 
 
 def load_definition(part: str):
-    group = "memory" if part in {"62256", "AS6C62256", "AT28C256", "SST39SF010A"} else "74xx"
-    path = ROOT / "lib" / "standard" / group / part / "definition" / "definition.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    """Read the stable runtime definition, not a particular authoring syntax."""
+
+    definition = load_digital_definition(part)
+    assert definition is not None
+    return definition
 
 
 def definition_has_datasheet_timing(definition: dict) -> bool:

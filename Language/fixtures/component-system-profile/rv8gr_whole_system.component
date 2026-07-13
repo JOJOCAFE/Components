@@ -1,0 +1,113 @@
+// Contract fixture only: source-shaped Component language, not yet parsed.
+use standard.digital as digital;
+use standard.memory as memory;
+use standard.virtual as virtual;
+use rv8gr.packages as rv8gr;
+
+component:component RV8GRWholeSystemChipLevelVirtual is components.digital {
+  about {
+    title "RV8GR whole-system chip-level virtual gate";
+    purpose "compose independently checked RV8GR packages without copying their internals";
+    audience "students 10-15";
+  }
+
+  port CLK : digital input;
+  port /RST : digital input;
+  bus port IBUS[8] : digital bidirectional;
+  bus port DBUS[8] : digital bidirectional;
+  bus port ABUS[16] : digital output;
+  bus port PC[16] : digital bidirectional;
+  bus port AC[8] : digital bidirectional;
+  port Z : digital bidirectional;
+  bus port PG[8] : digital bidirectional;
+  bus port DP[8] : digital bidirectional;
+  port RAM_/OE : digital output;
+  port RAM_/WE : digital output;
+  port ROM_/OE : digital output;
+
+  component Boot is rv8gr.BootSequenceTrace
+    lock "components.rv8gr.BootSequenceTrace@sha256:pending-interface-publication";
+  component StoreLoadBranch is rv8gr.StoreLoadBranchTrace
+    lock "components.rv8gr.StoreLoadBranchTrace@sha256:pending-interface-publication";
+  component PageJump is rv8gr.PageJumpTrace
+    lock "components.rv8gr.PageJumpTrace@sha256:pending-interface-publication";
+  component IRQ is rv8gr.InterruptTrace
+    lock "components.rv8gr.InterruptTrace@sha256:pending-interface-publication";
+  component BusPolicy is rv8gr.BusOwnership
+    lock "components.rv8gr.BusOwnership@sha256:pending-interface-publication";
+
+  device VCLK is virtual.ClockSource;
+  device IBUSMON is virtual.BusProbe;
+  device DBUSMON is virtual.BusProbe;
+  device OUTCHK is virtual.OutputAssert;
+  device CLKRC is virtual.RCParasitic;
+  device BUSRC is virtual.RCParasitic;
+  device DLY is virtual.DelayNoise;
+
+  net clk_in : digital;
+  net reset_n : digital;
+  bus ibus[8] : digital;
+  bus dbus[8] : digital;
+  bus abus[16] : digital;
+  bus pc[16] : digital;
+  bus ac[8] : digital;
+  bus pg[8] : digital;
+  bus dp[8] : digital;
+  net z : digital;
+  net ram_oe_n : digital;
+  net ram_we_n : digital;
+  net rom_oe_n : digital;
+
+  connect CLK -> clk_in;
+  connect /RST -> reset_n;
+  connect IBUS -> ibus;
+  connect DBUS -> dbus;
+  connect ABUS -> abus;
+  connect PC -> pc;
+  connect AC -> ac;
+  connect PG -> pg;
+  connect DP -> dp;
+  connect Z -> z;
+  connect RAM_/OE -> ram_oe_n;
+  connect RAM_/WE -> ram_we_n;
+  connect ROM_/OE -> rom_oe_n;
+  connect clk_in -> Boot.CLK;
+  connect reset_n -> IRQ./RST;
+  connect ibus -> BusPolicy.IBUS;
+  connect dbus -> BusPolicy.DBUS;
+  connect pc -> Boot.PC;
+  connect ac -> Boot.AC;
+  connect pg -> Boot.PG;
+  connect dp -> Boot.DP;
+  connect z -> Boot.Z;
+  connect clk_in -> CLKRC.IN;
+  connect clk_in -> DLY.IN;
+  connect ibus[0] -> IBUSMON.IN;
+  connect dbus[0] -> DBUSMON.IN;
+  connect dbus[0] -> BUSRC.IN;
+  connect pc[0] -> OUTCHK.IN;
+
+  probe ibus_state, ibus;
+  probe dbus_state, dbus;
+  probe architecture_pc, pc;
+  display architecture_pc as waveform, { "label": "PC architectural checkpoints" };
+
+  timing contract virtual_stress_only {
+    applies_to CLK, /RST, IBUS, DBUS, RAM_/OE, RAM_/WE, ROM_/OE;
+    limitation "functional virtual stress only; no physical edge-quality, voltage, or PCB signoff";
+  }
+
+  evidence {
+    claim "one active DBUS driver in checked phases";
+    source "examples/circuits/RV8GR_BusOwnership/tests/bus_ownership.json";
+    status virtual_proof;
+  }
+  evidence {
+    claim "whole-system physical signoff remains blocked";
+    source "examples/circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json";
+    status limitation;
+  }
+
+  test-suite "examples/circuits/RV8GR_WholeSystemChipLevelVirtual/tests/whole_system_chip_level_virtual.json"
+    kind declarative_vectors;
+}

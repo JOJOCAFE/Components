@@ -71,51 +71,51 @@ Important: `embedded_pinout_doc` means the DB definition exactly matches the rep
 | 74HCT245 | 74xx | 20 | PASS_EXACT_PIN_MAP | manual_datasheet_text_extraction | PDF_OK:source/74HCT245_TI_SN74HCT245.pdf:38p | 20 pins match |
 | 74HCT541 | 74xx | 20 | PASS_EXACT_PIN_MAP | manual_datasheet_text_extraction | PDF_OK:source/74HCT541_TI_SN74HCT541.pdf:30p | 20 pins match |
 | 74HCT574 | 74xx | 20 | PASS_EXACT_PIN_MAP | manual_datasheet_text_extraction | PDF_OK:source/74HCT574_TI_SN74HCT574.pdf:30p | 20 pins match |
-| BC549 | Discrete | 3 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| BC559 | Discrete | 3 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| NPN | Discrete | 3 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| PNP | Discrete | 3 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| 62256 | Memory | 28 | PASS_EXACT_PIN_MAP | embedded_pinout_doc:lib/standard/memory/62256/simulation/model.v | PDF_OK:source/KM62256C.PDF:9p; PDF_OK:source/AS6C62256.PDF:12p | 28 pins match |
-| AS6C62256 | Memory | 28 | PASS_EXACT_PIN_MAP | embedded_pinout_doc:lib/standard/memory/AS6C62256/simulation/model.v | PDF_OK:source/AS6C62256.PDF:12p | 28 pins match |
-| AT28C256 | Memory | 28 | PASS_EXACT_PIN_MAP | embedded_pinout_doc:lib/standard/memory/AT28C256/simulation/model.v | PDF_OK:source/AT28C256_Microchip_doc0006.pdf:25p | 28 pins match |
-| CY7C199 | Memory | 28 | PASS_EXACT_PIN_MAP | embedded_pinout_doc:lib/standard/memory/CY7C199/simulation/model.v | PDF_OK:source/CY7C199.PDF:13p | 28 pins match |
-| SST39SF010A | Memory | 32 | PASS_EXACT_PIN_MAP | embedded_pinout_doc:lib/standard/memory/SST39SF010A/simulation/model.v | PDF_OK:source/SST39SF010A_MICROCHIP_DS20005022.pdf:32p | 32 pins match |
-| BlueLED | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Capacitor | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Crystal2Pin_10MHz | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Crystal2Pin_1MHz | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Crystal2Pin_2MHz | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Crystal2Pin_5MHz | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| LED | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Oscillator4Pin_10MHz | Passive | 4 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Oscillator4Pin_1MHz | Passive | 4 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Oscillator4Pin_2MHz | Passive | 4 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Oscillator4Pin_5MHz | Passive | 4 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| RedLED | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Resistor | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| YellowLED | Passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| LM358 | Support | 8 | PASS_EXACT_PIN_MAP | manual_datasheet_text_extraction | PDF_OK:source/LM358_TI_LM358.pdf:68p | 8 pins match |
-| LM393 | Support | 8 | PASS_EXACT_PIN_MAP | manual_datasheet_text_extraction | PDF_OK:source/LM393_TI_LM393.pdf:56p | 8 pins match |
-| MAX232 | Support | 16 | PASS_EXACT_PIN_MAP | manual_datasheet_text_extraction | PDF_OK:source/MAX232_TI_MAX232.pdf:27p | 16 pins match |
-| NE555 | Support | 8 | PASS_EXACT_PIN_MAP | manual_datasheet_text_extraction | PDF_OK:source/NE555_TI_NE555.pdf:39p | 8 pins match |
-| ULN2803A | Support | 18 | PASS_EXACT_PIN_MAP | manual_datasheet_text_extraction | PDF_OK:source/ULN2803A_TI_ALLDATASHEET.pdf:10p | 18 pins match |
-| BusProbe | Virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| ClockSource | Virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| DelayNoise | Virtual | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| GND | Virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| InputSource | Virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| OutputAssert | Virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Probe | Virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Pulldown | Virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Pullup | Virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| RCParasitic | Virtual | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| Switch | Virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
-| VCC | Virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| BC549 | discrete | 3 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| BC559 | discrete | 3 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| NPN | discrete | 3 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| PNP | discrete | 3 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| 62256 | memory | 28 | PASS_EXACT_PIN_MAP | embedded_pinout_doc:lib/standard/memory/62256/simulation/model.v | PDF_OK:source/KM62256C.PDF:9p; PDF_OK:source/AS6C62256.PDF:12p | 28 pins match |
+| AS6C62256 | memory | 28 | PASS_EXACT_PIN_MAP | embedded_pinout_doc:lib/standard/memory/AS6C62256/simulation/model.v | PDF_OK:source/AS6C62256.PDF:12p | 28 pins match |
+| AT28C256 | memory | 28 | PASS_EXACT_PIN_MAP | embedded_pinout_doc:lib/standard/memory/AT28C256/simulation/model.v | PDF_OK:source/AT28C256_Microchip_doc0006.pdf:25p | 28 pins match |
+| CY7C199 | memory | 28 | PASS_EXACT_PIN_MAP | embedded_pinout_doc:lib/standard/memory/CY7C199/simulation/model.v | PDF_OK:source/CY7C199.PDF:13p | 28 pins match |
+| SST39SF010A | memory | 32 | PASS_EXACT_PIN_MAP | embedded_pinout_doc:lib/standard/memory/SST39SF010A/simulation/model.v | PDF_OK:source/SST39SF010A_MICROCHIP_DS20005022.pdf:32p | 32 pins match |
+| BlueLED | passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Capacitor | passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Crystal2Pin_10MHz | passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Crystal2Pin_1MHz | passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Crystal2Pin_2MHz | passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Crystal2Pin_5MHz | passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| LED | passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Oscillator4Pin_10MHz | passive | 4 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Oscillator4Pin_1MHz | passive | 4 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Oscillator4Pin_2MHz | passive | 4 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Oscillator4Pin_5MHz | passive | 4 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| RedLED | passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Resistor | passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| YellowLED | passive | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| LM358 | support | 8 | PASS_EXACT_PIN_MAP | manual_datasheet_text_extraction | PDF_OK:source/LM358_TI_LM358.pdf:68p | 8 pins match |
+| LM393 | support | 8 | PASS_EXACT_PIN_MAP | manual_datasheet_text_extraction | PDF_OK:source/LM393_TI_LM393.pdf:56p | 8 pins match |
+| MAX232 | support | 16 | PASS_EXACT_PIN_MAP | manual_datasheet_text_extraction | PDF_OK:source/MAX232_TI_MAX232.pdf:27p | 16 pins match |
+| NE555 | support | 8 | PASS_EXACT_PIN_MAP | manual_datasheet_text_extraction | PDF_OK:source/NE555_TI_NE555.pdf:39p | 8 pins match |
+| ULN2803A | support | 18 | PASS_EXACT_PIN_MAP | manual_datasheet_text_extraction | PDF_OK:source/ULN2803A_TI_ALLDATASHEET.pdf:10p | 18 pins match |
+| BusProbe | virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| ClockSource | virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| DelayNoise | virtual | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| GND | virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| InputSource | virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| OutputAssert | virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Probe | virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Pulldown | virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Pullup | virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| RCParasitic | virtual | 2 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| Switch | virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
+| VCC | virtual | 1 | SKIP_NON_IC_OR_NO_DATASHEET_PINOUT | no datasheet-backed IC pinout expected | N/A | virtual/passive/discrete package, not an IC datasheet pinout |
 
 ## Summary
 
 - Total DB definitions checked: 105
-- Datasheet-backed IC definitions checked: 75
+- Datasheet-backed IC definitions checked: 65
 - Mismatches: 0
 - Cannot/source-problem items: 0
 

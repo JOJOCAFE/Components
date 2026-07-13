@@ -20,6 +20,7 @@ sys.path.insert(0, str(ROOT / "python"))
 sys.path.insert(0, str(ROOT / "tools"))
 
 from python_behavior_crosscheck import bus_aliases, normalize_bus_expected  # noqa: E402
+from chiplib.db import resolve_definition_source  # noqa: E402
 
 
 ANNOTATION_EXPECT_KEYS = {
@@ -414,7 +415,8 @@ def emit_testbench(part: str, module: str, model_path: Path, definition: dict[st
 
 def run_part(part_dir: Path, tmp: Path, iverilog: str, vvp: str) -> dict[str, Any]:
     part = part_dir.name
-    definition = load_json(part_dir / "definition" / "definition.json")
+    definition_path = part_dir / "definition" / "definition.json"
+    definition = resolve_definition_source(load_json(definition_path), definition_path)
     netlist = load_json(part_dir / "simulation" / "netlist.json")
     truth = load_json(part_dir / "tests" / "truth_table.json")
     module_py = import_model(part_dir / "simulation" / "model.py")

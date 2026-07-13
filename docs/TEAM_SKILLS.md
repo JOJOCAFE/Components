@@ -67,6 +67,78 @@ to ship, and Pim keeps the route visible.
   those mappings; Mint checks HDL alignment; Fern gates each promotion; Noon
   preserves the modeled-versus-physical student boundary.
 
+## Active RV8GR Software Differential-Hardening Lane: 2026-07-13
+
+The passing directed, opcode-control, and chip-level gates remain the baseline.
+This lane increases software confidence before physical wiring; it does not
+claim physical timing or board signoff.
+
+| Owner | Bounded deliverable | Paired review |
+|---|---|---|
+| Pim | Task order, checkpoints, cross-repo scope, and reproducible handoff | Fern |
+| Bank | Four-model state/phase trace contract and canonical-source boundaries | Bam + Ohm |
+| Fern | Seed ledger, differential oracle, mutation acceptance criteria, regression gate | Mint |
+| Mint | Behavioural/chip-level RTL trace probes and mutation benches | Fern |
+| Ohm | Signal/pin interpretation for bus handoff, ROM `/WE`, store direction, reset | Bank + Noon |
+| Bam | Deterministic Python/Components differential runner and `/tmp` reproducibility wrapper | Fern + Mint |
+| Noon | Student-safe explanation of coverage, reserved encodings, and simulation limits | Ohm |
+
+Required work packages are: seeded instruction-stream differential tests,
+end-to-end reserved-encoding characterization, a T0/T1/T2 trace contract,
+negative mutation tests, and a clean external-Components runner.  Preserve
+the current directed suite; do not replace it.  A result is promotable only if
+the command fails on mismatch and retains the seed, ROM/program, phase trace,
+and model versions needed to reproduce it.
+
+## Active `component:component` Language Model Lane: 2026-07-13
+
+The first language implementation target is an executable Component source
+model, not Board/UI.  It instantiates compact Device definitions, declares
+typed nets/buses, makes explicit connections, names probes/display intent, and
+attaches bounded deterministic tests.  It resolves into immutable topology.
+`component:board` and `component:operation` remain deferred clients of that
+model.
+
+- Bank owns the source/AST/resolver contract and compatibility boundary.
+- Bam owns the parser/resolver/runtime prototype once the contract is frozen.
+- Fern owns conformance fixtures for invalid ports, widths, drivers, power,
+  probes, displays, and deterministic test failures.
+- Mint and Ohm review device/pin/timing truth exposed through Component source.
+- Noon owns readable examples that do not require a Board to explain a machine.
+- Pim keeps this additive proposal separate from `docs/Component/old_references`.
+
+## Saved RV8GR Software-Closeout Skill: 2026-07-13
+
+The RV8GR software lane is closed at the digital-model boundary.  Before a
+future RV8GR change is called safe, run the complete external regression:
+
+```sh
+COMPONENTS_ROOT=/home/jo/kiro/Components \
+  /home/jo/kiro/RV8/RV8GR/tools/run_all_verilog_tb.sh
+```
+
+This includes behavioral tests, chip-level bring-up/full execution, dual RTL
+comparison, and negative kill tests for reset release, U34/U7 ownership, ROM
+`/WE` protection, U7 store direction, and output-enable ordering.  A killed
+mutation is evidence that the test can observe that specific modeled fault; it
+is not a physical deadband, memory-turnaround, contention-current, or PCB
+clock-rate signoff.  Those claims remain Ohm's measurement work on wired
+hardware.
+
+## Saved Component Model and Definition-Migration Skill: 2026-07-13
+
+- `docs/Component/` contains only `Component_Model.md`; all imported v0.1
+  material is preserved under `docs/Component/old_references/`.
+- A Component source describes explicit topology, bounded checks, and read-only
+  observation.  Device definitions provide behavior/timing; Resources provide
+  presentation.  Board and Operation stay deferred.
+- Before replacing a legacy RV8GR definition, run the digital or memory
+  lossless-equivalence gate and the migration audit.  A bridge-ready result is
+  permission to author/review a compact source, never permission to discard
+  canonical timing, pin, or evidence truth.
+- Any direct package-file audit must resolve compact authoring through
+  `chiplib.db.resolve_definition_source()` before reading pins or timing.
+
 ## Model Routing
 
 Pim assigns the strongest available Codex coding/reasoning profile to work that

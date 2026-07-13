@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jojocafe.github.io/Components/lib/standard/resource.schema.json",
+  "title": "Components device resource mapping",
+  "$comment": "Structural schema only. A resource maps an existing device to presentation artifacts; it must not define device behavior, timing, or evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "maps", "views"],
+  "properties": {
+    "schema": {"const": "components.resource"},
+    "version": {"const": 1},
+    "maps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["part", "device_definition"],
+      "properties": {
+        "part": {"type": "string", "minLength": 1},
+        "device_definition": {"type": "string", "pattern": "^[^/].*\\.json$"}
+      }
+    },
+    "views": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "artifact"],
+        "properties": {
+          "kind": {"type": "string", "minLength": 1},
+          "artifact": {"type": "string", "pattern": "^[^/].*\\.json$"}
+        }
+      }
+    }
+  }
+}

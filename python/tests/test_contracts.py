@@ -21,7 +21,7 @@ EXAMPLES = [
 
 
 def load_example(name: str) -> Design:
-    path = ROOT / "examples" / f"{name}.json"
+    path = ROOT / "examples" / "circuits" / f"{name}.json"
     return Design.from_dict(json.loads(path.read_text(encoding="utf-8")))
 
 

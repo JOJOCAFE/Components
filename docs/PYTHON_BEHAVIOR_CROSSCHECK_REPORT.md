@@ -71,16 +71,16 @@ Important: this checks the Python runtime model. A `PASS_MODEL_DELAY_BUT_DATASHE
 | 74HCT245 | 74xx | PASS | PASS | PASS (3 run, 0 placeholder) | PASS_MODEL_DELAY | 15 | 15 | - |
 | 74HCT541 | 74xx | PASS | PASS | PASS (3 run, 0 placeholder) | PASS_MODEL_DELAY | 15 | 15 | - |
 | 74HCT574 | 74xx | PASS | PASS | PASS (4 run, 0 placeholder) | PASS_MODEL_DELAY | 15 | 15 | - |
-| 62256 | Memory | PASS | PASS | PASS (12 run, 0 placeholder) | PASS_MODEL_DELAY | 70 | 70 | - |
-| AS6C62256 | Memory | PASS | PASS | PASS (8 run, 0 placeholder) | PASS_MODEL_DELAY | 55 | 55 | - |
-| AT28C256 | Memory | PASS | PASS | PASS (16 run, 0 placeholder) | PASS_MODEL_DELAY | 150 | 150 | - |
-| CY7C199 | Memory | PASS | PASS | PASS (12 run, 0 placeholder) | PASS_MODEL_DELAY | 70 | 70 | - |
-| SST39SF010A | Memory | PASS | PASS | PASS (8 run, 0 placeholder) | PASS_MODEL_DELAY | 70 | 70 | - |
-| LM358 | Support | PASS | PASS | PASS (3 run, 0 placeholder) | PASS_MODEL_DELAY | 1 | 1 | - |
-| LM393 | Support | PASS | PASS | PASS (3 run, 0 placeholder) | PASS_MODEL_DELAY | 1 | 1 | - |
-| MAX232 | Support | PASS | PASS | PASS (3 run, 0 placeholder) | PASS_MODEL_DELAY | 1 | 1 | - |
-| NE555 | Support | PASS | PASS | PASS (4 run, 0 placeholder) | PASS_MODEL_DELAY | 1 | 1 | - |
-| ULN2803A | Support | PASS | PASS | PASS (3 run, 0 placeholder) | PASS_MODEL_DELAY | 1 | 1 | - |
+| 62256 | memory | PASS | PASS | PASS (12 run, 0 placeholder) | PASS_MODEL_DELAY | 70 | 70 | - |
+| AS6C62256 | memory | PASS | PASS | PASS (8 run, 0 placeholder) | PASS_MODEL_DELAY | 55 | 55 | - |
+| AT28C256 | memory | PASS | PASS | PASS (16 run, 0 placeholder) | PASS_MODEL_DELAY | 150 | 150 | - |
+| CY7C199 | memory | PASS | PASS | PASS (12 run, 0 placeholder) | PASS_MODEL_DELAY | 70 | 70 | - |
+| SST39SF010A | memory | PASS | PASS | PASS (8 run, 0 placeholder) | PASS_MODEL_DELAY | 70 | 70 | - |
+| LM358 | support | PASS | PASS | PASS (3 run, 0 placeholder) | PASS_MODEL_DELAY | 1 | 1 | - |
+| LM393 | support | PASS | PASS | PASS (3 run, 0 placeholder) | PASS_MODEL_DELAY | 1 | 1 | - |
+| MAX232 | support | PASS | PASS | PASS (3 run, 0 placeholder) | PASS_MODEL_DELAY | 1 | 1 | - |
+| NE555 | support | PASS | PASS | PASS (4 run, 0 placeholder) | PASS_MODEL_DELAY | 1 | 1 | - |
+| ULN2803A | support | PASS | PASS | PASS (3 run, 0 placeholder) | PASS_MODEL_DELAY | 1 | 1 | - |
 
 ## Summary
 

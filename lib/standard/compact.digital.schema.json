@@ -1,0 +1,299 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jojocafe.github.io/Components/lib/standard/compact.digital.schema.json",
+  "title": "Components compact digital component definition",
+  "$comment": "Human-authored source for db.component.digital.compact@0.2. A resolver, not the runtime, expands this format to db.component.digital.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "profile", "part", "about", "package", "pins", "logic", "timing", "model", "verify", "sources"],
+  "properties": {
+    "schema": {"const": "db.component.digital.compact"},
+    "version": {"const": "0.2"},
+    "profile": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*@[0-9]+\\.[0-9]+$"},
+    "part": {"type": "string", "minLength": 1},
+    "about": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "family", "group", "role"],
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "family": {"type": "string", "minLength": 1},
+        "group": {"enum": ["74xx", "memory"]},
+        "role": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1}, "manufacturer": {"type": "string", "minLength": 1}
+      }
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {"type": "string", "minLength": 1},
+        "default": {"type": "string", "minLength": 1}
+      }
+    },
+    "pins": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"pattern": "^[1-9][0-9]*$"},
+      "additionalProperties": {"$ref": "#/$defs/pin"}
+    },
+    "logic": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["type"],
+      "properties": {
+        "type": {"type": "string", "minLength": 1},
+        "width": {"type": "integer", "minimum": 1}
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["default"],
+      "properties": {
+        "default": {"$ref": "#/$defs/time"},
+        "conditions": {"type": "object", "additionalProperties": true},
+        "clock_edge": {"enum": ["rising", "falling"]},
+        "datasheet": {"type": "object", "additionalProperties": true},
+        "clocked": {"$ref": "#/$defs/clockedTiming"},
+        "tri_state": {"$ref": "#/$defs/triStateTiming"},
+        "multipath": {"$ref": "#/$defs/multiPathTiming"},
+        "clocked_tri_state": {"$ref": "#/$defs/clockedTriStateTiming"},
+        "asynchronous_memory": {"$ref": "#/$defs/asynchronousMemoryTiming"}
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "python": {"$ref": "#/$defs/modelName"},
+        "verilog": {"$ref": "#/$defs/modelName"},
+        "logic_family_model": {"type": "string", "minLength": 1}
+      }
+    },
+    "electrical": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "verify": {"oneOf": [{"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true}, {"type": "object", "additionalProperties": false, "required": ["tests", "required_vectors"], "properties": {"tests": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true}, "required_vectors": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}}}]},
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/source"}
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {"type": "string", "minLength": 1}
+      }
+    },
+    "procurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recommended_for_new_design", "availability_class", "stock_basis", "last_checked"],
+      "properties": {
+        "recommended_for_new_design": {"type": "boolean"},
+        "availability_class": {"enum": ["active", "legacy", "obsolete", "unknown"]},
+        "stock_basis": {"enum": ["broad-stock", "common-education-stock", "nos-or-limited", "unknown"]},
+        "last_checked": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"}
+      }
+    },
+    "known_limitations": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "pin": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 3,
+      "prefixItems": [
+        {"type": "string", "minLength": 1},
+        {"enum": ["in", "out", "io", "passive", "power", "nc"]},
+        {"$ref": "#/$defs/pinOptions"}
+      ],
+      "items": false
+    },
+    "pinOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "active": {"const": "low"},
+        "edge": {"enum": ["rising", "falling"]},
+        "rail": {"enum": ["VCC", "VDD", "GND", "VSS"]},
+        "bus": {"type": "string", "minLength": 1},
+        "bit": {"type": "integer", "minimum": 0},
+        "drive": {"enum": ["push_pull", "open_drain", "tri_state"]},
+        "enable": {"type": "string", "minLength": 1},
+        "function": {"type": "string", "minLength": 1}
+      }
+    },
+    "time": {
+      "oneOf": [
+        {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?(ns|us|ms|s)$"},
+        {"type": "number", "minimum": 0}
+      ]
+    },
+    "voltageTimeValues": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"pattern": "^[0-9]+(\\.[0-9]+)?V$"},
+      "additionalProperties": {"$ref": "#/$defs/time"}
+    },
+    "clockedTiming": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["conditions", "propagation", "setup", "hold", "minimum_pulse_width", "maximum_clock_frequency", "evidence"],
+      "properties": {
+        "conditions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["load_pf", "temperature_c"],
+          "properties": {
+            "load_pf": {"type": "number", "minimum": 0},
+            "temperature_c": {"type": "number"},
+            "note": {"type": "string", "minLength": 1}
+          }
+        },
+        "propagation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["clear_to_q", "clock_to_q", "clock_to_rco", "ent_to_rco", "transition_any"],
+          "properties": {
+            "clear_to_q": {"$ref": "#/$defs/voltageTimeValues"},
+            "clock_to_q": {"$ref": "#/$defs/voltageTimeValues"},
+            "clock_to_rco": {"$ref": "#/$defs/voltageTimeValues"},
+            "ent_to_rco": {"$ref": "#/$defs/voltageTimeValues"},
+            "transition_any": {"$ref": "#/$defs/voltageTimeValues"}
+          }
+        },
+        "setup": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["clear_inactive", "data", "enp_ent", "load_low"],
+          "properties": {
+            "clear_inactive": {"$ref": "#/$defs/voltageTimeValues"},
+            "data": {"$ref": "#/$defs/voltageTimeValues"},
+            "enp_ent": {"$ref": "#/$defs/voltageTimeValues"},
+            "load_low": {"$ref": "#/$defs/voltageTimeValues"}
+          }
+        },
+        "hold": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["after_clock"],
+          "properties": {"after_clock": {"$ref": "#/$defs/voltageTimeValues"}}
+        },
+        "minimum_pulse_width": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["clock_high_or_low", "clear_low"],
+          "properties": {
+            "clock_high_or_low": {"$ref": "#/$defs/voltageTimeValues"},
+            "clear_low": {"$ref": "#/$defs/voltageTimeValues"}
+          }
+        },
+        "maximum_clock_frequency": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {"pattern": "^[0-9]+(\\.[0-9]+)?V$"},
+          "additionalProperties": {"type": "number", "exclusiveMinimum": 0}
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source", "url"],
+          "properties": {
+            "source": {"type": "string", "minLength": 1},
+            "url": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    },
+    "modelName": {
+      "oneOf": [
+        {"type": "string", "minLength": 1},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name"],
+          "properties": {
+            "name": {"type": "string", "minLength": 1},
+            "file": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "package"],
+      "anyOf": [{"required": ["url"]}, {"required": ["file"]}],
+      "properties": {
+        "label": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "minLength": 1},
+        "file": {"type": "string", "minLength": 1},
+        "package": {"type": "string", "minLength": 1},
+        "package_evidence": {"type": "string", "minLength": 1},
+        "used_for": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "manufacturer": {"type": "string", "minLength": 1}
+      }
+    },
+    "asynchronousMemoryTiming": {
+      "type": "object", "additionalProperties": false,
+      "required": ["variant", "read", "write", "model", "evidence"],
+      "properties": {
+        "variant": {"type": "object", "additionalProperties": false, "required": ["selected", "available", "physical_signoff_requires"], "properties": {"selected": {"type": "string"}, "available": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}}, "unselected_policy": {"type": "string"}, "physical_signoff_requires": {"type": "string"}}},
+        "read": {"type": "object", "additionalProperties": false, "required": ["address", "ce", "oe", "float"], "properties": {"address": {"$ref": "#/$defs/time"}, "ce": {"$ref": "#/$defs/time"}, "oe": {"$ref": "#/$defs/time"}, "float": {"$ref": "#/$defs/time"}}},
+        "write": {"type": "object", "additionalProperties": true},
+        "model": {"type": "object", "additionalProperties": true},
+        "evidence": {"type": "object", "additionalProperties": true}
+      }
+    },
+    "multiPathTiming": {
+      "type": "object", "additionalProperties": false,
+      "required": ["conditions", "rows", "evidence"],
+      "properties": {
+        "conditions": {"type": "object", "additionalProperties": false, "required": ["note"], "properties": {"note": {"type": "string", "minLength": 1}}},
+        "rows": {"type": "object", "additionalProperties": {"type": "object", "additionalProperties": {"$ref": "#/$defs/voltageTimeValues"}}},
+        "evidence": {"type": "object", "additionalProperties": true},
+        "source_field": {"type": "string", "minLength": 1}
+      }
+    },
+    "clockedTriStateTiming": {
+      "type": "object", "additionalProperties": false,
+      "required": ["conditions", "rows", "requirements", "evidence"],
+      "properties": {
+        "conditions": {"type": "object", "additionalProperties": false, "required": ["note"], "properties": {"note": {"type": "string", "minLength": 1}}},
+        "rows": {"type": "object", "additionalProperties": {"$ref": "#/$defs/voltageTimeValues"}},
+        "requirements": {"type": "object", "additionalProperties": {"anyOf": [{"$ref": "#/$defs/voltageTimeValues"}, {"type": "object", "additionalProperties": {"type": "number", "exclusiveMinimum": 0}}]}},
+        "evidence": {"type": "object", "additionalProperties": true}
+      }
+    },
+    "triStateTiming": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["conditions", "transfer", "output_enable", "output_disable", "transition", "evidence"],
+      "properties": {
+        "conditions": {"type": "object", "additionalProperties": false, "required": ["device", "load_capacitance_pf", "temperature_note", "source"], "properties": {"device": {"type": "string", "minLength": 1}, "load_capacitance_pf": {"type": "number", "minimum": 0}, "temperature_note": {"type": "string", "minLength": 1}, "source": {"type": "string", "minLength": 1}}},
+        "transfer": {"$ref": "#/$defs/triStateRows"},
+        "output_enable": {"$ref": "#/$defs/triStateRows"},
+        "output_disable": {"$ref": "#/$defs/triStateRows"},
+        "transition": {"$ref": "#/$defs/triStateRows"},
+        "evidence": {"type": "object", "additionalProperties": true}
+      }
+    },
+    "triStateRows": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"pattern": "^[0-9]+(\\.[0-9]+)?V$"},
+      "additionalProperties": {"type": "object", "additionalProperties": false, "required": ["typ", "max_25c", "max_sn54", "max_sn74"], "properties": {"typ": {"type": "integer", "minimum": 0}, "max_25c": {"type": "integer", "minimum": 0}, "max_sn54": {"type": "integer", "minimum": 0}, "max_sn74": {"type": "integer", "minimum": 0}}}
+    }
+  }
+}

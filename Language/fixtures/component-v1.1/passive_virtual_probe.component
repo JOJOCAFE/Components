@@ -1,0 +1,17 @@
+use standard.passive as passive;
+use standard.virtual as virtual;
+
+component:component PassiveVirtualFixture is components.physical {
+  device R1, passive.Resistor;
+  device Sense, virtual.Probe;
+
+  net source : digital;
+  net sensed : digital;
+
+  connect source -> R1.1;
+  connect R1.2 -> sensed;
+  connect sensed -> Sense.IN;
+
+  probe sensed_level, sensed;
+  display sensed_level as value, { "label": "resistor output node" };
+}

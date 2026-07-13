@@ -1,0 +1,14 @@
+{
+  "schema": "components.resource",
+  "version": 1,
+  "maps": {
+    "part": "74HC574",
+    "device_definition": "../definition/definition.json"
+  },
+  "views": {
+    "dip": {
+      "kind": "symbol.dip",
+      "artifact": "../symbol/dip.json"
+    }
+  }
+}

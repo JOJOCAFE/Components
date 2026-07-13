@@ -1,0 +1,104 @@
+{
+  "authoring": {
+    "profile": "virtual.clock_source@0.2",
+    "schema": "db.component.virtual.compact",
+    "source": "definition/definition.json"
+  },
+  "definition_layers": {
+    "component": {
+      "family": "Virtual",
+      "group": "virtual",
+      "kind": "virtual",
+      "part": "ClockSource",
+      "role": "stimulus",
+      "schema": "db.component.definition",
+      "title": "Clock source",
+      "version": 1
+    },
+    "package": {
+      "default_package": "virtual",
+      "packages": [
+        {
+          "id": "virtual",
+          "kind": "virtual",
+          "pins": 1
+        }
+      ],
+      "part": "ClockSource",
+      "schema": "db.component.package",
+      "version": 1
+    },
+    "pins": {
+      "buses": {},
+      "part": "ClockSource",
+      "pins": [
+        {
+          "direction": "output",
+          "name": "CLK",
+          "number": 1
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "simulation": {
+      "part": "ClockSource",
+      "schema": "db.component.simulation",
+      "simulation": {
+        "default_period_ns": 100,
+        "service": "sim.clock_source"
+      },
+      "version": 1
+    },
+    "ui": {
+      "part": "ClockSource",
+      "schema": "db.component.ui",
+      "ui": {
+        "symbol": "clock",
+        "widget": "clock"
+      },
+      "version": 1
+    }
+  },
+  "family": "Virtual",
+  "group": "virtual",
+  "id": "ClockSource",
+  "kind": "virtual",
+  "package": {
+    "kind": "virtual",
+    "pins": 1
+  },
+  "part": "ClockSource",
+  "pins": [
+    {
+      "direction": "output",
+      "name": "CLK",
+      "number": 1
+    }
+  ],
+  "role": "stimulus",
+  "schema": "db.component.definition",
+  "simulation": {
+    "default_period_ns": 100,
+    "service": "sim.clock_source"
+  },
+  "status": {
+    "datasheet": "not_applicable",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "tests": "modeled",
+    "verilog_export": "not_applicable",
+    "verilog_model": "not_applicable"
+  },
+  "title": "Clock source",
+  "ui": {
+    "symbol": "clock",
+    "widget": "clock"
+  },
+  "version": 1,
+  "virtual": {
+    "default_period_ns": 100,
+    "event_model": "periodic",
+    "kind": "clock_source"
+  }
+}

@@ -47,6 +47,22 @@ share it across the copied chip models.
 truth. Regenerate it after changing `definition/definition.json`, split test
 records, symbol metadata, or generator code.
 
+## Compact Authoring
+
+`db.component.digital.compact` v0.2 lets a learner edit a shorter,
+physical-pin-number keyed source and resolve it into the stable
+`db.component.digital` runtime format without changing consumers. Its contract
+is [`COMPACT_DEFINITION_V0_2.md`](COMPACT_DEFINITION_V0_2.md). Active compact
+sources are 74HC00, 74HC161, 74HC157, 74HC245, and 74HC574; their resolved
+outputs have passed DB, Python, Verilog, and pin/timing equivalence gates.
+Regenerate the 74HC00 runtime evidence from its active source with:
+
+```sh
+PYTHONPATH=python python3 tools/resolve_compact_definition.py \
+  lib/standard/74xx/74HC00/definition/definition.json \
+  --output lib/standard/74xx/74HC00/generated/resolved.json --check
+```
+
 ## Required Generation Targets
 
 Each seed `definition.json` must declare:

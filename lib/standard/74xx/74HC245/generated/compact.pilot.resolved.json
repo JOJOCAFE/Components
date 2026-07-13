@@ -1,0 +1,1252 @@
+{
+  "authoring": {
+    "profile": "74hc.digital@0.2",
+    "schema": "db.component.digital.compact",
+    "source": "definition/definition.json"
+  },
+  "datasheet": {
+    "part": "74HC245",
+    "schema": "db.component.datasheet.sources",
+    "sources": [
+      {
+        "label": "Texas Instruments SN74HC245",
+        "package_evidence": "N, 20-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+      }
+    ],
+    "version": 1
+  },
+  "definition_layers": {
+    "electrical": {
+      "evidence": {
+        "label": "Texas Instruments SN74HC245",
+        "package_evidence": "N, 20-pin PDIP",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+      },
+      "part": "74HC245",
+      "schema": "db.component.electrical",
+      "version": 1
+    },
+    "timing": {
+      "delay": {
+        "datasheet_max_ns_25c": {
+          "condition": "SN74HC245, CL=50 pF, TA=25 C",
+          "tdis_oe_to_a_b": {
+            "vcc_2_v": 200,
+            "vcc_4_5_v": 40,
+            "vcc_6_v": 34
+          },
+          "ten_oe_to_a_b": {
+            "vcc_2_v": 230,
+            "vcc_4_5_v": 46,
+            "vcc_6_v": 39
+          },
+          "tpd_a_b_to_b_a": {
+            "vcc_2_v": 105,
+            "vcc_4_5_v": 21,
+            "vcc_6_v": 18
+          },
+          "transition_a_b": {
+            "vcc_2_v": 60,
+            "vcc_4_5_v": 12,
+            "vcc_6_v": 10
+          }
+        },
+        "datasheet_max_ns_sn74": {
+          "condition": "SN74HC245 commercial temperature range",
+          "tdis_oe_to_a_b": {
+            "vcc_2_v": 250,
+            "vcc_4_5_v": 50,
+            "vcc_6_v": 43
+          },
+          "ten_oe_to_a_b": {
+            "vcc_2_v": 290,
+            "vcc_4_5_v": 58,
+            "vcc_6_v": 49
+          },
+          "tpd_a_b_to_b_a": {
+            "vcc_2_v": 130,
+            "vcc_4_5_v": 26,
+            "vcc_6_v": 22
+          },
+          "transition_a_b": {
+            "vcc_2_v": 75,
+            "vcc_4_5_v": 15,
+            "vcc_6_v": 13
+          }
+        },
+        "datasheet_typical_ns": {
+          "condition": "SN74HC245, CL=50 pF, TA=25 C",
+          "tdis_oe_to_a_b": {
+            "vcc_2_v": 74,
+            "vcc_4_5_v": 25,
+            "vcc_6_v": 21
+          },
+          "ten_oe_to_a_b": {
+            "vcc_2_v": 125,
+            "vcc_4_5_v": 23,
+            "vcc_6_v": 20
+          },
+          "tpd_a_b_to_b_a": {
+            "vcc_2_v": 40,
+            "vcc_4_5_v": 15,
+            "vcc_6_v": 12
+          },
+          "transition_a_b": {
+            "vcc_2_v": 20,
+            "vcc_4_5_v": 8,
+            "vcc_6_v": 6
+          }
+        },
+        "default_ns": 12,
+        "model_delay_ns": 12,
+        "simple": {
+          "default_delay_ns": 12,
+          "source": "functional simulator default; timed mode uses path-specific datasheet values"
+        },
+        "source": "functional simulator default; timed mode uses path-specific datasheet values",
+        "status": "datasheet-backed",
+        "timed": {
+          "conditions": {
+            "device": "SN74HC245",
+            "load_capacitance_pf": 50,
+            "source": "Texas Instruments SN74HC245 datasheet section 6.6 Switching Characteristics",
+            "temperature_note": "TA = 25 C typical/max_25c; SN54/SN74 max columns cover full rated ranges"
+          },
+          "paths": {
+            "A_to_B": {
+              "condition": "DIR=1 and /OE=0",
+              "from": "A",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "max_ns_25c": 105,
+                  "max_ns_sn54": 160,
+                  "max_ns_sn74": 130,
+                  "min_ns": null,
+                  "typ_ns": 40
+                },
+                "vcc_4_5_v": {
+                  "max_ns_25c": 21,
+                  "max_ns_sn54": 32,
+                  "max_ns_sn74": 26,
+                  "min_ns": null,
+                  "typ_ns": 15
+                },
+                "vcc_6_v": {
+                  "max_ns_25c": 18,
+                  "max_ns_sn54": 27,
+                  "max_ns_sn74": 22,
+                  "min_ns": null,
+                  "typ_ns": 12
+                }
+              },
+              "to": "B"
+            },
+            "B_to_A": {
+              "condition": "DIR=0 and /OE=0",
+              "from": "B",
+              "parameter": "tpd",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "max_ns_25c": 105,
+                  "max_ns_sn54": 160,
+                  "max_ns_sn74": 130,
+                  "min_ns": null,
+                  "typ_ns": 40
+                },
+                "vcc_4_5_v": {
+                  "max_ns_25c": 21,
+                  "max_ns_sn54": 32,
+                  "max_ns_sn74": 26,
+                  "min_ns": null,
+                  "typ_ns": 15
+                },
+                "vcc_6_v": {
+                  "max_ns_25c": 18,
+                  "max_ns_sn54": 27,
+                  "max_ns_sn74": 22,
+                  "min_ns": null,
+                  "typ_ns": 12
+                }
+              },
+              "to": "A"
+            },
+            "OE_to_high_Z": {
+              "condition": "/OE rises",
+              "from": "/OE",
+              "parameter": "tdis",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "max_ns_25c": 200,
+                  "max_ns_sn54": 300,
+                  "max_ns_sn74": 250,
+                  "min_ns": null,
+                  "typ_ns": 74
+                },
+                "vcc_4_5_v": {
+                  "max_ns_25c": 40,
+                  "max_ns_sn54": 60,
+                  "max_ns_sn74": 50,
+                  "min_ns": null,
+                  "typ_ns": 25
+                },
+                "vcc_6_v": {
+                  "max_ns_25c": 34,
+                  "max_ns_sn54": 51,
+                  "max_ns_sn74": 43,
+                  "min_ns": null,
+                  "typ_ns": 21
+                }
+              },
+              "to": "A,B high-Z"
+            },
+            "OE_to_output_enable": {
+              "condition": "/OE falls",
+              "from": "/OE",
+              "parameter": "ten",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "max_ns_25c": 230,
+                  "max_ns_sn54": 340,
+                  "max_ns_sn74": 290,
+                  "min_ns": null,
+                  "typ_ns": 125
+                },
+                "vcc_4_5_v": {
+                  "max_ns_25c": 46,
+                  "max_ns_sn54": 68,
+                  "max_ns_sn74": 58,
+                  "min_ns": null,
+                  "typ_ns": 23
+                },
+                "vcc_6_v": {
+                  "max_ns_25c": 39,
+                  "max_ns_sn54": 58,
+                  "max_ns_sn74": 49,
+                  "min_ns": null,
+                  "typ_ns": 20
+                }
+              },
+              "to": "A,B enabled outputs"
+            },
+            "transition_time": {
+              "condition": "enabled output switches",
+              "from": "A or B output transition",
+              "parameter": "tt",
+              "ranges_ns": {
+                "vcc_2_v": {
+                  "max_ns_25c": 60,
+                  "max_ns_sn54": 90,
+                  "max_ns_sn74": 75,
+                  "min_ns": null,
+                  "typ_ns": 20
+                },
+                "vcc_4_5_v": {
+                  "max_ns_25c": 12,
+                  "max_ns_sn54": 18,
+                  "max_ns_sn74": 15,
+                  "min_ns": null,
+                  "typ_ns": 8
+                },
+                "vcc_6_v": {
+                  "max_ns_25c": 10,
+                  "max_ns_sn54": 15,
+                  "max_ns_sn74": 13,
+                  "min_ns": null,
+                  "typ_ns": 6
+                }
+              },
+              "to": "A or B output transition"
+            }
+          }
+        }
+      },
+      "evidence": {
+        "source": "Texas Instruments SN74HC245 datasheet, section 6.6 Switching Characteristics, CL = 50 pF",
+        "url": "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+      },
+      "part": "74HC245",
+      "propagation": [
+        {
+          "condition": "DIR=1 and /OE=0",
+          "from": "A",
+          "max_ns_25c": {
+            "vcc_2_v": 105,
+            "vcc_4_5_v": 21,
+            "vcc_6_v": 18
+          },
+          "max_ns_sn74": {
+            "vcc_2_v": 130,
+            "vcc_4_5_v": 26,
+            "vcc_6_v": 22
+          },
+          "name": "A_to_B",
+          "parameter": "tpd",
+          "simple_default_delay_ns": 12,
+          "timed_path": "A_to_B",
+          "to": "B",
+          "typ_ns": {
+            "vcc_2_v": 40,
+            "vcc_4_5_v": 15,
+            "vcc_6_v": 12
+          }
+        },
+        {
+          "condition": "DIR=0 and /OE=0",
+          "from": "B",
+          "max_ns_25c": {
+            "vcc_2_v": 105,
+            "vcc_4_5_v": 21,
+            "vcc_6_v": 18
+          },
+          "max_ns_sn74": {
+            "vcc_2_v": 130,
+            "vcc_4_5_v": 26,
+            "vcc_6_v": 22
+          },
+          "name": "B_to_A",
+          "parameter": "tpd",
+          "simple_default_delay_ns": 12,
+          "timed_path": "B_to_A",
+          "to": "A",
+          "typ_ns": {
+            "vcc_2_v": 40,
+            "vcc_4_5_v": 15,
+            "vcc_6_v": 12
+          }
+        },
+        {
+          "condition": "/OE falls",
+          "from": "/OE",
+          "max_ns_25c": {
+            "vcc_2_v": 230,
+            "vcc_4_5_v": 46,
+            "vcc_6_v": 39
+          },
+          "max_ns_sn74": {
+            "vcc_2_v": 290,
+            "vcc_4_5_v": 58,
+            "vcc_6_v": 49
+          },
+          "name": "OE_to_output_enable",
+          "parameter": "ten",
+          "simple_default_delay_ns": 12,
+          "timed_path": "OE_to_output_enable",
+          "to": "A,B",
+          "typ_ns": {
+            "vcc_2_v": 125,
+            "vcc_4_5_v": 23,
+            "vcc_6_v": 20
+          }
+        },
+        {
+          "condition": "/OE rises",
+          "from": "/OE",
+          "max_ns_25c": {
+            "vcc_2_v": 200,
+            "vcc_4_5_v": 40,
+            "vcc_6_v": 34
+          },
+          "max_ns_sn74": {
+            "vcc_2_v": 250,
+            "vcc_4_5_v": 50,
+            "vcc_6_v": 43
+          },
+          "name": "OE_to_high_Z",
+          "parameter": "tdis",
+          "simple_default_delay_ns": 12,
+          "timed_path": "OE_to_high_Z",
+          "to": "A,B",
+          "typ_ns": {
+            "vcc_2_v": 74,
+            "vcc_4_5_v": 25,
+            "vcc_6_v": 21
+          }
+        },
+        {
+          "condition": "enabled output switches",
+          "from": "A or B output",
+          "max_ns_25c": {
+            "vcc_2_v": 60,
+            "vcc_4_5_v": 12,
+            "vcc_6_v": 10
+          },
+          "max_ns_sn74": {
+            "vcc_2_v": 75,
+            "vcc_4_5_v": 15,
+            "vcc_6_v": 13
+          },
+          "name": "transition_time",
+          "parameter": "tt",
+          "simple_default_delay_ns": 12,
+          "timed_path": "transition_time",
+          "to": "A or B output",
+          "typ_ns": {
+            "vcc_2_v": 20,
+            "vcc_4_5_v": 8,
+            "vcc_6_v": 6
+          }
+        }
+      ],
+      "schema": "db.component.timing",
+      "setup_hold": [],
+      "timing_parameters": {
+        "basis": "normalized_from_existing_datasheet_timing",
+        "parameters": {
+          "clock_to_q_high": {
+            "reason": "74HC245 is not a clocked storage element for this parameter.",
+            "status": "not_applicable"
+          },
+          "clock_to_q_low": {
+            "reason": "74HC245 is not a clocked storage element for this parameter.",
+            "status": "not_applicable"
+          },
+          "hold": {
+            "note": "DIR and /OE setup/hold metadata is source-backed for bus-control use.",
+            "source_field": "definition_layers.timing.setup_hold",
+            "status": "exact",
+            "values_ns": []
+          },
+          "minimum_pulse_width": {
+            "reason": "74HC245 is not a clocked storage element for this parameter.",
+            "status": "not_applicable"
+          },
+          "setup": {
+            "note": "DIR and /OE setup/hold metadata is source-backed for bus-control use.",
+            "source_field": "definition_layers.timing.setup_hold",
+            "status": "exact",
+            "values_ns": []
+          },
+          "tPHL": {
+            "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tpd",
+            "status": "exact",
+            "values_ns": {
+              "A_to_B": {
+                "vcc_2_v": {
+                  "max_25c": 105,
+                  "max_sn54": 160,
+                  "max_sn74": 130,
+                  "typ": 40
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 21,
+                  "max_sn54": 32,
+                  "max_sn74": 26,
+                  "typ": 15
+                },
+                "vcc_6_v": {
+                  "max_25c": 18,
+                  "max_sn54": 27,
+                  "max_sn74": 22,
+                  "typ": 12
+                }
+              },
+              "B_to_A": {
+                "vcc_2_v": {
+                  "max_25c": 105,
+                  "max_sn54": 160,
+                  "max_sn74": 130,
+                  "typ": 40
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 21,
+                  "max_sn54": 32,
+                  "max_sn74": 26,
+                  "typ": 15
+                },
+                "vcc_6_v": {
+                  "max_25c": 18,
+                  "max_sn54": 27,
+                  "max_sn74": 22,
+                  "typ": 12
+                }
+              }
+            }
+          },
+          "tPHZ": {
+            "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tdis",
+            "status": "exact",
+            "values_ns": {
+              "vcc_2_v": {
+                "max_25c": 200,
+                "max_sn54": 300,
+                "max_sn74": 250,
+                "typ": 74
+              },
+              "vcc_4_5_v": {
+                "max_25c": 40,
+                "max_sn54": 60,
+                "max_sn74": 50,
+                "typ": 25
+              },
+              "vcc_6_v": {
+                "max_25c": 34,
+                "max_sn54": 51,
+                "max_sn74": 43,
+                "typ": 21
+              }
+            }
+          },
+          "tPLH": {
+            "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tpd",
+            "status": "exact",
+            "values_ns": {
+              "A_to_B": {
+                "vcc_2_v": {
+                  "max_25c": 105,
+                  "max_sn54": 160,
+                  "max_sn74": 130,
+                  "typ": 40
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 21,
+                  "max_sn54": 32,
+                  "max_sn74": 26,
+                  "typ": 15
+                },
+                "vcc_6_v": {
+                  "max_25c": 18,
+                  "max_sn54": 27,
+                  "max_sn74": 22,
+                  "typ": 12
+                }
+              },
+              "B_to_A": {
+                "vcc_2_v": {
+                  "max_25c": 105,
+                  "max_sn54": 160,
+                  "max_sn74": 130,
+                  "typ": 40
+                },
+                "vcc_4_5_v": {
+                  "max_25c": 21,
+                  "max_sn54": 32,
+                  "max_sn74": 26,
+                  "typ": 15
+                },
+                "vcc_6_v": {
+                  "max_25c": 18,
+                  "max_sn54": 27,
+                  "max_sn74": 22,
+                  "typ": 12
+                }
+              }
+            }
+          },
+          "tPLZ": {
+            "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tdis",
+            "status": "exact",
+            "values_ns": {
+              "vcc_2_v": {
+                "max_25c": 200,
+                "max_sn54": 300,
+                "max_sn74": 250,
+                "typ": 74
+              },
+              "vcc_4_5_v": {
+                "max_25c": 40,
+                "max_sn54": 60,
+                "max_sn74": 50,
+                "typ": 25
+              },
+              "vcc_6_v": {
+                "max_25c": 34,
+                "max_sn54": 51,
+                "max_sn74": 43,
+                "typ": 21
+              }
+            }
+          },
+          "tPZH": {
+            "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "source_field": "TI SN74HC245 switching characteristics, CL=50 pF ten",
+            "status": "exact",
+            "values_ns": {
+              "vcc_2_v": {
+                "max_25c": 230,
+                "max_sn54": 340,
+                "max_sn74": 290,
+                "typ": 125
+              },
+              "vcc_4_5_v": {
+                "max_25c": 46,
+                "max_sn54": 68,
+                "max_sn74": 58,
+                "typ": 23
+              },
+              "vcc_6_v": {
+                "max_25c": 39,
+                "max_sn54": 58,
+                "max_sn74": 49,
+                "typ": 20
+              }
+            }
+          },
+          "tPZL": {
+            "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+            "source_field": "TI SN74HC245 switching characteristics, CL=50 pF ten",
+            "status": "exact",
+            "values_ns": {
+              "vcc_2_v": {
+                "max_25c": 230,
+                "max_sn54": 340,
+                "max_sn74": 290,
+                "typ": 125
+              },
+              "vcc_4_5_v": {
+                "max_25c": 46,
+                "max_sn54": 68,
+                "max_sn74": 58,
+                "typ": 23
+              },
+              "vcc_6_v": {
+                "max_25c": 39,
+                "max_sn54": 58,
+                "max_sn74": 49,
+                "typ": 20
+              }
+            }
+          }
+        },
+        "schema": "db.component.timing_parameters",
+        "version": 1
+      },
+      "version": 1
+    }
+  },
+  "evidence": {
+    "datasheet_status": "historical-or-current",
+    "dip_pinout_verified": true,
+    "manufacturer": "Texas Instruments SN74HC245"
+  },
+  "generation": {
+    "python": {
+      "class": "HC245",
+      "factory": "create",
+      "file": "lib/standard/74xx/74HC245/simulation/model.py",
+      "part": "74HC245"
+    },
+    "targets": [
+      "json",
+      "python_simulator",
+      "verilog_wrapper",
+      "verilog_testbench",
+      "kicad_symbol",
+      "svg_pinout",
+      "documentation",
+      "unit_test",
+      "interactive_demo"
+    ],
+    "verilog": {
+      "file": "lib/standard/74xx/74HC245/simulation/model.v",
+      "module": "ttl_74hc245",
+      "netlist": "lib/standard/74xx/74HC245/simulation/netlist.json"
+    }
+  },
+  "logic": {
+    "direction_control": {
+      "0": "B_to_A",
+      "1": "A_to_B",
+      "pin": "DIR"
+    },
+    "enable": {
+      "active_low": true,
+      "pin": "/OE"
+    },
+    "paths": [
+      {
+        "from": "A",
+        "to": "B",
+        "when": "DIR=1 and /OE=0"
+      },
+      {
+        "from": "B",
+        "to": "A",
+        "when": "DIR=0 and /OE=0"
+      },
+      {
+        "A": "Z",
+        "B": "Z",
+        "when": "/OE=1"
+      }
+    ],
+    "tristate": true,
+    "type": "octal_bus_transceiver",
+    "width": 8
+  },
+  "logic_family_model": "HC245",
+  "metadata": {
+    "family": "74HC",
+    "group": "74xx",
+    "role": "bus_transceiver",
+    "title": "Octal bus transceiver with 3-state outputs"
+  },
+  "package": {
+    "default": "N",
+    "kind": "DIP",
+    "pins": 20
+  },
+  "part": "74HC245",
+  "pins": [
+    {
+      "direction": "input",
+      "function": "direction_control",
+      "name": "DIR",
+      "number": 1
+    },
+    {
+      "bit": 0,
+      "bus": "A",
+      "direction": "bidirectional",
+      "name": "A1",
+      "number": 2
+    },
+    {
+      "bit": 1,
+      "bus": "A",
+      "direction": "bidirectional",
+      "name": "A2",
+      "number": 3
+    },
+    {
+      "bit": 2,
+      "bus": "A",
+      "direction": "bidirectional",
+      "name": "A3",
+      "number": 4
+    },
+    {
+      "bit": 3,
+      "bus": "A",
+      "direction": "bidirectional",
+      "name": "A4",
+      "number": 5
+    },
+    {
+      "bit": 4,
+      "bus": "A",
+      "direction": "bidirectional",
+      "name": "A5",
+      "number": 6
+    },
+    {
+      "bit": 5,
+      "bus": "A",
+      "direction": "bidirectional",
+      "name": "A6",
+      "number": 7
+    },
+    {
+      "bit": 6,
+      "bus": "A",
+      "direction": "bidirectional",
+      "name": "A7",
+      "number": 8
+    },
+    {
+      "bit": 7,
+      "bus": "A",
+      "direction": "bidirectional",
+      "name": "A8",
+      "number": 9
+    },
+    {
+      "direction": "power",
+      "name": "GND",
+      "number": 10,
+      "rail": "GND"
+    },
+    {
+      "bit": 7,
+      "bus": "B",
+      "direction": "bidirectional",
+      "name": "B8",
+      "number": 11
+    },
+    {
+      "bit": 6,
+      "bus": "B",
+      "direction": "bidirectional",
+      "name": "B7",
+      "number": 12
+    },
+    {
+      "bit": 5,
+      "bus": "B",
+      "direction": "bidirectional",
+      "name": "B6",
+      "number": 13
+    },
+    {
+      "bit": 4,
+      "bus": "B",
+      "direction": "bidirectional",
+      "name": "B5",
+      "number": 14
+    },
+    {
+      "bit": 3,
+      "bus": "B",
+      "direction": "bidirectional",
+      "name": "B4",
+      "number": 15
+    },
+    {
+      "bit": 2,
+      "bus": "B",
+      "direction": "bidirectional",
+      "name": "B3",
+      "number": 16
+    },
+    {
+      "bit": 1,
+      "bus": "B",
+      "direction": "bidirectional",
+      "name": "B2",
+      "number": 17
+    },
+    {
+      "bit": 0,
+      "bus": "B",
+      "direction": "bidirectional",
+      "name": "B1",
+      "number": 18
+    },
+    {
+      "active_low": true,
+      "direction": "input",
+      "function": "enable",
+      "name": "/OE",
+      "number": 19
+    },
+    {
+      "direction": "power",
+      "name": "VCC",
+      "number": 20,
+      "rail": "VCC"
+    }
+  ],
+  "procurement": {
+    "availability_class": "active",
+    "last_checked": "2026-07-13",
+    "recommended_for_new_design": true,
+    "stock_basis": "broad-stock"
+  },
+  "schema": "db.component.digital",
+  "status": {
+    "datasheet": "verified",
+    "pinout": "verified",
+    "python_behavior": "modeled",
+    "tests": "tested",
+    "verilog_export": "tested",
+    "verilog_model": "modeled"
+  },
+  "timing": {
+    "simple": {
+      "default_delay_ns": 12,
+      "source": "functional simulator default; timed mode uses path-specific datasheet values"
+    },
+    "timed": {
+      "conditions": {
+        "device": "SN74HC245",
+        "load_capacitance_pf": 50,
+        "source": "Texas Instruments SN74HC245 datasheet section 6.6 Switching Characteristics",
+        "temperature_note": "TA = 25 C typical/max_25c; SN54/SN74 max columns cover full rated ranges"
+      },
+      "paths": {
+        "A_to_B": {
+          "condition": "DIR=1 and /OE=0",
+          "from": "A",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "vcc_2_v": {
+              "max_ns_25c": 105,
+              "max_ns_sn54": 160,
+              "max_ns_sn74": 130,
+              "min_ns": null,
+              "typ_ns": 40
+            },
+            "vcc_4_5_v": {
+              "max_ns_25c": 21,
+              "max_ns_sn54": 32,
+              "max_ns_sn74": 26,
+              "min_ns": null,
+              "typ_ns": 15
+            },
+            "vcc_6_v": {
+              "max_ns_25c": 18,
+              "max_ns_sn54": 27,
+              "max_ns_sn74": 22,
+              "min_ns": null,
+              "typ_ns": 12
+            }
+          },
+          "to": "B"
+        },
+        "B_to_A": {
+          "condition": "DIR=0 and /OE=0",
+          "from": "B",
+          "parameter": "tpd",
+          "ranges_ns": {
+            "vcc_2_v": {
+              "max_ns_25c": 105,
+              "max_ns_sn54": 160,
+              "max_ns_sn74": 130,
+              "min_ns": null,
+              "typ_ns": 40
+            },
+            "vcc_4_5_v": {
+              "max_ns_25c": 21,
+              "max_ns_sn54": 32,
+              "max_ns_sn74": 26,
+              "min_ns": null,
+              "typ_ns": 15
+            },
+            "vcc_6_v": {
+              "max_ns_25c": 18,
+              "max_ns_sn54": 27,
+              "max_ns_sn74": 22,
+              "min_ns": null,
+              "typ_ns": 12
+            }
+          },
+          "to": "A"
+        },
+        "OE_to_high_Z": {
+          "condition": "/OE rises",
+          "from": "/OE",
+          "parameter": "tdis",
+          "ranges_ns": {
+            "vcc_2_v": {
+              "max_ns_25c": 200,
+              "max_ns_sn54": 300,
+              "max_ns_sn74": 250,
+              "min_ns": null,
+              "typ_ns": 74
+            },
+            "vcc_4_5_v": {
+              "max_ns_25c": 40,
+              "max_ns_sn54": 60,
+              "max_ns_sn74": 50,
+              "min_ns": null,
+              "typ_ns": 25
+            },
+            "vcc_6_v": {
+              "max_ns_25c": 34,
+              "max_ns_sn54": 51,
+              "max_ns_sn74": 43,
+              "min_ns": null,
+              "typ_ns": 21
+            }
+          },
+          "to": "A,B high-Z"
+        },
+        "OE_to_output_enable": {
+          "condition": "/OE falls",
+          "from": "/OE",
+          "parameter": "ten",
+          "ranges_ns": {
+            "vcc_2_v": {
+              "max_ns_25c": 230,
+              "max_ns_sn54": 340,
+              "max_ns_sn74": 290,
+              "min_ns": null,
+              "typ_ns": 125
+            },
+            "vcc_4_5_v": {
+              "max_ns_25c": 46,
+              "max_ns_sn54": 68,
+              "max_ns_sn74": 58,
+              "min_ns": null,
+              "typ_ns": 23
+            },
+            "vcc_6_v": {
+              "max_ns_25c": 39,
+              "max_ns_sn54": 58,
+              "max_ns_sn74": 49,
+              "min_ns": null,
+              "typ_ns": 20
+            }
+          },
+          "to": "A,B enabled outputs"
+        },
+        "transition_time": {
+          "condition": "enabled output switches",
+          "from": "A or B output transition",
+          "parameter": "tt",
+          "ranges_ns": {
+            "vcc_2_v": {
+              "max_ns_25c": 60,
+              "max_ns_sn54": 90,
+              "max_ns_sn74": 75,
+              "min_ns": null,
+              "typ_ns": 20
+            },
+            "vcc_4_5_v": {
+              "max_ns_25c": 12,
+              "max_ns_sn54": 18,
+              "max_ns_sn74": 15,
+              "min_ns": null,
+              "typ_ns": 8
+            },
+            "vcc_6_v": {
+              "max_ns_25c": 10,
+              "max_ns_sn54": 15,
+              "max_ns_sn74": 13,
+              "min_ns": null,
+              "typ_ns": 6
+            }
+          },
+          "to": "A or B output transition"
+        }
+      }
+    },
+    "timing_parameters": {
+      "basis": "normalized_from_existing_datasheet_timing",
+      "parameters": {
+        "clock_to_q_high": {
+          "reason": "74HC245 is not a clocked storage element for this parameter.",
+          "status": "not_applicable"
+        },
+        "clock_to_q_low": {
+          "reason": "74HC245 is not a clocked storage element for this parameter.",
+          "status": "not_applicable"
+        },
+        "hold": {
+          "note": "DIR and /OE setup/hold metadata is source-backed for bus-control use.",
+          "source_field": "definition_layers.timing.setup_hold",
+          "status": "exact",
+          "values_ns": []
+        },
+        "minimum_pulse_width": {
+          "reason": "74HC245 is not a clocked storage element for this parameter.",
+          "status": "not_applicable"
+        },
+        "setup": {
+          "note": "DIR and /OE setup/hold metadata is source-backed for bus-control use.",
+          "source_field": "definition_layers.timing.setup_hold",
+          "status": "exact",
+          "values_ns": []
+        },
+        "tPHL": {
+          "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tpd",
+          "status": "exact",
+          "values_ns": {
+            "A_to_B": {
+              "vcc_2_v": {
+                "max_25c": 105,
+                "max_sn54": 160,
+                "max_sn74": 130,
+                "typ": 40
+              },
+              "vcc_4_5_v": {
+                "max_25c": 21,
+                "max_sn54": 32,
+                "max_sn74": 26,
+                "typ": 15
+              },
+              "vcc_6_v": {
+                "max_25c": 18,
+                "max_sn54": 27,
+                "max_sn74": 22,
+                "typ": 12
+              }
+            },
+            "B_to_A": {
+              "vcc_2_v": {
+                "max_25c": 105,
+                "max_sn54": 160,
+                "max_sn74": 130,
+                "typ": 40
+              },
+              "vcc_4_5_v": {
+                "max_25c": 21,
+                "max_sn54": 32,
+                "max_sn74": 26,
+                "typ": 15
+              },
+              "vcc_6_v": {
+                "max_25c": 18,
+                "max_sn54": 27,
+                "max_sn74": 22,
+                "typ": 12
+              }
+            }
+          }
+        },
+        "tPHZ": {
+          "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tdis",
+          "status": "exact",
+          "values_ns": {
+            "vcc_2_v": {
+              "max_25c": 200,
+              "max_sn54": 300,
+              "max_sn74": 250,
+              "typ": 74
+            },
+            "vcc_4_5_v": {
+              "max_25c": 40,
+              "max_sn54": 60,
+              "max_sn74": 50,
+              "typ": 25
+            },
+            "vcc_6_v": {
+              "max_25c": 34,
+              "max_sn54": 51,
+              "max_sn74": 43,
+              "typ": 21
+            }
+          }
+        },
+        "tPLH": {
+          "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tpd",
+          "status": "exact",
+          "values_ns": {
+            "A_to_B": {
+              "vcc_2_v": {
+                "max_25c": 105,
+                "max_sn54": 160,
+                "max_sn74": 130,
+                "typ": 40
+              },
+              "vcc_4_5_v": {
+                "max_25c": 21,
+                "max_sn54": 32,
+                "max_sn74": 26,
+                "typ": 15
+              },
+              "vcc_6_v": {
+                "max_25c": 18,
+                "max_sn54": 27,
+                "max_sn74": 22,
+                "typ": 12
+              }
+            },
+            "B_to_A": {
+              "vcc_2_v": {
+                "max_25c": 105,
+                "max_sn54": 160,
+                "max_sn74": 130,
+                "typ": 40
+              },
+              "vcc_4_5_v": {
+                "max_25c": 21,
+                "max_sn54": 32,
+                "max_sn74": 26,
+                "typ": 15
+              },
+              "vcc_6_v": {
+                "max_25c": 18,
+                "max_sn54": 27,
+                "max_sn74": 22,
+                "typ": 12
+              }
+            }
+          }
+        },
+        "tPLZ": {
+          "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "source_field": "TI SN74HC245 switching characteristics, CL=50 pF tdis",
+          "status": "exact",
+          "values_ns": {
+            "vcc_2_v": {
+              "max_25c": 200,
+              "max_sn54": 300,
+              "max_sn74": 250,
+              "typ": 74
+            },
+            "vcc_4_5_v": {
+              "max_25c": 40,
+              "max_sn54": 60,
+              "max_sn74": 50,
+              "typ": 25
+            },
+            "vcc_6_v": {
+              "max_25c": 34,
+              "max_sn54": 51,
+              "max_sn74": 43,
+              "typ": 21
+            }
+          }
+        },
+        "tPZH": {
+          "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "source_field": "TI SN74HC245 switching characteristics, CL=50 pF ten",
+          "status": "exact",
+          "values_ns": {
+            "vcc_2_v": {
+              "max_25c": 230,
+              "max_sn54": 340,
+              "max_sn74": 290,
+              "typ": 125
+            },
+            "vcc_4_5_v": {
+              "max_25c": 46,
+              "max_sn54": 68,
+              "max_sn74": 58,
+              "typ": 23
+            },
+            "vcc_6_v": {
+              "max_25c": 39,
+              "max_sn54": 58,
+              "max_sn74": 49,
+              "typ": 20
+            }
+          }
+        },
+        "tPZL": {
+          "note": "TI SN74HC245 table and waveform notes map tPLH/tPHL to tpd, tPZH/tPZL to ten, and tPHZ/tPLZ to tdis.",
+          "source_field": "TI SN74HC245 switching characteristics, CL=50 pF ten",
+          "status": "exact",
+          "values_ns": {
+            "vcc_2_v": {
+              "max_25c": 230,
+              "max_sn54": 340,
+              "max_sn74": 290,
+              "typ": 125
+            },
+            "vcc_4_5_v": {
+              "max_25c": 46,
+              "max_sn54": 68,
+              "max_sn74": 58,
+              "typ": 23
+            },
+            "vcc_6_v": {
+              "max_25c": 39,
+              "max_sn54": 58,
+              "max_sn74": 49,
+              "typ": 20
+            }
+          }
+        }
+      },
+      "schema": "db.component.timing_parameters",
+      "version": 1
+    }
+  },
+  "variants": [
+    {
+      "manufacturer": "Texas Instruments",
+      "part": "SN74HC245N"
+    }
+  ],
+  "verification": {
+    "required_vectors": [],
+    "tests": [
+      "truth_table",
+      "timing",
+      "tri_state",
+      "bus_fight",
+      "propagation"
+    ]
+  },
+  "version": 1
+}

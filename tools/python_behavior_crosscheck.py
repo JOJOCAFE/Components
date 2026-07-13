@@ -16,6 +16,7 @@ REPORT = ROOT / "docs" / "PYTHON_BEHAVIOR_CROSSCHECK_REPORT.md"
 sys.path.insert(0, str(ROOT / "python"))
 
 from chiplib.core import Z  # noqa: E402
+from chiplib.db import resolve_definition_source  # noqa: E402
 
 
 DIR_MAP = {
@@ -285,7 +286,7 @@ def main() -> int:
         group = definition.relative_to(ROOT / "lib" / "standard").parts[0]
         if group not in {"74xx", "memory", "support"}:
             continue
-        data = json.loads(definition.read_text(encoding="utf-8"))
+        data = resolve_definition_source(json.loads(definition.read_text(encoding="utf-8")), definition)
         part = str(data.get("part") or definition.parents[1].name)
         model_path = definition.parents[1] / "simulation" / "model.py"
         truth_path = definition.parents[1] / "tests" / "truth_table.json"

@@ -1,0 +1,30 @@
+{
+  "schema": "components.component-negative-fixtures@1",
+  "cases": [
+    {
+      "id": "unknown-port",
+      "source_fragment": "connect Clock.CLK -> U1.NOT_A_PORT;",
+      "expected_diagnostic": "resolver.unknown_port"
+    },
+    {
+      "id": "forbidden-physical-pin",
+      "source_fragment": "connect Clock.CLK -> U1.@99;",
+      "expected_diagnostic": "resolver.unknown_physical_pin"
+    },
+    {
+      "id": "duplicate-instance",
+      "source_fragment": "device U1, digital.74HC04; device U1, digital.74HC04;",
+      "expected_diagnostic": "resolver.duplicate_symbol"
+    },
+    {
+      "id": "scalar-to-bus",
+      "source_fragment": "bus q[4] : digital; connect Clock.CLK -> q;",
+      "expected_diagnostic": "topology.width_mismatch"
+    },
+    {
+      "id": "display-is-not-driver",
+      "source_fragment": "display U1.1Y as value;",
+      "expected_diagnostic": "schema.display_requires_probe_or_read_only_endpoint"
+    }
+  ]
+}

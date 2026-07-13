@@ -1,0 +1,40 @@
+// Four independent paths are written explicitly.  The resolver does not guess
+// that ports called 1A..4A form a Component bus.
+use standard.digital as digital;
+use standard.virtual as virtual;
+
+component:component MuxFirstDraft is components.digital {
+  title "Four-channel 2-to-1 multiplexer";
+
+  device Mux is digital.74HC157;
+  device Observe is virtual.Probe;
+
+  net vcc : power;
+  net gnd : power;
+  net select : digital;
+  net enable_n : digital;
+  bus a[4] : digital;
+  bus b[4] : digital;
+  bus y[4] : digital;
+
+  connect vcc -> Mux.VCC;
+  connect gnd -> Mux.GND;
+  connect select -> Mux.A/B;
+  connect enable_n -> Mux./G;
+  connect a[0] -> Mux.1A;
+  connect b[0] -> Mux.1B;
+  connect Mux.1Y -> y[0];
+  connect a[1] -> Mux.2A;
+  connect b[1] -> Mux.2B;
+  connect Mux.2Y -> y[1];
+  connect a[2] -> Mux.3A;
+  connect b[2] -> Mux.3B;
+  connect Mux.3Y -> y[2];
+  connect a[3] -> Mux.4A;
+  connect b[3] -> Mux.4B;
+  connect Mux.4Y -> y[3];
+  connect y[0] -> Observe.IN;
+
+  probe output, y;
+  display output as value, { "label": "Selected four-bit value", "radix": 2 };
+}

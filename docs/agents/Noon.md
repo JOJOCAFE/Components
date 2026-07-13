@@ -52,3 +52,19 @@ evidence, or commands that must match executable behavior.
 - Explain that VirtualTestHelpers is modeled test instrumentation, not
   physical signoff, and keep future BusOwnership/FullControl examples tied to
   source-backed wiring rather than simplified prose equations.
+
+## Active 2026-07-13 RV8GR Software Lane
+
+- Write a short learner-facing explanation of what the four-model comparison
+  proves, what reserved encodings actually do, and why passing simulation does
+  not sign off a breadboard or PCB.
+- Keep phase names, active-low labels, and bus-owner wording aligned with
+  Ohm's canonical signal review and the executable trace contract.
+- Turn each retained failing seed into a small, explainable regression example
+  only after Fern confirms the root cause and stable expected behavior.
+
+## Active `component:component` Language Lane
+
+- Create small no-Board examples showing device choice, named nets, explicit
+  wiring, probes, display intent, and one deterministic test without hiding
+  real pins, timing, or active-low behavior.

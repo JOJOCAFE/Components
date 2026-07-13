@@ -45,3 +45,27 @@ pushes, or cross-repo consistency.
   do not mark either promoted from a generated campaign alone.
 - Keep Components `01d7ea1` and RV8 `7d2dac5` visible in handoffs until a
   later checkpoint supersedes them.
+
+## Active 2026-07-13 RV8GR Software Lane
+
+- Coordinate a bounded software differential-hardening lane without reopening
+  physical-wiring scope or weakening the existing passing baseline.
+- Keep one task/seed/command ledger that records exact model revisions, ROM
+  image, initial state, phase trace, failing command, and owner.
+- Require explicit evidence before a finding crosses repository boundaries;
+  changes to canonical RV8GR RTL or wiring belong first in `/home/jo/kiro/RV8`.
+
+## Active `component:component` Language Lane
+
+- Keep the new executable Component-source profile additive to frozen Language
+  v1.0 and separate from imported historical references.
+- Route parser/resolver/runtime work only after Bank's source/AST contract and
+  Fern's conformance cases agree; Board and Operation remain deferred.
+
+## Saved 2026-07-13 RV8GR Software Closeout
+
+- Treat `run_all_verilog_tb.sh` as the required one-command regression: it now
+  includes reset, U34/U7, ROM `/WE`, store-direction, and OE-order mutation
+  kills as well as the normal behavioral and chip-level gates.
+- Keep physical evidence explicitly outside this closeout; future work belongs
+  to the wired-board measurement scope, not another unbounded software lane.

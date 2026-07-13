@@ -1,0 +1,47 @@
+{
+  "schema": "components.component-fixture@1",
+  "fixture": "digital-inverter",
+  "source": "digital_inverter.component",
+  "expected_status": "resolves",
+  "library_lock": [
+    {
+      "instance": "Clock",
+      "locator": "standard.virtual.ClockSource",
+      "resolved_definition": "lib/standard/virtual/ClockSource/generated/resolved.json",
+      "expected_pins": [{ "name": "CLK", "number": 1, "direction": "output" }]
+    },
+    {
+      "instance": "U1",
+      "locator": "standard.digital.74HC04",
+      "resolved_definition": "lib/standard/74xx/74HC04/generated/resolved.json",
+      "expected_pins": [
+        { "name": "1A", "number": 1, "direction": "input" },
+        { "name": "1Y", "number": 2, "direction": "output" },
+        { "name": "GND", "number": 7, "direction": "power" },
+        { "name": "VCC", "number": 14, "direction": "power" }
+      ]
+    },
+    {
+      "instance": "Observe",
+      "locator": "standard.virtual.Probe",
+      "resolved_definition": "lib/standard/virtual/Probe/generated/resolved.json",
+      "expected_pins": [{ "name": "IN", "number": 1, "direction": "input" }]
+    }
+  ],
+  "nets": [
+    { "id": "vcc", "kind": "power", "endpoints": ["U1.VCC"] },
+    { "id": "gnd", "kind": "power", "endpoints": ["U1.GND"] },
+    { "id": "clock", "kind": "digital", "endpoints": ["Clock.CLK", "U1.1A"] },
+    { "id": "inverted", "kind": "digital", "endpoints": ["U1.1Y", "Observe.IN"] }
+  ],
+  "probes": [
+    { "id": "input_level", "target": "clock", "read_only": true },
+    { "id": "inverted_level", "target": "inverted", "read_only": true }
+  ],
+  "displays": [
+    { "target": "inverted_level", "kind": "value", "read_only": true }
+  ],
+  "tests": [
+    { "id": "inversion", "bounded": true, "execution": "deferred-operation-runtime" }
+  ]
+}

@@ -46,3 +46,25 @@ or hardware-readiness wording is involved.
 
 - Verify every proposed BusOwnership gate/pin mapping against canonical RV8GR
   wiring and datasheet pin truth before it becomes a Components contract.
+
+## Active 2026-07-13 RV8GR Software Lane
+
+- Review the physical meaning of all traced control signals: U34-to-U7
+  turnaround, ROM `/WE`, store direction, output enables, and reset release.
+- Distinguish a digital mutation proof from datasheet timing or scope evidence;
+  no software result may become a hardware-speed or bus-deadband signoff.
+- Supply pin/net naming corrections from canonical RV8GR sources before Bank,
+  Bam, or Mint encodes a cross-model mapping.
+
+## Active `component:component` Language Lane
+
+- Review physical-pin selectors, typed rails, active-low names, and timing
+  diagnostics exposed by Component source; presentation intent must not alter
+  Device pin truth.
+
+## Saved 2026-07-13 RV8GR Software Closeout
+
+- Software now detects the modeled ROM-write, store-direction, and ownership
+  faults.  Physical closure still requires installed memory markings, supply
+  checks, scope captures, memory turnaround, bus deadband, and contention
+  current evidence before any board frequency recommendation.

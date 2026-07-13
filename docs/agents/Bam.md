@@ -56,3 +56,26 @@ generated artifacts can affect live chip behavior.
 
 - Maintain the promoted VirtualTestHelpers adapter proof and implement future
   BusOwnership/FullControl runtime mappings only after Bank/Ohm source them.
+
+## Active 2026-07-13 RV8GR Software Lane
+
+- Implement a deterministic seeded runner for CPUSim and ComponentsCPUSim once
+  Bank freezes the state/trace contract; write temporary artifacts only below
+  `/tmp` and retain compact failure fixtures.
+- Compare instruction-stream results and phase observations without inferring
+  unavailable physical signals or duplicating RV8GR CPU behavior in a circuit
+  package.
+- Provide a clean command that detects external-Components/source drift and
+  exits nonzero on disagreement for Fern's regression gate.
+
+## Active `component:component` Language Lane
+
+- Prototype the parser/resolver/runtime bridge only from the approved v1.1
+  Component contract.  Resolve compact Device records into immutable topology;
+  never put Board state or direct imperative mutations into source resolution.
+
+## Saved 2026-07-13 RV8GR Software Closeout
+
+- Differential runners and reserved-opcode characterization are compatibility
+  evidence with retained replay artifacts; they complement, but do not replace,
+  the independent structural RTL and mutation gates.

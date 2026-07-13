@@ -51,3 +51,26 @@ proof, bus-safety proof, or CI gate evidence.
 - Gate VirtualTestHelpers as promoted and reject any BusOwnership/FullControl
   promotion lacking source-backed mappings, negative bus-conflict vectors, and
   deterministic evidence.
+
+## Active 2026-07-13 RV8GR Software Lane
+
+- Own the seeded differential oracle and failure artifact format; every mismatch
+  must retain seed, ROM/program, initial state, trace, model revisions, and a
+  shell-nonzero reproducer.
+- Specify and review negative mutations for U34-to-U7 deadband, ROM `/WE`,
+  store direction, output-enable order, and reset release.
+- Treat the forced-T2 512 opcode-by-Z sweep as partial coverage, not proof of
+  fetch or stateful instruction-stream behavior.
+
+## Active `component:component` Language Lane
+
+- Gate conformance fixtures for source-to-resolved topology, invalid endpoints,
+  width/direction/power conflicts, read-only probes/displays, and deterministic
+  bounded test failures before a parser/resolver prototype is promoted.
+
+## Saved 2026-07-13 RV8GR Software Closeout
+
+- The reset, U34/U7, ROM `/WE`, store-direction, and OE-order negative tests
+  all have baseline-and-kill evidence in the external RV8GR regression.
+- Reject any attempt to turn those model kills into physical timing, current,
+  deadband, or maximum-clock claims without board measurements.

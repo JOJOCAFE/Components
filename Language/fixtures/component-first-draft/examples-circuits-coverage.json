@@ -1,0 +1,69 @@
+{
+  "schema": "components.component-first-draft-coverage@1",
+  "status": "audit-only; no source has been parsed or migrated",
+  "scope": {
+    "selection": "every examples/circuits/*.json plus every package circuit.json",
+    "source_file_count": 33,
+    "topology_sources": 28,
+    "evidence_or_campaign_sources": 5
+  },
+  "categories": {
+    "core_now": "The stated concept is expressible by First Draft device/net/bus/connect/probe/display/test after explicit expansion.",
+    "later_component_profile": "Still Component-owned, but needs declared boundary ports, hierarchy, attributes/evidence, or circuit-level timing contracts.",
+    "operation": "A request to drive, clock, wait, run a campaign, or collect/replay a trace; it must execute declared Component tests later.",
+    "board": "Presentation placement, routing, widgets, or physical capture; not a Component topology concern.",
+    "existing_compatibility_only": "Legacy JSON runner/evidence syntax retained as input or report data; it is not First Draft source.",
+    "unsupported": "Not safely expressible until a specific Device/profile capability exists."
+  },
+  "required_concepts": [
+    {"concept": "device instantiation", "classification": "core_now", "evidence": "all 28 topology sources declare chips"},
+    {"concept": "typed scalar nets and explicit pin/port connections", "classification": "core_now", "evidence": "all 28 topology sources have connect/wiring facts; legacy U1.1 spelling becomes U1.@1"},
+    {"concept": "ordered buses", "classification": "core_now", "evidence": "legacy range names require explicit members or resolved Device bus ports"},
+    {"concept": "tri-state, bidirectional, and one-driver validation", "classification": "core_now", "evidence": "74HC245/541 and memory bus cases exercise the resolver contract"},
+    {"concept": "named observations and display intent", "classification": "core_now", "evidence": "legacy probes become probe/watch and optional read-only display"},
+    {"concept": "bounded assertions", "classification": "core_now", "evidence": "First Draft test blocks provide set/pulse/wait/assert only"},
+    {"concept": "legacy inputs, clocks, steps, campaign execution, traces, and replay", "classification": "operation", "evidence": "imperative runner actions are not topology declarations"},
+    {"concept": "package public ports and reusable child circuits", "classification": "later_component_profile", "evidence": "First Draft has no Component boundary-port or hierarchy syntax"},
+    {"concept": "circuit-level timing contracts, proof links, audience text, and physical claims", "classification": "later_component_profile", "evidence": "these are Component metadata/evidence, not copied Device timing"},
+    {"concept": "coordinates, routed wires, instrument panels, and physical capture forms", "classification": "board", "evidence": "must remain separate from topology"},
+    {"concept": "non-compact chip definitions and composite RV8GR devices", "classification": "unsupported", "evidence": "the topology notation can name them, but active compact resolved Device records/hierarchy contracts do not yet exist"}
+  ],
+  "files": {
+    "examples/circuits/nand.json": {"kind": "legacy_topology", "topology": "core_now", "execution": "operation", "blockers": ["legacy aliases/input_sets/steps are compatibility syntax"]},
+    "examples/circuits/counter.json": {"kind": "legacy_topology", "topology": "core_now", "execution": "operation", "blockers": ["legacy aliases/clocks/steps are compatibility syntax"]},
+    "examples/circuits/bus_transceiver.json": {"kind": "legacy_topology", "topology": "core_now", "execution": "operation", "blockers": ["legacy input presets/steps are compatibility syntax"]},
+    "examples/circuits/memory_read.json": {"kind": "legacy_topology", "topology": "core_now", "execution": "operation", "blockers": ["legacy input presets/steps are compatibility syntax", "62256 needs compact resolved Device record"]},
+    "examples/circuits/tiny_cpu_slice.json": {"kind": "legacy_topology", "topology": "core_now", "execution": "operation", "blockers": ["legacy aliases/clocks/steps are compatibility syntax", "62256 needs compact resolved Device record"]},
+
+    "examples/circuits/RV8GR_AddressMux16/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net/bus", "connect"], "blockers": ["public ports", "range expansion", "package metadata/timing"]},
+    "examples/circuits/RV8GR_AluAccumulator/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net/bus", "connect", "probe/test"], "blockers": ["public ports", "circuit timing contract", "74HC283/541/86/74/688 compact Device records"]},
+    "examples/circuits/RV8GR_BranchJumpControl/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net", "connect", "test"], "blockers": ["public ports", "74HC86 compact Device record"]},
+    "examples/circuits/RV8GR_BusOwnership/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net/bus", "connect", "probe/test"], "blockers": ["public ports", "circuit ownership/timing contract", "74HC541/32/86 and 62256 compact Device records"]},
+    "examples/circuits/RV8GR_DataPageMemory/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net/bus", "connect", "test"], "blockers": ["public ports", "circuit timing contract", "74HC21 and 62256 compact Device records"]},
+    "examples/circuits/RV8GR_FetchCycleTrace/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net/bus", "connect", "probe"], "blockers": ["public ports", "trace execution is Operation", "74HC541 compact Device record"]},
+    "examples/circuits/RV8GR_IRQLatch/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net", "connect", "test"], "blockers": ["public ports", "74HC74 compact Device record"]},
+    "examples/circuits/RV8GR_InstructionLatch/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net/bus", "connect", "test"], "blockers": ["public ports"]},
+    "examples/circuits/RV8GR_InterruptEnable/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net", "connect", "test"], "blockers": ["public ports", "74HC21/74HC74 compact Device records"]},
+    "examples/circuits/RV8GR_InterruptTrace/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net", "connect", "probe"], "blockers": ["public ports", "trace execution is Operation", "74HC21/74HC74/Switch compact Device records"]},
+    "examples/circuits/RV8GR_PageDataRegisters/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net/bus", "connect", "test"], "blockers": ["public ports", "74HC21/32 compact Device records"]},
+    "examples/circuits/RV8GR_PC16/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net/bus", "connect", "test"], "blockers": ["public ports", "declared multi-chip counter chain interface"]},
+    "examples/circuits/RV8GR_ResetClockBringup/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net", "connect", "probe"], "blockers": ["public ports", "trace execution is Operation", "74HC164/32 compact Device records"]},
+    "examples/circuits/RV8GR_RingCounter/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net", "connect", "test"], "blockers": ["public ports", "74HC164 compact Device record"]},
+    "examples/circuits/RV8GR_RomDbusRead/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net/bus", "connect", "test"], "blockers": ["public ports"]},
+    "examples/circuits/RV8GR_StorePath/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net/bus", "connect", "test"], "blockers": ["public ports", "74HC541/86 and 62256 compact Device records"]},
+    "examples/circuits/RV8GR_VirtualTestHelpers/circuit.json": {"kind": "leaf_package", "topology": "later_component_profile", "core": ["device", "net", "connect", "probe/test"], "blockers": ["public ports", "passive/analog profile", "Switch/BusProbe/RCParasitic/DelayNoise/OutputAssert compact Device records"]},
+
+    "examples/circuits/RV8GR_BootSequenceTrace/circuit.json": {"kind": "composite_package", "topology": "later_component_profile", "core": ["net/bus", "connect", "probe"], "blockers": ["hierarchy and child Component interface", "trace execution is Operation", "RV8GR_AluAccumulator resolved Component"]},
+    "examples/circuits/RV8GR_FullControlOpcodeSweep/circuit.json": {"kind": "composite_package", "topology": "later_component_profile", "core": ["net/bus", "connect", "probe/test"], "blockers": ["hierarchy and child Component interfaces", "opcode sweep is Operation", "all RV8GR child Components"]},
+    "examples/circuits/RV8GR_Lab13MarkerTrace/circuit.json": {"kind": "composite_package", "topology": "later_component_profile", "core": ["net/bus", "connect", "probe"], "blockers": ["hierarchy and child Component interfaces", "trace execution is Operation"]},
+    "examples/circuits/RV8GR_PageJumpTrace/circuit.json": {"kind": "composite_package", "topology": "later_component_profile", "core": ["net/bus", "connect", "probe"], "blockers": ["hierarchy and child Component interfaces", "trace execution is Operation"]},
+    "examples/circuits/RV8GR_StoreLoadBranchTrace/circuit.json": {"kind": "composite_package", "topology": "later_component_profile", "core": ["net/bus", "connect", "probe"], "blockers": ["hierarchy and child Component interfaces", "trace execution is Operation"]},
+    "examples/circuits/RV8GR_WholeSystemChipLevelVirtual/circuit.json": {"kind": "composite_package", "topology": "later_component_profile", "core": ["net/bus", "connect", "probe/test"], "blockers": ["hierarchy and child Component interfaces", "orchestration metadata is compatibility-only", "stress/campaign execution is Operation"]},
+
+    "examples/circuits/RV8GR_CIRCUIT_RUNTIME_EVIDENCE.json": {"kind": "campaign_evidence", "classification": "existing_compatibility_only", "blockers": ["report, not machine topology"]},
+    "examples/circuits/RV8GR_CIRCUIT_TEST_CAMPAIGN.json": {"kind": "campaign_evidence", "classification": "existing_compatibility_only", "blockers": ["report, not machine topology"]},
+    "examples/circuits/RV8GR_COVERAGE_INDEX.json": {"kind": "campaign_evidence", "classification": "existing_compatibility_only", "blockers": ["coverage index, not machine topology"]},
+    "examples/circuits/physical_capture_plan.json": {"kind": "physical_evidence", "classification": "board", "blockers": ["measurement workflow, not topology"]},
+    "examples/circuits/timing_margins.json": {"kind": "timing_evidence", "classification": "later_component_profile", "blockers": ["circuit timing/evidence profile", "physical measurements remain Board/lab evidence"]}
+  }
+}

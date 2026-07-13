@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jojocafe.github.io/Components/lib/standard/compact.memory.schema.json",
+  "title": "Components compact asynchronous-memory device definition",
+  "$comment": "Structural schema only. A memory Device has its own behavior and timing grammar; it is not a generic digital Device.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema", "version", "profile", "part", "about", "package", "pins", "logic", "timing", "model", "verify", "sources"],
+  "properties": {
+    "schema": {"const": "db.component.memory.compact"},
+    "version": {"const": "0.2"},
+    "profile": {"const": "memory.async@0.2"},
+    "part": {"type": "string", "minLength": 1},
+    "about": {"type": "object", "required": ["title", "family", "group", "role"], "properties": {"group": {"const": "memory"}}, "additionalProperties": true},
+    "pins": {"type": "object", "minProperties": 1},
+    "logic": {"type": "object", "required": ["type", "address_width", "data_width", "read", "write", "tristate"], "properties": {"type": {"enum": ["parallel_eeprom", "parallel_sram"]}}, "additionalProperties": true},
+    "timing": {"type": "object", "required": ["default", "asynchronous_memory"], "properties": {"asynchronous_memory": {"type": "object", "minProperties": 1}}, "additionalProperties": true},
+    "model": {"type": "object", "required": ["python", "verilog"]},
+    "verify": {},
+    "sources": {"type": "array", "minItems": 1}
+  }
+}

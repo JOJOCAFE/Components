@@ -10,6 +10,8 @@ documentation lives here.
 - `CHIP_STATUS.md` - 74xx/memory status baseline used by DB status checks.
 - `SESSION_HANDOFF.md` - latest work state, verification, and next lanes.
 - `TEAM_SKILLS.md` - compact Components team routing and quality-gate contract.
+- `COMPACT_DEFINITION_V0_2.md` - additive human-authored compact-definition
+  pilot and resolver contract.
 - `Agents/` - delegated per-agent skill files for Pim, Bank, Fern, Mint, Ohm,
   Bam, and Noon.
 

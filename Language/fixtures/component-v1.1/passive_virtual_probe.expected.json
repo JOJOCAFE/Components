@@ -1,0 +1,30 @@
+{
+  "schema": "components.component-fixture@1",
+  "fixture": "passive-virtual-probe",
+  "source": "passive_virtual_probe.component",
+  "expected_status": "resolves-with-declared-execution-limit",
+  "execution_limit": "Passive compact records do not yet define cross-domain electrical simulation semantics.",
+  "library_lock": [
+    {
+      "instance": "R1",
+      "locator": "standard.passive.Resistor",
+      "resolved_definition": "lib/standard/passive/Resistor/generated/resolved.json",
+      "expected_pins": [
+        { "name": "1", "number": 1, "direction": "passive" },
+        { "name": "2", "number": 2, "direction": "passive" }
+      ]
+    },
+    {
+      "instance": "Sense",
+      "locator": "standard.virtual.Probe",
+      "resolved_definition": "lib/standard/virtual/Probe/generated/resolved.json",
+      "expected_pins": [{ "name": "IN", "number": 1, "direction": "input" }]
+    }
+  ],
+  "nets": [
+    { "id": "source", "kind": "digital", "endpoints": ["R1.1"] },
+    { "id": "sensed", "kind": "digital", "endpoints": ["R1.2", "Sense.IN"] }
+  ],
+  "probes": [{ "id": "sensed_level", "target": "sensed", "read_only": true }],
+  "displays": [{ "target": "sensed_level", "kind": "value", "read_only": true }]
+}

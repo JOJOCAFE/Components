@@ -1,0 +1,113 @@
+{
+  "authoring": {
+    "profile": "passive.capacitor@0.2",
+    "schema": "db.component.passive.compact",
+    "source": "definition/definition.json"
+  },
+  "definition_layers": {
+    "component": {
+      "family": "Passive",
+      "group": "passive",
+      "kind": "physical",
+      "part": "Capacitor",
+      "role": "passive",
+      "schema": "db.component.definition",
+      "title": "Capacitor",
+      "version": 1
+    },
+    "package": {
+      "default_package": "two_terminal",
+      "packages": [
+        {
+          "id": "two_terminal",
+          "kind": "two_terminal",
+          "pins": 2
+        }
+      ],
+      "part": "Capacitor",
+      "schema": "db.component.package",
+      "version": 1
+    },
+    "pins": {
+      "buses": {},
+      "part": "Capacitor",
+      "pins": [
+        {
+          "direction": "passive",
+          "name": "1",
+          "number": 1
+        },
+        {
+          "direction": "passive",
+          "name": "2",
+          "number": 2
+        }
+      ],
+      "schema": "db.component.pins",
+      "version": 1
+    },
+    "simulation": {
+      "part": "Capacitor",
+      "schema": "db.component.simulation",
+      "simulation": {
+        "default_farads": 1e-06,
+        "service": "sim.capacitor"
+      },
+      "version": 1
+    },
+    "ui": {
+      "part": "Capacitor",
+      "schema": "db.component.ui",
+      "ui": {
+        "symbol": "capacitor",
+        "widget": "capacitor"
+      },
+      "version": 1
+    }
+  },
+  "family": "Passive",
+  "group": "passive",
+  "id": "Capacitor",
+  "kind": "physical",
+  "package": {
+    "kind": "two_terminal",
+    "pins": 2
+  },
+  "part": "Capacitor",
+  "passive": {
+    "default_farads": 1e-06,
+    "kind": "capacitor"
+  },
+  "pins": [
+    {
+      "direction": "passive",
+      "name": "1",
+      "number": 1
+    },
+    {
+      "direction": "passive",
+      "name": "2",
+      "number": 2
+    }
+  ],
+  "role": "passive",
+  "schema": "db.component.definition",
+  "simulation": {
+    "default_farads": 1e-06,
+    "service": "sim.capacitor"
+  },
+  "status": {
+    "datasheet": "not_applicable",
+    "pinout": "modeled",
+    "python_behavior": "modeled",
+    "tests": "modeled",
+    "verilog_export": "not_applicable",
+    "verilog_model": "not_applicable"
+  },
+  "title": "Capacitor",
+  "ui": {
+    "symbol": "capacitor",
+    "widget": "capacitor"
+  },
+  "version": 1
+}

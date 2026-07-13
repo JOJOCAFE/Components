@@ -8,6 +8,10 @@ from pathlib import Path
 import re
 from typing import Any
 
+from .compact_definition import COMPACT_SCHEMA, resolve_compact_definition
+from .memory_definition import MEMORY_SCHEMA, resolve_compact_memory_definition
+from .compact_component_definition import SCHEMAS as COMPACT_COMPONENT_SCHEMAS, resolve_compact_component
+
 
 JsonMap = dict[str, Any]
 ROOT = Path(__file__).resolve().parents[2]
@@ -45,6 +49,7 @@ def load_component(part: str) -> JsonMap:
         data = json.load(handle)
     if not isinstance(data, dict):
         raise ValueError(f"component DB manifest must be an object: {path}")
+    data = resolve_definition_source(data, path)
     manifest = _manifest_from_definition(data, path) if path.name == "definition.json" else deepcopy(data)
     manifest.setdefault("part", path.parents[1].name if path.name == "definition.json" else path.parent.name)
     manifest.setdefault("id", manifest["part"])
@@ -53,6 +58,25 @@ def load_component(part: str) -> JsonMap:
     manifest["missing_properties"] = missing_properties(manifest)
     manifest["missing_files"] = missing_files(manifest)
     return manifest
+
+
+def resolve_definition_source(data: Mapping[str, Any], path: Path) -> JsonMap:
+    """Resolve compact authoring data to the canonical definition shape.
+
+    Audits that read package files directly must use this same boundary as the
+    DB loader; otherwise a keyed compact pin map is mistaken for legacy pins.
+    """
+
+    resolved = deepcopy(dict(data))
+    if path.name != "definition.json":
+        return resolved
+    if resolved.get("schema") == COMPACT_SCHEMA:
+        return resolve_compact_definition(resolved, path.parents[1])
+    if resolved.get("schema") == MEMORY_SCHEMA:
+        return resolve_compact_memory_definition(resolved, path.parents[1])
+    if resolved.get("schema") in COMPACT_COMPONENT_SCHEMAS:
+        return resolve_compact_component(resolved)
+    return resolved
 
 
 def load_all_components() -> list[JsonMap]:
@@ -177,6 +201,12 @@ def load_package_definition(part: str, *, required: bool = True) -> JsonMap | No
     if not isinstance(data, dict):
         raise ValueError(f"component definition must be an object: {path}")
     definition = deepcopy(data)
+    if definition.get("schema") == COMPACT_SCHEMA:
+        definition = resolve_compact_definition(definition, path.parents[1])
+    elif definition.get("schema") == MEMORY_SCHEMA:
+        definition = resolve_compact_memory_definition(definition, path.parents[1])
+    elif definition.get("schema") in COMPACT_COMPONENT_SCHEMAS:
+        definition = resolve_compact_component(definition)
     definition.setdefault("part", path.parents[1].name)
     definition["definition_path"] = path.relative_to(ROOT).as_posix()
     if definition.get("schema") == "db.component.digital":

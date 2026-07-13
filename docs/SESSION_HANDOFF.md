@@ -1,16 +1,30 @@
 # Components Session Handoff
 
-Last updated: 2026-07-11
+Last updated: 2026-07-13
 
 ## Current State
 
 - Repo: `/home/jo/kiro/Components`
 - Branch: `main`
-- Base pushed state: `8a0de62 Refine 74HC593 timing evidence`
-- This handoff describes the verified follow-up checkpoint for the NE555
-  contract fix, generated-report drift gate, and coordination-doc refresh.
+- Base pushed state: `55d7eb3 Harden RV8GR composed control verification`
+- This handoff describes the compact-definition, Component-model, and RV8GR
+  software-closeout checkpoint that is ready to be committed and pushed.
 
 ## Active Verified Worktree
+
+- `docs/Component/` now exposes one active Markdown source:
+  `Component_Model.md`.  The original imported design bundle is preserved
+  unchanged under `docs/Component/old_references/`; Language fixtures link to
+  the active model instead of a second document copy.
+- Compact Device authoring is active for the digital, memory, passive, and
+  virtual pilots.  The legacy migration adapters prove lossless resolution for
+  eight RV8GR digital records and three SRAM records; the audit reports seven
+  compact-ready, eleven bridge-ready, and zero blocked RV8GR definitions.
+- The complete Components quality gate passed: Python chip/design/UI/netlist/
+  CLI/API/DB/contracts/simulation/equivalence/circuit suites, DB audit/status,
+  six source/behavior crosschecks, 74xx and memory Verilog smoke benches,
+  migration gates, and Component-language fixtures.  Direct package-file
+  crosschecks now resolve compact sources through the same DB boundary.
 
 - Last pushed Components checkpoint: `01d7ea1 Promote virtual test helper
   circuit` on `main`; the worktree was clean after push.
@@ -21,11 +35,13 @@ Last updated: 2026-07-11
   pass.
 - `RV8GR_VirtualTestHelpers` is directly promoted. Its public runner proof
   executes clock, phase, bus, switch, R/C, delay/noise, and output-assert
-  vectors. The current next direct-execution work is BusOwnership.
-- Do not infer BusOwnership control wiring or FullControl child-port mappings
-  from prose equations. Source them from canonical RV8GR RTL/wiring evidence,
-  then bind DB/Python/Verilog/tests/docs together. Physical timing remains
-  blocked regardless of modeled package promotion.
+  vectors. `RV8GR_BusOwnership` is also directly promoted: seven live phase
+  vectors plus five explicitly labelled forced-control conflict checks bind
+  U24/U25/U26/U28, U7/U14/U34, ROM, and RAM from canonical RV8GR evidence.
+- Do not infer FullControl child-port mappings from prose equations. Source
+  them from canonical RV8GR RTL/wiring evidence, then bind
+  DB/Python/Verilog/tests/docs together. BusOwnership functional promotion does
+  not prove package-level timing or physical hardware timing.
 - Repository layout migrated on 2026-07-12: packages live in
   `lib/standard/`; circuit examples and proof assets live in
   `examples/circuits/`; documentation, schemas, source evidence, and Verilog
@@ -47,8 +63,32 @@ Last updated: 2026-07-11
 - CI includes a separate `circuit-campaign-promotion` job that verifies
   generated campaign artifacts, the direct package gate, the timing-binding
   gate, and campaign determinism.
-- BusOwnership and FullControl remain blocked by missing concrete boundary
-  width/control contracts. Physical RV8GR evidence remains separate and open.
+- FullControl now has explicit source-backed composition contracts for ordered
+  address concatenation, `/ADDR_MODE` export, PC16, and InterruptEnable; it
+  flattens to 39 live leaves with child power rails preserved.  The isolated
+  PC16 proof passes reset, `0x1234` parallel load, and `0x1235` increment.
+  FullControl remains unpromoted: a powered live T2 run detects a real U34/U7
+  IBUS contention, and IE requires an explicit U31 clock event rather than
+  inferred combinational-edge behavior.  BusOwnership modeled timing and all
+  physical RV8GR evidence remain separate and open.
+- Five active digital Device sources (`74HC00`, `74HC161`, `74HC157`,
+  `74HC245`, `74HC574`) use compact authoring plus generated resolved output.
+  Resistor, ClockSource, and AT28C256 are also active typed compact Devices
+  for passive, virtual, and memory classes.  `74HC00`, `74HC157`, `74HC161`,
+  `74HC245`, and `74HC574` have presentation-only Resource maps.  See
+  `docs/DEFINITION_OWNERSHIP_V0_1.md` before migrating another package.
+- The lossless migration proof now covers all eleven still-legacy RV8GR-ready
+  records: eight digital chips through
+  `tools/check_rv8gr_legacy_compact_equivalence.py` and the `62256`,
+  `AS6C62256`, `CY7C199` SRAM trio through
+  `tools/check_rv8gr_legacy_memory_compact_equivalence.py`.  No legacy source
+  has been rewritten yet; compact authoring review and package regressions are
+  the next safe migration step.
+- The FullControl operation gate runs the external RV8GR behavioral 512-opcode
+  suite, chip-level bring-up/full, and dual RTL comparison, then checks all
+  512 scheduled `/PC_LD` rows and 256 source-owned reset-Z T2 controls with
+  settled U34/U7 ownership.  Live IE remains correctly blocked until the
+  flattened runner can schedule the source-backed U33-to-U31 clock edge.
 
 ## Completed RV8GR Software Coverage
 
@@ -64,6 +104,10 @@ Last updated: 2026-07-11
   traces, R/C stress, delay/noise stress, and virtual fault checks.
 - The RV8GR behavioral and chip-level Verilog gate was recorded passing via
   `/home/jo/kiro/RV8/RV8GR/tools/run_all_verilog_tb.sh`.
+- The same full external gate now also requires negative mutation kills for
+  reset release, U34/U7 ownership, ROM `/WE` protection, U7 store direction,
+  and output-enable ordering.  This closes the bounded RV8GR software lane;
+  only physical measurement/readiness work remains on that lane.
 
 ## Evidence Boundary
 

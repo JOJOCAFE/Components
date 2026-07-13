@@ -45,3 +45,19 @@ layout decisions could become long-term constraints.
 
 - Define authoritative gate-level control and child-port mapping contracts for
   BusOwnership and FullControl before Bam makes them executable.
+
+## Active 2026-07-13 RV8GR Software Lane
+
+- Define the four-model differential contract: initial state, instruction ROM,
+  architectural observations, and T0/T1/T2 signal observations.
+- Mark each phase signal as canonical-RV8GR sourced, Components-derived, or
+  intentionally unavailable.  Do not manufacture a mapping to fill a trace.
+- Keep the new machine-readable contract independent of Board/UI syntax and
+  compatible with the resolved-topology language direction.
+
+## Active `component:component` Language Lane
+
+- Own the v1.1 source/AST/resolver contract that turns compact Device facts
+  into instances, typed nets/buses, explicit topology, tests, and observation
+  declarations without copying Device behavior.
+- Keep Board placement and imperative Operation transport out of this profile.

@@ -6,10 +6,10 @@ Important: this is timing-only. `PASS_SOURCE_VALUES_PRESENT` means the DB datash
 
 | Part | Group | Timing Status | Result | source/PDF | Datasheet Values Checked | Details |
 |---|---:|---|---|---|---|---|
-| 74HC00 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC00_TI_SN74HC00.pdf | 18, 23, 9 | datasheet values present: 18, 23, 9 |
+| 74HC00 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC00_TI_SN74HC00.pdf | 9, 18, 23 | datasheet values present: 9, 18, 23 |
 | 74HC02 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC02_TI_SN74HC02.pdf | 18, 15, 23, 19, 9, 8 | datasheet values present: 18, 15, 23, 19, 9, 8 |
 | 74HC03 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC03_TI_SN74HC03.pdf | 13, 10, 8, 25, 20, 15, 31, 19 | datasheet values present: 13, 10, 8, 25, 20, 15, 31, 19 |
-| 74HC04 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC04_TI_SN74HC04.pdf | 19, 24, 9 | datasheet values present: 19, 24, 9 |
+| 74HC04 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC04_TI_SN74HC04.pdf | 9, 19, 24 | datasheet values present: 9, 19, 24 |
 | 74HC05 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC05_TI_SN74HC05.pdf | 13, 9, 8, 23, 17, 15, 29, 21, 19, 35, 26, 22 | datasheet values present: 13, 9, 8, 23, 17, 15, 29, 21, 19, 35, 26, 22 |
 | 74HC07 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC07_STMICROELECTRONICS_23210.pdf | 6 | datasheet values present: 6 |
 | 74HC08 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC08_TI_SN74HC08.pdf | 20, 15, 25, 19, 30, 22, 10, 8 | datasheet values present: 20, 15, 25, 19, 30, 22, 10, 8 |
@@ -25,7 +25,7 @@ Important: this is timing-only. `PASS_SOURCE_VALUES_PRESENT` means the DB datash
 | 74HC153 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC153_TI_SN74HC153.pdf | 28, 23, 19, 16, 30, 26, 12, 10, 35, 29, 24, 20, 38, 32, 15, 13, 17, 14, 11, 9, 21, 8, 6 | datasheet values present: 28, 23, 19, 16, 30, 26, 12, 10, 35, 29, 24, 20, 38, 32, 15, 13, 17, 14, 11, 9, 21, 8, 6 |
 | 74HC154 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC154_NXP_344457.pdf; source/74HC154_TI_CD74HC154.pdf | 30, 15, 45, 22, 38, 19, 13, 14, 7 | datasheet values present: 30, 15, 45, 22, 38, 19, 13, 14, 7 |
 | 74HC155 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC155_STMICROELECTRONICS_23044.pdf | 12 | datasheet values present: 12 |
-| 74HC157 | 74xx | - | PASS_SOURCE_VALUES_PRESENT | source/74HC157_TI_SN74HC157.pdf | 13, 11, 16, 18, 14, 8, 6 | datasheet values present: 13, 11, 16, 18, 14, 8, 6 |
+| 74HC157 | 74xx | - | PASS_SOURCE_VALUES_PRESENT | source/74HC157_TI_SN74HC157.pdf | 13, 11, 18, 14, 16, 8, 6 | datasheet values present: 13, 11, 18, 14, 16, 8, 6 |
 | 74HC158 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC158_TI_27895_SN74HC158N_DIPVERIFY.pdf; source/74HC158_TI_SN74HC158.pdf | 25, 12, 31, 15, 18, 8 | datasheet values present: 25, 12, 31, 15, 18, 8 |
 | 74HC160 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC160_RENESAS_RENESAS_248480_HD74HC160P_DIPVERIFY.pdf | 225, 160, 200, 150, 75, 280, 250, 190, 95, 80, 100, 125, 156 | datasheet values present: 225, 160, 200, 150, 75, 280, 250, 190, 95, 80, 100, 125, 156 |
 | 74HC161 | 74xx | - | PASS_SOURCE_VALUES_PRESENT | source/74HC161_TI_SN74HC161.pdf | 21, 18, 25, 24, 20, 17, 14, 8, 6 | datasheet values present: 21, 18, 25, 24, 20, 17, 14, 8, 6 |
@@ -58,7 +58,7 @@ Important: this is timing-only. `PASS_SOURCE_VALUES_PRESENT` means the DB datash
 | 74HC4520 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC4520_TI_CD74HC4520.pdf | 30, 24, 20, 16, 25 | datasheet values present: 30, 24, 20, 16, 25 |
 | 74HC4538 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC4538_TI_CD74HC4538.pdf | 16, 20, 24 | datasheet values present: 16, 20, 24 |
 | 74HC541 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC541_TI_SN74HC541.pdf | 23, 30, 12, 38, 18, 17, 8 | datasheet values present: 23, 30, 12, 38, 18, 17, 8 |
-| 74HC574 | 74xx | - | PASS_SOURCE_VALUES_PRESENT | source/74HC574_TI_SN74HC574.pdf | 28, 24, 22, 26, 23, 8, 6 | datasheet values present: 28, 24, 22, 26, 23, 8, 6 |
+| 74HC574 | 74xx | - | PASS_SOURCE_VALUES_PRESENT | source/74HC574_TI_SN74HC574.pdf | 28, 24, 26, 23, 22, 8, 6 | datasheet values present: 28, 24, 26, 23, 22, 8, 6 |
 | 74HC593 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/M54HC593.PDF | 42, 44, 12, 15, 53, 55, 19, 63, 66, 18, 22, 27, 28, 7, 8 | datasheet values present: 42, 44, 12, 15, 53, 55, 19, 63, 66, 18, 22, 27, 28, 7, 8 |
 | 74HC595 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC595_TI_SN74HC595.pdf | 31, 21, 25, 38, 30, 35, 37, 44, 45, 52, 15, 18 | datasheet values present: 31, 21, 25, 38, 30, 35, 37, 44, 45, 52, 15, 18 |
 | 74HC688 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HC688_TI_CD74HC688.pdf | 42, 30, 51, 36, 34, 24 | datasheet values present: 42, 30, 51, 36, 34, 24 |
@@ -71,11 +71,11 @@ Important: this is timing-only. `PASS_SOURCE_VALUES_PRESENT` means the DB datash
 | 74HCT245 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HCT245_TI_SN74HCT245.pdf | 14, 20, 28, 33 | datasheet values present: 14, 20, 28, 33 |
 | 74HCT541 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HCT541_TI_SN74HCT541.pdf | 13, 23, 29, 34 | datasheet values present: 13, 23, 29, 34 |
 | 74HCT574 | 74xx | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/74HCT574_TI_SN74HCT574.pdf | 36, 30, 24, 20, 26, 45, 38, 54 | datasheet values present: 36, 30, 24, 20, 26, 45, 38, 54 |
-| 62256 | Memory | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/KM62256C.PDF; source/AS6C62256.PDF | 55, 25, 20, 5, 70, 35, 30, 45, 0, 40, 60, 50 | datasheet values present: 55, 25, 20, 5, 70, 35, 30, 45, 0, 40, 60, 50 |
-| AS6C62256 | Memory | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/AS6C62256.PDF | 55, 30, 10, 5, 20, 50, 0, 45, 25 | datasheet values present: 55, 30, 10, 5, 20, 50, 0, 45, 25 |
-| AT28C256 | Memory | - | PASS_SOURCE_VALUES_PRESENT | source/AT28C256_Microchip_doc0006.pdf | 150, 200, 250, 350, 70, 80, 100, 50, 55, 60, 0, 10000, 1 | datasheet values present: 150, 200, 250, 350, 70, 80, 100, 50, 55, 60, 0, 10000, 1 |
-| CY7C199 | Memory | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/CY7C199.PDF | 20, 25, 35, 45, 10, 15, 9, 11, 0, 16, 18, 22 | datasheet values present: 20, 25, 35, 45, 10, 15, 9, 11, 0, 16, 18, 22 |
-| SST39SF010A | Memory | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/SST39SF010A_MICROCHIP_DS20005022.pdf | 55, 20, 35, 0, 70, 25 | datasheet values present: 55, 20, 35, 0, 70, 25 |
+| 62256 | memory | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/KM62256C.PDF; source/AS6C62256.PDF | 55, 25, 20, 5, 70, 35, 30, 45, 0, 40, 60, 50 | datasheet values present: 55, 25, 20, 5, 70, 35, 30, 45, 0, 40, 60, 50 |
+| AS6C62256 | memory | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/AS6C62256.PDF | 55, 30, 10, 5, 20, 50, 0, 45, 25 | datasheet values present: 55, 30, 10, 5, 20, 50, 0, 45, 25 |
+| AT28C256 | memory | - | PASS_SOURCE_VALUES_PRESENT | source/AT28C256_Microchip_doc0006.pdf | 150, 200, 250, 350, 70, 80, 100, 50, 55, 60, 0, 10000, 1 | datasheet values present: 150, 200, 250, 350, 70, 80, 100, 50, 55, 60, 0, 10000, 1 |
+| CY7C199 | memory | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/CY7C199.PDF | 20, 25, 35, 45, 10, 15, 9, 11, 0, 16, 18, 22 | datasheet values present: 20, 25, 35, 45, 10, 15, 9, 11, 0, 16, 18, 22 |
+| SST39SF010A | memory | datasheet-backed | PASS_SOURCE_VALUES_PRESENT | source/SST39SF010A_MICROCHIP_DS20005022.pdf | 55, 20, 35, 0, 70, 25 | datasheet values present: 55, 20, 35, 0, 70, 25 |
 
 ## Summary
 

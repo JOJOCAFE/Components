@@ -1,0 +1,39 @@
+// A counter written in the first public, human-first Component style.
+use standard.digital as digital;
+use standard.virtual as virtual;
+
+component:component CounterFirstDraft is components.digital {
+  title "Four-bit counter with a visible reset and count test";
+
+  device Clock is virtual.ClockSource;
+  device Counter is digital.74HC161;
+  device Observe is virtual.Probe;
+
+  net vcc : power;
+  net gnd : power;
+  net reset_n : digital;
+  bus count[4] : digital;
+
+  connect vcc -> Counter.VCC;
+  connect gnd -> Counter.GND;
+  connect Clock.CLK -> Counter.CLK;
+  connect reset_n -> Counter./CLR;
+  connect Counter.QA -> count[0];
+  connect Counter.QB -> count[1];
+  connect Counter.QC -> count[2];
+  connect Counter.QD -> count[3];
+  connect count[0] -> Observe.IN;
+
+  probe count_value, count;
+  watch least_bit, count[0];
+  display count_value as waveform, { "label": "Counter Q", "radix": 2 };
+
+  test reset_then_count {
+    arrange { set reset_n = 0; }
+    settle;
+    assert count_value == 0;
+    arrange { set reset_n = 1; pulse Clock.CLK; }
+    wait 25 ns;
+    assert least_bit == 1;
+  }
+}

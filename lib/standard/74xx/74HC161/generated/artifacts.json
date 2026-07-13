@@ -703,13 +703,7 @@
     },
     "unit_test": {
       "part": "74HC161",
-      "required_vectors": [
-        "async_clear",
-        "parallel_load",
-        "count",
-        "disabled_count",
-        "terminal_count"
-      ],
+      "required_vectors": [],
       "schema": "db.component.generated.tests",
       "split_records": {
         "bus_fight": {

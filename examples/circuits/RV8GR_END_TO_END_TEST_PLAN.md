@@ -179,6 +179,33 @@ Components-side whole-system proof scope, while RV8GR retains ownership of the
 behavioral and chip-level Verilog runners. Do not duplicate RV8GR testbench
 logic here; keep both RTL levels in the required gate.
 
+### Stage 4A - Software Differential-Hardening Lane
+
+Goal: extend the passing directed and opcode-control gates into reproducible,
+stateful equivalence evidence before physical wiring begins.  This is a new
+software lane; it does not invalidate the completed Stage 4 baseline.
+
+1. Run deterministic, seeded instruction-stream programs through CPUSim,
+   ComponentsCPUSim, behavioural RTL, and chip-level RTL.  Seed AC, Z, PG, DP,
+   IE, IRQ, RAM, and the ROM image; retain the seed and program for every
+   failure.
+2. Sweep reserved/non-ISA encodings end-to-end through fetch and execution.
+   Record their actual HLT, PC, PG, DP, IE, and RAM effects.  Do not label an
+   unassigned encoding a safe NOP without that proof.
+3. Define a machine-readable phase trace contract for T0, T1, and T2:
+   address, memory controls, bus ownership, and RAM writes.  Compare the same
+   trace across the four models, not merely final register values.
+4. Add negative/mutation proofs that fail when U34-to-U7 handoff deadband,
+   ROM `/WE` high, store direction, output-enable order, or reset release are
+   deliberately broken.
+5. Provide one clean reproducibility wrapper that uses external Components,
+   writes only to `/tmp`, and reports source/model drift.
+
+Entry baseline: the current 512 opcode-by-Z sweep validates forced T2 control
+cases, but intentionally bypasses T0/T1 fetch and does not cover arbitrary
+stateful instruction streams.  It is therefore evidence for this lane, not a
+substitute for it.
+
 ### Stage 5 - Physical Build Signoff
 
 Goal: hardware is accepted only after both logic behavior and physical evidence

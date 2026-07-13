@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import re
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -18,6 +19,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "source"
 REPORT = ROOT / "docs" / "TIMING_CROSSCHECK_REPORT.md"
+sys.path.insert(0, str(ROOT / "python"))
+
+from chiplib.db import resolve_definition_source  # noqa: E402
 
 SOURCE_ALIASES = {
     "62256": ["KM62256C.PDF", "AS6C62256.PDF"],
@@ -198,7 +202,7 @@ def main() -> int:
         group = group_from_definition(definition)
         if group not in {"74xx", "memory"}:
             continue
-        data = json.loads(definition.read_text(encoding="utf-8"))
+        data = resolve_definition_source(json.loads(definition.read_text(encoding="utf-8")), definition)
         part = str(data.get("part") or definition.parents[1].name)
         layer = timing_layer(data)
         if layer is None:

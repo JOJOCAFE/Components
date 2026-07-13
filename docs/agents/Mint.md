@@ -43,3 +43,24 @@ generated wrappers, or Python/Verilog equivalence.
 
 - Check that the RV8GR external-Components Verilog wrappers retain both
   lower-case external and legacy vendored layout compatibility.
+
+## Active 2026-07-13 RV8GR Software Lane
+
+- Add readable behavioural and chip-level RTL observation points required by
+  the agreed T0/T1/T2 trace contract, without changing functional semantics.
+- Build mutation benches that demonstrably fail for forbidden memory-control,
+  bus-handoff, store-direction, output-enable, and reset-release changes.
+- Keep RTL trace values named by the canonical RV8GR signals and compare them
+  with Python/Components only through Fern's agreed oracle.
+
+## Active `component:component` Language Lane
+
+- Review Component source against resolved Device Verilog interfaces so port,
+  clock, tri-state, and timing declarations cannot silently drift from HDL.
+
+## Saved 2026-07-13 RV8GR Software Closeout
+
+- Maintain `tb_rv8gr_memory_bus_mutation.v` and its runner as testbench-only
+  negative evidence; production RTL must remain unchanged by fault injection.
+- Keep the new runner inside `run_all_verilog_tb.sh` whenever its compile set
+  or memory/U7 behavior changes.
