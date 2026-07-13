@@ -22,6 +22,10 @@ This folder is shared project infrastructure. Keep reusable chip models here ins
 - `source/` - manufacturer datasheet PDFs used as local evidence for pinout documentation; see `source/README.md` for the retained evidence list.
 - `docs/` - compact documentation index, guides, contracts, status, reports,
   task plans, team skills, and handoff notes.
+- `board/` - lightweight local Components workbench: visual Drawing on the
+  left, readable Component text upper-right, and bounded Terminal lower-right.
+  It is served by the existing local Python API and owns no separate circuit
+  model.
 - `AGENTS.md` - local JOJOCAFE team ownership map for Components work.
 
 ## Verification Rule
@@ -94,17 +98,17 @@ Python models are pin-number/pin-name addressable, support net wiring and
 tri-state conflict checks, and carry propagation-delay metadata for timing
 analysis.
 
-The long-term simulator goal is a student-friendly block UI whose design state
-round-trips 1-to-1 with `docs/SCHEMATIC_JSON_SPEC.md`: JSON can become editable
-blocks, and blocks can become the same logical JSON, including probes and
-display blocks. The UI should behave like Blender or Maya: a front-end that
-calls Python backend commands and renders the returned design/simulation state.
-The same backend must also be callable by CLI and by direct Python scripts, all
-using the same JSON schematic file.
+The student authoring goal has two compatible views: the legacy normalized
+Design/block-UI workflow and the text-first Component Board in `board/`.
+The Component Board keeps readable `.component` text as source of topology;
+Drawing and Terminal actions request checked source patches or bounded runtime
+operations through Python. Neither view is allowed to invent chip behavior,
+pins, wires, or simulator state. The same backend remains callable by CLI,
+direct Python, API/AI clients, and the local Board.
 
 Primary users are students from roughly primary to secondary school age
 (`10-15` years old), with the same tools still usable by older learners up to
-about `24`. Keep examples, labels, errors, and UI/API affordances clear enough
+about `25`. Keep examples, labels, errors, and UI/API affordances clear enough
 for beginners while preserving real pin-level behavior and datasheet accuracy.
 
 Use the Verilog files when a project needs HDL-level comparison, FPGA-oriented
@@ -169,6 +173,7 @@ python3 -B -m tests.test_block_ui
 python3 -B -m tests.test_netlist
 python3 -B -m tests.test_cli
 python3 -B -m tests.test_api
+python3 -B -m tests.test_component_board_api
 python3 -B -m tests.test_db
 python3 -B -m tests.test_generated_split_records
 python3 -B -m tests.test_contracts
@@ -233,6 +238,22 @@ For students around ages 10-15, use this build-along order:
 
 Use `docs/README.md` for the current student/teacher/reference map across the
 docs.
+
+## First Component Board
+
+The first local Board is intentionally small and dependency-free. It opens the
+NOT-gate Component in a three-pane workspace, keeps a browser-local draft,
+and sends every resolve/run/edit request to the existing Python service.
+
+```sh
+PYTHONPATH=python python3 -B -m chiplib.api --http --host 127.0.0.1 --port 8765
+```
+
+Open <http://127.0.0.1:8765/>. If that port is busy, choose another (for
+example `8766`) and open the matching address. See
+[`board/README.md`](board/README.md) for the available safe Terminal commands
+and focused tests. A passing digital result is still not breadboard wiring,
+electrical-safety, or speed signoff.
 
 ## Documentation
 

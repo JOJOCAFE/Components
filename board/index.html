@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Components Board</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="workbench">
+      <header class="topbar">
+        <div><strong id="component-name">Components Board</strong><span id="save-state">Starting…</span></div>
+        <div class="top-actions">
+          <button id="run-test" class="primary">Try inversion</button>
+          <button id="reset-layout" title="Restore Drawing + Text + Terminal">Reset view</button>
+        </div>
+      </header>
+
+      <section class="panes" id="panes">
+        <article class="pane drawing-pane" id="drawing-pane">
+          <div class="pane-head"><span>Drawing</span><button class="pane-toggle" data-pane="drawing-pane">Full screen</button></div>
+          <p class="purpose" id="meaning">A small machine you can read, point at, and try.</p>
+          <div class="tool-row" aria-label="Drawing tools">
+            <button class="tool selected" data-tool="select">Select</button>
+            <button class="tool" data-tool="connect">Connect</button>
+            <button class="tool" data-tool="inspect">Inspect</button>
+          </div>
+          <div id="board-canvas" class="board-canvas" aria-label="Component Drawing"></div>
+          <section id="lens" class="lens" aria-live="polite">
+            <strong>Start here</strong>
+            <p>This is a NOT gate. It changes 0 into 1, and 1 into 0.</p>
+            <button id="watch-output">Watch inverted output</button>
+          </section>
+          <form id="connect-form" class="connect-form hidden">
+            <label>From <input id="connect-from" placeholder="U1.1Y" required></label>
+            <label>To <input id="connect-to" placeholder="Observe.IN" required></label>
+            <button class="primary" type="submit">Preview connection</button>
+            <button id="close-connect" type="button">Cancel</button>
+          </form>
+        </article>
+
+        <section class="right-stack">
+          <article class="pane text-pane" id="text-pane">
+            <div class="pane-head"><span>Readable Component text</span><button class="pane-toggle" data-pane="text-pane">Full screen</button></div>
+            <textarea id="source" spellcheck="false" aria-label="Readable Component source"></textarea>
+            <div id="diagnostics" class="diagnostics" aria-live="polite"></div>
+          </article>
+
+          <section class="terminal" id="terminal-pane">
+            <div class="terminal-head"><span>Terminal</span><button id="terminal-expand">Expand</button></div>
+            <div id="terminal-log" class="terminal-log" aria-live="polite"></div>
+            <form id="terminal-form" class="terminal-form">
+              <span>&gt;</span><input id="terminal-input" autocomplete="off" placeholder="Try: run inversion" aria-label="Component command">
+              <button class="primary">Send</button>
+            </form>
+            <div class="suggestions"><button data-command="run inversion">Try inversion</button><button data-command="drive Clock.CLK 0">Set input to 0</button><button data-command="watch inverted_level">Watch output</button></div>
+          </section>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

@@ -4,7 +4,7 @@ This repo uses the JOJOCAFE seven-person team model from RV8GR, adapted for
 the shared Components library.
 
 Primary customer: students around 10-15 years old, with the same tools still
-usable by older learners up to about 24. Every role must preserve real chip
+usable by older learners up to about 25. Every role must preserve real chip
 behavior and datasheet truth while keeping errors, examples, and docs clear
 enough for beginners.
 

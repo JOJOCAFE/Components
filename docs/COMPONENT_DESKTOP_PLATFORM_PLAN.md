@@ -87,10 +87,10 @@ The first client is deliberately small, but it is a real authoring workspace:
 
 All three call the same local Python service to parse, resolve, validate, and run declared tests. A Drawing electrical edit must return an explicit source patch, then redraw from resolved JSON. A Terminal runtime request returns a trace and never changes source. See [`COMPONENT_THREE_PANE_WORKSPACE.md`](COMPONENT_THREE_PANE_WORKSPACE.md) for the synchronization and command boundary.
 
-The default layout is Drawing and readable Text left/right with a shallow
-Terminal at the bottom. Panes can be collapsed, resized, detached, or made
-full-screen. The interaction is pointer/stylus-first with a tiny contextual
-tool row, not a permanent menu/ribbon interface.
+The default layout puts Drawing on the left, readable Text upper-right, and a
+shallow Terminal lower-right. Panes can be collapsed, resized, detached, or
+made full-screen. The interaction is pointer/stylus-first with a tiny
+contextual tool row, not a permanent menu/ribbon interface.
 
 Multi-window support may be added after this slice.  One local session owns
 the active source and runtime request; other windows receive immutable

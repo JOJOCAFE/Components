@@ -31,6 +31,11 @@ _OBSERVE = re.compile(r"(probe|watch)\s+([A-Za-z_][A-Za-z0-9_]*)\s*,\s*(.+)$")
 _DISPLAY = re.compile(r"display\s+(.+?)\s+as\s+([A-Za-z_][A-Za-z0-9_]*)(?:\s*,\s*(\{.*\}))?$")
 _TITLE = re.compile(r'title\s+("(?:[^"\\]|\\.)*")$')
 _BUS_MEMBER = re.compile(r"([A-Za-z_][A-Za-z0-9_]*)\[(\d+)\]$")
+_LIBRARY_GROUPS = {
+    "standard.digital": {"74xx"}, "standard.memory": {"memory"},
+    "standard.virtual": {"virtual"}, "standard.passive": {"passive"},
+    "standard.discrete": {"discrete"}, "standard.support": {"support"},
+}
 
 
 @dataclass(frozen=True)
@@ -252,6 +257,10 @@ def resolve_component(ast: JsonMap) -> JsonMap:
                 definition = load_component(part)
             except (KeyError, ValueError) as exc:
                 diagnostics.append(Diagnostic("resolver.unknown_device", f"cannot resolve {node['locator']!r}: {exc}", line)); continue
+            library = imports[locator_alias]
+            groups = _LIBRARY_GROUPS.get(library)
+            if groups is None or definition.get("group") not in groups:
+                diagnostics.append(Diagnostic("resolver.library_ownership", f"{node['locator']!r} is not owned by imported library {library!r}", line)); continue
             parameters = node.get("parameters", {})
             if parameters:
                 # The virtual clock's published period is the sole leaf

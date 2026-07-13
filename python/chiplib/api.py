@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
+import mimetypes
+from pathlib import Path
 import sys
 from typing import Any
 
@@ -12,9 +14,13 @@ from .services import CONTRACT, CircuitCommandService, CircuitSessionRegistry, F
 from .component_language import parse_component_text, resolve_component
 from .component_runtime import ComponentRuntimeError, ComponentRuntimeSession
 from .component_transport import board_view
+from .component_edit import apply_component_edit
 
 
 JsonMap = dict[str, Any]
+ROOT = Path(__file__).resolve().parents[2]
+BOARD_ROOT = ROOT / "board"
+NOT_GATE_FIXTURE = ROOT / "Language" / "fixtures" / "component-v1.1" / "digital_inverter.component"
 
 
 def handle_request(
@@ -79,6 +85,15 @@ def handle_request(
             return circuit_service.export_evidence(response, include_traces=bool(options.get("include_traces", input_data.get("include_traces", False))))
         if command in {"headless-capabilities", "ai-capabilities"}:
             return _ok(command, headless_capabilities())
+        if command == "component-language-example":
+            return _ok(command, {"id": "not-gate", "source": NOT_GATE_FIXTURE.read_text(encoding="utf-8")})
+        if command == "component-language-edit":
+            source = input_data.get("source")
+            revision = input_data.get("source_revision", options.get("source_revision"))
+            edit = input_data.get("edit", options.get("edit"))
+            if not isinstance(source, str) or not isinstance(revision, str) or not isinstance(edit, dict):
+                raise ValueError("component-language-edit needs source, source_revision, and edit")
+            return _ok(command, apply_component_edit(source, expected_revision=revision, edit=edit, source_name=str(input_data.get("source_name", "<api>"))))
         if command in {"component-language-parse", "component-language-resolve", "component-language-board-view", "component-language-run", "component-language-student"}:
             source = input_data.get("source")
             if not isinstance(source, str):
@@ -92,8 +107,16 @@ def handle_request(
                 return _ok(command, {"format": "components.component-student@1", "component": resolved.get("component_id"), "parts": [{"name": item["id"], "part": item["part"]} for item in resolved.get("instances", [])], "wires": len(resolved.get("edges", [])), "tests": [item["id"] for item in resolved.get("tests", [])], "diagnostics": resolved.get("diagnostics", [])})
             try:
                 runtime = ComponentRuntimeSession(resolved)
+                drives = options.get("drives", input_data.get("drives", []))
+                if not isinstance(drives, list):
+                    raise ValueError("drives must be a list of target/value objects")
+                for drive in drives:
+                    if not isinstance(drive, dict) or not isinstance(drive.get("target"), str) or "value" not in drive:
+                        raise ValueError("each drive needs target and value")
+                    runtime.drive(drive["target"], drive["value"])
                 test = options.get("test")
-                return _ok(command, {"runtime": runtime.snapshot(), "test": runtime.run_declared_test(str(test)) if test else None, "probes": runtime.probe()})
+                probe = options.get("probe", input_data.get("probe"))
+                return _ok(command, {"runtime": runtime.snapshot(), "test": runtime.run_declared_test(str(test)) if test else None, "probes": runtime.probe(str(probe) if probe else None)})
             except ComponentRuntimeError as exc:
                 return _error(command, "component.runtime_blocked", str(exc))
         if command in {"project-builder", "ai-project-builder"}:
@@ -193,6 +216,22 @@ def run_http(host: str = "127.0.0.1", port: int = 8765, service: FrontendDesignS
     circuit_sessions = CircuitSessionRegistry()
 
     class Handler(BaseHTTPRequestHandler):
+        def do_GET(self) -> None:  # noqa: N802 - stdlib API name
+            relative = self.path.split("?", 1)[0].lstrip("/") or "index.html"
+            candidate = (BOARD_ROOT / relative).resolve()
+            if candidate != BOARD_ROOT.resolve() and BOARD_ROOT.resolve() not in candidate.parents:
+                self.send_error(404)
+                return
+            if not candidate.is_file():
+                self.send_error(404)
+                return
+            body = candidate.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", mimetypes.guess_type(str(candidate))[0] or "application/octet-stream")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
         def do_POST(self) -> None:  # noqa: N802 - stdlib API name
             length = int(self.headers.get("Content-Length", "0"))
             raw = self.rfile.read(length)

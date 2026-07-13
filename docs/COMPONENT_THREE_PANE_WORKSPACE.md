@@ -15,18 +15,19 @@ The contextual explanation next to selected objects follows
 +--------------------------------+--------------------------------+
 | 1. Drawing                     | 2. Component text              |
 | point, connect, inspect        | readable code, diagnostics     |
+|                                +--------------------------------+
+|                                | 3. Terminal: a few lines       |
+|                                | live command/result  [expand]  |
 +--------------------------------+--------------------------------+
-| 3. Terminal: a few live command/result lines             [expand] |
-+--------------------------------------------------------------------+
 ```
 
 1. **Drawing** lets a learner see and directly edit declared parts and wires.
 2. **Component text** always shows the readable `component:component` source that learners save, share, and review.
 3. **Terminal** sends immediate, visible source-edit or safe runtime requests.
 
-Drawing and Text start left/right. Terminal starts at the bottom and is only a
-few lines high: last command, result, and the next useful prompt. It expands
-only when the learner asks to inspect a trace or history.
+Drawing starts on the left. Text is upper-right. Terminal is lower-right and
+only a few lines high: last command, result, and the next useful prompt. It
+expands only when the learner asks to inspect a trace or history.
 
 Every region may be resized, collapsed, detached into its own window, or made
 full-window/full-screen. Returning to the default workbench must take one

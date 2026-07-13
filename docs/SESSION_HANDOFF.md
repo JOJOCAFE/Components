@@ -3,24 +3,21 @@
 Last updated: 2026-07-14
 
 > **Current authority.** This section supersedes the older RV8GR checkpoint
-> notes below when they disagree. The pushed `main` baseline is `5409405 Extend
-> Component runtime and JSON bridge`. The shared worktree also contains
-> the next, uncommitted Component-runtime and student-documentation work; do
-> not describe it as pushed until its owner commits it. `Language.zip` is
-> user-owned and remains untracked/untouched.
+> notes below when they disagree. This checkpoint includes the first local
+> Component Board implementation and its focused verification. `Language.zip`
+> is user-owned and remains untracked/untouched.
 
 ## Current student-first Board/desktop checkpoint: 2026-07-14
 
-This student-first Board/Resource/team-contract checkpoint contains
-documentation, schemas, fixtures, and a contract checker only; the separate
-local `component_language.py` and component-language test work remains
-unstaged and must not be described as included in this checkpoint.
+This student-first checkpoint contains Resource/Board contracts, the local
+Board implementation, source-edit API, Component-language ownership checks,
+fixtures, tests, documentation, and team working rules.
 
 The next Component client is a lightweight, offline-first three-pane
-workbench: **Drawing** and readable **Component text** sit left/right; a small
-bounded **Terminal** is at the bottom. Panes can resize, collapse, detach, or
-go full-screen. The default UI is pointer/stylus-first and contextual, not a
-ribbon/menu-heavy professional CAD application.
+workbench: **Drawing** is left, readable **Component text** is upper-right,
+and a small bounded **Terminal** is lower-right. Panes can resize, collapse,
+detach, or go full-screen. The default UI is pointer/stylus-first and
+contextual, not a ribbon/menu-heavy professional CAD application.
 
 - One readable `.component` source remains the electrical/topology authority.
   Drawing and Terminal *source edits* send revision-checked intents and return
@@ -62,6 +59,27 @@ ledger before a proposed fix.
    student hardware.
 4. Run the first-sight learner test before adding timeline/waveform, 3D,
    multiwindow, updater endpoint, or plugin host.
+
+### First implementation now present
+
+`board/` now contains a dependency-free local web workbench served from the
+existing `chiplib.api --http` process. It loads the real NOT-gate fixture,
+shows Drawing/Text/Terminal, resolves text through the existing service,
+stores a local browser draft, runs the declared `inversion` test, and supports
+bounded `run`, `drive`, `watch`, `connect`, and `disconnect` commands.
+
+`python/chiplib/component_edit.py` owns the first revision-checked source
+patches for connect/disconnect. It parses/resolves the candidate text before
+returning it; invalid or stale edits leave source unchanged. Focused proof:
+
+```sh
+PYTHONPATH=python python3 -B -m tests.test_component_board_api
+PYTHONPATH=python python3 -B -m tests.test_api
+node --check board/app.js
+```
+
+This is a local browser proof, not yet a Rust/Tauri package, an iOS adapter,
+measured performance session, or a completed learner test.
 
 ## Current Component Text Route
 

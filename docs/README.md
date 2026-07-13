@@ -8,13 +8,19 @@ documentation lives here.
 
 - `STUDENT_GUIDE.md` - beginner-first CLI/API path for students.
 - `COMPONENT_BUILD_NOT_GATE.md` - first text Component lesson: read, run, and
-  explain one NOT gate without a Board.
+  explain one NOT gate before using advanced Board detail.
+- `../board/README.md` - run the first local three-pane Component Board.
+- `COMPONENT_FIRST_SIGHT_DESIGN.md` - learner-first usability promise.
+- `COMPONENT_LEARNING_LENS.md` - explanation/deeper-detail contract for a
+  selected part, wire, value, or result.
+- `COMPONENT_THREE_PANE_WORKSPACE.md` - Drawing left, Text upper-right,
+  Terminal lower-right interaction contract.
 - `CHIP_STATUS.md` - 74xx/memory status baseline used by DB status checks.
 - `SESSION_HANDOFF.md` - latest work state, verification, and next lanes.
 - `TEAM_SKILLS.md` - compact Components team routing and quality-gate contract.
 - `COMPACT_DEFINITION_V0_2.md` - additive human-authored compact-definition
   pilot and resolver contract.
-- `Agents/` - delegated per-agent skill files for Pim, Bank, Fern, Mint, Ohm,
+- `agents/` - delegated per-agent skill files for Pim, Bank, Fern, Mint, Ohm,
   Bam, and Noon.
 
 ## Chip DB And Generation
@@ -45,13 +51,13 @@ recorded in the task plan and campaign reports.
 
 [`COMPONENT_TEXT_IDE.md`](COMPONENT_TEXT_IDE.md) documents the text-first
 `component:component` CLI. It parses and resolves Component fixtures against
-the active library before any Board or visual editor exists. The supported leaf
-digital-model subset can run its bounded declared tests; Board editing,
-Resource commands, and physical claims remain separate.
+the active library. The supported leaf digital-model subset can run its bounded
+declared tests. The local `../board/` workbench consumes the same service and
+readable source; advanced Resource views and physical claims remain separate.
 
 - [`COMPONENT_PROGRAM_TASKS.md`](COMPONENT_PROGRAM_TASKS.md) - delivery order
-  and owned acceptance gates from the text IDE through Runtime, Resources, and
-  the deferred `component:board` editor.
+  and owned acceptance gates from the text IDE through Runtime, Resources, the
+  in-progress three-pane Board, and later `component:board` work.
 
 - [`CIRCUIT_RUNNER_ARCHITECTURE.md`](CIRCUIT_RUNNER_ARCHITECTURE.md) - net,
   timing, execution, and future interface architecture.

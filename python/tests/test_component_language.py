@@ -139,6 +139,18 @@ component:component Imports is components.digital {
     }
 
 
+def test_leaf_resolver_rejects_alias_that_claims_the_wrong_library():
+    source = """
+use arbitrary.namespace as digital;
+component:component WrongLibrary is components.digital {
+ device U1, digital.74HC04;
+}
+"""
+    result = resolve_component(parse_component_text(source))
+    assert result["ok"] is False
+    assert "resolver.library_ownership" in {item["code"] for item in result["diagnostics"]}
+
+
 def test_leaf_resolver_rejects_zero_width_self_wiring_and_net_aliases():
     source = """
 use standard.digital as digital;
@@ -174,6 +186,49 @@ component:component MemoryPin is components.digital {
     assert result["edges"][0]["target_endpoint"]["port"] == "/CE"
 
 
+def test_mux_fixture_and_rv8gr_address_mux_keep_the_live_74hc157_pin_contract():
+    """Keep a learner-readable Component fixture tied to real library pins.
+
+    ``MuxFirstDraft`` is deliberately not an executable RV8GR replacement.
+    It is the small, readable four-bit lesson that uses the same 74HC157
+    definition and the same numbered pins as the four chips in AddressMux16.
+    This catches a definition rename or pin-number drift before text tooling
+    teaches a student a connection that the circuit library cannot make.
+    """
+    resolved = resolve_component(parse_component_file(FIXTURES / "component-first-draft" / "mux_first_draft.component"))
+    assert resolved["ok"], resolved["diagnostics"]
+    mux = next(instance for instance in resolved["instances"] if instance["id"] == "Mux")
+    assert mux["part"] == "74HC157"
+    assert mux["definition_path"] == "lib/standard/74xx/74HC157/definition/definition.json"
+
+    fixture_ports = {
+        (edge["source_endpoint"].get("port"), edge["source_endpoint"].get("pin"))
+        for edge in resolved["edges"]
+        if edge["source_endpoint"].get("instance") == "Mux"
+    } | {
+        (edge["target_endpoint"].get("port"), edge["target_endpoint"].get("pin"))
+        for edge in resolved["edges"]
+        if edge["target_endpoint"].get("instance") == "Mux"
+    }
+    assert fixture_ports == {
+        ("A/B", 1), ("1A", 2), ("1B", 3), ("1Y", 4),
+        ("2A", 5), ("2B", 6), ("2Y", 7), ("GND", 8),
+        ("3Y", 9), ("3B", 10), ("3A", 11), ("4Y", 12),
+        ("4B", 13), ("4A", 14), ("/G", 15), ("VCC", 16),
+    }
+
+    circuit = json.loads((ROOT / "examples" / "circuits" / "RV8GR_AddressMux16" / "circuit.json").read_text(encoding="utf-8"))
+    assert {chip["part"] for chip in circuit["chips"]} == {"74HC157"}
+    live_pins = {pin for _port, pin in fixture_ports}
+    address_mux_pins = {
+        int(connection.rsplit(".", 1)[1])
+        for wire in circuit["wiring"]
+        for connection in wire["connections"]
+        if connection.startswith(("U15.", "U16.", "U29.", "U30."))
+    }
+    assert address_mux_pins == live_pins
+
+
 def main() -> None:
     test_counter_fixture_has_ast_to_resolved_topology_pipeline()
     test_text_ide_snapshot_is_parse_resolve_validate_not_runtime()
@@ -184,8 +239,10 @@ def main() -> None:
     test_resolved_cli_is_hash_seed_deterministic()
     test_leaf_validation_rejects_power_misuse_and_multiple_outputs()
     test_leaf_resolver_requires_real_imports_and_a_single_local_namespace()
+    test_leaf_resolver_rejects_alias_that_claims_the_wrong_library()
     test_leaf_resolver_rejects_zero_width_self_wiring_and_net_aliases()
     test_leaf_resolver_keeps_quoted_datasheet_port_names_exact()
+    test_mux_fixture_and_rv8gr_address_mux_keep_the_live_74hc157_pin_contract()
     print("Components Component-language tests passed")
 
 

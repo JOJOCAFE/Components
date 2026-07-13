@@ -1,6 +1,6 @@
 # Components Program Tasks
 
-Last reconciled: 2026-07-13
+Last reconciled: 2026-07-14
 
 This is the active delivery order for the Component language, text IDE,
 runtime, Resource Library, and later Board work.  It complements—not
@@ -60,7 +60,7 @@ Passing digital simulation is never physical wiring or timing signoff.
 
 | ID | Work | Owner / review | Acceptance | Status |
 |---|---|---|---|---|
-| C3.5.1 | Build the lightweight three-pane foundation: Drawing, readable Component text, and bounded Terminal over one Rust/Tauri + small Preact/TypeScript session. Use the desktop Python adapter, preserve a portable JSON service boundary for iOS, and keep source authoritative while Drawing emits checked source patches. | Bank + Bam / Noon, Fern | First pass the intent/trace/verification gate; then NOT-gate no-network/no-plugin launch proves text -> Drawing sync, legal/illegal Drawing connection handling, one bounded Terminal trace, atomic autosave/recovery, recorded startup/interaction baseline, and a first-sight test with a 10–15-year-old plus an adult beginner; no pane has alternate electrical state. | design completed 2026-07-14; implementation next |
+| C3.5.1 | Build the lightweight three-pane foundation: Drawing, readable Component text, and bounded Terminal over one Rust/Tauri + small Preact/TypeScript session. Use the desktop Python adapter, preserve a portable JSON service boundary for iOS, and keep source authoritative while Drawing emits checked source patches. | Bank + Bam / Noon, Fern | First pass the intent/trace/verification gate; then NOT-gate no-network/no-plugin launch proves text -> Drawing sync, legal/illegal Drawing connection handling, one bounded Terminal trace, atomic autosave/recovery, recorded startup/interaction baseline, and a first-sight test with a 10–15-year-old plus an adult beginner; no pane has alternate electrical state. | in progress: dependency-free local `board/` workbench, API-served assets, resolver/runtime, draft recovery, and checked connect/disconnect source patches pass focused tests; Tauri wrapper, measured UI session, and learner test remain |
 | C3.5.1a | Build the NOT-gate first-sight route inside the three-pane shell: title/meaning, visible `IN -> U1 -> OUT`, one suggested action, result sentence, selection-to-source highlight, and error recovery. | Bam + Noon / Bank, Fern | unprepared 10–15-year-old and adult-beginner test each complete the five-minute Learning Lens path without a guide. | queued with C3.5.1 |
 | C3.5.2 | Define signed auto-update compatibility, channel, safe-restart, recovery, and rollback contracts before enabling an update endpoint. | Bank + Bam / Fern, Noon | tampered/incompatible manifest fixtures are rejected; update preserves drafts and waits for runtime idle. | contract completed 2026-07-13; implementation deferred |
 | C3.5.3 | Define the versioned plugin manifest, capability policy, integrity checks, safe mode, and no-plugin core operation before accepting third-party code. | Bank + Bam / Fern, Noon | plugin contract proves no hidden topology/model mutation and rejects incompatible/tampered plugins. | contract completed 2026-07-13; host implementation deferred |
