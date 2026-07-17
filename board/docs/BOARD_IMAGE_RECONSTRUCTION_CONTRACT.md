@@ -17,8 +17,10 @@ For every resolved `device`, the Board places a real library-backed symbol or
 package frame in an initial readable layout. Each frame shows definition-owned
 physical pin number, logical port name, direction, and source identity.
 
-For every resolved explicit `connect` edge, the Board shows a **dashed guide**
-from the exact source pin/net to the exact target pin/net. The guide means:
+For every resolved explicit `connect` edge, the Board can show a **dashed
+guide** from the exact source pin/net to the exact target pin/net. Unrouted
+guides are hidden by default; selecting a device or pin toggles only its
+relevant guides. The guide means:
 “this electrical connection already exists in Component code; now draw its
 schematic path.” It is not an inferred wire and it is not saved as a Board
 route.

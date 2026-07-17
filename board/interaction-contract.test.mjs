@@ -27,6 +27,10 @@ for (const required of [
   'View moved. Component source and Board picture are unchanged.',
   'Left-drag any device, net, route bend, or label',
   'endpointScreenPoint',
+  'function shouldShowWire(wire)',
+  'function toggleGuideFocus(focus)',
+  'Connection guides hidden. Click a device or connection dot',
+  'Showing routing guides for ${target}',
   'Connect node ${anchor.endpoint}',
 ]) assert.ok(app.includes(required), `missing interaction contract: ${required}`);
 
