@@ -53,6 +53,7 @@ def test_harness_report_has_fern_shape_eight_negatives_and_disabled_short_run_th
     assert {item["case_id"] for item in report["negative_results"]} == {"stale-profile-digest", "invalid-world-point", "forbidden-direct-mutation", "route-before-connect", "unknown-edge-route", "bus-route-without-contract", "malformed-profile-migration", "stale-source-operation"}
     assert all(item["result"] == "pass" and item["source_unchanged"] and item["topology_unchanged"] and item["profile_unchanged"] for item in report["negative_results"])
     assert report["determinism"]["stable"] is True
+    assert report["environment"]["warmup_iterations"] == 0
     assert report["threshold_evaluation"]["enabled"] is False
     assert "disabled" in report["threshold_evaluation"]["reason"]
 
@@ -73,6 +74,16 @@ def test_export_is_deterministic() -> None:
     operations = [{"id": "connect", "kind": "component.connect.apply", "edge_id": "edge:source", "expected_source_revision": "sha256:" + "0" * 64}]
     first, second = deterministic_export(projection, profile, operations), deterministic_export(projection, profile, operations)
     assert first["digest"] == second["digest"] and first["json"] == second["json"]
+
+
+def test_warmups_are_recorded_but_not_in_measurement_samples() -> None:
+    report = run_harness(iterations=3, warmup_iterations=2)
+    assert report["result"] == "pass", report["failures"]
+    assert report["environment"]["warmup_iterations"] == 2
+    for fixture in report["fixture_results"]:
+        for measurement in ("load_resolve_projection", "profile_migration", "queue_validate_apply"):
+            assert fixture["measurements"][measurement]["iterations"] == 3
+            assert len(fixture["measurements"][measurement]["samples_ns"]) == 3
 
 
 def main() -> None:

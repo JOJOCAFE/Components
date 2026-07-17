@@ -224,7 +224,9 @@ def _summary(samples: list[int]) -> dict[str, Any]:
     return {"samples_ns": samples, "iterations": len(samples), "median_ns": int(statistics.median(ordered)), "p95_ns": ordered[(len(ordered) * 95 + 99) // 100 - 1]}
 
 
-def _measure(iterations: int, fn: Callable[[], Any]) -> tuple[Any, dict[str, Any]]:
+def _measure(iterations: int, fn: Callable[[], Any], *, warmup_iterations: int = 0) -> tuple[Any, dict[str, Any]]:
+    for _ in range(warmup_iterations):
+        fn()
     samples, value = [], None
     for _ in range(iterations):
         started = time.perf_counter_ns(); value = fn(); samples.append(time.perf_counter_ns() - started)
@@ -240,9 +242,9 @@ def _negative(case_id: str, category: str, source: str, resolved: dict[str, Any]
     return {"case_id": case_id, "category": category, "input_digest": _digest({"case_id": case_id, "expected": expected_code}), "result": "pass" if observed == expected_code and before_source == source and before_topology == _canonical(resolved) and before_profile == _canonical(profile) else "fail", "expected_failure_code": expected_code, "observed_failure_code": observed, "source_unchanged": before_source == source, "topology_unchanged": before_topology == _canonical(resolved), "profile_unchanged": before_profile == _canonical(profile), "message": message}
 
 
-def _environment(iterations: int) -> dict[str, Any]:
+def _environment(iterations: int, warmup_iterations: int) -> dict[str, Any]:
     info = time.get_clock_info("perf_counter")
-    return {"python_version": sys.version.split()[0], "implementation": platform.python_implementation(), "platform": platform.platform(), "machine": platform.machine(), "processor": platform.processor(), "cpu_count": os.cpu_count(), "monotonic_clock": info.implementation, "monotonic_resolution": info.resolution, "hostname": socket.gethostname(), "iterations": iterations}
+    return {"python_version": sys.version.split()[0], "implementation": platform.python_implementation(), "platform": platform.platform(), "machine": platform.machine(), "processor": platform.processor(), "cpu_count": os.cpu_count(), "monotonic_clock": info.implementation, "monotonic_resolution": info.resolution, "hostname": socket.gethostname(), "iterations": iterations, "warmup_iterations": warmup_iterations}
 
 
 def _evaluate_thresholds(fixture_results: list[dict[str, Any]], *, enforce: bool) -> dict[str, Any]:
@@ -277,19 +279,19 @@ def _evaluate_thresholds(fixture_results: list[dict[str, Any]], *, enforce: bool
     return {"enabled": True, "threshold_record_digest": _digest(record), "baseline_id": record.get("baseline", {}).get("baseline_id"), "result": "pass" if passed else "fail", "decisions": decisions, "reason": record.get("claim_boundary")}
 
 
-def _run(*, iterations: int, cross_hash_seeds: bool, enforce_thresholds: bool) -> dict[str, Any]:
+def _run(*, iterations: int, warmup_iterations: int, cross_hash_seeds: bool, enforce_thresholds: bool) -> dict[str, Any]:
     failures, fixture_results, exports = [], [], {}
     for fixture in fixtures():
         source = fixture["source_text"]
         def load_resolve_project() -> tuple[dict[str, Any], dict[str, Any]]:
             resolved = resolve_component(parse_component_text(source, source_name=fixture["source"]))
             return resolved, project_resolved_topology(resolved)
-        (resolved, projection), load_resolve_projection_measurement = _measure(iterations, load_resolve_project)
+        (resolved, projection), load_resolve_projection_measurement = _measure(iterations, load_resolve_project, warmup_iterations=warmup_iterations)
         profile = fresh_profile(projection)
-        migration, migration_measurement = _measure(iterations, lambda: migrate_profile_placeholder(profile, projection))
+        migration, migration_measurement = _measure(iterations, lambda: migrate_profile_placeholder(profile, projection), warmup_iterations=warmup_iterations)
         migrated_profile = migration["profile"]
         operations = [{"id": "connect-source", "kind": "component.connect.apply", "edge_id": "edge:queued-source", "expected_source_revision": source_revision(source)}, {"id": "route-source", "kind": "board.route", "edge_id": "edge:queued-source", "depends_on": ["connect-source"], "points": [{"x": 0, "y": 0}]}]
-        queue, queue_measurement = _measure(iterations, lambda: validate_operation_queue(operations, projection, current_revision=source_revision(source)))
+        queue, queue_measurement = _measure(iterations, lambda: validate_operation_queue(operations, projection, current_revision=source_revision(source)), warmup_iterations=warmup_iterations)
         exported = deterministic_export(projection, migrated_profile, operations)
         checks, resource_digest = _validate_expectations(fixture, resolved, projection)
         checks.extend([{"name": "profile_validation_or_migration", "result": "pass", "message": migration["status"]}, {"name": "queue_dependency", "result": "pass", "message": "source connect precedes dependent scalar route"}, {"name": "source_ownership", "result": "pass", "message": "profile validation excludes electrical fields"}, {"name": "deterministic_export", "result": "pass", "message": "canonical export repeated identically"}])
@@ -313,7 +315,7 @@ def _run(*, iterations: int, cross_hash_seeds: bool, enforce_thresholds: bool) -
     determinism = {"runs_per_fixture": 3, "canonical_export_digests": [exports, exports, exports], "cross_hash_seed_digests": {}, "stable": True, "comparison_scope": "canonical Board/profile/operation exports only; measurements and environment excluded"}
     if cross_hash_seeds:
         for seed in ("0", "1"):
-            env = {**os.environ, "PYTHONHASHSEED": seed, "BOARD_V2_HARNESS_SEED_CHILD": "1"}
+            env = {**os.environ, "PYTHONHASHSEED": seed, "BOARD_V2_HARNESS_SEED_CHILD": "1", "BOARD_V2_HARNESS_ITERATIONS": "3", "BOARD_V2_HARNESS_WARMUP_ITERATIONS": "0"}
             child = subprocess.run([sys.executable, "-B", "-m", "chiplib.board_v2_harness"], text=True, capture_output=True, env=env, check=False)
             try: child_data = json.loads(child.stdout)
             except json.JSONDecodeError: child_data = {"failures": ["child JSON unavailable"]}
@@ -322,18 +324,20 @@ def _run(*, iterations: int, cross_hash_seeds: bool, enforce_thresholds: bool) -
         if not determinism["stable"]: failures.append("determinism:cross_hash_seed")
     thresholds = _evaluate_thresholds(fixture_results, enforce=enforce_thresholds)
     if thresholds["result"] == "fail": failures.append("thresholds:regression")
-    return {"schema": HARNESS_SCHEMA, "harness_version": "0.2", "result": "fail" if failures else "pass", "run_mode": "baseline", "fixture_results": fixture_results, "negative_results": negatives, "determinism": determinism, "threshold_evaluation": thresholds, "environment": _environment(iterations), "failure_count": len(failures), "failures": failures}
+    return {"schema": HARNESS_SCHEMA, "harness_version": "0.2", "result": "fail" if failures else "pass", "run_mode": "baseline", "fixture_results": fixture_results, "negative_results": negatives, "determinism": determinism, "threshold_evaluation": thresholds, "environment": _environment(iterations, warmup_iterations), "failure_count": len(failures), "failures": failures}
 
 
-def run_harness(*, iterations: int = 5, enforce_thresholds: bool = False) -> dict[str, Any]:
+def run_harness(*, iterations: int = 5, warmup_iterations: int = 0, enforce_thresholds: bool = False) -> dict[str, Any]:
     if iterations < 3: raise BoardV2ContractError("board.iterations: deterministic harness needs at least three iterations")
-    return _run(iterations=iterations, cross_hash_seeds=os.environ.get("BOARD_V2_HARNESS_SEED_CHILD") != "1", enforce_thresholds=enforce_thresholds)
+    if warmup_iterations < 0: raise BoardV2ContractError("board.warmup_iterations: warm-up count must be zero or greater")
+    return _run(iterations=iterations, warmup_iterations=warmup_iterations, cross_hash_seeds=os.environ.get("BOARD_V2_HARNESS_SEED_CHILD") != "1", enforce_thresholds=enforce_thresholds)
 
 
 def main() -> None:
     iterations = int(os.environ.get("BOARD_V2_HARNESS_ITERATIONS", "5"))
+    warmup_iterations = int(os.environ.get("BOARD_V2_HARNESS_WARMUP_ITERATIONS", "5"))
     enforce = os.environ.get("BOARD_V2_HARNESS_ENFORCE_THRESHOLDS") == "1" and os.environ.get("BOARD_V2_HARNESS_SEED_CHILD") != "1"
-    report = run_harness(iterations=iterations, enforce_thresholds=enforce)
+    report = run_harness(iterations=iterations, warmup_iterations=warmup_iterations, enforce_thresholds=enforce)
     print(json.dumps(report, sort_keys=True, separators=(",", ":")))
     if report["result"] != "pass": raise SystemExit(1)
 
