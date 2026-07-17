@@ -6,4 +6,46 @@
   <text class="title" x="550" y="906" text-anchor="middle">74HC11 · DIP-14</text>
   <rect class="body" x="200" y="30" width="700" height="790" rx="4"/>
   <path d="M515.0 30a35 35 0 0 0 70 0" fill="none" stroke="#000" stroke-width="12.5"/>
+  <rect class="pin" id="connector0pin" data-pin-number="1" data-pin-name="1A" data-direction="input" x="5" y="95" width="195" height="10"/>
+  <text class="name" x="220" y="117" text-anchor="start">1A</text>
+  <text class="number" x="100" y="85" text-anchor="middle">1</text>
+  <rect class="pin" id="connector1pin" data-pin-number="2" data-pin-name="1B" data-direction="input" x="5" y="195" width="195" height="10"/>
+  <text class="name" x="220" y="217" text-anchor="start">1B</text>
+  <text class="number" x="100" y="185" text-anchor="middle">2</text>
+  <rect class="pin" id="connector2pin" data-pin-number="3" data-pin-name="2A" data-direction="input" x="5" y="295" width="195" height="10"/>
+  <text class="name" x="220" y="317" text-anchor="start">2A</text>
+  <text class="number" x="100" y="285" text-anchor="middle">3</text>
+  <rect class="pin" id="connector3pin" data-pin-number="4" data-pin-name="2B" data-direction="input" x="5" y="395" width="195" height="10"/>
+  <text class="name" x="220" y="417" text-anchor="start">2B</text>
+  <text class="number" x="100" y="385" text-anchor="middle">4</text>
+  <rect class="pin" id="connector4pin" data-pin-number="5" data-pin-name="2C" data-direction="input" x="5" y="495" width="195" height="10"/>
+  <text class="name" x="220" y="517" text-anchor="start">2C</text>
+  <text class="number" x="100" y="485" text-anchor="middle">5</text>
+  <rect class="pin" id="connector5pin" data-pin-number="6" data-pin-name="2Y" data-direction="output" x="5" y="595" width="195" height="10"/>
+  <text class="name" x="220" y="617" text-anchor="start">2Y</text>
+  <text class="number" x="100" y="585" text-anchor="middle">6</text>
+  <rect class="pin" id="connector6pin" data-pin-number="7" data-pin-name="GND" data-direction="power" x="5" y="695" width="195" height="10"/>
+  <text class="name" x="220" y="717" text-anchor="start">GND</text>
+  <text class="number" x="100" y="685" text-anchor="middle">7</text>
+  <rect class="pin" id="connector7pin" data-pin-number="8" data-pin-name="3Y" data-direction="output" x="900" y="695" width="195" height="10"/>
+  <text class="name" x="880" y="717" text-anchor="end">3Y</text>
+  <text class="number" x="1000" y="685" text-anchor="middle">8</text>
+  <rect class="pin" id="connector8pin" data-pin-number="9" data-pin-name="3A" data-direction="input" x="900" y="595" width="195" height="10"/>
+  <text class="name" x="880" y="617" text-anchor="end">3A</text>
+  <text class="number" x="1000" y="585" text-anchor="middle">9</text>
+  <rect class="pin" id="connector9pin" data-pin-number="10" data-pin-name="3B" data-direction="input" x="900" y="495" width="195" height="10"/>
+  <text class="name" x="880" y="517" text-anchor="end">3B</text>
+  <text class="number" x="1000" y="485" text-anchor="middle">10</text>
+  <rect class="pin" id="connector10pin" data-pin-number="11" data-pin-name="3C" data-direction="input" x="900" y="395" width="195" height="10"/>
+  <text class="name" x="880" y="417" text-anchor="end">3C</text>
+  <text class="number" x="1000" y="385" text-anchor="middle">11</text>
+  <rect class="pin" id="connector11pin" data-pin-number="12" data-pin-name="1Y" data-direction="output" x="900" y="295" width="195" height="10"/>
+  <text class="name" x="880" y="317" text-anchor="end">1Y</text>
+  <text class="number" x="1000" y="285" text-anchor="middle">12</text>
+  <rect class="pin" id="connector12pin" data-pin-number="13" data-pin-name="1C" data-direction="input" x="900" y="195" width="195" height="10"/>
+  <text class="name" x="880" y="217" text-anchor="end">1C</text>
+  <text class="number" x="1000" y="185" text-anchor="middle">13</text>
+  <rect class="pin" id="connector13pin" data-pin-number="14" data-pin-name="VCC" data-direction="power" x="900" y="95" width="195" height="10"/>
+  <text class="name" x="880" y="117" text-anchor="end">VCC</text>
+  <text class="number" x="1000" y="85" text-anchor="middle">14</text>
 </svg>

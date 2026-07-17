@@ -6,4 +6,64 @@
   <text class="title" x="550" y="1206" text-anchor="middle">74HC688 · DIP-20</text>
   <rect class="body" x="200" y="30" width="700" height="1090" rx="4"/>
   <path d="M515.0 30a35 35 0 0 0 70 0" fill="none" stroke="#000" stroke-width="12.5"/>
+  <rect class="pin" id="connector0pin" data-pin-number="1" data-pin-name="/E" data-direction="input" x="5" y="95" width="195" height="10"/>
+  <text class="name" x="220" y="117" text-anchor="start">/E</text>
+  <text class="number" x="100" y="85" text-anchor="middle">1</text>
+  <rect class="pin" id="connector1pin" data-pin-number="2" data-pin-name="A0" data-direction="input" x="5" y="195" width="195" height="10"/>
+  <text class="name" x="220" y="217" text-anchor="start">A0</text>
+  <text class="number" x="100" y="185" text-anchor="middle">2</text>
+  <rect class="pin" id="connector2pin" data-pin-number="3" data-pin-name="B0" data-direction="input" x="5" y="295" width="195" height="10"/>
+  <text class="name" x="220" y="317" text-anchor="start">B0</text>
+  <text class="number" x="100" y="285" text-anchor="middle">3</text>
+  <rect class="pin" id="connector3pin" data-pin-number="4" data-pin-name="A1" data-direction="input" x="5" y="395" width="195" height="10"/>
+  <text class="name" x="220" y="417" text-anchor="start">A1</text>
+  <text class="number" x="100" y="385" text-anchor="middle">4</text>
+  <rect class="pin" id="connector4pin" data-pin-number="5" data-pin-name="B1" data-direction="input" x="5" y="495" width="195" height="10"/>
+  <text class="name" x="220" y="517" text-anchor="start">B1</text>
+  <text class="number" x="100" y="485" text-anchor="middle">5</text>
+  <rect class="pin" id="connector5pin" data-pin-number="6" data-pin-name="A2" data-direction="input" x="5" y="595" width="195" height="10"/>
+  <text class="name" x="220" y="617" text-anchor="start">A2</text>
+  <text class="number" x="100" y="585" text-anchor="middle">6</text>
+  <rect class="pin" id="connector6pin" data-pin-number="7" data-pin-name="B2" data-direction="input" x="5" y="695" width="195" height="10"/>
+  <text class="name" x="220" y="717" text-anchor="start">B2</text>
+  <text class="number" x="100" y="685" text-anchor="middle">7</text>
+  <rect class="pin" id="connector7pin" data-pin-number="8" data-pin-name="A3" data-direction="input" x="5" y="795" width="195" height="10"/>
+  <text class="name" x="220" y="817" text-anchor="start">A3</text>
+  <text class="number" x="100" y="785" text-anchor="middle">8</text>
+  <rect class="pin" id="connector8pin" data-pin-number="9" data-pin-name="B3" data-direction="input" x="5" y="895" width="195" height="10"/>
+  <text class="name" x="220" y="917" text-anchor="start">B3</text>
+  <text class="number" x="100" y="885" text-anchor="middle">9</text>
+  <rect class="pin" id="connector9pin" data-pin-number="10" data-pin-name="GND" data-direction="power" x="5" y="995" width="195" height="10"/>
+  <text class="name" x="220" y="1017" text-anchor="start">GND</text>
+  <text class="number" x="100" y="985" text-anchor="middle">10</text>
+  <rect class="pin" id="connector10pin" data-pin-number="11" data-pin-name="A4" data-direction="input" x="900" y="995" width="195" height="10"/>
+  <text class="name" x="880" y="1017" text-anchor="end">A4</text>
+  <text class="number" x="1000" y="985" text-anchor="middle">11</text>
+  <rect class="pin" id="connector11pin" data-pin-number="12" data-pin-name="B4" data-direction="input" x="900" y="895" width="195" height="10"/>
+  <text class="name" x="880" y="917" text-anchor="end">B4</text>
+  <text class="number" x="1000" y="885" text-anchor="middle">12</text>
+  <rect class="pin" id="connector12pin" data-pin-number="13" data-pin-name="A5" data-direction="input" x="900" y="795" width="195" height="10"/>
+  <text class="name" x="880" y="817" text-anchor="end">A5</text>
+  <text class="number" x="1000" y="785" text-anchor="middle">13</text>
+  <rect class="pin" id="connector13pin" data-pin-number="14" data-pin-name="B5" data-direction="input" x="900" y="695" width="195" height="10"/>
+  <text class="name" x="880" y="717" text-anchor="end">B5</text>
+  <text class="number" x="1000" y="685" text-anchor="middle">14</text>
+  <rect class="pin" id="connector14pin" data-pin-number="15" data-pin-name="A6" data-direction="input" x="900" y="595" width="195" height="10"/>
+  <text class="name" x="880" y="617" text-anchor="end">A6</text>
+  <text class="number" x="1000" y="585" text-anchor="middle">15</text>
+  <rect class="pin" id="connector15pin" data-pin-number="16" data-pin-name="B6" data-direction="input" x="900" y="495" width="195" height="10"/>
+  <text class="name" x="880" y="517" text-anchor="end">B6</text>
+  <text class="number" x="1000" y="485" text-anchor="middle">16</text>
+  <rect class="pin" id="connector16pin" data-pin-number="17" data-pin-name="A7" data-direction="input" x="900" y="395" width="195" height="10"/>
+  <text class="name" x="880" y="417" text-anchor="end">A7</text>
+  <text class="number" x="1000" y="385" text-anchor="middle">17</text>
+  <rect class="pin" id="connector17pin" data-pin-number="18" data-pin-name="B7" data-direction="input" x="900" y="295" width="195" height="10"/>
+  <text class="name" x="880" y="317" text-anchor="end">B7</text>
+  <text class="number" x="1000" y="285" text-anchor="middle">18</text>
+  <rect class="pin" id="connector18pin" data-pin-number="19" data-pin-name="/Y" data-direction="output" x="900" y="195" width="195" height="10"/>
+  <text class="name" x="880" y="217" text-anchor="end">/Y</text>
+  <text class="number" x="1000" y="185" text-anchor="middle">19</text>
+  <rect class="pin" id="connector19pin" data-pin-number="20" data-pin-name="VCC" data-direction="power" x="900" y="95" width="195" height="10"/>
+  <text class="name" x="880" y="117" text-anchor="end">VCC</text>
+  <text class="number" x="1000" y="85" text-anchor="middle">20</text>
 </svg>

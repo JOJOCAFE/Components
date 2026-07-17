@@ -44,12 +44,12 @@ def test_74hc04_node_metadata_supports_named_and_physical_lookup():
     assert by_number["2"].get("data-component-selector") == "@2"
 
 
-def test_no_pin_chip_frames_have_no_printed_pinout_or_connector_nodes():
+def test_no_pin_chip_frames_remove_lead_stubs_but_keep_definition_metadata():
     frames = sorted(NO_PIN_FRAMES.glob("74hc*.svg"))
     assert frames
     for path in frames:
         text = path.read_text(encoding="utf-8")
         assert 'class="lead"' not in text
-        assert 'class="pin"' not in text
-        assert 'class="name"' not in text
-        assert 'class="number"' not in text
+        assert 'class="pin"' in text
+        assert 'class="name"' in text
+        assert 'class="number"' in text

@@ -31,7 +31,7 @@ def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
 
 
-def frame_svg(record: dict, *, include_pinout: bool = True) -> str:
+def frame_svg(record: dict, *, include_pinout: bool = True, include_leads: bool = True) -> str:
     part = record["part"]
     package = record["package"]
     pins = record["pins"]
@@ -71,8 +71,9 @@ def frame_svg(record: dict, *, include_pinout: bool = True) -> str:
         name_anchor = "start" if left else "end"
         number_x = 100 if left else width - 100
         if include_pinout:
+            if include_leads:
+                lines.append(f'  <line class="lead" x1="{x1}" y1="{y}" x2="{x2}" y2="{y}"/>')
             lines.extend((
-                f'  <line class="lead" x1="{x1}" y1="{y}" x2="{x2}" y2="{y}"/>',
                 f'  <rect class="pin" id="connector{connector}pin" data-pin-number="{number}" data-pin-name="{esc(pin["name"])}" data-direction="{esc(pin["direction"])}" x="{min(x1, x2)}" y="{y - 5}" width="{abs(x2 - x1)}" height="10"/>',
                 f'  <text class="name" x="{name_x}" y="{y + 17}" text-anchor="{name_anchor}">{esc(pin["name"])}</text>',
                 f'  <text class="number" x="{number_x}" y="{y - 15}" text-anchor="middle">{number}</text>',
@@ -110,7 +111,7 @@ def main() -> None:
         output.write_text(frame_svg(record), encoding="utf-8")
         ET.parse(output)
         no_pin_output = NO_PIN_OUT / output.name
-        no_pin_output.write_text(frame_svg(record, include_pinout=False), encoding="utf-8")
+        no_pin_output.write_text(frame_svg(record, include_pinout=True, include_leads=False), encoding="utf-8")
         ET.parse(no_pin_output)
         manifest.append({
             "part": part,
@@ -134,8 +135,8 @@ def main() -> None:
     )
     (NO_PIN_OUT / "README.md").write_text(
         "# Definition-backed no-pin DIP frames\n\n"
-        "These SVGs are generated from the same reviewed DIP records as the sibling functional frames, but deliberately omit pin leads, numbers, and names. "
-        "They are Board artwork only. The Board must render definition-owned connection nodes itself and must never infer a pin, port, or behavior from this frame.\n",
+        "These SVGs are generated from the same reviewed DIP records as the sibling functional frames, but deliberately omit the long pin lead stubs. "
+        "They retain readable pin labels while the Board renders definition-owned connection dots at the node locations; it must never infer a pin, port, or behavior from this frame.\n",
         encoding="utf-8",
     )
     print(f"generated={len(manifest)}")

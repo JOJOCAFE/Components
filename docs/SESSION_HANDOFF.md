@@ -202,8 +202,8 @@ pan/zoom with an unchanged exported profile. Refresh the 25-sample regression
 baseline after that browser proof and before starting B3.
 
 Board chip artwork now uses generated no-pin 74HC DIP frames in
-`board/assets/74hc-chip-frames-no-pins/`: all printed lead lines, pin numbers,
-and pin names are absent. The Board renders small definition-owned connection
+`board/assets/74hc-chip-frames-no-pins/`: long printed lead stubs are absent,
+but readable labels remain. The Board renders small definition-owned connection
 dots over the frame and targets its routes/guides at those dots. The underlying
 definition still owns port names, physical pin evidence, and validation.
 

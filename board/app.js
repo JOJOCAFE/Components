@@ -124,13 +124,11 @@ function renderBoard() {
   const blocks = state.board?.blocks || [];
   const devices = blocks.filter(item => item.type === "device");
   const nets = state.board?.nets || [];
-  const connectedEndpoints = new Set((state.board?.wires || []).flatMap(wire => [wire.from, wire.to]));
   const nodes = [];
   devices.forEach((item, index) => {
     const fallback = { x: devices.length === 1 ? 0 : -138 + index * (276 / (devices.length - 1)), y: 84 };
     const placement = placementFor(item.id);
-    const anchors = item.resource?.kind === "logic-gate-symbol.svg" ? visibleGateAnchors(item.pin_anchors || [], connectedEndpoints) : item.pin_anchors || [];
-    nodes.push({ id: item.id, label: item.id === "U1" ? "U1\nNOT gate" : item.id, x: placement?.origin?.x ?? fallback.x, y: placement?.origin?.y ?? fallback.y, kind: "device", part: item.part, pinAnchors: anchors, resource: item.resource });
+    nodes.push({ id: item.id, label: item.id === "U1" ? "U1\nNOT gate" : item.id, x: placement?.origin?.x ?? fallback.x, y: placement?.origin?.y ?? fallback.y, kind: "device", part: item.part, pinAnchors: item.pin_anchors || [], resource: item.resource });
   });
   nets.filter(item => item.kind !== "power").forEach((item, index) => {
     const fallback = { x: -192 + index * (384 / Math.max(1, nets.filter(n => n.kind !== "power").length - 1)), y: -132 };
@@ -173,13 +171,6 @@ function drawEdge(vectors, from, to, wire) {
   });
 }
 
-function visibleGateAnchors(anchors, connectedEndpoints) {
-  const connectable = anchors.filter(anchor => anchor.direction === "input" || anchor.direction === "output");
-  const used = connectable.filter(anchor => connectedEndpoints.has(anchor.endpoint));
-  if (!used.length) return connectable.slice(0, 2);
-  const unit = used[0].port.match(/^(\d+)/)?.[1];
-  return unit ? connectable.filter(anchor => anchor.port.startsWith(unit)) : used;
-}
 function endpointScreenPoint(endpoint) {
   const anchor = $("#board-canvas").querySelector(`[data-endpoint="${CSS.escape(endpoint)}"]`);
   if (!anchor) return null;
@@ -398,13 +389,10 @@ function selectNode(node) {
 }
 
 function chipFrame(node, compact = false) {
-  const inputs = node.pinAnchors.filter(anchor => anchor.direction === "input");
-  const outputs = node.pinAnchors.filter(anchor => anchor.direction === "output");
-  const anchors = [...inputs, ...outputs].map(anchor => {
-    const group = anchor.direction === "output" ? outputs : inputs;
-    const top = 50 + (group.indexOf(anchor) - (group.length - 1) / 2) * 24;
-    const side = anchor.direction === "output" ? "right" : "left";
-    return `<button class="pin-anchor ${side}" type="button" data-anchor-id="${anchor.id}" data-endpoint="${anchor.endpoint}" data-direction="${anchor.direction}" data-pin-number="${anchor.physical_pin}" data-pin-name="${anchor.port}" data-component-selector="@${anchor.physical_pin}" style="top:${top}%" aria-label="Connect node ${anchor.endpoint}, ${anchor.direction}"></button>`;
+  const anchors = node.pinAnchors.map(anchor => {
+    const sideCount = Math.max(1, node.pinAnchors.length / 2);
+    const top = 6 + (Number(anchor.dip_order) - .5) * (88 / sideCount);
+    return `<button class="pin-anchor ${anchor.dip_side}" type="button" data-anchor-id="${anchor.id}" data-endpoint="${anchor.endpoint}" data-direction="${anchor.direction}" data-pin-number="${anchor.physical_pin}" data-pin-name="${anchor.port}" data-component-selector="@${anchor.physical_pin}" style="top:${top}%" aria-label="Connect node ${anchor.endpoint}, ${anchor.direction}"></button>`;
   }).join("");
   const caption = compact ? "" : "<figcaption>Drag from one visible pin to another to propose a checked source edit. This frame owns no wiring state.</figcaption>";
   return `<figure class="pinout-art chip-frame${compact ? " compact" : ""}" data-frame-device="${node.id}"><img src="${node.resource.asset}" alt="${node.part} logic symbol" draggable="false"><div class="pin-anchor-layer" aria-label="Definition-owned ${node.part} connect nodes">${anchors}</div>${caption}</figure>`;
