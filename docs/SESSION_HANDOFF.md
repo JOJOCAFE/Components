@@ -223,6 +223,33 @@ stored in the digest-locked profile and do not change Component wiring. The
 current connection-guide path can be dragged into a routed path; it does not
 invent an electrical edge.
 
+### Board guide-operation checkpoint: 2026-07-17
+
+The guide rule is frozen and reusable. `board/guide-operation.js` emits and
+reduces a session-only `components.operation@1` record with kind
+`board.guide.toggle`; its contract and reuse boundary are in
+`board/docs/BOARD_GUIDE_OPERATION_CONTRACT.md`. With **Guides** selected,
+clicking any device, net, or precise pin/node dot toggles all matching declared
+scalar edges for that focus: if all are shown they hide, otherwise they show.
+Several node groups may remain shown. Clicking another endpoint can therefore
+hide or show a shared edge individually. Every visible Board object has a
+resolved border node/dot; a guide click never selects, inspects, routes,
+persists, or changes `component:component` topology.
+
+Focused proof:
+
+```bash
+node board/guide-operation.test.mjs
+node board/interaction-contract.test.mjs
+node board/profile-v2.test.mjs
+PYTHONPATH=python python3 -B -m tests.test_component_board_api
+```
+
+This is not a transaction queue or a persisted `component:operation` log.
+Bank must freeze that later authority before collaboration, replay, macro, or
+profile-persistence work. B3 also remains blocked by the separate human
+old-profile migration/pan/zoom observation described above.
+
 ## Functional-pinout SVG handoff: 2026-07-14
 
 Board artwork is being redrawn as clean SVG from the cropped datasource PNGs

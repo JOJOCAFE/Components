@@ -80,6 +80,15 @@ proof, bus-safety proof, or CI gate evidence.
   learners must see the exact source patch or trace, and an illegal action must
   leave topology unchanged with an actionable explanation.
 
+## Saved Board guide-operation review — 2026-07-17
+
+- For guide changes, independently run `node board/guide-operation.test.mjs`
+  and confirm that node-group visibility, shared-edge endpoint toggles, and
+  multiple visible groups are deterministic.
+- Reject any guide implementation that changes Component topology, a persisted
+  Board profile, or ordinary select/inspect/connect behavior. Browser wording
+  is not a substitute for the reducer-level ownership proof.
+
 ## Saved 2026-07-13 RV8GR Software Closeout
 
 - The reset, U34/U7, ROM `/WE`, store-direction, and OE-order negative tests

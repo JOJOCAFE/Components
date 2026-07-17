@@ -74,6 +74,15 @@ pushes, or cross-repo consistency.
   Drawing and Terminal edits must return readable source patches; runtime work
   must return a trace; no pane gets a hidden circuit model.
 
+## Saved Board guide-operation coordination — 2026-07-17
+
+- Route every guide-interaction change through
+  `board/docs/BOARD_GUIDE_OPERATION_CONTRACT.md`: Guides is a session-only
+  semantic operation, never an alternate topology editor.
+- Keep the node-group toggle rule and focused reducer proof visible in the
+  task/handoff. Any persistence, queue, collaboration, or route-authoring
+  expansion requires Bank's separate contract decision.
+
 ## Saved 2026-07-13 RV8GR Software Closeout
 
 - Treat `run_all_verilog_tb.sh` as the required one-command regression: it now

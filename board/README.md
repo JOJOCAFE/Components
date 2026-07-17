@@ -69,6 +69,8 @@ clicked, the device reveals its remaining guides; clicking that device again
 removes every guide connected to it. Clicking another endpoint toggles that
 edge one by one. A saved Board route remains
 visible because it is the learner's drawing, not a temporary guide.
+The semantic operation and future-reuse boundary are frozen in
+[`docs/BOARD_GUIDE_OPERATION_CONTRACT.md`](docs/BOARD_GUIDE_OPERATION_CONTRACT.md).
 
 The current canvas keeps visual artifacts vector-first: reviewed chip frames
 are SVG resources, connection guides/routes are SVG paths, and Board labels

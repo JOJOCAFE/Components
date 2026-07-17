@@ -72,6 +72,21 @@ world-coordinate Viewport and transaction-operation architecture in
 `board/docs/BOARD_ARCHITECTURE_FREEZE.md`. That gate does not authorize bus routes,
 Working Box/BOM expansion, or physical claims.
 
+### Saved Board guide-operation freeze: 2026-07-17
+
+Guides are a reusable, session-only `component:operation` slice, not Board
+model mutation. The frozen contract is
+`board/docs/BOARD_GUIDE_OPERATION_CONTRACT.md` and the reusable reducer is
+`board/guide-operation.js`: with **Guides** selected, a click on any resolved
+node toggles every declared scalar edge for that node as a group; if every one
+is already visible it hides them, otherwise it reveals them. Several node
+groups may remain visible, and another endpoint can toggle a shared edge
+individually. Guide clicks never select, inspect, route, alter topology, or
+persist a Board profile. Pim keeps this boundary explicit, Bank owns any
+future persistence/queue decision, Bam uses the operation reducer rather than
+direct UI state mutation, Noon keeps the learner wording precise, and Fern
+independently checks the reducer and ownership boundary before extension.
+
 ## Saved Team Checkpoint: 2026-07-12
 
 - Components `main` is pushed at `01d7ea1 Promote virtual test helper circuit`.

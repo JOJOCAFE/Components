@@ -86,6 +86,16 @@ generated artifacts can affect live chip behavior.
   service path, and test a disproof of the leading hypothesis before changing
   parser, resolver, runtime, or UI adapter code.
 
+## Saved Board guide-operation implementation — 2026-07-17
+
+- Reuse `board/guide-operation.js` for guide visibility. Create a
+  `components.operation@1` `board.guide.toggle` record from resolved topology,
+  then apply its pure reducer; do not mutate guide state ad hoc in a pointer
+  handler.
+- Keep guide authority `board_session`: it may show or hide declared scalar
+  edges only. It must not write a Board profile, select/inspect an object, or
+  create, retarget, or route a Component connection.
+
 ## Saved 2026-07-13 RV8GR Software Closeout
 
 - Differential runners and reserved-opcode characterization are compatibility

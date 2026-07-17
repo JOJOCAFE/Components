@@ -79,3 +79,12 @@ evidence, or commands that must match executable behavior.
   an error, simplify the screen and language before adding a lesson.
 - Keep advanced vocabulary, datasheets, traces, and real package detail one
   short **See details** action away; never make them prerequisites.
+
+## Saved Board Guides wording — 2026-07-17
+
+- Teach **Guides** as “show the connection hints for this dot or device,” not
+  as “draw a wire.” A second click hides that node's hints; several selected
+  nodes may stay visible so learners can plan a shared path or future bus.
+- State that Guides only helps the learner see an already-declared connection.
+  It neither changes Component code nor draws the final route; left-click
+  connection drawing remains a separate tool.
