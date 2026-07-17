@@ -30,6 +30,8 @@ for (const required of [
   'function shouldShowWire(wire)',
   'state.guideFocuses.some(focus =>',
   'state.guideFocuses.push(focus)',
+  'state.guideHiddenEdges.includes(edgeId(wire))',
+  'function wireMatchesFocus(wire, focus)',
   'function isGuideTool()',
   'anchor.addEventListener("click"',
   'anchor.dataset.pinGestureBound',
