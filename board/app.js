@@ -154,7 +154,12 @@ function renderBoard() {
 
 function shouldShowWire(wire) {
   if (routeFor(edgeId(wire))) return true;
-  return state.guideFocuses.some(focus => wire.from === focus.endpoint || wire.to === focus.endpoint);
+  return state.guideFocuses.some(focus => {
+    if (focus.kind === "pin") return wire.from === focus.endpoint || wire.to === focus.endpoint;
+    if (focus.kind === "net") return wire.from === focus.id || wire.to === focus.id;
+    const prefix = `${focus.id}.`;
+    return wire.from.startsWith(prefix) || wire.to.startsWith(prefix);
+  });
 }
 
 function drawEdge(vectors, from, to, wire) {
@@ -402,12 +407,13 @@ function toggleGuideFocus(focus) {
 }
 
 function guideFocusMessage(change) {
-  const target = change.focus.endpoint;
+  const target = change.focus.kind === "pin" ? change.focus.endpoint : change.focus.id;
   if (!change.visible) return `Hid routing guides for ${target}. ${state.guideFocuses.length} guide selection${state.guideFocuses.length === 1 ? " remains" : "s remain"}.`;
-  return `Showing routing guides for ${target}. Left-click more connection dots to add their guides; click this dot again to hide only its guides.`;
+  return `Showing routing guides for ${target}. Left-click more devices, nets, or connection dots to add their guides; click this node again to hide only its guides.`;
 }
 
 function selectNode(node) {
+  if (isGuideTool() && (node.kind === "device" || node.kind === "net")) status(guideFocusMessage(toggleGuideFocus({ kind: node.kind, id: node.id })));
   state.selected = node; renderBoard();
   const technical = node.kind === "device" ? `${node.part} Device` : "Wire (net)";
   const sentence = node.id === "U1" ? "This NOT gate changes 0 into 1, and 1 into 0." : node.kind === "net" ? "This wire carries a named signal between declared parts." : "This is a declared part in this small machine.";

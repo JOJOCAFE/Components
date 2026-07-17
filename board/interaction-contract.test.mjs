@@ -32,10 +32,12 @@ for (const required of [
   'state.guideFocuses.push(focus)',
   'function isGuideTool()',
   'anchor.addEventListener("click"',
+  'focus.kind === "net"',
+  'toggleGuideFocus({ kind: node.kind, id: node.id })',
   '$("#board-canvas").classList.toggle("guide-mode", tool === "guide")',
   'function toggleGuideFocus(focus)',
   'Hid routing guides for ${target}',
-  'Left-click an exact connection dot',
+  'Left-click more devices, nets, or connection dots',
   'Connect node ${anchor.endpoint}',
 ]) assert.ok(app.includes(required), `missing interaction contract: ${required}`);
 
