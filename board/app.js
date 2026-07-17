@@ -2,7 +2,7 @@ import { checkedWorldPoint, createBoardProfileV2, migrateBoardProfileV1ToV2, val
 import { adaptiveGrid, panViewport, screenToWorld, viewport, worldToScreen, zoomViewportAt } from "./viewport.js";
 
 const $ = (selector) => document.querySelector(selector);
-const state = { source: "", revision: "", resolved: null, board: null, selected: null, drives: [], timer: null, resolveGeneration: 0, pinGesture: null, guide: null, guideFocus: null, boardProfile: null, staleBoardProfile: false, topologyDigest: "", drag: null, viewportDrag: null, viewport: null, nodePositions: {}, suppressClick: false, pen: null, labelDraft: null };
+const state = { source: "", revision: "", resolved: null, board: null, selected: null, drives: [], timer: null, resolveGeneration: 0, pinGesture: null, guide: null, guideFocuses: [], boardProfile: null, staleBoardProfile: false, topologyDigest: "", drag: null, viewportDrag: null, viewport: null, nodePositions: {}, suppressClick: false, pen: null, labelDraft: null };
 // v2 intentionally starts from a valid Component example instead of retaining
 // older workbench drafts that may contain Terminal commands such as `run`.
 const STORAGE_KEY = "components.board.not-gate.source.v2";
@@ -45,7 +45,7 @@ async function resolve() {
     loadBoardProfile(result);
     state.board = await request("component-language-board-view", { source, source_name: "Board draft" });
     if (generation !== state.resolveGeneration) return;
-    state.guideFocus = null;
+    state.guideFocuses = [];
     $("#component-name").textContent = friendlyTitle(result.component_id);
     status("Looks good. Click a part or wire to read it, then try one action.");
     renderBoard();
@@ -154,12 +154,12 @@ function renderBoard() {
 
 function shouldShowWire(wire) {
   if (routeFor(edgeId(wire))) return true;
-  const focus = state.guideFocus;
-  if (!focus) return false;
-  if (focus.kind === "pin") return wire.from === focus.endpoint || wire.to === focus.endpoint;
-  if (focus.kind === "net") return wire.from === focus.id || wire.to === focus.id;
-  const prefix = `${focus.id}.`;
-  return wire.from.startsWith(prefix) || wire.to.startsWith(prefix);
+  return state.guideFocuses.some(focus => {
+    if (focus.kind === "pin") return wire.from === focus.endpoint || wire.to === focus.endpoint;
+    if (focus.kind === "net") return wire.from === focus.id || wire.to === focus.id;
+    const prefix = `${focus.id}.`;
+    return wire.from.startsWith(prefix) || wire.to.startsWith(prefix);
+  });
 }
 
 function drawEdge(vectors, from, to, wire) {
@@ -396,14 +396,19 @@ function sameGuideFocus(left, right) {
 }
 
 function toggleGuideFocus(focus) {
-  state.guideFocus = sameGuideFocus(state.guideFocus, focus) ? null : focus;
-  return state.guideFocus;
+  const index = state.guideFocuses.findIndex(item => sameGuideFocus(item, focus));
+  if (index >= 0) {
+    state.guideFocuses.splice(index, 1);
+    return { focus, visible: false };
+  }
+  state.guideFocuses.push(focus);
+  return { focus, visible: true };
 }
 
-function guideFocusMessage(focus) {
-  if (!focus) return "Connection guides hidden. Click a device or connection dot to reveal only its routing guides.";
-  const target = focus.kind === "pin" ? focus.endpoint : focus.id;
-  return `Showing routing guides for ${target}. Click it again to hide them.`;
+function guideFocusMessage(change) {
+  const target = change.focus.kind === "pin" ? change.focus.endpoint : change.focus.id;
+  if (!change.visible) return `Hid routing guides for ${target}. ${state.guideFocuses.length} guide selection${state.guideFocuses.length === 1 ? " remains" : "s remain"}.`;
+  return `Showing routing guides for ${target}. Click more devices, nets, or pins to add their guides; click this one again to hide only its guides.`;
 }
 
 function selectNode(node, toggleGuides = false) {
