@@ -1,0 +1,16 @@
+{
+  "schema": "components.board-profile@2",
+  "version": 2,
+  "coordinate_space": {"id": "world-centered-cartesian@1", "origin": "center", "x_axis": "right", "y_axis": "up", "unit": "world"},
+  "topology_ref": {"component_id": "DigitalInverterFixture", "schema": "components.resolved-component@1", "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+  "resource_bindings": [],
+  "placements": [
+    {"target": {"kind": "device-instance", "id": "U1"}, "origin": {"x": 0, "y": 0}, "rotation_deg": 0},
+    {"target": {"kind": "net", "id": "OUT"}, "origin": {"x": 180, "y": -60}, "rotation_deg": 0}
+  ],
+  "routes": [{"edge_id": "edge:U1.1Y->OUT", "points": [{"x": 0, "y": 0}, {"x": 90, "y": 0}, {"x": 180, "y": -60}]}],
+  "labels": [{"id": "output_note", "position": {"x": 180, "y": -120}, "text": "Inverted output", "font_size": 3}],
+  "widgets": [],
+  "physical_captures": [],
+  "view": {"title": "A NOT gate", "theme": "light"}
+}

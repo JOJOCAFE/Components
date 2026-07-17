@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { CENTERED_WORLD_COORDINATE_SPACE, createBoardProfileV2, validateBoardProfileV2 } from "./profile-v2.js";
+import { readFile } from "node:fs/promises";
+import { CENTERED_WORLD_COORDINATE_SPACE, createBoardProfileV2, migrateBoardProfileV1ToV2, validateBoardProfileV2 } from "./profile-v2.js";
 
 const topology = { componentId: "BoardProof", digest: "sha256:" + "a".repeat(64), title: "Board proof" };
 const fresh = createBoardProfileV2(topology);
@@ -15,4 +16,17 @@ assert.throws(() => validateBoardProfileV2({ ...fresh, source: "component Bad;" 
 assert.throws(() => validateBoardProfileV2({ ...fresh, view: { ...fresh.view, viewport: { center: { x: 1, y: 1 } } } }, topology), /session-local/);
 assert.throws(() => validateBoardProfileV2({ ...fresh, placements: [{ target: { kind: "device-instance", id: "U1" }, origin: { x: Infinity, y: 0 }, rotation_deg: 0 }] }, topology), /World x/);
 assert.throws(() => validateBoardProfileV2({ ...fresh, placements: [{ target: { kind: "device-instance", id: "U1" }, origin: { x: 0, y: 0 }, rotation_deg: 45 }] }, topology), /rotation_deg/);
+const fixtureRoot = new URL("./fixtures/profile-v1-to-v2/", import.meta.url);
+const sourceV1 = JSON.parse(await readFile(new URL("not-gate.v1.json", fixtureRoot), "utf8"));
+const expectedV2 = JSON.parse(await readFile(new URL("not-gate.v2.expectation.json", fixtureRoot), "utf8"));
+const migrationTopology = { componentId: sourceV1.topology_ref.component_id, digest: sourceV1.topology_ref.digest };
+const firstMigration = migrateBoardProfileV1ToV2(sourceV1, migrationTopology);
+const secondMigration = migrateBoardProfileV1ToV2(sourceV1, migrationTopology);
+assert.equal(firstMigration.status, "migrated");
+assert.deepEqual(firstMigration.profile, expectedV2);
+assert.deepEqual(secondMigration.profile, firstMigration.profile);
+assert.deepEqual(firstMigration.source_profile, sourceV1);
+assert.notStrictEqual(firstMigration.source_profile, sourceV1);
+assert.throws(() => migrateBoardProfileV1ToV2({ ...sourceV1, placements: [{ ...sourceV1.placements[0], position: { x: 101, y: 50 } }] }, migrationTopology), /0 to 100/);
+assert.throws(() => migrateBoardProfileV1ToV2({ ...sourceV1, topology_ref: { ...sourceV1.topology_ref, digest: "sha256:" + "b".repeat(64) } }, migrationTopology), /stale or wrong/);
 console.log("Board profile @2 contract tests passed");

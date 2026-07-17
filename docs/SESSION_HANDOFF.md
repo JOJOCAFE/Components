@@ -183,6 +183,14 @@ fields and session-local viewport/camera persistence. B2.2 is next: a
 deterministic explicit `@1 → @2` migration with fixtures; the browser must not
 silently reinterpret an old profile as world data.
 
+B2.2 is complete in `board/profile-v2.js` and the aligned headless harness:
+it maps bounded v1 top-left points by `(x - 50) × 6`, `(50 - y) × 6`, validates
+the source digest before conversion, returns a copied source profile as
+migration evidence, and exports validated v2 output deterministically across
+hash seeds. The existing 25-sample regression baseline predates this intentional
+canonical-export change and must be refreshed after B2.3 browser adoption; do
+not use it to claim a current v2 performance threshold. B2.3 is next.
+
 ### Vector canvas slice: 2026-07-17
 
 The local Board now renders existing chip-frame resources as SVG, resolved

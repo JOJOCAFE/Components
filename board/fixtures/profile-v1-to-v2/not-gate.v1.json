@@ -1,0 +1,15 @@
+{
+  "schema": "components.board-profile@1",
+  "version": 1,
+  "topology_ref": {"component_id": "DigitalInverterFixture", "schema": "components.resolved-component@1", "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+  "resource_bindings": [],
+  "placements": [
+    {"target": {"kind": "device-instance", "id": "U1"}, "position": {"x": 50, "y": 50}, "rotation": 0},
+    {"target": {"kind": "net", "id": "OUT"}, "position": {"x": 80, "y": 60}, "rotation": 0}
+  ],
+  "routes": [{"edge_id": "edge:U1.1Y->OUT", "points": [{"x": 50, "y": 50}, {"x": 65, "y": 50}, {"x": 80, "y": 60}]}],
+  "labels": [{"id": "output_note", "position": {"x": 80, "y": 70}, "text": "Inverted output", "font_size": 3}],
+  "widgets": [],
+  "physical_captures": [],
+  "view": {"title": "A NOT gate", "theme": "light"}
+}

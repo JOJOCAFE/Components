@@ -5,7 +5,7 @@ import json
 
 from chiplib.board_v2_harness import (
     BoardV2ContractError, canonical_topology_projection, deterministic_export,
-    fixtures, fresh_profile, project_resolved_topology, run_harness,
+    fixtures, fresh_profile, migrate_profile_placeholder, project_resolved_topology, run_harness,
     validate_operation_queue, validate_profile,
 )
 from chiplib.component_language import parse_component_text, resolve_component
@@ -44,7 +44,7 @@ def test_harness_report_has_fern_shape_eight_negatives_and_disabled_short_run_th
     required_checks = {"fixture_integrity", "projection", "profile_validation_or_migration", "queue_dependency", "source_ownership", "deterministic_export"}
     for fixture in report["fixture_results"]:
         assert fixture["profile_input_version"] == 1
-        assert fixture["profile_output_version"] == 1  # @2 is deliberately outside Gate 0.
+        assert fixture["profile_output_version"] == 2
         assert fixture["export_bytes"] > 0
         assert {item["name"] for item in fixture["checks"]} >= required_checks
         for measurement in ("load_resolve_projection", "profile_migration", "queue_validate_apply"):
@@ -58,7 +58,7 @@ def test_harness_report_has_fern_shape_eight_negatives_and_disabled_short_run_th
 
 
 def test_bad_profile_and_route_before_connect_are_rejected_without_mutation() -> None:
-    _resolved, projection = _projection(); profile = fresh_profile(projection)
+    _resolved, projection = _projection(); profile = migrate_profile_placeholder(fresh_profile(projection), projection)["profile"]
     bad_digest = {**profile, "topology_ref": {**profile["topology_ref"], "digest": "sha256:wrong"}}
     try: validate_profile(bad_digest, projection)
     except BoardV2ContractError as exc: assert str(exc).startswith("board.stale_profile_digest:")
@@ -69,7 +69,7 @@ def test_bad_profile_and_route_before_connect_are_rejected_without_mutation() ->
 
 
 def test_export_is_deterministic() -> None:
-    _resolved, projection = _projection(); profile = fresh_profile(projection)
+    _resolved, projection = _projection(); profile = migrate_profile_placeholder(fresh_profile(projection), projection)["profile"]
     operations = [{"id": "connect", "kind": "component.connect.apply", "edge_id": "edge:source", "expected_source_revision": "sha256:" + "0" * 64}]
     first, second = deterministic_export(projection, profile, operations), deterministic_export(projection, profile, operations)
     assert first["digest"] == second["digest"] and first["json"] == second["json"]

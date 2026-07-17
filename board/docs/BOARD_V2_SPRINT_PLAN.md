@@ -4,9 +4,9 @@ Status: active task plan. **Gate 0 is complete: the reviewed 25-sample
 baseline and regression guard are tracked. B1.1/B1.2 are complete as pure,
 tested transform/grid kernels. B1.3 now renders through the centered
 world/viewport transform, with the existing `@1` top-left profile adapted only
-at the UI boundary until Sprint 2 migration. B2.1 has frozen and validated
-`components.board-profile@2`; current next task: B2.2, deterministic `@1 → @2`
-migration fixtures and implementation.**
+at the UI boundary until Sprint 2 migration. B2.1/B2.2 have frozen and
+validated `components.board-profile@2` plus deterministic `@1 → @2` migration;
+current next task: B2.3, adopt world points in the persisted Board profile.**
 This plan implements
 [BOARD_ARCHITECTURE_FREEZE.md](BOARD_ARCHITECTURE_FREEZE.md) in small,
 independently reviewable slices. A sprint cannot advance merely because the

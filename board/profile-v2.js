@@ -3,6 +3,8 @@
 
 export const BOARD_PROFILE_V2_SCHEMA = "components.board-profile@2";
 export const BOARD_PROFILE_V2_VERSION = 2;
+export const BOARD_PROFILE_V1_SCHEMA = "components.board-profile@1";
+export const BOARD_PROFILE_V1_VERSION = 1;
 export const CENTERED_WORLD_COORDINATE_SPACE = Object.freeze({
   id: "world-centered-cartesian@1", origin: "center", x_axis: "right", y_axis: "up", unit: "world",
 });
@@ -66,6 +68,20 @@ function checkedLabel(value) {
   return { id: identifier(label.id, "Label needs an identifier."), position: checkedWorldPoint(label.position), text: typeof label.text === "string" && label.text.trim() ? label.text : (() => { throw new Error("Label needs text."); })(), font_size: finite(label.font_size, "Label font_size must be finite.") };
 }
 
+function copyJson(value) { return JSON.parse(JSON.stringify(value)); }
+function checkedV1Point(value) {
+  const point = object(value, "Board profile @1 point must be an x/y object.");
+  const x = finite(point.x, "Board profile @1 x must be finite."), y = finite(point.y, "Board profile @1 y must be finite.");
+  if (x < 0 || x > 100 || y < 0 || y > 100) throw new Error("Board profile @1 coordinates must be from 0 to 100.");
+  return { x, y };
+}
+
+/** The old 0..100 top-left canvas becomes the centered world shown in B1.3. */
+export function v1PointToWorld(point) {
+  const legacy = checkedV1Point(point);
+  return { x: (legacy.x - 50) * 6, y: (50 - legacy.y) * 6 };
+}
+
 export function createBoardProfileV2({ componentId, digest, title }) {
   return {
     schema: BOARD_PROFILE_V2_SCHEMA, version: BOARD_PROFILE_V2_VERSION, coordinate_space: { ...CENTERED_WORLD_COORDINATE_SPACE },
@@ -96,4 +112,36 @@ export function validateBoardProfileV2(value, topology = null) {
   if ("viewport" in view || "camera" in view) throw new Error("Viewport state is session-local and cannot be stored in Board profile @2.");
   output.view = { title: typeof view.title === "string" ? view.title : "Components Board", theme: view.theme === "dark" ? "dark" : "light" };
   return output;
+}
+
+/**
+ * Explicit, non-mutating migration. `source_profile` is returned as evidence
+ * for callers/tests but is intentionally not embedded in the persisted @2.
+ */
+export function migrateBoardProfileV1ToV2(value, topology) {
+  const source = object(value, "Board profile @1 must be an object.");
+  if (source.schema !== BOARD_PROFILE_V1_SCHEMA || source.version !== BOARD_PROFILE_V1_VERSION) throw new Error("Expected components.board-profile@1 for migration.");
+  const ref = checkedTopologyRef(source.topology_ref, topology);
+  const placements = array(source.placements, "Board profile @1 placements must be an array.").map(item => {
+    const itemObject = object(item, "Board profile @1 placement must be an object.");
+    const target = object(itemObject.target, "Board profile @1 placement target must be an object.");
+    if (target.kind !== "device-instance" && target.kind !== "net") throw new Error("Board profile @1 placement target must be a device instance or net.");
+    return { target: { kind: target.kind, id: identifier(target.id, "Board profile @1 placement target needs an identifier.") }, origin: v1PointToWorld(itemObject.position), rotation_deg: checkedRotation(itemObject.rotation ?? 0) };
+  });
+  const routes = array(source.routes, "Board profile @1 routes must be an array.").map(item => {
+    const route = object(item, "Board profile @1 route must be an object.");
+    if (typeof route.edge_id !== "string" || !route.edge_id) throw new Error("Board profile @1 route must name an edge.");
+    return { edge_id: route.edge_id, points: array(route.points, "Board profile @1 route points must be an array.").map(v1PointToWorld) };
+  });
+  const labels = array(source.labels ?? [], "Board profile @1 labels must be an array.").map(item => {
+    const label = object(item, "Board profile @1 label must be an object.");
+    return { id: identifier(label.id, "Board profile @1 label needs an identifier."), position: v1PointToWorld(label.position), text: label.text, font_size: label.font_size };
+  });
+  const candidate = {
+    schema: BOARD_PROFILE_V2_SCHEMA, version: BOARD_PROFILE_V2_VERSION, coordinate_space: { ...CENTERED_WORLD_COORDINATE_SPACE }, topology_ref: ref,
+    resource_bindings: array(source.resource_bindings ?? [], "Board profile @1 resource_bindings must be an array."), placements, routes, labels,
+    widgets: array(source.widgets ?? [], "Board profile @1 widgets must be an array."), physical_captures: array(source.physical_captures ?? [], "Board profile @1 physical_captures must be an array."),
+    view: { title: typeof source.view?.title === "string" ? source.view.title : "Components Board", theme: source.view?.theme === "dark" ? "dark" : "light" },
+  };
+  return { status: "migrated", source_schema: BOARD_PROFILE_V1_SCHEMA, source_profile: copyJson(source), profile: validateBoardProfileV2(candidate, topology) };
 }

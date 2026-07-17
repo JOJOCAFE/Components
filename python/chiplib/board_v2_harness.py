@@ -22,7 +22,8 @@ from .component_transport import board_view
 ROOT = Path(__file__).resolve().parents[2]
 CORPUS_ROOT = ROOT / "Language" / "fixtures" / "board-v2"
 THRESHOLD_PATH = ROOT / "python" / "tests" / "data" / "board_v2" / "thresholds.json"
-PROFILE_SCHEMA = "components.board-profile@1"
+PROFILE_V1_SCHEMA = "components.board-profile@1"
+PROFILE_SCHEMA = "components.board-profile@2"
 HARNESS_SCHEMA = "components.board-v2-harness-result@1"
 
 
@@ -92,11 +93,11 @@ def project_resolved_topology(resolved: dict[str, Any]) -> dict[str, Any]:
 
 
 def fresh_profile(projection: dict[str, Any]) -> dict[str, Any]:
-    return {"schema": PROFILE_SCHEMA, "version": 1, "topology_ref": {"component_id": projection["component_id"], "schema": "components.resolved-component@1", "digest": projection["topology_digest"]}, "resource_bindings": [], "placements": [], "routes": [], "labels": [], "widgets": [], "physical_captures": []}
+    return {"schema": PROFILE_V1_SCHEMA, "version": 1, "topology_ref": {"component_id": projection["component_id"], "schema": "components.resolved-component@1", "digest": projection["topology_digest"]}, "resource_bindings": [], "placements": [], "routes": [], "labels": [], "widgets": [], "physical_captures": []}
 
 
-def validate_profile(profile: Any, projection: dict[str, Any]) -> dict[str, Any]:
-    if not isinstance(profile, dict) or profile.get("schema") != PROFILE_SCHEMA or profile.get("version") != 1:
+def validate_profile_v1(profile: Any, projection: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(profile, dict) or profile.get("schema") != PROFILE_V1_SCHEMA or profile.get("version") != 1:
         raise BoardV2ContractError("board.malformed_profile_migration: expected components.board-profile@1")
     forbidden = {"source", "resolved", "instances", "nets", "edges", "operations"} & set(profile)
     if forbidden:
@@ -107,7 +108,43 @@ def validate_profile(profile: Any, projection: dict[str, Any]) -> dict[str, Any]
     edge_ids = {item["id"] for item in projection["edges"]}
     for placement in profile.get("placements", []):
         if not isinstance(placement, dict): raise BoardV2ContractError("board.malformed_profile_migration: placement must be an object")
-        checked_world_point(placement.get("origin", placement.get("position")))
+        point = checked_world_point(placement.get("position"))
+        if not 0 <= point["x"] <= 100 or not 0 <= point["y"] <= 100: raise BoardV2ContractError("board.malformed_profile_migration: v1 point must be within 0..100")
+    for route in profile.get("routes", []):
+        if not isinstance(route, dict) or not isinstance(route.get("edge_id"), str): raise BoardV2ContractError("board.malformed_profile_migration: route must name an edge")
+        if "[" in route["edge_id"] or "bus:" in route["edge_id"]: raise BoardV2ContractError("board.bus_route_without_contract: bus routes need their own contract")
+        if route["edge_id"] not in edge_ids: raise BoardV2ContractError("board.unknown_edge_route: route must refer to a resolved scalar edge")
+        for point in route.get("points", []):
+            checked = checked_world_point(point)
+            if not 0 <= checked["x"] <= 100 or not 0 <= checked["y"] <= 100: raise BoardV2ContractError("board.malformed_profile_migration: v1 point must be within 0..100")
+    for label in profile.get("labels", []):
+        if not isinstance(label, dict): raise BoardV2ContractError("board.malformed_profile_migration: label must be an object")
+        point = checked_world_point(label.get("position"))
+        if not 0 <= point["x"] <= 100 or not 0 <= point["y"] <= 100: raise BoardV2ContractError("board.malformed_profile_migration: v1 point must be within 0..100")
+    return copy.deepcopy(profile)
+
+
+def _v1_to_world(point: Any) -> dict[str, float]:
+    value = checked_world_point(point)
+    if not 0 <= value["x"] <= 100 or not 0 <= value["y"] <= 100: raise BoardV2ContractError("board.malformed_profile_migration: v1 point must be within 0..100")
+    return {"x": (value["x"] - 50) * 6, "y": (50 - value["y"]) * 6}
+
+
+def validate_profile(profile: Any, projection: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(profile, dict) or profile.get("schema") != PROFILE_SCHEMA or profile.get("version") != 2:
+        raise BoardV2ContractError("board.malformed_profile_migration: expected components.board-profile@2")
+    space = profile.get("coordinate_space")
+    expected_space = {"id": "world-centered-cartesian@1", "origin": "center", "x_axis": "right", "y_axis": "up", "unit": "world"}
+    if space != expected_space: raise BoardV2ContractError("board.invalid_world_coordinate_space: expected centered Cartesian world metadata")
+    forbidden = {"source", "resolved", "instances", "nets", "edges", "operations", "viewport", "camera"} & set(profile)
+    if forbidden: raise BoardV2ContractError(f"board.forbidden_direct_mutation: profile may not contain {sorted(forbidden)[0]}")
+    ref = profile.get("topology_ref")
+    if not isinstance(ref, dict) or ref.get("component_id") != projection["component_id"] or ref.get("digest") != projection["topology_digest"]:
+        raise BoardV2ContractError("board.stale_profile_digest: profile topology reference is stale or wrong")
+    for placement in profile.get("placements", []):
+        if not isinstance(placement, dict): raise BoardV2ContractError("board.malformed_profile_migration: placement must be an object")
+        checked_world_point(placement.get("origin"))
+    edge_ids = {item["id"] for item in projection["edges"]}
     for route in profile.get("routes", []):
         if not isinstance(route, dict) or not isinstance(route.get("edge_id"), str): raise BoardV2ContractError("board.malformed_profile_migration: route must name an edge")
         if "[" in route["edge_id"] or "bus:" in route["edge_id"]: raise BoardV2ContractError("board.bus_route_without_contract: bus routes need their own contract")
@@ -116,11 +153,14 @@ def validate_profile(profile: Any, projection: dict[str, Any]) -> dict[str, Any]
     for label in profile.get("labels", []):
         if not isinstance(label, dict): raise BoardV2ContractError("board.malformed_profile_migration: label must be an object")
         checked_world_point(label.get("position"))
+    if isinstance(profile.get("view"), dict) and ({"viewport", "camera"} & set(profile["view"])): raise BoardV2ContractError("board.forbidden_direct_mutation: viewport is session-local")
     return copy.deepcopy(profile)
 
 
 def migrate_profile_placeholder(profile: dict[str, Any], projection: dict[str, Any]) -> dict[str, Any]:
-    return {"status": "placeholder_noop", "source_schema": PROFILE_SCHEMA, "profile": validate_profile(profile, projection)}
+    source = validate_profile_v1(profile, projection)
+    migrated = {"schema": PROFILE_SCHEMA, "version": 2, "coordinate_space": {"id": "world-centered-cartesian@1", "origin": "center", "x_axis": "right", "y_axis": "up", "unit": "world"}, "topology_ref": copy.deepcopy(source["topology_ref"]), "resource_bindings": copy.deepcopy(source.get("resource_bindings", [])), "placements": [{"target": copy.deepcopy(item["target"]), "origin": _v1_to_world(item["position"]), "rotation_deg": item.get("rotation", 0)} for item in source.get("placements", [])], "routes": [{"edge_id": item["edge_id"], "points": [_v1_to_world(point) for point in item.get("points", [])]} for item in source.get("routes", [])], "labels": [{**copy.deepcopy(item), "position": _v1_to_world(item["position"])} for item in source.get("labels", [])], "widgets": copy.deepcopy(source.get("widgets", [])), "physical_captures": copy.deepcopy(source.get("physical_captures", [])), "view": copy.deepcopy(source.get("view", {"title": projection["component_id"], "theme": "light"}))}
+    return {"status": "migrated", "source_schema": PROFILE_V1_SCHEMA, "source_profile": source, "profile": validate_profile(migrated, projection)}
 
 
 def validate_operation_queue(operations: list[dict[str, Any]], projection: dict[str, Any], *, current_revision: str | None = None) -> list[dict[str, Any]]:
@@ -247,24 +287,25 @@ def _run(*, iterations: int, cross_hash_seeds: bool, enforce_thresholds: bool) -
         (resolved, projection), load_resolve_projection_measurement = _measure(iterations, load_resolve_project)
         profile = fresh_profile(projection)
         migration, migration_measurement = _measure(iterations, lambda: migrate_profile_placeholder(profile, projection))
+        migrated_profile = migration["profile"]
         operations = [{"id": "connect-source", "kind": "component.connect.apply", "edge_id": "edge:queued-source", "expected_source_revision": source_revision(source)}, {"id": "route-source", "kind": "board.route", "edge_id": "edge:queued-source", "depends_on": ["connect-source"], "points": [{"x": 0, "y": 0}]}]
         queue, queue_measurement = _measure(iterations, lambda: validate_operation_queue(operations, projection, current_revision=source_revision(source)))
-        exported = deterministic_export(projection, profile, operations)
+        exported = deterministic_export(projection, migrated_profile, operations)
         checks, resource_digest = _validate_expectations(fixture, resolved, projection)
         checks.extend([{"name": "profile_validation_or_migration", "result": "pass", "message": migration["status"]}, {"name": "queue_dependency", "result": "pass", "message": "source connect precedes dependent scalar route"}, {"name": "source_ownership", "result": "pass", "message": "profile validation excludes electrical fields"}, {"name": "deterministic_export", "result": "pass", "message": "canonical export repeated identically"}])
         failed = [item["name"] for item in checks if item["result"] != "pass"]
         if failed: failures.extend([f"{fixture['id']}:{item}" for item in failed])
-        fixture_results.append({"fixture_id": fixture["id"], "source_revision": source_revision(source), "topology_digest": projection["topology_digest"], "resource_binding_digest": resource_digest, "profile_input_version": 1, "profile_output_version": 1, "projection_digest": _digest(projection), "export_digest": exported["digest"], "export_bytes": exported["bytes"], "operation_ids": [item["id"] for item in operations], "operation_results": queue, "checks": checks, "measurements": {"load_resolve_projection": load_resolve_projection_measurement, "profile_migration": migration_measurement, "queue_validate_apply": queue_measurement, "export_bytes": exported["bytes"]}, "result": "fail" if failed else "pass", "failures": failed})
+        fixture_results.append({"fixture_id": fixture["id"], "source_revision": source_revision(source), "topology_digest": projection["topology_digest"], "resource_binding_digest": resource_digest, "profile_input_version": 1, "profile_output_version": 2, "projection_digest": _digest(projection), "export_digest": exported["digest"], "export_bytes": exported["bytes"], "operation_ids": [item["id"] for item in operations], "operation_results": queue, "checks": checks, "measurements": {"load_resolve_projection": load_resolve_projection_measurement, "profile_migration": migration_measurement, "queue_validate_apply": queue_measurement, "export_bytes": exported["bytes"]}, "result": "fail" if failed else "pass", "failures": failed})
         exports[fixture["id"]] = {"source_revision": source_revision(source), "topology_digest": projection["topology_digest"], "projection_digest": _digest(projection), "export_digest": exported["digest"], "operation_ids": [item["id"] for item in operations]}
     first = fixture_results[0]; source = fixtures()[0]["source_text"]
-    resolved = resolve_component(parse_component_text(source)); projection = project_resolved_topology(resolved); profile = fresh_profile(projection)
+    resolved = resolve_component(parse_component_text(source)); projection = project_resolved_topology(resolved); profile = fresh_profile(projection); migrated_profile = migrate_profile_placeholder(profile, projection)["profile"]
     negatives = [
-        _negative("stale-profile-digest", "profile", source, resolved, profile, "board.stale_profile_digest", lambda: validate_profile({**profile, "topology_ref": {**profile["topology_ref"], "digest": "sha256:" + "0" * 64}}, projection)),
-        _negative("invalid-world-point", "world", source, resolved, profile, "board.invalid_world_point", lambda: validate_profile({**profile, "placements": [{"origin": {"x": float("nan"), "y": 0}}]}, projection)),
-        _negative("forbidden-direct-mutation", "ownership", source, resolved, profile, "board.forbidden_direct_mutation", lambda: validate_profile({**profile, "edges": []}, projection)),
+        _negative("stale-profile-digest", "profile", source, resolved, migrated_profile, "board.stale_profile_digest", lambda: validate_profile({**migrated_profile, "topology_ref": {**migrated_profile["topology_ref"], "digest": "sha256:" + "0" * 64}}, projection)),
+        _negative("invalid-world-point", "world", source, resolved, migrated_profile, "board.invalid_world_point", lambda: validate_profile({**migrated_profile, "placements": [{"origin": {"x": float("nan"), "y": 0}}]}, projection)),
+        _negative("forbidden-direct-mutation", "ownership", source, resolved, migrated_profile, "board.forbidden_direct_mutation", lambda: validate_profile({**migrated_profile, "edges": []}, projection)),
         _negative("route-before-connect", "queue", source, resolved, profile, "board.route_before_connect", lambda: validate_operation_queue([{ "id": "route", "kind": "board.route", "edge_id": "edge:queued", "points": []}], projection)),
-        _negative("unknown-edge-route", "profile", source, resolved, profile, "board.unknown_edge_route", lambda: validate_profile({**profile, "routes": [{"edge_id": "edge:missing", "points": []}]}, projection)),
-        _negative("bus-route-without-contract", "profile", source, resolved, profile, "board.bus_route_without_contract", lambda: validate_profile({**profile, "routes": [{"edge_id": "bus:data[0]", "points": []}]}, projection)),
+        _negative("unknown-edge-route", "profile", source, resolved, migrated_profile, "board.unknown_edge_route", lambda: validate_profile({**migrated_profile, "routes": [{"edge_id": "edge:missing", "points": []}]}, projection)),
+        _negative("bus-route-without-contract", "profile", source, resolved, migrated_profile, "board.bus_route_without_contract", lambda: validate_profile({**migrated_profile, "routes": [{"edge_id": "bus:data[0]", "points": []}]}, projection)),
         _negative("malformed-profile-migration", "migration", source, resolved, profile, "board.malformed_profile_migration", lambda: migrate_profile_placeholder({"schema": PROFILE_SCHEMA, "version": 99}, projection)),
         _negative("stale-source-operation", "queue", source, resolved, profile, "board.stale_source_operation", lambda: validate_operation_queue([{ "id": "connect", "kind": "component.connect.apply", "edge_id": "edge:new", "expected_source_revision": "sha256:" + "0" * 64}], projection, current_revision=source_revision(source))),
     ]

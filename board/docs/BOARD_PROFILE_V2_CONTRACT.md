@@ -69,7 +69,9 @@ fields, and persisted viewport/camera state.
 
 ## Compatibility boundary
 
-`@1` is the previous bounded, top-left normalized profile. It remains readable
-only through an explicit deterministic `@1 → @2` migration in B2.2; it is not
-silently treated as `@2`. The browser continues to use its local compatibility
-adapter until that migration is implemented and tested.
+`@1` is the previous bounded, top-left normalized profile. The explicit B2.2
+migration uses `(x - 50) × 6` for world x and `(50 - y) × 6` for world y. It
+returns a deep-copied `source_profile` as migration evidence, validates the
+digest before conversion, and never silently treats `@1` as `@2`. The checked
+NOT-gate fixture lives in `board/fixtures/profile-v1-to-v2/`. Browser adoption
+of the migrated profile is a separate B2.3 task.
