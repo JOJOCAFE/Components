@@ -34,6 +34,7 @@ for (const required of [
   'anchor.addEventListener("click"',
   'focus.kind === "net"',
   'toggleGuideFocus({ kind: node.kind, id: node.id })',
+  'if (isGuideTool()) {',
   '$("#board-canvas").classList.toggle("guide-mode", tool === "guide")',
   'function toggleGuideFocus(focus)',
   'Hid routing guides for ${target}',

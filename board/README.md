@@ -62,7 +62,9 @@ reserved for its definition/inspection. Choose **Guides** in the left rail,
 then left-click a device, net, or precise connection dot to toggle its related
 routing guides. The choices accumulate: click three nodes and their guide
 groups stay visible together, which lets a learner arrange related paths as a
-future bus. Click a node again to hide only its guides. A saved Board route remains
+future bus. While Guides is active, node clicks only toggle guides; they do
+not select, inspect, or create a connection. Click a node again to hide only
+its guides. A saved Board route remains
 visible because it is the learner's drawing, not a temporary guide.
 
 The current canvas keeps visual artifacts vector-first: reviewed chip frames

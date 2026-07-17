@@ -413,7 +413,11 @@ function guideFocusMessage(change) {
 }
 
 function selectNode(node) {
-  if (isGuideTool() && (node.kind === "device" || node.kind === "net")) status(guideFocusMessage(toggleGuideFocus({ kind: node.kind, id: node.id })));
+  if (isGuideTool()) {
+    status(guideFocusMessage(toggleGuideFocus({ kind: node.kind, id: node.id })));
+    renderBoard();
+    return;
+  }
   state.selected = node; renderBoard();
   const technical = node.kind === "device" ? `${node.part} Device` : "Wire (net)";
   const sentence = node.id === "U1" ? "This NOT gate changes 0 into 1, and 1 into 0." : node.kind === "net" ? "This wire carries a named signal between declared parts." : "This is a declared part in this small machine.";
