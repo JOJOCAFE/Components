@@ -28,9 +28,8 @@ for (const required of [
   'Left-drag any device, net, route bend, or label',
   'endpointScreenPoint',
   'function shouldShowWire(wire)',
-  'state.guideFocuses.some(focus =>',
-  'state.guideFocuses.push(focus)',
-  'state.guideHiddenEdges.includes(edgeId(wire))',
+  'state.guideVisibleEdges.includes(edgeId(wire))',
+  'state.guideVisibleEdges = state.guideVisibleEdges.filter',
   'function wireMatchesFocus(wire, focus)',
   'function isGuideTool()',
   'anchor.addEventListener("click"',
@@ -44,8 +43,8 @@ for (const required of [
   'if (isGuideTool()) {',
   '$("#board-canvas").classList.toggle("guide-mode", tool === "guide")',
   'function toggleGuideFocus(focus)',
-  'Hid routing guides for ${target}',
-  'Left-click more devices, nets, or connection dots',
+  'Hid all ${change.edgeCount} routing guide',
+  'Click another endpoint to toggle one guide',
   'Connect node ${anchor.endpoint}',
 ]) assert.ok(app.includes(required), `missing interaction contract: ${required}`);
 

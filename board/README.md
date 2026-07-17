@@ -64,8 +64,10 @@ routing guides. The choices accumulate: click three nodes and their guide
 groups stay visible together, which lets a learner arrange related paths as a
 future bus. While Guides is active, node clicks only toggle guides; they do
 not select, inspect, or create a connection. Click a node again to hide only
-its guides, even when the same edge is also part of a selected device or net
-group. A saved Board route remains
+its connected guide group. When one pin is already visible and its device is
+clicked, the device reveals its remaining guides; clicking that device again
+removes every guide connected to it. Clicking another endpoint toggles that
+edge one by one. A saved Board route remains
 visible because it is the learner's drawing, not a temporary guide.
 
 The current canvas keeps visual artifacts vector-first: reviewed chip frames

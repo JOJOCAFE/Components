@@ -2,7 +2,7 @@ import { checkedWorldPoint, createBoardProfileV2, migrateBoardProfileV1ToV2, val
 import { adaptiveGrid, panViewport, screenToWorld, viewport, worldToScreen, zoomViewportAt } from "./viewport.js";
 
 const $ = (selector) => document.querySelector(selector);
-const state = { source: "", revision: "", resolved: null, board: null, selected: null, drives: [], timer: null, resolveGeneration: 0, pinGesture: null, guide: null, guideFocuses: [], guideHiddenEdges: [], boardProfile: null, staleBoardProfile: false, topologyDigest: "", drag: null, viewportDrag: null, viewport: null, nodePositions: {}, suppressClick: false, pen: null, labelDraft: null };
+const state = { source: "", revision: "", resolved: null, board: null, selected: null, drives: [], timer: null, resolveGeneration: 0, pinGesture: null, guide: null, guideVisibleEdges: [], boardProfile: null, staleBoardProfile: false, topologyDigest: "", drag: null, viewportDrag: null, viewport: null, nodePositions: {}, suppressClick: false, pen: null, labelDraft: null };
 // v2 intentionally starts from a valid Component example instead of retaining
 // older workbench drafts that may contain Terminal commands such as `run`.
 const STORAGE_KEY = "components.board.not-gate.source.v2";
@@ -45,7 +45,7 @@ async function resolve() {
     loadBoardProfile(result);
     state.board = await request("component-language-board-view", { source, source_name: "Board draft" });
     if (generation !== state.resolveGeneration) return;
-    state.guideFocuses = []; state.guideHiddenEdges = [];
+    state.guideVisibleEdges = [];
     $("#component-name").textContent = friendlyTitle(result.component_id);
     status("Looks good. Click a part or wire to read it, then try one action.");
     renderBoard();
@@ -155,8 +155,7 @@ function renderBoard() {
 
 function shouldShowWire(wire) {
   if (routeFor(edgeId(wire))) return true;
-  if (state.guideHiddenEdges.includes(edgeId(wire))) return false;
-  return state.guideFocuses.some(focus => wireMatchesFocus(wire, focus));
+  return state.guideVisibleEdges.includes(edgeId(wire));
 }
 
 function wireMatchesFocus(wire, focus) {
@@ -422,35 +421,26 @@ function finishPenAt(target) {
   const pen = state.pen; state.pen = null;
   routeVisualConnection(pen.from, pen.to, pen.vias);
 }
-function sameGuideFocus(left, right) {
-  return left?.kind === right?.kind && (left?.kind === "pin" ? left?.endpoint === right?.endpoint : left?.id === right?.id);
-}
-
 function toggleGuideFocus(focus) {
-  const index = state.guideFocuses.findIndex(item => sameGuideFocus(item, focus));
-  if (index >= 0) {
-    state.guideFocuses.splice(index, 1);
-    return { focus, visible: false };
-  }
   const wires = (state.board?.wires || []).filter(wire => wireMatchesFocus(wire, focus));
   const allVisible = wires.length > 0 && wires.every(shouldShowWire);
   if (allVisible) {
-    for (const wire of wires) {
-      const id = edgeId(wire);
-      if (!routeFor(id) && !state.guideHiddenEdges.includes(id)) state.guideHiddenEdges.push(id);
-    }
-    return { focus, visible: false };
+    const edgeIds = new Set(wires.map(edgeId));
+    state.guideVisibleEdges = state.guideVisibleEdges.filter(id => !edgeIds.has(id));
+    return { focus, visible: false, edgeCount: wires.length };
   }
-  const edgeIds = new Set(wires.map(edgeId));
-  state.guideHiddenEdges = state.guideHiddenEdges.filter(id => !edgeIds.has(id));
-  if (!state.guideFocuses.some(item => wires.some(wire => wireMatchesFocus(wire, item)))) state.guideFocuses.push(focus);
-  return { focus, visible: true };
+  for (const wire of wires) {
+    const id = edgeId(wire);
+    if (!state.guideVisibleEdges.includes(id)) state.guideVisibleEdges.push(id);
+  }
+  return { focus, visible: true, edgeCount: wires.length };
 }
 
 function guideFocusMessage(change) {
   const target = change.focus.kind === "pin" ? change.focus.endpoint : change.focus.id;
-  if (!change.visible) return `Hid routing guides for ${target}. ${state.guideFocuses.length} guide selection${state.guideFocuses.length === 1 ? " remains" : "s remain"}.`;
-  return `Showing routing guides for ${target}. Left-click more devices, nets, or connection dots to add their guides; click this node again to hide only its guides.`;
+  if (change.edgeCount === 0) return `${target} has no declared scalar connections to guide.`;
+  if (!change.visible) return `Hid all ${change.edgeCount} routing guide${change.edgeCount === 1 ? "" : "s"} connected to ${target}.`;
+  return `Showing all ${change.edgeCount} routing guide${change.edgeCount === 1 ? "" : "s"} connected to ${target}. Click another endpoint to toggle one guide, or click this node again to hide its group.`;
 }
 
 function selectNode(node) {
