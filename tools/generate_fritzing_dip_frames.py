@@ -83,7 +83,12 @@ def frame_svg(
                 lines.append(f'  <line class="lead" x1="{x1}" y1="{y}" x2="{x2}" y2="{y}"/>')
             else:
                 node_x = body_x - 18 if left else body_x + body_width + 18
-                lines.append(f'  <circle class="node" cx="{node_x}" cy="{y}" r="11"/>')
+                lines.append(
+                    f'  <circle class="node" id="connector{connector}node" '
+                    f'data-pin-number="{number}" data-pin-name="{esc(pin["name"])}" '
+                    f'data-direction="{esc(pin["direction"])}" '
+                    f'data-component-selector="@{number}" cx="{node_x}" cy="{y}" r="11"/>'
+                )
             lines.extend((
                 f'  <rect class="pin" id="connector{connector}pin" data-pin-number="{number}" data-pin-name="{esc(pin["name"])}" data-direction="{esc(pin["direction"])}" x="{min(x1, x2)}" y="{y - 5}" width="{abs(x2 - x1)}" height="10"/>',
                 f'  <text class="name" x="{name_x}" y="{y + 17}" text-anchor="{name_anchor}">{esc(f"{number}:{pin["name"]}" if combine_pin_label else pin["name"])}</text>',
@@ -128,7 +133,7 @@ def main() -> None:
                 record,
                 include_pinout=True,
                 include_leads=False,
-                combine_pin_label=part == "74HC00",
+                combine_pin_label=True,
             ),
             encoding="utf-8",
         )

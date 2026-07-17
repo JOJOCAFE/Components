@@ -53,8 +53,9 @@ def test_no_pin_chip_frames_remove_lead_stubs_but_keep_definition_metadata():
         assert 'class="node"' in text
         assert 'class="pin"' in text
         assert 'class="name"' in text
-        if path.name == "74hc00.svg":
-            assert ">1:1A</text>" in text
-            assert 'class="number"' not in text
-        else:
-            assert 'class="number"' in text
+        assert ">1:1A</text>" in text
+        assert 'class="number"' not in text
+        assert 'id="connector0node"' in text
+        assert 'data-pin-number="1"' in text
+        assert 'data-pin-name="1A"' in text
+        assert 'data-component-selector="@1"' in text

@@ -6,60 +6,46 @@
   <text class="title" x="550" y="906" text-anchor="middle">74HC32 · DIP-14</text>
   <rect class="body" x="200" y="30" width="700" height="790" rx="4"/>
   <path d="M515.0 30a35 35 0 0 0 70 0" fill="none" stroke="#000" stroke-width="12.5"/>
-  <circle class="node" cx="182" cy="100" r="11"/>
+  <circle class="node" id="connector0node" data-pin-number="1" data-pin-name="1A" data-direction="input" data-component-selector="@1" cx="182" cy="100" r="11"/>
   <rect class="pin" id="connector0pin" data-pin-number="1" data-pin-name="1A" data-direction="input" x="5" y="95" width="195" height="10"/>
-  <text class="name" x="220" y="117" text-anchor="start">1A</text>
-  <text class="number" x="100" y="85" text-anchor="middle">1</text>
-  <circle class="node" cx="182" cy="200" r="11"/>
+  <text class="name" x="220" y="117" text-anchor="start">1:1A</text>
+  <circle class="node" id="connector1node" data-pin-number="2" data-pin-name="1B" data-direction="input" data-component-selector="@2" cx="182" cy="200" r="11"/>
   <rect class="pin" id="connector1pin" data-pin-number="2" data-pin-name="1B" data-direction="input" x="5" y="195" width="195" height="10"/>
-  <text class="name" x="220" y="217" text-anchor="start">1B</text>
-  <text class="number" x="100" y="185" text-anchor="middle">2</text>
-  <circle class="node" cx="182" cy="300" r="11"/>
+  <text class="name" x="220" y="217" text-anchor="start">2:1B</text>
+  <circle class="node" id="connector2node" data-pin-number="3" data-pin-name="1Y" data-direction="output" data-component-selector="@3" cx="182" cy="300" r="11"/>
   <rect class="pin" id="connector2pin" data-pin-number="3" data-pin-name="1Y" data-direction="output" x="5" y="295" width="195" height="10"/>
-  <text class="name" x="220" y="317" text-anchor="start">1Y</text>
-  <text class="number" x="100" y="285" text-anchor="middle">3</text>
-  <circle class="node" cx="182" cy="400" r="11"/>
+  <text class="name" x="220" y="317" text-anchor="start">3:1Y</text>
+  <circle class="node" id="connector3node" data-pin-number="4" data-pin-name="2A" data-direction="input" data-component-selector="@4" cx="182" cy="400" r="11"/>
   <rect class="pin" id="connector3pin" data-pin-number="4" data-pin-name="2A" data-direction="input" x="5" y="395" width="195" height="10"/>
-  <text class="name" x="220" y="417" text-anchor="start">2A</text>
-  <text class="number" x="100" y="385" text-anchor="middle">4</text>
-  <circle class="node" cx="182" cy="500" r="11"/>
+  <text class="name" x="220" y="417" text-anchor="start">4:2A</text>
+  <circle class="node" id="connector4node" data-pin-number="5" data-pin-name="2B" data-direction="input" data-component-selector="@5" cx="182" cy="500" r="11"/>
   <rect class="pin" id="connector4pin" data-pin-number="5" data-pin-name="2B" data-direction="input" x="5" y="495" width="195" height="10"/>
-  <text class="name" x="220" y="517" text-anchor="start">2B</text>
-  <text class="number" x="100" y="485" text-anchor="middle">5</text>
-  <circle class="node" cx="182" cy="600" r="11"/>
+  <text class="name" x="220" y="517" text-anchor="start">5:2B</text>
+  <circle class="node" id="connector5node" data-pin-number="6" data-pin-name="2Y" data-direction="output" data-component-selector="@6" cx="182" cy="600" r="11"/>
   <rect class="pin" id="connector5pin" data-pin-number="6" data-pin-name="2Y" data-direction="output" x="5" y="595" width="195" height="10"/>
-  <text class="name" x="220" y="617" text-anchor="start">2Y</text>
-  <text class="number" x="100" y="585" text-anchor="middle">6</text>
-  <circle class="node" cx="182" cy="700" r="11"/>
+  <text class="name" x="220" y="617" text-anchor="start">6:2Y</text>
+  <circle class="node" id="connector6node" data-pin-number="7" data-pin-name="GND" data-direction="power" data-component-selector="@7" cx="182" cy="700" r="11"/>
   <rect class="pin" id="connector6pin" data-pin-number="7" data-pin-name="GND" data-direction="power" x="5" y="695" width="195" height="10"/>
-  <text class="name" x="220" y="717" text-anchor="start">GND</text>
-  <text class="number" x="100" y="685" text-anchor="middle">7</text>
-  <circle class="node" cx="918" cy="700" r="11"/>
+  <text class="name" x="220" y="717" text-anchor="start">7:GND</text>
+  <circle class="node" id="connector7node" data-pin-number="8" data-pin-name="3Y" data-direction="output" data-component-selector="@8" cx="918" cy="700" r="11"/>
   <rect class="pin" id="connector7pin" data-pin-number="8" data-pin-name="3Y" data-direction="output" x="900" y="695" width="195" height="10"/>
-  <text class="name" x="880" y="717" text-anchor="end">3Y</text>
-  <text class="number" x="1000" y="685" text-anchor="middle">8</text>
-  <circle class="node" cx="918" cy="600" r="11"/>
+  <text class="name" x="880" y="717" text-anchor="end">8:3Y</text>
+  <circle class="node" id="connector8node" data-pin-number="9" data-pin-name="3A" data-direction="input" data-component-selector="@9" cx="918" cy="600" r="11"/>
   <rect class="pin" id="connector8pin" data-pin-number="9" data-pin-name="3A" data-direction="input" x="900" y="595" width="195" height="10"/>
-  <text class="name" x="880" y="617" text-anchor="end">3A</text>
-  <text class="number" x="1000" y="585" text-anchor="middle">9</text>
-  <circle class="node" cx="918" cy="500" r="11"/>
+  <text class="name" x="880" y="617" text-anchor="end">9:3A</text>
+  <circle class="node" id="connector9node" data-pin-number="10" data-pin-name="3B" data-direction="input" data-component-selector="@10" cx="918" cy="500" r="11"/>
   <rect class="pin" id="connector9pin" data-pin-number="10" data-pin-name="3B" data-direction="input" x="900" y="495" width="195" height="10"/>
-  <text class="name" x="880" y="517" text-anchor="end">3B</text>
-  <text class="number" x="1000" y="485" text-anchor="middle">10</text>
-  <circle class="node" cx="918" cy="400" r="11"/>
+  <text class="name" x="880" y="517" text-anchor="end">10:3B</text>
+  <circle class="node" id="connector10node" data-pin-number="11" data-pin-name="4Y" data-direction="output" data-component-selector="@11" cx="918" cy="400" r="11"/>
   <rect class="pin" id="connector10pin" data-pin-number="11" data-pin-name="4Y" data-direction="output" x="900" y="395" width="195" height="10"/>
-  <text class="name" x="880" y="417" text-anchor="end">4Y</text>
-  <text class="number" x="1000" y="385" text-anchor="middle">11</text>
-  <circle class="node" cx="918" cy="300" r="11"/>
+  <text class="name" x="880" y="417" text-anchor="end">11:4Y</text>
+  <circle class="node" id="connector11node" data-pin-number="12" data-pin-name="4A" data-direction="input" data-component-selector="@12" cx="918" cy="300" r="11"/>
   <rect class="pin" id="connector11pin" data-pin-number="12" data-pin-name="4A" data-direction="input" x="900" y="295" width="195" height="10"/>
-  <text class="name" x="880" y="317" text-anchor="end">4A</text>
-  <text class="number" x="1000" y="285" text-anchor="middle">12</text>
-  <circle class="node" cx="918" cy="200" r="11"/>
+  <text class="name" x="880" y="317" text-anchor="end">12:4A</text>
+  <circle class="node" id="connector12node" data-pin-number="13" data-pin-name="4B" data-direction="input" data-component-selector="@13" cx="918" cy="200" r="11"/>
   <rect class="pin" id="connector12pin" data-pin-number="13" data-pin-name="4B" data-direction="input" x="900" y="195" width="195" height="10"/>
-  <text class="name" x="880" y="217" text-anchor="end">4B</text>
-  <text class="number" x="1000" y="185" text-anchor="middle">13</text>
-  <circle class="node" cx="918" cy="100" r="11"/>
+  <text class="name" x="880" y="217" text-anchor="end">13:4B</text>
+  <circle class="node" id="connector13node" data-pin-number="14" data-pin-name="VCC" data-direction="power" data-component-selector="@14" cx="918" cy="100" r="11"/>
   <rect class="pin" id="connector13pin" data-pin-number="14" data-pin-name="VCC" data-direction="power" x="900" y="95" width="195" height="10"/>
-  <text class="name" x="880" y="117" text-anchor="end">VCC</text>
-  <text class="number" x="1000" y="85" text-anchor="middle">14</text>
+  <text class="name" x="880" y="117" text-anchor="end">14:VCC</text>
 </svg>
