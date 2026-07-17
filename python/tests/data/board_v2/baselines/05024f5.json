@@ -1,0 +1,769 @@
+{
+  "determinism": {
+    "canonical_export_digests": [
+      {
+        "chain-4": {
+          "export_digest": "sha256:d85a8c22600abc62856c0e32e264477e56cb092815d817bcaaf8b07924f19956",
+          "operation_ids": [
+            "connect-source",
+            "route-source"
+          ],
+          "projection_digest": "sha256:599c5b1ce751c0bb4131e9d0049e79b7c0d837eedbf9d2211ad5f18cb29b8a1d",
+          "source_revision": "sha256:3036b8c609216fbb99262a8d269d831cbd16efec72b58888cfbe4ca665ec6eca",
+          "topology_digest": "sha256:911eae3a3eed6fb86ea99d70a7fed340f5e924bf24610ca0648889eb3c51b632"
+        },
+        "dense-16x32": {
+          "export_digest": "sha256:4d407d08151522bbd73973bd38ecbb745c61fbf1ca66f036fb86005572606570",
+          "operation_ids": [
+            "connect-source",
+            "route-source"
+          ],
+          "projection_digest": "sha256:8ee7333ac462b9db615025df7fc56e82e6f792f342b37a0fb4f381bafd27cced",
+          "source_revision": "sha256:496b86aed02903f6ac90b5d87ff60271072aeb6b155f76dd7060fdf6e1d4de35",
+          "topology_digest": "sha256:283c48b6647e63d28e77c93c79224616a2f3fd446ca8ce23b37592a779f0b99c"
+        },
+        "not-gate": {
+          "export_digest": "sha256:c07d171510b9b76c5ffcee3ba84d4dd8cc14f2c04fdfe5b02b5ce6913c75a86e",
+          "operation_ids": [
+            "connect-source",
+            "route-source"
+          ],
+          "projection_digest": "sha256:bc311a4556a4004530ee05212897a8b8cdb90903f5affac40044d0da582d24cf",
+          "source_revision": "sha256:d9dbfa0bc37f8c1f6d409735fa3dfd4273fa2223016f472fda012f69796f69f0",
+          "topology_digest": "sha256:8a4f0a50122a64ffa93ef986712391467c0cfaca546f74c21c55719bfeb9111a"
+        }
+      },
+      {
+        "chain-4": {
+          "export_digest": "sha256:d85a8c22600abc62856c0e32e264477e56cb092815d817bcaaf8b07924f19956",
+          "operation_ids": [
+            "connect-source",
+            "route-source"
+          ],
+          "projection_digest": "sha256:599c5b1ce751c0bb4131e9d0049e79b7c0d837eedbf9d2211ad5f18cb29b8a1d",
+          "source_revision": "sha256:3036b8c609216fbb99262a8d269d831cbd16efec72b58888cfbe4ca665ec6eca",
+          "topology_digest": "sha256:911eae3a3eed6fb86ea99d70a7fed340f5e924bf24610ca0648889eb3c51b632"
+        },
+        "dense-16x32": {
+          "export_digest": "sha256:4d407d08151522bbd73973bd38ecbb745c61fbf1ca66f036fb86005572606570",
+          "operation_ids": [
+            "connect-source",
+            "route-source"
+          ],
+          "projection_digest": "sha256:8ee7333ac462b9db615025df7fc56e82e6f792f342b37a0fb4f381bafd27cced",
+          "source_revision": "sha256:496b86aed02903f6ac90b5d87ff60271072aeb6b155f76dd7060fdf6e1d4de35",
+          "topology_digest": "sha256:283c48b6647e63d28e77c93c79224616a2f3fd446ca8ce23b37592a779f0b99c"
+        },
+        "not-gate": {
+          "export_digest": "sha256:c07d171510b9b76c5ffcee3ba84d4dd8cc14f2c04fdfe5b02b5ce6913c75a86e",
+          "operation_ids": [
+            "connect-source",
+            "route-source"
+          ],
+          "projection_digest": "sha256:bc311a4556a4004530ee05212897a8b8cdb90903f5affac40044d0da582d24cf",
+          "source_revision": "sha256:d9dbfa0bc37f8c1f6d409735fa3dfd4273fa2223016f472fda012f69796f69f0",
+          "topology_digest": "sha256:8a4f0a50122a64ffa93ef986712391467c0cfaca546f74c21c55719bfeb9111a"
+        }
+      },
+      {
+        "chain-4": {
+          "export_digest": "sha256:d85a8c22600abc62856c0e32e264477e56cb092815d817bcaaf8b07924f19956",
+          "operation_ids": [
+            "connect-source",
+            "route-source"
+          ],
+          "projection_digest": "sha256:599c5b1ce751c0bb4131e9d0049e79b7c0d837eedbf9d2211ad5f18cb29b8a1d",
+          "source_revision": "sha256:3036b8c609216fbb99262a8d269d831cbd16efec72b58888cfbe4ca665ec6eca",
+          "topology_digest": "sha256:911eae3a3eed6fb86ea99d70a7fed340f5e924bf24610ca0648889eb3c51b632"
+        },
+        "dense-16x32": {
+          "export_digest": "sha256:4d407d08151522bbd73973bd38ecbb745c61fbf1ca66f036fb86005572606570",
+          "operation_ids": [
+            "connect-source",
+            "route-source"
+          ],
+          "projection_digest": "sha256:8ee7333ac462b9db615025df7fc56e82e6f792f342b37a0fb4f381bafd27cced",
+          "source_revision": "sha256:496b86aed02903f6ac90b5d87ff60271072aeb6b155f76dd7060fdf6e1d4de35",
+          "topology_digest": "sha256:283c48b6647e63d28e77c93c79224616a2f3fd446ca8ce23b37592a779f0b99c"
+        },
+        "not-gate": {
+          "export_digest": "sha256:c07d171510b9b76c5ffcee3ba84d4dd8cc14f2c04fdfe5b02b5ce6913c75a86e",
+          "operation_ids": [
+            "connect-source",
+            "route-source"
+          ],
+          "projection_digest": "sha256:bc311a4556a4004530ee05212897a8b8cdb90903f5affac40044d0da582d24cf",
+          "source_revision": "sha256:d9dbfa0bc37f8c1f6d409735fa3dfd4273fa2223016f472fda012f69796f69f0",
+          "topology_digest": "sha256:8a4f0a50122a64ffa93ef986712391467c0cfaca546f74c21c55719bfeb9111a"
+        }
+      }
+    ],
+    "comparison_scope": "canonical Board/profile/operation exports only; measurements and environment excluded",
+    "cross_hash_seed_digests": {},
+    "runs_per_fixture": 3,
+    "stable": true
+  },
+  "environment": {
+    "cpu_count": 12,
+    "hostname": "DESKTOP-MQO9479",
+    "implementation": "CPython",
+    "iterations": 25,
+    "machine": "x86_64",
+    "monotonic_clock": "clock_gettime(CLOCK_MONOTONIC)",
+    "monotonic_resolution": 1e-09,
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "processor": "x86_64",
+    "python_version": "3.12.3"
+  },
+  "failure_count": 0,
+  "failures": [],
+  "fixture_results": [
+    {
+      "checks": [
+        {
+          "message": "checked source resolves to expected ids/counts",
+          "name": "fixture_integrity",
+          "result": "pass"
+        },
+        {
+          "message": "read-only projection has expected scalar edges",
+          "name": "projection",
+          "result": "pass"
+        },
+        {
+          "message": "resolver-derived projection equals checked canonical fixture",
+          "name": "canonical_topology_projection",
+          "result": "pass"
+        },
+        {
+          "message": "manifest canonical digest matches",
+          "name": "canonical_topology_digest",
+          "result": "pass"
+        },
+        {
+          "message": "presentation binding expectations remain topology-locked",
+          "name": "resource_expectations",
+          "result": "pass"
+        },
+        {
+          "message": "placeholder_noop",
+          "name": "profile_validation_or_migration",
+          "result": "pass"
+        },
+        {
+          "message": "source connect precedes dependent scalar route",
+          "name": "queue_dependency",
+          "result": "pass"
+        },
+        {
+          "message": "profile validation excludes electrical fields",
+          "name": "source_ownership",
+          "result": "pass"
+        },
+        {
+          "message": "canonical export repeated identically",
+          "name": "deterministic_export",
+          "result": "pass"
+        }
+      ],
+      "export_bytes": 4380,
+      "export_digest": "sha256:c07d171510b9b76c5ffcee3ba84d4dd8cc14f2c04fdfe5b02b5ce6913c75a86e",
+      "failures": [],
+      "fixture_id": "not-gate",
+      "measurements": {
+        "export_bytes": 4380,
+        "load_resolve_projection": {
+          "iterations": 25,
+          "median_ns": 77355589,
+          "p95_ns": 83572675,
+          "samples_ns": [
+            76937247,
+            77355589,
+            77331085,
+            77904550,
+            76730457,
+            80471596,
+            79235263,
+            79260598,
+            77735027,
+            76367417,
+            76767993,
+            75996280,
+            75190341,
+            74673177,
+            74806565,
+            76399593,
+            77760253,
+            75737101,
+            87112212,
+            80391642,
+            83572675,
+            80588745,
+            80865582,
+            78579625,
+            75729267
+          ]
+        },
+        "profile_migration": {
+          "iterations": 25,
+          "median_ns": 6093,
+          "p95_ns": 9920,
+          "samples_ns": [
+            15819,
+            9920,
+            7695,
+            6519,
+            6343,
+            6621,
+            6712,
+            6434,
+            6477,
+            6067,
+            5737,
+            5912,
+            5953,
+            5884,
+            5899,
+            6093,
+            6116,
+            6222,
+            5909,
+            5648,
+            5586,
+            5701,
+            5568,
+            6141,
+            6015
+          ]
+        },
+        "queue_validate_apply": {
+          "iterations": 25,
+          "median_ns": 2372,
+          "p95_ns": 6724,
+          "samples_ns": [
+            13955,
+            6724,
+            4177,
+            2855,
+            2584,
+            2455,
+            2338,
+            2449,
+            2332,
+            2326,
+            2372,
+            2450,
+            2312,
+            2310,
+            2372,
+            2342,
+            2314,
+            2347,
+            2434,
+            2423,
+            2374,
+            2357,
+            2398,
+            2255,
+            2306
+          ]
+        }
+      },
+      "operation_ids": [
+        "connect-source",
+        "route-source"
+      ],
+      "operation_results": [
+        {
+          "authority": "component_source",
+          "expected_source_revision": "sha256:d9dbfa0bc37f8c1f6d409735fa3dfd4273fa2223016f472fda012f69796f69f0",
+          "expected_topology_digest": "sha256:8a4f0a50122a64ffa93ef986712391467c0cfaca546f74c21c55719bfeb9111a",
+          "id": "connect-source",
+          "state": "Applied"
+        },
+        {
+          "authority": "board_profile",
+          "expected_source_revision": null,
+          "expected_topology_digest": "sha256:8a4f0a50122a64ffa93ef986712391467c0cfaca546f74c21c55719bfeb9111a",
+          "id": "route-source",
+          "state": "Applied"
+        }
+      ],
+      "profile_input_version": 1,
+      "profile_output_version": 1,
+      "projection_digest": "sha256:bc311a4556a4004530ee05212897a8b8cdb90903f5affac40044d0da582d24cf",
+      "resource_binding_digest": "sha256:eb08e48124614fe03a01e5691e4e2bed63ab5d20b711317a04247854170b0f33",
+      "result": "pass",
+      "source_revision": "sha256:d9dbfa0bc37f8c1f6d409735fa3dfd4273fa2223016f472fda012f69796f69f0",
+      "topology_digest": "sha256:8a4f0a50122a64ffa93ef986712391467c0cfaca546f74c21c55719bfeb9111a"
+    },
+    {
+      "checks": [
+        {
+          "message": "checked source resolves to expected ids/counts",
+          "name": "fixture_integrity",
+          "result": "pass"
+        },
+        {
+          "message": "read-only projection has expected scalar edges",
+          "name": "projection",
+          "result": "pass"
+        },
+        {
+          "message": "resolver-derived projection equals checked canonical fixture",
+          "name": "canonical_topology_projection",
+          "result": "pass"
+        },
+        {
+          "message": "manifest canonical digest matches",
+          "name": "canonical_topology_digest",
+          "result": "pass"
+        },
+        {
+          "message": "presentation binding expectations remain topology-locked",
+          "name": "resource_expectations",
+          "result": "pass"
+        },
+        {
+          "message": "placeholder_noop",
+          "name": "profile_validation_or_migration",
+          "result": "pass"
+        },
+        {
+          "message": "source connect precedes dependent scalar route",
+          "name": "queue_dependency",
+          "result": "pass"
+        },
+        {
+          "message": "profile validation excludes electrical fields",
+          "name": "source_ownership",
+          "result": "pass"
+        },
+        {
+          "message": "canonical export repeated identically",
+          "name": "deterministic_export",
+          "result": "pass"
+        }
+      ],
+      "export_bytes": 6851,
+      "export_digest": "sha256:d85a8c22600abc62856c0e32e264477e56cb092815d817bcaaf8b07924f19956",
+      "failures": [],
+      "fixture_id": "chain-4",
+      "measurements": {
+        "export_bytes": 6851,
+        "load_resolve_projection": {
+          "iterations": 25,
+          "median_ns": 119241088,
+          "p95_ns": 128422349,
+          "samples_ns": [
+            119241088,
+            119565523,
+            122990633,
+            117852354,
+            116717532,
+            119208588,
+            117555471,
+            122887179,
+            116276725,
+            116087816,
+            125299182,
+            122350860,
+            126565266,
+            138289025,
+            119775150,
+            122959173,
+            116201822,
+            115739543,
+            128422349,
+            117118944,
+            117970349,
+            120200169,
+            120410864,
+            117732741,
+            117400531
+          ]
+        },
+        "profile_migration": {
+          "iterations": 25,
+          "median_ns": 7051,
+          "p95_ns": 13802,
+          "samples_ns": [
+            13802,
+            8415,
+            7720,
+            6796,
+            6464,
+            6902,
+            6628,
+            6998,
+            6663,
+            6128,
+            8324,
+            6307,
+            6424,
+            7363,
+            7225,
+            7180,
+            7051,
+            7085,
+            6582,
+            7575,
+            7307,
+            6691,
+            40527,
+            7429,
+            6770
+          ]
+        },
+        "queue_validate_apply": {
+          "iterations": 25,
+          "median_ns": 2248,
+          "p95_ns": 4733,
+          "samples_ns": [
+            12668,
+            4733,
+            3263,
+            2684,
+            2625,
+            4485,
+            2263,
+            2203,
+            2222,
+            2208,
+            2331,
+            2164,
+            2267,
+            2219,
+            2409,
+            2214,
+            2282,
+            2221,
+            2206,
+            2248,
+            2242,
+            2169,
+            2305,
+            2231,
+            2190
+          ]
+        }
+      },
+      "operation_ids": [
+        "connect-source",
+        "route-source"
+      ],
+      "operation_results": [
+        {
+          "authority": "component_source",
+          "expected_source_revision": "sha256:3036b8c609216fbb99262a8d269d831cbd16efec72b58888cfbe4ca665ec6eca",
+          "expected_topology_digest": "sha256:911eae3a3eed6fb86ea99d70a7fed340f5e924bf24610ca0648889eb3c51b632",
+          "id": "connect-source",
+          "state": "Applied"
+        },
+        {
+          "authority": "board_profile",
+          "expected_source_revision": null,
+          "expected_topology_digest": "sha256:911eae3a3eed6fb86ea99d70a7fed340f5e924bf24610ca0648889eb3c51b632",
+          "id": "route-source",
+          "state": "Applied"
+        }
+      ],
+      "profile_input_version": 1,
+      "profile_output_version": 1,
+      "projection_digest": "sha256:599c5b1ce751c0bb4131e9d0049e79b7c0d837eedbf9d2211ad5f18cb29b8a1d",
+      "resource_binding_digest": "sha256:f6e27bc971d6bee4bb313693fef208a24ce52ac8645b06daf4778ac95434c3fd",
+      "result": "pass",
+      "source_revision": "sha256:3036b8c609216fbb99262a8d269d831cbd16efec72b58888cfbe4ca665ec6eca",
+      "topology_digest": "sha256:911eae3a3eed6fb86ea99d70a7fed340f5e924bf24610ca0648889eb3c51b632"
+    },
+    {
+      "checks": [
+        {
+          "message": "checked source resolves to expected ids/counts",
+          "name": "fixture_integrity",
+          "result": "pass"
+        },
+        {
+          "message": "read-only projection has expected scalar edges",
+          "name": "projection",
+          "result": "pass"
+        },
+        {
+          "message": "resolver-derived projection equals checked canonical fixture",
+          "name": "canonical_topology_projection",
+          "result": "pass"
+        },
+        {
+          "message": "manifest canonical digest matches",
+          "name": "canonical_topology_digest",
+          "result": "pass"
+        },
+        {
+          "message": "presentation binding expectations remain topology-locked",
+          "name": "resource_expectations",
+          "result": "pass"
+        },
+        {
+          "message": "placeholder_noop",
+          "name": "profile_validation_or_migration",
+          "result": "pass"
+        },
+        {
+          "message": "source connect precedes dependent scalar route",
+          "name": "queue_dependency",
+          "result": "pass"
+        },
+        {
+          "message": "profile validation excludes electrical fields",
+          "name": "source_ownership",
+          "result": "pass"
+        },
+        {
+          "message": "canonical export repeated identically",
+          "name": "deterministic_export",
+          "result": "pass"
+        }
+      ],
+      "export_bytes": 44727,
+      "export_digest": "sha256:4d407d08151522bbd73973bd38ecbb745c61fbf1ca66f036fb86005572606570",
+      "failures": [],
+      "fixture_id": "dense-16x32",
+      "measurements": {
+        "export_bytes": 44727,
+        "load_resolve_projection": {
+          "iterations": 25,
+          "median_ns": 684200258,
+          "p95_ns": 721812111,
+          "samples_ns": [
+            721003075,
+            684028937,
+            662463480,
+            721812111,
+            704748159,
+            705674959,
+            665206615,
+            783292342,
+            681940467,
+            659157023,
+            690593210,
+            677960655,
+            684200258,
+            675426146,
+            686972676,
+            660080205,
+            660812793,
+            690488629,
+            654382783,
+            710273840,
+            696631287,
+            688246167,
+            655271097,
+            664727132,
+            688969932
+          ]
+        },
+        "profile_migration": {
+          "iterations": 25,
+          "median_ns": 7174,
+          "p95_ns": 9270,
+          "samples_ns": [
+            17658,
+            9270,
+            7542,
+            7299,
+            6650,
+            7369,
+            7624,
+            6679,
+            6797,
+            6715,
+            7174,
+            7227,
+            6955,
+            6883,
+            7007,
+            7284,
+            7248,
+            7261,
+            7200,
+            6705,
+            6794,
+            6570,
+            7168,
+            6879,
+            7227
+          ]
+        },
+        "queue_validate_apply": {
+          "iterations": 25,
+          "median_ns": 3632,
+          "p95_ns": 10983,
+          "samples_ns": [
+            10983,
+            4711,
+            4128,
+            3648,
+            3362,
+            3841,
+            3451,
+            3741,
+            3411,
+            3452,
+            3632,
+            3553,
+            3790,
+            3559,
+            3433,
+            3478,
+            3539,
+            3305,
+            3507,
+            17393,
+            6810,
+            4640,
+            4021,
+            3759,
+            3566
+          ]
+        }
+      },
+      "operation_ids": [
+        "connect-source",
+        "route-source"
+      ],
+      "operation_results": [
+        {
+          "authority": "component_source",
+          "expected_source_revision": "sha256:496b86aed02903f6ac90b5d87ff60271072aeb6b155f76dd7060fdf6e1d4de35",
+          "expected_topology_digest": "sha256:283c48b6647e63d28e77c93c79224616a2f3fd446ca8ce23b37592a779f0b99c",
+          "id": "connect-source",
+          "state": "Applied"
+        },
+        {
+          "authority": "board_profile",
+          "expected_source_revision": null,
+          "expected_topology_digest": "sha256:283c48b6647e63d28e77c93c79224616a2f3fd446ca8ce23b37592a779f0b99c",
+          "id": "route-source",
+          "state": "Applied"
+        }
+      ],
+      "profile_input_version": 1,
+      "profile_output_version": 1,
+      "projection_digest": "sha256:8ee7333ac462b9db615025df7fc56e82e6f792f342b37a0fb4f381bafd27cced",
+      "resource_binding_digest": "sha256:f6ddc53b7ab2cd35efa7ab16049b020d5fbba36f54f34de18f0c2859b41f7b3f",
+      "result": "pass",
+      "source_revision": "sha256:496b86aed02903f6ac90b5d87ff60271072aeb6b155f76dd7060fdf6e1d4de35",
+      "topology_digest": "sha256:283c48b6647e63d28e77c93c79224616a2f3fd446ca8ce23b37592a779f0b99c"
+    }
+  ],
+  "harness_version": "0.2",
+  "negative_results": [
+    {
+      "case_id": "stale-profile-digest",
+      "category": "profile",
+      "expected_failure_code": "board.stale_profile_digest",
+      "input_digest": "sha256:82ae9be26949a9bd14ca7939962fc2db40ce843bd2c451f109fdf486600c158b",
+      "message": "board.stale_profile_digest: profile topology reference is stale or wrong",
+      "observed_failure_code": "board.stale_profile_digest",
+      "profile_unchanged": true,
+      "result": "pass",
+      "source_unchanged": true,
+      "topology_unchanged": true
+    },
+    {
+      "case_id": "invalid-world-point",
+      "category": "world",
+      "expected_failure_code": "board.invalid_world_point",
+      "input_digest": "sha256:565f178e9e4ac70954674e057e3e7f56065ba5b9b0159928dde831c834435549",
+      "message": "board.invalid_world_point: x and y must be finite numbers",
+      "observed_failure_code": "board.invalid_world_point",
+      "profile_unchanged": true,
+      "result": "pass",
+      "source_unchanged": true,
+      "topology_unchanged": true
+    },
+    {
+      "case_id": "forbidden-direct-mutation",
+      "category": "ownership",
+      "expected_failure_code": "board.forbidden_direct_mutation",
+      "input_digest": "sha256:0e2fce5ea59a2e3a1f8b967f2dbde7c39bf2600eac1df1314c5772a4c87839df",
+      "message": "board.forbidden_direct_mutation: profile may not contain edges",
+      "observed_failure_code": "board.forbidden_direct_mutation",
+      "profile_unchanged": true,
+      "result": "pass",
+      "source_unchanged": true,
+      "topology_unchanged": true
+    },
+    {
+      "case_id": "route-before-connect",
+      "category": "queue",
+      "expected_failure_code": "board.route_before_connect",
+      "input_digest": "sha256:c3002db43a2281f9bfb94581f82fea17ccf907d13cbfc34b29ddffa33487450c",
+      "message": "board.route_before_connect: route cannot apply before source edge",
+      "observed_failure_code": "board.route_before_connect",
+      "profile_unchanged": true,
+      "result": "pass",
+      "source_unchanged": true,
+      "topology_unchanged": true
+    },
+    {
+      "case_id": "unknown-edge-route",
+      "category": "profile",
+      "expected_failure_code": "board.unknown_edge_route",
+      "input_digest": "sha256:3315be4b2c0504615fdd4d770481639bd7679e7866cfe7e4b9c9cc27652bf7e4",
+      "message": "board.unknown_edge_route: route must refer to a resolved scalar edge",
+      "observed_failure_code": "board.unknown_edge_route",
+      "profile_unchanged": true,
+      "result": "pass",
+      "source_unchanged": true,
+      "topology_unchanged": true
+    },
+    {
+      "case_id": "bus-route-without-contract",
+      "category": "profile",
+      "expected_failure_code": "board.bus_route_without_contract",
+      "input_digest": "sha256:74f88045ec68ac2398675c37416dc3f3f55bcf72e551fe0c0dcd3b8570ebeb20",
+      "message": "board.bus_route_without_contract: bus routes need their own contract",
+      "observed_failure_code": "board.bus_route_without_contract",
+      "profile_unchanged": true,
+      "result": "pass",
+      "source_unchanged": true,
+      "topology_unchanged": true
+    },
+    {
+      "case_id": "malformed-profile-migration",
+      "category": "migration",
+      "expected_failure_code": "board.malformed_profile_migration",
+      "input_digest": "sha256:9a88f645f2df8acb62dc85be1590bba0dcbefb6f47bd46aa35fac9424191fba6",
+      "message": "board.malformed_profile_migration: expected components.board-profile@1",
+      "observed_failure_code": "board.malformed_profile_migration",
+      "profile_unchanged": true,
+      "result": "pass",
+      "source_unchanged": true,
+      "topology_unchanged": true
+    },
+    {
+      "case_id": "stale-source-operation",
+      "category": "queue",
+      "expected_failure_code": "board.stale_source_operation",
+      "input_digest": "sha256:b54ec7a1ea466fa81564337d0f43b721cf9f4a834607803ac3e8a086d793831d",
+      "message": "board.stale_source_operation: source revision differs from current source",
+      "observed_failure_code": "board.stale_source_operation",
+      "profile_unchanged": true,
+      "result": "pass",
+      "source_unchanged": true,
+      "topology_unchanged": true
+    }
+  ],
+  "result": "pass",
+  "run_mode": "baseline",
+  "schema": "components.board-v2-harness-result@1",
+  "threshold_evaluation": {
+    "baseline_id": null,
+    "decisions": [],
+    "enabled": false,
+    "reason": "Thresholds are disabled in baseline mode until a reviewed B0.4 record exists; this report is not a product latency target.",
+    "result": "not_evaluated",
+    "threshold_record_digest": null
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schema": "components.board-v2-regression-thresholds@1",
+  "policy_id": "board-v2-gate0-initial",
+  "baseline": {
+    "baseline_id": "board-v2-05024f5-2026-07-17",
+    "evidence_digest": "sha256:556b040f3cdbbe33a68ececd13ddd5d8a5b282c34cefa268d68db68d76c99050",
+    "git_revision": "05024f5",
+    "fixture_digests": {
+      "not-gate": "sha256:8a4f0a50122a64ffa93ef986712391467c0cfaca546f74c21c55719bfeb9111a",
+      "chain-4": "sha256:911eae3a3eed6fb86ea99d70a7fed340f5e924bf24610ca0648889eb3c51b632",
+      "dense-16x32": "sha256:283c48b6647e63d28e77c93c79224616a2f3fd446ca8ce23b37592a779f0b99c"
+    },
+    "environment": {"python_version": "3.12.3", "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39"},
+    "iterations": 25,
+    "warmup_iterations": 5
+  },
+  "limits": {
+    "not-gate": {
+      "load_resolve_projection": {"baseline_median_ns": 77355589, "baseline_p95_ns": 83572675, "max_p95_ns": 167145350},
+      "profile_migration": {"baseline_median_ns": 6093, "baseline_p95_ns": 9920, "max_p95_ns": 29760},
+      "queue_validate_apply": {"baseline_median_ns": 2372, "baseline_p95_ns": 6724, "max_p95_ns": 13448},
+      "max_export_bytes": 4380
+    },
+    "chain-4": {
+      "load_resolve_projection": {"baseline_median_ns": 119241088, "baseline_p95_ns": 128422349, "max_p95_ns": 256844698},
+      "profile_migration": {"baseline_median_ns": 7051, "baseline_p95_ns": 13802, "max_p95_ns": 27604},
+      "queue_validate_apply": {"baseline_median_ns": 2248, "baseline_p95_ns": 4733, "max_p95_ns": 9466},
+      "max_export_bytes": 6851
+    },
+    "dense-16x32": {
+      "load_resolve_projection": {"baseline_median_ns": 684200258, "baseline_p95_ns": 721812111, "max_p95_ns": 1443624222},
+      "profile_migration": {"baseline_median_ns": 7174, "baseline_p95_ns": 9270, "max_p95_ns": 18540},
+      "queue_validate_apply": {"baseline_median_ns": 3632, "baseline_p95_ns": 10983, "max_p95_ns": 21966},
+      "max_export_bytes": 44727
+    }
+  },
+  "review": {
+    "fern_reviewed": true,
+    "review_reference": "board/docs/BOARD_V2_HARNESS_VERIFICATION_SPEC.md; Gate 0 baseline collected from clean commit 05024f5",
+    "change_reason": "Initial 5-warmup/25-sample WSL development-machine baseline. Timing guards are two times recorded p95, except the sub-10-microsecond NOT profile-migration check at three times p95 to tolerate observed scheduler noise; export bytes are exact deterministic limits."
+  },
+  "claim_boundary": "Regression guard for this checked baseline; not a cross-machine product latency, responsiveness, startup, memory, or learner-experience target."
+}

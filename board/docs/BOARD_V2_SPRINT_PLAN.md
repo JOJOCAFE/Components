@@ -1,7 +1,8 @@
 # Board v2 Sprint Plan — Harness Before Growth
 
-Status: active task plan. **Current checkpoint: Gate 0 B0.1–B0.3 implemented
-and passing; B0.4 reviewed 25-sample baseline/threshold record remains open.**
+Status: active task plan. **Gate 0 is complete: the reviewed 25-sample
+baseline and regression guard are tracked. Current next task: B1.1, the pure
+world/viewport transform kernel.**
 This plan implements
 [BOARD_ARCHITECTURE_FREEZE.md](BOARD_ARCHITECTURE_FREEZE.md) in small,
 independently reviewable slices. A sprint cannot advance merely because the
@@ -107,6 +108,10 @@ this repository without a GUI and follow this shape:
 ```sh
 PYTHONPATH=python python3 -B -m tests.test_board_v2_harness
 ```
+
+The B0.4 regression command adds `BOARD_V2_HARNESS_ITERATIONS=25` and
+`BOARD_V2_HARNESS_ENFORCE_THRESHOLDS=1`; the short test command deliberately
+does not enforce timing thresholds.
 
 The output must name the fixture, source revision, topology digest, Board
 profile version, operation IDs, measurements, pass/fail state, and a specific

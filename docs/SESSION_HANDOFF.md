@@ -149,12 +149,14 @@ migration, queue dependency, deterministic export, and intentional negative
 cases. Subsequent checkpoints are World/Viewport, profile v2 migration,
 definition-derived geometry, transaction queue, then the learner trial.
 
-Gate 0 B0.1–B0.3 now pass: `Language/fixtures/board-v2/` supplies checked
+Gate 0 is complete: `Language/fixtures/board-v2/` supplies checked
 NOT/chain-4/dense-16x32 sources and canonical topology projections; the
 headless `tests.test_board_v2_harness` checks their digests, eight negative
 cases, deterministic exports across hash seeds, and baseline-mode measurements.
-B0.4 remains open: collect the specified 25-sample reviewed baseline and add
-the tracked threshold record before enabling performance regression limits.
+`python/tests/data/board_v2/baselines/05024f5.json` records the five-warmup,
+25-sample baseline; the reviewed `thresholds.json` enables the explicit
+regression command documented in `board/docs/BOARD_V2_HARNESS_VERIFICATION_SPEC.md`.
+The next task is B1.1: a pure centered world/viewport transform kernel.
 
 ### Vector canvas slice: 2026-07-17
 

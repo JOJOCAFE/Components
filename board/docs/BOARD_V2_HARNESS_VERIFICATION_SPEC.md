@@ -29,12 +29,13 @@ documented output path so CI can retain the specific reason.
 The final B0/B5 focused exit set, once Bam lands the harness, is:
 
 ```sh
+BOARD_V2_HARNESS_ITERATIONS=25 BOARD_V2_HARNESS_ENFORCE_THRESHOLDS=1 PYTHONPATH=python python3 -B -m chiplib.board_v2_harness
 PYTHONPATH=python python3 -B -m tests.test_board_v2_harness
 PYTHONPATH=python python3 -B -m tests.test_component_board_api
 PYTHONPATH=python python3 -B -m tests.test_component_language
 ```
 
-All three commands must pass; this is deliberately separate from human
+All four commands must pass; this is deliberately separate from human
 first-sight trials.
 
 ## Harness JSON result contract

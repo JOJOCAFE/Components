@@ -21,6 +21,7 @@ from .component_transport import board_view
 
 ROOT = Path(__file__).resolve().parents[2]
 CORPUS_ROOT = ROOT / "Language" / "fixtures" / "board-v2"
+THRESHOLD_PATH = ROOT / "python" / "tests" / "data" / "board_v2" / "thresholds.json"
 PROFILE_SCHEMA = "components.board-profile@1"
 HARNESS_SCHEMA = "components.board-v2-harness-result@1"
 
@@ -204,7 +205,39 @@ def _environment(iterations: int) -> dict[str, Any]:
     return {"python_version": sys.version.split()[0], "implementation": platform.python_implementation(), "platform": platform.platform(), "machine": platform.machine(), "processor": platform.processor(), "cpu_count": os.cpu_count(), "monotonic_clock": info.implementation, "monotonic_resolution": info.resolution, "hostname": socket.gethostname(), "iterations": iterations}
 
 
-def _run(*, iterations: int, cross_hash_seeds: bool) -> dict[str, Any]:
+def _evaluate_thresholds(fixture_results: list[dict[str, Any]], *, enforce: bool) -> dict[str, Any]:
+    """Apply the reviewed local regression guard when its tracked record exists."""
+    if not enforce:
+        return {"enabled": False, "threshold_record_digest": None, "baseline_id": None, "result": "not_evaluated", "decisions": [], "reason": "Threshold enforcement is disabled for this short contract run; use the documented 25-sample regression command."}
+    if not THRESHOLD_PATH.is_file():
+        return {"enabled": False, "threshold_record_digest": None, "baseline_id": None, "result": "not_evaluated", "decisions": [], "reason": "No reviewed threshold record is tracked; this is baseline mode, not a product latency target."}
+    record = _read_json(THRESHOLD_PATH)
+    if record.get("schema") != "components.board-v2-regression-thresholds@1":
+        raise BoardV2ContractError("board.threshold_schema: unsupported threshold record")
+    review = record.get("review")
+    if not isinstance(review, dict) or review.get("fern_reviewed") is not True or not review.get("review_reference"):
+        raise BoardV2ContractError("board.threshold_review: threshold record is not independently reviewed")
+    limits = record.get("limits")
+    if not isinstance(limits, dict):
+        raise BoardV2ContractError("board.threshold_limits: threshold record has no limits")
+    decisions = []
+    for fixture in fixture_results:
+        fixture_id, fixture_limits = fixture["fixture_id"], limits.get(fixture["fixture_id"])
+        if not isinstance(fixture_limits, dict):
+            raise BoardV2ContractError(f"board.threshold_limits: missing limits for {fixture_id}")
+        for measurement in ("load_resolve_projection", "profile_migration", "queue_validate_apply"):
+            limit = fixture_limits.get(measurement, {}).get("max_p95_ns")
+            actual = fixture["measurements"][measurement]["p95_ns"]
+            passed = isinstance(limit, int) and actual <= limit
+            decisions.append({"fixture_id": fixture_id, "measurement": measurement, "actual_p95_ns": actual, "max_p95_ns": limit, "result": "pass" if passed else "fail"})
+        max_bytes, actual_bytes = fixture_limits.get("max_export_bytes"), fixture["export_bytes"]
+        passed = isinstance(max_bytes, int) and actual_bytes <= max_bytes
+        decisions.append({"fixture_id": fixture_id, "measurement": "export_bytes", "actual": actual_bytes, "max": max_bytes, "result": "pass" if passed else "fail"})
+    passed = all(item["result"] == "pass" for item in decisions)
+    return {"enabled": True, "threshold_record_digest": _digest(record), "baseline_id": record.get("baseline", {}).get("baseline_id"), "result": "pass" if passed else "fail", "decisions": decisions, "reason": record.get("claim_boundary")}
+
+
+def _run(*, iterations: int, cross_hash_seeds: bool, enforce_thresholds: bool) -> dict[str, Any]:
     failures, fixture_results, exports = [], [], {}
     for fixture in fixtures():
         source = fixture["source_text"]
@@ -246,17 +279,20 @@ def _run(*, iterations: int, cross_hash_seeds: bool) -> dict[str, Any]:
             determinism["cross_hash_seed_digests"][seed] = {item["fixture_id"]: {key: item[key] for key in ("source_revision", "topology_digest", "projection_digest", "export_digest", "operation_ids")} for item in child_data.get("fixture_results", [])}
         determinism["stable"] = all(value == exports for value in determinism["cross_hash_seed_digests"].values())
         if not determinism["stable"]: failures.append("determinism:cross_hash_seed")
-    thresholds = {"enabled": False, "threshold_record_digest": None, "baseline_id": None, "result": "not_evaluated", "decisions": [], "reason": "Thresholds are disabled in baseline mode until a reviewed B0.4 record exists; this report is not a product latency target."}
+    thresholds = _evaluate_thresholds(fixture_results, enforce=enforce_thresholds)
+    if thresholds["result"] == "fail": failures.append("thresholds:regression")
     return {"schema": HARNESS_SCHEMA, "harness_version": "0.2", "result": "fail" if failures else "pass", "run_mode": "baseline", "fixture_results": fixture_results, "negative_results": negatives, "determinism": determinism, "threshold_evaluation": thresholds, "environment": _environment(iterations), "failure_count": len(failures), "failures": failures}
 
 
-def run_harness(*, iterations: int = 5) -> dict[str, Any]:
+def run_harness(*, iterations: int = 5, enforce_thresholds: bool = False) -> dict[str, Any]:
     if iterations < 3: raise BoardV2ContractError("board.iterations: deterministic harness needs at least three iterations")
-    return _run(iterations=iterations, cross_hash_seeds=os.environ.get("BOARD_V2_HARNESS_SEED_CHILD") != "1")
+    return _run(iterations=iterations, cross_hash_seeds=os.environ.get("BOARD_V2_HARNESS_SEED_CHILD") != "1", enforce_thresholds=enforce_thresholds)
 
 
 def main() -> None:
-    report = run_harness()
+    iterations = int(os.environ.get("BOARD_V2_HARNESS_ITERATIONS", "5"))
+    enforce = os.environ.get("BOARD_V2_HARNESS_ENFORCE_THRESHOLDS") == "1" and os.environ.get("BOARD_V2_HARNESS_SEED_CHILD") != "1"
+    report = run_harness(iterations=iterations, enforce_thresholds=enforce)
     print(json.dumps(report, sort_keys=True, separators=(",", ":")))
     if report["result"] != "pass": raise SystemExit(1)
 

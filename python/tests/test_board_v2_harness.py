@@ -35,7 +35,7 @@ def test_corpus_is_consumed_and_canonical_projection_matches_every_case() -> Non
         assert canonical_topology_projection(resolved) == fixture["canonical_projection"]
 
 
-def test_harness_report_has_fern_shape_eight_negatives_and_disabled_thresholds() -> None:
+def test_harness_report_has_fern_shape_eight_negatives_and_disabled_short_run_thresholds() -> None:
     report = _report()
     assert report["schema"] == "components.board-v2-harness-result@1"
     assert report["result"] == "pass", report["failures"]
@@ -77,7 +77,7 @@ def test_export_is_deterministic() -> None:
 
 def main() -> None:
     test_corpus_is_consumed_and_canonical_projection_matches_every_case()
-    test_harness_report_has_fern_shape_eight_negatives_and_disabled_thresholds()
+    test_harness_report_has_fern_shape_eight_negatives_and_disabled_short_run_thresholds()
     test_bad_profile_and_route_before_connect_are_rejected_without_mutation()
     test_export_is_deterministic()
     print(json.dumps(_report(), sort_keys=True, separators=(",", ":")))
