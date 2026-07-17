@@ -87,7 +87,7 @@ function saveBoardProfile(command) {
   log(command);
   $("#save-state").textContent = "Board picture saved on this device";
 }
-function placementFor(id) { return state.boardProfile?.placements.find(item => item.target?.kind === "device-instance" && item.target.id === id); }
+function placementFor(id, kind = "device-instance") { return state.boardProfile?.placements.find(item => item.target?.kind === kind && item.target.id === id); }
 function routeFor(edgeId) { return state.boardProfile?.routes.find(item => item.edge_id === edgeId); }
 function edgeId(wire) { return wire.id || `edge:${wire.from}->${wire.to}`; }
 function pointText(point) { return `(${Number(point.x).toFixed(1)}%, ${Number(point.y).toFixed(1)}%)`; }
@@ -123,7 +123,11 @@ function renderBoard() {
     const placement = placementFor(item.id);
     nodes.push({ id: item.id, label: item.id === "U1" ? "U1\nNOT gate" : item.id, x: placement?.position?.x ?? fallback.x, y: placement?.position?.y ?? fallback.y, kind: "device", part: item.part, pinAnchors: item.pin_anchors || [], resource: item.resource });
   });
-  nets.filter(item => item.kind !== "power").forEach((item, index) => nodes.push({ id: item.id, label: item.id, x: 18 + index * (64 / Math.max(1, nets.filter(n => n.kind !== "power").length - 1)), y: 72, kind: "net" }));
+  nets.filter(item => item.kind !== "power").forEach((item, index) => {
+    const fallback = { x: 18 + index * (64 / Math.max(1, nets.filter(n => n.kind !== "power").length - 1)), y: 72 };
+    const placement = placementFor(item.id, "net");
+    nodes.push({ id: item.id, label: item.id, x: placement?.position?.x ?? fallback.x, y: placement?.position?.y ?? fallback.y, kind: "net" });
+  });
   nodes.forEach(node => { node.screen = projectLegacyPoint(canvas, node); });
   const lookup = Object.fromEntries(nodes.map(item => [item.id, item]));
   state.nodePositions = Object.fromEntries(nodes.map(item => [item.id, { x: item.x, y: item.y }]));
@@ -148,14 +152,14 @@ function drawEdge(vectors, from, to, wire) {
   edge.classList.add("board-edge", savedRoute?.points?.length > 2 ? "routed" : "connection-guide");
   edge.setAttribute("d", `M ${points.map(point => `${point.x} ${point.y}`).join(" L ")}`);
   edge.setAttribute("aria-label", `${wire.from} to ${wire.to}. ${savedRoute ? "Visual route." : "Connection guide: draw a route."}`);
-  edge.addEventListener("pointerdown", event => beginRouteDrag(event, wire));
+  edge.addEventListener("pointerdown", event => { if (isSelectTool()) beginRouteDrag(event, wire); });
   edge.addEventListener("click", event => { event.stopPropagation(); if (state.suppressClick) return; selectWire(wire); });
   vectors.append(edge);
   points.slice(1, -1).forEach((via, index) => {
     const handle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     handle.classList.add("route-handle"); handle.setAttribute("cx", via.x); handle.setAttribute("cy", via.y); handle.setAttribute("r", "5");
     handle.setAttribute("aria-label", "Drag to move this visual route bend.");
-    handle.addEventListener("pointerdown", event => beginRouteDrag(event, wire, index + 1)); vectors.append(handle);
+    handle.addEventListener("pointerdown", event => { if (isSelectTool()) beginRouteDrag(event, wire, index + 1); }); vectors.append(handle);
   });
 }
 
@@ -171,7 +175,12 @@ function drawLabels(vectors) {
       const span = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
       span.setAttribute("x", position.x); span.setAttribute("dy", index === 0 ? "0" : String(fontSize * 1.25)); span.textContent = line; text.append(span);
     });
-    const edit = event => { event.stopPropagation(); beginLabel(label.position, label); };
+    text.addEventListener("pointerdown", event => {
+      if (!isSelectTool()) return;
+      event.preventDefault(); event.stopPropagation();
+      state.drag = { kind: "label", id: label.id, moved: false, start: boardPoint(event) };
+    });
+    const edit = event => { event.stopPropagation(); if (!isSelectTool()) beginLabel(label.position, label); };
     text.addEventListener("click", edit); text.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); edit(event); } });
     vectors.append(text);
   }
@@ -185,13 +194,19 @@ function drawNode(canvas, node) {
     device.innerHTML = `<div class="board-device-title"><button class="board-device-label" type="button">${node.label}</button><button class="gate-move" type="button" aria-label="Move ${node.id}" title="Drag to move this gate">✋</button></div>${chipFrame(node, true)}`;
     const label = device.querySelector(".board-device-label");
     label.addEventListener("click", event => { event.stopPropagation(); if (state.suppressClick) return; selectNode(node); });
+    device.addEventListener("pointerdown", event => {
+      if (!isSelectTool() || event.target.closest(".pin-anchor, .gate-move")) return;
+      beginObjectDrag(event, node);
+    });
     const move = device.querySelector(".gate-move");
     move.addEventListener("pointerdown", event => beginChipDrag(event, node));
     canvas.append(device);
     return;
   }
   const button = document.createElement("button"); button.className = `node ${node.kind}` + (state.selected?.id === node.id ? " selected" : "");
-  button.style.left = `${node.screen.x}px`; button.style.top = `${node.screen.y}px`; button.textContent = node.label; button.addEventListener("click", () => selectNode(node)); canvas.append(button);
+  button.style.left = `${node.screen.x}px`; button.style.top = `${node.screen.y}px`; button.textContent = node.label;
+  button.addEventListener("pointerdown", event => { if (isSelectTool()) beginObjectDrag(event, node); });
+  button.addEventListener("click", () => { if (!state.suppressClick) selectNode(node); }); canvas.append(button);
 }
 
 function boardPoint(event) {
@@ -200,10 +215,10 @@ function boardPoint(event) {
   const legacy = worldToLegacy(world);
   return { x: Math.max(0, Math.min(100, legacy.x)), y: Math.max(0, Math.min(100, legacy.y)) };
 }
-function setPlacement(id, point) {
+function setPlacement(id, point, kind = "device-instance") {
   const placements = state.boardProfile.placements;
-  const existing = placementFor(id);
-  const record = { target: { kind: "device-instance", id }, position: point, rotation: 0 };
+  const existing = placementFor(id, kind);
+  const record = { target: { kind, id }, position: point, rotation: 0 };
   if (existing) Object.assign(existing, record); else placements.push(record);
 }
 function setRoutePoints(wire, vias) {
@@ -247,7 +262,14 @@ function cancelLabelDraft() {
 }
 function beginChipDrag(event, node) {
   event.preventDefault(); event.stopPropagation();
-  state.drag = { kind: "chip", id: node.id, moved: false, start: boardPoint(event) };
+  state.drag = { kind: "node", nodeKind: "device-instance", id: node.id, moved: false, start: boardPoint(event) };
+}
+function isSelectTool() { return document.querySelector('.tool.selected')?.dataset.tool === "select"; }
+function beginObjectDrag(event, node) {
+  if (event.button !== 0) return;
+  event.preventDefault(); event.stopPropagation();
+  state.selected = node;
+  state.drag = { kind: "node", nodeKind: node.kind === "device" ? "device-instance" : "net", id: node.id, moved: false, start: boardPoint(event) };
 }
 function beginRouteDrag(event, wire, viaIndex = 1) {
   event.preventDefault(); event.stopPropagation();
@@ -257,8 +279,11 @@ function moveBoardDrag(event) {
   if (!state.drag || !state.boardProfile) return;
   const point = boardPoint(event);
   if (Math.abs(point.x - state.drag.start.x) > .25 || Math.abs(point.y - state.drag.start.y) > .25) state.drag.moved = true;
-  if (state.drag.kind === "chip") setPlacement(state.drag.id, point);
-  else setRoute(state.drag.wire, point, state.drag.viaIndex);
+  if (state.drag.kind === "node") setPlacement(state.drag.id, point, state.drag.nodeKind);
+  else if (state.drag.kind === "label") {
+    const label = state.boardProfile.labels?.find(item => item.id === state.drag.id);
+    if (label) label.position = point;
+  } else setRoute(state.drag.wire, point, state.drag.viaIndex);
   renderBoard();
 }
 function finishBoardDrag() {
@@ -267,10 +292,14 @@ function finishBoardDrag() {
   if (!drag.moved) return;
   state.suppressClick = true;
   setTimeout(() => { state.suppressClick = false; }, 0);
-  if (drag.kind === "chip") {
-    const placement = placementFor(drag.id);
+  if (drag.kind === "node") {
+    const placement = placementFor(drag.id, drag.nodeKind);
     saveBoardProfile(`component:board place ${drag.id} at ${pointText(placement.position)};`);
     status(`Moved ${drag.id}. This changed only its Board picture, not Component wiring.`);
+  } else if (drag.kind === "label") {
+    const label = state.boardProfile.labels?.find(item => item.id === drag.id);
+    saveBoardProfile(`component:board label ${drag.id} at ${pointText(label.position)} size ${label.font_size};`);
+    status(`Moved label ${drag.id}. Component wiring is unchanged.`);
   } else {
     const route = routeFor(edgeId(drag.wire)); const vias = route.points.slice(1, -1).map(pointText).join(" -> ");
     saveBoardProfile(`component:board route ${route.edge_id} via ${vias};`);
@@ -555,7 +584,11 @@ $("#reset-layout").onclick = () => {
   renderBoard(); status("View reset. Component source and Board picture are unchanged.");
 };
 document.querySelectorAll(".pane-toggle").forEach(button => button.onclick = () => document.getElementById(button.dataset.pane).classList.toggle("fullscreen"));
-document.querySelectorAll(".tool").forEach(button => button.onclick = () => { document.querySelectorAll(".tool").forEach(item => item.classList.remove("selected")); button.classList.add("selected"); $("#connect-form").classList.toggle("hidden", button.dataset.tool !== "connect"); if (button.dataset.tool !== "label") cancelLabelDraft(); });
+document.querySelectorAll(".tool").forEach(button => button.onclick = () => {
+  document.querySelectorAll(".tool").forEach(item => item.classList.remove("selected")); button.classList.add("selected");
+  $("#connect-form").classList.toggle("hidden", button.dataset.tool !== "connect"); if (button.dataset.tool !== "label") cancelLabelDraft();
+  if (button.dataset.tool === "select") status("Select is active. Left-drag any device, net, route bend, or label to move its Board picture.");
+});
 $("#close-connect").onclick = () => cancelPendingInteraction();
 $("#connect-form").addEventListener("submit", event => { event.preventDefault(); editConnection("connect", $("#connect-from").value.trim(), $("#connect-to").value.trim()); });
 $("#close-label").onclick = () => cancelLabelDraft();

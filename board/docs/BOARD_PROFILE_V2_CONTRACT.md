@@ -49,9 +49,10 @@ export digest.
 
 ## World objects
 
-- A placement names an existing `device-instance`, an `origin`, and one
-  discrete `rotation_deg` (`0`, `90`, `180`, or `270`). Bounding-box and pin
-  geometry remain definition-derived work for B3.
+- A placement names an existing `device-instance` or named `net`, an `origin`,
+  and one discrete `rotation_deg` (`0`, `90`, `180`, or `270`). This lets
+  Select move every visible schematic object without creating a second netlist.
+  Bounding-box and pin geometry remain definition-derived work for B3.
 - A scalar route names a resolved `edge_id` and finite world-point bends. It
   still cannot create an electrical connection. Bus routes remain rejected.
 - A label has a stable identifier, finite world `position`, non-empty text,

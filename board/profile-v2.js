@@ -49,9 +49,9 @@ function checkedRotation(value) {
 
 function checkedPlacement(value) {
   const placement = object(value, "Placement must be an object.");
-  const target = object(placement.target, "Placement target must be a device instance.");
-  if (target.kind !== "device-instance") throw new Error("Placement target must be a device instance.");
-  return { target: { kind: "device-instance", id: identifier(target.id, "Placement target needs an instance identifier.") }, origin: checkedWorldPoint(placement.origin), rotation_deg: checkedRotation(placement.rotation_deg) };
+  const target = object(placement.target, "Placement target must be a device instance or net.");
+  if (target.kind !== "device-instance" && target.kind !== "net") throw new Error("Placement target must be a device instance or net.");
+  return { target: { kind: target.kind, id: identifier(target.id, "Placement target needs an identifier.") }, origin: checkedWorldPoint(placement.origin), rotation_deg: checkedRotation(placement.rotation_deg) };
 }
 
 function checkedRoute(value) {
