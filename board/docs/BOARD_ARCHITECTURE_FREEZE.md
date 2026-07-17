@@ -146,6 +146,11 @@ The viewport transform is client/session state by default. It may be saved as
 optional view metadata for convenience, but does not affect the meaning of the
 world data or the resolved circuit.
 
+The exact frozen `@2` schema and rejection rules are in
+[BOARD_PROFILE_V2_CONTRACT.md](BOARD_PROFILE_V2_CONTRACT.md). In particular,
+viewport/camera state is session-local in the current contract and is not a
+persisted profile field.
+
 ## Implementation gate
 
 Before extending Board tools, implement and prove all of these together:

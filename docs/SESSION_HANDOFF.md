@@ -175,6 +175,14 @@ is explicitly adapted at the UI boundary until B2 migration; it is not renamed
 or presented as world-coordinate truth. The next task is B2.1: specify the
 persisted `components.board-profile@2` world-coordinate contract.
 
+B2.1 is complete in `board/profile-v2.js`, its Node contract proof, and
+`board/docs/BOARD_PROFILE_V2_CONTRACT.md`. The new profile requires exact
+centered Cartesian metadata, finite unbounded world points, digest-locked
+topology references, and only discrete initial rotation. It rejects electrical
+fields and session-local viewport/camera persistence. B2.2 is next: a
+deterministic explicit `@1 → @2` migration with fixtures; the browser must not
+silently reinterpret an old profile as world data.
+
 ### Vector canvas slice: 2026-07-17
 
 The local Board now renders existing chip-frame resources as SVG, resolved
