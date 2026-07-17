@@ -21,6 +21,7 @@ JsonMap = dict[str, Any]
 ROOT = Path(__file__).resolve().parents[2]
 BOARD_ROOT = ROOT / "board"
 BOARD_RESOURCE_ROOT = BOARD_ROOT / "assets" / "74hc-functional-pinouts"
+BOARD_GATE_RESOURCE_ROOT = BOARD_ROOT / "assets" / "logic-gates"
 NOT_GATE_FIXTURE = ROOT / "Language" / "fixtures" / "component-v1.1" / "digital_inverter.component"
 
 
@@ -272,8 +273,12 @@ def run_http(host: str = "127.0.0.1", port: int = 8765, service: FrontendDesignS
 
 def board_static_file(relative: str) -> Path | None:
     """Resolve one Board-owned static file without allowing path escape."""
-    prefix = "resources/74hc-functional-pinouts/"
-    root, child = (BOARD_RESOURCE_ROOT, relative[len(prefix):]) if relative.startswith(prefix) else (BOARD_ROOT, relative)
+    if relative.startswith("resources/74hc-functional-pinouts/"):
+        root, child = BOARD_RESOURCE_ROOT, relative.removeprefix("resources/74hc-functional-pinouts/")
+    elif relative.startswith("resources/logic-gates/"):
+        root, child = BOARD_GATE_RESOURCE_ROOT, relative.removeprefix("resources/logic-gates/")
+    else:
+        root, child = BOARD_ROOT, relative
     candidate = (root / child).resolve()
     if candidate != root.resolve() and root.resolve() not in candidate.parents:
         return None

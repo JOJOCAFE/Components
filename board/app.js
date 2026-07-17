@@ -124,11 +124,13 @@ function renderBoard() {
   const blocks = state.board?.blocks || [];
   const devices = blocks.filter(item => item.type === "device");
   const nets = state.board?.nets || [];
+  const connectedEndpoints = new Set((state.board?.wires || []).flatMap(wire => [wire.from, wire.to]));
   const nodes = [];
   devices.forEach((item, index) => {
     const fallback = { x: devices.length === 1 ? 0 : -138 + index * (276 / (devices.length - 1)), y: 84 };
     const placement = placementFor(item.id);
-    nodes.push({ id: item.id, label: item.id === "U1" ? "U1\nNOT gate" : item.id, x: placement?.origin?.x ?? fallback.x, y: placement?.origin?.y ?? fallback.y, kind: "device", part: item.part, pinAnchors: item.pin_anchors || [], resource: item.resource });
+    const anchors = item.resource?.kind === "logic-gate-symbol.svg" ? visibleGateAnchors(item.pin_anchors || [], connectedEndpoints) : item.pin_anchors || [];
+    nodes.push({ id: item.id, label: item.id === "U1" ? "U1\nNOT gate" : item.id, x: placement?.origin?.x ?? fallback.x, y: placement?.origin?.y ?? fallback.y, kind: "device", part: item.part, pinAnchors: anchors, resource: item.resource });
   });
   nets.filter(item => item.kind !== "power").forEach((item, index) => {
     const fallback = { x: -192 + index * (384 / Math.max(1, nets.filter(n => n.kind !== "power").length - 1)), y: -132 };
@@ -141,12 +143,12 @@ function renderBoard() {
   const vectors = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   vectors.classList.add("board-vectors"); vectors.setAttribute("viewBox", `0 0 ${screen.width} ${screen.height}`); vectors.setAttribute("preserveAspectRatio", "none");
   canvas.append(vectors);
+  nodes.forEach(node => drawNode(canvas, node));
   (state.board?.wires || []).forEach(wire => {
     const left = lookup[wire.from.split(".")[0]] || lookup[wire.from]; const right = lookup[wire.to.split(".")[0]] || lookup[wire.to];
     if (left && right) drawEdge(vectors, left, right, wire);
   });
   drawLabels(vectors);
-  nodes.forEach(node => drawNode(canvas, node));
   if (state.guide) requestAnimationFrame(() => drawPinGuide(canvas));
   if (state.pen) requestAnimationFrame(() => drawPenPreview(canvas));
 }
@@ -155,6 +157,7 @@ function drawEdge(vectors, from, to, wire) {
   const savedRoute = routeFor(edgeId(wire));
   const worldPoints = savedRoute?.points?.length > 2 ? [{ x: from.x, y: from.y }, ...savedRoute.points.slice(1, -1), { x: to.x, y: to.y }] : [{ x: from.x, y: from.y }, { x: to.x, y: to.y }];
   const canvas = $("#board-canvas"); const points = worldPoints.map(point => projectWorldPoint(canvas, point));
+  points[0] = endpointScreenPoint(wire.from) || points[0]; points[points.length - 1] = endpointScreenPoint(wire.to) || points[points.length - 1];
   const edge = document.createElementNS("http://www.w3.org/2000/svg", "path");
   edge.classList.add("board-edge", savedRoute?.points?.length > 2 ? "routed" : "connection-guide");
   edge.setAttribute("d", `M ${points.map(point => `${point.x} ${point.y}`).join(" L ")}`);
@@ -168,6 +171,20 @@ function drawEdge(vectors, from, to, wire) {
     handle.setAttribute("aria-label", "Drag to move this visual route bend.");
     handle.addEventListener("pointerdown", event => { if (isSelectTool()) beginRouteDrag(event, wire, index + 1); }); vectors.append(handle);
   });
+}
+
+function visibleGateAnchors(anchors, connectedEndpoints) {
+  const connectable = anchors.filter(anchor => anchor.direction === "input" || anchor.direction === "output");
+  const used = connectable.filter(anchor => connectedEndpoints.has(anchor.endpoint));
+  if (!used.length) return connectable.slice(0, 2);
+  const unit = used[0].port.match(/^(\d+)/)?.[1];
+  return unit ? connectable.filter(anchor => anchor.port.startsWith(unit)) : used;
+}
+function endpointScreenPoint(endpoint) {
+  const anchor = $("#board-canvas").querySelector(`[data-endpoint="${CSS.escape(endpoint)}"]`);
+  if (!anchor) return null;
+  const canvas = $("#board-canvas").getBoundingClientRect(), box = anchor.getBoundingClientRect();
+  return { x: box.left + box.width / 2 - canvas.left, y: box.top + box.height / 2 - canvas.top };
 }
 
 function drawLabels(vectors) {
@@ -381,13 +398,16 @@ function selectNode(node) {
 }
 
 function chipFrame(node, compact = false) {
-  const anchors = node.pinAnchors.map(anchor => {
-    const sidePinCount = Math.max(1, node.pinAnchors.length / 2);
-    const top = 6 + (Number(anchor.dip_order) - .5) * (88 / sidePinCount);
-    return `<button class="pin-anchor ${anchor.dip_side}" type="button" data-anchor-id="${anchor.id}" data-endpoint="${anchor.endpoint}" data-direction="${anchor.direction}" data-pin-number="${anchor.physical_pin}" data-pin-name="${anchor.port}" data-component-selector="@${anchor.physical_pin}" style="top:${top}%" aria-label="${anchor.endpoint}, physical pin ${anchor.physical_pin}, ${anchor.direction} pin"></button>`;
+  const inputs = node.pinAnchors.filter(anchor => anchor.direction === "input");
+  const outputs = node.pinAnchors.filter(anchor => anchor.direction === "output");
+  const anchors = [...inputs, ...outputs].map(anchor => {
+    const group = anchor.direction === "output" ? outputs : inputs;
+    const top = 50 + (group.indexOf(anchor) - (group.length - 1) / 2) * 24;
+    const side = anchor.direction === "output" ? "right" : "left";
+    return `<button class="pin-anchor ${side}" type="button" data-anchor-id="${anchor.id}" data-endpoint="${anchor.endpoint}" data-direction="${anchor.direction}" data-pin-number="${anchor.physical_pin}" data-pin-name="${anchor.port}" data-component-selector="@${anchor.physical_pin}" style="top:${top}%" aria-label="Connect node ${anchor.endpoint}, ${anchor.direction}"></button>`;
   }).join("");
   const caption = compact ? "" : "<figcaption>Drag from one visible pin to another to propose a checked source edit. This frame owns no wiring state.</figcaption>";
-  return `<figure class="pinout-art chip-frame${compact ? " compact" : ""}" data-frame-device="${node.id}"><img src="${node.resource.asset}" alt="${node.part} DIP pin frame" draggable="false"><div class="pin-anchor-layer" aria-label="Definition-owned ${node.part} pins">${anchors}</div>${caption}</figure>`;
+  return `<figure class="pinout-art chip-frame${compact ? " compact" : ""}" data-frame-device="${node.id}"><img src="${node.resource.asset}" alt="${node.part} logic symbol" draggable="false"><div class="pin-anchor-layer" aria-label="Definition-owned ${node.part} connect nodes">${anchors}</div>${caption}</figure>`;
 }
 
 function installPinGesture() {

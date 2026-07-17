@@ -26,6 +26,9 @@ for (const required of [
   'panViewport(ensureViewport(canvas)',
   'View moved. Component source and Board picture are unchanged.',
   'Left-drag any device, net, route bend, or label',
+  'visibleGateAnchors',
+  'endpointScreenPoint',
+  'Connect node ${anchor.endpoint}',
 ]) assert.ok(app.includes(required), `missing interaction contract: ${required}`);
 
 assert.ok(!app.includes("projectLegacyPoint"), "Board renderer must not retain the v1 coordinate adapter");
