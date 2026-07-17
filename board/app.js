@@ -143,6 +143,7 @@ function renderBoard() {
   vectors.classList.add("board-vectors"); vectors.setAttribute("viewBox", `0 0 ${screen.width} ${screen.height}`); vectors.setAttribute("preserveAspectRatio", "none");
   canvas.append(vectors);
   nodes.forEach(node => drawNode(canvas, node));
+  installPinGesture();
   (state.board?.wires || []).forEach(wire => {
     const left = lookup[wire.from.split(".")[0]] || lookup[wire.from]; const right = lookup[wire.to.split(".")[0]] || lookup[wire.to];
     if (left && right && shouldShowWire(wire)) drawEdge(vectors, left, right, wire);
@@ -440,6 +441,8 @@ function chipFrame(node, compact = false) {
 
 function installPinGesture() {
   document.querySelectorAll(".pin-anchor").forEach(anchor => {
+    if (anchor.dataset.pinGestureBound === "true") return;
+    anchor.dataset.pinGestureBound = "true";
     anchor.addEventListener("click", event => {
       event.preventDefault(); event.stopPropagation();
       if (isGuideTool()) {

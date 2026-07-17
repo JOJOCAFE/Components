@@ -32,6 +32,8 @@ for (const required of [
   'state.guideFocuses.push(focus)',
   'function isGuideTool()',
   'anchor.addEventListener("click"',
+  'anchor.dataset.pinGestureBound',
+  'nodes.forEach(node => drawNode(canvas, node));\n  installPinGesture();',
   'focus.kind === "net"',
   'toggleGuideFocus({ kind: node.kind, id: node.id })',
   'if (isGuideTool()) {',
