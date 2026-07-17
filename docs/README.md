@@ -15,6 +15,30 @@ documentation lives here.
   selected part, wire, value, or result.
 - `COMPONENT_THREE_PANE_WORKSPACE.md` - Drawing left, Text upper-right,
   Terminal lower-right interaction contract.
+- [`../board/docs/COMPONENT_BOARD_WORKFLOW.md`](../board/docs/COMPONENT_BOARD_WORKFLOW.md) - learner and implementation workflow for
+  inspecting chips, previewing/applying connections, recovering from errors,
+  and running the first Board example.
+- [`../board/docs/COMPONENT_BOARD_PROTOTYPE.md`](../board/docs/COMPONENT_BOARD_PROTOTYPE.md) - prototype boundary and command design for
+  Component topology versus `component:board` placement, routes, and LOGO pen
+  paths; use this before implementing further Board commands.
+- [`../board/docs/BOARD_FIRST_SIGHT_TRIAL.md`](../board/docs/BOARD_FIRST_SIGHT_TRIAL.md) - five-minute human acceptance protocol for the
+  local NOT-gate Board, including safe-change and recovery checks.
+- [`../board/docs/BOARD_LEARNER_CIRCUIT_DIRECTION.md`](../board/docs/BOARD_LEARNER_CIRCUIT_DIRECTION.md) - MakeCode-like blocks, readable
+  Component code, and KiCad-like Board direction under one circuit authority.
+- [`../board/docs/BOARD_IMAGE_RECONSTRUCTION_CONTRACT.md`](../board/docs/BOARD_IMAGE_RECONSTRUCTION_CONTRACT.md) - resolver-gated schematic-image
+  reconstruction and code-to-Board connection-guide contract.
+- [`../board/docs/BOARD_CANVAS_PROTOTYPE_SCOPE.md`](../board/docs/BOARD_CANVAS_PROTOTYPE_SCOPE.md) - the deliberately small mouse/stylus
+  schematic-canvas prototype and its Component-layer action mapping.
+- [`../board/docs/BOARD_ARCHITECTURE_FREEZE.md`](../board/docs/BOARD_ARCHITECTURE_FREEZE.md) - frozen Board v2 world-coordinate Viewport,
+  semantic-operation, and transaction-queue architecture.
+- [`../board/docs/BOARD_V2_SPRINT_PLAN.md`](../board/docs/BOARD_V2_SPRINT_PLAN.md) - ordered Board v2 tasks, machine/human
+  checkpoints, and the benchmark-harness gate that precedes broad editor work.
+- [`../board/docs/BOARD_SCHEMATIC_TOOLSET.md`](../board/docs/BOARD_SCHEMATIC_TOOLSET.md) - the staged KiCad/Tinkercad-inspired schematic
+  tool inventory and its Component-layer mappings.
+
+The related language-layer contract is
+[`../Language/23_Component_Operation_Contract.md`](../Language/23_Component_Operation_Contract.md):
+the replayable Board/source/runtime operation layer.
 - `CHIP_STATUS.md` - 74xx/memory status baseline used by DB status checks.
 - `SESSION_HANDOFF.md` - latest work state, verification, and next lanes.
 - `TEAM_SKILLS.md` - compact Components team routing and quality-gate contract.

@@ -14,12 +14,13 @@ from .services import CONTRACT, CircuitCommandService, CircuitSessionRegistry, F
 from .component_language import parse_component_text, resolve_component
 from .component_runtime import ComponentRuntimeError, ComponentRuntimeSession
 from .component_transport import board_view
-from .component_edit import apply_component_edit
+from .component_edit import apply_component_edit, preview_component_edit
 
 
 JsonMap = dict[str, Any]
 ROOT = Path(__file__).resolve().parents[2]
 BOARD_ROOT = ROOT / "board"
+BOARD_RESOURCE_ROOT = ROOT / "resource" / "temp" / "74hc-functional-pinouts"
 NOT_GATE_FIXTURE = ROOT / "Language" / "fixtures" / "component-v1.1" / "digital_inverter.component"
 
 
@@ -94,6 +95,13 @@ def handle_request(
             if not isinstance(source, str) or not isinstance(revision, str) or not isinstance(edit, dict):
                 raise ValueError("component-language-edit needs source, source_revision, and edit")
             return _ok(command, apply_component_edit(source, expected_revision=revision, edit=edit, source_name=str(input_data.get("source_name", "<api>"))))
+        if command == "component-language-edit-preview":
+            source = input_data.get("source")
+            revision = input_data.get("source_revision", options.get("source_revision"))
+            edit = input_data.get("edit", options.get("edit"))
+            if not isinstance(source, str) or not isinstance(revision, str) or not isinstance(edit, dict):
+                raise ValueError("component-language-edit-preview needs source, source_revision, and edit")
+            return _ok(command, preview_component_edit(source, expected_revision=revision, edit=edit, source_name=str(input_data.get("source_name", "<api>"))))
         if command in {"component-language-parse", "component-language-resolve", "component-language-board-view", "component-language-run", "component-language-student"}:
             source = input_data.get("source")
             if not isinstance(source, str):
@@ -218,8 +226,8 @@ def run_http(host: str = "127.0.0.1", port: int = 8765, service: FrontendDesignS
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self) -> None:  # noqa: N802 - stdlib API name
             relative = self.path.split("?", 1)[0].lstrip("/") or "index.html"
-            candidate = (BOARD_ROOT / relative).resolve()
-            if candidate != BOARD_ROOT.resolve() and BOARD_ROOT.resolve() not in candidate.parents:
+            candidate = board_static_file(relative)
+            if candidate is None:
                 self.send_error(404)
                 return
             if not candidate.is_file():
@@ -260,6 +268,16 @@ def run_http(host: str = "127.0.0.1", port: int = 8765, service: FrontendDesignS
     finally:
         server.server_close()
     return 0
+
+
+def board_static_file(relative: str) -> Path | None:
+    """Resolve one Board-owned static file without allowing path escape."""
+    prefix = "resources/74hc-functional-pinouts/"
+    root, child = (BOARD_RESOURCE_ROOT, relative[len(prefix):]) if relative.startswith(prefix) else (BOARD_ROOT, relative)
+    candidate = (root / child).resolve()
+    if candidate != root.resolve() and root.resolve() not in candidate.parents:
+        return None
+    return candidate if candidate.is_file() else None
 
 
 def main(argv: list[str] | None = None) -> int:

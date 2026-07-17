@@ -1,0 +1,9 @@
+{
+  "schema": "components.board-v2-fixture-corpus@1",
+  "digest_algorithm": "For each canonical_projection file: parse UTF-8 JSON, serialize with JSON object keys sorted recursively, ensure_ascii=false, separators=(',', ':'), UTF-8 encode, then SHA-256. Array order is preserved. Hash the serialized value, never raw file bytes.",
+  "cases": [
+    {"id": "not-gate", "source": "not_gate.component", "canonical_projection": "not_gate.topology-projection.json", "resolved_expectation": "not_gate.resolved.expectation.json", "resource_binding_expectation": "not_gate.resource-bindings.expectation.json", "board_projection_expectation": "not_gate.board-projection.expectation.json", "topology_digest": "sha256:8a4f0a50122a64ffa93ef986712391467c0cfaca546f74c21c55719bfeb9111a"},
+    {"id": "chain-4", "source": "chain_4.component", "canonical_projection": "chain_4.topology-projection.json", "resolved_expectation": "chain_4.resolved.expectation.json", "resource_binding_expectation": "chain_4.resource-bindings.expectation.json", "board_projection_expectation": "chain_4.board-projection.expectation.json", "topology_digest": "sha256:911eae3a3eed6fb86ea99d70a7fed340f5e924bf24610ca0648889eb3c51b632"},
+    {"id": "dense-16x32", "source": "dense_16x32.component", "canonical_projection": "dense_16x32.topology-projection.json", "resolved_expectation": "dense_16x32.resolved.expectation.json", "resource_binding_expectation": "dense_16x32.resource-bindings.expectation.json", "board_projection_expectation": "dense_16x32.board-projection.expectation.json", "topology_digest": "sha256:283c48b6647e63d28e77c93c79224616a2f3fd446ca8ce23b37592a779f0b99c"}
+  ]
+}

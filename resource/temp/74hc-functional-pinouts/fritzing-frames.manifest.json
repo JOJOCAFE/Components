@@ -1,0 +1,554 @@
+{
+  "schema": "components.board.fritzing-dip-frame@1",
+  "frames": [
+    {
+      "part": "74HC00",
+      "file": "74hc00.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC02",
+      "file": "74hc02.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC03",
+      "file": "74hc03.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC04",
+      "file": "74hc04.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": "74hc04-internal.svg"
+    },
+    {
+      "part": "74HC05",
+      "file": "74hc05.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": "74hc05-internal.svg"
+    },
+    {
+      "part": "74HC07",
+      "file": "74hc07.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC08",
+      "file": "74hc08.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": "74hc08-internal.svg"
+    },
+    {
+      "part": "74HC10",
+      "file": "74hc10.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC11",
+      "file": "74hc11.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC132",
+      "file": "74hc132.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC138",
+      "file": "74hc138.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC139",
+      "file": "74hc139.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC14",
+      "file": "74hc14.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": "74hc14-internal.svg"
+    },
+    {
+      "part": "74HC147",
+      "file": "74hc147.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC148",
+      "file": "74hc148.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC151",
+      "file": "74hc151.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC153",
+      "file": "74hc153.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC154",
+      "file": "74hc154.svg",
+      "pins": 24,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC155",
+      "file": "74hc155.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC158",
+      "file": "74hc158.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC160",
+      "file": "74hc160.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC162",
+      "file": "74hc162.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC163",
+      "file": "74hc163.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC164",
+      "file": "74hc164.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC165",
+      "file": "74hc165.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC166",
+      "file": "74hc166.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC193",
+      "file": "74hc193.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC20",
+      "file": "74hc20.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC21",
+      "file": "74hc21.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC238",
+      "file": "74hc238.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC240",
+      "file": "74hc240.svg",
+      "pins": 20,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC244",
+      "file": "74hc244.svg",
+      "pins": 20,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC251",
+      "file": "74hc251.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC257",
+      "file": "74hc257.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC266",
+      "file": "74hc266.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC27",
+      "file": "74hc27.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC273",
+      "file": "74hc273.svg",
+      "pins": 20,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC283",
+      "file": "74hc283.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC30",
+      "file": "74hc30.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC32",
+      "file": "74hc32.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC352",
+      "file": "74hc352.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC374",
+      "file": "74hc374.svg",
+      "pins": 20,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC377",
+      "file": "74hc377.svg",
+      "pins": 20,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC4049",
+      "file": "74hc4049.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC4050",
+      "file": "74hc4050.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC4078",
+      "file": "74hc4078.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC4520",
+      "file": "74hc4520.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC4538",
+      "file": "74hc4538.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC541",
+      "file": "74hc541.svg",
+      "pins": 20,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC593",
+      "file": "74hc593.svg",
+      "pins": 20,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC595",
+      "file": "74hc595.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC688",
+      "file": "74hc688.svg",
+      "pins": 20,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC74",
+      "file": "74hc74.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC85",
+      "file": "74hc85.svg",
+      "pins": 16,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC86",
+      "file": "74hc86.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HC922",
+      "file": "74hc922.svg",
+      "pins": 18,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HCT04",
+      "file": "74hct04.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HCT14",
+      "file": "74hct14.svg",
+      "pins": 14,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HCT245",
+      "file": "74hct245.svg",
+      "pins": 20,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HCT541",
+      "file": "74hct541.svg",
+      "pins": 20,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    },
+    {
+      "part": "74HCT574",
+      "file": "74hct574.svg",
+      "pins": 20,
+      "frame_style": "Adr-hyng 74LS-Series-Fritzing-Parts Schematic DIP frame",
+      "external_source": "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic",
+      "license": "CC BY-SA 3.0",
+      "internal_symbol_asset": null
+    }
+  ]
+}

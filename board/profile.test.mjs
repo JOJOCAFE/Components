@@ -1,0 +1,24 @@
+import assert from "node:assert/strict";
+import { advancePen, createBoardProfile, labelRecord, loadBoardProfile, parseRoutePoints, routeRecord } from "./profile.js";
+
+const topology = { componentId: "BoardProof", digest: "sha256:current", title: "Board proof" };
+const fresh = createBoardProfile(topology);
+assert.equal(loadBoardProfile(fresh, topology).status, "current");
+assert.equal(loadBoardProfile({ ...fresh, topology_ref: { ...fresh.topology_ref, digest: "sha256:old" } }, topology).status, "stale");
+assert.equal(loadBoardProfile({ schema: "wrong" }, topology).status, "invalid");
+assert.deepEqual(parseRoutePoints("(30,40) (60,40)"), [{ x: 30, y: 40 }, { x: 60, y: 40 }]);
+assert.throws(() => parseRoutePoints("(101,40)"), /0 to 100/);
+assert.throws(() => parseRoutePoints("(NaN,40)"), /0 to 100/);
+assert.throws(() => parseRoutePoints("(30,40) words"), /only Board coordinates/);
+const start = { x: 10, y: 10 };
+const coordinate = routeRecord({ edgeId: "edge:A->B", kind: "scalar", start, vias: [{ x: 30, y: 10 }, { x: 30, y: 30 }], end: { x: 80, y: 30 } });
+const penFirst = advancePen(start, 0, 20);
+const penSecond = advancePen(penFirst, 90, 20);
+const pen = routeRecord({ edgeId: "edge:A->B", kind: "scalar", start, vias: [penFirst, penSecond], end: { x: 80, y: 30 } });
+assert.deepEqual(pen.points, coordinate.points);
+assert.throws(() => advancePen({ x: 99, y: 50 }, 0, 2), /0 to 100/);
+assert.throws(() => routeRecord({ edgeId: "edge:bus", kind: "bus", start, vias: [], end: { x: 20, y: 20 } }), /scalar edges/);
+assert.deepEqual(labelRecord({ id: "note_1", position: { x: 50, y: 50 }, text: "First line\nSecond line", fontSize: 3 }), { id: "note_1", position: { x: 50, y: 50 }, text: "First line\nSecond line", font_size: 3 });
+assert.throws(() => labelRecord({ id: "bad id", position: start, text: "note", fontSize: 3 }), /identifier/);
+assert.throws(() => labelRecord({ id: "note", position: start, text: "", fontSize: 3 }), /label text/);
+console.log("Board profile contract tests passed");

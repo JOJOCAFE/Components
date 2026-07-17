@@ -1,11 +1,204 @@
 # Components Session Handoff
 
-Last updated: 2026-07-14
+Last updated: 2026-07-17
 
 > **Current authority.** This section supersedes the older RV8GR checkpoint
 > notes below when they disagree. This checkpoint includes the first local
 > Component Board implementation and its focused verification. `Language.zip`
 > is user-owned and remains untracked/untouched.
+
+## Board prototype checkpoint: 2026-07-17
+
+The active next authority for Board work is
+`board/docs/COMPONENT_BOARD_PROTOTYPE.md`. It was written after the learner clarified
+the required split:
+
+- `component:component` owns checked `device`, `net`, `bus`, and explicit
+  `connect U1.1Y -> U2.1A;` source declarations.
+- `component:board` owns only presentation: placed positions and route points
+  for an **already resolved** scalar edge. A route must never create a circuit
+  connection.
+- Coordinate paths and LOGO-style pen paths are alternate ways to describe the
+  same legacy prototype Board-profile route. The former `0..100`, top-left,
+  positive-right/down encoding is superseded for new work by the centered
+  world-coordinate Viewport architecture in `board/docs/BOARD_ARCHITECTURE_FREEZE.md`.
+- Bus routing is deliberately not implemented/accepted: a bus needs a frozen
+  bundle/member route contract before the Board can draw a line that implies
+  bit wiring.
+
+The prototype lists Working Box/BOM lifecycle, source-versus-profile
+persistence, stale-digest recovery, accessibility/undo expectations, and seven
+first acceptance scenarios. `board/docs/COMPONENT_BOARD_WORKFLOW.md` remains the
+learner flow; use the prototype for any new command or Board profile behavior.
+
+### Board worktree status at handoff
+
+- The worktree contains uncommitted Board/SVG/API/docs work from this session
+  and earlier concurrent Board slices. Preserve it; do not reset or discard
+  unrelated changes.
+- Focused checks passed **before** the final prototype clarification:
+
+  ```sh
+  PYTHONPATH=python python3 -B -c 'from tests.test_component_board_api import test_board_chip_frame_resource_is_available, test_board_example_resolve_run_and_checked_source_edit, test_board_edit_rejects_stale_or_missing_connection_without_mutating_text; test_board_chip_frame_resource_is_available(); test_board_example_resolve_run_and_checked_source_edit(); test_board_edit_rejects_stale_or_missing_connection_without_mutating_text()'
+  PYTHONPATH=python python3 -B -c 'from tests.test_functional_pinout_svg_metadata import test_every_74hc_svg_pin_node_has_command_lookup_metadata; test_every_74hc_svg_pin_node_has_command_lookup_metadata()'
+  node --check board/app.js
+  git diff --check
+  ```
+
+- The later coordinate/LOGO pen-command experiment has **not** been accepted
+  against the new prototype or given a final interactive-browser verification.
+  Do not claim it is complete. Review/adjust it from the prototype first, then
+  add deterministic profile round-trip tests and run the focused checks again.
+
+### Exact resume order
+
+1. Run `board/docs/BOARD_FIRST_SIGHT_TRIAL.md` separately with one 13–15-year-old
+   learner and one adult beginner. This is the remaining human acceptance
+   evidence; do not mark it passed from developer inspection.
+2. Add Working Box and atomic BOM preview only after the add-declaration
+   service contract and tests are complete.
+3. Add a bus-route contract before any visual bus bundle command.
+4. Have Fern independently review the browser flow before a broader Board
+   implementation is claimed.
+
+### Board profile contract checkpoint: 2026-07-17
+
+The local Board now has a deterministic profile-rule module at
+`board/profile.js` with a Node proof at `board/profile.test.mjs`. It accepts
+only finite in-bounds Board coordinates (`0..100`), stores scalar-edge routes
+only, and uses Board units for both coordinate and LOGO pen paths. A stale
+topology digest is not reused or retargeted: the Board reports it and requires
+an explicit `discard board profile` before an empty profile can be saved.
+
+Focused checkpoint evidence:
+
+```sh
+node --check board/app.js
+node board/profile.test.mjs
+PYTHONPATH=python python3 -B -m tests.test_component_board_api
+PYTHONPATH=python python3 -B -m tests.test_component_language
+PYTHONPATH=python python3 -B -m tests.test_functional_pinout_svg_metadata
+git diff --check
+```
+
+This closes the deterministic scalar-profile subgate only. It does not claim
+server profile persistence, Working Box/BOM, bus-route semantics, Undo/Redo,
+browser accessibility parity, a learner trial, timing signoff, or breadboard
+safety.
+
+### Browser interaction implementation checkpoint: 2026-07-17
+
+The local Board now has the code-level interaction path for pointer and
+keyboard pin selection, checked preview before explicit Apply, typed pin-to-pin
+preview, and Cancel/Escape/`cancel route` recovery. The associated machine
+checks are `node board/interaction-contract.test.mjs` plus the focused Board
+API tests; a temporary localhost HTTP smoke confirmed that the API serves the
+module Board client. No browser automation runtime is installed in this
+environment, so visual interaction still needs the human trial protocol above.
+
+### Learner circuit direction: 2026-07-17
+
+The requested Board direction is now recorded in
+`board/docs/BOARD_LEARNER_CIRCUIT_DIRECTION.md`: MakeCode-like blocks, readable
+Component code, and a KiCad-like spatial Board are three views of one
+library-backed Component circuit. The next implementation slice after the
+human trial is a checked library palette and Working Box, not a freehand
+canvas. `components.block_ui` remains a separate normalized-Design
+interchange until a checked Component-to-Design bridge is frozen.
+
+The user further clarified the primary goal: Board is the **detailed
+bidirectional visual editor** for Component language. It must render text as
+a real pin-by-pin circuit and turn visual part/pin edits back into exact
+checked Component code. MakeCode/Canva/SketchUp-style ease is the interaction
+layer; it never replaces the KiCad-like detailed canvas with rough blocks.
+
+The first visual surface is now explicitly a **student-friendly KiCad-style
+schematic for ages 13–15**, not a breadboard interface. Breadboard/physical
+layout stays deferred behind a separate evidence and safety contract.
+
+The Board's two-way next contract is now explicit: Component source places all
+resolved devices and shows dashed connection guides for a student to route;
+an image import stages a reviewable schematic reconstruction and proposed
+Component source rather than claiming automatic electrical truth. See
+`board/docs/BOARD_IMAGE_RECONSTRUCTION_CONTRACT.md`.
+
+The three-layer language model is now documented explicitly:
+`component:component` defines the circuit, `component:board` defines its
+resolved visual profile, and planned `component:operation` defines meaningful
+replayable Board/source/runtime actions. It follows the Maya/Blender command
+idea without persisting every raw mouse move or individual keystroke; see
+`Language/23_Component_Operation_Contract.md`.
+
+### Board architecture freeze: 2026-07-17
+
+Board is frozen as a Component-language visual front end: **Screen → Viewport
+→ centered World → snap/selection → semantic operation → transaction queue →
+validation → update → re-render**. Board does not edit a Component model
+directly. The right-top overlay is a multi-row Transaction Queue with Apply
+all; Inspect is semantic (Device, Library, Pins, Ports, Timing, Behavior,
+References, Connections). The immediate next implementation gate is profile
+v2/migration plus the world/viewport/operation path, before broad editor-tool
+work. See `board/docs/BOARD_ARCHITECTURE_FREEZE.md`.
+
+### Board v2 sprint and harness gate: 2026-07-17
+
+The current execution authority is `board/docs/BOARD_V2_SPRINT_PLAN.md`. Begin with
+Gate 0: deterministic fixtures and a headless benchmark/regression harness.
+Do not widen Board tools until it measures and proves projection, profile
+migration, queue dependency, deterministic export, and intentional negative
+cases. Subsequent checkpoints are World/Viewport, profile v2 migration,
+definition-derived geometry, transaction queue, then the learner trial.
+
+Gate 0 B0.1–B0.3 now pass: `Language/fixtures/board-v2/` supplies checked
+NOT/chain-4/dense-16x32 sources and canonical topology projections; the
+headless `tests.test_board_v2_harness` checks their digests, eight negative
+cases, deterministic exports across hash seeds, and baseline-mode measurements.
+B0.4 remains open: collect the specified 25-sample reviewed baseline and add
+the tracked threshold record before enabling performance regression limits.
+
+### Vector canvas slice: 2026-07-17
+
+The local Board now renders existing chip-frame resources as SVG, resolved
+connection guides/routes as SVG paths, and Board-only labels as SVG text. A
+label supports one or multiple lines and a `1.5..8` Board-unit size; font and
+colour choices remain intentionally deferred. Labels and visual routes are
+stored in the digest-locked profile and do not change Component wiring. The
+current connection-guide path can be dragged into a routed path; it does not
+invent an electrical edge.
+
+## Functional-pinout SVG handoff: 2026-07-14
+
+Board artwork is being redrawn as clean SVG from the cropped datasource PNGs
+in `resource/temp/74hc-functional-pinouts/`; the package definition remains
+the pin-truth authority. The accepted internal-symbol references are
+`74hc04-internal.svg`, `74hc05-internal.svg`, `74hc08-internal.svg`, and
+`74hc14-internal.svg`. The reviewed combined outputs are
+`74hc04-functional.svg`, `74hc05-functional.svg`, `74hc08-functional.svg`,
+and `74hc14-functional.svg`; the definition-backed Fritzing-style outside
+frames use the corresponding un-suffixed filenames. Together they establish
+the shared DIP header, inside-name/outside-number label spacing, direct
+gate/bubble/cord contact, and source-specific internal marks. For special
+symbols, check a manufacturer datasheet as well as the cropped source before
+drawing a new part.
+
+`74hc21.png` is cropped and `74hc21.svg` exists only as an **unaccepted
+draft**. Do not use it as a template. Resume by inspecting its PNG at high
+magnification and tracing its two four-input AND symbols and each stepped cord
+one route at a time; the previous attempt did not faithfully match the source.
+
+### Functional-pinout resume point: 2026-07-14
+
+- Reviewed combined drawings: `74hc00-functional.svg`, `74hc02-functional.svg`,
+  `74hc03-functional.svg`, `74hc04-functional.svg`, `74hc05-functional.svg`,
+  `74hc08-functional.svg`, and `74hc14-functional.svg`.
+- `74hc08-functional.svg` is the latest accepted source-match reference: its
+  right AND gates mirror the left-side placement, and 4A/3A take the clear
+  turn lane between the inside pin name and lower gate edge.
+- For each next chip: enlarge its cropped PNG before editing, trace cord turns
+  rather than inferring them, preserve definition pin mapping/connectors, then
+  run a connector/symbol count check and `git diff --check`.
+- The 74HC00/02/03 drawings are functional references but should receive a
+  final visual source comparison before they are treated as finished examples.
 
 ## Current student-first Board/desktop checkpoint: 2026-07-14
 

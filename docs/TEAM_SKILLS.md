@@ -53,6 +53,25 @@ Role-specific detail lives in `docs/agents/`.
 No specialist verifies only their own work. Fern reviews behavior that is meant
 to ship, and Pim keeps the route visible.
 
+## Saved Board Prototype Gate: 2026-07-17
+
+Before a specialist extends Board commands, read
+`board/docs/COMPONENT_BOARD_PROTOTYPE.md`. The contract is strict: Component source
+owns `device`/`net`/`bus`/`connect`; `component:board` owns only digest-locked
+positions and visual paths for existing resolved scalar edges. Bank owns any
+Board-profile or bus-route contract decision; Bam implements only the approved
+contract; Noon keeps command wording beginner-readable; Fern independently
+proves that a Board route cannot create or retarget topology. Do not implement
+a decorative bus line until its bundle/member semantics are explicitly frozen.
+
+The deterministic scalar-profile subgate is now present in `board/profile.js`
+and `board/profile.test.mjs`: valid `0..100` points only, stale digest refusal,
+scalar-only route records, and coordinate/pen normalization. It is now an
+exploratory legacy profile: before more Board tools, migrate through the frozen
+world-coordinate Viewport and transaction-operation architecture in
+`board/docs/BOARD_ARCHITECTURE_FREEZE.md`. That gate does not authorize bus routes,
+Working Box/BOM expansion, or physical claims.
+
 ## Saved Team Checkpoint: 2026-07-12
 
 - Components `main` is pushed at `01d7ea1 Promote virtual test helper circuit`.
@@ -274,3 +293,36 @@ vvp /tmp/tb_74xx_smoke.vvp
 iverilog -g2012 -Wall -o /tmp/tb_memory_smoke.vvp verilog/memory/*.v verilog/memory/tests/tb_memory_smoke.v
 vvp /tmp/tb_memory_smoke.vvp
 ```
+
+## Saved 74HC Functional-Pinout SVG Skill: 2026-07-14
+
+The canonical examples for redrawing Board functional-pinout artwork are now
+`74HC00`, `74HC02`, `74HC03`, `74HC04`, `74HC05`, `74HC08`, and `74HC14` in
+`resource/temp/74hc-functional-pinouts/`. Use their `-functional.svg` files
+as the approved combined frame-plus-logic examples.
+They supersede the earlier experimental `74HC00`–`74HC03` drawing guidance;
+do not reuse that older layout as a template.
+
+- Work from the cropped source PNG and the package definition pin map. Redraw
+  in SVG; never embed or automatically trace the raster.
+- Preserve the source's exact terminal routing: cords touch the gate boundary,
+  turned and straight input paths stay distinct, and every output has its own
+  clear return lane.
+- Keep the compact **pin name inside** the package, slightly above its cord
+  line. Keep the **physical pin number outside** the package, also above its
+  cord line. Neither text element may overlap the cord.
+- Match the source symbol family and internal detail. `74HC00` establishes
+  rounded NAND plus a hollow output bubble; `74HC02` establishes compact,
+  upward-facing NOR gates with their stepped lower-input cords; `74HC03`
+  establishes open-collector NAND marking; `74HC04` establishes the plain
+  inverter layout; `74HC05` establishes the open-drain inverter mark;
+  `74HC08` establishes rounded two-input AND gates; and `74HC14` establishes a
+  compact, input-side hysteresis loop plus an output inversion bubble. For a
+  non-plain gate, verify the symbol against the cropped PNG and an
+  authoritative manufacturer datasheet before drawing.
+- Match the approved DIP header construction exactly: one connection rectangle
+  per physical pin, normal long outer lead, compact internal pin name, and
+  external pin number. Do not substitute short stubs or an alternate DIP
+  layout.
+- Keep SVG art presentation-only. Gate terminals and physical pin truth come
+  from the definition/graph contract, not inferred from SVG coordinates.

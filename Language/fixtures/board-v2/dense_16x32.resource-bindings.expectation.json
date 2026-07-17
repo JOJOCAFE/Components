@@ -1,0 +1,8 @@
+{
+  "schema": "components.board-v2-resource-binding-expectation@1",
+  "topology_ref": {"component_id": "BoardV2Dense16x32", "schema": "components.resolved-component@1", "digest": "sha256:283c48b6647e63d28e77c93c79224616a2f3fd446ca8ce23b37592a779f0b99c"},
+  "binding_id_pattern": "<instance-id>-dip-frame",
+  "target_kind": "device-instance",
+  "target_ids": ["U01", "U02", "U03", "U04", "U05", "U06", "U07", "U08", "U09", "U10", "U11", "U12", "U13", "U14", "U15", "U16"],
+  "resource": {"id": "components.board-v2.74HC04-frame@1", "digest": "sha256:62f06e316fcc761c95d253ca4374f2fee93a9a5f5781b2a87c1ccf5298c50456", "view": "dip-frame", "asset": "resource/temp/74hc-functional-pinouts/74hc04.svg"}
+}

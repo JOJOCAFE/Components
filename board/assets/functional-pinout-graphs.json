@@ -1,0 +1,10 @@
+{
+  "schema": "components.board.functional-pinout-graphs@1",
+  "boundary": "Presentation graph only. Device definitions remain the source of pin names, logic, timing, and electrical behavior.",
+  "parts": {
+    "74HC00": {"kind": "nand", "output_mode": "push-pull", "gates": [{"id":"G1","pins":{"A":1,"B":2,"Y":3}},{"id":"G2","pins":{"A":4,"B":5,"Y":6}},{"id":"G3","pins":{"A":9,"B":10,"Y":8}},{"id":"G4","pins":{"A":12,"B":13,"Y":11}}]},
+    "74HC02": {"kind": "nor", "output_mode": "push-pull", "gates": [{"id":"G1","pins":{"A":2,"B":3,"Y":1}},{"id":"G2","pins":{"A":5,"B":6,"Y":4}},{"id":"G3","pins":{"A":8,"B":9,"Y":10}},{"id":"G4","pins":{"A":11,"B":12,"Y":13}}]},
+    "74HC03": {"kind": "nand", "output_mode": "open-drain", "gates": [{"id":"G1","pins":{"A":1,"B":2,"Y":3}},{"id":"G2","pins":{"A":4,"B":5,"Y":6}},{"id":"G3","pins":{"A":9,"B":10,"Y":8}},{"id":"G4","pins":{"A":12,"B":13,"Y":11}}]},
+    "74HC04": {"kind": "inverter", "output_mode": "push-pull", "gates": [{"id":"G1","pins":{"A":1,"Y":2}},{"id":"G2","pins":{"A":3,"Y":4}},{"id":"G3","pins":{"A":5,"Y":6}},{"id":"G4","pins":{"A":9,"Y":8}},{"id":"G5","pins":{"A":11,"Y":10}},{"id":"G6","pins":{"A":13,"Y":12}}]}
+  }
+}

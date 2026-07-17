@@ -1,0 +1,12 @@
+{
+  "schema": "components.board-v2-resolved-expectation@1",
+  "source": "not_gate.component",
+  "component_id": "BoardV2NotGate",
+  "expected_ok": true,
+  "topology_digest": "sha256:8a4f0a50122a64ffa93ef986712391467c0cfaca546f74c21c55719bfeb9111a",
+  "canonical_projection": "not_gate.topology-projection.json",
+  "counts": {"instances": 3, "nets": 2, "scalar_edges": 4, "buses": 0},
+  "instance_ids": ["Clock", "U1", "Observe"],
+  "edge_ids": ["edge:Clock.CLK->clock", "edge:clock->U1.1A", "edge:U1.1Y->inverted", "edge:inverted->Observe.IN"],
+  "topology_projection": {"component_id": "BoardV2NotGate", "profile": "components.digital", "library_lock_order": ["Clock", "U1", "Observe"], "edge_order": ["Clock.CLK->clock", "clock->U1.1A", "U1.1Y->inverted", "inverted->Observe.IN"]}
+}

@@ -1,0 +1,13 @@
+use standard.digital as digital;
+use standard.virtual as virtual;
+
+component:component BoardV2Chain4 is components.digital {
+  device Clock, virtual.ClockSource;
+  device U1, digital.74HC04;
+  device U2, digital.74HC04;
+  device Observe, virtual.Probe;
+
+  connect Clock.CLK -> U1.1A;
+  connect U1.1Y -> U2.1A;
+  connect U2.1Y -> Observe.IN;
+}

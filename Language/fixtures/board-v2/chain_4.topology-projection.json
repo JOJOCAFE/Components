@@ -1,0 +1,1 @@
+{"schema":"components.board-v2-topology-projection@1","component_id":"BoardV2Chain4","profile":"components.digital","instances":[["Clock","ClockSource"],["U1","74HC04"],["U2","74HC04"],["Observe","Probe"]],"nets":[],"buses":[],"scalar_edges":[["Clock.CLK","U1.1A"],["U1.1Y","U2.1A"],["U2.1Y","Observe.IN"]],"observations":[],"display_bindings":[],"tests":[]}

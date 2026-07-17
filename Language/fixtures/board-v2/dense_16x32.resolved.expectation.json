@@ -1,0 +1,12 @@
+{
+  "schema": "components.board-v2-resolved-expectation@1",
+  "source": "dense_16x32.component",
+  "component_id": "BoardV2Dense16x32",
+  "expected_ok": true,
+  "topology_digest": "sha256:283c48b6647e63d28e77c93c79224616a2f3fd446ca8ce23b37592a779f0b99c",
+  "canonical_projection": "dense_16x32.topology-projection.json",
+  "counts": {"instances": 16, "nets": 0, "scalar_edges": 32, "buses": 0},
+  "instance_ids": ["U01", "U02", "U03", "U04", "U05", "U06", "U07", "U08", "U09", "U10", "U11", "U12", "U13", "U14", "U15", "U16"],
+  "edge_id_pattern": "edge:<resolved-from>-><resolved-to>",
+  "topology_projection": {"component_id": "BoardV2Dense16x32", "profile": "components.digital", "layer_instances": [["U01", "U02", "U03", "U04"], ["U05", "U06", "U07", "U08"], ["U09", "U10", "U11", "U12"], ["U13", "U14", "U15", "U16"]], "edge_count": 32}
+}

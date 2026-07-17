@@ -1,9 +1,13 @@
 # 22 — `component:board` Profile Contract
 
-Status: deferred contract for C4.1.  A Board profile is intentionally not an
-implemented language feature or visual editor.  It can be frozen for exchange
-only after the C1 resolved-component and C3 Resource-binding contracts are
-available to consume.
+Status: C4.1 prototype checkpoint. The local Board now creates and validates
+browser-local `components.board-profile@1` records for placements and existing
+scalar-edge routes. It is not a Component-language feature, a server-persisted
+exchange implementation, or a completed visual editor. Its normalized top-left
+coordinates are legacy prototype data; the frozen Board v2 migration is in
+[`../board/docs/BOARD_ARCHITECTURE_FREEZE.md`](../board/docs/BOARD_ARCHITECTURE_FREEZE.md).
+C4.2 remains gated on that migration plus resolver, resource-binding,
+round-trip, and learner interaction evidence.
 
 ## Boundary
 
@@ -34,10 +38,13 @@ It contains:
 - `physical_captures`: evidence references with scope and status; and
 - optional Board title/view metadata.
 
-Coordinates and path points are Board-local presentation data.  They neither
-create an electrical connection nor prove a PCB route.  A physical capture is
+Coordinates and path points are Board-local presentation data. They neither
+create an electrical connection nor prove a PCB route. A physical capture is
 an evidence reference, not a simulation input and not an automatic physical
-signoff claim.
+signoff claim. Profile `@1` uses bounded `0..100` top-left coordinates only as
+a prototype encoding. The planned successor will declare centered Cartesian
+world coordinates explicitly; screen and viewport coordinates never enter the
+Component parser or resolver.
 
 ## Hard exclusions
 
@@ -63,3 +70,20 @@ prove the closed ownership boundary only.  They do not authorize C4.2.  A
 visual editor can begin only when it uses the C1 resolver and C3 bindings,
 round-trips source-owned topology unchanged, and exposes resolver diagnostics
 instead of silently repairing a Board view.
+
+## C4.1 prototype evidence
+
+The dependency-free local Board consumes the resolver's read-only Board view
+and saves only presentation data in browser-local storage. Its profile helper
+rejects invalid/non-finite/out-of-range `0..100` coordinates, rejects a route
+whose resolved edge is not explicitly scalar, preserves topology identity, and
+marks mismatched profiles stale rather than retargeting them. Coordinate and
+LOGO-pen paths are normalized to the same Board units and have a deterministic
+Node proof in `board/profile.test.mjs`.
+
+This is deliberately still narrower than C4.2: Board profile persistence is
+local to the prototype, bus-route/member semantics are not defined, and the
+required browser accessibility plus first-sight learner trials remain open.
+Before C4.2 extends placement/routing, a new profile version, migration
+fixtures, world/viewport transform, and transaction operation path are
+required.

@@ -71,6 +71,8 @@ def test_runtime_instantiates_resolved_inverter_and_reads_probe():
     runtime = ComponentRuntimeSession(resolved)
     runtime.drive("clock", 0)
     assert runtime.probe("inverted_level")["probes"]["inverted_level"] == 1
+    runtime.drive("clock", 1)
+    assert runtime.probe("inverted_level")["probes"]["inverted_level"] == 0
     assert runtime.run_declared_test("inversion")["ok"] is True
 
 

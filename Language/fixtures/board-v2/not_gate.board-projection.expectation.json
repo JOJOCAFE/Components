@@ -1,0 +1,9 @@
+{
+  "schema": "components.board-v2-projection-expectation@1",
+  "source_of_truth": "components.resolved-component@1",
+  "topology_ref": {"component_id": "BoardV2NotGate", "digest": "sha256:8a4f0a50122a64ffa93ef986712391467c0cfaca546f74c21c55719bfeb9111a"},
+  "read_only": true,
+  "blocks": [{"id": "Clock", "type": "device", "part": "ClockSource"}, {"id": "U1", "type": "device", "part": "74HC04", "pin_anchor_source": "resolved-definition"}, {"id": "Observe", "type": "device", "part": "Probe"}],
+  "scalar_edge_ids": ["edge:Clock.CLK->clock", "edge:clock->U1.1A", "edge:U1.1Y->inverted", "edge:inverted->Observe.IN"],
+  "forbidden": ["bus-routes", "svg-derived-pins", "board-created-connections"]
+}

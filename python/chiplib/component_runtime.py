@@ -70,12 +70,13 @@ class ComponentRuntimeSession:
     def drive(self, target: str, value: int | str) -> dict[str, Any]:
         key = f"net:{target}" if f"net:{target}" in self.groups else f"port:{target}"
         if key not in self.groups: raise ComponentRuntimeError(f"unknown resolved net or Device port {target!r}")
-        source = self.sources.get(target)
+        source_key = self.groups[key]
+        source = self.sources.get(source_key)
         if source is None:
-            source = self.board.logic_source(f"operation:{target}", self.groups[key], 0)
-            self.sources[target] = source
+            source = self.board.logic_source(f"operation:{source_key}", source_key, 0)
+            self.sources[source_key] = source
         logical = int(value) if isinstance(value, str) and value in {"0", "1"} else value
-        source.value = normalize_logic(logical); self.board.settle()
+        self.board.set_source(source.name, normalize_logic(logical)); self.board.settle()
         return self.snapshot()
 
     def probe(self, name: str | None = None) -> dict[str, Any]:

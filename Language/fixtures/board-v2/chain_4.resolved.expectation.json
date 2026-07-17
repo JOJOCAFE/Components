@@ -1,0 +1,12 @@
+{
+  "schema": "components.board-v2-resolved-expectation@1",
+  "source": "chain_4.component",
+  "component_id": "BoardV2Chain4",
+  "expected_ok": true,
+  "topology_digest": "sha256:911eae3a3eed6fb86ea99d70a7fed340f5e924bf24610ca0648889eb3c51b632",
+  "canonical_projection": "chain_4.topology-projection.json",
+  "counts": {"instances": 4, "nets": 0, "scalar_edges": 3, "buses": 0},
+  "instance_ids": ["Clock", "U1", "U2", "Observe"],
+  "edge_ids": ["edge:Clock.CLK->U1.1A", "edge:U1.1Y->U2.1A", "edge:U2.1Y->Observe.IN"],
+  "topology_projection": {"component_id": "BoardV2Chain4", "profile": "components.digital", "library_lock_order": ["Clock", "U1", "U2", "Observe"], "edge_order": ["Clock.CLK->U1.1A", "U1.1Y->U2.1A", "U2.1Y->Observe.IN"]}
+}

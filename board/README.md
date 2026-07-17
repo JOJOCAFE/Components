@@ -14,12 +14,23 @@ PYTHONPATH=python python3 -B -m chiplib.api --http --host 127.0.0.1 --port 8765
 Open <http://127.0.0.1:8765/>. The Python API serves this folder, so the Board
 and Component service share one local origin.
 
+Read [`docs/COMPONENT_BOARD_WORKFLOW.md`](docs/COMPONENT_BOARD_WORKFLOW.md)
+before extending Board behavior. It defines the learner workflow and preserves
+the one-source, checked-preview, explicit-apply boundary.
+
 First slice included:
 
 - the real NOT-gate Component fixture, parser, resolver, Board JSON view, and
   declared `inversion` runtime test;
 - local draft autosave/recovery through browser local storage;
 - selection-to-readable-source highlighting and a Learning Lens explanation;
+- definition-backed 74HC DIP-frame SVG resources from
+  `resource/temp/74hc-functional-pinouts/`; and
+- visible definition-owned pin anchors over a selected supported 74HC frame.
+  A pointer gesture first calls the pure `component-language-edit-preview`
+  request, which parse/resolves the proposed patch and returns its digest while
+  retaining the exact current source. Only after that preview can the learner
+  explicitly submit the existing revision-checked source-patch request; and
 - bounded Terminal commands: `run`, `drive`, `watch`, `connect`,
   `disconnect`, and `help`; and
 - checked Board/Terminal connect/disconnect source patches. An invalid edit
@@ -28,3 +39,30 @@ First slice included:
 This is intentionally a dependency-free browser proof. A later Tauri wrapper
 must consume this same local JSON/source-edit boundary; it must not introduce
 a second circuit model.
+
+Board placement and scalar-edge routing use `components.board-profile@1` in
+browser-local storage. Coordinates are stable Board units from `0` to `100`,
+not screen pixels: invalid or out-of-bounds route points are rejected. A
+saved picture whose topology digest no longer matches is never reused or
+retargeted; the learner must explicitly run `discard board profile` before
+starting an empty replacement picture. `fd` and `bk` pen distances use the
+same Board units, so a pen path and matching coordinate path save equivalent
+route points. Bus routes remain unavailable pending their own contract.
+
+Interaction proof currently covers pointer and keyboard pin selection, exact
+source-edit preview before Apply, Cancel/Escape/`cancel route` recovery, and
+typed pin-to-pin commands using that same preview. The machine checks are in
+`board/interaction-contract.test.mjs`; the final first-sight acceptance trial
+still requires a real 10–15-year-old learner and adult beginner.
+
+The current canvas keeps visual artifacts vector-first: reviewed chip frames
+are SVG resources, connection guides/routes are SVG paths, and Board labels
+are SVG text. Choose **Label**, click the canvas, enter one or more lines, and
+set a size from `1.5` to `8` Board units. Labels and routes save only in the
+digest-locked Board profile; they do not alter Component source or pin truth.
+
+The SVG chip frames are deliberately presentation-only. The Board serves them
+through `resources/74hc-functional-pinouts/` when a matching local frame
+exists. They are a helpful package reference; the resolved Component and
+package definition remain the only source for ports, logic, timing, and
+wiring.

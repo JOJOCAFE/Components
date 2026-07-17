@@ -1,0 +1,635 @@
+{
+  "schema": "components.74hc-source-page-manifest@1",
+  "records": [
+    {
+      "part": "74HC00",
+      "source": "74HC00_TI_SN74HC00.pdf",
+      "page": 1,
+      "matched": "functional pinout",
+      "source_mentions_dip": true,
+      "image": "74hc00-source-page.png",
+      "status": "extracted",
+      "crop_selection": "reviewed-functional-dip",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc00.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC02",
+      "source": "74HC02_TI_SN74HC02.pdf",
+      "page": 1,
+      "matched": "functional pinout",
+      "source_mentions_dip": true,
+      "image": "74hc02-source-page.png",
+      "status": "extracted",
+      "crop_selection": "reviewed-functional-dip",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc02.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC03",
+      "source": "74HC03_TI_SN74HC03.pdf",
+      "page": 1,
+      "matched": "functional pinout",
+      "source_mentions_dip": true,
+      "image": "74hc03-source-page.png",
+      "status": "extracted",
+      "crop_selection": "reviewed-functional-dip",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc03.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC04",
+      "source": "74HC04_TI_SN74HC04.pdf",
+      "page": 1,
+      "matched": "functional pinout",
+      "source_mentions_dip": true,
+      "image": "74hc04-source-page.png",
+      "status": "extracted",
+      "crop_selection": "reviewed-functional-dip",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc04.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC05",
+      "source": "74HC05_TI_SN74HC05.pdf",
+      "page": 1,
+      "matched": "functional pinout",
+      "source_mentions_dip": true,
+      "image": "74hc05-source-page.png",
+      "status": "extracted",
+      "crop_selection": "reviewed-functional-dip",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc05.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC07",
+      "source": "74HC07_STMICROELECTRONICS_23210.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC08",
+      "source": "74HC08_TI_SN74HC08.pdf",
+      "page": 1,
+      "matched": "functional pinout",
+      "source_mentions_dip": true,
+      "image": "74hc08-source-page.png",
+      "status": "extracted",
+      "crop_selection": "reviewed-functional-dip",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc08.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC10",
+      "source": "74HC10_TI_27881_SN74HC10N_DIPVERIFY.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC11",
+      "source": "74HC11_NXP_344446_DIPCHECK.pdf",
+      "page": 2,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc11-source-page.png",
+      "status": "extracted",
+      "crop_status": "cropped-dip-only",
+      "crop_selection": "reviewed-explicit-dip-source-bbox",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc11.png"
+    },
+    {
+      "part": "74HC132",
+      "source": "74HC132_TI_SN74HC132.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc132-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc132.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC138",
+      "source": "74HC138_TI_SN74HC138.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc138-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc138.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC139",
+      "source": "74HC139_TI_SN74HC139.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc139-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc139.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC14",
+      "source": "74HC14_TI_SN74HC14.pdf",
+      "page": 1,
+      "matched": "functional pinout",
+      "source_mentions_dip": true,
+      "image": "74hc14-source-page.png",
+      "status": "extracted",
+      "crop_selection": "reviewed-functional-dip",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc14.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC147",
+      "source": "74HC147_TI2_2202533.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc147-source-page.png",
+      "status": "extracted",
+      "crop_status": "cropped-dip-only",
+      "crop_selection": "reviewed-explicit-dip-source-bbox",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc147.png"
+    },
+    {
+      "part": "74HC148",
+      "source": "74HC148_STMICROELECTRONICS_23041.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC151",
+      "source": "74HC151_TI_SN74HC151.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc151-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc151.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC153",
+      "source": "74HC153_TI_SN74HC153.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc153-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc153.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC154",
+      "source": "74HC154_NXP_344457.pdf",
+      "page": 4,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc154-source-page.png",
+      "status": "extracted",
+      "crop_status": "cropped-dip-only",
+      "crop_selection": "reviewed-explicit-dip-source-bbox",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc154.png"
+    },
+    {
+      "part": "74HC155",
+      "source": "74HC155_STMICROELECTRONICS_23044.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC157",
+      "source": "74HC157_TI_SN74HC157.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc157-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc157.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC158",
+      "source": "74HC158_TI_27895_SN74HC158N_DIPVERIFY.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC160",
+      "source": "74HC160_RENESAS_RENESAS_248480_HD74HC160P_DIPVERIFY.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC161",
+      "source": "74HC161_TI_SN74HC161.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC162",
+      "source": "74HC162_PHILIPS_15546.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC163",
+      "source": "74HC163_TI_27897_SN74HC163N_DIPVERIFY.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC164",
+      "source": "74HC164_TI_SN74HC164.pdf",
+      "page": 4,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc164-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc164.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC165",
+      "source": "74HC165_TI_SN74HC165.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc165-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc165.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC166",
+      "source": "74HC166_TI_SN74HC166.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc166-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc166.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC193",
+      "source": "74HC193_TI_SN74HC193.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC20",
+      "source": "74HC20_TI_27902_SN74HC20N_DIPVERIFY.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC21",
+      "source": "74HC21_TI_SN74HC21.pdf",
+      "page": 1,
+      "matched": "functional pinout",
+      "source_mentions_dip": true,
+      "image": "74hc21-source-page.png",
+      "status": "extracted",
+      "crop_selection": "reviewed-functional-dip",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc21.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC238",
+      "source": "74HC238_NXP_344486_DIPCHECK.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc238-source-page.png",
+      "status": "extracted",
+      "crop_status": "cropped-dip-only",
+      "crop_selection": "reviewed-explicit-dip-source-bbox",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc238.png"
+    },
+    {
+      "part": "74HC240",
+      "source": "74HC240_TI_SN74HC240.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc240-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc240.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC244",
+      "source": "74HC244_TI_SN74HC244.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc244-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc244.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC245",
+      "source": "74HC245_TI_SN74HC245.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc245-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc245.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC251",
+      "source": "74HC251_TI_SN74HC251.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc251-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc251.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC257",
+      "source": "74HC257_TI_SN74HC257.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc257-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc257.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC266",
+      "source": "74HC266_TI2_2204305.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc266-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc266.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC27",
+      "source": "74HC27_NXP_344450_DIPCHECK.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc27-source-page.png",
+      "status": "extracted",
+      "crop_status": "cropped-dip-only",
+      "crop_selection": "reviewed-explicit-dip-source-bbox",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc27.png"
+    },
+    {
+      "part": "74HC273",
+      "source": "74HC273_TI_SN74HC273.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc273-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc273.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC283",
+      "source": "74HC283_TI_CD74HC283.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc283-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc283.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC30",
+      "source": "74HC30_TI_CD74HC30.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc30-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc30.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC32",
+      "source": "74HC32_TI_SN74HC32.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc32-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc32.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC352",
+      "source": "74HC352_STMICROELECTRONICS_23075.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC374",
+      "source": "74HC374_TI_SN74HC374.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc374-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc374.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC377",
+      "source": "74HC377_TI_27924_SN74HC377N_DIPVERIFY.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC4049",
+      "source": "74HC4049_TI_CD74HC4049.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC4050",
+      "source": "74HC4050_TI_CD74HC4050.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC4078",
+      "status": "missing-local-source"
+    },
+    {
+      "part": "74HC4520",
+      "source": "74HC4520_TI_CD74HC4520.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC4538",
+      "source": "74HC4538_TI_CD74HC4538.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC541",
+      "source": "74HC541_TI_SN74HC541.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc541-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc541.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC574",
+      "source": "74HC574_TI_SN74HC574.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc574-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc574.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC593",
+      "status": "missing-local-source"
+    },
+    {
+      "part": "74HC595",
+      "source": "74HC595_TI_SN74HC595.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc595-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc595.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC688",
+      "source": "74HC688_TI_CD74HC688.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc688-source-page.png",
+      "status": "extracted",
+      "crop_status": "cropped-dip-only",
+      "crop_selection": "reviewed-explicit-dip-source-bbox",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc688.png"
+    },
+    {
+      "part": "74HC74",
+      "source": "74HC74_TI_SN74HC74.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc74-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc74.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC85",
+      "source": "74HC85_MOTOROLA_4353_MC74HC85N_DIPVERIFY.pdf",
+      "status": "no-pinout-source-page"
+    },
+    {
+      "part": "74HC86",
+      "source": "74HC86_TI_SN74HC86.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hc86-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hc86.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HC922",
+      "status": "missing-local-source"
+    },
+    {
+      "part": "74HCT04",
+      "source": "74HCT04_TI_SN74HCT04.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hct04-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hct04.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HCT14",
+      "source": "74HCT14_TI_SN74HCT14.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hct14-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hct14.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HCT245",
+      "source": "74HCT245_TI_SN74HCT245.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hct245-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hct245.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HCT541",
+      "source": "74HCT541_TI_SN74HCT541.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hct541-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hct541.png",
+      "crop_status": "cropped-dip-only"
+    },
+    {
+      "part": "74HCT574",
+      "source": "74HCT574_TI_SN74HCT574.pdf",
+      "page": 3,
+      "matched": "pin configuration",
+      "source_mentions_dip": true,
+      "image": "74hct574-source-page.png",
+      "status": "extracted",
+      "crop_selection": "left-dip-or-pdip-source-view",
+      "crop": "resource/temp/74hc-functional-pinouts/74hct574.png",
+      "crop_status": "cropped-dip-only"
+    }
+  ]
+}

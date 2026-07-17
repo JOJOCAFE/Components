@@ -23,6 +23,7 @@
           <div class="tool-row" aria-label="Drawing tools">
             <button class="tool selected" data-tool="select">Select</button>
             <button class="tool" data-tool="connect">Connect</button>
+            <button class="tool" data-tool="label">Label</button>
             <button class="tool" data-tool="inspect">Inspect</button>
           </div>
           <div id="board-canvas" class="board-canvas" aria-label="Component Drawing"></div>
@@ -34,8 +35,14 @@
           <form id="connect-form" class="connect-form hidden">
             <label>From <input id="connect-from" placeholder="U1.1Y" required></label>
             <label>To <input id="connect-to" placeholder="Observe.IN" required></label>
-            <button class="primary" type="submit">Preview connection</button>
+            <button class="primary" type="submit">Apply checked connection</button>
             <button id="close-connect" type="button">Cancel</button>
+          </form>
+          <form id="label-form" class="label-form hidden">
+            <label>Label text <textarea id="label-text" rows="2" placeholder="One line or&#10;two lines" required></textarea></label>
+            <label>Size <input id="label-size" type="number" min="1.5" max="8" step=".5" value="3"></label>
+            <button class="primary" type="submit">Place label</button>
+            <button id="close-label" type="button">Cancel</button>
           </form>
         </article>
 

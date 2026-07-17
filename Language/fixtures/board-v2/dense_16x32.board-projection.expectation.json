@@ -1,0 +1,18 @@
+{
+  "schema": "components.board-v2-projection-expectation@1",
+  "source_of_truth": "components.resolved-component@1",
+  "topology_ref": {"component_id": "BoardV2Dense16x32", "digest": "sha256:283c48b6647e63d28e77c93c79224616a2f3fd446ca8ce23b37592a779f0b99c"},
+  "read_only": true,
+  "block_count": 16,
+  "block_ids": ["U01", "U02", "U03", "U04", "U05", "U06", "U07", "U08", "U09", "U10", "U11", "U12", "U13", "U14", "U15", "U16"],
+  "part": "74HC04",
+  "pin_anchor_source": "resolved-definition",
+  "scalar_edge_ids": [
+    "edge:U01.1Y->U05.1A", "edge:U01.2Y->U05.2A", "edge:U02.1Y->U06.1A", "edge:U02.2Y->U06.2A", "edge:U03.1Y->U07.1A", "edge:U03.2Y->U07.2A", "edge:U04.1Y->U08.1A", "edge:U04.2Y->U08.2A",
+    "edge:U05.1Y->U09.1A", "edge:U05.2Y->U09.2A", "edge:U06.1Y->U10.1A", "edge:U06.2Y->U10.2A", "edge:U07.1Y->U11.1A", "edge:U07.2Y->U11.2A", "edge:U08.1Y->U12.1A", "edge:U08.2Y->U12.2A",
+    "edge:U01.3Y->U09.3A", "edge:U01.4Y->U09.4A", "edge:U02.3Y->U10.3A", "edge:U02.4Y->U10.4A", "edge:U03.3Y->U11.3A", "edge:U03.4Y->U11.4A", "edge:U04.3Y->U12.3A", "edge:U04.4Y->U12.4A",
+    "edge:U09.1Y->U13.1A", "edge:U09.2Y->U13.2A", "edge:U10.1Y->U14.1A", "edge:U10.2Y->U14.2A", "edge:U11.1Y->U15.1A", "edge:U11.2Y->U15.2A", "edge:U12.1Y->U16.1A", "edge:U12.2Y->U16.2A"
+  ],
+  "suggested_layers": [["U01", "U02", "U03", "U04"], ["U05", "U06", "U07", "U08"], ["U09", "U10", "U11", "U12"], ["U13", "U14", "U15", "U16"]],
+  "forbidden": ["implicit-bus-members", "bus-routes", "layout-created-connections"]
+}
