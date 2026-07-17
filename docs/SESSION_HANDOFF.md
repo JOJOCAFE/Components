@@ -201,12 +201,11 @@ old-profile migration, negative/positive placement, a label/route drag, and
 pan/zoom with an unchanged exported profile. Refresh the 25-sample regression
 baseline after that browser proof and before starting B3.
 
-The first 74HC04 Board symbol now uses the checked CC0 no-pin `not-mil.svg`
-asset. Its visible connect nodes are small Board-rendered dots, filtered from
-resolved input/output anchors for the displayed gate unit; route endpoints and
-temporary connection guides target those dots rather than printed DIP pins.
-The underlying definition still owns port names, physical pin evidence, and
-validation. Broader multi-unit symbol/geometry mapping remains B3 work.
+Board chip artwork now uses generated no-pin 74HC DIP frames in
+`board/assets/74hc-chip-frames-no-pins/`: all printed lead lines, pin numbers,
+and pin names are absent. The Board renders small definition-owned connection
+dots over the frame and targets its routes/guides at those dots. The underlying
+definition still owns port names, physical pin evidence, and validation.
 
 ### Vector canvas slice: 2026-07-17
 

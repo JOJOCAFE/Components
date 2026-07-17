@@ -1,65 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 940" role="img" aria-labelledby="title desc">
   <title id="title">74HC07 definition-backed DIP frame</title>
-  <desc id="desc">74HC07 DIP pin frame. Frame style adapted from https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic under CC BY-SA 3.0; local Components definition provides all pin truth.</desc>
+  <desc id="desc">74HC07 DIP frame. Frame style adapted from https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic under CC BY-SA 3.0; local Components definition provides all pin truth.</desc>
   <style>.body{fill:#fff;stroke:#000;stroke-width:12.5}.lead{stroke:#787878;stroke-width:9.72;stroke-linecap:round}.pin{fill:none;stroke:none}.name{font:50px "Droid Sans",Arial,sans-serif;fill:#444}.number{font:30px "Droid Sans",Arial,sans-serif;fill:#666}.title{font:44px "Droid Sans",Arial,sans-serif;fill:#111}</style>
   <text class="title" x="550" y="906" text-anchor="middle">74HC07 · DIP-14</text>
   <rect class="body" x="200" y="30" width="700" height="790" rx="4"/>
   <path d="M515.0 30a35 35 0 0 0 70 0" fill="none" stroke="#000" stroke-width="12.5"/>
   <line class="lead" x1="5" y1="100" x2="200" y2="100"/>
-  <rect class="pin" id="connector0pin" data-pin-number="1" data-pin-name="1A" data-component-pin="pin-1" data-component-selector="@1" data-component-port="1A" data-direction="input" x="5" y="95" width="195" height="10"/>
+  <rect class="pin" id="connector0pin" data-pin-number="1" data-pin-name="1A" data-direction="input" x="5" y="95" width="195" height="10"/>
   <text class="name" x="220" y="117" text-anchor="start">1A</text>
   <text class="number" x="100" y="85" text-anchor="middle">1</text>
   <line class="lead" x1="5" y1="200" x2="200" y2="200"/>
-  <rect class="pin" id="connector1pin" data-pin-number="2" data-pin-name="1Y" data-component-pin="pin-2" data-component-selector="@2" data-component-port="1Y" data-direction="output" x="5" y="195" width="195" height="10"/>
+  <rect class="pin" id="connector1pin" data-pin-number="2" data-pin-name="1Y" data-direction="output" x="5" y="195" width="195" height="10"/>
   <text class="name" x="220" y="217" text-anchor="start">1Y</text>
   <text class="number" x="100" y="185" text-anchor="middle">2</text>
   <line class="lead" x1="5" y1="300" x2="200" y2="300"/>
-  <rect class="pin" id="connector2pin" data-pin-number="3" data-pin-name="2A" data-component-pin="pin-3" data-component-selector="@3" data-component-port="2A" data-direction="input" x="5" y="295" width="195" height="10"/>
+  <rect class="pin" id="connector2pin" data-pin-number="3" data-pin-name="2A" data-direction="input" x="5" y="295" width="195" height="10"/>
   <text class="name" x="220" y="317" text-anchor="start">2A</text>
   <text class="number" x="100" y="285" text-anchor="middle">3</text>
   <line class="lead" x1="5" y1="400" x2="200" y2="400"/>
-  <rect class="pin" id="connector3pin" data-pin-number="4" data-pin-name="2Y" data-component-pin="pin-4" data-component-selector="@4" data-component-port="2Y" data-direction="output" x="5" y="395" width="195" height="10"/>
+  <rect class="pin" id="connector3pin" data-pin-number="4" data-pin-name="2Y" data-direction="output" x="5" y="395" width="195" height="10"/>
   <text class="name" x="220" y="417" text-anchor="start">2Y</text>
   <text class="number" x="100" y="385" text-anchor="middle">4</text>
   <line class="lead" x1="5" y1="500" x2="200" y2="500"/>
-  <rect class="pin" id="connector4pin" data-pin-number="5" data-pin-name="3A" data-component-pin="pin-5" data-component-selector="@5" data-component-port="3A" data-direction="input" x="5" y="495" width="195" height="10"/>
+  <rect class="pin" id="connector4pin" data-pin-number="5" data-pin-name="3A" data-direction="input" x="5" y="495" width="195" height="10"/>
   <text class="name" x="220" y="517" text-anchor="start">3A</text>
   <text class="number" x="100" y="485" text-anchor="middle">5</text>
   <line class="lead" x1="5" y1="600" x2="200" y2="600"/>
-  <rect class="pin" id="connector5pin" data-pin-number="6" data-pin-name="3Y" data-component-pin="pin-6" data-component-selector="@6" data-component-port="3Y" data-direction="output" x="5" y="595" width="195" height="10"/>
+  <rect class="pin" id="connector5pin" data-pin-number="6" data-pin-name="3Y" data-direction="output" x="5" y="595" width="195" height="10"/>
   <text class="name" x="220" y="617" text-anchor="start">3Y</text>
   <text class="number" x="100" y="585" text-anchor="middle">6</text>
   <line class="lead" x1="5" y1="700" x2="200" y2="700"/>
-  <rect class="pin" id="connector6pin" data-pin-number="7" data-pin-name="GND" data-component-pin="pin-7" data-component-selector="@7" data-component-port="GND" data-direction="power" x="5" y="695" width="195" height="10"/>
+  <rect class="pin" id="connector6pin" data-pin-number="7" data-pin-name="GND" data-direction="power" x="5" y="695" width="195" height="10"/>
   <text class="name" x="220" y="717" text-anchor="start">GND</text>
   <text class="number" x="100" y="685" text-anchor="middle">7</text>
   <line class="lead" x1="900" y1="700" x2="1095" y2="700"/>
-  <rect class="pin" id="connector7pin" data-pin-number="8" data-pin-name="4Y" data-component-pin="pin-8" data-component-selector="@8" data-component-port="4Y" data-direction="output" x="900" y="695" width="195" height="10"/>
+  <rect class="pin" id="connector7pin" data-pin-number="8" data-pin-name="4Y" data-direction="output" x="900" y="695" width="195" height="10"/>
   <text class="name" x="880" y="717" text-anchor="end">4Y</text>
   <text class="number" x="1000" y="685" text-anchor="middle">8</text>
   <line class="lead" x1="900" y1="600" x2="1095" y2="600"/>
-  <rect class="pin" id="connector8pin" data-pin-number="9" data-pin-name="4A" data-component-pin="pin-9" data-component-selector="@9" data-component-port="4A" data-direction="input" x="900" y="595" width="195" height="10"/>
+  <rect class="pin" id="connector8pin" data-pin-number="9" data-pin-name="4A" data-direction="input" x="900" y="595" width="195" height="10"/>
   <text class="name" x="880" y="617" text-anchor="end">4A</text>
   <text class="number" x="1000" y="585" text-anchor="middle">9</text>
   <line class="lead" x1="900" y1="500" x2="1095" y2="500"/>
-  <rect class="pin" id="connector9pin" data-pin-number="10" data-pin-name="5Y" data-component-pin="pin-10" data-component-selector="@10" data-component-port="5Y" data-direction="output" x="900" y="495" width="195" height="10"/>
+  <rect class="pin" id="connector9pin" data-pin-number="10" data-pin-name="5Y" data-direction="output" x="900" y="495" width="195" height="10"/>
   <text class="name" x="880" y="517" text-anchor="end">5Y</text>
   <text class="number" x="1000" y="485" text-anchor="middle">10</text>
   <line class="lead" x1="900" y1="400" x2="1095" y2="400"/>
-  <rect class="pin" id="connector10pin" data-pin-number="11" data-pin-name="5A" data-component-pin="pin-11" data-component-selector="@11" data-component-port="5A" data-direction="input" x="900" y="395" width="195" height="10"/>
+  <rect class="pin" id="connector10pin" data-pin-number="11" data-pin-name="5A" data-direction="input" x="900" y="395" width="195" height="10"/>
   <text class="name" x="880" y="417" text-anchor="end">5A</text>
   <text class="number" x="1000" y="385" text-anchor="middle">11</text>
   <line class="lead" x1="900" y1="300" x2="1095" y2="300"/>
-  <rect class="pin" id="connector11pin" data-pin-number="12" data-pin-name="6Y" data-component-pin="pin-12" data-component-selector="@12" data-component-port="6Y" data-direction="output" x="900" y="295" width="195" height="10"/>
+  <rect class="pin" id="connector11pin" data-pin-number="12" data-pin-name="6Y" data-direction="output" x="900" y="295" width="195" height="10"/>
   <text class="name" x="880" y="317" text-anchor="end">6Y</text>
   <text class="number" x="1000" y="285" text-anchor="middle">12</text>
   <line class="lead" x1="900" y1="200" x2="1095" y2="200"/>
-  <rect class="pin" id="connector12pin" data-pin-number="13" data-pin-name="6A" data-component-pin="pin-13" data-component-selector="@13" data-component-port="6A" data-direction="input" x="900" y="195" width="195" height="10"/>
+  <rect class="pin" id="connector12pin" data-pin-number="13" data-pin-name="6A" data-direction="input" x="900" y="195" width="195" height="10"/>
   <text class="name" x="880" y="217" text-anchor="end">6A</text>
   <text class="number" x="1000" y="185" text-anchor="middle">13</text>
   <line class="lead" x1="900" y1="100" x2="1095" y2="100"/>
-  <rect class="pin" id="connector13pin" data-pin-number="14" data-pin-name="VCC" data-component-pin="pin-14" data-component-selector="@14" data-component-port="VCC" data-direction="power" x="900" y="95" width="195" height="10"/>
+  <rect class="pin" id="connector13pin" data-pin-number="14" data-pin-name="VCC" data-direction="power" x="900" y="95" width="195" height="10"/>
   <text class="name" x="880" y="117" text-anchor="end">VCC</text>
   <text class="number" x="1000" y="85" text-anchor="middle">14</text>
 </svg>

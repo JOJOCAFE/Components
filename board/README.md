@@ -24,9 +24,10 @@ First slice included:
   declared `inversion` runtime test;
 - local draft autosave/recovery through browser local storage;
 - selection-to-readable-source highlighting and a Learning Lens explanation;
-- definition-backed 74HC DIP-frame SVG Board resources from
-  `board/assets/74hc-functional-pinouts/`; and
-- visible definition-owned pin anchors over a selected supported 74HC frame.
+- definition-backed 74HC no-pin DIP-frame SVG Board resources from
+  `board/assets/74hc-chip-frames-no-pins/`; and
+- visible definition-owned connection dots over a selected supported 74HC
+  frame (the artwork contains no printed leads, numbers, or names).
   A pointer gesture first calls the pure `component-language-edit-preview`
   request, which parse/resolves the proposed patch and returns its digest while
   retaining the exact current source. Only after that preview can the learner
@@ -61,8 +62,8 @@ are SVG text. Choose **Label**, click the canvas, enter one or more lines, and
 set a size from `1.5` to `8` Board units. Labels and routes save only in the
 digest-locked Board profile; they do not alter Component source or pin truth.
 
-The SVG chip frames are deliberately presentation-only. The Board serves them
-through `resources/74hc-functional-pinouts/` when a matching local frame
-exists. They are a helpful package reference; the resolved Component and
-package definition remain the only source for ports, logic, timing, and
-wiring.
+The SVG chip frames are deliberately presentation-only. The Board serves the
+no-pin frames through `resources/74hc-chip-frames-no-pins/` when a matching
+local frame exists. The older functional-pinout frames remain review assets,
+not Board artwork. The resolved Component and package definition remain the
+only source for ports, logic, timing, and wiring.

@@ -7,8 +7,7 @@ from .db import load_component_package
 
 
 ROOT = Path(__file__).resolve().parents[2]
-FRAME_ROOT = ROOT / "board" / "assets" / "74hc-functional-pinouts"
-GATE_ROOT = ROOT / "board" / "assets" / "logic-gates" / "mil-no-pins"
+FRAME_ROOT = ROOT / "board" / "assets" / "74hc-chip-frames-no-pins"
 
 
 def _presentation_pins(part: str) -> list[dict[str, Any]]:
@@ -49,23 +48,13 @@ def _pin_anchors(instance_id: str, pins: list[dict[str, Any]]) -> list[dict[str,
 
 def _chip_frame(part: str) -> dict[str, str] | None:
     """Return a presentation-only local asset when a reviewed frame exists."""
-    # The Board supplies its own definition-owned connection nodes.  Use a
-    # no-pin logic symbol for the initial inverter rather than a DIP drawing
-    # whose printed pin numbers could be mistaken for wiring truth.
-    if part.lower() in {"74hc04", "digital.74hc04"}:
-        candidate = GATE_ROOT / "not-mil.svg"
-        return {
-            "kind": "logic-gate-symbol.svg",
-            "asset": "resources/logic-gates/mil-no-pins/not-mil.svg",
-            "source": candidate.relative_to(ROOT).as_posix(),
-        }
     filename = f"{part.lower()}.svg"
     candidate = FRAME_ROOT / filename
     if not candidate.is_file():
         return None
     return {
-        "kind": "chip-frame.svg",
-        "asset": f"resources/74hc-functional-pinouts/{filename}",
+        "kind": "chip-frame-no-pins.svg",
+        "asset": f"resources/74hc-chip-frames-no-pins/{filename}",
         "source": candidate.relative_to(ROOT).as_posix(),
     }
 

@@ -19,6 +19,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "lib" / "standard" / "74xx"
 OUT = ROOT / "board" / "assets" / "74hc-functional-pinouts"
+NO_PIN_OUT = ROOT / "board" / "assets" / "74hc-chip-frames-no-pins"
 MANIFEST = OUT / "fritzing-frames.manifest.json"
 README = OUT / "FRITZING_FRAMES.md"
 EXTERNAL_SOURCE = "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic"
@@ -30,7 +31,7 @@ def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
 
 
-def frame_svg(record: dict) -> str:
+def frame_svg(record: dict, *, include_pinout: bool = True) -> str:
     part = record["part"]
     package = record["package"]
     pins = record["pins"]
@@ -53,7 +54,7 @@ def frame_svg(record: dict) -> str:
         '<?xml version="1.0" encoding="UTF-8"?>',
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
         f'  <title id="title">{esc(part)} definition-backed DIP frame</title>',
-        f'  <desc id="desc">{esc(part)} DIP pin frame. Frame style adapted from {esc(EXTERNAL_SOURCE)} under {EXTERNAL_LICENSE}; local Components definition provides all pin truth.</desc>',
+        f'  <desc id="desc">{esc(part)} DIP frame. Frame style adapted from {esc(EXTERNAL_SOURCE)} under {EXTERNAL_LICENSE}; local Components definition provides all pin truth.</desc>',
         '  <style>.body{fill:#fff;stroke:#000;stroke-width:12.5}.lead{stroke:#787878;stroke-width:9.72;stroke-linecap:round}.pin{fill:none;stroke:none}.name{font:50px "Droid Sans",Arial,sans-serif;fill:#444}.number{font:30px "Droid Sans",Arial,sans-serif;fill:#666}.title{font:44px "Droid Sans",Arial,sans-serif;fill:#111}</style>',
         f'  <text class="title" x="550" y="{height - 34}" text-anchor="middle">{esc(part)} · DIP-{total}</text>',
         f'  <rect class="body" x="{body_x}" y="{body_y}" width="{body_width}" height="{body_height}" rx="4"/>',
@@ -69,12 +70,13 @@ def frame_svg(record: dict) -> str:
         name_x = body_x + 20 if left else body_x + body_width - 20
         name_anchor = "start" if left else "end"
         number_x = 100 if left else width - 100
-        lines.extend((
-            f'  <line class="lead" x1="{x1}" y1="{y}" x2="{x2}" y2="{y}"/>',
-            f'  <rect class="pin" id="connector{connector}pin" data-pin-number="{number}" data-pin-name="{esc(pin["name"])}" data-direction="{esc(pin["direction"])}" x="{min(x1, x2)}" y="{y - 5}" width="{abs(x2 - x1)}" height="10"/>',
-            f'  <text class="name" x="{name_x}" y="{y + 17}" text-anchor="{name_anchor}">{esc(pin["name"])}</text>',
-            f'  <text class="number" x="{number_x}" y="{y - 15}" text-anchor="middle">{number}</text>',
-        ))
+        if include_pinout:
+            lines.extend((
+                f'  <line class="lead" x1="{x1}" y1="{y}" x2="{x2}" y2="{y}"/>',
+                f'  <rect class="pin" id="connector{connector}pin" data-pin-number="{number}" data-pin-name="{esc(pin["name"])}" data-direction="{esc(pin["direction"])}" x="{min(x1, x2)}" y="{y - 5}" width="{abs(x2 - x1)}" height="10"/>',
+                f'  <text class="name" x="{name_x}" y="{y + 17}" text-anchor="{name_anchor}">{esc(pin["name"])}</text>',
+                f'  <text class="number" x="{number_x}" y="{y - 15}" text-anchor="middle">{number}</text>',
+            ))
     lines.append('</svg>')
     return "\n".join(lines) + "\n"
 
@@ -92,6 +94,7 @@ def read_records() -> list[dict]:
 def main() -> None:
     records = read_records()
     OUT.mkdir(parents=True, exist_ok=True)
+    NO_PIN_OUT.mkdir(parents=True, exist_ok=True)
     # Keep source PNGs and the hand-drawn internal-symbol SVGs in the shared
     # review folder. Remove only names recorded by the last frame manifest.
     if MANIFEST.exists():
@@ -106,6 +109,9 @@ def main() -> None:
         output = OUT / f"{part.lower()}.svg"
         output.write_text(frame_svg(record), encoding="utf-8")
         ET.parse(output)
+        no_pin_output = NO_PIN_OUT / output.name
+        no_pin_output.write_text(frame_svg(record, include_pinout=False), encoding="utf-8")
+        ET.parse(no_pin_output)
         manifest.append({
             "part": part,
             "file": output.name,
@@ -124,6 +130,12 @@ def main() -> None:
         "The external connector metadata is not reused because it can differ from visible labels.\n\n"
         "For 74HC04, 74HC05, 74HC08, and 74HC14, the manifest links the existing Components internal functional-pinout SVG. "
         "A Board may compose that internal art inside this frame, but must obtain connectable ports from the resolved definition.\n",
+        encoding="utf-8",
+    )
+    (NO_PIN_OUT / "README.md").write_text(
+        "# Definition-backed no-pin DIP frames\n\n"
+        "These SVGs are generated from the same reviewed DIP records as the sibling functional frames, but deliberately omit pin leads, numbers, and names. "
+        "They are Board artwork only. The Board must render definition-owned connection nodes itself and must never infer a pin, port, or behavior from this frame.\n",
         encoding="utf-8",
     )
     print(f"generated={len(manifest)}")

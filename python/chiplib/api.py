@@ -21,6 +21,7 @@ JsonMap = dict[str, Any]
 ROOT = Path(__file__).resolve().parents[2]
 BOARD_ROOT = ROOT / "board"
 BOARD_RESOURCE_ROOT = BOARD_ROOT / "assets" / "74hc-functional-pinouts"
+BOARD_NO_PIN_FRAME_ROOT = BOARD_ROOT / "assets" / "74hc-chip-frames-no-pins"
 BOARD_GATE_RESOURCE_ROOT = BOARD_ROOT / "assets" / "logic-gates"
 NOT_GATE_FIXTURE = ROOT / "Language" / "fixtures" / "component-v1.1" / "digital_inverter.component"
 
@@ -275,6 +276,8 @@ def board_static_file(relative: str) -> Path | None:
     """Resolve one Board-owned static file without allowing path escape."""
     if relative.startswith("resources/74hc-functional-pinouts/"):
         root, child = BOARD_RESOURCE_ROOT, relative.removeprefix("resources/74hc-functional-pinouts/")
+    elif relative.startswith("resources/74hc-chip-frames-no-pins/"):
+        root, child = BOARD_NO_PIN_FRAME_ROOT, relative.removeprefix("resources/74hc-chip-frames-no-pins/")
     elif relative.startswith("resources/logic-gates/"):
         root, child = BOARD_GATE_RESOURCE_ROOT, relative.removeprefix("resources/logic-gates/")
     else:
