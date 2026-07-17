@@ -403,7 +403,7 @@ function toggleGuideFocus(focus) {
 function guideFocusMessage(change) {
   const target = change.focus.endpoint;
   if (!change.visible) return `Hid routing guides for ${target}. ${state.guideFocuses.length} guide selection${state.guideFocuses.length === 1 ? " remains" : "s remain"}.`;
-  return `Showing routing guides for ${target}. Double-click more connection dots to add their guides; double-click this dot again to hide only its guides.`;
+  return `Showing routing guides for ${target}. Right-click more connection dots to add their guides; right-click this dot again to hide only its guides.`;
 }
 
 function selectNode(node) {
@@ -436,7 +436,7 @@ function installPinGesture() {
         else finishPinGesture(anchor);
       }
     });
-    anchor.addEventListener("dblclick", event => {
+    anchor.addEventListener("contextmenu", event => {
       event.preventDefault(); event.stopPropagation();
       if (!isSelectTool()) return;
       status(guideFocusMessage(toggleGuideFocus({ kind: "pin", endpoint: anchor.dataset.endpoint })));
