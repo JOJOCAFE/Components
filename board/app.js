@@ -153,10 +153,11 @@ function drawNode(canvas, node) {
     const device = document.createElement("section");
     device.className = "board-device" + (state.selected?.id === node.id ? " selected" : "");
     device.style.left = `${node.x}%`; device.style.top = `${node.y}%`;
-    device.innerHTML = `<button class="board-device-label" type="button">${node.label}</button>${chipFrame(node, true)}`;
+    device.innerHTML = `<div class="board-device-title"><button class="board-device-label" type="button">${node.label}</button><button class="gate-move" type="button" aria-label="Move ${node.id}" title="Drag to move this gate">✋</button></div>${chipFrame(node, true)}`;
     const label = device.querySelector(".board-device-label");
-    label.addEventListener("pointerdown", event => beginChipDrag(event, node));
     label.addEventListener("click", event => { event.stopPropagation(); if (state.suppressClick) return; selectNode(node); });
+    const move = device.querySelector(".gate-move");
+    move.addEventListener("pointerdown", event => beginChipDrag(event, node));
     canvas.append(device);
     return;
   }
@@ -316,7 +317,7 @@ function chipFrame(node, compact = false) {
   const anchors = node.pinAnchors.map(anchor => {
     const sidePinCount = Math.max(1, node.pinAnchors.length / 2);
     const top = 6 + (Number(anchor.dip_order) - .5) * (88 / sidePinCount);
-    return `<button class="pin-anchor ${anchor.dip_side}" type="button" data-anchor-id="${anchor.id}" data-endpoint="${anchor.endpoint}" data-direction="${anchor.direction}" data-pin-number="${anchor.physical_pin}" data-pin-name="${anchor.port}" data-component-selector="@${anchor.physical_pin}" style="top:${top}%" aria-label="${anchor.endpoint}, physical pin ${anchor.physical_pin}, ${anchor.direction} pin">${anchor.physical_pin}<span>${anchor.port}</span></button>`;
+    return `<button class="pin-anchor ${anchor.dip_side}" type="button" data-anchor-id="${anchor.id}" data-endpoint="${anchor.endpoint}" data-direction="${anchor.direction}" data-pin-number="${anchor.physical_pin}" data-pin-name="${anchor.port}" data-component-selector="@${anchor.physical_pin}" style="top:${top}%" aria-label="${anchor.endpoint}, physical pin ${anchor.physical_pin}, ${anchor.direction} pin"></button>`;
   }).join("");
   const caption = compact ? "" : "<figcaption>Drag from one visible pin to another to propose a checked source edit. This frame owns no wiring state.</figcaption>";
   return `<figure class="pinout-art chip-frame${compact ? " compact" : ""}" data-frame-device="${node.id}"><img src="${node.resource.asset}" alt="${node.part} DIP pin frame" draggable="false"><div class="pin-anchor-layer" aria-label="Definition-owned ${node.part} pins">${anchors}</div>${caption}</figure>`;

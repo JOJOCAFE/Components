@@ -6,7 +6,7 @@ from xml.etree import ElementTree
 
 
 ROOT = Path(__file__).resolve().parents[2]
-PINOUTS = ROOT / "resource" / "temp" / "74hc-functional-pinouts"
+PINOUTS = ROOT / "board" / "assets" / "74hc-functional-pinouts"
 
 
 def _pin_nodes(path: Path):

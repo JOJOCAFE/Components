@@ -26,7 +26,7 @@ from PIL import Image, ImageChops
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = ROOT / "resource" / "temp" / "74hc-functional-pinout-pages"
-OUT = ROOT / "resource" / "temp" / "74hc-functional-pinouts"
+OUT = ROOT / "board" / "assets" / "74hc-functional-pinouts"
 REVIEWED_FUNCTIONAL_DIP = {
     "74HC00", "74HC02", "74HC03", "74HC04", "74HC05", "74HC08", "74HC14", "74HC21",
 }

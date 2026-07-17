@@ -40,23 +40,23 @@ button.primary { color: #fff; border-color: #1467df; background: #1467df; box-sh
 .node.net { min-width: 74px; border-radius: 2px; border-color: #8ea4bd; font-size: .8rem; }
 .node.selected { border-color: #e17522; background: #fff6eb; }
 .board-device { position: absolute; z-index: 2; width: min(43%, 320px); min-width: 180px; transform: translate(-50%, -14%); }
-.board-device.selected .board-device-label { color: #0b53b7; border-color: #1467df; background: #eff6ff; }
-.board-device-label { display: block; width: 100%; margin-bottom: .25rem; padding: .3rem .45rem; border: 0; border-radius: 0; color: #1467df; background: transparent; font-size: .86rem; font-weight: 750; text-align: left; }
+.board-device-title { display: flex; align-items: center; gap: .2rem; margin-bottom: .25rem; }
+.board-device.selected .board-device-label { color: #0b53b7; }
+.board-device-label { display: block; flex: 1; padding: .3rem .45rem; border: 0; border-radius: 0; color: #1467df; background: transparent; font-size: .86rem; font-weight: 750; text-align: left; }
+.gate-move { display: grid; place-items: center; width: 2.15rem; height: 2.05rem; padding: 0; border-color: #b8cdf0; background: #f7fbff; font-size: 1rem; cursor: grab; }
+.gate-move:active { cursor: grabbing; }
 .board-device .pinout-art { width: 100%; margin: 0; border: 0; border-radius: 0; background: transparent; padding: 0; }
 .board-device .pinout-art img { max-height: 290px; }
 .board-device .pin-anchor-layer { inset: .25rem; }
-.board-device .pin-anchor { width: 3rem; min-height: 1.15rem; padding: .04rem .13rem; border-color: #1467df; border-radius: 99px; font-size: .6rem; }
-.board-device .pin-anchor span { font-size: .51rem; }
 .pinout-art { display: block; width: min(100%, 360px); margin: .65rem 0 0; color: #52697c; font-size: .8rem; }
 .pinout-art svg, .pinout-art img { display: block; width: 100%; height: auto; object-fit: contain; }
 .pinout-art figcaption { display: none; }
 .chip-frame { position: relative; overflow: hidden; }
 .pin-anchor-layer { position: absolute; inset: .25rem .25rem 1.8rem; pointer-events: none; }
-.pin-anchor { position: absolute; z-index: 1; width: 3.3rem; min-height: 1.35rem; padding: .08rem .2rem; border: 2px solid #1467df; border-radius: 99px; background: #f5fbff; color: #123d60; font-size: .68rem; line-height: 1.05; pointer-events: auto; touch-action: none; }
-.pin-anchor.left { left: .15rem; text-align: left; }
-.pin-anchor.right { right: .15rem; text-align: right; }
-.pin-anchor span { display: block; font-size: .58rem; color: #355970; }
-.pin-anchor:hover, .pin-anchor:focus-visible { border-color: #e17522; background: #fff6eb; }
+.pin-anchor { position: absolute; z-index: 1; width: 1.1rem; height: 1rem; padding: 0; border: 0; border-radius: 0; background: transparent; color: transparent; opacity: 0; pointer-events: auto; touch-action: none; cursor: crosshair; }
+.pin-anchor.left { left: .15rem; }
+.pin-anchor.right { right: .15rem; }
+.pin-anchor:hover, .pin-anchor:focus-visible { opacity: 1; outline: 2px solid #1467df; outline-offset: 1px; background: #dbeafe66; }
 .pin-guide { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .pin-guide line { stroke: #1677ff; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 9 6; filter: drop-shadow(0 1px 1px #fff); animation: guide-flow .8s linear infinite; }
 .pin-guide text { fill: #07548e; font-size: 12px; font-weight: 700; text-anchor: middle; paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }

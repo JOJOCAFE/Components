@@ -166,7 +166,9 @@ code.
 B1.1 is complete in `board/viewport.js` with a Node proof at
 `board/viewport.test.mjs`: centered world origin, screen/world round trips,
 content-following pan, anchor-preserving zoom, and visible world bounds. The
-next task is B1.2: adaptive grid and snap in world units.
+same module now selects readable 1/2/5 adaptive world grids and snaps a world
+point without altering Component source. The next task is B1.3: migrate the
+renderer from normalized top-left coordinates to the world/viewport transform.
 
 ### Vector canvas slice: 2026-07-17
 
@@ -181,7 +183,7 @@ invent an electrical edge.
 ## Functional-pinout SVG handoff: 2026-07-14
 
 Board artwork is being redrawn as clean SVG from the cropped datasource PNGs
-in `resource/temp/74hc-functional-pinouts/`; the package definition remains
+in `board/assets/74hc-functional-pinouts/`; the package definition remains
 the pin-truth authority. The accepted internal-symbol references are
 `74hc04-internal.svg`, `74hc05-internal.svg`, `74hc08-internal.svg`, and
 `74hc14-internal.svg`. The reviewed combined outputs are

@@ -18,7 +18,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "lib" / "standard" / "74xx"
-OUT = ROOT / "resource" / "temp" / "74hc-functional-pinouts"
+OUT = ROOT / "board" / "assets" / "74hc-functional-pinouts"
 MANIFEST = OUT / "fritzing-frames.manifest.json"
 README = OUT / "FRITZING_FRAMES.md"
 EXTERNAL_SOURCE = "https://github.com/Adr-hyng/74LS-Series-Fritzing-Parts/tree/main/Schematic"

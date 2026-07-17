@@ -15,7 +15,7 @@ SOURCE = (ROOT / "Language" / "fixtures" / "component-v1.1" / "digital_inverter.
 
 def test_board_chip_frame_resource_is_available() -> None:
     frame = board_static_file("resources/74hc-functional-pinouts/74hc04.svg")
-    assert frame == ROOT / "resource" / "temp" / "74hc-functional-pinouts" / "74hc04.svg"
+    assert frame == ROOT / "board" / "assets" / "74hc-functional-pinouts" / "74hc04.svg"
     root = ElementTree.parse(frame).getroot()
     assert root.tag.endswith("svg")
     assert root.attrib["role"] == "img"
@@ -34,7 +34,7 @@ def test_board_example_resolve_run_and_checked_source_edit() -> None:
     assert u1["resource"] == {
         "kind": "chip-frame.svg",
         "asset": "resources/74hc-functional-pinouts/74hc04.svg",
-        "source": "resource/temp/74hc-functional-pinouts/74hc04.svg",
+        "source": "board/assets/74hc-functional-pinouts/74hc04.svg",
     }
     assert u1["pins"] == [
         {"number": 1, "name": "1A", "direction": "input"},
@@ -76,7 +76,7 @@ def test_board_example_resolve_run_and_checked_source_edit() -> None:
     assert driven["ok"] is True
     assert driven["result"]["probes"]["probes"]["input_level"] == 1
     assert driven["result"]["probes"]["probes"]["inverted_level"] == 0
-    assert board_static_file(u1["resource"]["asset"]) == ROOT / "resource" / "temp" / "74hc-functional-pinouts" / "74hc04.svg"
+    assert board_static_file(u1["resource"]["asset"]) == ROOT / "board" / "assets" / "74hc-functional-pinouts" / "74hc04.svg"
     assert board["result"]["wires"][0] == {"id": "edge:vcc->U1.VCC", "from": "vcc", "to": "U1.VCC", "kind": "scalar"}
 
     edited = handle_request({

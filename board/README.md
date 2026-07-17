@@ -24,8 +24,8 @@ First slice included:
   declared `inversion` runtime test;
 - local draft autosave/recovery through browser local storage;
 - selection-to-readable-source highlighting and a Learning Lens explanation;
-- definition-backed 74HC DIP-frame SVG resources from
-  `resource/temp/74hc-functional-pinouts/`; and
+- definition-backed 74HC DIP-frame SVG Board resources from
+  `board/assets/74hc-functional-pinouts/`; and
 - visible definition-owned pin anchors over a selected supported 74HC frame.
   A pointer gesture first calls the pure `component-language-edit-preview`
   request, which parse/resolves the proposed patch and returns its digest while

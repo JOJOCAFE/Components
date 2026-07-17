@@ -7,7 +7,7 @@ from .db import load_component_package
 
 
 ROOT = Path(__file__).resolve().parents[2]
-FRAME_ROOT = ROOT / "resource" / "temp" / "74hc-functional-pinouts"
+FRAME_ROOT = ROOT / "board" / "assets" / "74hc-functional-pinouts"
 
 
 def _presentation_pins(part: str) -> list[dict[str, Any]]:

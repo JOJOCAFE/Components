@@ -20,7 +20,7 @@ from .component_edit import apply_component_edit, preview_component_edit
 JsonMap = dict[str, Any]
 ROOT = Path(__file__).resolve().parents[2]
 BOARD_ROOT = ROOT / "board"
-BOARD_RESOURCE_ROOT = ROOT / "resource" / "temp" / "74hc-functional-pinouts"
+BOARD_RESOURCE_ROOT = BOARD_ROOT / "assets" / "74hc-functional-pinouts"
 NOT_GATE_FIXTURE = ROOT / "Language" / "fixtures" / "component-v1.1" / "digital_inverter.component"
 
 

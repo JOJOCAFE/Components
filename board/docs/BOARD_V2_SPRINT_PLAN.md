@@ -1,9 +1,9 @@
 # Board v2 Sprint Plan — Harness Before Growth
 
 Status: active task plan. **Gate 0 is complete: the reviewed 25-sample
-baseline and regression guard are tracked. B1.1 is complete as a pure,
-tested transform kernel. Current next task: B1.2, adaptive grid and snap in
-world units.**
+baseline and regression guard are tracked. B1.1/B1.2 are complete as pure,
+tested transform/grid kernels. Current next task: B1.3, migrate the renderer
+from normalized top-left coordinates to the world/viewport transform.**
 This plan implements
 [BOARD_ARCHITECTURE_FREEZE.md](BOARD_ARCHITECTURE_FREEZE.md) in small,
 independently reviewable slices. A sprint cannot advance merely because the

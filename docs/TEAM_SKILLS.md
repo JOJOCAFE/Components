@@ -298,7 +298,7 @@ vvp /tmp/tb_memory_smoke.vvp
 
 The canonical examples for redrawing Board functional-pinout artwork are now
 `74HC00`, `74HC02`, `74HC03`, `74HC04`, `74HC05`, `74HC08`, and `74HC14` in
-`resource/temp/74hc-functional-pinouts/`. Use their `-functional.svg` files
+`board/assets/74hc-functional-pinouts/`. Use their `-functional.svg` files
 as the approved combined frame-plus-logic examples.
 They supersede the earlier experimental `74HC00`–`74HC03` drawing guidance;
 do not reuse that older layout as a template.

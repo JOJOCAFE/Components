@@ -54,3 +54,23 @@ export function worldBounds(view, screenRect) {
   const current = viewport(view), r = rect(screenRect), halfWidth = r.width / current.pixelsPerWorld / 2, halfHeight = r.height / current.pixelsPerWorld / 2;
   return { minX: current.center.x - halfWidth, maxX: current.center.x + halfWidth, minY: current.center.y - halfHeight, maxY: current.center.y + halfHeight };
 }
+
+/** Choose a readable 1/2/5 world-unit grid whose major spacing stays on screen. */
+export function adaptiveGrid(view, { targetPixels = 72, minPixels = 48, maxPixels = 108 } = {}) {
+  const current = viewport(view), target = finite(targetPixels, "targetPixels"), minimum = finite(minPixels, "minPixels"), maximum = finite(maxPixels, "maxPixels");
+  if (target <= 0 || minimum <= 0 || maximum < minimum) throw new RangeError("grid pixel limits are invalid");
+  const desired = target / current.pixelsPerWorld;
+  const exponent = Math.floor(Math.log10(desired));
+  const candidates = [];
+  for (let power = exponent - 1; power <= exponent + 1; power += 1) for (const unit of [1, 2, 5]) candidates.push(unit * 10 ** power);
+  const allowed = candidates.filter(spacing => spacing * current.pixelsPerWorld >= minimum && spacing * current.pixelsPerWorld <= maximum);
+  const spacing = (allowed.length ? allowed : candidates).sort((a, b) => Math.abs(a * current.pixelsPerWorld - target) - Math.abs(b * current.pixelsPerWorld - target))[0];
+  return { majorWorldUnits: spacing, minorWorldUnits: spacing / 5, majorPixels: spacing * current.pixelsPerWorld };
+}
+
+/** Snap is a Board presentation aid; callers retain the unsnapped input if needed. */
+export function snapWorldPoint(value, grid) {
+  const p = point(value, "world"), spacing = finite(grid?.majorWorldUnits ?? grid, "grid.majorWorldUnits");
+  if (spacing <= 0) throw new RangeError("grid.majorWorldUnits must be positive");
+  return { x: Math.round(p.x / spacing) * spacing, y: Math.round(p.y / spacing) * spacing };
+}
