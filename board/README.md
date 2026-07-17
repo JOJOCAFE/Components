@@ -42,14 +42,12 @@ This is intentionally a dependency-free browser proof. A later Tauri wrapper
 must consume this same local JSON/source-edit boundary; it must not introduce
 a second circuit model.
 
-Board placement and scalar-edge routing use `components.board-profile@1` in
-browser-local storage. Coordinates are stable Board units from `0` to `100`,
-not screen pixels: invalid or out-of-bounds route points are rejected. A
-saved picture whose topology digest no longer matches is never reused or
-retargeted; the learner must explicitly run `discard board profile` before
-starting an empty replacement picture. `fd` and `bk` pen distances use the
-same Board units, so a pen path and matching coordinate path save equivalent
-route points. Bus routes remain unavailable pending their own contract.
+Board placement, scalar-edge routing, and labels use the digest-locked
+`components.board-profile@2` in browser-local storage. They use centered
+world coordinates, never screen pixels. A saved picture whose topology digest
+no longer matches is never reused or retargeted; the learner must explicitly
+run `discard board profile` before starting an empty replacement picture. Bus
+routes remain unavailable pending their own contract.
 
 Interaction proof currently covers pointer and keyboard pin selection, exact
 source-edit preview before Apply, Cancel/Escape/`cancel route` recovery, and
@@ -74,9 +72,23 @@ The semantic operation and future-reuse boundary are frozen in
 
 The current canvas keeps visual artifacts vector-first: reviewed chip frames
 are SVG resources, connection guides/routes are SVG paths, and Board labels
-are SVG text. Choose **Label**, click the canvas, enter one or more lines, and
-set a size from `1.5` to `8` Board units. Labels and routes save only in the
-digest-locked Board profile; they do not alter Component source or pin truth.
+are SVG text. Choose **Label**, then click anywhere in the viewport and type
+immediately at that point. Double-click a saved label to edit text directly on
+the label itself; click elsewhere to save it, or press Escape to cancel.
+Thai, English, and other standard Unicode text are kept as one label object.
+Select and left-drag a completed label to move it. Right-click any
+viewport object to replace the browser menu with its Board properties; a label
+uses a compact properties popup for `1.5..8` size, a 16-colour palette with an
+editable hex-code field, bold, italic, and underline. Double-click the label
+itself to edit its text; selecting it exposes a resize handle. One label has
+one style and color—mixed runs and font-family choice are intentionally
+deferred. Labels and routes save only in the digest-locked Board profile; they
+do not alter Component source or pin truth.
+
+Mode rule: in **Label** mode, one click on an existing label edits its text and
+one click elsewhere finishes the active edit. In **Select** mode, the pointer
+tool selects/grabs a label for moving or its corner handle for resizing;
+double-click edits its text. Right-click always opens Board properties.
 
 The SVG chip frames are deliberately presentation-only. The Board serves the
 no-pin frames through `resources/74hc-chip-frames-no-pins/` when a matching

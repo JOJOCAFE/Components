@@ -140,6 +140,35 @@ References, Connections). The immediate next implementation gate is profile
 v2/migration plus the world/viewport/operation path, before broad editor-tool
 work. See `board/docs/BOARD_ARCHITECTURE_FREEZE.md`.
 
+### Guides feature reusable release candidate: 2026-07-18
+
+Only the session-only **Guides** feature is a release candidate, documented in
+`board/docs/BOARD_GUIDE_OPERATION_CONTRACT.md`. Future production clients must
+reuse `board.guide.toggle` and `board/guide-operation.js`; they must not create
+parallel raw-click guide behavior or make it persistent/topological. Pim must
+surface this reminder when Guides returns to scope. The wider Board v2 sprint
+remains active development with its own browser and learner-trial gates.
+
+### Current Board team sprint: viewport properties — 2026-07-18
+
+`board/docs/BOARD_CURRENT_TEAM_SPRINT.md` routes the focused next sprint:
+Board-owned right-click properties and movable, whole-style UTF-8 labels. Its
+browser observation is separate from the older B2.3 migration observation; do
+not let this UI slice become an unverified Board v2 release claim.
+
+### Board direct-label checkpoint: 2026-07-18
+
+The local prototype keeps its chips, devices, nets, and routes visible while
+the label path evolves: `renderBoard()` preserves the previous canvas if an
+optional label/UI render error occurs. In **Label** mode, click blank viewport
+space to create/type a UTF-8 label, click a label to edit its text directly,
+and click elsewhere to save. In **Select** mode, the pointer selects/drags a
+label, its corner handle resizes it, and double-click edits it. Right-click
+opens the compact liquid-metal property surface for size, one hex colour
+(16-swatch palette), and whole-label B/I/U only. Text remains direct-edit,
+not a right-click field. Browser observation is still required before calling
+this learner interaction complete.
+
 ### Board v2 sprint and harness gate: 2026-07-17
 
 The current execution authority is `board/docs/BOARD_V2_SPRINT_PLAN.md`. Begin with
@@ -217,8 +246,11 @@ validation.
 
 The local Board now renders existing chip-frame resources as SVG, resolved
 connection guides/routes as SVG paths, and Board-only labels as SVG text. A
-label supports one or multiple lines and a `1.5..8` Board-unit size; font and
-colour choices remain intentionally deferred. Labels and visual routes are
+label supports one or multiple UTF-8 lines and a `1.5..8` Board-unit size.
+Right-click anywhere in the viewport suppresses the browser menu and opens a
+Board property view; label properties provide one palette colour and whole-
+label bold, italic, and underline, while font-family selection and mixed runs
+remain deferred. Left-drag moves a selected label. Labels and visual routes are
 stored in the digest-locked profile and do not change Component wiring. The
 current connection-guide path can be dragged into a routed path; it does not
 invent an electrical edge.

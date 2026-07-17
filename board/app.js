@@ -1,9 +1,9 @@
-import { checkedWorldPoint, createBoardProfileV2, migrateBoardProfileV1ToV2, validateBoardProfileV2 } from "./profile-v2.js";
+import { checkedWorldPoint, createBoardProfileV2, LABEL_COLOR_PALETTE, migrateBoardProfileV1ToV2, validateBoardProfileV2 } from "./profile-v2.js";
 import { adaptiveGrid, panViewport, screenToWorld, viewport, worldToScreen, zoomViewportAt } from "./viewport.js";
 import { applyGuideToggleOperation, createGuideToggleOperation } from "./guide-operation.js";
 
 const $ = (selector) => document.querySelector(selector);
-const state = { source: "", revision: "", resolved: null, board: null, selected: null, drives: [], timer: null, resolveGeneration: 0, pinGesture: null, guide: null, guideVisibleEdges: [], boardProfile: null, staleBoardProfile: false, topologyDigest: "", drag: null, viewportDrag: null, viewport: null, nodePositions: {}, suppressClick: false, pen: null, labelDraft: null };
+const state = { source: "", revision: "", resolved: null, board: null, selected: null, drives: [], timer: null, resolveGeneration: 0, pinGesture: null, guide: null, guideVisibleEdges: [], boardProfile: null, staleBoardProfile: false, topologyDigest: "", drag: null, viewportDrag: null, viewport: null, nodePositions: {}, suppressClick: false, pen: null, labelDraft: null, propertyLabelId: null, suppressNextLabelClick: false };
 // v2 intentionally starts from a valid Component example instead of retaining
 // older workbench drafts that may contain Terminal commands such as `run`.
 const STORAGE_KEY = "components.board.not-gate.source.v2";
@@ -121,37 +121,43 @@ function updateGrid(canvas) {
 }
 
 function renderBoard() {
-  const canvas = $("#board-canvas"); canvas.replaceChildren();
-  const screen = canvasRect(canvas); ensureViewport(canvas); updateGrid(canvas);
-  const blocks = state.board?.blocks || [];
-  const devices = blocks.filter(item => item.type === "device");
-  const nets = state.board?.nets || [];
-  const nodes = [];
-  devices.forEach((item, index) => {
+  const canvas = $("#board-canvas"); const previousChildren = [...canvas.childNodes]; canvas.replaceChildren();
+  try {
+    const screen = canvasRect(canvas); ensureViewport(canvas); updateGrid(canvas);
+    const blocks = state.board?.blocks || [];
+    const devices = blocks.filter(item => item.type === "device");
+    const nets = state.board?.nets || [];
+    const nodes = [];
+    devices.forEach((item, index) => {
     const fallback = { x: devices.length === 1 ? 0 : -138 + index * (276 / (devices.length - 1)), y: 84 };
     const placement = placementFor(item.id);
     nodes.push({ id: item.id, label: item.id === "U1" ? "U1\nNOT gate" : item.id, x: placement?.origin?.x ?? fallback.x, y: placement?.origin?.y ?? fallback.y, kind: "device", part: item.part, pinAnchors: item.pin_anchors || [], resource: item.resource });
-  });
-  nets.filter(item => item.kind !== "power").forEach((item, index) => {
+    });
+    nets.filter(item => item.kind !== "power").forEach((item, index) => {
     const fallback = { x: -192 + index * (384 / Math.max(1, nets.filter(n => n.kind !== "power").length - 1)), y: -132 };
     const placement = placementFor(item.id, "net");
     nodes.push({ id: item.id, label: item.id, x: placement?.origin?.x ?? fallback.x, y: placement?.origin?.y ?? fallback.y, kind: "net", pinAnchors: [{ id: `${item.id}.net`, endpoint: item.id, direction: "net", dip_side: "right", dip_order: 1 }] });
-  });
-  nodes.forEach(node => { node.screen = projectWorldPoint(canvas, node); });
-  const lookup = Object.fromEntries(nodes.map(item => [item.id, item]));
-  state.nodePositions = Object.fromEntries(nodes.map(item => [item.id, { x: item.x, y: item.y }]));
-  const vectors = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  vectors.classList.add("board-vectors"); vectors.setAttribute("viewBox", `0 0 ${screen.width} ${screen.height}`); vectors.setAttribute("preserveAspectRatio", "none");
-  canvas.append(vectors);
-  nodes.forEach(node => drawNode(canvas, node));
-  installPinGesture();
-  (state.board?.wires || []).forEach(wire => {
+    });
+    nodes.forEach(node => { node.screen = projectWorldPoint(canvas, node); });
+    const lookup = Object.fromEntries(nodes.map(item => [item.id, item]));
+    state.nodePositions = Object.fromEntries(nodes.map(item => [item.id, { x: item.x, y: item.y }]));
+    const vectors = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    vectors.classList.add("board-vectors"); vectors.setAttribute("viewBox", `0 0 ${screen.width} ${screen.height}`); vectors.setAttribute("preserveAspectRatio", "none");
+    canvas.append(vectors);
+    nodes.forEach(node => drawNode(canvas, node));
+    installPinGesture();
+    (state.board?.wires || []).forEach(wire => {
     const left = lookup[wire.from.split(".")[0]] || lookup[wire.from]; const right = lookup[wire.to.split(".")[0]] || lookup[wire.to];
     if (left && right && shouldShowWire(wire)) drawEdge(vectors, left, right, wire);
-  });
-  drawLabels(vectors);
-  if (state.guide) requestAnimationFrame(() => drawPinGuide(canvas));
-  if (state.pen) requestAnimationFrame(() => drawPenPreview(canvas));
+    });
+    drawLabels(vectors);
+    if (state.guide) requestAnimationFrame(() => drawPinGuide(canvas));
+    if (state.pen) requestAnimationFrame(() => drawPenPreview(canvas));
+  } catch (error) {
+    canvas.replaceChildren(...previousChildren);
+    console.error("Board render kept the previous viewport after an optional UI error.", error);
+    status(`Board view kept safe: ${error.message}`, true);
+  }
 }
 
 function shouldShowWire(wire) {
@@ -170,12 +176,14 @@ function drawEdge(vectors, from, to, wire) {
   edge.setAttribute("aria-label", `${wire.from} to ${wire.to}. ${savedRoute ? "Visual route." : "Connection guide: draw a route."}`);
   edge.addEventListener("pointerdown", event => { if (isSelectTool()) beginRouteDrag(event, wire); });
   edge.addEventListener("click", event => { event.stopPropagation(); if (state.suppressClick) return; selectWire(wire); });
+  edge.addEventListener("contextmenu", event => openObjectProperties(event, { title: "Connection properties", summary: `${wire.from} → ${wire.to}. This is a resolved Component connection; its Board route is presentation only.` }));
   vectors.append(edge);
   points.slice(1, -1).forEach((via, index) => {
     const handle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     handle.classList.add("route-handle"); handle.setAttribute("cx", via.x); handle.setAttribute("cy", via.y); handle.setAttribute("r", "5");
     handle.setAttribute("aria-label", "Drag to move this visual route bend.");
-    handle.addEventListener("pointerdown", event => { if (isSelectTool()) beginRouteDrag(event, wire, index + 1); }); vectors.append(handle);
+    handle.addEventListener("pointerdown", event => { if (isSelectTool()) beginRouteDrag(event, wire, index + 1); });
+    handle.addEventListener("contextmenu", event => openObjectProperties(event, { title: "Route bend properties", summary: `${wire.from} → ${wire.to}. Drag this bend to change only the saved visual route.` })); vectors.append(handle);
   });
 }
 
@@ -192,8 +200,10 @@ function drawLabels(vectors) {
     const position = projectWorldPoint(canvas, label.position);
     const fontSize = Math.max(12, label.font_size * scale * 1.5);
     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    const style = label.style || { color: "#1d2c42", bold: false, italic: false, underline: false };
     text.classList.add("board-label"); text.setAttribute("x", position.x); text.setAttribute("y", position.y); text.setAttribute("font-size", fontSize);
-    text.setAttribute("tabindex", "0"); text.setAttribute("role", "button"); text.setAttribute("aria-label", `Edit label: ${label.text}`);
+    text.setAttribute("fill", style.color); text.setAttribute("font-weight", style.bold ? "700" : "400"); text.setAttribute("font-style", style.italic ? "italic" : "normal"); text.setAttribute("text-decoration", style.underline ? "underline" : "none");
+    text.setAttribute("tabindex", "0"); text.setAttribute("role", "button"); text.setAttribute("aria-label", `Label: ${label.text}. Right-click for properties.`);
     label.text.split("\n").forEach((line, index) => {
       const span = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
       span.setAttribute("x", position.x); span.setAttribute("dy", index === 0 ? "0" : String(fontSize * 1.25)); span.textContent = line; text.append(span);
@@ -201,12 +211,26 @@ function drawLabels(vectors) {
     text.addEventListener("pointerdown", event => {
       if (!isSelectTool()) return;
       event.preventDefault(); event.stopPropagation();
+      state.selected = { kind: "label", id: label.id };
       state.drag = { kind: "label", id: label.id, moved: false, start: boardPoint(event) };
     });
-    const edit = event => { event.stopPropagation(); if (!isSelectTool()) beginLabel(label.position, label); };
-    text.addEventListener("click", edit); text.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); edit(event); } });
+    const select = event => { event.stopPropagation(); if (isLabelTool()) { beginLabel(label.position, label); return; } if (isSelectTool()) { state.selected = { kind: "label", id: label.id }; renderBoard(); status(`Selected label ${label.id}. Drag to move it, drag its corner handle to resize, double-click to edit, or right-click for properties.`); } };
+    text.addEventListener("click", select); text.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); select(event); } });
+    text.addEventListener("dblclick", event => { if (!isSelectTool()) return; event.preventDefault(); event.stopPropagation(); beginLabel(label.position, label); });
+    text.addEventListener("contextmenu", event => openObjectProperties(event, { title: "Label properties", summary: "Double-click the label itself to edit text. These controls change its one whole-label style.", label }));
     vectors.append(text);
+    if (state.selected?.kind === "label" && state.selected.id === label.id) {
+      const lines = label.text.split("\n");
+      const bounds = { x: position.x, y: position.y - fontSize, width: Math.max(fontSize, ...lines.map(line => line.length * fontSize * .62)), height: Math.max(fontSize * 1.25, lines.length * fontSize * 1.25) };
+      const frame = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      frame.classList.add("label-selection"); frame.setAttribute("x", bounds.x - 4); frame.setAttribute("y", bounds.y - 4); frame.setAttribute("width", bounds.width + 8); frame.setAttribute("height", bounds.height + 8); vectors.append(frame);
+      const handle = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      handle.classList.add("label-resize-handle"); handle.setAttribute("x", bounds.x + bounds.width); handle.setAttribute("y", bounds.y + bounds.height); handle.setAttribute("width", 8); handle.setAttribute("height", 8); handle.setAttribute("aria-label", "Drag to resize label text");
+      handle.addEventListener("pointerdown", event => { if (!isSelectTool()) return; event.preventDefault(); event.stopPropagation(); state.drag = { kind: "label-resize", id: label.id, moved: false, start: boardPoint(event), fontSize: label.font_size }; });
+      vectors.append(handle);
+    }
   }
+  if (state.labelDraft) drawLabelEditor(vectors, state.labelDraft);
 }
 
 function drawNode(canvas, node) {
@@ -225,6 +249,7 @@ function drawNode(canvas, node) {
       if (event.target.closest(".pin-anchor, .gate-move, .board-device-label") || state.suppressClick) return;
       selectNode(node);
     });
+    device.addEventListener("contextmenu", event => openObjectProperties(event, { title: `${node.id} properties`, summary: `${node.part} is definition-owned. Pin truth, timing, and behavior stay outside the Board profile.` }));
     const move = device.querySelector(".gate-move");
     move.addEventListener("pointerdown", event => beginChipDrag(event, node));
     canvas.append(device);
@@ -259,6 +284,7 @@ function drawBorderFrame(canvas, node) {
     if (event.target.closest(".pin-anchor") || state.suppressClick) return;
     selectNode(node);
   });
+  frame.addEventListener("contextmenu", event => openObjectProperties(event, { title: `${node.id} properties`, summary: "This net is resolved Component topology. Its Board placement is presentation only." }));
   canvas.append(frame);
 }
 
@@ -289,37 +315,90 @@ function setRoute(wire, via, viaIndex = 1) {
   setRoutePoints(wire, vias);
 }
 function beginLabel(position, existing = null) {
-  state.labelDraft = { position, existing };
-  $("#label-text").value = existing?.text || "";
-  $("#label-size").value = existing?.font_size || 3;
-  $("#label-form").classList.remove("hidden");
-  $("#label-text").focus();
-  status(existing ? "Edit the label text or size, then apply it." : "Type a label. Use Enter for another line.");
+  cancelLabelDraft();
+  state.labelDraft = { position, existing, editor: null };
+  renderBoard();
+  status("Type directly on the label. Click elsewhere to save; Escape cancels.");
+}
+function drawLabelEditor(vectors, draft) {
+  const canvas = $("#board-canvas"); const position = projectWorldPoint(canvas, draft.position);
+  const existing = draft.existing; const style = labelStyle(existing || {}); const fontSize = Math.max(12, Number(existing?.font_size || 3) * ensureViewport(canvas).pixelsPerWorld * 1.5);
+  const foreign = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+  foreign.setAttribute("x", position.x - 2); foreign.setAttribute("y", position.y - fontSize); foreign.setAttribute("width", "260"); foreign.setAttribute("height", String(Math.max(44, fontSize * 2.8)));
+  const editor = document.createElement("div"); editor.id = "label-inline-editor"; editor.className = "label-inline-editor"; editor.contentEditable = "true"; editor.spellcheck = true; editor.setAttribute("role", "textbox"); editor.setAttribute("aria-label", "Board label text");
+  editor.style.color = style.color; editor.style.fontSize = `${fontSize}px`; editor.style.fontWeight = style.bold ? "700" : "400"; editor.style.fontStyle = style.italic ? "italic" : "normal"; editor.style.textDecoration = style.underline ? "underline" : "none";
+  editor.textContent = existing?.text || "";
+  foreign.append(editor); vectors.append(foreign); draft.editor = editor;
+  editor.addEventListener("keydown", event => {
+    if (event.key === "Escape") { event.preventDefault(); cancelLabelDraft(); status("Label cancelled. Component source and Board picture are unchanged."); }
+  });
+  editor.addEventListener("blur", () => { if (state.labelDraft?.editor === editor) saveLabelDraft(); });
+  requestAnimationFrame(() => { if (state.labelDraft?.editor === editor) { editor.focus(); const range = document.createRange(); range.selectNodeContents(editor); range.collapse(false); const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range); } });
+}
+function labelStyle(label) { return label.style || { color: "#1d2c42", bold: false, italic: false, underline: false }; }
+function selectPaletteColor(color) {
+  $("#property-label-color-code").value = color;
+  document.querySelectorAll(".label-color-swatch").forEach(item => item.classList.toggle("selected", item.dataset.color === color.toLowerCase()));
+}
+function positionProperties(event) {
+  const pane = $("#drawing-pane").getBoundingClientRect(); const menu = $("#object-properties");
+  menu.style.left = `${Math.max(12, Math.min(event.clientX - pane.left, pane.width - 342))}px`;
+  menu.style.top = `${Math.max(12, Math.min(event.clientY - pane.top, pane.height - 280))}px`;
+}
+function openObjectProperties(event, { title, summary, label = null }) {
+  event.preventDefault(); event.stopPropagation();
+  state.propertyLabelId = label?.id || null;
+  $("#property-title").textContent = title; $("#property-summary").textContent = summary;
+  const form = $("#label-properties"); form.classList.toggle("hidden", !label);
+  if (label) {
+    const style = labelStyle(label);
+    $("#property-label-size").value = label.font_size; selectPaletteColor(style.color);
+    $("#property-label-bold").checked = style.bold;
+    $("#property-label-italic").checked = style.italic; $("#property-label-underline").checked = style.underline;
+  }
+  positionProperties(event); $("#object-properties").classList.remove("hidden");
+}
+function closeObjectProperties() { state.propertyLabelId = null; $("#object-properties").classList.add("hidden"); }
+function saveLabelProperties() {
+  const label = state.boardProfile?.labels?.find(item => item.id === state.propertyLabelId);
+  if (!label) return;
+  try {
+    const fontSize = Number($("#property-label-size").value);
+    const color = $("#property-label-color-code").value.trim().toLowerCase();
+    if (!Number.isFinite(fontSize) || fontSize < 1.5 || fontSize > 8 || !/^#[0-9a-f]{6}$/.test(color)) throw new Error("Label needs a size from 1.5 to 8 and a six-digit hex color.");
+    label.font_size = fontSize;
+    label.style = { color, bold: $("#property-label-bold").checked, italic: $("#property-label-italic").checked, underline: $("#property-label-underline").checked };
+    validateBoardProfileV2(state.boardProfile, boardTopology(state.resolved));
+    saveBoardProfile(`component:board label ${label.id} properties updated;`); closeObjectProperties(); renderBoard();
+    status(`Updated label ${label.id}. Its text style is Board presentation only.`);
+  } catch (error) { status(error.message, true); }
 }
 function saveLabelDraft() {
   const draft = state.labelDraft;
   if (!draft || !state.boardProfile) return;
   try {
     const id = draft.existing?.id || `label-${(state.boardProfile.labels?.length || 0) + 1}`;
-    const text = $("#label-text").value; const fontSize = Number($("#label-size").value);
+    const text = draft.editor.innerText.replace(/\n+$/, ""); const fontSize = Number(draft.existing?.font_size || 3);
     if (!/^[A-Za-z_][A-Za-z0-9_-]*$/.test(id) || !text.trim() || !Number.isFinite(fontSize) || fontSize < 1.5 || fontSize > 8) throw new Error("Label needs an identifier, text, and a size from 1.5 to 8.");
-    const label = { id, position: checkedWorldPoint(draft.position), text, font_size: fontSize };
+    const label = { id, position: checkedWorldPoint(draft.position), text, font_size: fontSize, style: labelStyle(draft.existing || {}) };
     state.boardProfile.labels ||= [];
     const existingIndex = state.boardProfile.labels.findIndex(item => item.id === id);
     if (existingIndex >= 0) state.boardProfile.labels[existingIndex] = label; else state.boardProfile.labels.push(label);
-    state.labelDraft = null; $("#label-form").classList.add("hidden");
+    state.labelDraft = null;
     saveBoardProfile(`component:board label ${id} at ${pointText(label.position)} size ${label.font_size};`);
     renderBoard(); status("Saved a visual label. Component wiring is unchanged.");
   } catch (error) { status(error.message, true); }
 }
 function cancelLabelDraft() {
-  state.labelDraft = null; $("#label-form").classList.add("hidden");
+  if (!state.labelDraft) return;
+  state.labelDraft = null; if (state.board) renderBoard();
 }
 function beginChipDrag(event, node) {
   event.preventDefault(); event.stopPropagation();
   state.drag = { kind: "node", nodeKind: "device-instance", id: node.id, moved: false, start: boardPoint(event) };
 }
 function isSelectTool() { return document.querySelector('.tool.selected')?.dataset.tool === "select"; }
+function isLabelTool() { return document.querySelector('.tool.selected')?.dataset.tool === "label"; }
 function isGuideTool() { return document.querySelector('.tool.selected')?.dataset.tool === "guide"; }
 function beginObjectDrag(event, node) {
   if (event.button !== 0) return;
@@ -339,6 +418,9 @@ function moveBoardDrag(event) {
   else if (state.drag.kind === "label") {
     const label = state.boardProfile.labels?.find(item => item.id === state.drag.id);
     if (label) label.position = point;
+  } else if (state.drag.kind === "label-resize") {
+    const label = state.boardProfile.labels?.find(item => item.id === state.drag.id);
+    if (label) label.font_size = Math.max(1.5, Math.min(8, Math.round((state.drag.fontSize + (point.y - state.drag.start.y) / 12) * 2) / 2));
   } else setRoute(state.drag.wire, point, state.drag.viaIndex);
   renderBoard();
 }
@@ -356,6 +438,10 @@ function finishBoardDrag() {
     const label = state.boardProfile.labels?.find(item => item.id === drag.id);
     saveBoardProfile(`component:board label ${drag.id} at ${pointText(label.position)} size ${label.font_size};`);
     status(`Moved label ${drag.id}. Component wiring is unchanged.`);
+  } else if (drag.kind === "label-resize") {
+    const label = state.boardProfile.labels?.find(item => item.id === drag.id);
+    saveBoardProfile(`component:board label ${label.id} size ${label.font_size};`);
+    status(`Resized label ${label.id}. Component wiring is unchanged.`);
   } else {
     const route = routeFor(edgeId(drag.wire)); const vias = route.points.slice(1, -1).map(pointText).join(" -> ");
     saveBoardProfile(`component:board route ${route.edge_id} via ${vias};`);
@@ -479,6 +565,7 @@ function installPinGesture() {
       } else if (!state.pinGesture) beginPinGesture(anchor, "Press Enter or Space on a second pin to propose it.");
       else finishPinGesture(anchor);
     });
+    anchor.addEventListener("contextmenu", event => openObjectProperties(event, { title: `${anchor.dataset.endpoint} properties`, summary: `This ${anchor.dataset.direction} connection point is definition-owned. Use Connect for a checked source edit; Guides only changes temporary guide visibility.` }));
   });
 }
 
@@ -677,11 +764,31 @@ document.querySelectorAll(".tool").forEach(button => button.onclick = () => {
 });
 $("#close-connect").onclick = () => cancelPendingInteraction();
 $("#connect-form").addEventListener("submit", event => { event.preventDefault(); editConnection("connect", $("#connect-from").value.trim(), $("#connect-to").value.trim()); });
-$("#close-label").onclick = () => cancelLabelDraft();
-$("#label-form").addEventListener("submit", event => { event.preventDefault(); saveLabelDraft(); });
+LABEL_COLOR_PALETTE.forEach(color => {
+  const swatch = document.createElement("button"); swatch.type = "button"; swatch.className = "label-color-swatch"; swatch.dataset.color = color; swatch.style.background = color; swatch.title = color.toUpperCase(); swatch.setAttribute("aria-label", `Use ${color.toUpperCase()}`);
+  swatch.onclick = () => selectPaletteColor(color);
+  $("#label-color-palette").append(swatch);
+});
+$("#property-label-color-code").addEventListener("input", () => {
+  const color = $("#property-label-color-code").value.trim().toLowerCase();
+  document.querySelectorAll(".label-color-swatch").forEach(item => item.classList.toggle("selected", item.dataset.color === color));
+});
+$("#close-properties").onclick = () => closeObjectProperties();
+$("#cancel-properties").onclick = () => closeObjectProperties();
+$("#label-properties").addEventListener("submit", event => { event.preventDefault(); saveLabelProperties(); });
 $("#board-canvas").addEventListener("click", event => {
-  if (!document.querySelector('.tool.selected[data-tool="label"]') || (event.target !== $("#board-canvas") && !event.target.classList.contains("board-vectors"))) return;
+  if (!isLabelTool()) return;
+  if (state.suppressNextLabelClick) { state.suppressNextLabelClick = false; return; }
+  if (state.labelDraft) { saveLabelDraft(); return; }
+  if (event.target !== $("#board-canvas") && !event.target.classList.contains("board-vectors")) return;
   beginLabel(boardPoint(event));
+});
+$("#board-canvas").addEventListener("pointerdown", event => {
+  if (!isLabelTool() || !state.labelDraft || event.button !== 0 || event.target === state.labelDraft.editor) return;
+  state.suppressNextLabelClick = true;
+});
+$("#board-canvas").addEventListener("contextmenu", event => {
+  openObjectProperties(event, { title: "Viewport properties", summary: "Pan and zoom are session-local. World coordinates and Board objects remain unchanged." });
 });
 $("#board-canvas").addEventListener("wheel", event => {
   event.preventDefault();

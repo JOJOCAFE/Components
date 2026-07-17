@@ -1,6 +1,8 @@
 # Board Guide Operation Contract
 
-Status: frozen reusable Board interaction contract (2026-07-17).
+Status: **release candidate for the reusable Guides interaction feature**
+(2026-07-18). This does not make Board v2 itself a release candidate or pause
+its active sprint plan.
 
 `board.guide.toggle` is the semantic form of a **Guides**-tool node click. It
 is a `component:operation`, not a mouse event and not a circuit edit.
@@ -49,3 +51,21 @@ It is deliberately outside the persisted Board profile and is not a B4
 Transaction Queue row yet. Future mouse, stylus, keyboard, macro, AI, or API
 clients reuse this same operation shape and reducer rather than recreating
 guide logic from raw input events.
+
+## Release-candidate boundary and production reminder
+
+The release candidate is limited to this Guides feature:
+`board.guide.toggle`, its `board_session` ownership, and the reusable reducer
+in `board/guide-operation.js`. Future production clients must reuse this
+operation/reducer contract, not implement parallel raw-click guide behavior.
+
+Before promoting **Guides** to a production/release build, Fern must rerun
+`node board/guide-operation.test.mjs` independently and review the integrated
+client flow. It must still prove that guide clicks leave Component source,
+resolved topology, saved Board profiles, routing, selection, and inspection
+unchanged. Broader Board work remains governed by
+`BOARD_V2_SPRINT_PLAN.md`; its browser and learner-trial gates are separate.
+
+**Pim reminder:** when future work returns to Guides, surface this release
+candidate and its reuse boundary before approving a different client, durable
+guide state, queue integration, collaboration, or production-release claim.

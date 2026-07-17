@@ -11,6 +11,7 @@ export const CENTERED_WORLD_COORDINATE_SPACE = Object.freeze({
 
 const ELECTRICAL_FIELDS = new Set(["source", "resolved", "instances", "nets", "buses", "edges", "operations", "drives", "runtime"]);
 const TOP_LEVEL_FIELDS = new Set(["schema", "version", "coordinate_space", "topology_ref", "resource_bindings", "placements", "routes", "labels", "widgets", "physical_captures", "view"]);
+export const LABEL_COLOR_PALETTE = Object.freeze(["#000000", "#ffffff", "#808080", "#c0c0c0", "#b42318", "#f97316", "#facc15", "#65a30d", "#16a34a", "#0f766e", "#06b6d4", "#0b53b7", "#4338ca", "#6d28d9", "#db2777", "#7c2d12"]);
 
 function object(value, message) {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(message);
@@ -65,7 +66,14 @@ function checkedRoute(value) {
 
 function checkedLabel(value) {
   const label = object(value, "Label must be an object.");
-  return { id: identifier(label.id, "Label needs an identifier."), position: checkedWorldPoint(label.position), text: typeof label.text === "string" && label.text.trim() ? label.text : (() => { throw new Error("Label needs text."); })(), font_size: finite(label.font_size, "Label font_size must be finite.") };
+  const output = { id: identifier(label.id, "Label needs an identifier."), position: checkedWorldPoint(label.position), text: typeof label.text === "string" && label.text.trim() ? label.text : (() => { throw new Error("Label needs text."); })(), font_size: finite(label.font_size, "Label font_size must be finite.") };
+  if (label.style === undefined) return output;
+  const style = object(label.style, "Label style must be an object.");
+  for (const key of Object.keys(style)) if (!["color", "bold", "italic", "underline"].includes(key)) throw new Error(`Label style does not support ${key}.`);
+  if (typeof style.color !== "string" || !/^#[0-9a-fA-F]{6}$/.test(style.color)) throw new Error("Label color must be a six-digit hex code.");
+  for (const key of ["bold", "italic", "underline"]) if (typeof style[key] !== "boolean") throw new Error(`Label style ${key} must be true or false.`);
+  output.style = { color: style.color.toLowerCase(), bold: style.bold, italic: style.italic, underline: style.underline };
+  return output;
 }
 
 function copyJson(value) { return JSON.parse(JSON.stringify(value)); }

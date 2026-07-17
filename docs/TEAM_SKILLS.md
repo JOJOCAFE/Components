@@ -87,6 +87,19 @@ future persistence/queue decision, Bam uses the operation reducer rather than
 direct UI state mutation, Noon keeps the learner wording precise, and Fern
 independently checks the reducer and ownership boundary before extension.
 
+This **Guides feature only** is the reusable release candidate: future
+production clients reuse `board.guide.toggle` and `board/guide-operation.js`;
+the wider Board v2 plan remains active work, not a release candidate.
+
+### Saved Board direct-label interaction: 2026-07-18
+
+Keep direct label text editing separate from label properties: Label mode
+creates/edits text on the label and click-away saves; Select mode moves/resizes
+and double-click edits; right-click exposes only presentation style. The label
+profile stays digest-locked and may never alter Component source, resolved
+topology, pin truth, timing, or physical package facts. Preserve the render
+fallback that keeps the prior viewport when optional UI code fails.
+
 ## Saved Team Checkpoint: 2026-07-12
 
 - Components `main` is pushed at `01d7ea1 Promote virtual test helper circuit`.

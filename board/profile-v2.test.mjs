@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { CENTERED_WORLD_COORDINATE_SPACE, createBoardProfileV2, migrateBoardProfileV1ToV2, validateBoardProfileV2 } from "./profile-v2.js";
+import { CENTERED_WORLD_COORDINATE_SPACE, createBoardProfileV2, LABEL_COLOR_PALETTE, migrateBoardProfileV1ToV2, validateBoardProfileV2 } from "./profile-v2.js";
 
 const topology = { componentId: "BoardProof", digest: "sha256:" + "a".repeat(64), title: "Board proof" };
 const fresh = createBoardProfileV2(topology);
@@ -9,6 +9,11 @@ assert.deepEqual(validateBoardProfileV2(fresh, topology), fresh);
 const drawn = validateBoardProfileV2({ ...fresh, placements: [{ target: { kind: "device-instance", id: "U1" }, origin: { x: -120, y: 80 }, rotation_deg: 90 }], routes: [{ edge_id: "edge:U1.1Y->OUT", points: [{ x: -120, y: 80 }, { x: 40, y: 80 }] }], labels: [{ id: "clock_note", position: { x: 40, y: -60 }, text: "Clock input\nTry 0 then 1", font_size: 3 }] }, topology);
 assert.equal(drawn.placements[0].origin.x, -120);
 assert.equal(drawn.routes[0].points[1].y, 80);
+const styled = validateBoardProfileV2({ ...fresh, labels: [{ id: "thai_note", position: { x: 0, y: 0 }, text: "สวัสดี Board\nHello", font_size: 3, style: { color: LABEL_COLOR_PALETTE[1], bold: true, italic: false, underline: true } }] }, topology);
+assert.equal(styled.labels[0].style.bold, true);
+assert.equal(LABEL_COLOR_PALETTE.length, 16);
+assert.equal(validateBoardProfileV2({ ...fresh, labels: [{ id: "custom_color", position: { x: 0, y: 0 }, text: "Label", font_size: 3, style: { color: "#AbC123", bold: false, italic: false, underline: false } }] }, topology).labels[0].style.color, "#abc123");
+assert.throws(() => validateBoardProfileV2({ ...fresh, labels: [{ id: "bad_color", position: { x: 0, y: 0 }, text: "Label", font_size: 3, style: { color: "red", bold: false, italic: false, underline: false } }] }, topology), /hex/);
 assert.equal(validateBoardProfileV2({ ...fresh, placements: [{ target: { kind: "net", id: "OUT" }, origin: { x: 200, y: 0 }, rotation_deg: 0 }] }, topology).placements[0].target.kind, "net");
 assert.throws(() => validateBoardProfileV2({ ...fresh, coordinate_space: { ...fresh.coordinate_space, y_axis: "down" } }, topology), /y_axis/);
 assert.throws(() => validateBoardProfileV2({ ...fresh, coordinate_space: undefined }, topology), /coordinate_space/);
