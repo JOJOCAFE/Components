@@ -198,8 +198,13 @@ points, and mouse/stylus input converts directly from the viewport to a finite
 world point. The viewport is never stored in the profile. No browser runtime is
 available in this environment, so do not mark B2.3 passed until a human observes
 old-profile migration, negative/positive placement, a label/route drag, and
-pan/zoom with an unchanged exported profile. Refresh the 25-sample regression
-baseline after that browser proof and before starting B3.
+pan/zoom with an unchanged exported profile. Its machine benchmark side is
+refreshed and Fern-reviewed at `659a67a`: the tracked baseline has five
+unmeasured warm-ups, 25 retained samples, recorded seed-0/seed-1 digest
+evidence, and the enforced regression guard in
+`python/tests/data/board_v2/thresholds.json`. Before starting B3, retain the
+remaining human migration observation rather than treating the benchmark as a
+browser substitute.
 
 Board chip artwork now uses generated no-pin 74HC DIP frames in
 `board/assets/74hc-chip-frames-no-pins/`: long printed lead stubs are replaced

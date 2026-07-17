@@ -7,8 +7,8 @@ world/viewport transform, with the existing `@1` top-left profile adapted only
 at the UI boundary until Sprint 2 migration. B2.1/B2.2 have frozen and
 validated `components.board-profile@2` plus deterministic `@1 → @2` migration.
 B2.3 implementation now persists world-coordinate Board objects; its remaining
-checkpoint is an interactive browser proof and a refreshed 25-sample regression
-baseline before Sprint 3 geometry work.**
+checkpoint is an interactive browser proof before Sprint 3 geometry work. Its
+five-warmup/25-sample regression baseline is refreshed and Fern-reviewed.**
 This plan implements
 [BOARD_ARCHITECTURE_FREEZE.md](BOARD_ARCHITECTURE_FREEZE.md) in small,
 independently reviewable slices. A sprint cannot advance merely because the
@@ -70,9 +70,9 @@ resolved topology did not change.
 
 **B2.3 proof note:** the local Board migrates the previous local-storage `@1`
 key only through the checked migration, writes `@2` under a separate key, and
-keeps pan/zoom in session state. Before B3 starts, observe one migration and
-one pan/zoom in a browser, then refresh the tracked 25-sample harness baseline
-and thresholds for the intentional v2 export shape.
+keeps pan/zoom in session state. The tracked five-warmup/25-sample harness
+baseline and thresholds have been refreshed for the intentional v2 export
+shape. Before B3 starts, observe one migration and one pan/zoom in a browser.
 
 **Sprint 2 checkpoint:** every Gate 0 fixture round-trips through v2 and a
 stale topology refuses to attach an old visual route to a new edge.

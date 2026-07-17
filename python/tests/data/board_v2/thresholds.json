@@ -1,10 +1,10 @@
 {
   "schema": "components.board-v2-regression-thresholds@1",
-  "policy_id": "board-v2-gate0-initial",
+  "policy_id": "board-v2-gate0-world-profile-refresh",
   "baseline": {
-    "baseline_id": "board-v2-05024f5-2026-07-17",
-    "evidence_digest": "sha256:556b040f3cdbbe33a68ececd13ddd5d8a5b282c34cefa268d68db68d76c99050",
-    "git_revision": "05024f5",
+    "baseline_id": "board-v2-659a67a-2026-07-17",
+    "evidence_digest": "sha256:f22f872559c429dea334794a3df940314a6273f2a759d69867286702737a32e2",
+    "git_revision": "659a67a",
     "fixture_digests": {
       "not-gate": "sha256:8a4f0a50122a64ffa93ef986712391467c0cfaca546f74c21c55719bfeb9111a",
       "chain-4": "sha256:911eae3a3eed6fb86ea99d70a7fed340f5e924bf24610ca0648889eb3c51b632",
@@ -16,28 +16,28 @@
   },
   "limits": {
     "not-gate": {
-      "load_resolve_projection": {"baseline_median_ns": 77355589, "baseline_p95_ns": 83572675, "max_p95_ns": 167145350},
-      "profile_migration": {"baseline_median_ns": 6093, "baseline_p95_ns": 9920, "max_p95_ns": 29760},
-      "queue_validate_apply": {"baseline_median_ns": 2372, "baseline_p95_ns": 6724, "max_p95_ns": 13448},
-      "max_export_bytes": 4380
+      "load_resolve_projection": {"baseline_median_ns": 77620805, "baseline_p95_ns": 83255665, "max_p95_ns": 166511330},
+      "profile_migration": {"baseline_median_ns": 20759, "baseline_p95_ns": 22539, "max_p95_ns": 67617},
+      "queue_validate_apply": {"baseline_median_ns": 2407, "baseline_p95_ns": 2640, "max_p95_ns": 17352},
+      "max_export_bytes": 4558
     },
     "chain-4": {
-      "load_resolve_projection": {"baseline_median_ns": 119241088, "baseline_p95_ns": 128422349, "max_p95_ns": 256844698},
-      "profile_migration": {"baseline_median_ns": 7051, "baseline_p95_ns": 13802, "max_p95_ns": 27604},
-      "queue_validate_apply": {"baseline_median_ns": 2248, "baseline_p95_ns": 4733, "max_p95_ns": 9466},
-      "max_export_bytes": 6851
+      "load_resolve_projection": {"baseline_median_ns": 123862695, "baseline_p95_ns": 146528355, "max_p95_ns": 293056710},
+      "profile_migration": {"baseline_median_ns": 22410, "baseline_p95_ns": 23537, "max_p95_ns": 70611},
+      "queue_validate_apply": {"baseline_median_ns": 2321, "baseline_p95_ns": 2585, "max_p95_ns": 5170},
+      "max_export_bytes": 7037
     },
     "dense-16x32": {
-      "load_resolve_projection": {"baseline_median_ns": 684200258, "baseline_p95_ns": 721812111, "max_p95_ns": 1443624222},
-      "profile_migration": {"baseline_median_ns": 7174, "baseline_p95_ns": 9270, "max_p95_ns": 18540},
-      "queue_validate_apply": {"baseline_median_ns": 3632, "baseline_p95_ns": 10983, "max_p95_ns": 21966},
-      "max_export_bytes": 44727
+      "load_resolve_projection": {"baseline_median_ns": 692509997, "baseline_p95_ns": 777126117, "max_p95_ns": 1554252234},
+      "profile_migration": {"baseline_median_ns": 22911, "baseline_p95_ns": 24686, "max_p95_ns": 74058},
+      "queue_validate_apply": {"baseline_median_ns": 3541, "baseline_p95_ns": 3723, "max_p95_ns": 7446},
+      "max_export_bytes": 45043
     }
   },
   "review": {
     "fern_reviewed": true,
-    "review_reference": "board/docs/BOARD_V2_HARNESS_VERIFICATION_SPEC.md; Gate 0 baseline collected from clean commit 05024f5",
-    "change_reason": "Initial 5-warmup/25-sample WSL development-machine baseline. Timing guards are two times recorded p95, except the sub-10-microsecond NOT profile-migration check at three times p95 to tolerate observed scheduler noise; export bytes are exact deterministic limits."
+    "review_reference": "Fern approved 2026-07-17: baseline f22f872559c429dea334794a3df940314a6273f2a759d69867286702737a32e2 verified (5 warmups, 25 samples, seed 0/1 stable, 8 negatives); NOT queue ceiling 17352 ns approved from independent 5784 ns p95.",
+    "change_reason": "World-profile refresh from clean commit 659a67a: five unmeasured warm-ups and 25 retained samples per fixture, with retained seed-0/seed-1 digest evidence. Timing guards are twice the recorded p95, except profile migration remains three times p95 for scheduler noise and NOT queue uses three times Fern's independently observed 5,784 ns p95 after the primary 2,640 ns p95 proved too tight. Export bytes are exact deterministic limits."
   },
   "claim_boundary": "Regression guard for this checked baseline; not a cross-machine product latency, responsiveness, startup, memory, or learner-experience target."
 }
