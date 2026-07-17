@@ -1,5 +1,5 @@
 {
   "schema": "components.resource-binding@1", "version": 1,
   "topology_ref": {"component_id": "BoardV2NotGate", "schema": "components.resolved-component@1", "digest": "sha256:8a4f0a50122a64ffa93ef986712391467c0cfaca546f74c21c55719bfeb9111a"},
-  "bindings": [{"id": "U1-dip-frame", "target": {"kind": "device-instance", "id": "U1"}, "resource": {"id": "components.board-v2.74HC04-frame-no-pins@1", "digest": "sha256:95f09c0435481f7f8b5f6c5730e19db7714ba5b89969dd7aca2f5bee92435b05", "view": "dip-frame-no-pins"}, "presentation": {"label": "Inverter U1", "symbol": "dip", "package": "PDIP-14"}}]
+  "bindings": [{"id": "U1-dip-frame", "target": {"kind": "device-instance", "id": "U1"}, "resource": {"id": "components.board-v2.74HC04-frame-no-pins@1", "digest": "sha256:926dbb75698af80382348470b99329039bf3d653b4d6aeff83f2018d0f2f51b5", "view": "dip-frame-no-pins"}, "presentation": {"label": "Inverter U1", "symbol": "dip", "package": "PDIP-14"}}]
 }

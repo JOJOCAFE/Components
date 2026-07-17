@@ -27,7 +27,8 @@ First slice included:
 - definition-backed 74HC no-pin DIP-frame SVG Board resources from
   `board/assets/74hc-chip-frames-no-pins/`; and
 - visible definition-owned connection dots over a selected supported 74HC
-  frame (the artwork has no printed lead stubs; its pin labels remain readable).
+  frame (the artwork replaces lead stubs with compact dots while retaining
+  readable pin labels).
   A pointer gesture first calls the pure `component-language-edit-preview`
   request, which parse/resolves the proposed patch and returns its digest while
   retaining the exact current source. Only after that preview can the learner

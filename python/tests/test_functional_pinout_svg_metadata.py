@@ -50,6 +50,7 @@ def test_no_pin_chip_frames_remove_lead_stubs_but_keep_definition_metadata():
     for path in frames:
         text = path.read_text(encoding="utf-8")
         assert 'class="lead"' not in text
+        assert 'class="node"' in text
         assert 'class="pin"' in text
         assert 'class="name"' in text
         assert 'class="number"' in text

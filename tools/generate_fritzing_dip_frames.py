@@ -55,7 +55,9 @@ def frame_svg(record: dict, *, include_pinout: bool = True, include_leads: bool 
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
         f'  <title id="title">{esc(part)} definition-backed DIP frame</title>',
         f'  <desc id="desc">{esc(part)} DIP frame. Frame style adapted from {esc(EXTERNAL_SOURCE)} under {EXTERNAL_LICENSE}; local Components definition provides all pin truth.</desc>',
-        '  <style>.body{fill:#fff;stroke:#000;stroke-width:12.5}.lead{stroke:#787878;stroke-width:9.72;stroke-linecap:round}.pin{fill:none;stroke:none}.name{font:50px "Droid Sans",Arial,sans-serif;fill:#444}.number{font:30px "Droid Sans",Arial,sans-serif;fill:#666}.title{font:44px "Droid Sans",Arial,sans-serif;fill:#111}</style>',
+        '  <style>.body{fill:#fff;stroke:#000;stroke-width:12.5}.lead{stroke:#787878;stroke-width:9.72;stroke-linecap:round}'
+        + ('.node{fill:#000}' if include_pinout and not include_leads else '')
+        + '.pin{fill:none;stroke:none}.name{font:50px "Droid Sans",Arial,sans-serif;fill:#444}.number{font:30px "Droid Sans",Arial,sans-serif;fill:#666}.title{font:44px "Droid Sans",Arial,sans-serif;fill:#111}</style>',
         f'  <text class="title" x="550" y="{height - 34}" text-anchor="middle">{esc(part)} · DIP-{total}</text>',
         f'  <rect class="body" x="{body_x}" y="{body_y}" width="{body_width}" height="{body_height}" rx="4"/>',
         f'  <path d="M{width / 2 - 35:.1f} {body_y}a35 35 0 0 0 70 0" fill="none" stroke="#000" stroke-width="12.5"/>',
@@ -73,6 +75,9 @@ def frame_svg(record: dict, *, include_pinout: bool = True, include_leads: bool 
         if include_pinout:
             if include_leads:
                 lines.append(f'  <line class="lead" x1="{x1}" y1="{y}" x2="{x2}" y2="{y}"/>')
+            else:
+                node_x = body_x - 18 if left else body_x + body_width + 18
+                lines.append(f'  <circle class="node" cx="{node_x}" cy="{y}" r="11"/>')
             lines.extend((
                 f'  <rect class="pin" id="connector{connector}pin" data-pin-number="{number}" data-pin-name="{esc(pin["name"])}" data-direction="{esc(pin["direction"])}" x="{min(x1, x2)}" y="{y - 5}" width="{abs(x2 - x1)}" height="10"/>',
                 f'  <text class="name" x="{name_x}" y="{y + 17}" text-anchor="{name_anchor}">{esc(pin["name"])}</text>',
@@ -135,8 +140,8 @@ def main() -> None:
     )
     (NO_PIN_OUT / "README.md").write_text(
         "# Definition-backed no-pin DIP frames\n\n"
-        "These SVGs are generated from the same reviewed DIP records as the sibling functional frames, but deliberately omit the long pin lead stubs. "
-        "They retain readable pin labels while the Board renders definition-owned connection dots at the node locations; it must never infer a pin, port, or behavior from this frame.\n",
+        "These SVGs are generated from the same reviewed DIP records as the sibling functional frames, but deliberately replace long pin lead stubs with compact node dots. "
+        "They retain readable pin labels. The Board aligns definition-owned interactive connection nodes to the dots; it must never infer a pin, port, or behavior from this frame.\n",
         encoding="utf-8",
     )
     print(f"generated={len(manifest)}")

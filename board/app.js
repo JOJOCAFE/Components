@@ -390,8 +390,7 @@ function selectNode(node) {
 
 function chipFrame(node, compact = false) {
   const anchors = node.pinAnchors.map(anchor => {
-    const sideCount = Math.max(1, node.pinAnchors.length / 2);
-    const top = 6 + (Number(anchor.dip_order) - .5) * (88 / sideCount);
+    const top = (100 + (Number(anchor.dip_order) - 1) * 100) / 940 * 100;
     return `<button class="pin-anchor ${anchor.dip_side}" type="button" data-anchor-id="${anchor.id}" data-endpoint="${anchor.endpoint}" data-direction="${anchor.direction}" data-pin-number="${anchor.physical_pin}" data-pin-name="${anchor.port}" data-component-selector="@${anchor.physical_pin}" style="top:${top}%" aria-label="Connect node ${anchor.endpoint}, ${anchor.direction}"></button>`;
   }).join("");
   const caption = compact ? "" : "<figcaption>Drag from one visible pin to another to propose a checked source edit. This frame owns no wiring state.</figcaption>";

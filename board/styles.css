@@ -54,10 +54,10 @@ button.primary { color: #fff; border-color: #1467df; background: #1467df; box-sh
 .pinout-art figcaption { display: none; }
 .chip-frame { position: relative; overflow: hidden; }
 .pin-anchor-layer { position: absolute; inset: .25rem .25rem 1.8rem; pointer-events: none; }
-.pin-anchor { position: absolute; z-index: 1; width: .72rem; height: .72rem; padding: 0; border: 2px solid #fff; border-radius: 50%; background: #1467df; box-shadow: 0 0 0 1px #1467df; color: transparent; opacity: 1; pointer-events: auto; touch-action: none; cursor: crosshair; transform: translateY(-50%); }
-.pin-anchor.left { left: -.12rem; }
-.pin-anchor.right { right: -.12rem; }
-.pin-anchor:hover, .pin-anchor:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; background: #e17522; box-shadow: 0 0 0 2px #e17522; }
+.pin-anchor { position: absolute; z-index: 1; width: 1rem; height: 1rem; padding: 0; border: 0; border-radius: 50%; background: transparent; box-shadow: none; color: transparent; opacity: 1; pointer-events: auto; touch-action: none; cursor: crosshair; transform: translate(-50%, -50%); }
+.pin-anchor.left { left: 16.7%; }
+.pin-anchor.right { left: 83.3%; }
+.pin-anchor:hover, .pin-anchor:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; background: #1467df55; box-shadow: 0 0 0 2px #1467df; }
 .pin-guide { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .pin-guide line { stroke: #1677ff; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 9 6; filter: drop-shadow(0 1px 1px #fff); animation: guide-flow .8s linear infinite; }
 .pin-guide text { fill: #07548e; font-size: 12px; font-weight: 700; text-anchor: middle; paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }

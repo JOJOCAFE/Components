@@ -4,5 +4,5 @@
   "binding_id_pattern": "<instance-id>-dip-frame",
   "target_kind": "device-instance",
   "target_ids": ["U01", "U02", "U03", "U04", "U05", "U06", "U07", "U08", "U09", "U10", "U11", "U12", "U13", "U14", "U15", "U16"],
-  "resource": {"id": "components.board-v2.74HC04-frame-no-pins@1", "digest": "sha256:95f09c0435481f7f8b5f6c5730e19db7714ba5b89969dd7aca2f5bee92435b05", "view": "dip-frame-no-pins", "asset": "board/assets/74hc-chip-frames-no-pins/74hc04.svg"}
+  "resource": {"id": "components.board-v2.74HC04-frame-no-pins@1", "digest": "sha256:926dbb75698af80382348470b99329039bf3d653b4d6aeff83f2018d0f2f51b5", "view": "dip-frame-no-pins", "asset": "board/assets/74hc-chip-frames-no-pins/74hc04.svg"}
 }
