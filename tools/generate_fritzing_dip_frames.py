@@ -31,7 +31,13 @@ def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
 
 
-def frame_svg(record: dict, *, include_pinout: bool = True, include_leads: bool = True) -> str:
+def frame_svg(
+    record: dict,
+    *,
+    include_pinout: bool = True,
+    include_leads: bool = True,
+    combine_pin_label: bool = False,
+) -> str:
     part = record["part"]
     package = record["package"]
     pins = record["pins"]
@@ -80,9 +86,10 @@ def frame_svg(record: dict, *, include_pinout: bool = True, include_leads: bool 
                 lines.append(f'  <circle class="node" cx="{node_x}" cy="{y}" r="11"/>')
             lines.extend((
                 f'  <rect class="pin" id="connector{connector}pin" data-pin-number="{number}" data-pin-name="{esc(pin["name"])}" data-direction="{esc(pin["direction"])}" x="{min(x1, x2)}" y="{y - 5}" width="{abs(x2 - x1)}" height="10"/>',
-                f'  <text class="name" x="{name_x}" y="{y + 17}" text-anchor="{name_anchor}">{esc(pin["name"])}</text>',
-                f'  <text class="number" x="{number_x}" y="{y - 15}" text-anchor="middle">{number}</text>',
+                f'  <text class="name" x="{name_x}" y="{y + 17}" text-anchor="{name_anchor}">{esc(f"{number}:{pin["name"]}" if combine_pin_label else pin["name"])}</text>',
             ))
+            if not combine_pin_label:
+                lines.append(f'  <text class="number" x="{number_x}" y="{y - 15}" text-anchor="middle">{number}</text>')
     lines.append('</svg>')
     return "\n".join(lines) + "\n"
 
@@ -116,7 +123,15 @@ def main() -> None:
         output.write_text(frame_svg(record), encoding="utf-8")
         ET.parse(output)
         no_pin_output = NO_PIN_OUT / output.name
-        no_pin_output.write_text(frame_svg(record, include_pinout=True, include_leads=False), encoding="utf-8")
+        no_pin_output.write_text(
+            frame_svg(
+                record,
+                include_pinout=True,
+                include_leads=False,
+                combine_pin_label=part == "74HC00",
+            ),
+            encoding="utf-8",
+        )
         ET.parse(no_pin_output)
         manifest.append({
             "part": part,
