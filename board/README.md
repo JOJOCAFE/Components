@@ -57,12 +57,13 @@ typed pin-to-pin commands using that same preview. The machine checks are in
 `board/interaction-contract.test.mjs`; the final first-sight acceptance trial
 still requires a real 10–15-year-old learner and adult beginner.
 
-Unrouted connections are quiet by default. In **Select**, each chip, net, or
-connection-dot click independently toggles its declared routing guides. The
-choices accumulate: click three pins and their three guide groups stay visible
-together, which lets a learner arrange related paths as a future bus. Click a
-target again to hide only its guides. A saved Board route remains visible
-because it is the learner's drawing, not a temporary guide.
+Unrouted connections are quiet by default. A normal click on a chip or net is
+reserved for its definition/inspection. In **Select**, double-click a precise
+connection dot to toggle only that pin's routing guides. The choices
+accumulate: double-click three dots and their three guide groups stay visible
+together, which lets a learner arrange related paths as a future bus.
+Double-click a dot again to hide only its guides. A saved Board route remains
+visible because it is the learner's drawing, not a temporary guide.
 
 The current canvas keeps visual artifacts vector-first: reviewed chip frames
 are SVG resources, connection guides/routes are SVG paths, and Board labels

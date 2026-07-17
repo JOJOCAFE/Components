@@ -30,10 +30,10 @@ for (const required of [
   'function shouldShowWire(wire)',
   'state.guideFocuses.some(focus =>',
   'state.guideFocuses.push(focus)',
-  'selectNode(node, node.kind === "net")',
+  'anchor.addEventListener("dblclick"',
   'function toggleGuideFocus(focus)',
   'Hid routing guides for ${target}',
-  'Showing routing guides for ${target}',
+  'Double-click more connection dots',
   'Connect node ${anchor.endpoint}',
 ]) assert.ok(app.includes(required), `missing interaction contract: ${required}`);
 

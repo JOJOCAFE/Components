@@ -154,12 +154,7 @@ function renderBoard() {
 
 function shouldShowWire(wire) {
   if (routeFor(edgeId(wire))) return true;
-  return state.guideFocuses.some(focus => {
-    if (focus.kind === "pin") return wire.from === focus.endpoint || wire.to === focus.endpoint;
-    if (focus.kind === "net") return wire.from === focus.id || wire.to === focus.id;
-    const prefix = `${focus.id}.`;
-    return wire.from.startsWith(prefix) || wire.to.startsWith(prefix);
-  });
+  return state.guideFocuses.some(focus => wire.from === focus.endpoint || wire.to === focus.endpoint);
 }
 
 function drawEdge(vectors, from, to, wire) {
@@ -219,14 +214,14 @@ function drawNode(canvas, node) {
     device.style.left = `${node.screen.x}px`; device.style.top = `${node.screen.y}px`;
     device.innerHTML = `<div class="board-device-title"><button class="board-device-label" type="button">${node.label}</button><button class="gate-move" type="button" aria-label="Move ${node.id}" title="Drag to move this gate">✋</button></div>${chipFrame(node, true)}`;
     const label = device.querySelector(".board-device-label");
-    label.addEventListener("click", event => { event.stopPropagation(); if (state.suppressClick) return; selectNode(node, true); });
+    label.addEventListener("click", event => { event.stopPropagation(); if (state.suppressClick) return; selectNode(node); });
     device.addEventListener("pointerdown", event => {
       if (!isSelectTool() || event.target.closest(".pin-anchor, .gate-move")) return;
       beginObjectDrag(event, node);
     });
     device.addEventListener("click", event => {
       if (event.target.closest(".pin-anchor, .gate-move, .board-device-label") || state.suppressClick) return;
-      selectNode(node, true);
+      selectNode(node);
     });
     const move = device.querySelector(".gate-move");
     move.addEventListener("pointerdown", event => beginChipDrag(event, node));
@@ -236,7 +231,7 @@ function drawNode(canvas, node) {
   const button = document.createElement("button"); button.className = `node ${node.kind}` + (state.selected?.id === node.id ? " selected" : "");
   button.style.left = `${node.screen.x}px`; button.style.top = `${node.screen.y}px`; button.textContent = node.label;
   button.addEventListener("pointerdown", event => { if (isSelectTool()) beginObjectDrag(event, node); });
-  button.addEventListener("click", () => { if (!state.suppressClick) selectNode(node, node.kind === "net"); }); canvas.append(button);
+  button.addEventListener("click", () => { if (!state.suppressClick) selectNode(node); }); canvas.append(button);
 }
 
 function boardPoint(event) {
@@ -406,13 +401,12 @@ function toggleGuideFocus(focus) {
 }
 
 function guideFocusMessage(change) {
-  const target = change.focus.kind === "pin" ? change.focus.endpoint : change.focus.id;
+  const target = change.focus.endpoint;
   if (!change.visible) return `Hid routing guides for ${target}. ${state.guideFocuses.length} guide selection${state.guideFocuses.length === 1 ? " remains" : "s remain"}.`;
-  return `Showing routing guides for ${target}. Click more devices, nets, or pins to add their guides; click this one again to hide only its guides.`;
+  return `Showing routing guides for ${target}. Double-click more connection dots to add their guides; double-click this dot again to hide only its guides.`;
 }
 
-function selectNode(node, toggleGuides = false) {
-  if (toggleGuides && (node.kind === "device" || node.kind === "net")) status(guideFocusMessage(toggleGuideFocus({ kind: node.kind, id: node.id })));
+function selectNode(node) {
   state.selected = node; renderBoard();
   const technical = node.kind === "device" ? `${node.part} Device` : "Wire (net)";
   const sentence = node.id === "U1" ? "This NOT gate changes 0 into 1, and 1 into 0." : node.kind === "net" ? "This wire carries a named signal between declared parts." : "This is a declared part in this small machine.";
@@ -437,21 +431,21 @@ function installPinGesture() {
   document.querySelectorAll(".pin-anchor").forEach(anchor => {
     anchor.addEventListener("click", event => {
       event.preventDefault(); event.stopPropagation();
-      if (isSelectTool()) {
-        status(guideFocusMessage(toggleGuideFocus({ kind: "pin", endpoint: anchor.dataset.endpoint })));
-        renderBoard();
-      } else if (document.querySelector('.tool.selected')?.dataset.tool === "connect") {
+      if (document.querySelector('.tool.selected')?.dataset.tool === "connect") {
         if (!state.pinGesture) beginPinGesture(anchor, "Click a second pin to propose it.");
         else finishPinGesture(anchor);
       }
     });
+    anchor.addEventListener("dblclick", event => {
+      event.preventDefault(); event.stopPropagation();
+      if (!isSelectTool()) return;
+      status(guideFocusMessage(toggleGuideFocus({ kind: "pin", endpoint: anchor.dataset.endpoint })));
+      renderBoard();
+    });
     anchor.addEventListener("keydown", event => {
       if (event.key !== "Enter" && event.key !== " ") return;
       event.preventDefault();
-      if (isSelectTool()) {
-        status(guideFocusMessage(toggleGuideFocus({ kind: "pin", endpoint: anchor.dataset.endpoint })));
-        renderBoard();
-      } else if (!state.pinGesture) beginPinGesture(anchor, "Press Enter or Space on a second pin to propose it.");
+      if (!state.pinGesture) beginPinGesture(anchor, "Press Enter or Space on a second pin to propose it.");
       else finishPinGesture(anchor);
     });
   });
