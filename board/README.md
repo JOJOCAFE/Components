@@ -78,3 +78,9 @@ no-pin frames through `resources/74hc-chip-frames-no-pins/` when a matching
 local frame exists. The older functional-pinout frames remain review assets,
 not Board artwork. The resolved Component and package definition remain the
 only source for ports, logic, timing, and wiring.
+
+Every visible Board object is connectable at a border node: a 74HC frame uses
+its definition-aligned DIP dots; a net such as `Clock` or `OUT`, and a device
+without a chip SVG, uses a bordered frame with resolved endpoint dots. These
+are the targets for routes and for the **Guides** on/off switch; none creates
+an electrical connection by itself.

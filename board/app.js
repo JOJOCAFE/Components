@@ -134,7 +134,7 @@ function renderBoard() {
   nets.filter(item => item.kind !== "power").forEach((item, index) => {
     const fallback = { x: -192 + index * (384 / Math.max(1, nets.filter(n => n.kind !== "power").length - 1)), y: -132 };
     const placement = placementFor(item.id, "net");
-    nodes.push({ id: item.id, label: item.id, x: placement?.origin?.x ?? fallback.x, y: placement?.origin?.y ?? fallback.y, kind: "net" });
+    nodes.push({ id: item.id, label: item.id, x: placement?.origin?.x ?? fallback.x, y: placement?.origin?.y ?? fallback.y, kind: "net", pinAnchors: [{ id: `${item.id}.net`, endpoint: item.id, direction: "net", dip_side: "right", dip_order: 1 }] });
   });
   nodes.forEach(node => { node.screen = projectWorldPoint(canvas, node); });
   const lookup = Object.fromEntries(nodes.map(item => [item.id, item]));
@@ -234,10 +234,36 @@ function drawNode(canvas, node) {
     canvas.append(device);
     return;
   }
-  const button = document.createElement("button"); button.className = `node ${node.kind}` + (state.selected?.id === node.id ? " selected" : "");
-  button.style.left = `${node.screen.x}px`; button.style.top = `${node.screen.y}px`; button.textContent = node.label;
-  button.addEventListener("pointerdown", event => { if (isSelectTool()) beginObjectDrag(event, node); });
-  button.addEventListener("click", () => { if (!state.suppressClick) selectNode(node); }); canvas.append(button);
+  drawBorderFrame(canvas, node);
+}
+
+function genericAnchorMarkup(node) {
+  const anchors = node.pinAnchors || [];
+  return anchors.map((anchor, index) => {
+    const side = anchor.dip_side === "left" ? "left" : "right";
+    const sideAnchors = anchors.filter(item => (item.dip_side === "left" ? "left" : "right") === side);
+    const sideIndex = sideAnchors.indexOf(anchor);
+    const top = sideAnchors.length === 1 ? 50 : 18 + sideIndex * (64 / (sideAnchors.length - 1));
+    const pinNumber = anchor.physical_pin ?? "";
+    const pinName = anchor.port ?? anchor.endpoint;
+    return `<button class="pin-anchor generic-anchor ${side}" type="button" data-anchor-id="${anchor.id}" data-endpoint="${anchor.endpoint}" data-direction="${anchor.direction}" data-pin-number="${pinNumber}" data-pin-name="${pinName}" data-component-selector="${pinNumber ? `@${pinNumber}` : ""}" style="top:${top}%" aria-label="Connect node ${anchor.endpoint}, ${anchor.direction}"></button>`;
+  }).join("");
+}
+
+function drawBorderFrame(canvas, node) {
+  const frame = document.createElement("section");
+  frame.className = `node-frame ${node.kind}` + (state.selected?.id === node.id ? " selected" : "");
+  frame.style.left = `${node.screen.x}px`; frame.style.top = `${node.screen.y}px`;
+  frame.innerHTML = `<button class="node ${node.kind}" type="button">${node.label}</button><div class="node-anchor-layer" aria-label="Definition-owned ${node.kind} connect nodes">${genericAnchorMarkup(node)}</div>`;
+  frame.addEventListener("pointerdown", event => {
+    if (!isSelectTool() || event.target.closest(".pin-anchor")) return;
+    beginObjectDrag(event, node);
+  });
+  frame.addEventListener("click", event => {
+    if (event.target.closest(".pin-anchor") || state.suppressClick) return;
+    selectNode(node);
+  });
+  canvas.append(frame);
 }
 
 function boardPoint(event) {
