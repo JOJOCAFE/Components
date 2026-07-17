@@ -292,6 +292,7 @@ function beginChipDrag(event, node) {
   state.drag = { kind: "node", nodeKind: "device-instance", id: node.id, moved: false, start: boardPoint(event) };
 }
 function isSelectTool() { return document.querySelector('.tool.selected')?.dataset.tool === "select"; }
+function isGuideTool() { return document.querySelector('.tool.selected')?.dataset.tool === "guide"; }
 function beginObjectDrag(event, node) {
   if (event.button !== 0) return;
   event.preventDefault(); event.stopPropagation();
@@ -403,7 +404,7 @@ function toggleGuideFocus(focus) {
 function guideFocusMessage(change) {
   const target = change.focus.endpoint;
   if (!change.visible) return `Hid routing guides for ${target}. ${state.guideFocuses.length} guide selection${state.guideFocuses.length === 1 ? " remains" : "s remain"}.`;
-  return `Showing routing guides for ${target}. Right-click more connection dots to add their guides; right-click this dot again to hide only its guides.`;
+  return `Showing routing guides for ${target}. Left-click more connection dots to add their guides; click this dot again to hide only its guides.`;
 }
 
 function selectNode(node) {
@@ -431,21 +432,21 @@ function installPinGesture() {
   document.querySelectorAll(".pin-anchor").forEach(anchor => {
     anchor.addEventListener("click", event => {
       event.preventDefault(); event.stopPropagation();
-      if (document.querySelector('.tool.selected')?.dataset.tool === "connect") {
+      if (isGuideTool()) {
+        status(guideFocusMessage(toggleGuideFocus({ kind: "pin", endpoint: anchor.dataset.endpoint })));
+        renderBoard();
+      } else if (document.querySelector('.tool.selected')?.dataset.tool === "connect") {
         if (!state.pinGesture) beginPinGesture(anchor, "Click a second pin to propose it.");
         else finishPinGesture(anchor);
       }
     });
-    anchor.addEventListener("contextmenu", event => {
-      event.preventDefault(); event.stopPropagation();
-      if (!isSelectTool()) return;
-      status(guideFocusMessage(toggleGuideFocus({ kind: "pin", endpoint: anchor.dataset.endpoint })));
-      renderBoard();
-    });
     anchor.addEventListener("keydown", event => {
       if (event.key !== "Enter" && event.key !== " ") return;
       event.preventDefault();
-      if (!state.pinGesture) beginPinGesture(anchor, "Press Enter or Space on a second pin to propose it.");
+      if (isGuideTool()) {
+        status(guideFocusMessage(toggleGuideFocus({ kind: "pin", endpoint: anchor.dataset.endpoint })));
+        renderBoard();
+      } else if (!state.pinGesture) beginPinGesture(anchor, "Press Enter or Space on a second pin to propose it.");
       else finishPinGesture(anchor);
     });
   });
@@ -638,8 +639,11 @@ $("#reset-layout").onclick = () => {
 document.querySelectorAll(".pane-toggle").forEach(button => button.onclick = () => document.getElementById(button.dataset.pane).classList.toggle("fullscreen"));
 document.querySelectorAll(".tool").forEach(button => button.onclick = () => {
   document.querySelectorAll(".tool").forEach(item => item.classList.remove("selected")); button.classList.add("selected");
-  $("#connect-form").classList.toggle("hidden", button.dataset.tool !== "connect"); if (button.dataset.tool !== "label") cancelLabelDraft();
+  const tool = button.dataset.tool;
+  $("#board-canvas").classList.toggle("guide-mode", tool === "guide");
+  $("#connect-form").classList.toggle("hidden", tool !== "connect"); if (tool !== "label") cancelLabelDraft();
   if (button.dataset.tool === "select") status("Select is active. Left-drag any device, net, route bend, or label to move its Board picture.");
+  if (tool === "guide") status("Guides is active. Left-click an exact connection dot to show or hide its related routing guides.");
 });
 $("#close-connect").onclick = () => cancelPendingInteraction();
 $("#connect-form").addEventListener("submit", event => { event.preventDefault(); editConnection("connect", $("#connect-from").value.trim(), $("#connect-to").value.trim()); });

@@ -14,8 +14,9 @@ button.primary { color: #fff; border-color: #1467df; background: #1467df; box-sh
 .tool span { display: block; font-size: 2.08rem; font-family: ui-monospace, monospace; font-weight: 350; line-height: .9; }
 .tool:nth-child(2) span { font-size: 2.05rem; }
 .tool:nth-child(3) span { color: #1467df; transform: rotate(-38deg); }
-.tool:nth-child(4) span { font-family: Georgia, serif; font-size: 2.45rem; }
-.tool:nth-child(5) span { font-size: 2.6rem; }
+.tool:nth-child(4) span { color: #1677ff; font-size: 2.2rem; }
+.tool:nth-child(5) span { font-family: Georgia, serif; font-size: 2.45rem; }
+.tool:nth-child(6) span { font-size: 2.6rem; }
 .tool.selected { color: #102e78; border-color: #9bc7ff; background: linear-gradient(145deg, #e8f1ff, #f8fbff); box-shadow: inset 0 0 0 1px #dbeafe; }
 .board-stage { min-width: 0; min-height: 0; position: relative; display: grid; grid-template-rows: 58px minmax(0, 1fr); overflow: hidden; }
 .board-banner { position: relative; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0 1.25rem; border-bottom: 1px solid #d8e0ea; background: #fff; }
@@ -28,6 +29,7 @@ button.primary { color: #fff; border-color: #1467df; background: #1467df; box-sh
 .purpose { position: absolute; left: 28px; bottom: 20px; z-index: 4; max-width: 290px; margin: 0; color: #5a6d88; font-size: .84rem; pointer-events: none; }
 .board-canvas { --grid-major-px: 72px; --grid-minor-px: 14.4px; --grid-origin-x: 0px; --grid-origin-y: 0px; position: absolute; inset: 28px; overflow: hidden; border: 1px solid #edf1f7; background-color: #fff; background-image: linear-gradient(#eff3f8 1px, transparent 1px), linear-gradient(90deg, #eff3f8 1px, transparent 1px), radial-gradient(#d4ddea 0.7px, transparent 0.7px); background-size: var(--grid-major-px) var(--grid-major-px), var(--grid-major-px) var(--grid-major-px), var(--grid-minor-px) var(--grid-minor-px); background-position: var(--grid-origin-x) var(--grid-origin-y), var(--grid-origin-x) var(--grid-origin-y), calc(var(--grid-origin-x) - 1px) calc(var(--grid-origin-y) - 1px); touch-action: none; }
 .board-canvas.panning { cursor: grabbing; }
+.board-canvas.guide-mode, .board-canvas.guide-mode .pin-anchor { cursor: cell; }
 .board-canvas::before { content: "centered world coordinates  ·  shift-drag or middle-drag to pan"; position: absolute; top: 7px; left: 13px; color: #8a9ab2; font-size: .72rem; letter-spacing: .03em; white-space: nowrap; pointer-events: none; }
 .board-canvas::after { content: "world coordinates  ·  snap grid"; position: absolute; right: 13px; bottom: 10px; color: #90a0b7; font-size: .67rem; letter-spacing: .05em; pointer-events: none; }
 .board-vectors { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; overflow: visible; }
