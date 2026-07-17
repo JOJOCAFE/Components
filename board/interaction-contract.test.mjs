@@ -28,6 +28,8 @@ for (const required of [
   'Left-drag any device, net, route bend, or label',
   'endpointScreenPoint',
   'function shouldShowWire(wire)',
+  'focus.kind === "net"',
+  'selectNode(node, node.kind === "net")',
   'function toggleGuideFocus(focus)',
   'Connection guides hidden. Click a device or connection dot',
   'Showing routing guides for ${target}',

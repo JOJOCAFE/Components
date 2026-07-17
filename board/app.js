@@ -157,6 +157,7 @@ function shouldShowWire(wire) {
   const focus = state.guideFocus;
   if (!focus) return false;
   if (focus.kind === "pin") return wire.from === focus.endpoint || wire.to === focus.endpoint;
+  if (focus.kind === "net") return wire.from === focus.id || wire.to === focus.id;
   const prefix = `${focus.id}.`;
   return wire.from.startsWith(prefix) || wire.to.startsWith(prefix);
 }
@@ -235,7 +236,7 @@ function drawNode(canvas, node) {
   const button = document.createElement("button"); button.className = `node ${node.kind}` + (state.selected?.id === node.id ? " selected" : "");
   button.style.left = `${node.screen.x}px`; button.style.top = `${node.screen.y}px`; button.textContent = node.label;
   button.addEventListener("pointerdown", event => { if (isSelectTool()) beginObjectDrag(event, node); });
-  button.addEventListener("click", () => { if (!state.suppressClick) selectNode(node); }); canvas.append(button);
+  button.addEventListener("click", () => { if (!state.suppressClick) selectNode(node, node.kind === "net"); }); canvas.append(button);
 }
 
 function boardPoint(event) {
@@ -406,7 +407,7 @@ function guideFocusMessage(focus) {
 }
 
 function selectNode(node, toggleGuides = false) {
-  if (toggleGuides) status(guideFocusMessage(toggleGuideFocus({ kind: "device", id: node.id })));
+  if (toggleGuides && (node.kind === "device" || node.kind === "net")) status(guideFocusMessage(toggleGuideFocus({ kind: node.kind, id: node.id })));
   state.selected = node; renderBoard();
   const technical = node.kind === "device" ? `${node.part} Device` : "Wire (net)";
   const sentence = node.id === "U1" ? "This NOT gate changes 0 into 1, and 1 into 0." : node.kind === "net" ? "This wire carries a named signal between declared parts." : "This is a declared part in this small machine.";
