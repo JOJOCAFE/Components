@@ -2,8 +2,10 @@
 
 Status: active task plan. **Gate 0 is complete: the reviewed 25-sample
 baseline and regression guard are tracked. B1.1/B1.2 are complete as pure,
-tested transform/grid kernels. Current next task: B1.3, migrate the renderer
-from normalized top-left coordinates to the world/viewport transform.**
+tested transform/grid kernels. B1.3 now renders through the centered
+world/viewport transform, with the existing `@1` top-left profile adapted only
+at the UI boundary until Sprint 2 migration. Current next task: B2.1, specify
+the persisted world-coordinate profile.**
 This plan implements
 [BOARD_ARCHITECTURE_FREEZE.md](BOARD_ARCHITECTURE_FREEZE.md) in small,
 independently reviewable slices. A sprint cannot advance merely because the

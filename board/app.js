@@ -1,12 +1,16 @@
 import { advancePen, createBoardProfile, labelRecord, loadBoardProfile as checkedLoadBoardProfile, parseRoutePoints, routeRecord } from "./profile.js";
+import { adaptiveGrid, panViewport, screenToWorld, viewport, worldToScreen, zoomViewportAt } from "./viewport.js";
 
 const $ = (selector) => document.querySelector(selector);
-const state = { source: "", revision: "", resolved: null, board: null, selected: null, drives: [], timer: null, resolveGeneration: 0, pinGesture: null, guide: null, boardProfile: null, staleBoardProfile: false, topologyDigest: "", drag: null, nodePositions: {}, suppressClick: false, pen: null, labelDraft: null };
+const state = { source: "", revision: "", resolved: null, board: null, selected: null, drives: [], timer: null, resolveGeneration: 0, pinGesture: null, guide: null, boardProfile: null, staleBoardProfile: false, topologyDigest: "", drag: null, viewportDrag: null, viewport: null, nodePositions: {}, suppressClick: false, pen: null, labelDraft: null };
 // v2 intentionally starts from a valid Component example instead of retaining
 // older workbench drafts that may contain Terminal commands such as `run`.
 const STORAGE_KEY = "components.board.not-gate.source.v2";
 const BOARD_PROFILE_KEY = "components.board.not-gate.profile.v1";
 const started = performance.now();
+// Board profile @1 is top-left normalized. This adapter is deliberately local
+// to the renderer while Sprint 2 migrates the persisted profile to world data.
+const LEGACY_WORLD_UNITS_PER_PERCENT = 6;
 
 async function request(command, input = {}, options = {}) {
   const response = await fetch("/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ command, input, options }) });
@@ -87,9 +91,29 @@ function placementFor(id) { return state.boardProfile?.placements.find(item => i
 function routeFor(edgeId) { return state.boardProfile?.routes.find(item => item.edge_id === edgeId); }
 function edgeId(wire) { return wire.id || `edge:${wire.from}->${wire.to}`; }
 function pointText(point) { return `(${Number(point.x).toFixed(1)}%, ${Number(point.y).toFixed(1)}%)`; }
+function legacyToWorld(point) { return { x: (point.x - 50) * LEGACY_WORLD_UNITS_PER_PERCENT, y: (50 - point.y) * LEGACY_WORLD_UNITS_PER_PERCENT }; }
+function worldToLegacy(point) { return { x: point.x / LEGACY_WORLD_UNITS_PER_PERCENT + 50, y: 50 - point.y / LEGACY_WORLD_UNITS_PER_PERCENT }; }
+function canvasRect(canvas) { return { width: Math.max(1, canvas.clientWidth), height: Math.max(1, canvas.clientHeight) }; }
+function ensureViewport(canvas) {
+  if (!state.viewport) {
+    const rect = canvasRect(canvas);
+    state.viewport = viewport({ center: { x: 0, y: 0 }, pixelsPerWorld: Math.max(.1, Math.min(rect.width, rect.height) / 600) });
+  }
+  return state.viewport;
+}
+function projectLegacyPoint(canvas, point) { return worldToScreen(ensureViewport(canvas), legacyToWorld(point), canvasRect(canvas)); }
+function updateGrid(canvas) {
+  const view = ensureViewport(canvas); const grid = adaptiveGrid(view); const screen = canvasRect(canvas);
+  const origin = worldToScreen(view, { x: 0, y: 0 }, screen);
+  canvas.style.setProperty("--grid-major-px", `${grid.majorPixels}px`);
+  canvas.style.setProperty("--grid-minor-px", `${grid.majorPixels / 5}px`);
+  canvas.style.setProperty("--grid-origin-x", `${origin.x}px`);
+  canvas.style.setProperty("--grid-origin-y", `${origin.y}px`);
+}
 
 function renderBoard() {
   const canvas = $("#board-canvas"); canvas.replaceChildren();
+  const screen = canvasRect(canvas); ensureViewport(canvas); updateGrid(canvas);
   const blocks = state.board?.blocks || [];
   const devices = blocks.filter(item => item.type === "device");
   const nets = state.board?.nets || [];
@@ -100,10 +124,11 @@ function renderBoard() {
     nodes.push({ id: item.id, label: item.id === "U1" ? "U1\nNOT gate" : item.id, x: placement?.position?.x ?? fallback.x, y: placement?.position?.y ?? fallback.y, kind: "device", part: item.part, pinAnchors: item.pin_anchors || [], resource: item.resource });
   });
   nets.filter(item => item.kind !== "power").forEach((item, index) => nodes.push({ id: item.id, label: item.id, x: 18 + index * (64 / Math.max(1, nets.filter(n => n.kind !== "power").length - 1)), y: 72, kind: "net" }));
+  nodes.forEach(node => { node.screen = projectLegacyPoint(canvas, node); });
   const lookup = Object.fromEntries(nodes.map(item => [item.id, item]));
   state.nodePositions = Object.fromEntries(nodes.map(item => [item.id, { x: item.x, y: item.y }]));
   const vectors = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  vectors.classList.add("board-vectors"); vectors.setAttribute("viewBox", "0 0 100 100"); vectors.setAttribute("preserveAspectRatio", "none");
+  vectors.classList.add("board-vectors"); vectors.setAttribute("viewBox", `0 0 ${screen.width} ${screen.height}`); vectors.setAttribute("preserveAspectRatio", "none");
   canvas.append(vectors);
   (state.board?.wires || []).forEach(wire => {
     const left = lookup[wire.from.split(".")[0]] || lookup[wire.from]; const right = lookup[wire.to.split(".")[0]] || lookup[wire.to];
@@ -117,7 +142,8 @@ function renderBoard() {
 
 function drawEdge(vectors, from, to, wire) {
   const savedRoute = routeFor(edgeId(wire));
-  const points = savedRoute?.points?.length > 2 ? [{ x: from.x, y: from.y }, ...savedRoute.points.slice(1, -1), { x: to.x, y: to.y }] : [{ x: from.x, y: from.y }, { x: to.x, y: to.y }];
+  const legacyPoints = savedRoute?.points?.length > 2 ? [{ x: from.x, y: from.y }, ...savedRoute.points.slice(1, -1), { x: to.x, y: to.y }] : [{ x: from.x, y: from.y }, { x: to.x, y: to.y }];
+  const canvas = $("#board-canvas"); const points = legacyPoints.map(point => projectLegacyPoint(canvas, point));
   const edge = document.createElementNS("http://www.w3.org/2000/svg", "path");
   edge.classList.add("board-edge", savedRoute?.points?.length > 2 ? "routed" : "connection-guide");
   edge.setAttribute("d", `M ${points.map(point => `${point.x} ${point.y}`).join(" L ")}`);
@@ -127,20 +153,23 @@ function drawEdge(vectors, from, to, wire) {
   vectors.append(edge);
   points.slice(1, -1).forEach((via, index) => {
     const handle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    handle.classList.add("route-handle"); handle.setAttribute("cx", via.x); handle.setAttribute("cy", via.y); handle.setAttribute("r", "0.8");
+    handle.classList.add("route-handle"); handle.setAttribute("cx", via.x); handle.setAttribute("cy", via.y); handle.setAttribute("r", "5");
     handle.setAttribute("aria-label", "Drag to move this visual route bend.");
     handle.addEventListener("pointerdown", event => beginRouteDrag(event, wire, index + 1)); vectors.append(handle);
   });
 }
 
 function drawLabels(vectors) {
+  const canvas = $("#board-canvas"); const scale = ensureViewport(canvas).pixelsPerWorld;
   for (const label of state.boardProfile?.labels || []) {
+    const position = projectLegacyPoint(canvas, label.position);
+    const fontSize = Math.max(12, label.font_size * scale * 1.5);
     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    text.classList.add("board-label"); text.setAttribute("x", label.position.x); text.setAttribute("y", label.position.y); text.setAttribute("font-size", label.font_size);
+    text.classList.add("board-label"); text.setAttribute("x", position.x); text.setAttribute("y", position.y); text.setAttribute("font-size", fontSize);
     text.setAttribute("tabindex", "0"); text.setAttribute("role", "button"); text.setAttribute("aria-label", `Edit label: ${label.text}`);
     label.text.split("\n").forEach((line, index) => {
       const span = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
-      span.setAttribute("x", label.position.x); span.setAttribute("dy", index === 0 ? "0" : String(label.font_size * 1.25)); span.textContent = line; text.append(span);
+      span.setAttribute("x", position.x); span.setAttribute("dy", index === 0 ? "0" : String(fontSize * 1.25)); span.textContent = line; text.append(span);
     });
     const edit = event => { event.stopPropagation(); beginLabel(label.position, label); };
     text.addEventListener("click", edit); text.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); edit(event); } });
@@ -152,7 +181,7 @@ function drawNode(canvas, node) {
   if (node.kind === "device" && node.resource?.asset) {
     const device = document.createElement("section");
     device.className = "board-device" + (state.selected?.id === node.id ? " selected" : "");
-    device.style.left = `${node.x}%`; device.style.top = `${node.y}%`;
+    device.style.left = `${node.screen.x}px`; device.style.top = `${node.screen.y}px`;
     device.innerHTML = `<div class="board-device-title"><button class="board-device-label" type="button">${node.label}</button><button class="gate-move" type="button" aria-label="Move ${node.id}" title="Drag to move this gate">✋</button></div>${chipFrame(node, true)}`;
     const label = device.querySelector(".board-device-label");
     label.addEventListener("click", event => { event.stopPropagation(); if (state.suppressClick) return; selectNode(node); });
@@ -162,15 +191,14 @@ function drawNode(canvas, node) {
     return;
   }
   const button = document.createElement("button"); button.className = `node ${node.kind}` + (state.selected?.id === node.id ? " selected" : "");
-  button.style.left = `${node.x}%`; button.style.top = `${node.y}%`; button.textContent = node.label; button.addEventListener("click", () => selectNode(node)); canvas.append(button);
+  button.style.left = `${node.screen.x}px`; button.style.top = `${node.screen.y}px`; button.textContent = node.label; button.addEventListener("click", () => selectNode(node)); canvas.append(button);
 }
 
 function boardPoint(event) {
   const canvas = $("#board-canvas"); const box = canvas.getBoundingClientRect();
-  return {
-    x: Math.max(0, Math.min(100, ((event.clientX - box.left + canvas.scrollLeft) / canvas.scrollWidth) * 100)),
-    y: Math.max(0, Math.min(100, ((event.clientY - box.top + canvas.scrollTop) / canvas.scrollHeight) * 100)),
-  };
+  const world = screenToWorld(ensureViewport(canvas), { x: event.clientX - box.left, y: event.clientY - box.top }, canvasRect(canvas));
+  const legacy = worldToLegacy(world);
+  return { x: Math.max(0, Math.min(100, legacy.x)), y: Math.max(0, Math.min(100, legacy.y)) };
 }
 function setPlacement(id, point) {
   const placements = state.boardProfile.placements;
@@ -417,8 +445,10 @@ function drawPenPreview(canvas) {
   const namespace = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(namespace, "svg"); svg.classList.add("pen-preview");
   const polyline = document.createElementNS(namespace, "polyline");
-  const box = canvas.getBoundingClientRect();
-  polyline.setAttribute("points", points.map(point => `${point.x * box.width / 100},${point.y * box.height / 100}`).join(" "));
+  polyline.setAttribute("points", points.map(point => {
+    const screen = projectLegacyPoint(canvas, point);
+    return `${screen.x},${screen.y}`;
+  }).join(" "));
   svg.append(polyline); canvas.prepend(svg);
 }
 
@@ -518,7 +548,12 @@ $("#watch-output").onclick = () => runCommand("watch inverted_level");
 $("#terminal-form").addEventListener("submit", event => { event.preventDefault(); runCommand($("#terminal-input").value); });
 $(".suggestions").addEventListener("click", event => { if (event.target.dataset.command) runCommand(event.target.dataset.command); });
 $("#terminal-expand").onclick = () => { $("#terminal-pane").classList.toggle("expanded"); $("#terminal-expand").textContent = $("#terminal-pane").classList.contains("expanded") ? "Collapse" : "Expand"; };
-$("#reset-layout").onclick = () => { document.querySelectorAll(".fullscreen").forEach(item => item.classList.remove("fullscreen")); };
+$("#reset-layout").onclick = () => {
+  document.querySelectorAll(".fullscreen").forEach(item => item.classList.remove("fullscreen"));
+  const canvas = $("#board-canvas");
+  state.viewport = viewport({ center: { x: 0, y: 0 }, pixelsPerWorld: Math.max(.1, Math.min(canvas.clientWidth, canvas.clientHeight) / 600) });
+  renderBoard(); status("View reset. Component source and Board picture are unchanged.");
+};
 document.querySelectorAll(".pane-toggle").forEach(button => button.onclick = () => document.getElementById(button.dataset.pane).classList.toggle("fullscreen"));
 document.querySelectorAll(".tool").forEach(button => button.onclick = () => { document.querySelectorAll(".tool").forEach(item => item.classList.remove("selected")); button.classList.add("selected"); $("#connect-form").classList.toggle("hidden", button.dataset.tool !== "connect"); if (button.dataset.tool !== "label") cancelLabelDraft(); });
 $("#close-connect").onclick = () => cancelPendingInteraction();
@@ -529,6 +564,20 @@ $("#board-canvas").addEventListener("click", event => {
   if (!document.querySelector('.tool.selected[data-tool="label"]') || (event.target !== $("#board-canvas") && !event.target.classList.contains("board-vectors"))) return;
   beginLabel(boardPoint(event));
 });
+$("#board-canvas").addEventListener("wheel", event => {
+  event.preventDefault();
+  const canvas = $("#board-canvas"); const box = canvas.getBoundingClientRect();
+  state.viewport = zoomViewportAt(ensureViewport(canvas), event.deltaY < 0 ? 1.12 : 1 / 1.12, { x: event.clientX - box.left, y: event.clientY - box.top }, canvasRect(canvas));
+  renderBoard();
+}, { passive: false });
+$("#board-canvas").addEventListener("pointerdown", event => {
+  const canvas = $("#board-canvas");
+  if (event.button !== 1 && !event.shiftKey) return;
+  if (event.target !== canvas && !event.target.classList.contains("board-vectors")) return;
+  event.preventDefault();
+  state.viewportDrag = { x: event.clientX, y: event.clientY };
+  canvas.classList.add("panning");
+});
 
 document.addEventListener("keydown", event => {
   if (event.key !== "Escape") return;
@@ -536,7 +585,25 @@ document.addEventListener("keydown", event => {
   cancelPendingInteraction();
 });
 
-document.addEventListener("pointermove", moveBoardDrag);
-document.addEventListener("pointerup", () => { finishBoardDrag(); if (state.pinGesture) { state.pinGesture = null; clearPinGuide(); status("Connection cancelled. Component source is unchanged."); } });
+document.addEventListener("pointermove", event => {
+  if (state.viewportDrag) {
+    const canvas = $("#board-canvas");
+    const last = state.viewportDrag;
+    state.viewport = panViewport(ensureViewport(canvas), { x: event.clientX - last.x, y: event.clientY - last.y });
+    state.viewportDrag = { x: event.clientX, y: event.clientY };
+    renderBoard();
+    return;
+  }
+  moveBoardDrag(event);
+});
+document.addEventListener("pointerup", () => {
+  if (state.viewportDrag) {
+    state.viewportDrag = null; $("#board-canvas").classList.remove("panning");
+    status("View moved. Component source and Board picture are unchanged.");
+    return;
+  }
+  finishBoardDrag(); if (state.pinGesture) { state.pinGesture = null; clearPinGuide(); status("Connection cancelled. Component source is unchanged."); }
+});
+window.addEventListener("resize", () => { if (state.board) renderBoard(); });
 
 loadExample().catch(error => status(`Start the local Components API first: ${error.message}`, true));

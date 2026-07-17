@@ -18,6 +18,10 @@ for (const required of [
   'function drawLabels(vectors)',
   'function beginLabel(position, existing = null)',
   'labelRecord({ id, position: draft.position',
+  'zoomViewportAt(ensureViewport(canvas)',
+  'panViewport(ensureViewport(canvas)',
+  'function legacyToWorld(point)',
+  'View moved. Component source and Board picture are unchanged.',
 ]) assert.ok(app.includes(required), `missing interaction contract: ${required}`);
 
 console.log("Board interaction contract checks passed");

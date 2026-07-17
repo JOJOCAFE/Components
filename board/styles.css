@@ -26,16 +26,17 @@ button.primary { color: #fff; border-color: #1467df; background: #1467df; box-sh
 #save-state { max-width: 145px; overflow: hidden; color: #61718a; font-size: .72rem; text-overflow: ellipsis; }
 .drawing-pane { min-width: 0; min-height: 0; position: relative; overflow: hidden; background: #fbfdff; }
 .purpose { position: absolute; left: 28px; bottom: 20px; z-index: 4; max-width: 290px; margin: 0; color: #5a6d88; font-size: .84rem; pointer-events: none; }
-.board-canvas { position: absolute; inset: 28px; overflow: hidden; border: 1px solid #edf1f7; background-color: #fff; background-image: linear-gradient(#eff3f8 1px, transparent 1px), linear-gradient(90deg, #eff3f8 1px, transparent 1px), radial-gradient(#d4ddea 0.7px, transparent 0.7px); background-size: 132px 132px, 132px 132px, 9px 9px; background-position: 0 0, 0 0, -1px -1px; }
-.board-canvas::before { content: "−300       −200       −100          0          100        200        300"; position: absolute; top: 7px; left: 12%; right: 10%; color: #8a9ab2; font-size: .72rem; letter-spacing: .06em; word-spacing: 1.15rem; white-space: nowrap; pointer-events: none; }
+.board-canvas { --grid-major-px: 72px; --grid-minor-px: 14.4px; --grid-origin-x: 0px; --grid-origin-y: 0px; position: absolute; inset: 28px; overflow: hidden; border: 1px solid #edf1f7; background-color: #fff; background-image: linear-gradient(#eff3f8 1px, transparent 1px), linear-gradient(90deg, #eff3f8 1px, transparent 1px), radial-gradient(#d4ddea 0.7px, transparent 0.7px); background-size: var(--grid-major-px) var(--grid-major-px), var(--grid-major-px) var(--grid-major-px), var(--grid-minor-px) var(--grid-minor-px); background-position: var(--grid-origin-x) var(--grid-origin-y), var(--grid-origin-x) var(--grid-origin-y), calc(var(--grid-origin-x) - 1px) calc(var(--grid-origin-y) - 1px); touch-action: none; }
+.board-canvas.panning { cursor: grabbing; }
+.board-canvas::before { content: "centered world coordinates  ·  shift-drag or middle-drag to pan"; position: absolute; top: 7px; left: 13px; color: #8a9ab2; font-size: .72rem; letter-spacing: .03em; white-space: nowrap; pointer-events: none; }
 .board-canvas::after { content: "world coordinates  ·  snap grid"; position: absolute; right: 13px; bottom: 10px; color: #90a0b7; font-size: .67rem; letter-spacing: .05em; pointer-events: none; }
 .board-vectors { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; overflow: visible; }
-.board-edge { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: .32; vector-effect: non-scaling-stroke; pointer-events: stroke; cursor: move; }
-.board-edge.connection-guide { stroke: #1677ff; stroke-dasharray: 1.5 1.3; opacity: .95; }
-.board-edge.routed { stroke: #26374f; stroke-width: .36; }
+.board-edge { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.2; vector-effect: non-scaling-stroke; pointer-events: stroke; cursor: move; }
+.board-edge.connection-guide { stroke: #1677ff; stroke-dasharray: 8 7; opacity: .95; }
+.board-edge.routed { stroke: #26374f; stroke-width: 2.5; }
 .board-edge:hover { stroke: #e17522; }
-.board-vectors .route-handle { fill: #fff; stroke: #1467df; stroke-width: .35; vector-effect: non-scaling-stroke; cursor: move; }
-.board-label { fill: #1d2c42; font-family: Inter, ui-rounded, sans-serif; font-weight: 650; paint-order: stroke; stroke: #fff; stroke-width: .18; vector-effect: non-scaling-stroke; cursor: text; }
+.board-vectors .route-handle { fill: #fff; stroke: #1467df; stroke-width: 1.5; vector-effect: non-scaling-stroke; cursor: move; }
+.board-label { fill: #1d2c42; font-family: Inter, ui-rounded, sans-serif; font-weight: 650; paint-order: stroke; stroke: #fff; stroke-width: 2; vector-effect: non-scaling-stroke; cursor: text; }
 .node { position: absolute; z-index: 2; transform: translate(-50%, -50%); min-width: 92px; padding: .5rem .65rem; text-align: center; background: #fff; border: 1.5px solid #6685a6; border-radius: 6px; box-shadow: 0 2px 5px #254a6b18; cursor: pointer; }
 .node.net { min-width: 74px; border-radius: 2px; border-color: #8ea4bd; font-size: .8rem; }
 .node.selected { border-color: #e17522; background: #fff6eb; }

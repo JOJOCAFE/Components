@@ -167,8 +167,13 @@ B1.1 is complete in `board/viewport.js` with a Node proof at
 `board/viewport.test.mjs`: centered world origin, screen/world round trips,
 content-following pan, anchor-preserving zoom, and visible world bounds. The
 same module now selects readable 1/2/5 adaptive world grids and snaps a world
-point without altering Component source. The next task is B1.3: migrate the
-renderer from normalized top-left coordinates to the world/viewport transform.
+point without altering Component source. B1.3 is also complete: the browser
+projects devices, nets, routes, labels, and pen previews through this viewport;
+wheel zoom is pointer-anchored and Shift/middle drag pans the view. Those view
+actions only change local viewport state. The persisted `@1` normalized profile
+is explicitly adapted at the UI boundary until B2 migration; it is not renamed
+or presented as world-coordinate truth. The next task is B2.1: specify the
+persisted `components.board-profile@2` world-coordinate contract.
 
 ### Vector canvas slice: 2026-07-17
 
