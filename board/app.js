@@ -1,5 +1,6 @@
 import { checkedWorldPoint, createBoardProfileV2, migrateBoardProfileV1ToV2, validateBoardProfileV2 } from "./profile-v2.js";
 import { adaptiveGrid, panViewport, screenToWorld, viewport, worldToScreen, zoomViewportAt } from "./viewport.js";
+import { applyGuideToggleOperation, createGuideToggleOperation } from "./guide-operation.js";
 
 const $ = (selector) => document.querySelector(selector);
 const state = { source: "", revision: "", resolved: null, board: null, selected: null, drives: [], timer: null, resolveGeneration: 0, pinGesture: null, guide: null, guideVisibleEdges: [], boardProfile: null, staleBoardProfile: false, topologyDigest: "", drag: null, viewportDrag: null, viewport: null, nodePositions: {}, suppressClick: false, pen: null, labelDraft: null };
@@ -156,13 +157,6 @@ function renderBoard() {
 function shouldShowWire(wire) {
   if (routeFor(edgeId(wire))) return true;
   return state.guideVisibleEdges.includes(edgeId(wire));
-}
-
-function wireMatchesFocus(wire, focus) {
-  if (focus.kind === "pin") return wire.from === focus.endpoint || wire.to === focus.endpoint;
-  if (focus.kind === "net") return wire.from === focus.id || wire.to === focus.id;
-  const prefix = `${focus.id}.`;
-  return wire.from.startsWith(prefix) || wire.to.startsWith(prefix);
 }
 
 function drawEdge(vectors, from, to, wire) {
@@ -422,18 +416,11 @@ function finishPenAt(target) {
   routeVisualConnection(pen.from, pen.to, pen.vias);
 }
 function toggleGuideFocus(focus) {
-  const wires = (state.board?.wires || []).filter(wire => wireMatchesFocus(wire, focus));
-  const allVisible = wires.length > 0 && wires.every(shouldShowWire);
-  if (allVisible) {
-    const edgeIds = new Set(wires.map(edgeId));
-    state.guideVisibleEdges = state.guideVisibleEdges.filter(id => !edgeIds.has(id));
-    return { focus, visible: false, edgeCount: wires.length };
-  }
-  for (const wire of wires) {
-    const id = edgeId(wire);
-    if (!state.guideVisibleEdges.includes(id)) state.guideVisibleEdges.push(id);
-  }
-  return { focus, visible: true, edgeCount: wires.length };
+  const operation = createGuideToggleOperation({ focus, topology: { componentId: state.board?.component_id || state.resolved?.component_id, digest: state.topologyDigest } });
+  const result = applyGuideToggleOperation(operation, { wires: state.board?.wires || [], visibleEdgeIds: state.guideVisibleEdges });
+  state.guideVisibleEdges = result.visibleEdgeIds;
+  log(`component:operation ${operation.kind} ${operation.id}`);
+  return { focus: result.focus, visible: result.visible, edgeCount: result.edgeIds.length, operation };
 }
 
 function guideFocusMessage(change) {
