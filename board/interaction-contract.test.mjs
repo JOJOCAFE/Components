@@ -17,11 +17,17 @@ for (const required of [
   'vectors.classList.add("board-vectors")',
   'function drawLabels(vectors)',
   'function beginLabel(position, existing = null)',
-  'labelRecord({ id, position: draft.position',
+  'createBoardProfileV2',
+  'migrateBoardProfileV1ToV2',
+  'validateBoardProfileV2',
+  'checkedWorldPoint(world)',
+  'LEGACY_BOARD_PROFILE_KEY',
   'zoomViewportAt(ensureViewport(canvas)',
   'panViewport(ensureViewport(canvas)',
-  'function legacyToWorld(point)',
   'View moved. Component source and Board picture are unchanged.',
+  'Left-drag any device, net, route bend, or label',
 ]) assert.ok(app.includes(required), `missing interaction contract: ${required}`);
+
+assert.ok(!app.includes("projectLegacyPoint"), "Board renderer must not retain the v1 coordinate adapter");
 
 console.log("Board interaction contract checks passed");

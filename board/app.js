@@ -1,4 +1,4 @@
-import { advancePen, createBoardProfile, labelRecord, loadBoardProfile as checkedLoadBoardProfile, parseRoutePoints, routeRecord } from "./profile.js";
+import { checkedWorldPoint, createBoardProfileV2, migrateBoardProfileV1ToV2, validateBoardProfileV2 } from "./profile-v2.js";
 import { adaptiveGrid, panViewport, screenToWorld, viewport, worldToScreen, zoomViewportAt } from "./viewport.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -6,11 +6,9 @@ const state = { source: "", revision: "", resolved: null, board: null, selected:
 // v2 intentionally starts from a valid Component example instead of retaining
 // older workbench drafts that may contain Terminal commands such as `run`.
 const STORAGE_KEY = "components.board.not-gate.source.v2";
-const BOARD_PROFILE_KEY = "components.board.not-gate.profile.v1";
+const BOARD_PROFILE_KEY = "components.board.not-gate.profile.v2";
+const LEGACY_BOARD_PROFILE_KEY = "components.board.not-gate.profile.v1";
 const started = performance.now();
-// Board profile @1 is top-left normalized. This adapter is deliberately local
-// to the renderer while Sprint 2 migrates the persisted profile to world data.
-const LEGACY_WORLD_UNITS_PER_PERCENT = 6;
 
 async function request(command, input = {}, options = {}) {
   const response = await fetch("/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ command, input, options }) });
@@ -69,16 +67,21 @@ function canonicalJson(value) {
 async function digestResolvedTopology(resolved) { return sha256(canonicalJson(resolved)); }
 
 function boardTopology(resolved) { return { componentId: resolved.component_id, digest: state.topologyDigest, title: friendlyTitle(resolved.component_id) }; }
-function freshBoardProfile(resolved) { return createBoardProfile(boardTopology(resolved)); }
+function freshBoardProfile(resolved) { return createBoardProfileV2(boardTopology(resolved)); }
 function loadBoardProfile(resolved) {
   let saved = null;
-  try { saved = JSON.parse(localStorage.getItem(BOARD_PROFILE_KEY) || "null"); } catch (_) { /* start clean */ }
-  const loaded = checkedLoadBoardProfile(saved, boardTopology(resolved));
-  state.boardProfile = loaded.profile;
-  state.boardProfile.labels ||= [];
-  state.staleBoardProfile = loaded.status === "stale";
-  if (loaded.status === "stale") log("Saved Board picture is stale and was not reused. Type 'discard board profile' to start a new picture.");
-  if (loaded.status === "invalid") log("Saved Board picture has an unsupported format and was not reused.");
+  try { saved = JSON.parse(localStorage.getItem(BOARD_PROFILE_KEY) || localStorage.getItem(LEGACY_BOARD_PROFILE_KEY) || "null"); } catch (_) { /* start clean */ }
+  if (!saved) { state.boardProfile = freshBoardProfile(resolved); state.staleBoardProfile = false; return; }
+  try {
+    const migrated = saved.schema === "components.board-profile@1" ? migrateBoardProfileV1ToV2(saved, boardTopology(resolved)) : null;
+    state.boardProfile = migrated?.profile || validateBoardProfileV2(saved, boardTopology(resolved));
+    state.staleBoardProfile = false;
+    if (migrated) { localStorage.setItem(BOARD_PROFILE_KEY, JSON.stringify(state.boardProfile)); localStorage.removeItem(LEGACY_BOARD_PROFILE_KEY); log("Migrated your saved Board picture to world coordinates."); }
+  } catch (error) {
+    state.boardProfile = freshBoardProfile(resolved);
+    state.staleBoardProfile = /stale or wrong/i.test(error.message);
+    log(state.staleBoardProfile ? "Saved Board picture is stale and was not reused. Type 'discard board profile' to start a new picture." : "Saved Board picture has an unsupported format and was not reused.");
+  }
 }
 function saveBoardProfile(command) {
   if (!state.boardProfile) return;
@@ -90,9 +93,13 @@ function saveBoardProfile(command) {
 function placementFor(id, kind = "device-instance") { return state.boardProfile?.placements.find(item => item.target?.kind === kind && item.target.id === id); }
 function routeFor(edgeId) { return state.boardProfile?.routes.find(item => item.edge_id === edgeId); }
 function edgeId(wire) { return wire.id || `edge:${wire.from}->${wire.to}`; }
-function pointText(point) { return `(${Number(point.x).toFixed(1)}%, ${Number(point.y).toFixed(1)}%)`; }
-function legacyToWorld(point) { return { x: (point.x - 50) * LEGACY_WORLD_UNITS_PER_PERCENT, y: (50 - point.y) * LEGACY_WORLD_UNITS_PER_PERCENT }; }
-function worldToLegacy(point) { return { x: point.x / LEGACY_WORLD_UNITS_PER_PERCENT + 50, y: 50 - point.y / LEGACY_WORLD_UNITS_PER_PERCENT }; }
+function pointText(point) { return `(${Number(point.x).toFixed(1)}, ${Number(point.y).toFixed(1)})`; }
+function parseWorldRoutePoints(text) {
+  const matches = [...text.matchAll(/\(\s*([^,()]+)\s*,\s*([^,()]+)\s*\)/g)];
+  const remainder = text.replace(/\(\s*([^,()]+)\s*,\s*([^,()]+)\s*\)/g, "").trim();
+  if (!matches.length || remainder) throw new Error("Use only world coordinates such as (-120,80) after via.");
+  return matches.map(match => checkedWorldPoint({ x: Number(match[1]), y: Number(match[2]) }));
+}
 function canvasRect(canvas) { return { width: Math.max(1, canvas.clientWidth), height: Math.max(1, canvas.clientHeight) }; }
 function ensureViewport(canvas) {
   if (!state.viewport) {
@@ -101,7 +108,7 @@ function ensureViewport(canvas) {
   }
   return state.viewport;
 }
-function projectLegacyPoint(canvas, point) { return worldToScreen(ensureViewport(canvas), legacyToWorld(point), canvasRect(canvas)); }
+function projectWorldPoint(canvas, point) { return worldToScreen(ensureViewport(canvas), point, canvasRect(canvas)); }
 function updateGrid(canvas) {
   const view = ensureViewport(canvas); const grid = adaptiveGrid(view); const screen = canvasRect(canvas);
   const origin = worldToScreen(view, { x: 0, y: 0 }, screen);
@@ -119,16 +126,16 @@ function renderBoard() {
   const nets = state.board?.nets || [];
   const nodes = [];
   devices.forEach((item, index) => {
-    const fallback = { x: devices.length === 1 ? 50 : 27 + index * (46 / (devices.length - 1)), y: 36 };
+    const fallback = { x: devices.length === 1 ? 0 : -138 + index * (276 / (devices.length - 1)), y: 84 };
     const placement = placementFor(item.id);
-    nodes.push({ id: item.id, label: item.id === "U1" ? "U1\nNOT gate" : item.id, x: placement?.position?.x ?? fallback.x, y: placement?.position?.y ?? fallback.y, kind: "device", part: item.part, pinAnchors: item.pin_anchors || [], resource: item.resource });
+    nodes.push({ id: item.id, label: item.id === "U1" ? "U1\nNOT gate" : item.id, x: placement?.origin?.x ?? fallback.x, y: placement?.origin?.y ?? fallback.y, kind: "device", part: item.part, pinAnchors: item.pin_anchors || [], resource: item.resource });
   });
   nets.filter(item => item.kind !== "power").forEach((item, index) => {
-    const fallback = { x: 18 + index * (64 / Math.max(1, nets.filter(n => n.kind !== "power").length - 1)), y: 72 };
+    const fallback = { x: -192 + index * (384 / Math.max(1, nets.filter(n => n.kind !== "power").length - 1)), y: -132 };
     const placement = placementFor(item.id, "net");
-    nodes.push({ id: item.id, label: item.id, x: placement?.position?.x ?? fallback.x, y: placement?.position?.y ?? fallback.y, kind: "net" });
+    nodes.push({ id: item.id, label: item.id, x: placement?.origin?.x ?? fallback.x, y: placement?.origin?.y ?? fallback.y, kind: "net" });
   });
-  nodes.forEach(node => { node.screen = projectLegacyPoint(canvas, node); });
+  nodes.forEach(node => { node.screen = projectWorldPoint(canvas, node); });
   const lookup = Object.fromEntries(nodes.map(item => [item.id, item]));
   state.nodePositions = Object.fromEntries(nodes.map(item => [item.id, { x: item.x, y: item.y }]));
   const vectors = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -146,8 +153,8 @@ function renderBoard() {
 
 function drawEdge(vectors, from, to, wire) {
   const savedRoute = routeFor(edgeId(wire));
-  const legacyPoints = savedRoute?.points?.length > 2 ? [{ x: from.x, y: from.y }, ...savedRoute.points.slice(1, -1), { x: to.x, y: to.y }] : [{ x: from.x, y: from.y }, { x: to.x, y: to.y }];
-  const canvas = $("#board-canvas"); const points = legacyPoints.map(point => projectLegacyPoint(canvas, point));
+  const worldPoints = savedRoute?.points?.length > 2 ? [{ x: from.x, y: from.y }, ...savedRoute.points.slice(1, -1), { x: to.x, y: to.y }] : [{ x: from.x, y: from.y }, { x: to.x, y: to.y }];
+  const canvas = $("#board-canvas"); const points = worldPoints.map(point => projectWorldPoint(canvas, point));
   const edge = document.createElementNS("http://www.w3.org/2000/svg", "path");
   edge.classList.add("board-edge", savedRoute?.points?.length > 2 ? "routed" : "connection-guide");
   edge.setAttribute("d", `M ${points.map(point => `${point.x} ${point.y}`).join(" L ")}`);
@@ -166,7 +173,7 @@ function drawEdge(vectors, from, to, wire) {
 function drawLabels(vectors) {
   const canvas = $("#board-canvas"); const scale = ensureViewport(canvas).pixelsPerWorld;
   for (const label of state.boardProfile?.labels || []) {
-    const position = projectLegacyPoint(canvas, label.position);
+    const position = projectWorldPoint(canvas, label.position);
     const fontSize = Math.max(12, label.font_size * scale * 1.5);
     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
     text.classList.add("board-label"); text.setAttribute("x", position.x); text.setAttribute("y", position.y); text.setAttribute("font-size", fontSize);
@@ -212,21 +219,21 @@ function drawNode(canvas, node) {
 function boardPoint(event) {
   const canvas = $("#board-canvas"); const box = canvas.getBoundingClientRect();
   const world = screenToWorld(ensureViewport(canvas), { x: event.clientX - box.left, y: event.clientY - box.top }, canvasRect(canvas));
-  const legacy = worldToLegacy(world);
-  return { x: Math.max(0, Math.min(100, legacy.x)), y: Math.max(0, Math.min(100, legacy.y)) };
+  return checkedWorldPoint(world);
 }
 function setPlacement(id, point, kind = "device-instance") {
   const placements = state.boardProfile.placements;
   const existing = placementFor(id, kind);
-  const record = { target: { kind, id }, position: point, rotation: 0 };
+  const record = { target: { kind, id }, origin: checkedWorldPoint(point), rotation_deg: 0 };
   if (existing) Object.assign(existing, record); else placements.push(record);
 }
 function setRoutePoints(wire, vias) {
   const id = edgeId(wire); const routes = state.boardProfile.routes;
   const existing = routeFor(id);
   const start = state.nodePositions[wire.from.split(".")[0]] || state.nodePositions[wire.from] || { x: 0, y: 0 };
-  const end = state.nodePositions[wire.to.split(".")[0]] || state.nodePositions[wire.to] || { x: 100, y: 100 };
-  const record = routeRecord({ edgeId: id, kind: wire.kind, start, vias, end });
+  const end = state.nodePositions[wire.to.split(".")[0]] || state.nodePositions[wire.to] || { x: 0, y: 0 };
+  if (wire.kind !== "scalar") throw new Error("Board routes are available only for resolved scalar edges; bus routes need their own contract.");
+  const record = { edge_id: id, points: [start, ...vias, end].map(checkedWorldPoint) };
   if (existing) Object.assign(existing, record); else routes.push(record);
 }
 function setRoute(wire, via, viaIndex = 1) {
@@ -248,7 +255,9 @@ function saveLabelDraft() {
   if (!draft || !state.boardProfile) return;
   try {
     const id = draft.existing?.id || `label-${(state.boardProfile.labels?.length || 0) + 1}`;
-    const label = labelRecord({ id, position: draft.position, text: $("#label-text").value, fontSize: Number($("#label-size").value) });
+    const text = $("#label-text").value; const fontSize = Number($("#label-size").value);
+    if (!/^[A-Za-z_][A-Za-z0-9_-]*$/.test(id) || !text.trim() || !Number.isFinite(fontSize) || fontSize < 1.5 || fontSize > 8) throw new Error("Label needs an identifier, text, and a size from 1.5 to 8.");
+    const label = { id, position: checkedWorldPoint(draft.position), text, font_size: fontSize };
     state.boardProfile.labels ||= [];
     const existingIndex = state.boardProfile.labels.findIndex(item => item.id === id);
     if (existingIndex >= 0) state.boardProfile.labels[existingIndex] = label; else state.boardProfile.labels.push(label);
@@ -294,7 +303,7 @@ function finishBoardDrag() {
   setTimeout(() => { state.suppressClick = false; }, 0);
   if (drag.kind === "node") {
     const placement = placementFor(drag.id, drag.nodeKind);
-    saveBoardProfile(`component:board place ${drag.id} at ${pointText(placement.position)};`);
+    saveBoardProfile(`component:board place ${drag.id} at ${pointText(placement.origin)};`);
     status(`Moved ${drag.id}. This changed only its Board picture, not Component wiring.`);
   } else if (drag.kind === "label") {
     const label = state.boardProfile.labels?.find(item => item.id === drag.id);
@@ -346,8 +355,9 @@ function beginPenRoute(from, to) {
 }
 function movePen(distance) {
   if (!state.pen) { status("Start with route from <chip.pin> to <chip.pin>.", true); return; }
-  try { state.pen.position = advancePen(state.pen.position, state.pen.heading, distance); }
-  catch (error) { status(error.message, true); return; }
+  if (!Number.isFinite(distance) || !Number.isFinite(state.pen.heading)) { status("Pen heading and distance must be finite numbers.", true); return; }
+  const radians = state.pen.heading * Math.PI / 180;
+  state.pen.position = checkedWorldPoint({ x: state.pen.position.x + Math.cos(radians) * distance, y: state.pen.position.y + Math.sin(radians) * distance });
   if (state.pen.down) state.pen.vias.push({ ...state.pen.position });
   renderBoard();
   status(`Pen at ${pointText(state.pen.position)}${state.pen.down ? "; route point added." : "."}`);
@@ -475,7 +485,7 @@ function drawPenPreview(canvas) {
   const svg = document.createElementNS(namespace, "svg"); svg.classList.add("pen-preview");
   const polyline = document.createElementNS(namespace, "polyline");
   polyline.setAttribute("points", points.map(point => {
-    const screen = projectLegacyPoint(canvas, point);
+    const screen = projectWorldPoint(canvas, point);
     return `${screen.x},${screen.y}`;
   }).join(" "));
   svg.append(polyline); canvas.prepend(svg);
@@ -536,7 +546,7 @@ async function runCommand(text) {
     let match = command.match(/^route\s+from\s+(\S+)\s+to\s+(\S+)$/);
     if (match) { beginPenRoute(match[1], match[2]); return; }
     match = command.match(/^route\s+(\S+)\s*(?:to|->)\s*(\S+)\s+via\s+(.+)$/);
-    if (match) { const points = parseRoutePoints(match[3]); if (!points.length) { status("Use Board coordinates such as (30,40) after via.", true); return; } routeVisualConnection(match[1], match[2], points); return; }
+    if (match) { const points = parseWorldRoutePoints(match[3]); if (!points.length) { status("Use world coordinates such as (-120,80) after via.", true); return; } routeVisualConnection(match[1], match[2], points); return; }
     match = command.match(/^(?:pen|move pen)\s+to\s+(\S+)$/);
     if (match) {
       if (state.pen) { finishPenAt(match[1]); return; }

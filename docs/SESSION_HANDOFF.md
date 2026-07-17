@@ -191,6 +191,16 @@ hash seeds. The existing 25-sample regression baseline predates this intentional
 canonical-export change and must be refreshed after B2.3 browser adoption; do
 not use it to claim a current v2 performance threshold. B2.3 is next.
 
+B2.3 implementation is now in the Board client: its local profile key is
+`components.board.not-gate.profile.v2`; old `@1` storage migrates explicitly,
+then is removed. Devices/nets use world `origin`, routes and labels use world
+points, and mouse/stylus input converts directly from the viewport to a finite
+world point. The viewport is never stored in the profile. No browser runtime is
+available in this environment, so do not mark B2.3 passed until a human observes
+old-profile migration, negative/positive placement, a label/route drag, and
+pan/zoom with an unchanged exported profile. Refresh the 25-sample regression
+baseline after that browser proof and before starting B3.
+
 ### Vector canvas slice: 2026-07-17
 
 The local Board now renders existing chip-frame resources as SVG, resolved

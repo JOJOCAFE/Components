@@ -5,8 +5,10 @@ baseline and regression guard are tracked. B1.1/B1.2 are complete as pure,
 tested transform/grid kernels. B1.3 now renders through the centered
 world/viewport transform, with the existing `@1` top-left profile adapted only
 at the UI boundary until Sprint 2 migration. B2.1/B2.2 have frozen and
-validated `components.board-profile@2` plus deterministic `@1 → @2` migration;
-current next task: B2.3, adopt world points in the persisted Board profile.**
+validated `components.board-profile@2` plus deterministic `@1 → @2` migration.
+B2.3 implementation now persists world-coordinate Board objects; its remaining
+checkpoint is an interactive browser proof and a refreshed 25-sample regression
+baseline before Sprint 3 geometry work.**
 This plan implements
 [BOARD_ARCHITECTURE_FREEZE.md](BOARD_ARCHITECTURE_FREEZE.md) in small,
 independently reviewable slices. A sprint cannot advance merely because the
@@ -65,6 +67,12 @@ resolved topology did not change.
 | B2.1 | Specify and validate `components.board-profile@2` with explicit centered Cartesian coordinate-space metadata. | Bank + Bam / Fern | Schema excludes electrical model fields and rejects missing/incorrect coordinate convention. |
 | B2.2 | Implement deterministic `@1 → @2` migration with source profile retained as input evidence. | Bam / Fern | Fixture migration is stable across runs; invalid/stale `@1` rejects without retargeting. |
 | B2.3 | Move placements, route bends, and labels to finite world points; keep viewport view state optional/session-local. | Bam / Fern | Exports are world-coordinate-only for visual objects; changing viewport state changes no Board profile digest. |
+
+**B2.3 proof note:** the local Board migrates the previous local-storage `@1`
+key only through the checked migration, writes `@2` under a separate key, and
+keeps pan/zoom in session state. Before B3 starts, observe one migration and
+one pan/zoom in a browser, then refresh the tracked 25-sample harness baseline
+and thresholds for the intentional v2 export shape.
 
 **Sprint 2 checkpoint:** every Gate 0 fixture round-trips through v2 and a
 stale topology refuses to attach an old visual route to a new edge.
