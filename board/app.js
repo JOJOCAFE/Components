@@ -2,7 +2,9 @@ import { advancePen, createBoardProfile, labelRecord, loadBoardProfile as checke
 
 const $ = (selector) => document.querySelector(selector);
 const state = { source: "", revision: "", resolved: null, board: null, selected: null, drives: [], timer: null, resolveGeneration: 0, pinGesture: null, guide: null, boardProfile: null, staleBoardProfile: false, topologyDigest: "", drag: null, nodePositions: {}, suppressClick: false, pen: null, labelDraft: null };
-const STORAGE_KEY = "components.board.not-gate.source.v1";
+// v2 intentionally starts from a valid Component example instead of retaining
+// older workbench drafts that may contain Terminal commands such as `run`.
+const STORAGE_KEY = "components.board.not-gate.source.v2";
 const BOARD_PROFILE_KEY = "components.board.not-gate.profile.v1";
 const started = performance.now();
 
@@ -47,7 +49,12 @@ async function resolve() {
   } catch (error) { if (generation === state.resolveGeneration) status(error.message, true); }
 }
 
-function firstDiagnostic(result) { const item = result.diagnostics?.[0]; return item ? `${item.message} (line ${item.span?.line || "?"})` : "The text needs fixing before the Drawing can update."; }
+function firstDiagnostic(result) {
+  const item = result.diagnostics?.[0];
+  if (!item) return "The text needs fixing before the Drawing can update.";
+  if (/unsupported Component statement:\s*['"]run['"]/i.test(item.message || "")) return "`run` is a Board action, not Component code. Use Try inversion instead.";
+  return `${item.message} (line ${item.span?.line || "?"})`;
+}
 function friendlyTitle(name) { return name === "DigitalInverterFixture" ? "A NOT gate" : name || "Components Board"; }
 async function sha256(text) { const bytes = new TextEncoder().encode(text); const hash = await crypto.subtle.digest("SHA-256", bytes); return "sha256:" + [...new Uint8Array(hash)].map(x => x.toString(16).padStart(2, "0")).join(""); }
 function canonicalJson(value) {

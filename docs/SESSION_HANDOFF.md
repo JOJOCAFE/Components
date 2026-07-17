@@ -156,7 +156,17 @@ cases, deterministic exports across hash seeds, and baseline-mode measurements.
 `python/tests/data/board_v2/baselines/05024f5.json` records the five-warmup,
 25-sample baseline; the reviewed `thresholds.json` enables the explicit
 regression command documented in `board/docs/BOARD_V2_HARNESS_VERIFICATION_SPEC.md`.
-The next task is B1.1: a pure centered world/viewport transform kernel.
+The visual-prototype checkpoint now uses the Board-first viewport layout:
+narrow tool rail, large schematic area, and the compact code overlay without a
+permanent terminal panel. Old v1 local drafts that contained Terminal `run`
+commands are deliberately ignored by the new source-storage key; the UI tells
+the learner to use **Try inversion** instead of putting `run` in Component
+code.
+
+B1.1 is complete in `board/viewport.js` with a Node proof at
+`board/viewport.test.mjs`: centered world origin, screen/world round trips,
+content-following pan, anchor-preserving zoom, and visible world bounds. The
+next task is B1.2: adaptive grid and snap in world units.
 
 ### Vector canvas slice: 2026-07-17
 
