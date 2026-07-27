@@ -100,6 +100,23 @@ profile stays digest-locked and may never alter Component source, resolved
 topology, pin truth, timing, or physical package facts. Preserve the render
 fallback that keeps the prior viewport when optional UI code fails.
 
+### Saved Board MVC architecture: 2026-07-27
+
+Board source is now MVC-structured:
+
+- `app.js` — Controller (event wiring, DOM interaction, satisfies interaction-contract)
+- `model.js` — Model (EventBus, state factory, request, sha256, storage keys)
+- `views/canvas-view.js` — Canvas rendering helpers (9 pure functions)
+- `views/editor-view.js` — Editor helpers (diagnostics, title, highlight)
+- `views/terminal-view.js` — Terminal parser (17 command types)
+- `tools/tool-rail.js` — ToolRail plugin manager (register/unregister/activate)
+- `tools/{select,connect,guide,label,inspect}.js` — Individual tool plugins
+
+Rule: `interaction-contract.test.mjs` reads `app.js` as text — all 65+
+contract strings must remain literally in `app.js`. Extract pure logic into
+view/model modules; keep DOM wiring and interaction strings in the controller.
+Tool rail plugins are addable/removable without editing `app.js` internals.
+
 ## Saved Team Checkpoint: 2026-07-12
 
 - Components `main` is pushed at `01d7ea1 Promote virtual test helper circuit`.

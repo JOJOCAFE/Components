@@ -2,6 +2,28 @@ import { checkedWorldPoint, createBoardProfileV2, LABEL_COLOR_PALETTE, migrateBo
 import { adaptiveGrid, panViewport, screenToWorld, viewport, worldToScreen, zoomViewportAt } from "./viewport.js";
 import { applyGuideToggleOperation, createGuideToggleOperation } from "./guide-operation.js";
 
+// MVC modules — Model, Views, and ToolRail plugin system
+import { EventBus, createState, request as modelRequest, sha256 as modelSha256, canonicalJson as modelCanonicalJson, digestResolvedTopology as modelDigestTopology, STORAGE_KEY as MODEL_STORAGE_KEY, BOARD_PROFILE_KEY as MODEL_BOARD_PROFILE_KEY, LEGACY_BOARD_PROFILE_KEY as MODEL_LEGACY_BOARD_PROFILE_KEY } from "./model.js";
+import { canvasRect as viewCanvasRect, ensureViewport as viewEnsureViewport, projectWorldPoint as viewProjectWorldPoint, updateGrid as viewUpdateGrid, endpointScreenPoint as viewEndpointScreenPoint, shouldShowWire as viewShouldShowWire, chipFrame as viewChipFrame, genericAnchorMarkup as viewGenericAnchorMarkup, boardPoint as viewBoardPoint } from "./views/canvas-view.js";
+import { firstDiagnostic as viewFirstDiagnostic, friendlyTitle as viewFriendlyTitle, highlightSource as viewHighlightSource } from "./views/editor-view.js";
+import { parseCommand, probeSentence as viewProbeSentence } from "./views/terminal-view.js";
+import { ToolRail } from "./tools/tool-rail.js";
+import { createSelectTool } from "./tools/select.js";
+import { createConnectTool } from "./tools/connect.js";
+import { createGuideTool } from "./tools/guide.js";
+import { createLabelTool } from "./tools/label.js";
+import { createInspectTool } from "./tools/inspect.js";
+
+// Initialize MVC infrastructure
+const bus = new EventBus();
+const toolRail = new ToolRail();
+toolRail.register(createSelectTool());
+toolRail.register(createConnectTool());
+toolRail.register(createGuideTool());
+toolRail.register(createLabelTool());
+toolRail.register(createInspectTool());
+toolRail.activate("select");
+
 const $ = (selector) => document.querySelector(selector);
 const state = { source: "", revision: "", resolved: null, board: null, selected: null, drives: [], timer: null, resolveGeneration: 0, pinGesture: null, guide: null, guideVisibleEdges: [], boardProfile: null, staleBoardProfile: false, topologyDigest: "", drag: null, viewportDrag: null, viewport: null, nodePositions: {}, suppressClick: false, pen: null, labelDraft: null, propertyLabelId: null, suppressNextLabelClick: false };
 // v2 intentionally starts from a valid Component example instead of retaining

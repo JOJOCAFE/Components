@@ -1,6 +1,23 @@
 # Components Session Handoff
 
-Last updated: 2026-07-17
+Last updated: 2026-07-27
+
+## Session 2026-07-27 notes
+
+- `.codex/instructions.md` added (103 lines): job-scoped Codex agent
+  instructions covering team roles, source-of-truth rules, repo layout, quality
+  gates, Board/Language lanes, and datasheet policy. Untracked (not committed).
+- Board UI redesign attempted based on `board/temp/ui/component-main-ui.jpg`
+  mockup (title bar, tab bar, status bar, PCB Green #007C3D). Reverted at
+  user's request — original `board/index.html` and `board/styles.css` restored
+  from git. All 5 Board tests pass on restored code.
+- Mockup images preserved at `board/temp/ui/` for future reference:
+  `component-main-ui.jpg` (full desktop layout) and `components-logo.jpg`
+  (logo with PCB Green #007C3D).
+- The redesign direction is valid but needs a considered implementation plan
+  that keeps the existing 3-pane viewport (tool-rail | board-canvas |
+  component+command) intact as the inner layout, with chrome (title bar, tabs,
+  status bar) layered around it without breaking app.js DOM expectations.
 
 > **Current authority.** This section supersedes the older RV8GR checkpoint
 > notes below when they disagree. This checkpoint includes the first local
