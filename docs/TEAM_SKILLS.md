@@ -117,6 +117,24 @@ contract strings must remain literally in `app.js`. Extract pure logic into
 view/model modules; keep DOM wiring and interaction strings in the controller.
 Tool rail plugins are addable/removable without editing `app.js` internals.
 
+### Frozen Board UI v1.0 RC1: 2026-07-27
+
+The visual specification is frozen at `board/docs/BOARD_UI_V1_RC1_FROZEN.md`.
+Key rules all agents must follow:
+
+- **Layout:** Title bar + tabs + (tool rail | viewport | right panel) + command
+- **Viewport priority:** everything sacrifices space for the circuit canvas
+- **Color:** grayscale only; one accent (PCB Green #007C3D, logo dot only)
+- **Left rail:** 8 tools only (Select, Library, Wire, Guide, Label, Inspect, Probe, More)
+- **Style:** Macintosh spirit — no gradients, no ribbon, no IDE/CAD feeling
+- **Logo:** hexagon + C + green dot; monochrome; no word mark
+- **Tabs = Pages** within one project, not multiple projects
+- **Bottom panel title:** "Command" (not "component:command")
+- **Scrollbars:** classic style, no overlay
+
+Do not add tools, decorations, floating panels, or simulation colors to idle UI.
+Simulation colors appear ONLY during simulation.
+
 ## Saved Team Checkpoint: 2026-07-12
 
 - Components `main` is pushed at `01d7ea1 Promote virtual test helper circuit`.
