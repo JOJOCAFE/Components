@@ -6,18 +6,21 @@ Last updated: 2026-07-27
 
 - `.codex/instructions.md` added (103 lines): job-scoped Codex agent
   instructions covering team roles, source-of-truth rules, repo layout, quality
-  gates, Board/Language lanes, and datasheet policy. Untracked (not committed).
-- Board UI redesign attempted based on `board/temp/ui/component-main-ui.jpg`
-  mockup (title bar, tab bar, status bar, PCB Green #007C3D). Reverted at
-  user's request — original `board/index.html` and `board/styles.css` restored
-  from git. All 5 Board tests pass on restored code.
-- Mockup images preserved at `board/temp/ui/` for future reference:
-  `component-main-ui.jpg` (full desktop layout) and `components-logo.jpg`
-  (logo with PCB Green #007C3D).
-- The redesign direction is valid but needs a considered implementation plan
-  that keeps the existing 3-pane viewport (tool-rail | board-canvas |
-  component+command) intact as the inner layout, with chrome (title bar, tabs,
-  status bar) layered around it without breaking app.js DOM expectations.
+  gates, Board/Language lanes, and datasheet policy.
+- Board MVC refactoring complete: `model.js`, `views/`, `tools/` modules
+  created. `app.js` imports all modules, initializes ToolRail with 5 plugins.
+  All 5 Board tests pass. Interaction-contract satisfied.
+- Board UI v1.0 RC1 frozen at `board/docs/BOARD_UI_V1_RC1_FROZEN.md`:
+  Macintosh spirit, maximum circuit area, grayscale + one green accent,
+  8-tool rail, no IDE/CAD chrome. Timeless interface.
+- Logo saved to `board/assets/components-logo.jpg` (hexagon + C + green dot).
+- CSS fixed: right-stack is a proper grid column (not floating overlay),
+  terminal visible under source editor, board-banner hidden, board-stage is
+  2-column grid (viewport | right panel). All per frozen spec.
+- Components pushed through `61a3ec5 Hide board-banner, fix viewport layout`.
+- Next: implement the frozen UI in `index.html` (title bar, tab bar, status
+  bar wrapping the existing 3-pane viewport). Must preserve `app.js` DOM
+  queries and interaction-contract strings.
 
 > **Current authority.** This section supersedes the older RV8GR checkpoint
 > notes below when they disagree. This checkpoint includes the first local
