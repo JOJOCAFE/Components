@@ -19,7 +19,7 @@ button.primary { color: #fff; border-color: #1467df; background: #1467df; box-sh
 .tool:nth-child(6) span { font-size: 2.6rem; }
 .tool.selected { color: #102e78; border-color: #9bc7ff; background: linear-gradient(145deg, #e8f1ff, #f8fbff); box-shadow: inset 0 0 0 1px #dbeafe; }
 .board-stage { min-width: 0; min-height: 0; position: relative; display: grid; grid-template-columns: 1fr 340px; grid-template-rows: minmax(0, 1fr); overflow: hidden; }
-.board-banner { position: relative; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0 1.25rem; border-bottom: 1px solid #d8e0ea; background: #fff; }
+.board-banner { display: none; }
 .board-banner p { margin: 0; font-size: 1.04rem; font-weight: 620; color: #102d76; }
 .board-banner p span { display: inline-grid; place-items: center; width: 34px; height: 34px; margin-right: .45rem; color: #1467df; background: #eff6ff; border-radius: 8px; font-size: 1.25rem; }
 .top-actions { display: flex; align-items: center; gap: .45rem; white-space: nowrap; }
