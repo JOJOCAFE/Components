@@ -1,0 +1,7 @@
+{
+  "name": "components-board",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Components Board — technical drawing layout tool"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "components.board-config@1",
+  "paper": {
+    "size": "A4",
+    "width_mm": 297,
+    "height_mm": 210,
+    "orientation": "landscape",
+    "margin_mm": {"top": 10, "bottom": 10, "left": 10, "right": 10}
+  },
+  "grid": {
+    "major_mm": 10,
+    "minor_mm": 2.5,
+    "snap_mm": 1.25,
+    "border_tick_mm": 50
+  },
+  "title_block": {
+    "show": true,
+    "project": "",
+    "page_title": "",
+    "author": "",
+    "revision": "1.0"
+  },
+  "export": {
+    "dpi": 300,
+    "format": "pdf",
+    "monochrome": false,
+    "include_title_block": true,
+    "include_fold_marks": false
+  },
+  "print": {
+    "scale": "1:1",
+    "tile_to": "A4",
+    "overlap_mm": 15
+  }
+}
