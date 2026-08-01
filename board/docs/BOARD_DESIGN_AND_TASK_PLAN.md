@@ -357,6 +357,10 @@ place U3 at (80, 50) rotate 0;
 11. Commands accept both human text and JSON (same result either way)
 12. Parser, executor, and middleware are pluggable modules (replaceable at runtime)
 13. Engine state output is JSON-serializable (any client can render it)
+14. No rate limiting -- engine must run at full speed for AI/automation (~100K cmd/sec)
+15. Hard page cap: max 100 pages per project (prevents infinite loops)
+16. Memory guard: block new pages at 70% of 512MB RSS (prevents system crash)
+17. Each page has isolated models -- switching pages shows only that page's content
 
 ---
 
