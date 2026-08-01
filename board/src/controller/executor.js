@@ -76,6 +76,11 @@ export function createExecutor(componentModel, boardModel, config) {
     pages: { list: ['Page 1'], active: 'Page 1' },
   };
 
+  // Per-page model storage (page name -> {component, board})
+  const pageStore = {
+    'Page 1': { component: state.component, board: state.board },
+  };
+
   // History stacks for undo/redo
   const undoStack = [];
   const redoStack = [];
@@ -282,6 +287,11 @@ export function createExecutor(componentModel, boardModel, config) {
     }
 
     pushUndo();
+    // Save current page's state, create new page models
+    pageStore[state.pages.active] = { component: state.component, board: state.board };
+    pageStore[name] = { component: createComponentModel(), board: createBoardModel() };
+    state.component = pageStore[name].component;
+    state.board = pageStore[name].board;
     state.pages = {
       list: [...state.pages.list, name],
       active: name,
@@ -297,6 +307,10 @@ export function createExecutor(componentModel, boardModel, config) {
     }
 
     pushUndo();
+    // Save current page, load target page
+    pageStore[state.pages.active] = { component: state.component, board: state.board };
+    state.component = pageStore[name]?.component || createComponentModel();
+    state.board = pageStore[name]?.board || createBoardModel();
     state.pages = { ...state.pages, active: name };
     return ok(`Switched to page "${name}"`, cmd);
   }

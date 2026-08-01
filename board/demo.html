@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Components Board — Phase 1 Demo</title>
+<!-- Run: python3 -m http.server 8080 -d board/ OR npx serve board/
+     Open: http://localhost:8080/demo.html -->
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; background: #1a1a1a; color: #eee; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+#page-tabs { display: flex; gap: 2px; padding: 4px 8px; background: #252525; border-bottom: 1px solid #333; }
+.tab { padding: 4px 14px; border-radius: 4px 4px 0 0; background: #333; color: #aaa; cursor: pointer; font-size: 13px; }
+.tab.active { background: #007C3D; color: #fff; }
+.tab-add { background: none; border: 1px dashed #555; color: #777; }
+#viewport-wrap { flex: 1; position: relative; overflow: hidden; background: #2a2a2a; }
+#viewport-wrap svg { width: 100%; height: 100%; display: block; }
+#cmd-log { height: 100px; overflow-y: auto; padding: 4px 8px; background: #111; border-top: 1px solid #333; font: 12px/1.5 'Cascadia Code', 'Fira Code', monospace; }
+.log-ok { color: #6f6; } .log-err { color: #f66; } .log-info { color: #aaa; }
+#cmd-bar { display: flex; align-items: center; padding: 4px 8px; background: #1e1e1e; border-top: 1px solid #333; gap: 6px; }
+#cmd-bar span { color: #007C3D; font-weight: bold; }
+#cmd-input { flex: 1; background: #111; border: 1px solid #444; color: #eee; padding: 4px 8px; font: 13px/1.4 monospace; border-radius: 3px; }
+#cmd-input:focus { outline: none; border-color: #007C3D; }
+.btn { padding: 4px 12px; background: #007C3D; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 12px; }
+.btn:hover { background: #009948; } .btn:disabled { background: #444; color: #888; cursor: default; }
+#status-bar { display: flex; gap: 16px; padding: 3px 12px; background: #222; border-top: 1px solid #333; font-size: 12px; color: #999; }
+#status-bar .s { padding: 0 4px; }
+</style>
+</head>
+<body>
+<div id="page-tabs"></div>
+<div id="viewport-wrap"><svg id="svg"></svg></div>
+<div id="cmd-log"></div>
+<div id="cmd-bar">
+  <span>&gt;</span>
+  <input id="cmd-input" placeholder="type command..." autocomplete="off">
+  <button class="btn" id="btn-next">Next</button>
+  <button class="btn" id="btn-all">Run All</button>
+</div>
+<div id="status-bar">
+  <span class="s" id="st-tool">Select</span>
+  <span class="s" id="st-pos">x: 0.0  y: 0.0 mm</span>
+  <span class="s" id="st-zoom">100%</span>
+  <span class="s" id="st-paper">A4 L</span>
+</div>
+
+<script type="module">
+import { parseCommand } from './src/controller/parser.js';
+import { createExecutor } from './src/controller/executor.js';
+import { createEngine } from './src/controller/engine.js';
+import { createViewport } from './src/view/viewport.js';
+import { createCommandViewport } from './src/view/command-viewport.js';
+import { createStatusBar } from './src/view/status-bar.js';
+import { createPageTabs } from './src/view/page-tabs.js';
+
+// --- Setup ---
+const executor = createExecutor();
+const engine = createEngine({ parser: parseCommand, executor });
+const viewport = createViewport(engine.getState().config);
+const cmdVP = createCommandViewport(engine);
+const statusBar = createStatusBar(engine, viewport);
+const pageTabs = createPageTabs(engine);
+
+const DEMO_COMMANDS = [
+  'place U1, digital.74HC04 at (30, 20) rotate 0',
+  'place U2, digital.74HC161 at (120, 20) rotate 0',
+  'place U3, memory.62256 at (80, -50) rotate 0',
+  'connect U1.1Y -> U2.CLK',
+  'connect U2.QA -> U3.A0',
+  'route U1.1Y -> U2.CLK via (75, 20) (75, 10) (120, 10)',
+  'label "Clock" at (75, 5)',
+  'move U3 to (80, -60)',
+  'rotate U2 90',
+  'zoom 150%',
+  'zoom fit',
+  'undo',
+  'undo',
+  'redo',
+  'new-page "Memory" paper A3 landscape',
+  'switch-page "Memory"',
+  'place U4, memory.AT28C256 at (50, 0) rotate 0',
+  'switch-page "Page 1"',
+];
+let demoIdx = 0;
+
+// --- DOM refs ---
+const svg = document.getElementById('svg');
+const logEl = document.getElementById('cmd-log');
+const inputEl = document.getElementById('cmd-input');
+const btnNext = document.getElementById('btn-next');
+const btnAll = document.getElementById('btn-all');
+const tabsEl = document.getElementById('page-tabs');
+
+// --- Execute + render ---
+function execCmd(text) {
+  const entry = cmdVP.submit(text);
+  // Sync viewport zoom from engine state
+  const st = engine.getState();
+  if (st.viewport.zoom === 'fit') {
+    const r = svg.getBoundingClientRect();
+    viewport.zoomFit(r.width, r.height);
+  } else if (typeof st.viewport.zoom === 'number') {
+    viewport.setZoom(st.viewport.zoom);
+  }
+  appendLog(entry);
+  render();
+}
+
+function appendLog(entry) {
+  const div = document.createElement('div');
+  div.className = entry.success ? 'log-ok' : 'log-err';
+  div.textContent = `> ${entry.input}  — ${entry.message}`;
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+// --- SVG Rendering ---
+function render() {
+  const rect = svg.getBoundingClientRect();
+  const W = rect.width || 800;
+  const H = rect.height || 500;
+  const state = engine.getState();
+  const data = viewport.getRenderData(state, W, H);
+  let html = `<rect width="${W}" height="${H}" fill="#f8f8f8"/>`;
+
+  // Paper
+  const p = data.paper;
+  html += `<rect x="${p.x}" y="${p.y}" width="${p.width}" height="${p.height}" fill="#fff" stroke="#ccc"/>`;
+
+  // Minor grid
+  for (const l of data.grid.minor) html += `<line x1="${l.x1}" y1="${l.y1}" x2="${l.x2}" y2="${l.y2}" stroke="#f0f0f0" stroke-width="0.5"/>`;
+  // Major grid
+  for (const l of data.grid.major) html += `<line x1="${l.x1}" y1="${l.y1}" x2="${l.x2}" y2="${l.y2}" stroke="#e0e0e0" stroke-width="0.5"/>`;
+  // Grid labels
+  for (const lb of data.grid.labels) html += `<text x="${lb.x}" y="${lb.y}" font-size="9" fill="#bbb" font-family="sans-serif">${lb.text}</text>`;
+
+  // Devices
+  const DW = 40, DH = 30;
+  for (const d of data.devices) {
+    const rx = d.screenX - DW/2, ry = d.screenY - DH/2;
+    html += `<rect x="${rx}" y="${ry}" width="${DW}" height="${DH}" fill="#e3f2e0" stroke="#007C3D" rx="3"/>`;
+    html += `<text x="${d.screenX}" y="${d.screenY + 4}" text-anchor="middle" font-size="11" fill="#333" font-family="sans-serif">${d.ref}</text>`;
+  }
+
+  // Connections (dashed)
+  const devMap = {};
+  for (const d of data.devices) devMap[d.ref] = d;
+  for (const c of data.connections) {
+    const fRef = c.from.split('.')[0], tRef = c.to.split('.')[0];
+    const fd = devMap[fRef], td = devMap[tRef];
+    if (fd && td) html += `<line x1="${fd.screenX}" y1="${fd.screenY}" x2="${td.screenX}" y2="${td.screenY}" stroke="#888" stroke-dasharray="4 3" stroke-width="1"/>`;
+  }
+
+  // Routes (polylines, blue)
+  for (const r of data.routes) {
+    if (r.via.length > 0) {
+      const fRef = r.from.split('.')[0], tRef = r.to.split('.')[0];
+      const fd = devMap[fRef], td = devMap[tRef];
+      let pts = [];
+      if (fd) pts.push(`${fd.screenX},${fd.screenY}`);
+      for (const v of r.via) pts.push(`${v.screenX},${v.screenY}`);
+      if (td) pts.push(`${td.screenX},${td.screenY}`);
+      html += `<polyline points="${pts.join(' ')}" fill="none" stroke="#2196F3" stroke-width="1.5"/>`;
+    }
+  }
+
+  // Labels
+  for (const lb of data.labels) html += `<text x="${lb.screenX}" y="${lb.screenY}" font-size="12" fill="#333" font-family="sans-serif">${lb.text}</text>`;
+
+  svg.innerHTML = html;
+  renderTabs();
+  renderStatus();
+}
+
+function renderTabs() {
+  const pages = pageTabs.getPages();
+  tabsEl.innerHTML = pages.map(p =>
+    `<div class="tab${p.active ? ' active' : ''}" data-page="${p.name}">${p.name}</div>`
+  ).join('') + '<div class="tab tab-add">+</div>';
+}
+
+function renderStatus() {
+  document.getElementById('st-tool').textContent = statusBar.getState().tool;
+  document.getElementById('st-pos').textContent = statusBar.getFormattedCursor();
+  document.getElementById('st-zoom').textContent = statusBar.getFormattedZoom();
+  document.getElementById('st-paper').textContent = statusBar.getFormattedPaper();
+}
+
+// --- Events ---
+inputEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && inputEl.value.trim()) { execCmd(inputEl.value.trim()); inputEl.value = ''; }
+});
+btnNext.addEventListener('click', () => {
+  if (demoIdx < DEMO_COMMANDS.length) { execCmd(DEMO_COMMANDS[demoIdx++]); }
+  if (demoIdx >= DEMO_COMMANDS.length) btnNext.disabled = true;
+});
+btnAll.addEventListener('click', () => {
+  btnAll.disabled = true;
+  const iv = setInterval(() => {
+    if (demoIdx >= DEMO_COMMANDS.length) { clearInterval(iv); return; }
+    execCmd(DEMO_COMMANDS[demoIdx++]);
+    if (demoIdx >= DEMO_COMMANDS.length) btnNext.disabled = true;
+  }, 500);
+});
+tabsEl.addEventListener('click', e => {
+  const page = e.target.dataset?.page;
+  if (page) execCmd(`switch-page "${page}"`);
+});
+svg.addEventListener('mousemove', e => {
+  const r = svg.getBoundingClientRect();
+  const world = viewport.screenToWorld(e.clientX - r.left, e.clientY - r.top, r.width, r.height);
+  statusBar.setCursor(parseFloat(world.x.toFixed(1)), parseFloat(world.y.toFixed(1)));
+  renderStatus();
+});
+
+// Initial render
+viewport.zoomFit(800, 500);
+render();
+window.addEventListener('resize', render);
+appendLog({ success: true, input: '(demo ready)', message: `${DEMO_COMMANDS.length} commands queued — click Next or Run All` });
+</script>
+</body>
+</html>
