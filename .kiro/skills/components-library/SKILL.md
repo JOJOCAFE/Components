@@ -122,7 +122,7 @@ python3 tools/verilog_behavior_crosscheck.py
 - Five active compact Device sources: 74HC00, 74HC161, 74HC157, 74HC245, 74HC574
 - Functional-pinout SVGs: 74HC00, 02, 03, 04, 05, 08, 14 reviewed
 
-## Board Engine Files (Phase 1)
+## Board Engine Files (Phase 1 — COMPLETE)
 ```
 board/src/model/config.js          Config schema + validation (29 tests)
 board/src/model/component.js       Device + connection model
@@ -131,6 +131,11 @@ board/src/controller/parser.js     Dual-format parser (87 tests)
 board/src/controller/executor.js   Stateful executor (98 tests)
 board/src/controller/engine.js     Pluggable composition (21 tests)
 board/src/view/command-viewport.js Command CLI + log (32 tests)
+board/src/view/viewport.js         Coordinate math + render data (37 tests)
+board/src/view/status-bar.js       Tool/cursor/zoom/paper state (22 tests)
+board/src/view/page-tabs.js        Page management via engine (22 tests)
+board/demo.html                    Visual demo (step-through commands)
+Total: 10 modules, 348 tests, 0 DOM dependencies
 ```
 
 ## Current TODO

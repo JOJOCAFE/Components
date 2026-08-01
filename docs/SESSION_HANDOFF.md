@@ -31,12 +31,13 @@ Last updated: 2026-08-01
 
 ### Resume (next session)
 
-1. Continue Phase 1 remaining View layer tasks:
-   - 1.6 Viewport renderer (SVG, paper boundary, mm grid, device rendering)
-   - 1.7 Status bar (tool name, cursor mm, zoom controls, paper size)
-   - 1.8 Page tabs (create/switch/rename, per-page config)
-2. These require DOM/browser — will need HTML + thin DOM adapter
-3. After Phase 1: commit, then Phase 2 (text editors + file sync)
+1. **Phase 2: Text Editors** (standalone modules, DOM-free, same pattern as Phase 1):
+   - `board/src/model/file.js` — load/save/parse circuit.component + circuit.board
+   - `board/src/view/editor.js` — editor state (cursor, highlight, scroll)
+   - `board/src/controller/sync.js` — page sync (@page offset detection)
+   - Build standalone, test headless, connect to UI later
+2. Then Phase 3: Tool plugins (Select, Tray, Guide, Connect, Eraser, Label, Inspect)
+3. Phase 6 (auth/multi-agent) parked for after v1.0
 
 ### Evidence commands
 ```bash
@@ -45,6 +46,14 @@ node board/test/parser.test.js          # 87 tests
 node board/test/executor.test.js        # 98 tests
 node board/test/engine.test.js          # 21 tests
 node board/test/command-viewport.test.js # 32 tests
+node board/test/viewport.test.js        # 37 tests
+node board/test/status-bar.test.js      # 22 tests
+node board/test/page-tabs.test.js       # 22 tests
+# Total: 348 tests, 0 failures
+
+# Visual demo:
+cd board && python3 -m http.server 8080
+# Open http://localhost:8080/demo.html
 ```
 
 ## Session 2026-07-27 notes
