@@ -1,6 +1,51 @@
 # Components Session Handoff
 
-Last updated: 2026-07-27
+Last updated: 2026-08-01
+
+## Session 2026-08-01 notes
+
+- **Board docs rewrite**: 14 old scattered docs → 12 numbered (00-11) + 1 master
+  design doc (402 lines). Clean reading order, no redundancy.
+- **Board engine-first architecture**: universal command protocol. Any input
+  (human text / JSON / voice / AI) → Engine → JSON state → Any client.
+- **Pluggable modules**: parser, executor, middleware are injectable and
+  hot-swappable at runtime. `createEngine({parser, executor, middleware})`.
+- **Dual-format commands**: human-friendly text AND structured JSON produce
+  identical internal operations. AI/tools use JSON, students type text.
+- **Phase 1 implementation**: 5/8 tasks done, 267 tests passing (all headless):
+  - 1.1 Config model (paper A4-A0, mm, grid, export, print) — 29 tests
+  - 1.2 Command parser (20 command types, text + JSON) — 87 tests
+  - 1.3 Executor (component + board models, undo/redo, pages) — 98 tests
+  - 1.4 Engine module (pluggable, middleware, batch, hot-swap) — 21 tests
+  - 1.5 Command viewport (CLI log, history, suggestions) — 32 tests
+- **Key design decisions this session**:
+  - World unit = millimetre (mm), paper sizes A4-A0, landscape/portrait
+  - Page tabs on viewport (not global), each page has own paper/config
+  - Zoom controls in status bar (viewport stays 100% clean)
+  - Two files: circuit.component (electrical) + circuit.board (visual)
+  - Tool rail is plugin architecture (gesture → command, never touches model)
+  - Phase 1 tools: Select, Project Tray, Guide, Connect, Eraser, Label, Inspect, More
+  - Connect tool: orthogonal lines only (N/S/E/W, no diagonal)
+  - No config menu (no Microsoft style) — edit JSON or use Command
+  - Title block for print/export, fold marks for large paper (ISO 5457)
+
+### Resume (next session)
+
+1. Continue Phase 1 remaining View layer tasks:
+   - 1.6 Viewport renderer (SVG, paper boundary, mm grid, device rendering)
+   - 1.7 Status bar (tool name, cursor mm, zoom controls, paper size)
+   - 1.8 Page tabs (create/switch/rename, per-page config)
+2. These require DOM/browser — will need HTML + thin DOM adapter
+3. After Phase 1: commit, then Phase 2 (text editors + file sync)
+
+### Evidence commands
+```bash
+node board/test/config.test.js          # 29 tests
+node board/test/parser.test.js          # 87 tests
+node board/test/executor.test.js        # 98 tests
+node board/test/engine.test.js          # 21 tests
+node board/test/command-viewport.test.js # 32 tests
+```
 
 ## Session 2026-07-27 notes
 

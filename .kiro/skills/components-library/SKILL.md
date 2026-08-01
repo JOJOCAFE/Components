@@ -111,17 +111,30 @@ python3 tools/verilog_behavior_crosscheck.py
 - Keep only final cited PDF in `source/`; remove failed downloads and duplicates
 - 74HC150 and 74HC260 removed (no HC-family DIP evidence)
 
-## Current Status (2026-07-27)
-- Board MVC refactoring complete, UI v1.0 RC1 frozen
+## Current Status (2026-08-01)
+- Board MVC engine implemented: config, parser, executor, engine, command viewport
+- Phase 1: 5/8 tasks done, 267 tests passing (all headless, no DOM)
+- Architecture: pluggable engine (parser + executor + middleware, hot-swappable)
+- Dual-format commands: human text + JSON (same internal result)
+- Universal protocol: any input → engine → JSON state → any client
 - Profile v2 migration deterministic, harness/regression baseline active
 - Component language: parse/resolve/validate/run working
 - Five active compact Device sources: 74HC00, 74HC161, 74HC157, 74HC245, 74HC574
 - Functional-pinout SVGs: 74HC00, 02, 03, 04, 05, 08, 14 reviewed
-- Next: implement frozen UI in index.html, Board human trial, Working Box/BOM
+
+## Board Engine Files (Phase 1)
+```
+board/src/model/config.js          Config schema + validation (29 tests)
+board/src/model/component.js       Device + connection model
+board/src/model/board.js           Placement + route + label model
+board/src/controller/parser.js     Dual-format parser (87 tests)
+board/src/controller/executor.js   Stateful executor (98 tests)
+board/src/controller/engine.js     Pluggable composition (21 tests)
+board/src/view/command-viewport.js Command CLI + log (32 tests)
+```
 
 ## Current TODO
-- Implement frozen Board UI v1.0 RC1 in index.html (title bar, tab bar, status bar)
+- Board Phase 1 remaining: viewport renderer, status bar, page tabs (View/DOM layer)
 - Human first-sight trial (13-15 y/o learner + adult beginner)
-- Working Box and atomic BOM preview (after add-declaration service)
-- Bus-route contract (before visual bus bundle command)
-- Fern browser flow review
+- Phase 2: text editors (Component + Board file sync)
+- Phase 3: tool plugins (Select, Tray, Guide, Connect, Eraser, Label, Inspect)
