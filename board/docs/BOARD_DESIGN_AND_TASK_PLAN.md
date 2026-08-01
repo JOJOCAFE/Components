@@ -441,6 +441,18 @@ board/test/engine.test.js          ← 21 tests
 | 5.4 | First-sight trial: 13-15 y/o + adult beginner | Both complete NOT-gate without guide |
 | 5.5 | Freeze baseline and document remaining issues | No false claims |
 
+### Phase 6: Security & Multi-Agent (after v1.0)
+
+| # | Task | Verify |
+|---|------|--------|
+| 6.1 | Authentication protocol: identify who/what is sending commands (human/AI/app/bot) | Token-based auth, engine rejects unsigned commands |
+| 6.2 | Permission levels: read-only viewer, editor, admin, engine-to-engine | Role check before execute, unauthorized commands blocked |
+| 6.3 | Agent identity: each connected client/AI has an ID in command log | Log shows who executed each command |
+| 6.4 | Session management: connect/disconnect, token expiry, re-auth | Stale sessions rejected, no zombie connections |
+| 6.5 | Command signing: verify command origin (prevent injection from untrusted source) | Unsigned/tampered commands rejected |
+| 6.6 | Multi-agent coordination: lock pages/objects when being edited | Conflict detection, reject conflicting edits |
+| 6.7 | Audit trail: who did what, when, from where (exportable) | Full history with agent identity, exportable JSON |
+
 ---
 
 ## 10. Success Criteria
