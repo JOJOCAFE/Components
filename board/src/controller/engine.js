@@ -36,7 +36,7 @@
  * @param {object} [modules.middleware] - Optional middleware array [{before, after}]
  * @returns {object} Engine API
  */
-export function createEngine({ parser, executor, middleware = [] }) {
+export function createEngine({ parser, executor, middleware = [], maxCommandsPerSecond = 60 }) {
   if (typeof parser !== 'function') {
     throw new Error('Engine requires a parser function');
   }
@@ -46,12 +46,36 @@ export function createEngine({ parser, executor, middleware = [] }) {
 
   const log = [];
 
+  // Rate limiter: sliding window (prevents bot spam / infinite loops)
+  const rateWindow = [];
+  const RATE_LIMIT = maxCommandsPerSecond;
+
+  function isRateLimited() {
+    const now = Date.now();
+    while (rateWindow.length > 0 && rateWindow[0] < now - 1000) {
+      rateWindow.shift();
+    }
+    return rateWindow.length >= RATE_LIMIT;
+  }
+
+  function recordCommand() {
+    rateWindow.push(Date.now());
+  }
+
   /**
    * Run a command through the full pipeline: parse → middleware.before → execute → middleware.after → log.
    * @param {string} input - Human text or JSON command string
    * @returns {object} {success, message, command, parsed}
    */
   function run(input) {
+    // Rate limit: reject if too many commands per second
+    if (isRateLimited()) {
+      const entry = { timestamp: Date.now(), input, parsed: null, result: { success: false, error: `Rate limited: max ${RATE_LIMIT} commands/second. Slow down.` } };
+      log.push(entry);
+      return { success: false, error: entry.result.error, command: null, parsed: null };
+    }
+    recordCommand();
+
     // Parse
     const parsed = parser(input);
     if (parsed.type === 'error') {

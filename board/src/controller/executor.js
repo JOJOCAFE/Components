@@ -321,6 +321,12 @@ export function createExecutor(componentModel, boardModel, config) {
       return fail(`Page "${name}" already exists`, cmd);
     }
 
+    // Hard cap: absolute page limit (prevents bot/loop abuse)
+    const MAX_PAGES = 100;
+    if (state.pages.list.length >= MAX_PAGES) {
+      return fail(`Cannot create page: maximum ${MAX_PAGES} pages reached. Delete unused pages first.`, cmd);
+    }
+
     // Memory safety: check if memory usage exceeds 70% threshold
     const memCheck = checkMemory();
     if (memCheck.blocked) {
