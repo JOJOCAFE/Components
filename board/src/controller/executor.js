@@ -93,6 +93,41 @@ export function createExecutor(componentModel, boardModel, config) {
     return { success: false, error: errorMsg, command };
   }
 
+  /**
+   * Check memory usage. Block new pages at 70% of memory limit.
+   * Uses RSS (total process memory) against a configurable cap.
+   * Default cap: 512MB for Node, jsHeapSizeLimit for browser.
+   * Returns {blocked: false} if safe, or {blocked: true, reason} if not.
+   */
+  function checkMemory() {
+    const THRESHOLD = 0.70; // 70%
+    const DEFAULT_LIMIT_BYTES = 512 * 1024 * 1024; // 512 MB
+
+    // Node.js environment
+    if (typeof process !== 'undefined' && process.memoryUsage) {
+      const mem = process.memoryUsage();
+      const limit = DEFAULT_LIMIT_BYTES;
+      const usage = mem.rss / limit;
+      if (usage >= THRESHOLD) {
+        const usedMB = (mem.rss / 1024 / 1024).toFixed(0);
+        const limitMB = (limit / 1024 / 1024).toFixed(0);
+        return { blocked: true, reason: `Memory ${usedMB}MB / ${limitMB}MB (${(usage * 100).toFixed(0)}%). Save work and close unused pages.` };
+      }
+    }
+
+    // Browser environment (Chrome/Edge only — performance.memory)
+    if (typeof performance !== 'undefined' && performance.memory) {
+      const mem = performance.memory;
+      const usage = mem.usedJSHeapSize / mem.jsHeapSizeLimit;
+      if (usage >= THRESHOLD) {
+        const pct = (usage * 100).toFixed(0);
+        return { blocked: true, reason: `Memory ${pct}% used. Save work and close unused pages.` };
+      }
+    }
+
+    return { blocked: false };
+  }
+
   function pushUndo() {
     undoStack.push(snapshot(state));
     // Any new command clears the redo stack
@@ -284,6 +319,12 @@ export function createExecutor(componentModel, boardModel, config) {
 
     if (state.pages.list.includes(name)) {
       return fail(`Page "${name}" already exists`, cmd);
+    }
+
+    // Memory safety: check if memory usage exceeds 70% threshold
+    const memCheck = checkMemory();
+    if (memCheck.blocked) {
+      return fail(`Cannot create new page: ${memCheck.reason}`, cmd);
     }
 
     pushUndo();
