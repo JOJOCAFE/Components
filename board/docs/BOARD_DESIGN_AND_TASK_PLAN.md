@@ -27,7 +27,7 @@ User action (mouse/keyboard/voice/AI/CLI)
 Tool plugin (gesture interpreter)
         |
         v
-Command (text string)
+Command (text string or JSON)
         |
         v
 Engine: parse -> validate -> execute -> update model
@@ -39,6 +39,33 @@ Engine: parse -> validate -> execute -> update model
 ```
 
 Every action = a command. The command log = undo stack = macro system = collaboration history.
+
+### Pluggable Module Architecture
+
+The engine composes replaceable modules via dependency injection:
+
+```
+createEngine({ parser, executor, middleware })
+```
+
+| Module | Contract | Replaceable for |
+|--------|----------|-----------------|
+| **Parser** | `(text) => {type, ...params}` | Different language, voice, AI format, Thai |
+| **Executor** | `.execute(op) => {success, message}` | Different model, simulation, SPICE |
+| **Middleware** | `{before, after}` hooks | Readonly, permissions, collaboration, logging |
+
+The engine also supports:
+- `run(text)` — parse + execute + log (single command)
+- `runBatch(commands[])` — scripting/automation
+- `setParser(fn)` — hot-swap parser at runtime
+- `addMiddleware(mw)` — add guards/hooks at runtime
+- `getState()` — JSON output for any client
+- `getLog()` — complete command history with timestamps
+
+**Module contract means:** anyone can build their own parser (voice commands,
+Thai language, block-based), their own executor (SPICE simulation, breadboard
+physics), or their own client (3D viewer, mobile app, CLI) — as long as they
+follow the command/state protocol.
 
 ### Data Model
 
@@ -327,6 +354,9 @@ place U3 at (80, 50) rotate 0;
 8. One window = one project, tabs = pages
 9. No config menu -- JSON config edited directly or via Command
 10. Student clarity is a hard requirement
+11. Commands accept both human text and JSON (same result either way)
+12. Parser, executor, and middleware are pluggable modules (replaceable at runtime)
+13. Engine state output is JSON-serializable (any client can render it)
 
 ---
 
@@ -334,15 +364,35 @@ place U3 at (80, 50) rotate 0;
 
 ### Phase 1: Foundation (engine + config + viewport)
 
-| # | Task | Verify |
-|---|------|--------|
-| 1.1 | Define `board-config.json` schema and JSON read/write module | Schema validates, load/save round-trips |
-| 1.2 | Engine command parser: parse text commands into structured operations | Unit tests for all Phase 1 commands |
-| 1.3 | Engine executor: apply commands to Component + Board models | Model updates correctly, rejects invalid |
-| 1.4 | Viewport renderer: read Board model + config, render SVG/canvas | Paper boundary, grid in mm, devices render |
-| 1.5 | Command viewport: log commands, accept CLI input, send to engine | Type command -> engine executes -> log shows result |
-| 1.6 | Status bar: tool name, cursor mm position, zoom controls, paper size | Updates live on pointer move and zoom |
-| 1.7 | Page tabs: create/switch/rename pages, each with own config | New page works, switch updates viewport + editors |
+| # | Task | Layer | Status | Verify |
+|---|------|-------|--------|--------|
+| 1.1 | `board-config.json` schema + JSON read/write module | Model | ✅ DONE (29 tests) | Schema validates, load/save round-trips |
+| 1.2 | Command parser: text + JSON dual-format into operations | Controller | ✅ DONE (87 tests) | All command types parse, both formats same output |
+| 1.3 | Executor: apply commands to Component + Board models | Model+Controller | ✅ DONE (98 tests) | Model updates, rejects invalid, undo/redo works |
+| 1.4 | Pluggable engine: compose parser + executor + middleware | Controller | ✅ DONE (21 tests) | Hot-swap parser, middleware blocks/notifies, batch |
+| 1.5 | Command viewport: log commands, accept CLI input, send to engine | View | ⬜ TODO | Type command → engine executes → log shows result |
+| 1.6 | Viewport renderer: read Board model + config, render SVG/canvas | View | ⬜ TODO | Paper boundary, grid in mm, devices render |
+| 1.7 | Status bar: tool name, cursor mm position, zoom controls, paper size | View | ⬜ TODO | Updates live on pointer move and zoom |
+| 1.8 | Page tabs: create/switch/rename pages, each with own config | Controller+View | ⬜ TODO | New page works, switch updates viewport + editors |
+
+**Phase 1 progress: 4/8 tasks done, 235 tests passing.**
+
+Implementation order for remaining tasks: 1.5 → 1.6 → 1.7 → 1.8
+
+Files completed:
+```
+board/src/model/config.js          ← 1.1 (paper sizes, validation, CRUD)
+board/src/model/component.js       ← 1.3 (devices, connections)
+board/src/model/board.js           ← 1.3 (placements, routes, labels)
+board/src/controller/parser.js     ← 1.2 (text + JSON dual parser)
+board/src/controller/executor.js   ← 1.3 (stateful, undo/redo, pages)
+board/src/controller/engine.js     ← 1.4 (pluggable composition)
+board/board-config.json            ← 1.1 (default config)
+board/test/config.test.js          ← 29 tests
+board/test/parser.test.js          ← 87 tests
+board/test/executor.test.js        ← 98 tests
+board/test/engine.test.js          ← 21 tests
+```
 
 ### Phase 2: Text Editors (Component + Board)
 
