@@ -21,10 +21,25 @@ html, body { height: 100%; overflow: hidden; font-family: var(--sans); backgroun
 .app { height: 100%; display: grid; grid-template-rows: auto auto 1fr auto; }
 
 /* Menu bar */
-.menu-bar { display: flex; align-items: center; padding: 2px 12px; background: var(--bg2); border-bottom: 1px solid var(--border); font-size: 12px; gap: 4px; }
-.menu-bar .logo { color: var(--green); font-weight: 700; font-size: 14px; margin-right: 8px; }
-.menu-bar button { background: none; border: none; color: var(--text2); padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px; }
-.menu-bar button:hover { background: #333; color: var(--text); }
+.menu-bar { display: flex; align-items: center; padding: 2px 12px; background: var(--bg2); border-bottom: 1px solid var(--border); font-size: 12px; gap: 0; }
+.menu-bar .logo { color: var(--green); font-weight: 700; font-size: 14px; margin-right: 12px; }
+.menu-bar > button, .menu-item > button { background: none; border: none; color: var(--text2); padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px; }
+.menu-bar > button:hover, .menu-item > button:hover { background: #333; color: var(--text); }
+.menu-item { position: relative; }
+.menu-item > button { position: relative; }
+
+/* Dropdown */
+.menu-dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 240px; background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); padding: 4px 0; z-index: 100; }
+.menu-item.open .menu-dropdown { display: block; }
+.menu-dropdown button { display: flex; align-items: center; width: 100%; padding: 6px 14px; border: none; background: none; color: var(--text); font-size: 12px; cursor: pointer; text-align: left; gap: 8px; }
+.menu-dropdown button:hover { background: var(--green); color: #fff; }
+.menu-dropdown .menu-key { margin-left: auto; color: var(--text3); font-size: 11px; font-family: var(--mono); }
+.menu-dropdown button:hover .menu-key { color: rgba(255,255,255,0.7); }
+.menu-sep { height: 1px; background: var(--border); margin: 4px 0; }
+.menu-recent-label { padding: 4px 14px; font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+.menu-dropdown .recent-item { font-size: 11px; color: var(--text2); }
+.menu-dropdown .recent-item:hover { color: #fff; }
+.menu-dropdown .recent-empty { padding: 6px 14px; font-size: 11px; color: var(--text3); font-style: italic; }
 
 /* Page tabs */
 .page-tabs { display: flex; gap: 1px; padding: 0 8px; background: var(--bg2); border-bottom: 1px solid var(--border); align-items: end; }
@@ -116,7 +131,23 @@ html, body { height: 100%; overflow: hidden; font-family: var(--sans); backgroun
   <!-- Menu bar -->
   <div class="menu-bar">
     <span class="logo">C</span>
-    <button>File</button><button>Edit</button><button>View</button>
+    <div class="menu-item" id="menu-file">
+      <button>File</button>
+      <div class="menu-dropdown" id="dropdown-file">
+        <button data-action="new"><span class="menu-key">Ctrl+N</span>New Project</button>
+        <button data-action="open"><span class="menu-key">Ctrl+O</span>Open…</button>
+        <div class="menu-sep"></div>
+        <button data-action="save"><span class="menu-key">Ctrl+S</span>Save</button>
+        <button data-action="save-as"><span class="menu-key">Ctrl+Shift+S</span>Save As…</button>
+        <div class="menu-sep"></div>
+        <button data-action="download-circuit">Download Components:circuit</button>
+        <button data-action="download-board">Download Components:board</button>
+        <div class="menu-sep"></div>
+        <div class="menu-recent-label">Recent Projects</div>
+        <div id="recent-list"></div>
+      </div>
+    </div>
+    <button>Edit</button><button>View</button>
     <button>Project</button><button>Simulate</button><button>Help</button>
   </div>
 
@@ -163,7 +194,7 @@ html, body { height: 100%; overflow: hidden; font-family: var(--sans); backgroun
           <span class="terminal-ver">v1.0</span>
         </div>
         <div class="terminal-body" id="cmd-log">
-          <div class="term-banner">Components Board Engine — 929 tests verified</div>
+          <div class="term-banner">Components Board Engine — 969 tests verified</div>
           <div class="term-banner">Type commands, or use tools in the viewport.</div>
           <div class="term-banner">───────────────────────────────────────────</div>
         </div>
@@ -182,7 +213,7 @@ html, body { height: 100%; overflow: hidden; font-family: var(--sans); backgroun
     <span id="st-zoom">100%</span>
     <span id="st-paper">A4 Landscape</span>
     <span style="margin-left:auto" id="st-save"></span>
-    <span id="st-tests">929 tests ✓</span>
+    <span id="st-tests">969 tests ✓</span>
   </div>
 
 </div>
@@ -204,6 +235,7 @@ import { createToolSystem } from './src/controller/tools.js';
 import { createSelectTool } from './src/controller/select-tool.js';
 import { createConnectTool } from './src/controller/connect-tool.js';
 import { syncStateToText, syncTextToEngine } from './src/controller/twin-sync.js';
+import { createCommandRegistry, createFileCommands, createEditCommands, createViewCommands, createToolCommands, createPageCommands, createBoardCommands, createCircuitCommands } from './src/controller/command-registry.js';
 
 // ============================================================================
 // SAMPLE PROJECT (would normally load from disk)
@@ -275,11 +307,10 @@ let activePage = 'CPU';
 // SAVE / LOAD (localStorage)
 // ============================================================================
 function saveProject() {
-  const data = { circuit: CIRCUIT_SRC_LIVE, board: BOARD_SRC_LIVE, commands: engine.getLog?.() || [], activePage };
+  // Auto-save current working state (separate from named projects)
+  const data = { circuit: CIRCUIT_SRC_LIVE, board: BOARD_SRC_LIVE, commands: engine.getLog?.() || [], activePage, projectName: currentProjectName };
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    document.getElementById('st-save').textContent = '● Saved';
-    setTimeout(() => { document.getElementById('st-save').textContent = ''; }, 1500);
   } catch(e) { /* quota exceeded, ignore */ }
 }
 
@@ -291,13 +322,13 @@ function loadProject() {
     if (data.circuit) CIRCUIT_SRC_LIVE = data.circuit;
     if (data.board) BOARD_SRC_LIVE = data.board;
     if (data.activePage) activePage = data.activePage;
+    if (data.projectName) currentProjectName = data.projectName;
     circuitFile = parseFile(CIRCUIT_SRC_LIVE, FILE_TYPES.CIRCUIT);
     boardFile = parseFile(BOARD_SRC_LIVE, FILE_TYPES.BOARD);
     circuitEditor = createEditor(CIRCUIT_SRC_LIVE, { visibleLines: 30 });
     boardEditor = createEditor(BOARD_SRC_LIVE, { visibleLines: 30 });
     if (data.commands?.length) {
       data.commands.forEach(cmd => engine.run(cmd));
-      cmdLog(`(loaded ${data.commands.length} commands from save)`, true);
       return true;
     }
   } catch(e) { /* corrupt, ignore */ }
@@ -714,16 +745,138 @@ document.addEventListener('mouseup', e => {
 });
 
 // ============================================================================
-// COMMAND INPUT
+// COMMAND INPUT (progressive: short aliases + dot-notation)
 // ============================================================================
 document.getElementById('cmd-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') {
     const text = e.target.value.trim();
     if (!text) return;
     e.target.value = '';
-    runAndSave(text);
+    executeCommand(text);
+  }
+  // Tab completion hint
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const text = e.target.value.trim();
+    const hint = getCompletionHint(text);
+    if (hint) e.target.value = hint;
   }
 });
+
+// ============================================================================
+// COMMAND REGISTRY SETUP
+// ============================================================================
+const registry = createCommandRegistry();
+
+// --- Helpers ---
+function unquote(s) { return s.replace(/^["']|["']$/g, '').trim(); }
+function quoteIfNeeded(s) { return s.includes(' ') && !s.startsWith('"') ? `"${s}"` : s; }
+function doSaveAs(name) { currentProjectName = name; saveToProjects(name); updateTitle(); addToRecent(name); cmdLog(`Saved as "${name}"`, true); }
+function doSwitchPage(name) {
+  if (!name) return;
+  activePage = name;
+  const result = syncToPage(circuitFile, boardFile, circuitEditor, boardEditor, name);
+  circuitEditor = result.circuitEditor; boardEditor = result.boardEditor;
+  renderEditors(); renderPageTabs(); renderViewport();
+  cmdLog(`Page: ${name}`, true);
+}
+function doCollapse(collapse) {
+  const mainEl = document.querySelector('.main');
+  const btn = document.getElementById('collapse-btn');
+  const isCollapsed = mainEl.classList.contains('collapsed');
+  if (collapse && !isCollapsed || !collapse && isCollapsed) btn.click();
+}
+
+// Register file commands
+registry.register(createFileCommands({
+  onNew: () => fileNew(),
+  onOpen: (name) => name ? fileOpenProject(name) : fileOpen(),
+  onSave: () => fileSave(),
+  onSaveAs: (name) => name ? doSaveAs(name) : fileSaveAs(),
+  onDownload: (type) => fileDownload(type),
+  onRecent: () => getRecentList(),
+}));
+
+// Register edit commands
+registry.register(createEditCommands({
+  onUndo: () => runAndSave('undo'),
+  onRedo: () => runAndSave('redo'),
+  onSelect: (ref) => { if (ref) { selectedRef = ref; renderViewport(); } },
+  onDeselect: () => { selectedRef = null; renderViewport(); },
+}));
+
+// Register view commands
+registry.register(createViewCommands({
+  onCollapse: () => doCollapse(true),
+  onExpand: () => doCollapse(false),
+  onZoom: (args) => cmdLog('zoom: not yet implemented', true),
+  onPan: (args) => cmdLog('pan: not yet implemented', true),
+}));
+
+// Register tool commands
+registry.register(createToolCommands({
+  onActivate: (toolName) => {
+    const tools = toolSystem.list();
+    const match = tools.find(t => t.id === toolName || t.name.toLowerCase() === toolName);
+    if (match) { toolSystem.activate(match.id); renderToolRail(); updateStatus(); }
+  },
+  listTools: () => toolSystem.list().map(t => t.id),
+}));
+
+// Register page commands
+registry.register(createPageCommands({
+  onNew: (name) => runAndSave(`new-page ${quoteIfNeeded(name)} paper A4 landscape`),
+  onSwitch: (name) => doSwitchPage(name),
+  onDelete: (name) => runAndSave(`delete-page ${quoteIfNeeded(name)}`),
+}));
+
+// Register board commands (pass-through to engine)
+registry.register(createBoardCommands({
+  runEngine: (cmd) => runAndSave(cmd),
+}));
+
+// Register circuit commands (pass-through to engine)
+registry.register(createCircuitCommands({
+  runEngine: (cmd) => runAndSave(cmd),
+}));
+
+// Set fallback: unmatched commands go to engine's runAndSave
+registry.setFallback((text) => {
+  const lower = text.toLowerCase();
+  // Handle help as special case
+  if (lower === 'help' || lower === '?') {
+    const helpText = registry.help();
+    helpText.split('\n').forEach(line => cmdLog(line, true));
+    return { success: true, message: 'help shown' };
+  }
+  if (lower.startsWith('help ')) {
+    const group = lower.slice(5).trim();
+    const helpText = registry.help(group);
+    helpText.split('\n').forEach(line => cmdLog(line, true));
+    return { success: true, message: `help ${group} shown` };
+  }
+  // Pass to engine
+  return runAndSave(text);
+});
+
+/**
+ * Command router — uses the OOP command registry.
+ * Supports: "save" | "file.save" | "file save" — all work identically.
+ */
+function executeCommand(text) {
+  const raw = text.trim();
+  if (!raw) return;
+  const result = registry.execute(raw);
+  if (result && result.message) {
+    cmdLog(result.message, result.success !== false);
+  }
+}
+
+// --- Tab completion via registry ---
+function getCompletionHint(text) {
+  const completions = registry.complete(text);
+  return completions.length > 0 ? completions[0] : null;
+}
 
 function cmdLog(text, success = true) {
   const log = document.getElementById('cmd-log');
@@ -797,6 +950,204 @@ function updateStatus() {
   const config = engine.getState().config;
   document.getElementById('st-paper').textContent = `${config.paper.size} ${config.paper.orientation === 'landscape' ? 'L' : 'P'}`;
 }
+
+// ============================================================================
+// FILE MENU (New / Open / Save / Save As / Download / Recent)
+// ============================================================================
+const PROJECTS_KEY = 'components.board.projects';
+const RECENT_KEY = 'components.board.recent';
+let currentProjectName = 'Untitled';
+
+// --- Menu open/close ---
+document.getElementById('menu-file').querySelector('button').addEventListener('click', e => {
+  const menu = document.getElementById('menu-file');
+  menu.classList.toggle('open');
+  if (menu.classList.contains('open')) renderRecentList();
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('#menu-file')) {
+    document.getElementById('menu-file').classList.remove('open');
+  }
+});
+
+// --- Menu actions ---
+document.getElementById('dropdown-file').addEventListener('click', e => {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  const action = btn.dataset.action;
+  document.getElementById('menu-file').classList.remove('open');
+
+  switch (action) {
+    case 'new': fileNew(); break;
+    case 'open': fileOpen(); break;
+    case 'save': fileSave(); break;
+    case 'save-as': fileSaveAs(); break;
+    case 'download-circuit': fileDownload('circuit'); break;
+    case 'download-board': fileDownload('board'); break;
+  }
+});
+
+// --- Recent list click ---
+document.getElementById('recent-list').addEventListener('click', e => {
+  const item = e.target.closest('[data-project]');
+  if (item) {
+    document.getElementById('menu-file').classList.remove('open');
+    fileOpenProject(item.dataset.project);
+  }
+});
+
+// --- File: New ---
+function fileNew() {
+  if (!confirm('Create new project? Unsaved changes will be lost.')) return;
+  currentProjectName = 'Untitled';
+  CIRCUIT_SRC_LIVE = '@page Page1\n';
+  BOARD_SRC_LIVE = '@page Page1\npaper A4 landscape;\n';
+  // Reset engine (clear all state)
+  const state = engine.getState();
+  if (state.component?.devices) {
+    Object.keys(state.component.devices).forEach(ref => engine.run(`delete ${ref}`));
+  }
+  circuitFile = parseFile(CIRCUIT_SRC_LIVE, FILE_TYPES.CIRCUIT);
+  boardFile = parseFile(BOARD_SRC_LIVE, FILE_TYPES.BOARD);
+  circuitEditor = createEditor(CIRCUIT_SRC_LIVE, { visibleLines: 30 });
+  boardEditor = createEditor(BOARD_SRC_LIVE, { visibleLines: 30 });
+  activePage = 'Page1';
+  renderEditors();
+  renderPageTabs();
+  renderViewport();
+  updateTitle();
+  cmdLog('New project created', true);
+}
+
+// --- File: Open (from localStorage projects) ---
+function fileOpen() {
+  const projects = getProjectList();
+  if (projects.length === 0) {
+    alert('No saved projects. Use File > Save As to save first.');
+    return;
+  }
+  const name = prompt('Open project:\n\n' + projects.map((p, i) => `${i + 1}. ${p}`).join('\n') + '\n\nType name:');
+  if (name && name.trim()) fileOpenProject(name.trim());
+}
+
+function fileOpenProject(name) {
+  const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY) || '{}');
+  const data = projects[name];
+  if (!data) { alert(`Project "${name}" not found.`); return; }
+
+  currentProjectName = name;
+  CIRCUIT_SRC_LIVE = data.circuit || '@page Page1\n';
+  BOARD_SRC_LIVE = data.board || '@page Page1\npaper A4 landscape;\n';
+
+  // Reset engine and replay
+  const state = engine.getState();
+  if (state.component?.devices) {
+    Object.keys(state.component.devices).forEach(ref => engine.run(`delete ${ref}`));
+  }
+  if (data.commands) {
+    data.commands.forEach(cmd => engine.run(cmd));
+  }
+
+  circuitFile = parseFile(CIRCUIT_SRC_LIVE, FILE_TYPES.CIRCUIT);
+  boardFile = parseFile(BOARD_SRC_LIVE, FILE_TYPES.BOARD);
+  circuitEditor = createEditor(CIRCUIT_SRC_LIVE, { visibleLines: 30 });
+  boardEditor = createEditor(BOARD_SRC_LIVE, { visibleLines: 30 });
+  activePage = data.activePage || getPageNames(circuitFile)[0] || 'Page1';
+  renderEditors();
+  renderPageTabs();
+  renderViewport();
+  updateTitle();
+  addToRecent(name);
+  cmdLog(`Opened "${name}"`, true);
+}
+
+// --- File: Save ---
+function fileSave() {
+  if (currentProjectName === 'Untitled') { fileSaveAs(); return; }
+  saveToProjects(currentProjectName);
+  cmdLog(`Saved "${currentProjectName}"`, true);
+}
+
+// --- File: Save As ---
+function fileSaveAs() {
+  const name = prompt('Save project as:', currentProjectName === 'Untitled' ? '' : currentProjectName);
+  if (!name || !name.trim()) return;
+  currentProjectName = name.trim();
+  saveToProjects(currentProjectName);
+  updateTitle();
+  addToRecent(currentProjectName);
+  cmdLog(`Saved as "${currentProjectName}"`, true);
+}
+
+function saveToProjects(name) {
+  const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY) || '{}');
+  projects[name] = {
+    circuit: CIRCUIT_SRC_LIVE,
+    board: BOARD_SRC_LIVE,
+    commands: engine.getLog?.() || [],
+    activePage,
+    savedAt: new Date().toISOString(),
+  };
+  localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+  document.getElementById('st-save').textContent = '● Saved';
+  setTimeout(() => { document.getElementById('st-save').textContent = ''; }, 2000);
+}
+
+// --- File: Download ---
+function fileDownload(type) {
+  const content = type === 'circuit' ? CIRCUIT_SRC_LIVE : BOARD_SRC_LIVE;
+  const filename = `${currentProjectName || 'project'}.${type === 'circuit' ? 'circuit' : 'board'}`;
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  cmdLog(`Downloaded ${filename}`, true);
+}
+
+// --- Recent projects ---
+function getProjectList() {
+  const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY) || '{}');
+  return Object.keys(projects).sort();
+}
+
+function getRecentList() {
+  return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]').slice(0, 5);
+}
+
+function addToRecent(name) {
+  let recent = getRecentList().filter(n => n !== name);
+  recent.unshift(name);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(recent.slice(0, 5)));
+}
+
+function renderRecentList() {
+  const recent = getRecentList();
+  const el = document.getElementById('recent-list');
+  if (recent.length === 0) {
+    el.innerHTML = '<div class="recent-empty">No recent projects</div>';
+  } else {
+    el.innerHTML = recent.map(name =>
+      `<button class="recent-item" data-project="${name}">${name}</button>`
+    ).join('');
+  }
+}
+
+// --- Title ---
+function updateTitle() {
+  document.title = `${currentProjectName} — Components Board`;
+}
+
+// --- Keyboard shortcuts for File ---
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.ctrlKey && e.key === 'n') { e.preventDefault(); fileNew(); }
+  if (e.ctrlKey && e.key === 'o') { e.preventDefault(); fileOpen(); }
+  if (e.ctrlKey && !e.shiftKey && e.key === 's') { e.preventDefault(); fileSave(); }
+  if (e.ctrlKey && e.shiftKey && e.key === 'S') { e.preventDefault(); fileSaveAs(); }
+});
 
 // ============================================================================
 // RESIZABLE SPLITTERS + COLLAPSE
@@ -904,8 +1255,9 @@ renderEditors();
 renderPageTabs();
 renderViewport();
 updateStatus();
-cmdLog('(board loaded — 3 pages, 7 devices)', true);
-cmdLog('Type commands below, or click devices in viewport', true);
+updateTitle();
+cmdLog(`${currentProjectName} — ${getPageNames(circuitFile).length} pages loaded`, true);
+cmdLog('Type commands, or use File menu to manage projects', true);
 window.addEventListener('resize', renderViewport);
 </script>
 </body>

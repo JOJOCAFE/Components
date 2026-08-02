@@ -34,10 +34,11 @@ Engine (headless, 929 tests) → JSON state → Any client
 | `src/view/export.js` | 396 | 73 | Print preview, SVG, PNG meta, fold marks, tiling |
 | `src/controller/presentation.js` | 192 | 62 | Presentation mode + command history |
 | `src/controller/twin-sync.js` | 238 | 32 | Bidirectional state↔text sync |
-| `app.html` | 500 | — | Full interactive browser client |
+| `src/controller/command-registry.js` | 436 | 40 | OOP command system (groups, aliases, completion, help) |
+| `app.html` | ~950 | — | Full interactive browser client (registry-based) |
 | `demo-phase23.html` | 464 | — | Step-through demo of Phases 2+3 |
 
-### Total: 929 tests, 18 test files, 12 source modules, 0 failures
+### Total: 969 tests, 19 test files, 13 source modules, 0 failures
 
 ### Phase status
 | Phase | Status |

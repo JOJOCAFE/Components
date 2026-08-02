@@ -342,7 +342,79 @@ place U3 at (80, 50) rotate 0;
 
 ---
 
-## 8. Design Rules
+## 8. Command Registry (OOP Plugin System)
+
+Commands are organized by group (namespace) in an OOP-style registry. Groups are loadable at runtime — plug in new command libraries without touching the core.
+
+### Architecture
+
+```
+registry = createCommandRegistry()
+registry.register(fileCommands)     // file.new, file.save, file.open...
+registry.register(editCommands)     // edit.undo, edit.redo...
+registry.register(toolCommands)     // tool.select, tool.connect...
+registry.register(myPlugin)         // extend at runtime!
+
+registry.execute('file.save')       // dot-notation
+registry.execute('save')            // short alias (same result)
+registry.complete('file.')          // tab completion → [file.save, file.open...]
+registry.help('file')              // grouped help
+registry.setFallback(engineRun)    // unknown → pass to engine
+```
+
+### Progressive Disclosure
+
+| Level | Example | Notes |
+|-------|---------|-------|
+| Beginner | `save`, `undo`, `open "RV8"` | Short aliases, no dots needed |
+| Power user | `file.save`, `edit.undo`, `board.place U1 at (50,30)` | Organized namespaces |
+| Plugin dev | `registry.register({ name: 'simulate', commands: {...} })` | Extend the system |
+
+### Built-in Groups
+
+| Group | Commands | Description |
+|-------|----------|-------------|
+| `file` | new, open, save, save-as, download, recent | Project files |
+| `edit` | undo, redo, select, deselect | Edit operations |
+| `view` | collapse, expand, zoom, pan | Viewport control |
+| `tool` | select, connect, eraser, tray, guide, label, inspect | Tool activation |
+| `page` | new, switch, delete | Page management |
+| `board` | place, move, rotate, delete, label, route | Visual layout (pass to engine) |
+| `circuit` | device, connect, disconnect | Electrical net (pass to engine) |
+
+### Plugin Contract
+
+Any command group is a plain object:
+```js
+{
+  name: 'mygroup',
+  description: 'My custom commands',
+  commands: {
+    'action': {
+      fn: (args, rawText) => { return { success, message }; },
+      description: 'What it does',
+      alias: 'shortcut',    // optional: registers short form
+      args: '"name"',       // optional: for help display
+    }
+  }
+}
+```
+
+### Tab Completion
+
+Type partial → press Tab:
+- `fi⇥` → `file.`
+- `file.s⇥` → `file.save`
+- `tool.c⇥` → `tool.connect`
+
+### Help System
+
+- `help` → shows all groups with their commands
+- `help file` → shows file.* with descriptions and args
+
+---
+
+## 9. Design Rules
 
 1. A route is NOT a connection (route = visual, connect = electrical)
 2. Lines are orthogonal only (no diagonal)
@@ -364,7 +436,7 @@ place U3 at (80, 50) rotate 0;
 
 ---
 
-## 9. Task Plan
+## 10. Task Plan
 
 ### Phase 1: Foundation (engine + config + viewport)
 
