@@ -453,7 +453,7 @@ Type partial → press Tab:
 
 **Phase 1 progress: 8/8 tasks done, 348 tests passing.**
 
-Implementation order for remaining tasks: 1.5 → 1.6 → 1.7 → 1.8
+All Phase 1 tasks complete.
 
 Files completed:
 ```
@@ -535,7 +535,7 @@ board/test/export.test.js             ← 73 tests
 
 | # | Task | Status | Verify |
 |---|------|--------|--------|
-| 5.1 | Full regression: all machine tests pass in one command | ✅ DONE (897 tests) | Zero failures |
+| 5.1 | Full regression: all machine tests pass in one command | ✅ DONE (969 tests) | Zero failures |
 | 5.2 | Presentation mode: clean white, circuit only | ✅ DONE | No chrome visible |
 | 5.3 | Undo/redo from command log | ✅ DONE | Reverse any action, replay works |
 | 5.4 | First-sight trial: 13-15 y/o + adult beginner | ⬜ TODO | Both complete NOT-gate without guide |
@@ -544,12 +544,12 @@ board/test/export.test.js             ← 73 tests
 Files completed:
 ```
 board/src/controller/presentation.js   ← 5.2+5.3 (presentation mode, command history)
+board/src/controller/twin-sync.js       ← 5.x (bidirectional state↔text sync)
+board/src/controller/command-registry.js ← 5.x (OOP command groups, aliases, tab completion)
 board/test/integration.test.js         ← 62 tests (presentation, history, full pipeline)
+board/test/twin-sync.test.js            ← 32 tests
+board/test/command-registry.test.js      ← 40 tests
 ```
-| 5.2 | Presentation mode: clean white, circuit only | No chrome visible |
-| 5.3 | Undo/redo from command log | Reverse any action, replay works |
-| 5.4 | First-sight trial: 13-15 y/o + adult beginner | Both complete NOT-gate without guide |
-| 5.5 | Freeze baseline and document remaining issues | No false claims |
 
 ### Phase 6: Security & Multi-Agent (after v1.0)
 
@@ -565,7 +565,7 @@ board/test/integration.test.js         ← 62 tests (presentation, history, full
 
 ---
 
-## 10. Success Criteria
+## 11. Success Criteria
 
 Board v1.0 is complete when:
 

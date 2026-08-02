@@ -1,7 +1,8 @@
 # 09 — V2 Sprint Plan
 
-**Status:** Active execution plan
-**Purpose:** Gate 0 through Sprint 5, small reviewable slices.
+**Status:** ⚠️ SUPERSEDED — This Python-based sprint plan (B1.x-B5.x) has been replaced by the Node.js engine-first Board implementation (Phase 1-5, all complete). Kept for historical reference.
+
+**Original Purpose:** Gate 0 through Sprint 5, small reviewable slices.
 
 ---
 
@@ -11,13 +12,13 @@
 - Sprint 1 (B1.1-B1.3): DONE (viewport kernel, grid, renderer)
 - Sprint 2 (B2.1-B2.2): DONE (profile v2 contract, migration)
 - Sprint 2 (B2.3): CODE DONE, needs browser observation
-- Sprint 3-5: Not started
+- Sprint 3-5: Not started (superseded by Node.js Phase 3-5, which are complete)
 
 ## Guardrails
 
-- `component:component` = electrical source of truth
+- `Components:circuit` = electrical source of truth
 - Board creates semantic operations only, never mutates directly
-- `component:board` = digest-locked visual world data only
+- `Components:board` = digest-locked visual world data only
 - Screen pixel / SVG path never implies electrical connection
 - Passing simulation is not physical signoff
 

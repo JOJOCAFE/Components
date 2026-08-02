@@ -14,7 +14,7 @@ PYTHONPATH=python python3 -B -m chiplib.api --http --host 127.0.0.1 --port 8765
 Open <http://127.0.0.1:8765/>. The Python API serves this folder, so the Board
 and Component service share one local origin.
 
-Read [`docs/COMPONENT_BOARD_WORKFLOW.md`](docs/COMPONENT_BOARD_WORKFLOW.md)
+Read [`docs/05_STUDENT_WORKFLOW.md`](docs/05_STUDENT_WORKFLOW.md)
 before extending Board behavior. It defines the learner workflow and preserves
 the one-source, checked-preview, explicit-apply boundary.
 
@@ -68,7 +68,7 @@ removes every guide connected to it. Clicking another endpoint toggles that
 edge one by one. A saved Board route remains
 visible because it is the learner's drawing, not a temporary guide.
 The semantic operation and future-reuse boundary are frozen in
-[`docs/BOARD_GUIDE_OPERATION_CONTRACT.md`](docs/BOARD_GUIDE_OPERATION_CONTRACT.md).
+[`docs/07_GUIDE_OPERATION_CONTRACT.md`](docs/07_GUIDE_OPERATION_CONTRACT.md).
 
 The current canvas keeps visual artifacts vector-first: reviewed chip frames
 are SVG resources, connection guides/routes are SVG paths, and Board labels

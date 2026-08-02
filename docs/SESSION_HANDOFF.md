@@ -6,14 +6,14 @@ Last updated: 2026-08-02
 
 - **Phases 2-5 complete in one session** (Phase 1 was done 2026-08-01)
 - **Twin sync architecture**: Visual ↔ Components:circuit ↔ Components:board (MakeCode-style bidirectional)
-- **Engine is fully headless** — 929 tests run in Node.js, zero DOM dependency
+- **Engine is fully headless** — 969 tests run in Node.js, zero DOM dependency
 - **Browser app is thin client** — reads `engine.getState()` → SVG, captures input → `engine.run(cmd)`
 - **File naming convention**: `Components:circuit`, `Components:board`, `Components:command`
 - **UI features**: resizable splitters (h/v), collapse panel (Ctrl+B), tabbed editors, IDLE-style terminal, drag-to-move, connect tool, delete/rotate shortcuts, localStorage save/load, page tabs
 
 ### Architecture (confirmed, tested, documented)
 ```
-Engine (headless, 929 tests) → JSON state → Any client
+Engine (headless, 969 tests) → JSON state → Any client
   ├── Browser (app.html) — thin SVG renderer
   ├── CLI (future)
   ├── AI / MCP tool (future)
@@ -47,8 +47,8 @@ Engine (headless, 929 tests) → JSON state → Any client
 | 2: Text Editors (file model, editor state, page sync) | ✅ 256 tests |
 | 3: Tool Plugins (system, select, connect, tray, guide, eraser, label, inspect) | ✅ 158 tests |
 | 4: Print & Export (SVG, PNG meta, title block, fold marks, tiling, mono) | ✅ 73 tests |
-| 5: Integration (pipeline, presentation mode, undo/redo, twin sync) | ✅ 94 tests |
-| **Total** | **929 tests, 0 failures** |
+| 5: Integration (pipeline, presentation mode, undo/redo, twin sync) | ✅ 134 tests |
+| **Total** | **969 tests, 0 failures** |
 
 ### Remaining for v1.0
 - 5.4 First-sight trial (needs real 13-15 y/o students)
@@ -69,7 +69,7 @@ Options:
 
 ### Evidence commands
 ```bash
-# All 929 tests:
+# All 969 tests:
 cd /home/jo/kiro/Components/board
 for f in test/*.test.js; do node "$f"; done
 
@@ -77,38 +77,6 @@ for f in test/*.test.js; do node "$f"; done
 python3 -m http.server 8080 -d board/
 # Open: http://localhost:8080/app.html
 # Demo: http://localhost:8080/demo-phase23.html
-```
-
-### Resume (next session)
-
-1. **Phase 5: Integration & Human Trial**:
-   - 5.1 Full regression: all machine tests pass in one command
-   - 5.2 Presentation mode: clean white, circuit only
-   - 5.3 Undo/redo from command log
-   - 5.4 First-sight trial: 13-15 y/o + adult beginner
-   - 5.5 Freeze baseline and document remaining issues
-2. Phase 6: Security & Multi-Agent (after v1.0)
-
-### Evidence commands
-```bash
-# Phase 1 + 2 + 3 + 4 (all 835 tests):
-node board/test/config.test.js          # 29 tests
-node board/test/parser.test.js          # 87 tests
-node board/test/executor.test.js        # 98 tests
-node board/test/engine.test.js          # 21 tests
-node board/test/command-viewport.test.js # 32 tests
-node board/test/viewport.test.js        # 37 tests
-node board/test/status-bar.test.js      # 22 tests
-node board/test/page-tabs.test.js       # 22 tests
-node board/test/file.test.js           # 133 tests
-node board/test/editor.test.js         # 88 tests
-node board/test/sync.test.js           # 35 tests
-node board/test/tools.test.js          # 53 tests
-node board/test/select-tool.test.js    # 30 tests
-node board/test/connect-tool.test.js   # 37 tests
-node board/test/tool-actions.test.js   # 38 tests
-node board/test/export.test.js         # 73 tests
-# Total: 835 tests, 0 failures
 ```
 
 ## Session 2026-08-01 notes
@@ -121,7 +89,7 @@ node board/test/export.test.js         # 73 tests
   hot-swappable at runtime. `createEngine({parser, executor, middleware})`.
 - **Dual-format commands**: human-friendly text AND structured JSON produce
   identical internal operations. AI/tools use JSON, students type text.
-- **Phase 1 implementation**: 5/8 tasks done, 267 tests passing (all headless):
+- **Phase 1 implementation**: 8/8 tasks done, 348 tests passing (all headless):
   - 1.1 Config model (paper A4-A0, mm, grid, export, print) — 29 tests
   - 1.2 Command parser (20 command types, text + JSON) — 87 tests
   - 1.3 Executor (component + board models, undo/redo, pages) — 98 tests
@@ -166,6 +134,11 @@ cd board && python3 -m http.server 8080
 ```
 
 ## Session 2026-07-27 notes
+
+> **Note:** File references in sessions before 2026-08-01 use old names (e.g.,
+> `BOARD_UI_V1_RC1_FROZEN.md`, `COMPONENT_BOARD_PROTOTYPE.md`). These were
+> renamed to numbered format (01-11) during the 2026-08-01 docs rewrite.
+> See `board/docs/00_DESIGN_AND_TASK_PLAN.md` for the current file list.
 
 - `.codex/instructions.md` added (103 lines): job-scoped Codex agent
   instructions covering team roles, source-of-truth rules, repo layout, quality

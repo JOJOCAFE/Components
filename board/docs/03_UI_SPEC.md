@@ -94,7 +94,7 @@ All inputs (mouse, keyboard, voice, AI, script) produce the same command
 format. The UI is a thin client; the engine processes commands and renders
 results back to the viewport.
 
-UI title: **Command**. Language is `component:command`.
+UI title: **Command**. Language is `Components:command`.
 
 ## Viewport
 

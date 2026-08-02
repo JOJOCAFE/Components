@@ -24,7 +24,7 @@ Component source -> parse/resolve -> complete visual circuit
 visual edit -> exact source patch preview -> parse/resolve -> refreshed circuit
 ```
 
-Every meaningful Board gesture has a `component:operation` command equivalent
+Every meaningful Board gesture has a `Components:command` command equivalent
 (like Maya/Blender action history) - explainable, replayable, safely undoable.
 
 ## What Students See

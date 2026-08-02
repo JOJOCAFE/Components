@@ -37,7 +37,7 @@ Parser and resolver know electrical identifiers, never coordinates.
 |-------|-------|---------|----------------|
 | Screen | client input/rendering | pixel pointer, SVG/DOM | persisted data |
 | Viewport | Board client/session | pan, zoom, visible rect | electrical identity |
-| World | `component:board` | origins, route bends, labels | implied wiring |
+| World | `Components:board` | origins, route bends, labels | implied wiring |
 
 World: Cartesian (x,y), (0,0) = center of paper, +x = right, +y = up.
 Unit = **millimetre (mm)**. Grid labels show mm values.
