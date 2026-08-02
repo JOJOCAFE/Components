@@ -61,22 +61,29 @@ Engine (headless, 969 tests) → JSON state → Any client
 
 ### Resume (next session)
 
-Options:
-1. Polish browser client further (better syntax highlighting, minimap, file save/download)
-2. Build CLI client (headless, pipe commands, output text/SVG)
-3. Build MCP tool adapter (expose engine as AI tool)
-4. Back to RV8 (physical build, RV8-R architecture)
+Pick up from here:
+1. **Zoom + Pan** — scroll-to-zoom, drag-to-pan on empty space (must-have)
+2. **Pin visualization** — draw actual pins on device boxes
+3. **Undo/Redo** — Ctrl+Z / Ctrl+Y wired to edit.undo/edit.redo
+4. **Grid snap** — snap device position to grid on drag release
+5. **Device library tray** — UI panel to browse and drag-to-place
+6. Or switch to: RV8-GR parts order, RV8-R architecture, CLI client, MCP adapter
 
 ### Evidence commands
 ```bash
-# All 969 tests:
+# All 969 tests (headless, ~3 seconds):
 cd /home/jo/kiro/Components/board
 for f in test/*.test.js; do node "$f"; done
 
 # Serve app:
-python3 -m http.server 8080 -d board/
+cd /home/jo/kiro/Components/board && python3 -m http.server 8080
 # Open: http://localhost:8080/app.html
-# Demo: http://localhost:8080/demo-phase23.html
+
+# Git log:
+# 08d0a94 Update skill: Board engine complete (969 tests)
+# 9df1efe Docs cleanup: line-by-line audit
+# fe2d1a4 Command registry: OOP pluggable command system
+# 9526116 Board Phases 2-5: twin-sync engine, 929 tests
 ```
 
 ## Session 2026-08-01 notes
