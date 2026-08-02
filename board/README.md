@@ -5,49 +5,89 @@ Component text is upper-right, and a short bounded Terminal is lower-right.
 It has no npm dependencies, no plugin host, no network requirement after
 startup, and no hidden canvas circuit model.
 
-Run from the Components repository root:
+## Quick Start
 
 ```sh
-PYTHONPATH=python python3 -B -m chiplib.api --http --host 127.0.0.1 --port 8765
+cd board && python3 -m http.server 8080
+# Open: http://localhost:8080/app.html
 ```
 
-Open <http://127.0.0.1:8765/>. The Python API serves this folder, so the Board
-and Component service share one local origin.
+## Engine Architecture
 
-Read [`docs/05_STUDENT_WORKFLOW.md`](docs/05_STUDENT_WORKFLOW.md)
-before extending Board behavior. It defines the learner workflow and preserves
-the one-source, checked-preview, explicit-apply boundary.
+```
+Engine (headless, 1067 tests, no DOM) → JSON state → Any client
+  ├── Browser (app.html) — thin SVG renderer
+  ├── CLI (future)
+  ├── AI / MCP tool (future)
+  └── REST API (future)
+```
 
-First slice included:
+## Modules
 
-- the real NOT-gate Component fixture, parser, resolver, Board JSON view, and
-  declared `inversion` runtime test;
-- local draft autosave/recovery through browser local storage;
-- selection-to-readable-source highlighting and a Learning Lens explanation;
-- definition-backed 74HC no-pin DIP-frame SVG Board resources from
-  `board/assets/74hc-chip-frames-no-pins/`; and
-- visible definition-owned connection dots over a selected supported 74HC
-  frame (the artwork replaces lead stubs with compact dots while retaining
-  readable pin labels).
-  A pointer gesture first calls the pure `component-language-edit-preview`
-  request, which parse/resolves the proposed patch and returns its digest while
-  retaining the exact current source. Only after that preview can the learner
-  explicitly submit the existing revision-checked source-patch request; and
-- bounded Terminal commands: `run`, `drive`, `watch`, `connect`,
-  `disconnect`, and `help`; and
-- checked Board/Terminal connect/disconnect source patches. An invalid edit
-  leaves text and resolved topology unchanged.
+| Module | Purpose | Tests |
+|--------|---------|------:|
+| `src/model/config.js` | Paper, grid, export config | 29 |
+| `src/model/component.js` | Device + connection model | — |
+| `src/model/board.js` | Placement + route + label model | — |
+| `src/model/file.js` | Parse/serialize Components:circuit/board/command | 133 |
+| `src/model/library.js` | Catalog loader, search, filter, browse groups | 36 |
+| `src/controller/parser.js` | Command text → structured objects | 87 |
+| `src/controller/executor.js` | Apply commands to models (undo/redo) | 98 |
+| `src/controller/engine.js` | Pluggable engine (middleware, batch) | 21 |
+| `src/controller/tools.js` | Tool plugin system (8 tools) | 53 |
+| `src/controller/select-tool.js` | Select, move, rotate, delete, box-select | 30 |
+| `src/controller/connect-tool.js` | Orthogonal wiring, pin-to-pin | 37 |
+| `src/controller/tool-actions.js` | Tray, guide, eraser, label, inspect | 38 |
+| `src/controller/device-tray.js` | Project tray: add/remove/pickup/place/bom | 62 |
+| `src/controller/sync.js` | Page↔editor synchronization | 35 |
+| `src/controller/twin-sync.js` | Bidirectional state↔text sync | 32 |
+| `src/controller/presentation.js` | Presentation mode + command history | 62 |
+| `src/controller/command-registry.js` | OOP command system | 40 |
+| `src/view/editor.js` | DOM-free editor state | 88 |
+| `src/view/viewport.js` | Coordinate transforms, zoom, grid | 37 |
+| `src/view/export.js` | Print preview, SVG, PNG meta, fold marks | 73 |
+| `src/view/status-bar.js` | Status bar state | 22 |
+| `src/view/page-tabs.js` | Page tab state | 22 |
 
-This is intentionally a dependency-free browser proof. A later Tauri wrapper
-must consume this same local JSON/source-edit boundary; it must not introduce
-a second circuit model.
+**Total: 1067 tests, 21 test files, 0 failures**
 
-Board placement, scalar-edge routing, and labels use the digest-locked
-`components.board-profile@2` in browser-local storage. They use centered
-world coordinates, never screen pixels. A saved picture whose topology digest
-no longer matches is never reused or retargeted; the learner must explicitly
-run `discard board profile` before starting an empty replacement picture. Bus
-routes remain unavailable pending their own contract.
+## Device Library + Project Tray
+
+The tray system lets students pick parts from the library and place them on
+the board:
+
+```
+Library (lib/standard/)  →  Project Tray  →  Board viewport
+   (core engine)              (core engine)       (client SVG)
+```
+
+- **Library**: tree-style catalog loaded from `lib/standard/` definitions
+- **Tray**: add/remove/pickup/place/bom — tracks quantity and placement refs
+- **BOM**: load a JSON bill-of-materials → tray resolves parts from library
+- **Auto-ref**: U1/R1/C1/D1/Y1/Q1/X1 based on part group/role
+- **Auto-position**: finds next free grid cell if no position specified
+- **SVG rendering**: 61 chip frame SVGs loaded from `assets/`, with generic
+  DIP fallback for parts without artwork
+
+### Terminal commands
+
+```
+tray.add 74HC04          — add 1× 74HC04 to project tray
+tray.remove 74HC04       — remove from tray
+tray.place 74HC04        — place at auto-position
+tray.bom [{"part":"74HC04","qty":4}]  — load BOM JSON
+tray.export              — export tray as BOM JSON
+tray                     — open tray panel
+```
+
+## Boundary
+
+- **Core** (`lib/standard/`): definition truth — pins, logic, timing, behavior
+- **Client** (`board/assets/`): presentation only — SVG chip frames, gate art
+
+The client reads definitions to know *what* to draw, then maps to asset SVGs
+for *how* to draw it. If no asset exists, a generic DIP frame is drawn from
+pin count. The engine works headless without any assets.
 
 Interaction proof currently covers pointer and keyboard pin selection, exact
 source-edit preview before Apply, Cancel/Escape/`cancel route` recovery, and

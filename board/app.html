@@ -75,6 +75,45 @@ html, body { height: 100%; overflow: hidden; font-family: var(--sans); backgroun
 .viewport { background: #f8f8f8; position: relative; overflow: hidden; }
 .viewport svg { width: 100%; height: 100%; display: block; }
 
+/* Device Library / Tray Panel */
+.tray-panel { position: absolute; top: 0; left: 0; bottom: 0; width: 280px; background: var(--bg); border-right: 1px solid var(--border); display: none; flex-direction: column; z-index: 20; overflow: hidden; }
+.tray-panel.open { display: flex; }
+.tray-header { display: flex; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--border); gap: 8px; }
+.tray-header .tray-title { font-size: 12px; font-weight: 600; color: var(--green); }
+.tray-header .tray-close { margin-left: auto; background: none; border: none; color: var(--text3); cursor: pointer; font-size: 16px; }
+.tray-header .tray-close:hover { color: var(--text); }
+.tray-search { padding: 6px 12px; border-bottom: 1px solid var(--border); }
+.tray-search input { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 5px 8px; color: var(--text); font-size: 12px; outline: none; }
+.tray-search input:focus { border-color: var(--green); }
+.tray-list { flex: 1; overflow-y: auto; padding: 4px 0; }
+.tray-group { margin: 0; }
+.tray-group-header { display: flex; align-items: center; padding: 4px 10px; cursor: pointer; font-size: 11px; font-weight: 600; color: var(--text2); gap: 4px; user-select: none; }
+.tray-group-header:hover { background: var(--bg3); color: var(--text); }
+.tray-group-header .arrow { font-size: 9px; color: var(--text3); transition: transform 0.15s; width: 12px; text-align: center; }
+.tray-group-header.open .arrow { transform: rotate(90deg); }
+.tray-group-header .gcount { margin-left: auto; font-size: 9px; color: var(--text3); font-weight: 400; }
+.tray-group-items { display: none; padding-left: 16px; }
+.tray-group.open .tray-group-items { display: block; }
+.tray-item { display: flex; align-items: center; padding: 5px 12px; cursor: pointer; gap: 8px; border-left: 3px solid transparent; }
+.tray-item:hover { background: var(--bg3); border-left-color: var(--green); }
+.tray-item .ti-part { font-size: 11px; font-weight: 600; color: var(--text); font-family: var(--mono); min-width: 72px; }
+.tray-item .ti-title { font-size: 10px; color: var(--text2); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tray-item .ti-pins { font-size: 9px; color: var(--text3); }
+.tray-item .ti-add { opacity: 0; background: var(--green); border: none; color: #fff; width: 18px; height: 18px; border-radius: 3px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.tray-item:hover .ti-add { opacity: 1; }
+.tray-divider { padding: 6px 12px 3px; font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; border-top: 1px solid var(--border); margin-top: 4px; }
+.tray-project { border-top: 1px solid var(--border); padding: 6px 12px; }
+.tray-project-title { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.tray-project-item { display: flex; align-items: center; padding: 4px 0; gap: 8px; cursor: pointer; }
+.tray-project-item:hover { color: var(--green); }
+.tray-project-item .tp-ref { font-size: 10px; color: var(--green); font-family: var(--mono); min-width: 28px; }
+.tray-project-item .tp-part { font-size: 11px; color: var(--text); }
+.tray-project-item .tp-qty { margin-left: auto; font-size: 10px; color: var(--text3); }
+.tray-project-item .tp-place { margin-left: 4px; background: var(--green2); border: none; color: #fff; padding: 2px 6px; border-radius: 3px; font-size: 9px; cursor: pointer; }
+.tray-project-item .tp-place:hover { background: var(--green); }
+.tray-empty { padding: 20px 12px; text-align: center; color: var(--text3); font-size: 11px; }
+.tray-placing { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); background: var(--green); color: #fff; padding: 4px 12px; border-radius: 4px; font-size: 11px; z-index: 30; pointer-events: none; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+
 /* Right panel: editor + vertical splitter + terminal */
 .right-panel { display: flex; flex-direction: column; background: var(--bg); overflow: hidden; min-width: 0; }
 
@@ -168,6 +207,25 @@ html, body { height: 100%; overflow: hidden; font-family: var(--sans); backgroun
     <div class="viewport" id="viewport">
       <svg id="svg"></svg>
       <button class="collapse-btn" id="collapse-btn" title="Toggle panel (Ctrl+B)">◀</button>
+      <!-- Device Library / Project Tray Panel -->
+      <div class="tray-panel" id="tray-panel">
+        <div class="tray-header">
+          <span class="tray-title">Device Library</span>
+          <button class="tray-close" id="tray-close">×</button>
+        </div>
+        <div class="tray-search">
+          <input type="text" id="tray-search" placeholder="Search… (counter, NAND, 574)">
+        </div>
+        <!-- Tree-style library browser -->
+        <div class="tray-list" id="tray-list"></div>
+        <!-- Project tray (selected parts) -->
+        <div class="tray-project" id="tray-project">
+          <div class="tray-project-title">⬒ Project Tray</div>
+          <div id="tray-project-list"></div>
+        </div>
+      </div>
+      <!-- Placement indicator -->
+      <div class="tray-placing" id="tray-placing" style="display:none"></div>
     </div>
 
     <!-- Horizontal splitter (drag to resize viewport ↔ right panel) -->
@@ -194,7 +252,7 @@ html, body { height: 100%; overflow: hidden; font-family: var(--sans); backgroun
           <span class="terminal-ver">v1.0</span>
         </div>
         <div class="terminal-body" id="cmd-log">
-          <div class="term-banner">Components Board Engine — 969 tests verified</div>
+          <div class="term-banner">Components Board Engine — 1046 tests verified</div>
           <div class="term-banner">Type commands, or use tools in the viewport.</div>
           <div class="term-banner">───────────────────────────────────────────</div>
         </div>
@@ -213,7 +271,7 @@ html, body { height: 100%; overflow: hidden; font-family: var(--sans); backgroun
     <span id="st-zoom">100%</span>
     <span id="st-paper">A4 Landscape</span>
     <span style="margin-left:auto" id="st-save"></span>
-    <span id="st-tests">969 tests ✓</span>
+    <span id="st-tests">1046 tests ✓</span>
   </div>
 
 </div>
@@ -236,6 +294,8 @@ import { createSelectTool } from './src/controller/select-tool.js';
 import { createConnectTool } from './src/controller/connect-tool.js';
 import { syncStateToText, syncTextToEngine } from './src/controller/twin-sync.js';
 import { createCommandRegistry, createFileCommands, createEditCommands, createViewCommands, createToolCommands, createPageCommands, createBoardCommands, createCircuitCommands } from './src/controller/command-registry.js';
+import { createLibrary } from './src/model/library.js';
+import { createDeviceTray } from './src/controller/device-tray.js';
 
 // ============================================================================
 // SAMPLE PROJECT (would normally load from disk)
@@ -288,6 +348,73 @@ const pageTabs = createPageTabs(engine);
 const toolSystem = createToolSystem();
 const selectTool = createSelectTool();
 const connectToolInst = createConnectTool();
+
+// ============================================================================
+// DEVICE LIBRARY + PROJECT TRAY
+// ============================================================================
+const library = createLibrary();
+const deviceTray = createDeviceTray({ library, executor });
+
+// Load catalog (subset — matches lib/standard structure)
+const CATALOG_74XX = [
+  { part: '74HC00', about: { title: 'Quad 2-input NAND', family: '74HC', group: '74xx', role: 'nand_gate' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC02', about: { title: 'Quad 2-input NOR', family: '74HC', group: '74xx', role: 'nor_gate' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC04', about: { title: 'Hex inverter', family: '74HC', group: '74xx', role: 'inverter' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC08', about: { title: 'Quad 2-input AND', family: '74HC', group: '74xx', role: 'and_gate' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC14', about: { title: 'Hex Schmitt inverter', family: '74HC', group: '74xx', role: 'inverter' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC21', about: { title: 'Dual 4-input AND', family: '74HC', group: '74xx', role: 'and_gate' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC32', about: { title: 'Quad 2-input OR', family: '74HC', group: '74xx', role: 'or_gate' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC74', about: { title: 'Dual D flip-flop', family: '74HC', group: '74xx', role: 'flip_flop' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC86', about: { title: 'Quad 2-input XOR', family: '74HC', group: '74xx', role: 'xor_gate' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC138', about: { title: '3-to-8 decoder', family: '74HC', group: '74xx', role: 'decoder' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC139', about: { title: 'Dual 2-to-4 decoder', family: '74HC', group: '74xx', role: 'decoder' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC157', about: { title: 'Quad 2-to-1 mux', family: '74HC', group: '74xx', role: 'mux' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC161', about: { title: '4-bit binary counter', family: '74HC', group: '74xx', role: 'counter' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC164', about: { title: '8-bit shift register (SIPO)', family: '74HC', group: '74xx', role: 'shift_register' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC165', about: { title: '8-bit shift register (PISO)', family: '74HC', group: '74xx', role: 'shift_register' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC245', about: { title: 'Octal bus transceiver', family: '74HC', group: '74xx', role: 'bus_transceiver' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(20)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC283', about: { title: '4-bit binary adder', family: '74HC', group: '74xx', role: 'adder' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC541', about: { title: 'Octal buffer (3-state)', family: '74HC', group: '74xx', role: 'buffer' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(20)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC574', about: { title: 'Octal D flip-flop (3-state)', family: '74HC', group: '74xx', role: 'register' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(20)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC595', about: { title: '8-bit shift register (SIPO+latch)', family: '74HC', group: '74xx', role: 'shift_register' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
+  { part: '74HC688', about: { title: '8-bit magnitude comparator', family: '74HC', group: '74xx', role: 'comparator' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(20)].map((_,i)=>[i+1,['','']])) },
+];
+const CATALOG_MEMORY = [
+  { part: 'AT28C256', about: { title: '32KB parallel EEPROM', family: 'AT28', group: 'memory', role: 'eeprom' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(28)].map((_,i)=>[i+1,['','']])) },
+  { part: '62256', about: { title: '32KB static RAM', family: '62256', group: 'memory', role: 'sram' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(28)].map((_,i)=>[i+1,['','']])) },
+  { part: 'CY7C199', about: { title: '32KB fast SRAM (15ns)', family: 'CY7C', group: 'memory', role: 'sram' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(28)].map((_,i)=>[i+1,['','']])) },
+  { part: 'SST39SF010A', about: { title: '128KB flash', family: 'SST39', group: 'memory', role: 'flash' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(32)].map((_,i)=>[i+1,['','']])) },
+];
+const CATALOG_PASSIVE = [
+  { part: 'Resistor', about: { title: 'Resistor', family: 'Resistor', group: 'passive', role: 'resistor' }, package: { kind: 'TH' }, pins: { '1':['1',''], '2':['2',''] } },
+  { part: 'Capacitor', about: { title: 'Capacitor', family: 'Capacitor', group: 'passive', role: 'capacitor' }, package: { kind: 'TH' }, pins: { '1':['1',''], '2':['2',''] } },
+  { part: 'LED', about: { title: 'Standard LED', family: 'LED', group: 'passive', role: 'led' }, package: { kind: 'TH' }, pins: { '1':['A',''], '2':['K',''] } },
+  { part: 'RedLED', about: { title: 'Red LED', family: 'LED', group: 'passive', role: 'led' }, package: { kind: 'TH' }, pins: { '1':['A',''], '2':['K',''] } },
+  { part: 'Crystal2Pin_5MHz', about: { title: 'Crystal 5 MHz', family: 'Crystal', group: 'passive', role: 'crystal' }, package: { kind: 'TH' }, pins: { '1':['1',''], '2':['2',''] } },
+  { part: 'Oscillator4Pin_5MHz', about: { title: 'Oscillator 5 MHz', family: 'Oscillator', group: 'passive', role: 'oscillator' }, package: { kind: 'DIP' }, pins: { '1':['EN',''], '7':['GND',''], '8':['OUT',''], '14':['VCC',''] } },
+];
+const CATALOG_SUPPORT = [
+  { part: 'NE555', about: { title: 'Timer IC', family: 'NE555', group: 'support', role: 'timer' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(8)].map((_,i)=>[i+1,['','']])) },
+  { part: 'LM358', about: { title: 'Dual op-amp', family: 'LM358', group: 'support', role: 'op_amp' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(8)].map((_,i)=>[i+1,['','']])) },
+  { part: 'MAX232', about: { title: 'RS-232 driver/receiver', family: 'MAX232', group: 'support', role: 'interface' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
+];
+const CATALOG_VIRTUAL = [
+  { part: 'VCC', about: { title: 'Power rail +5V', family: 'virtual', group: 'virtual', role: 'power_source' }, package: { kind: 'virtual' }, pins: { '1':['VCC',''] } },
+  { part: 'GND', about: { title: 'Ground rail', family: 'virtual', group: 'virtual', role: 'power_source' }, package: { kind: 'virtual' }, pins: { '1':['GND',''] } },
+  { part: 'ClockSource', about: { title: 'Clock source', family: 'virtual', group: 'virtual', role: 'clock' }, package: { kind: 'virtual' }, pins: { '1':['CLK',''] } },
+  { part: 'Probe', about: { title: 'Logic probe', family: 'virtual', group: 'virtual', role: 'probe' }, package: { kind: 'virtual' }, pins: { '1':['IN',''] } },
+];
+
+library.loadGroup('74xx', CATALOG_74XX);
+library.loadGroup('memory', CATALOG_MEMORY);
+library.loadGroup('passive', CATALOG_PASSIVE);
+library.loadGroup('support', CATALOG_SUPPORT);
+library.loadGroup('virtual', CATALOG_VIRTUAL);
+
+// Tray UI state
+let trayOpen = false;
+let traySearchQuery = '';
+let placingPart = null; // part being placed (click-to-place mode)
 
 // Interaction state
 let selectedRef = null;
@@ -392,7 +519,7 @@ function renderToolRail() {
 
 document.getElementById('tool-rail').addEventListener('click', e => {
   const btn = e.target.closest('[data-tool]');
-  if (btn) { toolSystem.activate(btn.dataset.tool); renderToolRail(); updateStatus(); }
+  if (btn) { toolSystem.activate(btn.dataset.tool); renderToolRail(); updateStatus(); onToolActivate(btn.dataset.tool); }
 });
 
 // ============================================================================
@@ -549,6 +676,114 @@ document.getElementById('page-tabs').addEventListener('click', e => {
 // ============================================================================
 // VIEWPORT (SVG)
 // ============================================================================
+// ============================================================================
+// SVG DEVICE ASSET RENDERING
+// ============================================================================
+
+/** Cache: Map<slug, { viewBox, inner }> — preloaded SVG content */
+const deviceSVGCache = new Map();
+
+/** List of available chip frame SVGs (from assets/) */
+const CHIP_FRAME_SLUGS = [
+  '74hc00','74hc02','74hc03','74hc04','74hc05','74hc07','74hc08','74hc10','74hc11',
+  '74hc132','74hc138','74hc139','74hc14','74hc147','74hc148','74hc151','74hc153',
+  '74hc154','74hc155','74hc158','74hc160','74hc162','74hc163','74hc164','74hc165',
+  '74hc166','74hc193','74hc20','74hc21','74hc238','74hc240','74hc244','74hc251',
+  '74hc257','74hc266','74hc27','74hc273','74hc283','74hc30','74hc32','74hc352',
+  '74hc374','74hc377','74hc4049','74hc4050','74hc4078','74hc4520','74hc4538',
+  '74hc541','74hc593','74hc595','74hc688','74hc74','74hc85','74hc86','74hc922',
+  '74hct04','74hct14','74hct245','74hct541','74hct574',
+];
+
+/**
+ * Preload SVG assets into cache (async, non-blocking).
+ * Only fetches first batch to keep startup fast.
+ */
+async function preloadSVGAssets() {
+  const BATCH = 15; // load first 15 immediately, rest lazy
+  const toLoad = CHIP_FRAME_SLUGS.slice(0, BATCH);
+  
+  await Promise.all(toLoad.map(async slug => {
+    try {
+      const resp = await fetch(`assets/74hc-chip-frames-no-pins/${slug}.svg`);
+      if (!resp.ok) return;
+      const text = await resp.text();
+      parseSVGIntoCache(slug, text);
+    } catch(e) { /* network error, skip */ }
+  }));
+  
+  renderViewport(); // re-render with loaded assets
+  
+  // Lazy-load the rest
+  for (const slug of CHIP_FRAME_SLUGS.slice(BATCH)) {
+    if (deviceSVGCache.has(slug)) continue;
+    try {
+      const resp = await fetch(`assets/74hc-chip-frames-no-pins/${slug}.svg`);
+      if (resp.ok) parseSVGIntoCache(slug, await resp.text());
+    } catch(e) { /* skip */ }
+  }
+}
+
+/**
+ * Parse an SVG string and store viewBox + inner content.
+ */
+function parseSVGIntoCache(slug, svgText) {
+  const vbMatch = svgText.match(/viewBox="([^"]+)"/);
+  if (!vbMatch) return;
+  // Extract inner content (between <svg...> and </svg>)
+  const innerMatch = svgText.match(/<svg[^>]*>([\s\S]*)<\/svg>/i);
+  if (!innerMatch) return;
+  deviceSVGCache.set(slug, {
+    viewBox: vbMatch[1],
+    inner: innerMatch[1],
+  });
+}
+
+/**
+ * Get device dimensions (mm) based on part info.
+ * ICs scale with pin count, passives are small.
+ */
+function getDeviceDimensions(part) {
+  const p = (part || '').toLowerCase();
+  // Virtual parts — small
+  if (p === 'vcc' || p === 'gnd') return { w: 16, h: 16, pins: 1 };
+  if (p === 'probe' || p === 'clocksource' || p === 'inputsource') return { w: 20, h: 20, pins: 1 };
+  // Passives — small
+  if (p.includes('resistor') || p.includes('capacitor') || p.includes('crystal')) return { w: 20, h: 10, pins: 2 };
+  if (p.includes('led')) return { w: 14, h: 14, pins: 2 };
+  // ICs — scale by pin count from catalog
+  const entry = library.getByPart(part);
+  const pins = entry?.pinCount || 14;
+  // DIP: width proportional, height grows with pins
+  const h = 14 + (pins / 2) * 4; // ~30 for 14pin, ~38 for 20pin
+  const w = 24 + (pins > 16 ? 8 : 0); // wider for 20+ pin
+  return { w, h, pins };
+}
+
+/**
+ * Get colors for a device type.
+ */
+function getDeviceColors(part) {
+  const p = (part || '').toLowerCase();
+  if (p === 'vcc' || p === 'gnd') return { fill: '#ffecb3', stroke: '#f57c00', selFill: '#fff3e0', selStroke: '#e65100' };
+  if (p.includes('probe') || p.includes('clock') || p.includes('input')) return { fill: '#e3f2fd', stroke: '#1565c0', selFill: '#bbdefb', selStroke: '#0d47a1' };
+  if (p.includes('led')) return { fill: '#fce4ec', stroke: '#c62828', selFill: '#ffcdd2', selStroke: '#b71c1c' };
+  if (p.includes('resistor') || p.includes('capacitor')) return { fill: '#f3e5f5', stroke: '#6a1b9a', selFill: '#e1bee7', selStroke: '#4a148c' };
+  // Default IC colors
+  return { fill: '#e8f5e9', stroke: '#007C3D', selFill: '#c8e6c9', selStroke: '#004D25' };
+}
+
+/**
+ * Short display name for a part.
+ */
+function partShortName(part) {
+  if (!part) return '';
+  // Remove "digital." or "memory." prefix if present
+  const clean = part.replace(/^(digital|memory|passive|support|virtual)\./, '');
+  // Truncate if too long
+  return clean.length > 12 ? clean.slice(0, 11) + '…' : clean;
+}
+
 function renderViewport() {
   const svg = document.getElementById('svg');
   const rect = svg.getBoundingClientRect();
@@ -563,17 +798,51 @@ function renderViewport() {
   for (const l of data.grid.minor) html += `<line x1="${l.x1}" y1="${l.y1}" x2="${l.x2}" y2="${l.y2}" stroke="#f0f0f0" stroke-width="0.5"/>`;
   for (const l of data.grid.major) html += `<line x1="${l.x1}" y1="${l.y1}" x2="${l.x2}" y2="${l.y2}" stroke="#e8e8e8" stroke-width="0.5"/>`;
 
-  // Devices
-  const DW = 50, DH = 34;
+  // Devices — render with SVG assets or generic DIP frame
   const devMap = {};
   for (const d of data.devices) {
     devMap[d.ref] = d;
-    const rx = d.screenX - DW/2, ry = d.screenY - DH/2;
     const isSel = d.ref === selectedRef;
+    const part = d.part || '';
+    const dims = getDeviceDimensions(part);
+    const DW = dims.w, DH = dims.h;
+    const rx = d.screenX - DW/2, ry = d.screenY - DH/2;
+
     html += `<g class="device" data-ref="${d.ref}" style="cursor:pointer">`;
-    html += `<rect x="${rx}" y="${ry}" width="${DW}" height="${DH}" fill="${isSel ? '#c8e6c9' : '#e8f5e9'}" stroke="${isSel ? '#004D25' : '#007C3D'}" stroke-width="${isSel ? 2.5 : 1.5}" rx="3"/>`;
+
+    // Selection highlight
     if (isSel) html += `<rect x="${rx-3}" y="${ry-3}" width="${DW+6}" height="${DH+6}" fill="none" stroke="#007C3D" stroke-width="1" stroke-dasharray="4 2" rx="5"/>`;
-    html += `<text x="${d.screenX}" y="${d.screenY+4}" text-anchor="middle" font-size="11" fill="#333" font-family="sans-serif" font-weight="600">${d.ref}</text>`;
+
+    // Check if we have a cached SVG asset for this part
+    const slug = part.toLowerCase().replace(/^(digital|memory|passive|support|virtual)\./, '').replace(/[^a-z0-9]/g, '');
+    const svgContent = deviceSVGCache.get(slug);
+    if (svgContent) {
+      // Render SVG asset inline, scaled to fit
+      html += `<svg x="${rx}" y="${ry}" width="${DW}" height="${DH}" viewBox="${svgContent.viewBox}" preserveAspectRatio="xMidYMid meet">${svgContent.inner}</svg>`;
+    } else {
+      // Generic DIP frame (colored by type)
+      const colors = getDeviceColors(part);
+      html += `<rect x="${rx}" y="${ry}" width="${DW}" height="${DH}" fill="${isSel ? colors.selFill : colors.fill}" stroke="${isSel ? colors.selStroke : colors.stroke}" stroke-width="${isSel ? 2 : 1.5}" rx="3"/>`;
+      // Notch for ICs
+      if (dims.pins >= 8) {
+        html += `<path d="M${d.screenX-4} ${ry} a4 4 0 0 0 8 0" fill="none" stroke="${colors.stroke}" stroke-width="1"/>`;
+      }
+      // Pin dots (left and right)
+      const pinsPerSide = Math.ceil(dims.pins / 2);
+      if (pinsPerSide > 0 && dims.pins >= 4) {
+        const pinSpacing = (DH - 6) / pinsPerSide;
+        for (let i = 0; i < pinsPerSide; i++) {
+          const py = ry + 3 + pinSpacing * (i + 0.5);
+          html += `<circle cx="${rx+3}" cy="${py}" r="1.5" fill="${colors.stroke}" opacity="0.5"/>`;
+          html += `<circle cx="${rx+DW-3}" cy="${py}" r="1.5" fill="${colors.stroke}" opacity="0.5"/>`;
+        }
+      }
+    }
+
+    // Ref label (always on top)
+    html += `<text x="${d.screenX}" y="${ry - 4}" text-anchor="middle" font-size="9" fill="#333" font-family="sans-serif" font-weight="600">${d.ref}</text>`;
+    // Part label (below device)
+    html += `<text x="${d.screenX}" y="${ry + DH + 10}" text-anchor="middle" font-size="8" fill="#666" font-family="sans-serif">${partShortName(part)}</text>`;
     html += `</g>`;
   }
 
@@ -607,6 +876,9 @@ function renderViewport() {
 
 // Click device in viewport → select or connect based on active tool
 document.getElementById('svg').addEventListener('mousedown', e => {
+  // If placing from tray, let the click handler handle it
+  if (placingPart) return;
+
   const svgEl = document.getElementById('svg');
   const r = svgEl.getBoundingClientRect();
   const world = viewport.screenToWorld(e.clientX - r.left, e.clientY - r.top, r.width, r.height);
@@ -855,6 +1127,59 @@ registry.setFallback((text) => {
     helpText.split('\n').forEach(line => cmdLog(line, true));
     return { success: true, message: `help ${group} shown` };
   }
+  // Tray commands: tray.add, tray.remove, tray.place
+  if (lower.startsWith('tray.add ') || lower.startsWith('tray add ')) {
+    const part = text.replace(/^tray[.\s]+add\s+/i, '').trim();
+    const result = deviceTray.addToTray(part);
+    if (trayOpen) renderTrayProject();
+    return result.success ? { success: true, message: `Added ${part} to tray` } : { success: false, message: result.error };
+  }
+  if (lower.startsWith('tray.remove ') || lower.startsWith('tray remove ')) {
+    const part = text.replace(/^tray[.\s]+remove\s+/i, '').trim();
+    const result = deviceTray.removeFromTray(part);
+    if (trayOpen) renderTrayProject();
+    return result.success ? { success: true, message: `Removed ${part} from tray` } : { success: false, message: result.error };
+  }
+  if (lower.startsWith('tray.place ') || lower.startsWith('tray place ')) {
+    const part = text.replace(/^tray[.\s]+place\s+/i, '').trim();
+    if (!deviceTray.getItem(part)) deviceTray.addToTray(part);
+    const result = deviceTray.placeFromTray(part); // auto-position
+    if (result.success) {
+      const state = engine.getState();
+      const texts = syncStateToText(state);
+      if (texts.circuit) { CIRCUIT_SRC_LIVE = texts.circuit; circuitFile = parseFile(CIRCUIT_SRC_LIVE, FILE_TYPES.CIRCUIT); circuitEditor = createEditor(CIRCUIT_SRC_LIVE, { visibleLines: 30 }); }
+      if (texts.board) { BOARD_SRC_LIVE = texts.board; boardFile = parseFile(BOARD_SRC_LIVE, FILE_TYPES.BOARD); boardEditor = createEditor(BOARD_SRC_LIVE, { visibleLines: 30 }); }
+      renderEditors(); renderViewport(); if (trayOpen) renderTrayProject(); saveProject();
+      return { success: true, message: `Placed ${result.ref} (${part}) at (${result.position.x.toFixed(1)}, ${result.position.y.toFixed(1)})` };
+    }
+    return { success: false, message: result.error };
+  }
+  if (lower === 'tray' || lower === 'tray.open') {
+    openTray();
+    return { success: true, message: 'Tray opened' };
+  }
+  // tray.bom — load BOM JSON into tray
+  if (lower.startsWith('tray.bom ') || lower.startsWith('tray bom ')) {
+    const jsonStr = text.replace(/^tray[.\s]+bom\s+/i, '').trim();
+    try {
+      const bom = JSON.parse(jsonStr);
+      const result = deviceTray.loadBom(bom);
+      if (trayOpen) { renderTrayList(); renderTrayProject(); }
+      if (result.errors.length > 0) {
+        result.errors.forEach(err => cmdLog(`  warn: ${err}`, false));
+      }
+      return { success: result.success, message: `BOM loaded: ${result.loaded} parts, ${result.skipped} skipped` };
+    } catch (e) {
+      return { success: false, message: `Invalid JSON: ${e.message}` };
+    }
+  }
+  // tray.export — export tray as BOM JSON
+  if (lower === 'tray.export' || lower === 'tray export') {
+    const bom = deviceTray.exportBom();
+    const json = JSON.stringify(bom, null, 2);
+    cmdLog(json, true);
+    return { success: true, message: `Exported ${bom.length} items` };
+  }
   // Pass to engine
   return runAndSave(text);
 });
@@ -918,6 +1243,13 @@ document.addEventListener('keydown', e => {
 
   // Escape: cancel connect or deselect
   if (key === 'Escape') {
+    if (placingPart) {
+      placingPart = null;
+      document.getElementById('tray-placing').style.display = 'none';
+      cmdLog('Placement cancelled', true);
+      return;
+    }
+    if (trayOpen) { closeTray(); return; }
     if (connectToolInst.isActive()) {
       connectToolInst.escape();
       connectPreview = null;
@@ -937,6 +1269,7 @@ document.addEventListener('keydown', e => {
   if (result) {
     renderToolRail();
     updateStatus();
+    onToolActivate(result.id);
     return;
   }
 });
@@ -1247,6 +1580,199 @@ document.addEventListener('keydown', e => {
 }
 
 // ============================================================================
+// DEVICE TRAY UI
+// ============================================================================
+let trayOpenGroups = new Set(['74xx']); // groups expanded by default
+
+function openTray() {
+  trayOpen = true;
+  document.getElementById('tray-panel').classList.add('open');
+  renderTrayList();
+  renderTrayProject();
+  document.getElementById('tray-search').focus();
+}
+
+function closeTray() {
+  trayOpen = false;
+  placingPart = null;
+  deviceTray.cancelPickup();
+  document.getElementById('tray-panel').classList.remove('open');
+  document.getElementById('tray-placing').style.display = 'none';
+}
+
+function renderTrayList() {
+  const query = traySearchQuery;
+  const el = document.getElementById('tray-list');
+
+  if (query) {
+    // Search mode — flat results
+    const results = library.search(query, { limit: 30 });
+    if (results.length === 0) {
+      el.innerHTML = '<div class="tray-empty">No parts found</div>';
+      return;
+    }
+    el.innerHTML = results.map(p => `
+      <div class="tray-item" data-part="${p.part}" title="${p.title} · ${p.group} · ${p.pinCount} pins">
+        <span class="ti-part">${p.part}</span>
+        <span class="ti-title">${p.title}</span>
+        <span class="ti-pins">${p.pinCount}p</span>
+        <button class="ti-add" data-add="${p.part}" title="Add to tray">+</button>
+      </div>
+    `).join('');
+    return;
+  }
+
+  // Tree mode — groups with expandable members
+  const groups = library.listGroups().filter(g => g.count > 0);
+  let html = '';
+  for (const g of groups) {
+    const isOpen = trayOpenGroups.has(g.id);
+    const parts = isOpen ? library.listParts(g.id) : [];
+    html += `<div class="tray-group${isOpen ? ' open' : ''}">`;
+    html += `<div class="tray-group-header${isOpen ? ' open' : ''}" data-toggle-group="${g.id}">`;
+    html += `<span class="arrow">▶</span>${g.title}<span class="gcount">${g.count}</span>`;
+    html += `</div>`;
+    html += `<div class="tray-group-items">`;
+    for (const p of parts) {
+      html += `<div class="tray-item" data-part="${p.part}" title="${p.title} · ${p.pinCount} pins">`;
+      html += `<span class="ti-part">${p.part}</span>`;
+      html += `<span class="ti-title">${p.title}</span>`;
+      html += `<span class="ti-pins">${p.pinCount}p</span>`;
+      html += `<button class="ti-add" data-add="${p.part}" title="Add to tray">+</button>`;
+      html += `</div>`;
+    }
+    html += `</div></div>`;
+  }
+  el.innerHTML = html;
+}
+
+function renderTrayProject() {
+  const items = deviceTray.getItems();
+  const el = document.getElementById('tray-project-list');
+  if (items.length === 0) {
+    el.innerHTML = '<div style="font-size:10px;color:var(--text3);padding:4px 0;">Click + to add parts from library above</div>';
+    return;
+  }
+  el.innerHTML = items.map(item => {
+    const remaining = deviceTray.remainingCount(item.part);
+    return `
+    <div class="tray-project-item" data-tray-part="${item.part}">
+      <span class="tp-part">${item.part}</span>
+      <span class="tp-qty">×${item.quantity} (${item.placed.length} placed)</span>
+      ${remaining > 0 ? `<button class="tp-place" data-place="${item.part}" title="Pick up and place">▼</button>` : '<span style="font-size:9px;color:var(--text3)">✓ done</span>'}
+      <button class="tp-remove" data-remove-tray="${item.part}" title="Remove from tray" style="margin-left:4px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;">×</button>
+    </div>`;
+  }).join('');
+}
+
+// --- Tray event listeners ---
+document.getElementById('tray-close').addEventListener('click', closeTray);
+
+// Search
+document.getElementById('tray-search').addEventListener('input', e => {
+  traySearchQuery = e.target.value.trim();
+  renderTrayList();
+});
+
+// Tree group toggle
+document.getElementById('tray-list').addEventListener('click', e => {
+  const toggleBtn = e.target.closest('[data-toggle-group]');
+  if (toggleBtn) {
+    const gid = toggleBtn.dataset.toggleGroup;
+    if (trayOpenGroups.has(gid)) trayOpenGroups.delete(gid);
+    else trayOpenGroups.add(gid);
+    renderTrayList();
+    return;
+  }
+
+  // Add to tray
+  const addBtn = e.target.closest('[data-add]');
+  if (addBtn) {
+    e.stopPropagation();
+    const part = addBtn.dataset.add;
+    deviceTray.addToTray(part);
+    renderTrayProject();
+    cmdLog(`tray.add ${part}`, true);
+    return;
+  }
+  // Click item row → add to tray
+  const item = e.target.closest('[data-part]');
+  if (item && !e.target.closest('[data-toggle-group]')) {
+    const part = item.dataset.part;
+    deviceTray.addToTray(part);
+    renderTrayProject();
+    cmdLog(`tray.add ${part}`, true);
+  }
+});
+
+// Project tray: place / remove
+document.getElementById('tray-project-list').addEventListener('click', e => {
+  const placeBtn = e.target.closest('[data-place]');
+  if (placeBtn) {
+    const part = placeBtn.dataset.place;
+    placingPart = part;
+    deviceTray.pickup(part);
+    document.getElementById('tray-placing').textContent = `Click board to place ${part} — Esc to cancel`;
+    document.getElementById('tray-placing').style.display = 'block';
+    cmdLog(`Picked up ${part} — click on board to place`, true);
+    return;
+  }
+  const removeBtn = e.target.closest('[data-remove-tray]');
+  if (removeBtn) {
+    const part = removeBtn.dataset.removeTray;
+    deviceTray.removeFromTray(part);
+    renderTrayProject();
+    cmdLog(`tray.remove ${part}`, true);
+  }
+});
+
+// Click viewport to place part (pickup mode)
+document.getElementById('svg').addEventListener('click', e => {
+  if (!placingPart) return;
+  
+  const svgEl = document.getElementById('svg');
+  const r = svgEl.getBoundingClientRect();
+  const world = viewport.screenToWorld(e.clientX - r.left, e.clientY - r.top, r.width, r.height);
+  
+  const result = deviceTray.placeFromTray(placingPart, { x: world.x, y: world.y });
+  if (result.success) {
+    // Twin sync after placement
+    const state = engine.getState();
+    const texts = syncStateToText(state);
+    if (texts.circuit) { CIRCUIT_SRC_LIVE = texts.circuit; circuitFile = parseFile(CIRCUIT_SRC_LIVE, FILE_TYPES.CIRCUIT); circuitEditor = createEditor(CIRCUIT_SRC_LIVE, { visibleLines: 30 }); }
+    if (texts.board) { BOARD_SRC_LIVE = texts.board; boardFile = parseFile(BOARD_SRC_LIVE, FILE_TYPES.BOARD); boardEditor = createEditor(BOARD_SRC_LIVE, { visibleLines: 30 }); }
+    renderEditors();
+    renderViewport();
+    renderTrayProject();
+    cmdLog(`Placed ${result.ref} (${placingPart}) at (${result.position.x.toFixed(1)}, ${result.position.y.toFixed(1)})`, true);
+    saveProject();
+    
+    // Keep placing if more remaining
+    if (deviceTray.remainingCount(placingPart) <= 0) {
+      placingPart = null;
+      deviceTray.cancelPickup();
+      document.getElementById('tray-placing').style.display = 'none';
+    }
+  } else {
+    cmdLog(`Place failed: ${result.error}`, false);
+    placingPart = null;
+    deviceTray.cancelPickup();
+    document.getElementById('tray-placing').style.display = 'none';
+  }
+});
+
+// ============================================================================
+// TOOL RAIL — wire tray tool open/close
+// ============================================================================
+function onToolActivate(toolId) {
+  if (toolId === 'tray') {
+    if (trayOpen) closeTray(); else openTray();
+  } else {
+    closeTray();
+  }
+}
+
+// ============================================================================
 // INIT
 // ============================================================================
 viewport.zoomFit(800, 500);
@@ -1256,6 +1782,7 @@ renderPageTabs();
 renderViewport();
 updateStatus();
 updateTitle();
+preloadSVGAssets(); // async — loads chip frame SVGs in background
 cmdLog(`${currentProjectName} — ${getPageNames(circuitFile).length} pages loaded`, true);
 cmdLog('Type commands, or use File menu to manage projects', true);
 window.addEventListener('resize', renderViewport);

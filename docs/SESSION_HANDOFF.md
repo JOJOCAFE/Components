@@ -1,6 +1,64 @@
 # Components Session Handoff
 
-Last updated: 2026-08-02
+Last updated: 2026-08-03
+
+## Session 2026-08-03 (late-night) notes
+
+- **Device Library + Project Tray implemented** — catalog browser and project tray system
+- **SVG chip rendering** — 61 chip frame SVGs loaded from assets, with generic DIP fallback
+- **BOM command** — `tray.bom [...]` loads JSON bill-of-materials into tray, resolves from library
+- Both modules are headless/DOM-free, same pattern as all other board modules
+- Loads definitions from `lib/standard/` structure (groups → parts → definition.json)
+- Tray auto-generates reference designators: U (IC), R (resistor), C (capacitor), D (LED), Y (crystal/oscillator), Q (transistor), X (virtual)
+- Integrates with executor: `tray.placeFromTray(part, pos)` → `executor.execute({ type:'place', ref, part, x, y })`
+- Search: multi-token AND, scored (exact > partial > keyword), case-insensitive
+- Filter: by group, family, package, pin range, role
+- Auto-placement: scans grid for first free cell when no position specified
+- Tree-style library panel in app.html (expand/collapse groups)
+- Core/client boundary: lib/ owns truth (pins, logic, timing), board/assets/ owns presentation (SVGs)
+
+### New modules this session
+| File | Lines | Tests | Purpose |
+|------|------:|------:|---------|
+| `src/model/library.js` | 301 | 36 | Catalog loader: loadGroup, search, filter, listParts, listGroups |
+| `src/controller/device-tray.js` | 480 | 62 | Project tray: add/remove/pickup/place/bom/export, auto-ref, auto-position |
+
+### Total: 1067 tests, 21 test files, 15 source modules, 0 failures
+
+### Device Library API
+```js
+import { createLibrary } from './src/model/library.js';
+const lib = createLibrary();
+lib.loadGroup('74xx', [def1, def2, ...]);  // from definition.json files
+lib.search('counter');                      // → [{ part: '74HC161', title: '4-bit binary counter', ... }]
+lib.filter({ group: '74xx', minPins: 16 });
+lib.listParts('74xx', { sortBy: 'part' });
+lib.getByPart('74HC574');
+```
+
+### Device Tray API
+```js
+import { createDeviceTray } from './src/controller/device-tray.js';
+const tray = createDeviceTray({ library, executor });
+tray.addToTray('74HC04', 4);              // add 4× 74HC04 to tray
+tray.placeFromTray('74HC04', {x:50,y:30}); // → { ref: 'U1', command: {...} }
+tray.placeFromTray('74HC04', {x:70,y:30}); // → { ref: 'U2', ... }
+tray.remainingCount('74HC04');              // → 2
+tray.getItems();                            // → [{ part, quantity, placed, ... }]
+```
+
+### Ref prefix rules
+| Group/Role | Prefix | Example |
+|-----------|--------|---------|
+| 74xx, memory, support | U | U1, U2, U3 |
+| passive/resistor | R | R1, R2 |
+| passive/capacitor | C | C1, C2 |
+| passive/led | D | D1, D2 |
+| passive/crystal,oscillator | Y | Y1, Y2 |
+| discrete (transistor) | Q | Q1, Q2 |
+| virtual | X | X1, X2 |
+
+---
 
 ## Session 2026-08-02 notes
 
@@ -13,7 +71,7 @@ Last updated: 2026-08-02
 
 ### Architecture (confirmed, tested, documented)
 ```
-Engine (headless, 969 tests) → JSON state → Any client
+Engine (headless, 1046 tests) → JSON state → Any client
   ├── Browser (app.html) — thin SVG renderer
   ├── CLI (future)
   ├── AI / MCP tool (future)
@@ -21,7 +79,7 @@ Engine (headless, 969 tests) → JSON state → Any client
   └── 3D / VR / AR (future)
 ```
 
-### New modules this session
+### New modules (2026-08-02 main session)
 | File | Lines | Tests | Purpose |
 |------|------:|------:|---------|
 | `src/model/file.js` | 490 | 133 | Parse/serialize Components:circuit, :board, :command |
@@ -38,8 +96,6 @@ Engine (headless, 969 tests) → JSON state → Any client
 | `app.html` | ~950 | — | Full interactive browser client (registry-based) |
 | `demo-phase23.html` | 464 | — | Step-through demo of Phases 2+3 |
 
-### Total: 969 tests, 19 test files, 13 source modules, 0 failures
-
 ### Phase status
 | Phase | Status |
 |-------|--------|
@@ -48,6 +104,7 @@ Engine (headless, 969 tests) → JSON state → Any client
 | 3: Tool Plugins (system, select, connect, tray, guide, eraser, label, inspect) | ✅ 158 tests |
 | 4: Print & Export (SVG, PNG meta, title block, fold marks, tiling, mono) | ✅ 73 tests |
 | 5: Integration (pipeline, presentation mode, undo/redo, twin sync) | ✅ 134 tests |
+| 5.x: Device Library + Project Tray | ✅ 77 tests |
 | **Total** | **969 tests, 0 failures** |
 
 ### Remaining for v1.0
@@ -63,15 +120,16 @@ Engine (headless, 969 tests) → JSON state → Any client
 
 Pick up from here:
 1. **Zoom + Pan** — scroll-to-zoom, drag-to-pan on empty space (must-have)
-2. **Pin visualization** — draw actual pins on device boxes
-3. **Undo/Redo** — Ctrl+Z / Ctrl+Y wired to edit.undo/edit.redo
-4. **Grid snap** — snap device position to grid on drag release
-5. **Device library tray** — UI panel to browse and drag-to-place
-6. Or switch to: RV8-GR parts order, RV8-R architecture, CLI client, MCP adapter
+2. **Pin visualization** — draw pin labels/numbers on device SVGs when selected
+3. **Undo/Redo** — Ctrl+Z / Ctrl+Y wired to edit.undo/edit.redo in browser
+4. **Grid snap visual** — show snap grid overlay, ghost on drag
+5. **Catalog auto-loader** — fetch `lib/standard/*/definition/definition.json` at startup (replace inline catalog)
+6. **Drag-to-place** — drag from tray panel directly onto viewport (vs click-to-place)
+7. Or switch to: RV8-GR parts order, RV8-R architecture, CLI client, MCP adapter
 
 ### Evidence commands
 ```bash
-# All 969 tests (headless, ~3 seconds):
+# All 1067 tests (headless, ~3 seconds):
 cd /home/jo/kiro/Components/board
 for f in test/*.test.js; do node "$f"; done
 
