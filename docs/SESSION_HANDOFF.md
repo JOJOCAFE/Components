@@ -1,6 +1,114 @@
 # Components Session Handoff
 
-Last updated: 2026-08-01
+Last updated: 2026-08-02
+
+## Session 2026-08-02 notes
+
+- **Phases 2-5 complete in one session** (Phase 1 was done 2026-08-01)
+- **Twin sync architecture**: Visual ↔ Components:circuit ↔ Components:board (MakeCode-style bidirectional)
+- **Engine is fully headless** — 929 tests run in Node.js, zero DOM dependency
+- **Browser app is thin client** — reads `engine.getState()` → SVG, captures input → `engine.run(cmd)`
+- **File naming convention**: `Components:circuit`, `Components:board`, `Components:command`
+- **UI features**: resizable splitters (h/v), collapse panel (Ctrl+B), tabbed editors, IDLE-style terminal, drag-to-move, connect tool, delete/rotate shortcuts, localStorage save/load, page tabs
+
+### Architecture (confirmed, tested, documented)
+```
+Engine (headless, 929 tests) → JSON state → Any client
+  ├── Browser (app.html) — thin SVG renderer
+  ├── CLI (future)
+  ├── AI / MCP tool (future)
+  ├── REST API (future)
+  └── 3D / VR / AR (future)
+```
+
+### New modules this session
+| File | Lines | Tests | Purpose |
+|------|------:|------:|---------|
+| `src/model/file.js` | 490 | 133 | Parse/serialize Components:circuit, :board, :command |
+| `src/view/editor.js` | 460 | 88 | DOM-free editor state (cursor, selection, scroll, highlight) |
+| `src/controller/sync.js` | 159 | 35 | Page↔editor synchronization |
+| `src/controller/tools.js` | 253 | 53 | Plugin system (8 tools, shortcuts, gestures) |
+| `src/controller/select-tool.js` | 109 | 30 | Select, move, rotate, delete, box-select |
+| `src/controller/connect-tool.js` | 197 | 37 | Orthogonal wiring, pin-to-pin |
+| `src/controller/tool-actions.js` | 171 | 38 | Tray, guide, eraser, label, inspect |
+| `src/view/export.js` | 396 | 73 | Print preview, SVG, PNG meta, fold marks, tiling |
+| `src/controller/presentation.js` | 192 | 62 | Presentation mode + command history |
+| `src/controller/twin-sync.js` | 238 | 32 | Bidirectional state↔text sync |
+| `app.html` | 500 | — | Full interactive browser client |
+| `demo-phase23.html` | 464 | — | Step-through demo of Phases 2+3 |
+
+### Total: 929 tests, 18 test files, 12 source modules, 0 failures
+
+### Phase status
+| Phase | Status |
+|-------|--------|
+| 1: Foundation (engine, parser, executor, viewport, config) | ✅ 348 tests |
+| 2: Text Editors (file model, editor state, page sync) | ✅ 256 tests |
+| 3: Tool Plugins (system, select, connect, tray, guide, eraser, label, inspect) | ✅ 158 tests |
+| 4: Print & Export (SVG, PNG meta, title block, fold marks, tiling, mono) | ✅ 73 tests |
+| 5: Integration (pipeline, presentation mode, undo/redo, twin sync) | ✅ 94 tests |
+| **Total** | **929 tests, 0 failures** |
+
+### Remaining for v1.0
+- 5.4 First-sight trial (needs real 13-15 y/o students)
+- 5.5 Freeze baseline after trial feedback
+
+### After v1.0
+- Phase 6: Security & Multi-Agent (auth, permissions, agent identity)
+- CLI client, MCP tool integration, REST API
+- 3D/VR/AR rendering client
+
+### Resume (next session)
+
+Options:
+1. Polish browser client further (better syntax highlighting, minimap, file save/download)
+2. Build CLI client (headless, pipe commands, output text/SVG)
+3. Build MCP tool adapter (expose engine as AI tool)
+4. Back to RV8 (physical build, RV8-R architecture)
+
+### Evidence commands
+```bash
+# All 929 tests:
+cd /home/jo/kiro/Components/board
+for f in test/*.test.js; do node "$f"; done
+
+# Serve app:
+python3 -m http.server 8080 -d board/
+# Open: http://localhost:8080/app.html
+# Demo: http://localhost:8080/demo-phase23.html
+```
+
+### Resume (next session)
+
+1. **Phase 5: Integration & Human Trial**:
+   - 5.1 Full regression: all machine tests pass in one command
+   - 5.2 Presentation mode: clean white, circuit only
+   - 5.3 Undo/redo from command log
+   - 5.4 First-sight trial: 13-15 y/o + adult beginner
+   - 5.5 Freeze baseline and document remaining issues
+2. Phase 6: Security & Multi-Agent (after v1.0)
+
+### Evidence commands
+```bash
+# Phase 1 + 2 + 3 + 4 (all 835 tests):
+node board/test/config.test.js          # 29 tests
+node board/test/parser.test.js          # 87 tests
+node board/test/executor.test.js        # 98 tests
+node board/test/engine.test.js          # 21 tests
+node board/test/command-viewport.test.js # 32 tests
+node board/test/viewport.test.js        # 37 tests
+node board/test/status-bar.test.js      # 22 tests
+node board/test/page-tabs.test.js       # 22 tests
+node board/test/file.test.js           # 133 tests
+node board/test/editor.test.js         # 88 tests
+node board/test/sync.test.js           # 35 tests
+node board/test/tools.test.js          # 53 tests
+node board/test/select-tool.test.js    # 30 tests
+node board/test/connect-tool.test.js   # 37 tests
+node board/test/tool-actions.test.js   # 38 tests
+node board/test/export.test.js         # 73 tests
+# Total: 835 tests, 0 failures
+```
 
 ## Session 2026-08-01 notes
 
@@ -22,7 +130,7 @@ Last updated: 2026-08-01
   - World unit = millimetre (mm), paper sizes A4-A0, landscape/portrait
   - Page tabs on viewport (not global), each page has own paper/config
   - Zoom controls in status bar (viewport stays 100% clean)
-  - Two files: circuit.component (electrical) + circuit.board (visual)
+  - Two files: Components:circuit (electrical) + Components:board (visual)
   - Tool rail is plugin architecture (gesture → command, never touches model)
   - Phase 1 tools: Select, Project Tray, Guide, Connect, Eraser, Label, Inspect, More
   - Connect tool: orthogonal lines only (N/S/E/W, no diagonal)
@@ -32,7 +140,7 @@ Last updated: 2026-08-01
 ### Resume (next session)
 
 1. **Phase 2: Text Editors** (standalone modules, DOM-free, same pattern as Phase 1):
-   - `board/src/model/file.js` — load/save/parse circuit.component + circuit.board
+   - `board/src/model/file.js` — load/save/parse Components:circuit + Components:board
    - `board/src/view/editor.js` — editor state (cursor, highlight, scroll)
    - `board/src/controller/sync.js` — page sync (@page offset detection)
    - Build standalone, test headless, connect to UI later

@@ -73,8 +73,8 @@ File  Edit  View  Project  Simulate  Window  Help
 
 Tabs: `Component` | `Board` — each connected to a **separate file**.
 
-- Component tab → `circuit.component` (electrical: devices, nets, connections)
-- Board tab → `circuit.board` (visual: placements, routes, labels)
+- Component tab → `Components:circuit` (electrical: devices, nets, connections)
+- Board tab → `Components:board` (visual: placements, routes, labels)
 
 Both files have `@page` sections. Switching viewport page tab scrolls both
 editors to the matching `@page` position. Click device in viewport → highlights

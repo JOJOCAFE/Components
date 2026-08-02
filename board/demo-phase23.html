@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Components Board — Phase 2 + 3 Demo</title>
+<!-- Run: python3 -m http.server 8080 -d board/ OR npx serve board/
+     Open: http://localhost:8080/demo-phase23.html -->
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace; background: #1a1a1a; color: #eee; height: 100vh; display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; }
+header { padding: 8px 16px; background: #222; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 16px; }
+header h1 { font-size: 14px; color: #007C3D; font-weight: 600; }
+header .phase { font-size: 11px; color: #888; background: #333; padding: 2px 8px; border-radius: 3px; }
+
+main { display: grid; grid-template-columns: 1fr 1fr 320px; gap: 1px; background: #333; overflow: hidden; }
+.panel { background: #1e1e1e; display: flex; flex-direction: column; overflow: hidden; }
+.panel-header { padding: 6px 12px; background: #252525; border-bottom: 1px solid #333; font-size: 11px; color: #007C3D; font-weight: 600; display: flex; justify-content: space-between; }
+.panel-body { flex: 1; overflow-y: auto; padding: 8px 12px; font-size: 12px; line-height: 1.6; }
+
+.editor-line { display: flex; gap: 8px; }
+.editor-line .ln { color: #555; min-width: 24px; text-align: right; user-select: none; }
+.editor-line .code { color: #ccc; white-space: pre; }
+.editor-line.highlight { background: #1a3a1a; border-left: 3px solid #007C3D; padding-left: 5px; }
+.editor-line .kw { color: #569CD6; }
+.editor-line .ref { color: #DCDCAA; }
+.editor-line .str { color: #CE9178; }
+.editor-line .page { color: #C586C0; font-weight: bold; }
+.editor-line .comment { color: #6A9955; font-style: italic; }
+.editor-line .num { color: #B5CEA8; }
+
+.tool-rail { display: flex; flex-direction: column; gap: 2px; padding: 4px; }
+.tool-btn { padding: 6px 10px; background: #333; border: 1px solid #444; border-radius: 4px; color: #aaa; font-size: 11px; cursor: pointer; text-align: left; }
+.tool-btn:hover { border-color: #007C3D; color: #eee; }
+.tool-btn.active { background: #007C3D; color: #fff; border-color: #007C3D; }
+.tool-btn .key { float: right; color: #888; font-size: 10px; background: #222; padding: 1px 4px; border-radius: 2px; }
+
+.log-entry { padding: 2px 0; border-bottom: 1px solid #2a2a2a; }
+.log-entry.action { color: #6f6; }
+.log-entry.info { color: #aaa; }
+.log-entry.section { color: #007C3D; font-weight: bold; margin-top: 8px; }
+
+footer { padding: 6px 16px; background: #222; border-top: 1px solid #333; display: flex; gap: 16px; align-items: center; }
+footer button { padding: 4px 14px; background: #007C3D; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 12px; }
+footer button:hover { background: #009948; }
+footer button:disabled { background: #444; color: #888; cursor: default; }
+footer .info { color: #888; font-size: 11px; margin-left: auto; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Components Board</h1>
+  <span class="phase">Phase 2: Files + Editors</span>
+  <span class="phase">Phase 3: Tool Plugins</span>
+</header>
+
+<main>
+  <!-- Left: Components:circuit editor -->
+  <div class="panel">
+    <div class="panel-header">
+      <span>Components:circuit</span>
+      <span id="circuit-page">CPU</span>
+    </div>
+    <div class="panel-body" id="circuit-editor"></div>
+  </div>
+
+  <!-- Center: Components:board editor -->
+  <div class="panel">
+    <div class="panel-header">
+      <span>Components:board</span>
+      <span id="board-page">CPU</span>
+    </div>
+    <div class="panel-body" id="board-editor"></div>
+  </div>
+
+  <!-- Right: Tools + Log -->
+  <div class="panel">
+    <div class="panel-header"><span>Tools & Actions</span></div>
+    <div class="panel-body" style="display: flex; flex-direction: column; gap: 8px;">
+      <div class="tool-rail" id="tool-rail"></div>
+      <div style="border-top: 1px solid #333; padding-top: 8px; flex: 1; overflow-y: auto;" id="action-log"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <button id="btn-step">▶ Step</button>
+  <button id="btn-all">▶▶ Run All</button>
+  <button id="btn-reset">↺ Reset</button>
+  <span class="info" id="step-info">Ready — click Step to begin</span>
+</footer>
+
+<script type="module">
+import { parseFile, FILE_TYPES, getPageNames, getPageOffset, findDeviceLine, findPlacementLine } from './src/model/file.js';
+import { createEditor, setCursor, highlightAndScroll, getText, getLine, getLineCount } from './src/view/editor.js';
+import { syncToPage, syncToDevice, getCurrentPage, initSync } from './src/controller/sync.js';
+import { createToolSystem } from './src/controller/tools.js';
+import { createSelectTool } from './src/controller/select-tool.js';
+import { createConnectTool } from './src/controller/connect-tool.js';
+import { trayPick, trayPlace, guideToggle, eraserClick, labelCreate, inspect, inspectClear } from './src/controller/tool-actions.js';
+
+// ============================================================================
+// SAMPLE PROJECT FILES
+// ============================================================================
+
+const CIRCUIT_SRC = `@page CPU
+device U1, digital.74HC04;
+device U2, digital.74HC161;
+device U5, digital.74HC86;
+connect U1.1Y -> U2.CLK;
+connect U5.1Y -> U2.ENP;
+
+@page Memory
+device U3, memory.62256;
+device U4, memory.AT28C256;
+connect U2.QA -> U3.A0;
+connect U2.QB -> U3.A1;
+
+@page ALU
+device U10, digital.74HC283;
+device U11, digital.74HC86;
+connect U10.S0 -> U11.1A;`;
+
+const BOARD_SRC = `@page CPU
+paper A4 landscape;
+place U1 at (30, 40) rotate 0;
+place U2 at (100, 40) rotate 0;
+place U5 at (30, 80) rotate 0;
+route U1.1Y -> U2.CLK via (65, 40) (65, 30) (100, 30);
+
+@page Memory
+paper A3 landscape;
+place U3 at (60, 30) rotate 0;
+place U4 at (60, 80) rotate 0;
+route U2.QA -> U3.A0 via (30, 30);
+
+@page ALU
+paper A4 landscape;
+place U10 at (40, 40) rotate 0;
+place U11 at (120, 40) rotate 90;
+route U10.S0 -> U11.1A via (80, 40) (80, 30) (120, 30);`;
+
+// ============================================================================
+// DEMO STEPS
+// ============================================================================
+
+const STEPS = [
+  // Phase 2: File parsing
+  { section: '── Phase 2: File Model ──' },
+  { action: 'Parse Components:circuit (3 pages, 9 devices, 6 connections)', fn: 'parse-circuit' },
+  { action: 'Parse Components:board (3 pages, placements + routes)', fn: 'parse-board' },
+  { action: 'Detect pages: CPU, Memory, ALU', fn: 'detect-pages' },
+
+  // Phase 2: Editor state
+  { section: '── Phase 2: Editor State ──' },
+  { action: 'Load circuit into editor (16 lines)', fn: 'load-editors' },
+  { action: 'Sync both editors to CPU page', fn: 'sync-cpu' },
+  { action: 'Switch to Memory page (editors scroll)', fn: 'sync-memory' },
+  { action: 'Switch to ALU page (editors scroll)', fn: 'sync-alu' },
+
+  // Phase 2: Device click sync
+  { section: '── Phase 2: Viewport→Editor Sync ──' },
+  { action: 'Click U2 in viewport → highlight in both editors', fn: 'click-u2' },
+  { action: 'Click U3 in viewport → switch to Memory, highlight', fn: 'click-u3' },
+  { action: 'Click U10 in viewport → switch to ALU, highlight', fn: 'click-u10' },
+
+  // Phase 3: Tool system
+  { section: '── Phase 3: Tool Plugin System ──' },
+  { action: 'Register 8 tools (Select, Tray, Guide, Connect, Eraser, Label, Inspect, More)', fn: 'register-tools' },
+  { action: 'Shortcut V → Select active', fn: 'shortcut-v' },
+  { action: 'Shortcut W → Connect active', fn: 'shortcut-w' },
+  { action: 'Shortcut E → Eraser active', fn: 'shortcut-e' },
+  { action: 'Escape → back to Select', fn: 'shortcut-escape' },
+
+  // Phase 3: Select tool
+  { section: '── Phase 3: Select Tool ──' },
+  { action: 'Click U1 → select command', fn: 'select-u1' },
+  { action: 'Drag U1 (dx:+20, dy:-10) → move command', fn: 'drag-u1' },
+  { action: 'Key R → rotate U1 90°', fn: 'rotate-u1' },
+  { action: 'Key Delete → delete command', fn: 'delete-u1' },
+
+  // Phase 3: Connect tool
+  { section: '── Phase 3: Connect Tool ──' },
+  { action: 'Click pin U1.1Y → start connection', fn: 'connect-start' },
+  { action: 'Click point (65, 40) → turning point', fn: 'connect-point1' },
+  { action: 'Click point (65, 20) → turning point (orthogonal)', fn: 'connect-point2' },
+  { action: 'Click pin U2.CLK → complete! (connect + route)', fn: 'connect-end' },
+
+  // Phase 3: Other tools
+  { section: '── Phase 3: Other Tool Actions ──' },
+  { action: 'Tray: pick 74HC283 → place at (40,40)', fn: 'tray-action' },
+  { action: 'Guide: toggle guide on U1.1Y', fn: 'guide-action' },
+  { action: 'Eraser: delete U5', fn: 'eraser-action' },
+  { action: 'Label: create "CLK" at (75, 5)', fn: 'label-action' },
+  { action: 'Inspect: show U2 definition', fn: 'inspect-action' },
+
+  { section: '── Demo Complete ──' },
+];
+
+// ============================================================================
+// STATE
+// ============================================================================
+
+let circuitFile, boardFile;
+let circuitEditor, boardEditor;
+let toolSystem;
+let selectTool, connectTool;
+let currentPage = 'CPU';
+let highlightCircuitLine = -1;
+let highlightBoardLine = -1;
+let stepIdx = 0;
+
+// ============================================================================
+// STEP EXECUTION
+// ============================================================================
+
+function executeStep(step) {
+  if (step.section) { logSection(step.section); return; }
+
+  const result = runFn(step.fn);
+  logAction(step.action, result);
+}
+
+function runFn(fn) {
+  switch (fn) {
+    case 'parse-circuit':
+      circuitFile = parseFile(CIRCUIT_SRC, FILE_TYPES.CIRCUIT);
+      return `${circuitFile.pages.length} pages, ${circuitFile.lineCount} lines`;
+
+    case 'parse-board':
+      boardFile = parseFile(BOARD_SRC, FILE_TYPES.BOARD);
+      return `${boardFile.pages.length} pages, ${boardFile.lineCount} lines`;
+
+    case 'detect-pages':
+      return `Pages: ${getPageNames(circuitFile).join(', ')}`;
+
+    case 'load-editors':
+      circuitEditor = createEditor(CIRCUIT_SRC, { visibleLines: 20 });
+      boardEditor = createEditor(BOARD_SRC, { visibleLines: 20 });
+      renderEditors();
+      return `Circuit: ${getLineCount(circuitEditor)} lines, Board: ${getLineCount(boardEditor)} lines`;
+
+    case 'sync-cpu':
+      return doSyncPage('CPU');
+    case 'sync-memory':
+      return doSyncPage('Memory');
+    case 'sync-alu':
+      return doSyncPage('ALU');
+
+    case 'click-u2':
+      return doClickDevice('U2');
+    case 'click-u3':
+      return doClickDevice('U3');
+    case 'click-u10':
+      return doClickDevice('U10');
+
+    case 'register-tools':
+      toolSystem = createToolSystem();
+      renderTools();
+      return `${toolSystem.list().length} tools registered`;
+
+    case 'shortcut-v':
+      toolSystem.dispatchShortcut('V');
+      renderTools();
+      return `Active: ${toolSystem.getActive().name}`;
+    case 'shortcut-w':
+      toolSystem.dispatchShortcut('W');
+      renderTools();
+      return `Active: ${toolSystem.getActive().name}`;
+    case 'shortcut-e':
+      toolSystem.dispatchShortcut('E');
+      renderTools();
+      return `Active: ${toolSystem.getActive().name}`;
+    case 'shortcut-escape':
+      toolSystem.dispatchShortcut('Escape');
+      renderTools();
+      return `Active: ${toolSystem.getActive().name}`;
+
+    case 'select-u1':
+      selectTool = createSelectTool();
+      const selCmd = selectTool.click({ x: 30, y: 40 }, 'U1');
+      return JSON.stringify(selCmd);
+    case 'drag-u1':
+      const dragCmd = selectTool.drag({ x: 30, y: 40 }, { x: 50, y: 30 }, 'U1');
+      return JSON.stringify(dragCmd);
+    case 'rotate-u1':
+      const rotCmd = selectTool.key('R', 'U1');
+      return JSON.stringify(rotCmd);
+    case 'delete-u1':
+      const delCmd = selectTool.key('Delete', 'U1');
+      return JSON.stringify(delCmd);
+
+    case 'connect-start':
+      connectTool = createConnectTool();
+      connectTool.clickPin('U1.1Y');
+      return `Started from U1.1Y (active: ${connectTool.isActive()})`;
+    case 'connect-point1':
+      connectTool.clickPoint({ x: 65, y: 40 });
+      return `Point added. Preview: ${JSON.stringify(connectTool.getPreview().points)}`;
+    case 'connect-point2':
+      connectTool.clickPoint({ x: 65, y: 20 });
+      return `Point added. Preview: ${JSON.stringify(connectTool.getPreview().points)}`;
+    case 'connect-end':
+      const cmds = connectTool.clickPin('U2.CLK');
+      return cmds.map(c => JSON.stringify(c)).join('\n          ');
+
+    case 'tray-action':
+      const pick = trayPick('digital.74HC283');
+      const place = trayPlace('digital.74HC283', { x: 40, y: 40 });
+      return `${JSON.stringify(pick)} → ${JSON.stringify(place)}`;
+    case 'guide-action':
+      const g = guideToggle('U1.1Y', false);
+      return JSON.stringify(g);
+    case 'eraser-action':
+      const er = eraserClick('U5');
+      return JSON.stringify(er);
+    case 'label-action':
+      const lb = labelCreate('CLK', { x: 75, y: 5 });
+      return JSON.stringify(lb);
+    case 'inspect-action':
+      const insp = inspect('U2', { part: 'digital.74HC161', pins: ['CLK','ENP','ENT','QA','QB','QC','QD'], description: '4-bit sync counter' });
+      return JSON.stringify(insp);
+
+    default: return '(unknown)';
+  }
+}
+
+function doSyncPage(pageName) {
+  const result = syncToPage(circuitFile, boardFile, circuitEditor, boardEditor, pageName);
+  circuitEditor = result.circuitEditor;
+  boardEditor = result.boardEditor;
+  currentPage = pageName;
+  highlightCircuitLine = circuitEditor.highlight?.line ?? -1;
+  highlightBoardLine = boardEditor.highlight?.line ?? -1;
+  renderEditors();
+  document.getElementById('circuit-page').textContent = pageName;
+  document.getElementById('board-page').textContent = pageName;
+  return `Scrolled to @page ${pageName} (circuit line ${highlightCircuitLine}, board line ${highlightBoardLine})`;
+}
+
+function doClickDevice(ref) {
+  const result = syncToDevice(circuitFile, boardFile, circuitEditor, boardEditor, ref);
+  circuitEditor = result.circuitEditor;
+  boardEditor = result.boardEditor;
+  currentPage = result.page || currentPage;
+  highlightCircuitLine = circuitEditor.highlight?.line ?? -1;
+  highlightBoardLine = boardEditor.highlight?.line ?? -1;
+  renderEditors();
+  document.getElementById('circuit-page').textContent = currentPage;
+  document.getElementById('board-page').textContent = currentPage;
+  return `${ref} on page ${result.page}: circuit L${highlightCircuitLine}, board L${highlightBoardLine}`;
+}
+
+// ============================================================================
+// RENDERING
+// ============================================================================
+
+function renderEditors() {
+  document.getElementById('circuit-editor').innerHTML = renderEditorContent(circuitEditor, highlightCircuitLine, 'circuit');
+  document.getElementById('board-editor').innerHTML = renderEditorContent(boardEditor, highlightBoardLine, 'board');
+}
+
+function renderEditorContent(editor, hlLine, type) {
+  if (!editor) return '<div class="log-entry info">Not loaded yet</div>';
+  let html = '';
+  const lines = editor.lines;
+  for (let i = 0; i < lines.length; i++) {
+    const isHL = i === hlLine;
+    const raw = lines[i];
+    const colored = syntaxHighlight(raw, type);
+    html += `<div class="editor-line${isHL ? ' highlight' : ''}"><span class="ln">${i + 1}</span><span class="code">${colored}</span></div>`;
+  }
+  return html;
+}
+
+function syntaxHighlight(line, type) {
+  if (!line.trim()) return '&nbsp;';
+  // @page
+  if (line.match(/^@page/)) return `<span class="page">${esc(line)}</span>`;
+  // Comments
+  if (line.match(/^\s*(\/\/|#)/)) return `<span class="comment">${esc(line)}</span>`;
+
+  let out = esc(line);
+  // Keywords
+  out = out.replace(/\b(device|connect|paper|place|route|label|rotate)\b/g, '<span class="kw">$1</span>');
+  // Refs (U1, U2, etc)
+  out = out.replace(/\b(U\d+)\b/g, '<span class="ref">$1</span>');
+  // Pin refs
+  out = out.replace(/\b(U\d+\.\w+)\b/g, '<span class="ref">$1</span>');
+  // Strings
+  out = out.replace(/"([^"]+)"/g, '<span class="str">"$1"</span>');
+  // Numbers
+  out = out.replace(/\b(\d+\.?\d*)\b/g, '<span class="num">$1</span>');
+  // Parts
+  out = out.replace(/\b(digital\.\w+|memory\.\w+)\b/g, '<span class="str">$1</span>');
+  return out;
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderTools() {
+  if (!toolSystem) return;
+  const tools = toolSystem.list();
+  const active = toolSystem.getActive();
+  document.getElementById('tool-rail').innerHTML = tools.map(t =>
+    `<div class="tool-btn${t.id === active?.id ? ' active' : ''}">${t.name} <span class="key">${t.shortcut}</span></div>`
+  ).join('');
+}
+
+function logSection(text) {
+  const el = document.getElementById('action-log');
+  el.innerHTML += `<div class="log-entry section">${text}</div>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+function logAction(text, result) {
+  const el = document.getElementById('action-log');
+  el.innerHTML += `<div class="log-entry action">→ ${text}</div>`;
+  if (result) el.innerHTML += `<div class="log-entry info">  ${result}</div>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+// ============================================================================
+// CONTROLS
+// ============================================================================
+
+document.getElementById('btn-step').addEventListener('click', () => {
+  if (stepIdx < STEPS.length) {
+    executeStep(STEPS[stepIdx++]);
+    document.getElementById('step-info').textContent = `Step ${stepIdx}/${STEPS.length}`;
+    if (stepIdx >= STEPS.length) {
+      document.getElementById('btn-step').disabled = true;
+      document.getElementById('step-info').textContent = 'All steps complete ✅';
+    }
+  }
+});
+
+document.getElementById('btn-all').addEventListener('click', () => {
+  document.getElementById('btn-all').disabled = true;
+  const iv = setInterval(() => {
+    if (stepIdx >= STEPS.length) { clearInterval(iv); document.getElementById('btn-step').disabled = true; document.getElementById('step-info').textContent = 'All steps complete ✅'; return; }
+    executeStep(STEPS[stepIdx++]);
+    document.getElementById('step-info').textContent = `Step ${stepIdx}/${STEPS.length}`;
+  }, 300);
+});
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  stepIdx = 0;
+  circuitFile = boardFile = circuitEditor = boardEditor = toolSystem = selectTool = connectTool = null;
+  highlightCircuitLine = highlightBoardLine = -1;
+  currentPage = 'CPU';
+  document.getElementById('circuit-editor').innerHTML = '<div class="log-entry info">Click Step to begin</div>';
+  document.getElementById('board-editor').innerHTML = '<div class="log-entry info">Click Step to begin</div>';
+  document.getElementById('tool-rail').innerHTML = '';
+  document.getElementById('action-log').innerHTML = '';
+  document.getElementById('btn-step').disabled = false;
+  document.getElementById('btn-all').disabled = false;
+  document.getElementById('step-info').textContent = 'Ready — click Step to begin';
+  document.getElementById('circuit-page').textContent = 'CPU';
+  document.getElementById('board-page').textContent = 'CPU';
+});
+
+</script>
+</body>
+</html>

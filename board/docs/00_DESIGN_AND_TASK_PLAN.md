@@ -11,7 +11,7 @@ Sections:
 4. Tool Rail (plugin architecture, Phase 1 tools)
 5. Command Viewport (universal command bus)
 6. Paper & Export (mm, A4-A0, PDF/SVG/PNG, title block)
-7. File Structure (circuit.component + circuit.board)
+7. File Structure (Components:circuit + Components:board + Components:command)
 8. Design Rules (10 rules)
 9. Task Plan (5 phases, 27 tasks)
 10. Success Criteria (7 gates)
