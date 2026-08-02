@@ -7,139 +7,185 @@
 
 ## Mission
 - Shared 74HC/memory component library for education
-- Preserve datasheet truth, real pin behavior, active-low naming, timing limits, tri-state rules, and bus ownership
-- Keep DB definitions, Python behavior, Verilog export, pinout evidence, tests, docs, and circuit examples aligned
+- Visual schematic editor (Components Board) — headless engine + thin clients
+- Preserve datasheet truth, real pin behavior, active-low naming, timing limits, tri-state rules, bus ownership
 
-## Source of Truth
-- `definition/definition.json` + manufacturer datasheet PDF = authoritative
-- Generated Python, Verilog, KiCad, SVG, docs, tests, and demos are derived — never authoritative alone
-- Compact DB source files: don't duplicate derivable layers
+## Architecture (2026-08-02)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│            COMPONENTS ENGINE (headless, 969 tests)            │
+│  Parser → Executor → Model (source of truth) → JSON state   │
+│  Command Registry (OOP groups, aliases, plugins)             │
+│  Twin Sync: Visual ↔ Components:circuit ↔ Components:board   │
+└────────────────────┬────────────────────────────────────────┘
+                     │ JSON state output
+    ┌────────────────┼────────────────────────┐
+    v                v                v        v
+ Browser          CLI (future)    AI/MCP    3D/VR
+ (app.html)       (pipe cmds)    (tool)    (future)
+```
+
+### Key Principles
+- Engine is the single source of truth (no DOM dependency)
+- All UI actions = commands (logged, undoable, replayable)
+- Three project files are twins: edit one → others auto-update
+- Command registry: OOP groups, progressive disclosure (short/dot/tab)
+- Plugin architecture: new command libraries `.register()` at runtime
+
+## Three Project Files (Twins)
+
+| File | Owns | Example |
+|------|------|---------|
+| `Components:circuit` | Electrical truth: devices, nets, connections | `device U1, digital.74HC04;` |
+| `Components:board` | Visual layout: placements, routes, labels | `place U1 at (50, 30) rotate 0;` |
+| `Components:command` | Command history/log | `[12:01] place U1 at (50, 30)` |
+
+All three use `@page` sections for multi-page projects.
+
+## Board Engine — Complete (Phases 1-5)
+
+| Phase | What | Tests |
+|-------|------|------:|
+| 1 | Foundation (engine, parser, executor, viewport, config, pages) | 348 |
+| 2 | Text Editors (file model, editor state, page sync) | 256 |
+| 3 | Tool Plugins (system, select, connect, tray, guide, eraser, label, inspect) | 158 |
+| 4 | Print & Export (SVG, PNG meta, title block, fold marks ISO 5457, tiling) | 73 |
+| 5 | Integration (presentation mode, command history, twin sync, registry) | 134 |
+| **Total** | **13 source modules, 19 test files** | **969** |
+
+## Command Registry (OOP Plugin System)
+
+```js
+registry.register(group)        // add command library
+registry.execute('file.save')   // dot-notation
+registry.execute('save')        // short alias (same result)
+registry.complete('file.')      // tab completion
+registry.help('file')           // grouped help
+```
+
+Built-in groups: `file`, `edit`, `view`, `tool`, `page`, `board`, `circuit`
+
+## Source Modules
+
+```
+board/src/model/
+  config.js              Paper sizes, grid, export settings
+  component.js           Device + connection data model
+  board.js               Placement + route + label model
+  file.js                Parse/serialize Components:circuit/:board/:command
+
+board/src/view/
+  editor.js              DOM-free editor state (cursor, scroll, highlight)
+  viewport.js            Coordinate math + render data
+  status-bar.js          Tool/cursor/zoom/paper state
+  page-tabs.js           Page management
+  command-viewport.js    Command CLI + log
+  export.js              Print preview, SVG, PNG meta, fold marks, tiling
+
+board/src/controller/
+  parser.js              Dual-format text + JSON parser
+  executor.js            Stateful executor (undo/redo, pages)
+  engine.js              Pluggable composition (middleware, hot-swap)
+  tools.js               Plugin system (8 tools, shortcuts, gestures)
+  select-tool.js         Select, move, rotate, delete, box-select
+  connect-tool.js        Orthogonal wiring, pin-to-pin
+  tool-actions.js        Tray, guide, eraser, label, inspect
+  sync.js                Page↔editor synchronization
+  twin-sync.js           Bidirectional state↔text (MakeCode-style)
+  presentation.js        Presentation mode + command history
+  command-registry.js    OOP command system (groups, aliases, plugins)
+```
+
+## Browser Client (app.html)
+
+Thin client — renders engine state, captures input:
+- Tool rail (8 tools, keyboard shortcuts V/L/G/W/E/T/I/.)
+- SVG viewport (click select, drag move, connect wires)
+- Tabbed editors (Components:circuit | Components:board) — real textareas, editable
+- IDLE-style terminal (>>> prompt, tab completion, help)
+- File menu (New/Open/Save/Save As/Download/Recent) — Ctrl+N/O/S
+- Resizable panels (h/v splitters), collapsible (Ctrl+B)
+- Page tabs with sync
+- Auto-save to localStorage
+
+## Quality Gates
+
+```bash
+# All 969 Board engine tests (headless, no DOM)
+cd board && for f in test/*.test.js; do node "$f"; done
+
+# Serve app
+cd board && python3 -m http.server 8080
+# http://localhost:8080/app.html
+
+# Python chiplib tests
+PYTHONPATH=python python3 -B -m pytest tests/ -q
+
+# Crosschecks
+python3 tools/pinout_crosscheck.py
+python3 tools/timing_crosscheck.py
+```
 
 ## Team (7-person model)
 
 | Name | Role | Scope |
 |------|------|-------|
-| Pim | Coordinator | Route tasks, cross-file alignment, commits, pushes |
-| Bank | Architect | Schema, package boundaries, service contracts |
-| Fern | Verifier | Regression, timing/bus proof, release confidence |
-| Mint | RTL Coder | Verilog models, structural export, HDL benches |
-| Ohm | HW Coder | Pinout truth, DIP evidence, breadboard realism |
-| Bam | SW Coder | Python chiplib, CLI/API, circuit simulation, Board |
-| Noon | Docs Writer | Student guides, examples, labels, labs |
+| Pim | Coordinator | Route tasks, commits, pushes |
+| Bank | Architect | Schema, boundaries, contracts |
+| Fern | Verifier | Regression, proofs, audit |
+| Mint | RTL Coder | Verilog models, HDL export |
+| Ohm | HW Coder | Pinout truth, DIP evidence |
+| Bam | SW Coder | Python chiplib, Board engine, CLI |
+| Noon | Docs Writer | Student guides, labs, cleanup |
 
 ## Repo Layout
 ```
 Components/
-├── lib/standard/          Chip definitions (definition.json per family)
-├── python/chiplib/        Python behavior models + core.py
+├── board/                 Board engine + browser client (969 tests)
+│   ├── src/model/         Data models (config, component, board, file)
+│   ├── src/view/          View state (editor, viewport, export)
+│   ├── src/controller/    Logic (parser, executor, engine, tools, sync, registry)
+│   ├── test/              19 test files
+│   ├── app.html           Interactive browser client
+│   └── docs/              11 numbered design docs
+├── lib/standard/          Chip definitions (74xx, memory, passive, etc.)
+├── python/chiplib/        Python behavior models
 ├── python/tests/          Python test suite
 ├── verilog/74xx/          Verilog structural models
 ├── verilog/memory/        Memory chip Verilog
 ├── source/                Manufacturer datasheet PDFs
 ├── examples/circuits/     RV8GR and standalone circuit examples
-├── board/                 Visual Board tool (JS, MVC)
-├── Language/              Component-source language spec (23+ docs)
+├── Language/              Component language spec (23+ docs)
 ├── tools/                 Crosscheck and audit scripts
 ├── schemas/               JSON schemas
-├── docs/                  Team docs, agent skills, design plans
-└── .codex/instructions.md Codex agent instructions
+├── docs/                  Team docs, session handoff, design plans
+└── .kiro/skills/          This skill file
 ```
 
 ## Non-Negotiable Rules
 1. No specialist verifies only their own work — Fern reviews what ships
 2. DB, Python, Verilog, pinout evidence, and docs must not drift apart
-3. Missing properties allowed only when visible in status/task docs
-4. Active `simulation/model.py` must run standalone with only `chiplib/core.py`
-5. Pinouts require manufacturer datasheet + explicit DIP package proof
+3. Engine is headless — zero DOM dependency in source modules
+4. All UI actions = commands (logged, undoable, twin-synced)
+5. Pinouts require manufacturer datasheet + DIP package proof
 6. Student clarity is a hard requirement, not a polish pass
-7. Edge criteria required: clocked chips prove active-edge + no-edge hold; tri-state chips prove high-Z + no bus fight; memory chips prove read/write windows
-8. Do not describe functional simulation as physical hardware signoff
-
-## Board Tool Architecture (Frozen)
-- Component source owns `device`/`net`/`bus`/`connect` — Board never alters topology
-- Board profile: digest-locked positions + visual paths for resolved scalar edges
-- Guides: session-only semantic toggles (never alternate topology editor)
-- Labels: text editing in Label mode, move/resize in Select mode
-- MVC: app.js (controller) → model.js + views/ + tools/
-- UI v1.0 RC1: Macintosh spirit, max circuit area, grayscale + green accent, 8-tool rail
-- Architecture: Screen → Viewport → centered World → snap/selection → semantic operation → transaction queue → validation → update → re-render
-- Profile v2: centered Cartesian, finite unbounded world points, digest-locked topology, discrete rotation only
-- Board v2 sprint: Gate 0 ✓, B1.1 ✓, B1.3 ✓, B2.1 ✓, B2.2 ✓, B2.3 (needs human observation)
-
-## Component Language
-- Additive to frozen Language v1.0
-- Parser/resolver/runtime: `component-parse`, `component-resolve`, `component-validate`, `component-ide`, `component-student`, `component-run`
-- Three layers: `component:component` (circuit), `component:board` (visual), `component:operation` (actions)
-- Board and Operation layers deferred until source/runtime stable
-
-## RV8GR Integration
-- 36 board instances, 16 board-used part types, 18 RV8GR-ready definitions
-- Circuits in `examples/circuits/` must carry: wiring data, proof vectors, Python tests, student docs
-- Software coverage complete (boot, Lab 13, whole-system, mutation kills)
-- Physical timing NOT proven — hardware signoff still pending
-- Cross-repo: `COMPONENTS_ROOT=/home/jo/kiro/Components` for RV8GR verification
-
-## Quality Gates
-```bash
-# Python tests
-PYTHONPATH=python python3 -B -m pytest tests/ -q
-
-# Component language
-PYTHONPATH=python python3 -B -m tests.test_component_language
-
-# Board tests
-node board/interaction-contract.test.mjs
-node board/profile-v2.test.mjs
-node board/guide-operation.test.mjs
-
-# Board API
-PYTHONPATH=python python3 -B -m tests.test_component_board_api
-
-# DB audit
-PYTHONPATH=python python3 -B -m chiplib.cli db --audit
-
-# Crosschecks
-python3 tools/pinout_crosscheck.py
-python3 tools/timing_crosscheck.py
-python3 tools/python_behavior_crosscheck.py
-python3 tools/verilog_behavior_crosscheck.py
-```
+7. Command registry is extensible — new features = new groups, not core changes
 
 ## Datasheet Policy
-- Prefer direct manufacturer PDFs proving DIP/PDIP/P-DIP/N-P package
-- AllDatasheet only as locator when direct access unavailable
-- Keep only final cited PDF in `source/`; remove failed downloads and duplicates
-- 74HC150 and 74HC260 removed (no HC-family DIP evidence)
+- Manufacturer PDFs only (DIP/PDIP package proof required)
+- AllDatasheet as locator only, not authority
+- Keep cited PDFs in `source/`, remove failed downloads
 
-## Current Status (2026-08-01)
-- Board MVC engine implemented: config, parser, executor, engine, command viewport
-- Phase 1: 5/8 tasks done, 267 tests passing (all headless, no DOM)
-- Architecture: pluggable engine (parser + executor + middleware, hot-swappable)
-- Dual-format commands: human text + JSON (same internal result)
-- Universal protocol: any input → engine → JSON state → any client
-- Profile v2 migration deterministic, harness/regression baseline active
-- Component language: parse/resolve/validate/run working
-- Five active compact Device sources: 74HC00, 74HC161, 74HC157, 74HC245, 74HC574
-- Functional-pinout SVGs: 74HC00, 02, 03, 04, 05, 08, 14 reviewed
+## Current Status (2026-08-02)
+- Board engine: feature-complete, 969 tests, 0 failures
+- Browser client: interactive (drag, connect, edit, file menu, terminal)
+- Architecture: headless engine + thin client (proven by 969 headless tests)
+- Remaining: human first-sight trial (needs real students), zoom/pan, pin visualization
 
-## Board Engine Files (Phase 1 — COMPLETE)
-```
-board/src/model/config.js          Config schema + validation (29 tests)
-board/src/model/component.js       Device + connection model
-board/src/model/board.js           Placement + route + label model
-board/src/controller/parser.js     Dual-format parser (87 tests)
-board/src/controller/executor.js   Stateful executor (98 tests)
-board/src/controller/engine.js     Pluggable composition (21 tests)
-board/src/view/command-viewport.js Command CLI + log (32 tests)
-board/src/view/viewport.js         Coordinate math + render data (37 tests)
-board/src/view/status-bar.js       Tool/cursor/zoom/paper state (22 tests)
-board/src/view/page-tabs.js        Page management via engine (22 tests)
-board/demo.html                    Visual demo (step-through commands)
-Total: 10 modules, 348 tests, 0 DOM dependencies
-```
-
-## Current TODO
-- Board Phase 1 remaining: viewport renderer, status bar, page tabs (View/DOM layer)
-- Human first-sight trial (13-15 y/o learner + adult beginner)
-- Phase 2: text editors (Component + Board file sync)
-- Phase 3: tool plugins (Select, Tray, Guide, Connect, Eraser, Label, Inspect)
+## TODO
+- First-sight trial with 13-15 y/o students
+- Zoom + pan in viewport
+- Pin visualization on devices
+- CLI client (headless pipe mode)
+- MCP tool adapter (AI integration)
