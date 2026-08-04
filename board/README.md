@@ -1,9 +1,59 @@
-# Components Board — first local workbench
+# Components Board — thin client for the Components engine
+
+Board is a **thin client** of the Components core engine. It owns no circuit
+model, no chip behavior, and no electrical truth. It sends commands, reads
+state, and renders SVG.
+
+```
+Components Engine (python/chiplib/)
+  owns: Device Library, parse, resolve, simulate, validate, export
+    │
+    ▼  component:operation / JSON state
+    │
+Board (this directory)
+  owns: viewport rendering, interaction, drag/place, visual editing
+  reads: engine state → SVG
+  writes: commands → engine
+```
 
 This is the smallest real Board client: Drawing is on the left, readable
 Component text is upper-right, and a short bounded Terminal is lower-right.
 It has no npm dependencies, no plugin host, no network requirement after
 startup, and no hidden canvas circuit model.
+
+## Engine Interface Boundary
+
+Board communicates with the Components engine exclusively through
+`src/engine-interface.js`. This is the **only** import path for circuit state
+and mutations. Board never parses device/connect syntax, never generates
+circuit source, and never holds its own topology model.
+
+```
+Board code ──► engine-interface.js ──► adapter (mock or real)
+                (reads state, submits operations)
+```
+
+### File classification
+
+| File | Status | Role |
+|------|--------|------|
+| `src/engine-interface.js` | **Permanent** | Contract — Board's only engine import |
+| `src/engine-interface.md` | **Permanent** | Contract specification |
+| `src/engine-mock.js` | **TEMPORARY** | Local adapter wrapping component.js/file.js |
+
+The mock exists so Board development can proceed without the real Python
+Components engine adapter. It fulfils the same contract and will be replaced.
+
+### Phase B swap (what happens when the real engine is ready)
+
+1. Write a new adapter (e.g. `engine-http.js` or `engine-wasm.js`) that
+   implements `{ getState, submit, submitBatch }`.
+2. Pass it to `createEngineInterface(adapter)` instead of the mock.
+3. Delete `engine-mock.js` (and its `component.js`/`file.js` imports).
+4. **Zero Board code changes** — executor, tools, tray, tests all keep working.
+
+The contract is version-locked: `components.component-operation@1`. Both
+sides must agree on that format string before operations are exchanged.
 
 ## Quick Start
 
@@ -14,33 +64,43 @@ cd board && python3 -m http.server 8080
 
 ## Engine Architecture
 
+Board's internal engine is also headless (no DOM). The browser is just one
+possible renderer:
+
 ```
-Engine (headless, 1067 tests, no DOM) → JSON state → Any client
-  ├── Browser (app.html) — thin SVG renderer
-  ├── CLI (future)
-  ├── AI / MCP tool (future)
-  └── REST API (future)
+Board Engine (headless, 1122 tests, no DOM) → JSON state → Any client
+  ├── Browser (app.html)  — thin SVG renderer
+  ├── CLI (future)        — terminal commands
+  ├── AI / MCP (future)   — agent adapter
+  └── REST API (future)   — JSON over HTTP
 ```
+
+This is the **Board-local** engine for layout state. The **Components core
+engine** (python/chiplib/) owns circuit resolution and simulation separately.
 
 ## Modules
 
 | Module | Purpose | Tests |
 |--------|---------|------:|
+| `src/engine-interface.js` | **THE** engine boundary — Board's only import for circuit state/ops | — |
+| `src/engine-mock.js` | ⚠️ TEMPORARY mock adapter (wraps component.js locally) | — |
 | `src/model/config.js` | Paper, grid, export config | 29 |
-| `src/model/component.js` | Device + connection model | — |
+| `src/model/component.js` | Device + connection model (used by mock only) | — |
 | `src/model/board.js` | Placement + route + label model | — |
 | `src/model/file.js` | Parse/serialize Components:circuit/board/command | 133 |
 | `src/model/library.js` | Catalog loader, search, filter, browse groups | 36 |
+| `src/model/catalog-loader.js` | Auto-fetch definitions from lib/standard at startup | 22 |
 | `src/controller/parser.js` | Command text → structured objects | 87 |
-| `src/controller/executor.js` | Apply commands to models (undo/redo) | 98 |
+| `src/controller/executor.js` | Apply commands to models (undo/redo), delegates to engine | 98 |
 | `src/controller/engine.js` | Pluggable engine (middleware, batch) | 21 |
 | `src/controller/tools.js` | Tool plugin system (8 tools) | 53 |
 | `src/controller/select-tool.js` | Select, move, rotate, delete, box-select | 30 |
-| `src/controller/connect-tool.js` | Orthogonal wiring, pin-to-pin | 37 |
+| `src/controller/connect-tool.js` | Orthogonal wiring, pin-to-pin, toOperations() | 37 |
 | `src/controller/tool-actions.js` | Tray, guide, eraser, label, inspect | 38 |
-| `src/controller/device-tray.js` | Project tray: add/remove/pickup/place/bom | 62 |
+| `src/controller/device-tray.js` | Project tray: add/remove/pickup/place/bom, toOperation() | 62 |
+| `src/controller/drag-place.js` | Drag-to-place: drag from tray/library onto viewport | 33 |
 | `src/controller/sync.js` | Page↔editor synchronization | 35 |
-| `src/controller/twin-sync.js` | Bidirectional state↔text sync | 32 |
+| `src/controller/twin-sync.js` | ⚠️ DEPRECATED — bidirectional state↔text sync | 32 |
 | `src/controller/presentation.js` | Presentation mode + command history | 62 |
 | `src/controller/command-registry.js` | OOP command system | 40 |
 | `src/view/editor.js` | DOM-free editor state | 88 |
@@ -49,16 +109,24 @@ Engine (headless, 1067 tests, no DOM) → JSON state → Any client
 | `src/view/status-bar.js` | Status bar state | 22 |
 | `src/view/page-tabs.js` | Page tab state | 22 |
 
-**Total: 1067 tests, 21 test files, 0 failures**
+**Total: 1260 tests, 24 test files, 0 failures**
 
 ## Device Library + Project Tray
 
-The tray system lets students pick parts from the library and place them on
-the board:
+Parts flow from the core engine's Device Library into the Board through the
+tray system:
 
 ```
-Library (lib/standard/)  →  Project Tray  →  Board viewport
-   (core engine)              (core engine)       (client SVG)
+lib/standard/ (core — Device Library, owns chip truth)
+    │  fetch definition.json at startup
+    ▼
+catalog-loader → Library model (search, filter, browse)
+    │  student picks parts
+    ▼
+Project Tray (add, quantity, ref designators)
+    │  place command
+    ▼
+Board viewport (SVG rendering from board/assets/)
 ```
 
 - **Library**: tree-style catalog loaded from `lib/standard/` definitions

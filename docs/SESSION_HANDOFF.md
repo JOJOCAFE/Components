@@ -1,6 +1,158 @@
 # Components Session Handoff
 
-Last updated: 2026-08-03
+Last updated: 2026-08-04 (late)
+
+## Session 2026-08-04 (late) — Engine Interface / Thin-Client Refactor
+
+### What was done
+
+Board now communicates with the Components engine through a single
+**EngineInterface** boundary. Board reads state, writes `component:operation`
+objects. It never touches component.js or file.js directly.
+
+Architecture decision: **Board reads state, writes operations.**
+- Reads: devices, edges, sourceText, diagnostics (via `getState()`)
+- Writes: `{ kind, target, intent }` operations (via `submit()`)
+- Revision-checked: stale operations are rejected with a clear error
+
+### New files
+
+| File | Purpose | Status |
+|------|---------|--------|
+| `src/engine-interface.js` | THE boundary — Board's only engine import | Permanent |
+| `src/engine-mock.js` | Wraps component.js locally | ⚠️ TEMPORARY (Phase B removes) |
+| `src/engine-interface.md` | Contract specification | Permanent |
+| `test/engine-delegation.test.js` | 68 tests for delegation + format | Permanent |
+
+### Modified files
+
+| File | Change |
+|------|--------|
+| `src/controller/executor.js` | Accepts `engineInterface`, delegates place/connect/delete |
+| `src/controller/connect-tool.js` | Added `toOperations()` — produces `{circuitOp, boardCmd}` |
+| `src/controller/device-tray.js` | Added `toOperation()` / `toRemoveOperation()` — same format |
+| `src/controller/twin-sync.js` | Marked deprecated (Board no longer syncs circuit source) |
+
+### Operation format (frozen)
+
+```js
+{
+  circuitOp: {
+    kind: 'component.add-device',   // always starts with 'component.'
+    target: 'source',               // always 'source'
+    intent: { ref: 'U1', part: '74HC04' }
+  },
+  boardCmd: { type: 'place', ref: 'U1', part: '74HC04', x: 50, y: 30 }
+}
+```
+
+### Test count
+
+- New: 68 (engine-delegation.test.js)
+- Total: **1260 passed, 0 failed** (24 test files)
+
+### Resume notes (next session)
+
+1. **Phase B engine adapter** — when real Python engine is ready:
+   - Write `engine-http.js` (or WebSocket/WASM variant)
+   - Implement `{ getState, submit, submitBatch }`
+   - Pass to `createEngineInterface(adapter)` — zero Board changes
+   - Delete `engine-mock.js` and unused model imports
+2. **twin-sync.js** — deprecated, can be removed once confirmed unused
+3. **Zoom + Pan** — still the most-wanted UX feature
+4. **Pin visualization** — draw pin labels on SVGs
+5. **Undo/Redo in browser** — wire Ctrl+Z/Y to engine inverse ops
+
+### Evidence commands
+```bash
+# All 1260 tests:
+cd /home/jo/kiro/Components/board
+total=0; fails=0; for f in test/*.test.js; do result=$(node "$f" 2>&1); p=$(echo "$result" | grep -oP '\d+(?= passed)' | tail -1); f2=$(echo "$result" | grep -oP '\d+(?= failed)' | tail -1); total=$((total + ${p:-0})); fails=$((fails + ${f2:-0})); done; echo "TOTAL: $total passed, $fails failed"
+```
+
+---
+
+## Session 2026-08-04 notes
+
+- **Catalog Auto-Loader implemented** — fetches real `definition.json` from `lib/standard/` at startup
+- **Drag-to-Place implemented** — HTML5 drag from tray/library onto viewport to place parts
+- **Architecture docs aligned** — README.md and board/README.md now reflect the verified system architecture
+- All 1,122 tests pass (23 files, 0 failures)
+
+### New modules this session
+| File | Lines | Tests | Purpose |
+|------|------:|------:|---------|
+| `src/model/catalog-loader.js` | 270 | 22 | Fetch definitions from lib/standard at startup (browser fetch or Node fs) |
+| `src/controller/drag-place.js` | 311 | 33 | Drag state machine: dragStart → dragMove → dragEnd/Cancel |
+
+### Total: 1122 tests, 23 test files, 17 source modules, 0 failures
+
+### Catalog Auto-Loader
+- Pluggable reader (browser `fetch()` or Node `fs`) + `dirScanner` fallback
+- Discovers parts from `index.json` `components` array, falls back to directory scan
+- Loads definitions in parallel batches of 10
+- Progress callback for UI status indicator
+- Graceful partial failure: loads available parts, reports errors
+- Integration test confirms loading all real groups from `lib/standard/` disk
+
+### Drag-to-Place
+- State machine: `idle` → `dragging` → `over-target` → place or cancel
+- Snaps to 2.54mm grid (configurable)
+- Viewport bounds checking (screen → world coordinate conversion)
+- Listener pattern for ghost rendering / UI feedback
+- Uses existing `tray.placeFromTray()` for actual placement
+- Auto-adds to tray if dragged directly from library
+
+### Architecture Documentation Update
+- `README.md`: added System Architecture section with pipeline diagram, Three Authorities table, Language Types, Input Methods, Clients, Simulation Modes
+- `board/README.md`: title → "thin client for the Components engine", explicit dependency diagram, Board-local engine vs Components core engine distinction, Device Library flow diagram, updated module table and test count
+- Verified against SERVICE_CONTRACT, CIRCUIT_RUNNER_ARCHITECTURE, Language specs, Board docs
+
+### Key architecture confirmed:
+```
+lib/standard/ (Device Library — owns chip truth)
+    ↓
+Components Engine (parse → resolve → simulate → validate → export)
+    ↓
+component:operation protocol
+    ↓
+Thin clients (Board, CLI, API, MCP)
+```
+
+Three authorities: Device Library (pins/behavior/timing), Component source (topology), Board profile (visual only).
+Input never writes topology directly — produces source edits → re-resolution.
+
+### app.html changes
+- Removed 60-line inline hardcoded catalog (CATALOG_74XX, etc.)
+- Replaced with `createCatalogLoader({ basePath: '../lib/standard' })` + async `loadAll()`
+- Added `tray-status` element for load progress
+- Library items + tray items now `draggable="true"`
+- HTML5 `dragstart`/`dragover`/`drop`/`dragend` handlers wired to `dragPlace` controller
+
+### Resume (next session)
+
+Pick up from here:
+1. **Zoom + Pan** — scroll-to-zoom, drag-to-pan on empty space (must-have for usability)
+2. **Pin visualization** — draw pin labels/numbers on device SVGs when selected
+3. **Undo/Redo** — Ctrl+Z / Ctrl+Y wired to edit.undo/edit.redo in browser
+4. **Grid snap visual** — show snap grid overlay, ghost on drag
+5. Or switch to: RV8-GR parts order, RV8-R architecture, CLI client, MCP adapter
+
+### Evidence commands
+```bash
+# All 1122 tests (headless, ~3 seconds):
+cd /home/jo/kiro/Components/board
+for f in test/*.test.js; do node "$f"; done
+
+# Serve app:
+cd /home/jo/kiro/Components/board && python3 -m http.server 8080
+# Open: http://localhost:8080/app.html
+
+# Verify no whitespace issues:
+cd /home/jo/kiro/Components && git diff --check
+```
+
+---
 
 ## Session 2026-08-03 (late-night) notes
 

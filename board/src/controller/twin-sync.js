@@ -1,4 +1,15 @@
 /**
+ * @deprecated DEPRECATED — scheduled for removal.
+ *
+ * This module is superseded by the EngineInterface (src/engine-interface.js).
+ * The engine now owns source serialization and topology management.
+ * Board modules should use EngineInterface.submit() for circuit mutations
+ * and EngineInterface.getSourceText() for source display.
+ *
+ * Remaining consumers should migrate to EngineInterface before Phase B.
+ * Do NOT add new imports of this module.
+ *
+ * Original description:
  * Components Board — Bidirectional Sync (Twin Model)
  *
  * THREE TWINS: Visual (Viewport) ↔ Components:circuit ↔ Components:board

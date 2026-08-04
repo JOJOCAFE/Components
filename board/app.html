@@ -218,6 +218,8 @@ html, body { height: 100%; overflow: hidden; font-family: var(--sans); backgroun
         </div>
         <!-- Tree-style library browser -->
         <div class="tray-list" id="tray-list"></div>
+        <!-- Catalog load status -->
+        <div id="tray-status" style="font-size:9px;color:var(--text3);padding:2px 8px;"></div>
         <!-- Project tray (selected parts) -->
         <div class="tray-project" id="tray-project">
           <div class="tray-project-title">⬒ Project Tray</div>
@@ -296,6 +298,8 @@ import { syncStateToText, syncTextToEngine } from './src/controller/twin-sync.js
 import { createCommandRegistry, createFileCommands, createEditCommands, createViewCommands, createToolCommands, createPageCommands, createBoardCommands, createCircuitCommands } from './src/controller/command-registry.js';
 import { createLibrary } from './src/model/library.js';
 import { createDeviceTray } from './src/controller/device-tray.js';
+import { createCatalogLoader } from './src/model/catalog-loader.js';
+import { createDragPlace } from './src/controller/drag-place.js';
 
 // ============================================================================
 // SAMPLE PROJECT (would normally load from disk)
@@ -355,66 +359,45 @@ const connectToolInst = createConnectTool();
 const library = createLibrary();
 const deviceTray = createDeviceTray({ library, executor });
 
-// Load catalog (subset — matches lib/standard structure)
-const CATALOG_74XX = [
-  { part: '74HC00', about: { title: 'Quad 2-input NAND', family: '74HC', group: '74xx', role: 'nand_gate' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC02', about: { title: 'Quad 2-input NOR', family: '74HC', group: '74xx', role: 'nor_gate' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC04', about: { title: 'Hex inverter', family: '74HC', group: '74xx', role: 'inverter' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC08', about: { title: 'Quad 2-input AND', family: '74HC', group: '74xx', role: 'and_gate' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC14', about: { title: 'Hex Schmitt inverter', family: '74HC', group: '74xx', role: 'inverter' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC21', about: { title: 'Dual 4-input AND', family: '74HC', group: '74xx', role: 'and_gate' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC32', about: { title: 'Quad 2-input OR', family: '74HC', group: '74xx', role: 'or_gate' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC74', about: { title: 'Dual D flip-flop', family: '74HC', group: '74xx', role: 'flip_flop' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC86', about: { title: 'Quad 2-input XOR', family: '74HC', group: '74xx', role: 'xor_gate' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC138', about: { title: '3-to-8 decoder', family: '74HC', group: '74xx', role: 'decoder' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC139', about: { title: 'Dual 2-to-4 decoder', family: '74HC', group: '74xx', role: 'decoder' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC157', about: { title: 'Quad 2-to-1 mux', family: '74HC', group: '74xx', role: 'mux' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC161', about: { title: '4-bit binary counter', family: '74HC', group: '74xx', role: 'counter' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC164', about: { title: '8-bit shift register (SIPO)', family: '74HC', group: '74xx', role: 'shift_register' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(14)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC165', about: { title: '8-bit shift register (PISO)', family: '74HC', group: '74xx', role: 'shift_register' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC245', about: { title: 'Octal bus transceiver', family: '74HC', group: '74xx', role: 'bus_transceiver' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(20)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC283', about: { title: '4-bit binary adder', family: '74HC', group: '74xx', role: 'adder' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC541', about: { title: 'Octal buffer (3-state)', family: '74HC', group: '74xx', role: 'buffer' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(20)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC574', about: { title: 'Octal D flip-flop (3-state)', family: '74HC', group: '74xx', role: 'register' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(20)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC595', about: { title: '8-bit shift register (SIPO+latch)', family: '74HC', group: '74xx', role: 'shift_register' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
-  { part: '74HC688', about: { title: '8-bit magnitude comparator', family: '74HC', group: '74xx', role: 'comparator' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(20)].map((_,i)=>[i+1,['','']])) },
-];
-const CATALOG_MEMORY = [
-  { part: 'AT28C256', about: { title: '32KB parallel EEPROM', family: 'AT28', group: 'memory', role: 'eeprom' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(28)].map((_,i)=>[i+1,['','']])) },
-  { part: '62256', about: { title: '32KB static RAM', family: '62256', group: 'memory', role: 'sram' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(28)].map((_,i)=>[i+1,['','']])) },
-  { part: 'CY7C199', about: { title: '32KB fast SRAM (15ns)', family: 'CY7C', group: 'memory', role: 'sram' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(28)].map((_,i)=>[i+1,['','']])) },
-  { part: 'SST39SF010A', about: { title: '128KB flash', family: 'SST39', group: 'memory', role: 'flash' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(32)].map((_,i)=>[i+1,['','']])) },
-];
-const CATALOG_PASSIVE = [
-  { part: 'Resistor', about: { title: 'Resistor', family: 'Resistor', group: 'passive', role: 'resistor' }, package: { kind: 'TH' }, pins: { '1':['1',''], '2':['2',''] } },
-  { part: 'Capacitor', about: { title: 'Capacitor', family: 'Capacitor', group: 'passive', role: 'capacitor' }, package: { kind: 'TH' }, pins: { '1':['1',''], '2':['2',''] } },
-  { part: 'LED', about: { title: 'Standard LED', family: 'LED', group: 'passive', role: 'led' }, package: { kind: 'TH' }, pins: { '1':['A',''], '2':['K',''] } },
-  { part: 'RedLED', about: { title: 'Red LED', family: 'LED', group: 'passive', role: 'led' }, package: { kind: 'TH' }, pins: { '1':['A',''], '2':['K',''] } },
-  { part: 'Crystal2Pin_5MHz', about: { title: 'Crystal 5 MHz', family: 'Crystal', group: 'passive', role: 'crystal' }, package: { kind: 'TH' }, pins: { '1':['1',''], '2':['2',''] } },
-  { part: 'Oscillator4Pin_5MHz', about: { title: 'Oscillator 5 MHz', family: 'Oscillator', group: 'passive', role: 'oscillator' }, package: { kind: 'DIP' }, pins: { '1':['EN',''], '7':['GND',''], '8':['OUT',''], '14':['VCC',''] } },
-];
-const CATALOG_SUPPORT = [
-  { part: 'NE555', about: { title: 'Timer IC', family: 'NE555', group: 'support', role: 'timer' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(8)].map((_,i)=>[i+1,['','']])) },
-  { part: 'LM358', about: { title: 'Dual op-amp', family: 'LM358', group: 'support', role: 'op_amp' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(8)].map((_,i)=>[i+1,['','']])) },
-  { part: 'MAX232', about: { title: 'RS-232 driver/receiver', family: 'MAX232', group: 'support', role: 'interface' }, package: { kind: 'DIP' }, pins: Object.fromEntries([...Array(16)].map((_,i)=>[i+1,['','']])) },
-];
-const CATALOG_VIRTUAL = [
-  { part: 'VCC', about: { title: 'Power rail +5V', family: 'virtual', group: 'virtual', role: 'power_source' }, package: { kind: 'virtual' }, pins: { '1':['VCC',''] } },
-  { part: 'GND', about: { title: 'Ground rail', family: 'virtual', group: 'virtual', role: 'power_source' }, package: { kind: 'virtual' }, pins: { '1':['GND',''] } },
-  { part: 'ClockSource', about: { title: 'Clock source', family: 'virtual', group: 'virtual', role: 'clock' }, package: { kind: 'virtual' }, pins: { '1':['CLK',''] } },
-  { part: 'Probe', about: { title: 'Logic probe', family: 'virtual', group: 'virtual', role: 'probe' }, package: { kind: 'virtual' }, pins: { '1':['IN',''] } },
-];
+// Catalog auto-loader: fetches real definitions from lib/standard/ at startup
+const catalogLoader = createCatalogLoader({ basePath: '../lib/standard' });
 
-library.loadGroup('74xx', CATALOG_74XX);
-library.loadGroup('memory', CATALOG_MEMORY);
-library.loadGroup('passive', CATALOG_PASSIVE);
-library.loadGroup('support', CATALOG_SUPPORT);
-library.loadGroup('virtual', CATALOG_VIRTUAL);
+// Start loading catalog in background (non-blocking)
+let catalogReady = false;
+catalogLoader.loadAll(library, {
+  onProgress({ group, loaded, total }) {
+    const el = document.getElementById('tray-status');
+    if (el) el.textContent = `Loading ${group}... (${total} parts)`;
+  },
+}).then(result => {
+  catalogReady = true;
+  const el = document.getElementById('tray-status');
+  if (el) {
+    if (result.loaded > 0) {
+      el.textContent = `${result.loaded} parts loaded`;
+      setTimeout(() => { el.textContent = ''; }, 3000);
+    } else {
+      el.textContent = 'Catalog load failed';
+    }
+  }
+  // Re-render library tree with real data
+  renderTrayList();
+  if (result.errors.length > 0) {
+    console.warn('Catalog loader errors:', result.errors);
+  }
+}).catch(err => {
+  console.error('Catalog load error:', err);
+  const el = document.getElementById('tray-status');
+  if (el) el.textContent = 'Catalog unavailable';
+});
 
 // Tray UI state
 let trayOpen = false;
 let traySearchQuery = '';
 let placingPart = null; // part being placed (click-to-place mode)
+
+// Drag-to-place controller (drag from tray/library onto viewport)
+const dragPlace = createDragPlace({ tray: deviceTray, viewport, gridSnap: true });
 
 // Interaction state
 let selectedRef = null;
@@ -1612,7 +1595,7 @@ function renderTrayList() {
       return;
     }
     el.innerHTML = results.map(p => `
-      <div class="tray-item" data-part="${p.part}" title="${p.title} · ${p.group} · ${p.pinCount} pins">
+      <div class="tray-item" data-part="${p.part}" draggable="true" title="${p.title} · ${p.group} · ${p.pinCount} pins">
         <span class="ti-part">${p.part}</span>
         <span class="ti-title">${p.title}</span>
         <span class="ti-pins">${p.pinCount}p</span>
@@ -1634,7 +1617,7 @@ function renderTrayList() {
     html += `</div>`;
     html += `<div class="tray-group-items">`;
     for (const p of parts) {
-      html += `<div class="tray-item" data-part="${p.part}" title="${p.title} · ${p.pinCount} pins">`;
+      html += `<div class="tray-item" data-part="${p.part}" draggable="true" title="${p.title} · ${p.pinCount} pins">`;
       html += `<span class="ti-part">${p.part}</span>`;
       html += `<span class="ti-title">${p.title}</span>`;
       html += `<span class="ti-pins">${p.pinCount}p</span>`;
@@ -1656,7 +1639,7 @@ function renderTrayProject() {
   el.innerHTML = items.map(item => {
     const remaining = deviceTray.remainingCount(item.part);
     return `
-    <div class="tray-project-item" data-tray-part="${item.part}">
+    <div class="tray-project-item" data-tray-part="${item.part}" ${remaining > 0 ? 'draggable="true"' : ''}>
       <span class="tp-part">${item.part}</span>
       <span class="tp-qty">×${item.quantity} (${item.placed.length} placed)</span>
       ${remaining > 0 ? `<button class="tp-place" data-place="${item.part}" title="Pick up and place">▼</button>` : '<span style="font-size:9px;color:var(--text3)">✓ done</span>'}
@@ -1757,6 +1740,80 @@ document.getElementById('svg').addEventListener('click', e => {
     cmdLog(`Place failed: ${result.error}`, false);
     placingPart = null;
     deviceTray.cancelPickup();
+    document.getElementById('tray-placing').style.display = 'none';
+  }
+});
+
+// ============================================================================
+// DRAG-TO-PLACE — drag from tray/library onto viewport
+// ============================================================================
+
+// Dragstart on library/tray items
+document.getElementById('tray-panel').addEventListener('dragstart', e => {
+  const item = e.target.closest('[data-part]') || e.target.closest('[data-tray-part]');
+  if (!item) return;
+  const part = item.dataset.part || item.dataset.trayPart;
+  if (!part) return;
+
+  e.dataTransfer.setData('text/plain', part);
+  e.dataTransfer.effectAllowed = 'copy';
+
+  // Start the headless drag state machine
+  const result = dragPlace.dragStart(part, { x: e.clientX, y: e.clientY });
+  if (!result.success) {
+    e.preventDefault();
+    return;
+  }
+  document.getElementById('tray-placing').textContent = `Drag ${part} onto board`;
+  document.getElementById('tray-placing').style.display = 'block';
+});
+
+// Dragover on viewport SVG — allow drop
+document.getElementById('svg').addEventListener('dragover', e => {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+
+  const svgEl = document.getElementById('svg');
+  const r = svgEl.getBoundingClientRect();
+  dragPlace.dragMove(
+    { x: e.clientX, y: e.clientY },
+    { left: r.left, top: r.top, width: r.width, height: r.height }
+  );
+});
+
+// Drop on viewport SVG — place part
+document.getElementById('svg').addEventListener('drop', e => {
+  e.preventDefault();
+  const svgEl = document.getElementById('svg');
+  const r = svgEl.getBoundingClientRect();
+
+  const result = dragPlace.dragEnd(
+    { x: e.clientX, y: e.clientY },
+    { left: r.left, top: r.top, width: r.width, height: r.height }
+  );
+
+  document.getElementById('tray-placing').style.display = 'none';
+
+  if (result.success) {
+    // Twin sync after placement
+    const state = engine.getState();
+    const texts = syncStateToText(state);
+    if (texts.circuit) { CIRCUIT_SRC_LIVE = texts.circuit; circuitFile = parseFile(CIRCUIT_SRC_LIVE, FILE_TYPES.CIRCUIT); circuitEditor = createEditor(CIRCUIT_SRC_LIVE, { visibleLines: 30 }); }
+    if (texts.board) { BOARD_SRC_LIVE = texts.board; boardFile = parseFile(BOARD_SRC_LIVE, FILE_TYPES.BOARD); boardEditor = createEditor(BOARD_SRC_LIVE, { visibleLines: 30 }); }
+    renderEditors();
+    renderViewport();
+    renderTrayProject();
+    cmdLog(`Dropped ${result.ref} (${result.part}) at (${result.position.x.toFixed(1)}, ${result.position.y.toFixed(1)})`, true);
+    saveProject();
+  } else {
+    cmdLog(`Drop failed: ${result.error}`, false);
+  }
+});
+
+// Dragend — clean up if drag cancelled (dropped outside viewport)
+document.addEventListener('dragend', e => {
+  if (dragPlace.isDragging()) {
+    dragPlace.dragCancel();
     document.getElementById('tray-placing').style.display = 'none';
   }
 });

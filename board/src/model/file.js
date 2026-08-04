@@ -2,6 +2,19 @@
  * Components Board — File Model
  * Phase 2, Task 2.1: Parse/load/save Components:circuit + Components:board + Components:command
  *
+ * OWNERSHIP SPLIT (Phase A):
+ * ─────────────────────────────────────────────────────────────────────────────
+ * This file contains parsing for BOTH circuit and board syntax.
+ * Board only owns the board parsing (place/route/label/paper).
+ * Circuit parsing (device/connect) exists here ONLY because engine-mock.js
+ * imports it. When the real engine replaces the mock (Phase B), all circuit
+ * parsing functions will be dead code and can be removed from this file.
+ *
+ * Sections marked below:
+ *   CIRCUIT PARSING (engine-mock only) — Do NOT use from Board code
+ *   BOARD PARSING (Board owns)         — Board's canonical syntax
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
  * Three project files:
  *   Components:circuit  — electrical truth (devices, nets, connections)
  *   Components:board    — visual layout (placements, routes, labels)
@@ -48,7 +61,7 @@ export const LINE_TYPES = Object.freeze({
 });
 
 // =============================================================================
-// PARSING — SHARED
+// PARSING — SHARED (dispatches to circuit/board/command parsers)
 // =============================================================================
 
 /**
@@ -115,7 +128,7 @@ export function parseFile(text, fileType) {
 }
 
 // =============================================================================
-// LINE PARSING
+// LINE PARSING (dispatcher)
 // =============================================================================
 
 /**
@@ -137,6 +150,15 @@ export function parseLine(line, fileType) {
     default: return { type: LINE_TYPES.UNKNOWN, text: line };
   }
 }
+
+// =============================================================================
+// === CIRCUIT PARSING (engine-mock only) ======================================
+// =============================================================================
+// These functions parse Components:circuit syntax (device/connect).
+// Board does NOT own this syntax — it belongs to the engine.
+// Present here only because engine-mock.js imports parseFile + serialize helpers.
+// Remove when real engine replaces engine-mock.js (Phase B).
+// =============================================================================
 
 /**
  * Parse a circuit file line.
@@ -170,6 +192,93 @@ function parseCircuitLine(line) {
 
   return { type: LINE_TYPES.UNKNOWN, text: line };
 }
+
+/**
+ * Serialize a device statement.
+ * (engine-mock only — Board does not use)
+ */
+export function serializeDevice(ref, part) {
+  return `device ${ref}, ${part};`;
+}
+
+/**
+ * Serialize a connection statement.
+ * (engine-mock only — Board does not use)
+ */
+export function serializeConnect(from, to) {
+  return `connect ${from} -> ${to};`;
+}
+
+/**
+ * Serialize a full circuit file from pages data.
+ * (engine-mock only — Board does not use)
+ * @param {Array<{name: string, statements: Array}>} pages
+ * @returns {string}
+ */
+export function serializeCircuitFile(pages) {
+  const parts = [];
+  for (const page of pages) {
+    if (page.name) parts.push(`@page ${page.name}`);
+    for (const stmt of page.statements) {
+      switch (stmt.type) {
+        case 'device':
+          parts.push(serializeDevice(stmt.ref, stmt.part));
+          break;
+        case 'connect':
+          parts.push(serializeConnect(stmt.from, stmt.to));
+          break;
+        default:
+          if (stmt.raw) parts.push(stmt.raw);
+          break;
+      }
+    }
+    parts.push(''); // blank line between pages
+  }
+  return parts.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
+}
+
+/**
+ * Find line number of a device declaration by ref.
+ * (engine-mock only — Board does not use)
+ * @param {object} file — parsed circuit file
+ * @param {string} ref — device reference (e.g. 'U1')
+ * @returns {number} 0-based line number, or -1 if not found
+ */
+export function findDeviceLine(file, ref) {
+  for (const page of file.pages) {
+    for (const line of page.lines) {
+      if (line.parsed.type === LINE_TYPES.DEVICE && line.parsed.ref === ref) {
+        return line.lineNumber;
+      }
+    }
+  }
+  return -1;
+}
+
+/**
+ * Find which page a device belongs to.
+ * (engine-mock only — Board does not use)
+ * @param {object} file — parsed circuit file
+ * @param {string} ref
+ * @returns {string|null} page name or null
+ */
+export function findDevicePage(file, ref) {
+  for (const page of file.pages) {
+    for (const line of page.lines) {
+      if (line.parsed.type === LINE_TYPES.DEVICE && line.parsed.ref === ref) {
+        return page.name;
+      }
+    }
+  }
+  return null;
+}
+
+// =============================================================================
+// === BOARD PARSING (Board owns) ==============================================
+// =============================================================================
+// These functions parse Components:board syntax (paper/place/route/label).
+// This is Board's canonical file format.
+// =============================================================================
 
 /**
  * Parse a board file line.
@@ -238,6 +347,89 @@ function parseBoardLine(line) {
 }
 
 /**
+ * Serialize a paper statement.
+ */
+export function serializePaper(size, orientation) {
+  return `paper ${size} ${orientation};`;
+}
+
+/**
+ * Serialize a placement statement.
+ */
+export function serializePlace(ref, x, y, rotation = 0) {
+  return `place ${ref} at (${x}, ${y}) rotate ${rotation};`;
+}
+
+/**
+ * Serialize a route statement.
+ */
+export function serializeRoute(from, to, via) {
+  const pts = via.map(p => `(${p.x}, ${p.y})`).join(' ');
+  return `route ${from} -> ${to} via ${pts};`;
+}
+
+/**
+ * Serialize a label statement.
+ */
+export function serializeLabel(text, x, y) {
+  return `label "${text}" at (${x}, ${y});`;
+}
+
+/**
+ * Serialize a full board file from pages data.
+ * @param {Array<{name: string, statements: Array}>} pages
+ * @returns {string}
+ */
+export function serializeBoardFile(pages) {
+  const parts = [];
+  for (const page of pages) {
+    if (page.name) parts.push(`@page ${page.name}`);
+    for (const stmt of page.statements) {
+      switch (stmt.type) {
+        case 'paper':
+          parts.push(serializePaper(stmt.size, stmt.orientation));
+          break;
+        case 'place':
+          parts.push(serializePlace(stmt.ref, stmt.x, stmt.y, stmt.rotation));
+          break;
+        case 'route':
+          parts.push(serializeRoute(stmt.from, stmt.to, stmt.via));
+          break;
+        case 'label':
+          parts.push(serializeLabel(stmt.text, stmt.x, stmt.y));
+          break;
+        default:
+          if (stmt.raw) parts.push(stmt.raw);
+          break;
+      }
+    }
+    parts.push('');
+  }
+  return parts.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
+}
+
+/**
+ * Find line number of a placement by ref.
+ * @param {object} file — parsed board file
+ * @param {string} ref
+ * @returns {number} 0-based line number, or -1
+ */
+export function findPlacementLine(file, ref) {
+  for (const page of file.pages) {
+    for (const line of page.lines) {
+      if (line.parsed.type === LINE_TYPES.PLACE && line.parsed.ref === ref) {
+        return line.lineNumber;
+      }
+    }
+  }
+  return -1;
+}
+
+// =============================================================================
+// === COMMAND PARSING (shared utility) ========================================
+// =============================================================================
+
+/**
  * Parse a command log line.
  * Syntax:
  *   [HH:MM:SS] command text
@@ -265,6 +457,17 @@ function parseCommandLine(line) {
   }
 
   return { type: LINE_TYPES.UNKNOWN, text: line };
+}
+
+/**
+ * Serialize a command log file.
+ * @param {Array<{timestamp: string|null, command: string}>} entries
+ * @returns {string}
+ */
+export function serializeCommandFile(entries) {
+  return entries
+    .map(e => e.timestamp ? `[${e.timestamp}] ${e.command}` : `> ${e.command}`)
+    .join('\n') + '\n';
 }
 
 // =============================================================================
@@ -314,177 +517,4 @@ export function getPageRange(file, pageName) {
   const page = getPage(file, pageName);
   if (!page) return null;
   return { start: page.startLine, end: page.endLine };
-}
-
-// =============================================================================
-// SERIALIZATION
-// =============================================================================
-
-/**
- * Serialize a device statement.
- */
-export function serializeDevice(ref, part) {
-  return `device ${ref}, ${part};`;
-}
-
-/**
- * Serialize a connection statement.
- */
-export function serializeConnect(from, to) {
-  return `connect ${from} -> ${to};`;
-}
-
-/**
- * Serialize a paper statement.
- */
-export function serializePaper(size, orientation) {
-  return `paper ${size} ${orientation};`;
-}
-
-/**
- * Serialize a placement statement.
- */
-export function serializePlace(ref, x, y, rotation = 0) {
-  return `place ${ref} at (${x}, ${y}) rotate ${rotation};`;
-}
-
-/**
- * Serialize a route statement.
- */
-export function serializeRoute(from, to, via) {
-  const pts = via.map(p => `(${p.x}, ${p.y})`).join(' ');
-  return `route ${from} -> ${to} via ${pts};`;
-}
-
-/**
- * Serialize a label statement.
- */
-export function serializeLabel(text, x, y) {
-  return `label "${text}" at (${x}, ${y});`;
-}
-
-/**
- * Serialize a full circuit file from pages data.
- * @param {Array<{name: string, statements: Array}>} pages
- * @returns {string}
- */
-export function serializeCircuitFile(pages) {
-  const parts = [];
-  for (const page of pages) {
-    if (page.name) parts.push(`@page ${page.name}`);
-    for (const stmt of page.statements) {
-      switch (stmt.type) {
-        case 'device':
-          parts.push(serializeDevice(stmt.ref, stmt.part));
-          break;
-        case 'connect':
-          parts.push(serializeConnect(stmt.from, stmt.to));
-          break;
-        default:
-          if (stmt.raw) parts.push(stmt.raw);
-          break;
-      }
-    }
-    parts.push(''); // blank line between pages
-  }
-  return parts.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
-}
-
-/**
- * Serialize a full board file from pages data.
- * @param {Array<{name: string, statements: Array}>} pages
- * @returns {string}
- */
-export function serializeBoardFile(pages) {
-  const parts = [];
-  for (const page of pages) {
-    if (page.name) parts.push(`@page ${page.name}`);
-    for (const stmt of page.statements) {
-      switch (stmt.type) {
-        case 'paper':
-          parts.push(serializePaper(stmt.size, stmt.orientation));
-          break;
-        case 'place':
-          parts.push(serializePlace(stmt.ref, stmt.x, stmt.y, stmt.rotation));
-          break;
-        case 'route':
-          parts.push(serializeRoute(stmt.from, stmt.to, stmt.via));
-          break;
-        case 'label':
-          parts.push(serializeLabel(stmt.text, stmt.x, stmt.y));
-          break;
-        default:
-          if (stmt.raw) parts.push(stmt.raw);
-          break;
-      }
-    }
-    parts.push('');
-  }
-  return parts.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
-}
-
-/**
- * Serialize a command log file.
- * @param {Array<{timestamp: string|null, command: string}>} entries
- * @returns {string}
- */
-export function serializeCommandFile(entries) {
-  return entries
-    .map(e => e.timestamp ? `[${e.timestamp}] ${e.command}` : `> ${e.command}`)
-    .join('\n') + '\n';
-}
-
-// =============================================================================
-// FIND UTILITIES (for editor highlighting)
-// =============================================================================
-
-/**
- * Find line number of a device declaration by ref.
- * @param {object} file — parsed circuit file
- * @param {string} ref — device reference (e.g. 'U1')
- * @returns {number} 0-based line number, or -1 if not found
- */
-export function findDeviceLine(file, ref) {
-  for (const page of file.pages) {
-    for (const line of page.lines) {
-      if (line.parsed.type === LINE_TYPES.DEVICE && line.parsed.ref === ref) {
-        return line.lineNumber;
-      }
-    }
-  }
-  return -1;
-}
-
-/**
- * Find line number of a placement by ref.
- * @param {object} file — parsed board file
- * @param {string} ref
- * @returns {number} 0-based line number, or -1
- */
-export function findPlacementLine(file, ref) {
-  for (const page of file.pages) {
-    for (const line of page.lines) {
-      if (line.parsed.type === LINE_TYPES.PLACE && line.parsed.ref === ref) {
-        return line.lineNumber;
-      }
-    }
-  }
-  return -1;
-}
-
-/**
- * Find which page a device belongs to.
- * @param {object} file — parsed circuit file
- * @param {string} ref
- * @returns {string|null} page name or null
- */
-export function findDevicePage(file, ref) {
-  for (const page of file.pages) {
-    for (const line of page.lines) {
-      if (line.parsed.type === LINE_TYPES.DEVICE && line.parsed.ref === ref) {
-        return page.name;
-      }
-    }
-  }
-  return null;
 }

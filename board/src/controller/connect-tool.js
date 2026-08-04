@@ -190,8 +190,47 @@ export function createConnectTool() {
   }
 
   // ---------------------------------------------------------------------------
+  // TO OPERATIONS (EngineInterface-compatible operation objects)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Convert a completed connection's commands to engine-compatible operations.
+   * Use this when submitting through EngineInterface instead of executor.
+   *
+   * @param {object[]} commands — array from clickPin() completion (connect + route)
+   * @returns {object} { circuitOp, boardCmd } — circuitOp for engine, boardCmd for local executor
+   */
+  function toOperations(commands) {
+    if (!commands || commands.length === 0) return null;
+
+    const connectCmd = commands.find(c => c.type === 'connect');
+    const routeCmd = commands.find(c => c.type === 'route');
+
+    const result = {};
+
+    if (connectCmd) {
+      result.circuitOp = {
+        kind: 'component.connect.apply',
+        target: 'source',
+        intent: { from: connectCmd.from, to: connectCmd.to },
+      };
+    }
+
+    if (routeCmd) {
+      result.boardCmd = {
+        type: 'route',
+        from: routeCmd.from,
+        to: routeCmd.to,
+        via: routeCmd.via,
+      };
+    }
+
+    return result;
+  }
+
+  // ---------------------------------------------------------------------------
   // PUBLIC API
   // ---------------------------------------------------------------------------
 
-  return { clickPin, clickPoint, escape, isActive, getPreview };
+  return { clickPin, clickPoint, escape, isActive, getPreview, toOperations };
 }
