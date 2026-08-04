@@ -7,6 +7,82 @@ Reusable component models, DIP pinout notes, and datasheet evidence for RV8, RV8
 
 This folder is shared project infrastructure. Keep reusable chip models here instead of copying them into one CPU project unless a project needs a frozen local snapshot.
 
+## System Architecture
+
+Components is the **core engine** for digital circuit design, simulation, and
+verification. It is not just a chip library — it owns the full pipeline from
+source text to simulation results.
+
+```
+lib/standard/ (Device Library — owns chip truth: pins, behavior, timing)
+    │
+    ▼
+Components Engine (python/chiplib/)
+  ├── Parse:     component:component text → AST
+  ├── Resolve:   AST + Device Library → Immutable Topology
+  ├── Simulate:  Topology → RunnerSession (functional or timed)
+  ├── Validate:  bus conflicts, timing margins, coverage
+  └── Export:    netlist, Verilog, block-UI, board profile
+    │
+    ▼
+component:operation protocol (source-edit / board / runtime ops)
+    │
+    ▼
+┌──────────────┬─────────┬──────────┬────────────┐
+│ Board (web)  │  CLI    │ HTTP API │ MCP / AI   │
+└──────────────┴─────────┴──────────┴────────────┘
+         (thin clients — transaction queue, digest-locked)
+```
+
+### Three Authorities
+
+| Authority | Owns | Location |
+|-----------|------|----------|
+| Device Library | Chip identity, pins, behavior, timing, datasheet evidence | `lib/standard/` |
+| Component source | Circuit topology: devices, nets, connections | `component:component` / `component:circuit` text |
+| Board profile | Visual layout: placement, routes, labels (no electrical authority) | `component:board` text |
+
+### Language Types
+
+- **component:component** (or component:circuit) — electrical topology source.
+  Declares devices, nets, explicit connections. This is the circuit.
+- **component:board** — visual layout profile. Placement positions, route
+  points, labels. Derived from resolved topology; cannot invent connections.
+- **component:operation** — versioned JSON records of source-edit, board, and
+  runtime operations. Single-target enforcement per record.
+
+### Input Methods
+
+All input methods produce the same resolved topology:
+
+1. **Manual text** — write component:component directly
+2. **Components:command** — structured commands (from CLI, AI, or visual tools)
+3. **Board gestures** — pointer/touch actions that generate checked source-edit requests
+4. **BOM import** — bill of materials → tray → placement commands
+5. **Schematic import** — KiCad or image reconstruction → proposed source
+
+Input never writes topology directly. It produces source edits, which trigger
+re-resolution through the engine.
+
+### Clients
+
+Board and all other clients are thin:
+
+- **Board (web)** — sends commands, reads state, renders SVG. Owns no circuit model.
+- **CLI** — `chiplib.cli` commands for validate, run, probe, export.
+- **HTTP API** — `chiplib.api --http` serves the same engine over JSON.
+- **MCP / AI** — adapter over existing service commands (waiting for stability).
+
+### Simulation Modes
+
+| Mode | Delay | Use |
+|------|-------|-----|
+| Functional | Zero-delay, 4-state logic | Correctness, bus conflicts, truth tables |
+| Timed | Propagation-delay from definition.json | Timing margins, setup/hold, critical paths |
+
+Both modes use the same compiled signal graph. Neither mode proves physical
+hardware timing, analog behavior, or PCB layout correctness.
+
 ## Layout
 
 - `verilog/74xx/` - behavioral Verilog models for 74HC-family logic chips, with each `74hcxx.v` embedding its pinout notes as comments.

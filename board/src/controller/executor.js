@@ -64,9 +64,12 @@ function refFromPin(pin) {
  * @param {object} [componentModel] - initial component model
  * @param {object} [boardModel] - initial board model
  * @param {object} [config] - initial config
+ * @param {object} [options] - additional options
+ * @param {object} [options.engineInterface] - EngineInterface instance for circuit delegation
  * @returns {object} executor with execute, undo, redo, getState
  */
-export function createExecutor(componentModel, boardModel, config) {
+export function createExecutor(componentModel, boardModel, config, options) {
+  const engineInterface = options && options.engineInterface ? options.engineInterface : null;
   let state = {
     component: componentModel || createComponentModel(),
     board: boardModel || createBoardModel(),
@@ -136,6 +139,19 @@ export function createExecutor(componentModel, boardModel, config) {
 
   // --- Command handlers ---
 
+  /**
+   * Submit a circuit operation to the engine interface (fire-and-forget in Phase A).
+   * In Phase A the mock resolves synchronously, but we don't await since executor is sync.
+   * In Phase B this will be handled via an async command pipeline.
+   * @param {object} operation — operation object (kind, target, intent)
+   */
+  function _delegateToEngine(operation) {
+    if (!engineInterface) return;
+    // Fire-and-forget: engine-mock resolves synchronously in same microtask,
+    // keeping engine state in sync. Phase B will need async executor.
+    engineInterface.submit(operation);
+  }
+
   function handlePlace(cmd) {
     const { ref, part, x, y } = cmd;
     const rotation = cmd.rotate !== undefined ? cmd.rotate : (cmd.rotation || 0);
@@ -147,6 +163,13 @@ export function createExecutor(componentModel, boardModel, config) {
     pushUndo();
     state.component = addDevice(state.component, ref, part);
     state.board = setPlacement(state.board, ref, x, y, rotation);
+
+    _delegateToEngine({
+      kind: 'component.add-device',
+      target: 'source',
+      intent: { ref, part },
+    });
+
     return ok(`Placed ${ref} (${part}) at (${x}, ${y}) rotation ${rotation}°`, cmd);
   }
 
@@ -206,6 +229,13 @@ export function createExecutor(componentModel, boardModel, config) {
     if (state.selection === ref) {
       state.selection = null;
     }
+
+    _delegateToEngine({
+      kind: 'component.remove-device',
+      target: 'source',
+      intent: { ref },
+    });
+
     return ok(`Deleted ${ref} and its connections/routes`, cmd);
   }
 
@@ -228,6 +258,13 @@ export function createExecutor(componentModel, boardModel, config) {
     if (via && via.length > 0) {
       state.board = setRoute(state.board, from, to, via);
     }
+
+    _delegateToEngine({
+      kind: 'component.connect.apply',
+      target: 'source',
+      intent: { from, to },
+    });
+
     return ok(`Connected ${from} → ${to}`, cmd);
   }
 
@@ -247,6 +284,13 @@ export function createExecutor(componentModel, boardModel, config) {
     if (routeIdx >= 0) {
       state.board = removeRoute(state.board, from, to);
     }
+
+    _delegateToEngine({
+      kind: 'component.disconnect',
+      target: 'source',
+      intent: { from, to },
+    });
+
     return ok(`Disconnected ${from} → ${to}`, cmd);
   }
 

@@ -477,6 +477,55 @@ export function createDeviceTray(options = {}) {
   }
 
   // ---------------------------------------------------------------------------
+  // TO OPERATION (EngineInterface-compatible operation objects)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Convert a place command to engine-compatible operation objects.
+   * Use this when submitting through EngineInterface instead of executor.
+   *
+   * The place action is hybrid: engine handles device creation,
+   * board handles placement (position/rotation).
+   *
+   * @param {object} command — the { type: 'place', ref, part, x, y, rotation } command
+   * @returns {object} { circuitOp, boardCmd } — circuitOp for engine, boardCmd for local executor
+   */
+  function toOperation(command) {
+    if (!command || command.type !== 'place') return null;
+
+    return {
+      circuitOp: {
+        kind: 'component.add-device',
+        target: 'source',
+        intent: { ref: command.ref, part: command.part },
+      },
+      boardCmd: {
+        type: 'place',
+        ref: command.ref,
+        part: command.part,
+        x: command.x,
+        y: command.y,
+        rotation: command.rotation || 0,
+      },
+    };
+  }
+
+  /**
+   * Convert a device removal to engine-compatible operation.
+   * @param {string} ref — device reference to remove
+   * @returns {object} { circuitOp } — operation for engine
+   */
+  function toRemoveOperation(ref) {
+    return {
+      circuitOp: {
+        kind: 'component.remove-device',
+        target: 'source',
+        intent: { ref },
+      },
+    };
+  }
+
+  // ---------------------------------------------------------------------------
   // PUBLIC API
   // ---------------------------------------------------------------------------
 
@@ -501,5 +550,7 @@ export function createDeviceTray(options = {}) {
     clear,
     setRefCounters,
     getRefCounters,
+    toOperation,
+    toRemoveOperation,
   };
 }
