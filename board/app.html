@@ -570,6 +570,8 @@ const dragPlace = createDragPlace({ tray: deviceTray, viewport, gridSnap: true }
 let selectedRef = null;
 let dragState = null; // { ref, startWorld, startScreen }
 let connectPreview = null; // SVG line preview during connect
+let connectStart = null; // { ref, world } for draw-line preview
+const guideVisibleEdges = new Set(); // edge IDs toggled visible by Guide tool
 
 // File models + editors
 let CIRCUIT_SRC_LIVE = CIRCUIT_SRC;
@@ -1064,12 +1066,30 @@ function renderViewport() {
     }
   }
 
-  // Connections (dashed, no route)
+  // Connections (dashed, no route) — Guide-visible ones are solid green
   for (const c of data.connections) {
     const fRef = c.from.split('.')[0], tRef = c.to.split('.')[0];
     const fd = devMap[fRef], td = devMap[tRef];
     if (fd && td && !data.routes.some(r => r.from === c.from && r.to === c.to)) {
-      html += `<line x1="${fd.screenX}" y1="${fd.screenY}" x2="${td.screenX}" y2="${td.screenY}" stroke="#999" stroke-dasharray="4 3"/>`;
+      const edgeId = `edge:${c.from}->${c.to}`;
+      const isGuideVisible = guideVisibleEdges.has(edgeId);
+      if (isGuideVisible) {
+        html += `<line x1="${fd.screenX}" y1="${fd.screenY}" x2="${td.screenX}" y2="${td.screenY}" stroke="#007C3D" stroke-width="2" stroke-opacity="0.8"/>`;
+        // Label the connection endpoints
+        html += `<text x="${(fd.screenX + td.screenX)/2}" y="${(fd.screenY + td.screenY)/2 - 5}" text-anchor="middle" font-size="7" fill="#007C3D" font-family="monospace">${c.from} → ${c.to}</text>`;
+      } else {
+        html += `<line x1="${fd.screenX}" y1="${fd.screenY}" x2="${td.screenX}" y2="${td.screenY}" stroke="#999" stroke-dasharray="4 3"/>`;
+      }
+    }
+  }
+
+  // Connect tool preview line (from start device to current mouse)
+  if (connectStart && connectPreview) {
+    const startDev = devMap[connectStart.ref];
+    if (startDev && connectPreview.currentMouse) {
+      const endScreen = viewport.worldToScreen(connectPreview.currentMouse.x, connectPreview.currentMouse.y, W, H);
+      html += `<line x1="${startDev.screenX}" y1="${startDev.screenY}" x2="${endScreen.x}" y2="${endScreen.y}" stroke="#1976D2" stroke-width="2" stroke-dasharray="6 3" stroke-opacity="0.7"/>`;
+      html += `<circle cx="${endScreen.x}" cy="${endScreen.y}" r="4" fill="none" stroke="#1976D2" stroke-width="1.5"/>`;
     }
   }
 
@@ -1092,6 +1112,33 @@ document.getElementById('svg').addEventListener('mousedown', e => {
   const device = e.target.closest('[data-ref]');
   const activeTool = toolSystem.getActive()?.id;
 
+  // === GUIDE TOOL ===
+  if (activeTool === 'guide') {
+    if (device) {
+      const ref = device.dataset.ref;
+      // Toggle all edges involving this device
+      const state = engine.getState();
+      const conns = state.component?.connections || [];
+      const prefix = ref + '.';
+      const matchingEdges = conns.filter(c => c.from.startsWith(prefix) || c.to.startsWith(prefix))
+        .map(c => `edge:${c.from}->${c.to}`);
+      if (matchingEdges.length === 0) {
+        cmdLog(`guide: ${ref} has no connections`, false);
+        return;
+      }
+      const allVisible = matchingEdges.every(id => guideVisibleEdges.has(id));
+      if (allVisible) {
+        matchingEdges.forEach(id => guideVisibleEdges.delete(id));
+        cmdLog(`guide: hide ${ref} (${matchingEdges.length} edges)`, true);
+      } else {
+        matchingEdges.forEach(id => guideVisibleEdges.add(id));
+        cmdLog(`guide: show ${ref} (${matchingEdges.length} edges)`, true);
+      }
+      renderViewport();
+    }
+    return;
+  }
+
   // === CONNECT TOOL ===
   if (activeTool === 'connect') {
     if (device) {
@@ -1100,6 +1147,7 @@ document.getElementById('svg').addEventListener('mousedown', e => {
       if (!connectToolInst.isActive()) {
         // Start connection
         connectToolInst.clickPin(pinId);
+        connectStart = { ref, world: { x: world.x, y: world.y } };
         cmdLog(`connect: start from ${pinId}`, true);
       } else {
         // Complete connection
@@ -1114,6 +1162,7 @@ document.getElementById('svg').addEventListener('mousedown', e => {
           });
         }
         connectPreview = null;
+        connectStart = null;
         renderViewport();
       }
     } else if (connectToolInst.isActive()) {
@@ -1220,8 +1269,8 @@ document.getElementById('svg').addEventListener('mousemove', e => {
   // Connect preview line
   if (connectToolInst.isActive()) {
     const preview = connectToolInst.getPreview();
-    // We'll draw preview on next render — for now just track
     connectPreview = { ...preview, currentMouse: world };
+    renderViewport(); // live draw-line preview
   }
 });
 
@@ -1546,6 +1595,7 @@ document.addEventListener('keydown', e => {
     if (connectToolInst.isActive()) {
       connectToolInst.escape();
       connectPreview = null;
+      connectStart = null;
       cmdLog('connect: cancelled', true);
       renderViewport();
     }
