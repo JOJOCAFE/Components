@@ -453,41 +453,25 @@ import { createHttpAdapter } from './src/engine-http.js';
 // ============================================================================
 // SAMPLE PROJECT (would normally load from disk)
 // ============================================================================
-const CIRCUIT_SRC = `@page CPU
-device U1, digital.74HC04;
-device U2, digital.74HC161;
-device U5, digital.74HC86;
-connect U1.1Y -> U2.CLK;
-connect U5.1Y -> U2.ENP;
+// SAMPLE PROJECT: RV8GR Ring Counter (U8 + U24)
+// Real circuit from examples/circuits/RV8GR_RingCounter
+// ============================================================================
+const CIRCUIT_SRC = `@page RingCounter
+device U8, digital.74HC164;
+device U24, digital.74HC04;
+connect U8.Q0 -> U24.1A;
+connect U24.1Y -> U8.A;
+connect U8.Q1 -> U24.2A;
+connect U24.2Y -> U8.B;
+`;
 
-@page Memory
-device U3, memory.62256;
-device U4, memory.AT28C256;
-connect U2.QA -> U3.A0;
-connect U2.QB -> U3.A1;
-
-@page ALU
-device U10, digital.74HC283;
-device U11, digital.74HC86;
-connect U10.S0 -> U11.1A;`;
-
-const BOARD_SRC = `@page CPU
+const BOARD_SRC = `@page RingCounter
 paper A4 landscape;
-place U1 at (30, 40) rotate 0;
-place U2 at (100, 40) rotate 0;
-place U5 at (30, 80) rotate 0;
-route U1.1Y -> U2.CLK via (65, 40) (65, 30) (100, 30);
-
-@page Memory
-paper A3 landscape;
-place U3 at (60, 30) rotate 0;
-place U4 at (60, 80) rotate 0;
-
-@page ALU
-paper A4 landscape;
-place U10 at (40, 40) rotate 0;
-place U11 at (120, 40) rotate 90;
-route U10.S0 -> U11.1A via (80, 40) (80, 30) (120, 30);`;
+place U8 at (50, 40) rotate 0;
+place U24 at (120, 40) rotate 0;
+route U8.Q0 -> U24.1A via (80, 25) (100, 25);
+route U24.1Y -> U8.A via (100, 55) (80, 55);
+`;
 
 // ============================================================================
 // ENGINE SETUP
@@ -2338,6 +2322,8 @@ function onToolActivate(toolId) {
 // INIT
 // ============================================================================
 viewport.zoomFit(800, 500);
+// At real DIP scale, zoom higher so chips are visible (500% = 5px/mm)
+viewport.setZoom(500);
 renderToolRail();
 renderEditors();
 renderPageTabs();
