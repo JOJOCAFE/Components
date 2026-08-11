@@ -447,6 +447,8 @@ import { createLibrary } from './src/model/library.js';
 import { createDeviceTray } from './src/controller/device-tray.js';
 import { createCatalogLoader } from './src/model/catalog-loader.js';
 import { createDragPlace } from './src/controller/drag-place.js';
+import { createEngineInterface } from './src/engine-interface.js';
+import { createHttpAdapter } from './src/engine-http.js';
 
 // ============================================================================
 // SAMPLE PROJECT (would normally load from disk)
@@ -491,6 +493,7 @@ route U10.S0 -> U11.1A via (80, 40) (80, 30) (120, 30);`;
 // ENGINE SETUP
 // ============================================================================
 const STORAGE_KEY = 'components.board.project.v1';
+const ENGINE_MODE = new URLSearchParams(location.search).get('engine') || 'mock';
 const executor = createExecutor();
 const engine = createEngine({ parser: parseCommand, executor });
 const viewport = createViewport(engine.getState().config);
@@ -499,6 +502,23 @@ const pageTabs = createPageTabs(engine);
 const toolSystem = createToolSystem();
 const selectTool = createSelectTool();
 const connectToolInst = createConnectTool();
+
+// --- HTTP Engine Interface (when ?engine=http) ---
+let httpEngine = null;
+if (ENGINE_MODE === 'http') {
+  const httpBaseUrl = new URLSearchParams(location.search).get('api') || '';
+  const adapter = createHttpAdapter({ baseUrl: httpBaseUrl });
+  httpEngine = createEngineInterface(adapter);
+  // Init async — load state from server
+  adapter.init().then(() => {
+    console.log('[engine-http] Connected to Components engine');
+    document.getElementById('st-tool').textContent = '🟢 HTTP';
+    renderViewport();
+  }).catch(err => {
+    console.error('[engine-http] Failed to connect:', err.message);
+    document.getElementById('st-tool').textContent = '🔴 HTTP';
+  });
+}
 
 // ============================================================================
 // DEVICE LIBRARY + PROJECT TRAY
@@ -924,9 +944,29 @@ function renderViewport() {
   let html = `<rect width="${W}" height="${H}" fill="#f8f8f8"/>`;
   // Paper
   html += `<rect x="${data.paper.x}" y="${data.paper.y}" width="${data.paper.width}" height="${data.paper.height}" fill="#fff" stroke="#ddd"/>`;
-  // Grid
-  for (const l of data.grid.minor) html += `<line x1="${l.x1}" y1="${l.y1}" x2="${l.x2}" y2="${l.y2}" stroke="#f0f0f0" stroke-width="0.5"/>`;
-  for (const l of data.grid.major) html += `<line x1="${l.x1}" y1="${l.y1}" x2="${l.x2}" y2="${l.y2}" stroke="#e8e8e8" stroke-width="0.5"/>`;
+  // Grid dots (show at intersections; hide when too dense)
+  const vs = viewport.getViewState();
+  const dotSpacing = vs.zoom >= 80 ? data.grid.minor : data.grid.major; // minor dots at ≥80% zoom
+  const gridDots = [];
+  // Compute dot positions from minor vertical + horizontal grid line intersections
+  const vLines = vs.zoom >= 80 ? [...data.grid.minor, ...data.grid.major].filter(l => l.x1 === l.x2) : data.grid.major.filter(l => l.x1 === l.x2);
+  const hLines = vs.zoom >= 80 ? [...data.grid.minor, ...data.grid.major].filter(l => l.y1 === l.y2) : data.grid.major.filter(l => l.y1 === l.y2);
+  if (vLines.length <= 120 && hLines.length <= 80) {
+    for (const vl of vLines) {
+      for (const hl of hLines) {
+        const px = vl.x1, py = hl.y1;
+        // Only inside paper
+        if (px >= data.paper.x && px <= data.paper.x + data.paper.width &&
+            py >= data.paper.y && py <= data.paper.y + data.paper.height) {
+          const isMajor = data.grid.major.some(l => l.x1 === px && l.x1 === l.x2) &&
+                          data.grid.major.some(l => l.y1 === py && l.y1 === l.y2);
+          const r = isMajor ? 1.5 : 0.8;
+          const opacity = isMajor ? 0.3 : 0.15;
+          html += `<circle cx="${px}" cy="${py}" r="${r}" fill="#999" opacity="${opacity}"/>`;
+        }
+      }
+    }
+  }
 
   // Devices — render with SVG assets or generic DIP frame
   const devMap = {};
@@ -973,6 +1013,41 @@ function renderViewport() {
     html += `<text x="${d.screenX}" y="${ry - 4}" text-anchor="middle" font-size="9" fill="#333" font-family="sans-serif" font-weight="600">${d.ref}</text>`;
     // Part label (below device)
     html += `<text x="${d.screenX}" y="${ry + DH + 10}" text-anchor="middle" font-size="8" fill="#666" font-family="sans-serif">${partShortName(part)}</text>`;
+
+    // Pin labels (show on selected device when pin data available)
+    if (isSel) {
+      const devState = httpEngine ? httpEngine.getDevices()[d.ref] : state.component?.devices?.[d.ref];
+      const pins = devState?.pins ? Object.entries(devState.pins) : [];
+      const pinAnchors = devState?.pinAnchors || [];
+
+      if (pinAnchors.length > 0) {
+        // Use definition-derived anchors (real engine data)
+        const half = Math.ceil(pinAnchors.length / 2);
+        const pinSpacing = (DH - 6) / half;
+        for (const anchor of pinAnchors) {
+          const isLeft = anchor.dip_side === 'left';
+          const order = anchor.dip_order - 1;
+          const py = ry + 3 + pinSpacing * (order + 0.5);
+          const px = isLeft ? rx - 2 : rx + DW + 2;
+          const textAnchor = isLeft ? 'end' : 'start';
+          html += `<text x="${px}" y="${py + 3}" text-anchor="${textAnchor}" font-size="7" fill="#007C3D" font-family="monospace" opacity="0.9">${anchor.physical_pin} ${anchor.port}</text>`;
+        }
+      } else if (pins.length > 0) {
+        // Fallback: use pin map (mock data)
+        const pinList = pins.map(([name, info]) => ({ name, ...info }));
+        const half = Math.ceil(pinList.length / 2);
+        const pinSpacing = half > 0 ? (DH - 6) / half : DH;
+        for (let i = 0; i < pinList.length; i++) {
+          const isLeft = i < half;
+          const order = isLeft ? i : i - half;
+          const py = ry + 3 + pinSpacing * (order + 0.5);
+          const px = isLeft ? rx - 2 : rx + DW + 2;
+          const textAnchor = isLeft ? 'end' : 'start';
+          html += `<text x="${px}" y="${py + 3}" text-anchor="${textAnchor}" font-size="7" fill="#007C3D" font-family="monospace" opacity="0.9">${pinList[i].name}</text>`;
+        }
+      }
+    }
+
     html += `</g>`;
   }
 
@@ -1109,6 +1184,36 @@ document.getElementById('svg').addEventListener('mousemove', e => {
         device.style.transform = `translate(${sdx}px, ${sdy}px)`;
         device.style.opacity = '0.6';
       }
+
+      // Show snap ghost at grid-snapped position
+      const snapMm = engine.getState().config.grid.snap_mm;
+      const snappedX = Math.round(world.x / snapMm) * snapMm;
+      const snappedY = Math.round(world.y / snapMm) * snapMm;
+      let ghost = document.getElementById('snap-ghost');
+      if (!ghost) {
+        ghost = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        ghost.id = 'snap-ghost';
+        ghost.setAttribute('fill', 'none');
+        ghost.setAttribute('stroke', '#007C3D');
+        ghost.setAttribute('stroke-width', '1.5');
+        ghost.setAttribute('stroke-dasharray', '3 2');
+        ghost.setAttribute('rx', '3');
+        ghost.setAttribute('opacity', '0.6');
+        document.getElementById('svg').appendChild(ghost);
+      }
+      const svgEl = document.getElementById('svg');
+      const rect = svgEl.getBoundingClientRect();
+      const screenSnap = viewport.worldToScreen(snappedX, snappedY, rect.width, rect.height);
+      const part = engine.getState().component.devices[dragState.ref]?.part || '';
+      const dims = getDeviceDimensions(part);
+      ghost.setAttribute('x', screenSnap.x - dims.w / 2);
+      ghost.setAttribute('y', screenSnap.y - dims.h / 2);
+      ghost.setAttribute('width', dims.w);
+      ghost.setAttribute('height', dims.h);
+      ghost.style.display = '';
+
+      // Show snapped position in status bar
+      document.getElementById('st-pos').textContent = `snap: ${snappedX.toFixed(1)}, ${snappedY.toFixed(1)} mm`;
     }
   }
 
@@ -1126,16 +1231,21 @@ document.addEventListener('mouseup', e => {
     const svgEl = document.getElementById('svg');
     const r = svgEl.getBoundingClientRect();
     const endWorld = viewport.screenToWorld(e.clientX - r.left, e.clientY - r.top, r.width, r.height);
-    const dx = Math.round(endWorld.x - dragState.startWorld.x);
-    const dy = Math.round(endWorld.y - dragState.startWorld.y);
 
-    if (dx !== 0 || dy !== 0) {
-      // Get current position and compute new position
-      const state = engine.getState();
-      const placement = state.board?.placements?.[dragState.ref];
-      if (placement) {
-        const newX = placement.x + dx;
-        const newY = placement.y + dy;
+    // Snap to grid
+    const snapMm = engine.getState().config.grid.snap_mm;
+    const snappedX = Math.round(endWorld.x / snapMm) * snapMm;
+    const snappedY = Math.round(endWorld.y / snapMm) * snapMm;
+    const state = engine.getState();
+    const placement = state.board?.placements?.[dragState.ref];
+    if (placement) {
+      const startSnappedX = Math.round(dragState.startWorld.x / snapMm) * snapMm;
+      const startSnappedY = Math.round(dragState.startWorld.y / snapMm) * snapMm;
+      const dx = snappedX - startSnappedX;
+      const dy = snappedY - startSnappedY;
+      if (dx !== 0 || dy !== 0) {
+        const newX = Math.round((placement.x + dx) / snapMm) * snapMm;
+        const newY = Math.round((placement.y + dy) / snapMm) * snapMm;
         runAndSave(`move ${dragState.ref} to (${newX}, ${newY})`);
       }
     }
@@ -1143,6 +1253,11 @@ document.addEventListener('mouseup', e => {
     // Reset ghost style
     const device = document.querySelector(`[data-ref="${dragState.ref}"]`);
     if (device) { device.style.transform = ''; device.style.opacity = ''; }
+
+    // Hide snap ghost
+    const ghost = document.getElementById('snap-ghost');
+    if (ghost) ghost.style.display = 'none';
+
     renderViewport();
   }
   dragState = null;
