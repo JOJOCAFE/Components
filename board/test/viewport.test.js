@@ -91,16 +91,16 @@ test('setZoom clamps to minimum 10%', () => {
   assert.equal(state.zoom, 10);
 });
 
-test('setZoom clamps to maximum 1000%', () => {
+test('setZoom clamps to maximum 5000%', () => {
   const vp = createViewport(configA4);
-  const state = vp.setZoom(2000);
-  assert.equal(state.zoom, 1000);
+  const state = vp.setZoom(6000);
+  assert.equal(state.zoom, 5000);
 });
 
 test('setZoom accepts boundary values', () => {
   const vp = createViewport(configA4);
   assert.equal(vp.setZoom(10).zoom, 10);
-  assert.equal(vp.setZoom(1000).zoom, 1000);
+  assert.equal(vp.setZoom(5000).zoom, 5000);
 });
 
 // --- setPan ---
@@ -582,12 +582,12 @@ test('zoomAtPoint clamps at MIN_ZOOM (10%)', () => {
   approxEqual(vs.zoom, 10);
 });
 
-test('zoomAtPoint clamps at MAX_ZOOM (1000%)', () => {
+test('zoomAtPoint clamps at MAX_ZOOM (5000%)', () => {
   const vp = createViewport(configA4);
-  vp.setZoom(900);
-  vp.zoomAtPoint(2.0, 500, 400, 1000, 800); // 900 * 2 = 1800 → clamped to 1000
+  vp.setZoom(4000);
+  vp.zoomAtPoint(2.0, 500, 400, 1000, 800); // 4000 * 2 = 8000 → clamped to 5000
   const vs = vp.getViewState();
-  approxEqual(vs.zoom, 1000);
+  approxEqual(vs.zoom, 5000);
 });
 
 test('zoomAtPoint returns unchanged state when already at limit', () => {

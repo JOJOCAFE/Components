@@ -17,7 +17,7 @@
  */
 
 const MIN_ZOOM = 10;
-const MAX_ZOOM = 1000;
+const MAX_ZOOM = 5000;
 
 /**
  * Create a viewport instance bound to a config.
