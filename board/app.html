@@ -896,20 +896,34 @@ function parseSVGIntoCache(slug, svgText) {
  * ICs scale with pin count, passives are small.
  */
 function getDeviceDimensions(part) {
+  // Real DIP package dimensions in mm (world units = mm)
+  // Pin spacing: 2.54mm between pins on same side
+  // Narrow DIP (≤16 pins): 7.62mm row spacing
+  // Wide DIP (>16 pins): 15.24mm row spacing
+  const PIN_PITCH = 2.54; // mm between pins
+  const NARROW_WIDTH = 7.62; // mm (0.3 inch, 14/16 pin)
+  const WIDE_WIDTH = 15.24; // mm (0.6 inch, 20+ pin)
+
   const p = (part || '').toLowerCase();
-  // Virtual parts — small
-  if (p === 'vcc' || p === 'gnd') return { w: 16, h: 16, pins: 1 };
-  if (p === 'probe' || p === 'clocksource' || p === 'inputsource') return { w: 20, h: 20, pins: 1 };
-  // Passives — small
-  if (p.includes('resistor') || p.includes('capacitor') || p.includes('crystal')) return { w: 20, h: 10, pins: 2 };
-  if (p.includes('led')) return { w: 14, h: 14, pins: 2 };
-  // ICs — scale by pin count from catalog
+
+  // Virtual parts — small symbol (not a real DIP)
+  if (p === 'vcc' || p === 'gnd') return { w: 4, h: 4, pins: 1, pinPitch: PIN_PITCH };
+  if (p === 'probe' || p === 'clocksource' || p === 'inputsource') return { w: 5, h: 5, pins: 1, pinPitch: PIN_PITCH };
+  // Passives — real but small
+  if (p.includes('resistor') || p.includes('capacitor') || p.includes('crystal')) return { w: 7.62, h: 2.54, pins: 2, pinPitch: PIN_PITCH };
+  if (p.includes('led')) return { w: 5, h: 5, pins: 2, pinPitch: PIN_PITCH };
+
+  // ICs — real DIP dimensions from pin count
   const entry = library.getByPart(part);
   const pins = entry?.pinCount || 14;
-  // DIP: width proportional, height grows with pins
-  const h = 14 + (pins / 2) * 4; // ~30 for 14pin, ~38 for 20pin
-  const w = 24 + (pins > 16 ? 8 : 0); // wider for 20+ pin
-  return { w, h, pins };
+  const pinsPerSide = Math.ceil(pins / 2);
+
+  // Body length: (pinsPerSide - 1) * pitch + end margins
+  const bodyLength = (pinsPerSide - 1) * PIN_PITCH + PIN_PITCH; // one pitch margin
+  // Body width: narrow (≤16) or wide (>16)
+  const bodyWidth = pins > 16 ? WIDE_WIDTH : NARROW_WIDTH;
+
+  return { w: bodyWidth, h: bodyLength, pins, pinPitch: PIN_PITCH };
 }
 
 /**
@@ -972,12 +986,14 @@ function renderViewport() {
 
   // Devices — render with SVG assets or generic DIP frame
   const devMap = {};
+  const scale = vs.zoom / 100; // mm to screen pixels
   for (const d of data.devices) {
     devMap[d.ref] = d;
     const isSel = d.ref === selectedRef;
     const part = d.part || '';
     const dims = getDeviceDimensions(part);
-    const DW = dims.w, DH = dims.h;
+    // Convert mm dimensions to screen pixels
+    const DW = dims.w * scale, DH = dims.h * scale;
     const rx = d.screenX - DW/2, ry = d.screenY - DH/2;
 
     html += `<g class="device" data-ref="${d.ref}" style="cursor:pointer">`;
@@ -997,16 +1013,19 @@ function renderViewport() {
       html += `<rect x="${rx}" y="${ry}" width="${DW}" height="${DH}" fill="${isSel ? colors.selFill : colors.fill}" stroke="${isSel ? colors.selStroke : colors.stroke}" stroke-width="${isSel ? 2 : 1.5}" rx="3"/>`;
       // Notch for ICs
       if (dims.pins >= 8) {
-        html += `<path d="M${d.screenX-4} ${ry} a4 4 0 0 0 8 0" fill="none" stroke="${colors.stroke}" stroke-width="1"/>`;
+        const nr = 2 * scale; // notch radius scaled
+        html += `<path d="M${d.screenX-nr} ${ry} a${nr} ${nr} 0 0 0 ${nr*2} 0" fill="none" stroke="${colors.stroke}" stroke-width="1"/>`;
       }
-      // Pin dots (left and right)
+      // Pin dots (left and right) at real 2.54mm pitch
       const pinsPerSide = Math.ceil(dims.pins / 2);
       if (pinsPerSide > 0 && dims.pins >= 4) {
-        const pinSpacing = (DH - 6) / pinsPerSide;
+        const pinSpacing = dims.pinPitch * scale; // 2.54mm in screen px
+        const margin = (DH - pinSpacing * (pinsPerSide - 1)) / 2;
+        const dotR = Math.max(1, 1.2 * scale);
         for (let i = 0; i < pinsPerSide; i++) {
-          const py = ry + 3 + pinSpacing * (i + 0.5);
-          html += `<circle cx="${rx+3}" cy="${py}" r="1.5" fill="${colors.stroke}" opacity="0.5"/>`;
-          html += `<circle cx="${rx+DW-3}" cy="${py}" r="1.5" fill="${colors.stroke}" opacity="0.5"/>`;
+          const py = ry + margin + pinSpacing * i;
+          html += `<circle cx="${rx + dotR + 1}" cy="${py}" r="${dotR}" fill="${colors.stroke}" opacity="0.5"/>`;
+          html += `<circle cx="${rx + DW - dotR - 1}" cy="${py}" r="${dotR}" fill="${colors.stroke}" opacity="0.5"/>`;
         }
       }
     }
@@ -1023,13 +1042,14 @@ function renderViewport() {
       const pinAnchors = devState?.pinAnchors || [];
 
       if (pinAnchors.length > 0) {
-        // Use definition-derived anchors (real engine data)
+        // Use definition-derived anchors (real engine data) at real 2.54mm pitch
         const half = Math.ceil(pinAnchors.length / 2);
-        const pinSpacing = (DH - 6) / half;
+        const pinSpacing = dims.pinPitch * scale;
+        const margin = (DH - pinSpacing * (half - 1)) / 2;
         for (const anchor of pinAnchors) {
           const isLeft = anchor.dip_side === 'left';
           const order = anchor.dip_order - 1;
-          const py = ry + 3 + pinSpacing * (order + 0.5);
+          const py = ry + margin + pinSpacing * order;
           const px = isLeft ? rx - 2 : rx + DW + 2;
           const textAnchor = isLeft ? 'end' : 'start';
           html += `<text x="${px}" y="${py + 3}" text-anchor="${textAnchor}" font-size="7" fill="#007C3D" font-family="monospace" opacity="0.9">${anchor.physical_pin} ${anchor.port}</text>`;
@@ -1038,11 +1058,12 @@ function renderViewport() {
         // Fallback: use pin map (mock data)
         const pinList = pins.map(([name, info]) => ({ name, ...info }));
         const half = Math.ceil(pinList.length / 2);
-        const pinSpacing = half > 0 ? (DH - 6) / half : DH;
+        const pinSpacing = half > 1 ? dims.pinPitch * scale : DH;
+        const margin = (DH - pinSpacing * (half - 1)) / 2;
         for (let i = 0; i < pinList.length; i++) {
           const isLeft = i < half;
           const order = isLeft ? i : i - half;
-          const py = ry + 3 + pinSpacing * (order + 0.5);
+          const py = ry + margin + pinSpacing * order;
           const px = isLeft ? rx - 2 : rx + DW + 2;
           const textAnchor = isLeft ? 'end' : 'start';
           html += `<text x="${px}" y="${py + 3}" text-anchor="${textAnchor}" font-size="7" fill="#007C3D" font-family="monospace" opacity="0.9">${pinList[i].name}</text>`;
@@ -1172,6 +1193,8 @@ document.getElementById('svg').addEventListener('mousedown', e => {
       const placement = state.board?.placements?.[ref];
       const part = devInfo?.part || '';
       const dims = getDeviceDimensions(part);
+      const connectScale = viewport.getViewState().zoom / 100;
+      const DW = dims.w * connectScale, DH = dims.h * connectScale;
       const devScreen = viewport.worldToScreen(placement?.x || 0, placement?.y || 0, r.width, r.height);
 
       // Get pin positions — use httpEngine pin data if available, else estimate
@@ -1185,28 +1208,29 @@ document.getElementById('svg').addEventListener('mousedown', e => {
         const clickX = e.clientX - r.left, clickY = e.clientY - r.top;
         let bestDist = Infinity, bestAnchor = pinAnchors[0];
         const half = Math.ceil(pinAnchors.length / 2);
-        const pinSpacing = (dims.h - 6) / half;
+        const pinSpacing = dims.pinPitch * connectScale; // 2.54mm scaled
+        const margin = (DH - pinSpacing * (half - 1)) / 2;
         for (const anchor of pinAnchors) {
           const isLeft = anchor.dip_side === 'left';
           const order = anchor.dip_order - 1;
-          const py = devScreen.y - dims.h/2 + 3 + pinSpacing * (order + 0.5);
-          const px = isLeft ? devScreen.x - dims.w/2 : devScreen.x + dims.w/2;
+          const py = devScreen.y - DH/2 + margin + pinSpacing * order;
+          const px = isLeft ? devScreen.x - DW/2 : devScreen.x + DW/2;
           const dist = Math.hypot(clickX - px, clickY - py);
           if (dist < bestDist) { bestDist = dist; bestAnchor = anchor; }
         }
         pinId = bestAnchor.endpoint || `${ref}.${bestAnchor.port}`;
         const isLeft = bestAnchor.dip_side === 'left';
         const order = bestAnchor.dip_order - 1;
-        const py = devScreen.y - dims.h/2 + 3 + pinSpacing * (order + 0.5);
-        const px = isLeft ? devScreen.x - dims.w/2 : devScreen.x + dims.w/2;
+        const py = devScreen.y - DH/2 + margin + pinSpacing * order;
+        const px = isLeft ? devScreen.x - DW/2 : devScreen.x + DW/2;
         pinScreen = { x: px, y: py };
       } else {
         // Estimate: use click-relative position (top/bottom half → pick output/input side)
-        const clickLocal = e.clientY - r.top - (devScreen.y - dims.h/2);
-        const isTopHalf = clickLocal < dims.h / 2;
+        const clickLocal = e.clientY - r.top - (devScreen.y - DH/2);
+        const isTopHalf = clickLocal < DH / 2;
         pinScreen = {
-          x: isTopHalf ? devScreen.x + dims.w/2 : devScreen.x - dims.w/2,
-          y: devScreen.y - dims.h/4 + (isTopHalf ? 0 : dims.h/2)
+          x: isTopHalf ? devScreen.x + DW/2 : devScreen.x - DW/2,
+          y: devScreen.y - DH/4 + (isTopHalf ? 0 : DH/2)
         };
       }
 
@@ -1321,10 +1345,12 @@ document.getElementById('svg').addEventListener('mousemove', e => {
       const screenSnap = viewport.worldToScreen(snappedX, snappedY, rect.width, rect.height);
       const part = engine.getState().component.devices[dragState.ref]?.part || '';
       const dims = getDeviceDimensions(part);
-      ghost.setAttribute('x', screenSnap.x - dims.w / 2);
-      ghost.setAttribute('y', screenSnap.y - dims.h / 2);
-      ghost.setAttribute('width', dims.w);
-      ghost.setAttribute('height', dims.h);
+      const ghostScale = viewport.getViewState().zoom / 100;
+      const gW = dims.w * ghostScale, gH = dims.h * ghostScale;
+      ghost.setAttribute('x', screenSnap.x - gW / 2);
+      ghost.setAttribute('y', screenSnap.y - gH / 2);
+      ghost.setAttribute('width', gW);
+      ghost.setAttribute('height', gH);
       ghost.style.display = '';
 
       // Show snapped position in status bar
