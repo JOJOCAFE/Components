@@ -1397,13 +1397,23 @@ document.addEventListener('mouseup', e => {
 // ZOOM + PAN (scroll-to-zoom, shift/middle-drag-to-pan)
 // ============================================================================
 
-// Scroll wheel → pointer-anchored zoom
+// Scroll wheel: Ctrl+wheel = zoom, plain wheel = pan vertical, Shift+wheel = pan horizontal
 document.getElementById('svg').addEventListener('wheel', e => {
   e.preventDefault();
   const svgEl = document.getElementById('svg');
   const r = svgEl.getBoundingClientRect();
-  const factor = e.deltaY > 0 ? 0.9 : 1.1; // scroll down = zoom out
-  viewport.zoomAtPoint(factor, e.clientX - r.left, e.clientY - r.top, r.width, r.height);
+
+  if (e.ctrlKey || e.metaKey) {
+    // Ctrl+wheel (or pinch-to-zoom) → pointer-anchored zoom
+    const factor = e.deltaY > 0 ? 0.9 : 1.1;
+    viewport.zoomAtPoint(factor, e.clientX - r.left, e.clientY - r.top, r.width, r.height);
+  } else {
+    // Plain wheel → pan (deltaY = vertical, deltaX or shift+deltaY = horizontal)
+    const dx = e.shiftKey ? -e.deltaY : -e.deltaX;
+    const dy = e.shiftKey ? 0 : -e.deltaY;
+    viewport.panByScreenDelta(dx, dy);
+  }
+
   renderViewport();
   updateStatus();
 }, { passive: false });
