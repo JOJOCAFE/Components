@@ -288,13 +288,160 @@ import { createEngine } from './src/controller/engine.js';
 import { createViewport } from './src/view/viewport.js';
 import { createStatusBar } from './src/view/status-bar.js';
 import { createPageTabs } from './src/view/page-tabs.js';
-import { parseFile, FILE_TYPES, getPageNames } from './src/model/file.js';
+import { parseFile, FILE_TYPES, LINE_TYPES, getPageNames, serializeDevice, serializeConnect, serializePaper, serializePlace, serializeRoute, serializeLabel } from './src/model/file.js';
 import { createEditor, highlightAndScroll, getText, getLineCount } from './src/view/editor.js';
 import { syncToPage, syncToDevice, getCurrentPage } from './src/controller/sync.js';
 import { createToolSystem } from './src/controller/tools.js';
 import { createSelectTool } from './src/controller/select-tool.js';
 import { createConnectTool } from './src/controller/connect-tool.js';
-import { syncStateToText, syncTextToEngine } from './src/controller/twin-sync.js';
+
+// ==========================================================================
+// STATE → TEXT helpers (replaced deprecated twin-sync.js)
+// Board is allowed to serialize its own display text from state it holds.
+// ==========================================================================
+
+function syncStateToText(engineState) {
+  return {
+    circuit: _stateToCircuit(engineState),
+    board: _stateToBoard(engineState),
+  };
+}
+
+function _stateToCircuit(engineState) {
+  const pageList = engineState.pages?.list || ['Page 1'];
+  const devices = engineState.component?.devices || {};
+  const connections = engineState.component?.connections || [];
+  const lines = [];
+  for (const pageName of pageList) {
+    lines.push(`@page ${pageName}`);
+    for (const [ref, dev] of Object.entries(devices)) {
+      if ((dev.page || pageList[0]) === pageName) {
+        lines.push(serializeDevice(ref, dev.part));
+      }
+    }
+    for (const conn of connections) {
+      const fromRef = conn.from.split('.')[0];
+      const fromDev = devices[fromRef];
+      if ((fromDev?.page || pageList[0]) === pageName) {
+        lines.push(serializeConnect(conn.from, conn.to));
+      }
+    }
+    lines.push('');
+  }
+  return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
+}
+
+function _stateToBoard(engineState) {
+  const pageList = engineState.pages?.list || ['Page 1'];
+  const placements = engineState.board?.placements || {};
+  const routes = engineState.board?.routes || [];
+  const labels = engineState.board?.labels || [];
+  const config = engineState.config;
+  const lines = [];
+  for (const pageName of pageList) {
+    lines.push(`@page ${pageName}`);
+    const paperSize = config?.paper?.size || 'A4';
+    const paperOrient = config?.paper?.orientation || 'landscape';
+    lines.push(serializePaper(paperSize, paperOrient));
+    for (const [ref, pl] of Object.entries(placements)) {
+      if ((pl.page || pageList[0]) === pageName) {
+        lines.push(serializePlace(ref, pl.x, pl.y, pl.rotation || 0));
+      }
+    }
+    for (const route of routes) {
+      const fromRef = route.from.split('.')[0];
+      const fromPl = placements[fromRef];
+      if ((fromPl?.page || pageList[0]) === pageName) {
+        lines.push(serializeRoute(route.from, route.to, route.via || []));
+      }
+    }
+    for (const label of labels) {
+      if ((label.page || pageList[0]) === pageName) {
+        lines.push(serializeLabel(label.text, label.x, label.y));
+      }
+    }
+    lines.push('');
+  }
+  return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
+}
+
+function syncTextToEngine(editedSide, newText, engineState) {
+  if (editedSide === 'circuit') {
+    return _circuitTextToCommands(newText, engineState);
+  }
+  return _boardTextToCommands(newText, engineState);
+}
+
+function _circuitTextToCommands(newText, engineState) {
+  const file = parseFile(newText, FILE_TYPES.CIRCUIT);
+  const currentDevices = engineState.component?.devices || {};
+  const currentConnections = engineState.component?.connections || [];
+  const commands = [];
+  const parsedDevices = {};
+  const parsedConnections = [];
+  for (const page of file.pages) {
+    for (const line of page.lines) {
+      if (line.parsed.type === LINE_TYPES.DEVICE) {
+        parsedDevices[line.parsed.ref] = { part: line.parsed.part, page: page.name };
+      }
+      if (line.parsed.type === LINE_TYPES.CONNECT) {
+        parsedConnections.push({ from: line.parsed.from, to: line.parsed.to });
+      }
+    }
+  }
+  for (const [ref, dev] of Object.entries(parsedDevices)) {
+    if (!currentDevices[ref]) {
+      commands.push(`place ${ref}, ${dev.part} at (50, 50) rotate 0`);
+    }
+  }
+  for (const ref of Object.keys(currentDevices)) {
+    if (!parsedDevices[ref]) {
+      commands.push(`delete ${ref}`);
+    }
+  }
+  for (const conn of parsedConnections) {
+    const exists = currentConnections.some(c => c.from === conn.from && c.to === conn.to);
+    if (!exists) {
+      commands.push(`connect ${conn.from} -> ${conn.to}`);
+    }
+  }
+  for (const conn of currentConnections) {
+    const exists = parsedConnections.some(c => c.from === conn.from && c.to === conn.to);
+    if (!exists) {
+      commands.push(`disconnect ${conn.from} -> ${conn.to}`);
+    }
+  }
+  return commands;
+}
+
+function _boardTextToCommands(newText, engineState) {
+  const file = parseFile(newText, FILE_TYPES.BOARD);
+  const currentPlacements = engineState.board?.placements || {};
+  const commands = [];
+  const parsedPlacements = {};
+  for (const page of file.pages) {
+    for (const line of page.lines) {
+      if (line.parsed.type === LINE_TYPES.PLACE) {
+        parsedPlacements[line.parsed.ref] = {
+          x: line.parsed.x, y: line.parsed.y,
+          rotation: line.parsed.rotation, page: page.name,
+        };
+      }
+    }
+  }
+  for (const [ref, pl] of Object.entries(parsedPlacements)) {
+    const current = currentPlacements[ref];
+    if (current) {
+      if (current.x !== pl.x || current.y !== pl.y) {
+        commands.push(`move ${ref} to (${pl.x}, ${pl.y})`);
+      }
+      if ((current.rotation || 0) !== pl.rotation) {
+        commands.push(`rotate ${ref} ${pl.rotation}`);
+      }
+    }
+  }
+  return commands;
+}
 import { createCommandRegistry, createFileCommands, createEditCommands, createViewCommands, createToolCommands, createPageCommands, createBoardCommands, createCircuitCommands } from './src/controller/command-registry.js';
 import { createLibrary } from './src/model/library.js';
 import { createDeviceTray } from './src/controller/device-tray.js';
@@ -859,6 +1006,8 @@ function renderViewport() {
 
 // Click device in viewport → select or connect based on active tool
 document.getElementById('svg').addEventListener('mousedown', e => {
+  // If panning (shift+click or middle button), don't select/connect
+  if (e.shiftKey || e.button === 1) return;
   // If placing from tray, let the click handler handle it
   if (placingPart) return;
 
@@ -997,6 +1146,52 @@ document.addEventListener('mouseup', e => {
     renderViewport();
   }
   dragState = null;
+});
+
+// ============================================================================
+// ZOOM + PAN (scroll-to-zoom, shift/middle-drag-to-pan)
+// ============================================================================
+
+// Scroll wheel → pointer-anchored zoom
+document.getElementById('svg').addEventListener('wheel', e => {
+  e.preventDefault();
+  const svgEl = document.getElementById('svg');
+  const r = svgEl.getBoundingClientRect();
+  const factor = e.deltaY > 0 ? 0.9 : 1.1; // scroll down = zoom out
+  viewport.zoomAtPoint(factor, e.clientX - r.left, e.clientY - r.top, r.width, r.height);
+  renderViewport();
+  updateStatus();
+}, { passive: false });
+
+// Shift+drag or middle-button drag → pan
+let panState = null;
+
+document.getElementById('svg').addEventListener('mousedown', e => {
+  // Shift+left or middle button starts pan
+  if (e.shiftKey || e.button === 1) {
+    e.preventDefault();
+    panState = { startX: e.clientX, startY: e.clientY };
+  }
+}, true); // capture phase so it fires before select/connect handlers
+
+document.addEventListener('mousemove', e => {
+  if (panState && (e.buttons & 5)) { // left(1) or middle(4) held
+    const dx = e.clientX - panState.startX;
+    const dy = e.clientY - panState.startY;
+    if (dx !== 0 || dy !== 0) {
+      viewport.panByScreenDelta(dx, dy);
+      panState.startX = e.clientX;
+      panState.startY = e.clientY;
+      renderViewport();
+      updateStatus();
+    }
+  }
+});
+
+document.addEventListener('mouseup', e => {
+  if (panState) {
+    panState = null;
+  }
 });
 
 // ============================================================================
@@ -1265,6 +1460,8 @@ function updateStatus() {
   document.getElementById('st-tool').textContent = active?.name || 'Select';
   const config = engine.getState().config;
   document.getElementById('st-paper').textContent = `${config.paper.size} ${config.paper.orientation === 'landscape' ? 'L' : 'P'}`;
+  const vs = viewport.getViewState();
+  document.getElementById('st-zoom').textContent = `${Math.round(vs.zoom)}%`;
 }
 
 // ============================================================================
@@ -1456,13 +1653,39 @@ function updateTitle() {
   document.title = `${currentProjectName} — Components Board`;
 }
 
-// --- Keyboard shortcuts for File ---
+// --- Keyboard shortcuts for File + Undo/Redo ---
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   if (e.ctrlKey && e.key === 'n') { e.preventDefault(); fileNew(); }
   if (e.ctrlKey && e.key === 'o') { e.preventDefault(); fileOpen(); }
   if (e.ctrlKey && !e.shiftKey && e.key === 's') { e.preventDefault(); fileSave(); }
   if (e.ctrlKey && e.shiftKey && e.key === 'S') { e.preventDefault(); fileSaveAs(); }
+  // Undo: Ctrl+Z
+  if (e.ctrlKey && !e.shiftKey && e.key === 'z') {
+    e.preventDefault();
+    const result = engine.run('undo');
+    if (result.success) {
+      const state = engine.getState();
+      const texts = syncStateToText(state);
+      if (texts.circuit) { CIRCUIT_SRC_LIVE = texts.circuit; circuitFile = parseFile(CIRCUIT_SRC_LIVE, FILE_TYPES.CIRCUIT); circuitEditor = createEditor(CIRCUIT_SRC_LIVE, { visibleLines: 30 }); }
+      if (texts.board) { BOARD_SRC_LIVE = texts.board; boardFile = parseFile(BOARD_SRC_LIVE, FILE_TYPES.BOARD); boardEditor = createEditor(BOARD_SRC_LIVE, { visibleLines: 30 }); }
+      renderEditors(); renderViewport(); updateStatus();
+      cmdLog('undo', true);
+    }
+  }
+  // Redo: Ctrl+Y or Ctrl+Shift+Z
+  if ((e.ctrlKey && e.key === 'y') || (e.ctrlKey && e.shiftKey && e.key === 'Z')) {
+    e.preventDefault();
+    const result = engine.run('redo');
+    if (result.success) {
+      const state = engine.getState();
+      const texts = syncStateToText(state);
+      if (texts.circuit) { CIRCUIT_SRC_LIVE = texts.circuit; circuitFile = parseFile(CIRCUIT_SRC_LIVE, FILE_TYPES.CIRCUIT); circuitEditor = createEditor(CIRCUIT_SRC_LIVE, { visibleLines: 30 }); }
+      if (texts.board) { BOARD_SRC_LIVE = texts.board; boardFile = parseFile(BOARD_SRC_LIVE, FILE_TYPES.BOARD); boardEditor = createEditor(BOARD_SRC_LIVE, { visibleLines: 30 }); }
+      renderEditors(); renderViewport(); updateStatus();
+      cmdLog('redo', true);
+    }
+  }
 });
 
 // ============================================================================

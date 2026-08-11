@@ -489,6 +489,184 @@ test('getRenderData respects current zoom and pan', () => {
   approxEqual(d.screenY, 450);
 });
 
+// --- panByScreenDelta ---
+
+console.log('\npanByScreenDelta:');
+
+test('panByScreenDelta moves view at zoom 100%', () => {
+  const vp = createViewport(configA4);
+  vp.panByScreenDelta(100, -50);
+  const vs = vp.getViewState();
+  approxEqual(vs.panX, 100); // 100px / scale(1.0) = 100mm
+  approxEqual(vs.panY, -50);
+});
+
+test('panByScreenDelta accounts for zoom level', () => {
+  const vp = createViewport(configA4);
+  vp.setZoom(200); // scale = 2.0
+  vp.panByScreenDelta(100, -50);
+  const vs = vp.getViewState();
+  approxEqual(vs.panX, 50); // 100px / 2.0 = 50mm
+  approxEqual(vs.panY, -25);
+});
+
+test('panByScreenDelta accumulates', () => {
+  const vp = createViewport(configA4);
+  vp.panByScreenDelta(30, 20);
+  vp.panByScreenDelta(10, -5);
+  const vs = vp.getViewState();
+  approxEqual(vs.panX, 40);
+  approxEqual(vs.panY, 15);
+});
+
+test('panByScreenDelta with zero does nothing', () => {
+  const vp = createViewport(configA4);
+  vp.setPan(10, 20);
+  vp.panByScreenDelta(0, 0);
+  const vs = vp.getViewState();
+  approxEqual(vs.panX, 10);
+  approxEqual(vs.panY, 20);
+});
+
+// --- zoomAtPoint ---
+
+console.log('\nzoomAtPoint:');
+
+test('zoomAtPoint at screen center behaves like setZoom', () => {
+  const vp = createViewport(configA4);
+  vp.zoomAtPoint(2.0, 500, 400, 1000, 800); // center of 1000×800 screen
+  const vs = vp.getViewState();
+  approxEqual(vs.zoom, 200);
+  // Pan should stay ~0 since we zoomed at center with no prior pan
+  approxEqual(vs.panX, 0, 0.01);
+  approxEqual(vs.panY, 0, 0.01);
+});
+
+test('zoomAtPoint keeps world point under pointer fixed', () => {
+  const vp = createViewport(configA4);
+  const screenW = 1000, screenH = 800;
+  const pointerX = 700, pointerY = 300;
+
+  // Get world point under pointer before zoom
+  const worldBefore = vp.screenToWorld(pointerX, pointerY, screenW, screenH);
+
+  // Zoom in 2x at pointer
+  vp.zoomAtPoint(2.0, pointerX, pointerY, screenW, screenH);
+
+  // Get world point under same screen position after zoom
+  const worldAfter = vp.screenToWorld(pointerX, pointerY, screenW, screenH);
+
+  approxEqual(worldAfter.x, worldBefore.x, 0.01);
+  approxEqual(worldAfter.y, worldBefore.y, 0.01);
+});
+
+test('zoomAtPoint zoom out keeps point fixed', () => {
+  const vp = createViewport(configA4);
+  vp.setZoom(200);
+  const screenW = 1000, screenH = 800;
+  const pointerX = 250, pointerY = 600;
+
+  const worldBefore = vp.screenToWorld(pointerX, pointerY, screenW, screenH);
+  vp.zoomAtPoint(0.5, pointerX, pointerY, screenW, screenH);
+  const worldAfter = vp.screenToWorld(pointerX, pointerY, screenW, screenH);
+
+  approxEqual(worldAfter.x, worldBefore.x, 0.01);
+  approxEqual(worldAfter.y, worldBefore.y, 0.01);
+});
+
+test('zoomAtPoint clamps at MIN_ZOOM (10%)', () => {
+  const vp = createViewport(configA4);
+  vp.setZoom(15);
+  vp.zoomAtPoint(0.1, 500, 400, 1000, 800); // 15 * 0.1 = 1.5 → clamped to 10
+  const vs = vp.getViewState();
+  approxEqual(vs.zoom, 10);
+});
+
+test('zoomAtPoint clamps at MAX_ZOOM (1000%)', () => {
+  const vp = createViewport(configA4);
+  vp.setZoom(900);
+  vp.zoomAtPoint(2.0, 500, 400, 1000, 800); // 900 * 2 = 1800 → clamped to 1000
+  const vs = vp.getViewState();
+  approxEqual(vs.zoom, 1000);
+});
+
+test('zoomAtPoint returns unchanged state when already at limit', () => {
+  const vp = createViewport(configA4);
+  vp.setZoom(10);
+  const before = vp.getViewState();
+  vp.zoomAtPoint(0.5, 500, 400, 1000, 800); // 10 * 0.5 = 5 → clamped to 10
+  const after = vp.getViewState();
+  approxEqual(after.zoom, 10);
+  approxEqual(after.panX, before.panX, 0.01);
+  approxEqual(after.panY, before.panY, 0.01);
+});
+
+test('zoomAtPoint with existing pan keeps pointer world point', () => {
+  const vp = createViewport(configA4);
+  vp.setPan(50, -30);
+  const screenW = 1000, screenH = 800;
+  const pointerX = 400, pointerY = 500;
+
+  const worldBefore = vp.screenToWorld(pointerX, pointerY, screenW, screenH);
+  vp.zoomAtPoint(1.5, pointerX, pointerY, screenW, screenH);
+  const worldAfter = vp.screenToWorld(pointerX, pointerY, screenW, screenH);
+
+  approxEqual(worldAfter.x, worldBefore.x, 0.01);
+  approxEqual(worldAfter.y, worldBefore.y, 0.01);
+});
+
+test('zoomAtPoint multiple steps preserve anchor', () => {
+  const vp = createViewport(configA4);
+  const screenW = 1000, screenH = 800;
+  const pointerX = 300, pointerY = 200;
+
+  const worldStart = vp.screenToWorld(pointerX, pointerY, screenW, screenH);
+
+  // Simulate 5 scroll steps
+  for (let i = 0; i < 5; i++) {
+    vp.zoomAtPoint(1.1, pointerX, pointerY, screenW, screenH);
+  }
+
+  const worldEnd = vp.screenToWorld(pointerX, pointerY, screenW, screenH);
+  approxEqual(worldEnd.x, worldStart.x, 0.1);
+  approxEqual(worldEnd.y, worldStart.y, 0.1);
+});
+
+// --- Combined zoom + pan ---
+
+console.log('\nZoom + Pan combined:');
+
+test('pan then zoom at corner preserves point', () => {
+  const vp = createViewport(configA4);
+  const screenW = 1000, screenH = 800;
+
+  vp.panByScreenDelta(200, -100); // pan first
+  const pointerX = 800, pointerY = 100;
+
+  const worldBefore = vp.screenToWorld(pointerX, pointerY, screenW, screenH);
+  vp.zoomAtPoint(1.5, pointerX, pointerY, screenW, screenH);
+  const worldAfter = vp.screenToWorld(pointerX, pointerY, screenW, screenH);
+
+  approxEqual(worldAfter.x, worldBefore.x, 0.01);
+  approxEqual(worldAfter.y, worldBefore.y, 0.01);
+});
+
+test('zoom then pan then zoom preserves second anchor', () => {
+  const vp = createViewport(configA4);
+  const screenW = 1000, screenH = 800;
+
+  vp.zoomAtPoint(1.5, 500, 400, screenW, screenH);
+  vp.panByScreenDelta(100, 50);
+
+  const pointerX = 600, pointerY = 350;
+  const worldBefore = vp.screenToWorld(pointerX, pointerY, screenW, screenH);
+  vp.zoomAtPoint(0.8, pointerX, pointerY, screenW, screenH);
+  const worldAfter = vp.screenToWorld(pointerX, pointerY, screenW, screenH);
+
+  approxEqual(worldAfter.x, worldBefore.x, 0.01);
+  approxEqual(worldAfter.y, worldBefore.y, 0.01);
+});
+
 // --- Summary ---
 console.log(`\n━━━ Results: ${passed} passed, ${failed} failed ━━━\n`);
 if (failed > 0) process.exit(1);

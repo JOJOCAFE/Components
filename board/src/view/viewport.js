@@ -107,6 +107,47 @@ export function createViewport(config) {
   }
 
   /**
+   * Pan by a screen-pixel delta. Converts pixels to world offset.
+   * @param {number} dx — screen pixels horizontal
+   * @param {number} dy — screen pixels vertical
+   * @returns {object} new view state
+   */
+  function panByScreenDelta(dx, dy) {
+    panX += dx / scale();
+    panY += dy / scale();
+    return getViewState();
+  }
+
+  /**
+   * Zoom anchored at a screen point (pointer-anchored scroll-to-zoom).
+   * The world point under the pointer stays fixed on screen after zoom.
+   * @param {number} factor — multiplier (e.g. 1.1 to zoom in, 0.9 to zoom out)
+   * @param {number} screenX — pointer X in screen pixels
+   * @param {number} screenY — pointer Y in screen pixels
+   * @param {number} screenWidth
+   * @param {number} screenHeight
+   * @returns {object} new view state
+   */
+  function zoomAtPoint(factor, screenX, screenY, screenWidth, screenHeight) {
+    // World point under pointer BEFORE zoom
+    const worldX = toWorldX(screenX, screenWidth);
+    const worldY = toWorldY(screenY, screenHeight);
+
+    // Apply zoom
+    const newZoom = clampZoom(zoom * factor);
+    if (newZoom === zoom) return getViewState(); // clamped, no change
+    zoom = newZoom;
+
+    // After zoom, adjust pan so that same world point is still under pointer
+    // screenX = (worldX + panX) * scale() + screenWidth / 2
+    // → panX = (screenX - screenWidth / 2) / scale() - worldX
+    panX = (screenX - screenWidth / 2) / scale() - worldX;
+    panY = (screenY - screenHeight / 2) / scale() - worldY;
+
+    return getViewState();
+  }
+
+  /**
    * Convert screen pixel to world mm.
    */
   function screenToWorld(screenX, screenY, screenWidth, screenHeight) {
@@ -322,6 +363,8 @@ export function createViewport(config) {
     setZoom,
     zoomFit,
     setPan,
+    panByScreenDelta,
+    zoomAtPoint,
     screenToWorld,
     worldToScreen,
     getGridLines,

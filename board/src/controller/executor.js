@@ -4,17 +4,12 @@
  *
  * Stateful controller — the only mutable piece.
  * ES module syntax, Node.js compatible.
+ *
+ * BOUNDARY: Executor owns board-visual state (placements, routes, labels,
+ * selection, viewport, pages). Circuit state (devices, connections) is tracked
+ * locally for undo/redo but delegated to EngineInterface for the real engine.
+ * Executor does NOT import component.js — it inlines the trivial model ops.
  */
-
-import {
-  createComponentModel,
-  addDevice,
-  removeDevice,
-  addConnection,
-  removeConnection,
-  getDevice,
-  getConnections,
-} from '../model/component.js';
 
 import {
   createBoardModel,
@@ -28,6 +23,51 @@ import {
 } from '../model/board.js';
 
 import { createConfig } from '../model/config.js';
+
+// =============================================================================
+// INLINE COMPONENT MODEL (local shadow for undo/redo — NOT the engine truth)
+// =============================================================================
+
+function createComponentModel() {
+  return { devices: {}, connections: [] };
+}
+
+function addDevice(model, ref, part) {
+  return {
+    devices: { ...model.devices, [ref]: { ref, part } },
+    connections: model.connections,
+  };
+}
+
+function removeDevice(model, ref) {
+  const { [ref]: _removed, ...remainingDevices } = model.devices;
+  const prefix = ref + '.';
+  const connections = model.connections.filter(
+    c => !c.from.startsWith(prefix) && !c.to.startsWith(prefix)
+  );
+  return { devices: remainingDevices, connections };
+}
+
+function addConnection(model, from, to, via = []) {
+  return { devices: model.devices, connections: [...model.connections, { from, to, via }] };
+}
+
+function removeConnection(model, from, to) {
+  const idx = model.connections.findIndex(c => c.from === from && c.to === to);
+  if (idx < 0) return model;
+  return { devices: model.devices, connections: [...model.connections.slice(0, idx), ...model.connections.slice(idx + 1)] };
+}
+
+function getDevice(model, ref) {
+  return model.devices[ref] || null;
+}
+
+function getConnections(model, ref) {
+  const prefix = ref + '.';
+  return model.connections.filter(
+    c => c.from.startsWith(prefix) || c.to.startsWith(prefix)
+  );
+}
 
 /**
  * Deep clone via JSON round-trip (safe for plain objects).
