@@ -1332,11 +1332,26 @@ document.getElementById('svg').addEventListener('mousemove', e => {
     }
   }
 
-  // Connect preview line
+  // Connect preview line + auto-pan near edges
   if (connectToolInst.isActive()) {
     const preview = connectToolInst.getPreview();
     connectPreview = { ...preview, currentMouse: world };
-    renderViewport(); // live draw-line preview
+
+    // Auto-pan when cursor is within 40px of viewport edge
+    const edgeMargin = 40;
+    const panSpeed = 8; // pixels per frame
+    const localX = e.clientX - r.left, localY = e.clientY - r.top;
+    let autoPanX = 0, autoPanY = 0;
+    if (localX < edgeMargin) autoPanX = panSpeed;
+    else if (localX > r.width - edgeMargin) autoPanX = -panSpeed;
+    if (localY < edgeMargin) autoPanY = panSpeed;
+    else if (localY > r.height - edgeMargin) autoPanY = -panSpeed;
+
+    if (autoPanX !== 0 || autoPanY !== 0) {
+      viewport.panByScreenDelta(autoPanX, autoPanY);
+    }
+
+    renderViewport();
   }
 });
 
