@@ -1066,30 +1066,53 @@ function renderViewport() {
     }
   }
 
-  // Connections (dashed, no route) — Guide-visible ones are solid green
+  // Connections — only show if guide-visible (toggle) or has a saved route
+  // Guide-visible: solid green (diagonal). Routed: solid blue polyline (already drawn above).
+  // Hidden by default (matches prototype shouldShowWire pattern).
   for (const c of data.connections) {
     const fRef = c.from.split('.')[0], tRef = c.to.split('.')[0];
     const fd = devMap[fRef], td = devMap[tRef];
-    if (fd && td && !data.routes.some(r => r.from === c.from && r.to === c.to)) {
-      const edgeId = `edge:${c.from}->${c.to}`;
-      const isGuideVisible = guideVisibleEdges.has(edgeId);
-      if (isGuideVisible) {
-        html += `<line x1="${fd.screenX}" y1="${fd.screenY}" x2="${td.screenX}" y2="${td.screenY}" stroke="#007C3D" stroke-width="2" stroke-opacity="0.8"/>`;
-        // Label the connection endpoints
-        html += `<text x="${(fd.screenX + td.screenX)/2}" y="${(fd.screenY + td.screenY)/2 - 5}" text-anchor="middle" font-size="7" fill="#007C3D" font-family="monospace">${c.from} → ${c.to}</text>`;
-      } else {
-        html += `<line x1="${fd.screenX}" y1="${fd.screenY}" x2="${td.screenX}" y2="${td.screenY}" stroke="#999" stroke-dasharray="4 3"/>`;
-      }
-    }
+    if (!fd || !td) continue;
+    const hasRoute = data.routes.some(r => r.from === c.from && r.to === c.to);
+    if (hasRoute) continue; // already drawn as routed polyline
+    const edgeId = `edge:${c.from}->${c.to}`;
+    const isGuideVisible = guideVisibleEdges.has(edgeId);
+    if (!isGuideVisible) continue; // hidden — only shown when Guide-toggled
+    // Guide line: diagonal (direct pin-to-pin), solid green with label
+    html += `<line x1="${fd.screenX}" y1="${fd.screenY}" x2="${td.screenX}" y2="${td.screenY}" stroke="#007C3D" stroke-width="2" stroke-opacity="0.8"/>`;
+    html += `<text x="${(fd.screenX + td.screenX)/2}" y="${(fd.screenY + td.screenY)/2 - 5}" text-anchor="middle" font-size="7" fill="#007C3D" font-family="monospace">${c.from} → ${c.to}</text>`;
   }
 
-  // Connect tool preview line (from start device to current mouse)
-  if (connectStart && connectPreview) {
+  // Connect tool preview line (orthogonal 90° turns, from pin position to cursor)
+  if (connectStart && connectPreview && connectPreview.currentMouse) {
     const startDev = devMap[connectStart.ref];
-    if (startDev && connectPreview.currentMouse) {
-      const endScreen = viewport.worldToScreen(connectPreview.currentMouse.x, connectPreview.currentMouse.y, W, H);
-      html += `<line x1="${startDev.screenX}" y1="${startDev.screenY}" x2="${endScreen.x}" y2="${endScreen.y}" stroke="#1976D2" stroke-width="2" stroke-dasharray="6 3" stroke-opacity="0.7"/>`;
+    if (startDev) {
+      const W_ = rect.width || W, H_ = rect.height || H;
+      // Start from the pin position (use connectStart.pinScreen if available, else device edge)
+      const startPt = connectStart.pinScreen || { x: startDev.screenX, y: startDev.screenY };
+      const endWorld = connectPreview.currentMouse;
+      const endScreen = viewport.worldToScreen(endWorld.x, endWorld.y, W, H);
+
+      // Build orthogonal path: existing turning points + L-shaped segment to cursor
+      const pathPts = [startPt];
+      for (const p of (connectPreview.points || [])) {
+        const s = viewport.worldToScreen(p.x, p.y, W, H);
+        pathPts.push(s);
+      }
+
+      // Add L-shaped segment from last point to cursor (horizontal then vertical)
+      const last = pathPts[pathPts.length - 1];
+      const midPt = { x: endScreen.x, y: last.y }; // horizontal first, then vertical
+      pathPts.push(midPt);
+      pathPts.push(endScreen);
+
+      // Draw the polyline
+      const pts = pathPts.map(p => `${p.x},${p.y}`).join(' ');
+      html += `<polyline points="${pts}" fill="none" stroke="#1976D2" stroke-width="2" stroke-dasharray="6 3" stroke-opacity="0.7" stroke-linecap="round" stroke-linejoin="round"/>`;
+      // Endpoint circle
       html += `<circle cx="${endScreen.x}" cy="${endScreen.y}" r="4" fill="none" stroke="#1976D2" stroke-width="1.5"/>`;
+      // Start circle
+      html += `<circle cx="${startPt.x}" cy="${startPt.y}" r="3" fill="#1976D2" fill-opacity="0.5"/>`;
     }
   }
 
@@ -1143,11 +1166,54 @@ document.getElementById('svg').addEventListener('mousedown', e => {
   if (activeTool === 'connect') {
     if (device) {
       const ref = device.dataset.ref;
-      const pinId = ref + '.OUT'; // simplified pin targeting
+      // Find the nearest pin on this device to the click position
+      const state = engine.getState();
+      const devInfo = state.component?.devices?.[ref];
+      const placement = state.board?.placements?.[ref];
+      const part = devInfo?.part || '';
+      const dims = getDeviceDimensions(part);
+      const devScreen = viewport.worldToScreen(placement?.x || 0, placement?.y || 0, r.width, r.height);
+
+      // Get pin positions — use httpEngine pin data if available, else estimate
+      let pinId = ref + '.OUT'; // fallback
+      let pinScreen = { x: devScreen.x, y: devScreen.y };
+      const httpDev = httpEngine ? httpEngine.getDevices()[ref] : null;
+      const pinAnchors = httpDev?.pinAnchors || [];
+
+      if (pinAnchors.length > 0) {
+        // Find nearest pin anchor to click position
+        const clickX = e.clientX - r.left, clickY = e.clientY - r.top;
+        let bestDist = Infinity, bestAnchor = pinAnchors[0];
+        const half = Math.ceil(pinAnchors.length / 2);
+        const pinSpacing = (dims.h - 6) / half;
+        for (const anchor of pinAnchors) {
+          const isLeft = anchor.dip_side === 'left';
+          const order = anchor.dip_order - 1;
+          const py = devScreen.y - dims.h/2 + 3 + pinSpacing * (order + 0.5);
+          const px = isLeft ? devScreen.x - dims.w/2 : devScreen.x + dims.w/2;
+          const dist = Math.hypot(clickX - px, clickY - py);
+          if (dist < bestDist) { bestDist = dist; bestAnchor = anchor; }
+        }
+        pinId = bestAnchor.endpoint || `${ref}.${bestAnchor.port}`;
+        const isLeft = bestAnchor.dip_side === 'left';
+        const order = bestAnchor.dip_order - 1;
+        const py = devScreen.y - dims.h/2 + 3 + pinSpacing * (order + 0.5);
+        const px = isLeft ? devScreen.x - dims.w/2 : devScreen.x + dims.w/2;
+        pinScreen = { x: px, y: py };
+      } else {
+        // Estimate: use click-relative position (top/bottom half → pick output/input side)
+        const clickLocal = e.clientY - r.top - (devScreen.y - dims.h/2);
+        const isTopHalf = clickLocal < dims.h / 2;
+        pinScreen = {
+          x: isTopHalf ? devScreen.x + dims.w/2 : devScreen.x - dims.w/2,
+          y: devScreen.y - dims.h/4 + (isTopHalf ? 0 : dims.h/2)
+        };
+      }
+
       if (!connectToolInst.isActive()) {
         // Start connection
         connectToolInst.clickPin(pinId);
-        connectStart = { ref, world: { x: world.x, y: world.y } };
+        connectStart = { ref, world: { x: world.x, y: world.y }, pinScreen };
         cmdLog(`connect: start from ${pinId}`, true);
       } else {
         // Complete connection
@@ -1166,9 +1232,9 @@ document.getElementById('svg').addEventListener('mousedown', e => {
         renderViewport();
       }
     } else if (connectToolInst.isActive()) {
-      // Click on empty space = add turning point
+      // Click on empty space = add turning point (snapped orthogonal)
       connectToolInst.clickPoint({ x: Math.round(world.x), y: Math.round(world.y) });
-      cmdLog(`connect: point (${Math.round(world.x)}, ${Math.round(world.y)})`, true);
+      cmdLog(`connect: turn (${Math.round(world.x)}, ${Math.round(world.y)})`, true);
     }
     return;
   }
