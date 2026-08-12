@@ -1,10 +1,24 @@
-"""Statement handlers — one class per statement kind.
+"""
+Component Language — Statement Handlers
+========================================
 
-Each handler knows how to resolve its node type against the DB and
-produce resolved topology entries. Adding a new statement means adding
-a handler here and registering it in HANDLER_REGISTRY at the bottom.
+One handler class per statement kind.  Each handler knows how to resolve
+its node type against the chip DB and register results in the ResolutionContext.
 
-Handlers are stateless — all mutable state lives in ResolutionContext.
+HOW TO ADD A NEW HANDLER
+-------------------------
+
+1. Create a class that inherits from StatementHandler:
+
+    class MyHandler(StatementHandler):
+        def resolve(self, node, ctx):
+            # node = parsed AST node (dict with "kind", "name", "span", etc.)
+            # ctx  = ResolutionContext (has .nets, .devices, .connections, etc.)
+            ctx.stimulus.append({"kind": "my_thing", ...})
+
+2. Register it at the bottom of this file:
+
+    HANDLER_REGISTRY["my_keyword"] = MyHandler()
 """
 
 from __future__ import annotations
@@ -22,16 +36,24 @@ JsonMap = dict[str, Any]
 _ROOT = Path(__file__).resolve().parents[2]
 
 
+# =============================================================================
+# BASE CLASS
+# =============================================================================
+
 class StatementHandler:
-    """Base class for statement handlers."""
+    """Base class.  Override resolve() to handle a specific statement kind."""
 
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
-        """Resolve this node and register results in context."""
-        pass  # Default: no-op (node is stored as-is)
+        """Process this node and update the resolution context."""
+        pass
 
+
+# =============================================================================
+# TOPOLOGY HANDLERS
+# =============================================================================
 
 class DeviceHandler(StatementHandler):
-    """Resolves device declarations against the chip DB."""
+    """Resolves `device Name, Library.Part, {params};` against the chip DB."""
 
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         from .db import load_component
@@ -43,21 +65,26 @@ class DeviceHandler(StatementHandler):
 
         locator = node["locator"]
         alias, sep, _ = locator.partition(".")
+
+        # Unaliased hierarchy references (child.X, project.X)
+        if sep and alias.lower() in ("child", "project"):
+            ctx.devices[name] = ctx.make_hierarchy_device(node)
+            return
+
+        # Must start with a declared import alias
         if not sep or alias not in ctx.imports:
-            # Check for unaliased hierarchy references
-            if sep and alias.lower() in ("child", "project"):
-                ctx.devices[name] = ctx.make_hierarchy_device(node)
-                return
             ctx.error("resolver.unknown_import_alias",
                       f"Device locator {locator!r} must start with a declared import alias", line)
             return
 
         library = ctx.imports[alias]
+
         # Hierarchy imports skip DB resolution
         if library.startswith("project") or library == "project":
             ctx.devices[name] = ctx.make_hierarchy_device(node)
             return
 
+        # Resolve part from DB
         part = locator.rsplit(".", 1)[-1]
         try:
             definition = load_component(part)
@@ -65,30 +92,40 @@ class DeviceHandler(StatementHandler):
             ctx.error("resolver.unknown_device", f"cannot resolve {locator!r}: {exc}", line)
             return
 
+        # Verify library ownership
         groups = ctx.library_groups.get(library)
         if groups is not None and definition.get("group") not in groups:
             ctx.error("resolver.library_ownership",
                       f"{locator!r} is not owned by imported library {library!r}", line)
             return
 
-        # Validate parameters for virtual devices (relaxed)
+        # Validate parameters (minimal — only catch clearly wrong values)
         parameters = node.get("parameters") or {}
-        if parameters and "period_ns" in parameters:
-            if not isinstance(parameters["period_ns"], (int, float)) or parameters["period_ns"] <= 0:
-                ctx.error("resolver.invalid_parameter", f"{name!r}.period_ns must be positive", line)
+        if "period_ns" in parameters:
+            val = parameters["period_ns"]
+            if not isinstance(val, (int, float)) or val <= 0:
+                ctx.error("resolver.invalid_parameter",
+                          f"{name!r}.period_ns must be positive", line)
 
+        # Register device with resolved definition
         definition_path = definition.get("db_path")
-        raw_definition = (_ROOT / definition_path).read_bytes() if definition_path else b""
+        raw = (_ROOT / definition_path).read_bytes() if definition_path else b""
         ctx.devices[name] = {
-            "id": name, "part": part, "locator": locator,
-            "parameters": parameters, "pins": deepcopy(definition.get("pins", [])),
+            "id": name,
+            "part": part,
+            "locator": locator,
+            "parameters": parameters,
+            "pins": deepcopy(definition.get("pins", [])),
             "definition_path": definition_path,
-            "definition_digest": f"sha256:{hashlib.sha256(raw_definition).hexdigest()}",
-            "provenance": {"source_span": node["span"], "resolved_definition": definition_path},
+            "definition_digest": f"sha256:{hashlib.sha256(raw).hexdigest()}",
+            "provenance": {"source_span": node["span"],
+                          "resolved_definition": definition_path},
         }
 
 
 class NetHandler(StatementHandler):
+    """Resolves `net name : kind;`."""
+
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         name = node["name"]
         if not ctx.declare(name, "net", node["span"]["line"]):
@@ -97,6 +134,8 @@ class NetHandler(StatementHandler):
 
 
 class BusHandler(StatementHandler):
+    """Resolves `bus name[width] : kind;` — creates bus + member nets."""
+
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         name = node["name"]
         line = node["span"]["line"]
@@ -108,66 +147,88 @@ class BusHandler(StatementHandler):
             return
         ctx.buses[name] = {"id": name, "width": width, "kind": node["signal_kind"]}
         for bit in range(width):
-            member_id = f"{name}[{bit}]"
-            ctx.nets[member_id] = {"id": member_id, "kind": node["signal_kind"], "bus": name, "bit": bit}
+            member = f"{name}[{bit}]"
+            ctx.nets[member] = {"id": member, "kind": node["signal_kind"],
+                               "bus": name, "bit": bit}
 
 
 class PortHandler(StatementHandler):
+    """Resolves `port name[width] : kind, direction;` — creates boundary nets."""
+
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         name = node["name"]
         line = node["span"]["line"]
         width = node.get("width")
+
+        if not ctx.declare(name, "port", line):
+            return
+
         if width:
-            if not ctx.declare(name, "port", line):
-                return
-            ctx.buses[name] = {"id": name, "width": width, "kind": node["signal_kind"], "port": True}
+            ctx.buses[name] = {"id": name, "width": width,
+                              "kind": node["signal_kind"], "port": True}
             for bit in range(width):
-                member_id = f"{name}[{bit}]"
-                ctx.nets[member_id] = {"id": member_id, "kind": node["signal_kind"], "bus": name, "bit": bit, "port": True}
+                member = f"{name}[{bit}]"
+                ctx.nets[member] = {"id": member, "kind": node["signal_kind"],
+                                   "bus": name, "bit": bit, "port": True}
         else:
-            if not ctx.declare(name, "port", line):
-                return
-            ctx.nets[name] = {"id": name, "kind": node["signal_kind"], "port": True, "direction": node.get("direction")}
+            ctx.nets[name] = {"id": name, "kind": node["signal_kind"],
+                             "port": True, "direction": node.get("direction")}
+
         ctx.ports.append({
-            "id": name, "width": width, "signal_kind": node["signal_kind"],
-            "direction": node.get("direction"), "metadata": node.get("metadata") or {},
+            "id": name, "width": width,
+            "signal_kind": node["signal_kind"],
+            "direction": node.get("direction"),
+            "metadata": node.get("metadata") or {},
         })
 
 
 class InstanceHandler(StatementHandler):
+    """Resolves `instance name, Ref;` — registers a hierarchy sub-circuit."""
+
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         name = node["name"]
         if not ctx.declare(name, "instance", node["span"]["line"]):
             return
-        ctx.instances_list.append({"id": name, "source_ref": node["source_ref"],
-                                   "provenance": {"source_span": node["span"]}})
+        ctx.instances_list.append({
+            "id": name, "source_ref": node["source_ref"],
+            "provenance": {"source_span": node["span"]},
+        })
         # Register in devices so connect can reference instance.port
         ctx.devices[name] = {
-            "id": name, "part": node["source_ref"], "locator": f"instance.{node['source_ref']}",
+            "id": name, "part": node["source_ref"],
+            "locator": f"instance.{node['source_ref']}",
             "parameters": {}, "pins": [],
             "definition_path": None, "definition_digest": "hierarchy",
-            "provenance": {"source_span": node["span"], "resolved_definition": "hierarchy"},
+            "provenance": {"source_span": node["span"],
+                          "resolved_definition": "hierarchy"},
         }
 
 
 class ConnectHandler(StatementHandler):
+    """Resolves `connect source -> target;` — validates endpoints and creates edges."""
+
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         line = node["span"]["line"]
-        source = ctx.resolve_endpoint(node["source"], line)
-        target = ctx.resolve_endpoint(node["target"], line)
-        if source and target:
+        src = ctx.resolve_endpoint(node["source"], line)
+        tgt = ctx.resolve_endpoint(node["target"], line)
+        if src and tgt:
             if node["source"] == node["target"]:
                 ctx.error("validation.self_connection",
                           f"connection {node['source']!r} cannot target itself", line)
             else:
                 ctx.connections.append({
                     "from": node["source"], "to": node["target"],
-                    "source_endpoint": source, "target_endpoint": target,
+                    "source_endpoint": src, "target_endpoint": tgt,
                     "provenance": {"source_span": node["span"]},
                 })
 
 
+# =============================================================================
+# STIMULUS HANDLERS
+# =============================================================================
+
 class ClockHandler(StatementHandler):
+    """Resolves `clock name, endpoint, {params};`."""
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         ctx.clocks.append({
             "id": node["name"], "endpoint": node["endpoint"],
@@ -177,6 +238,7 @@ class ClockHandler(StatementHandler):
 
 
 class ChannelHandler(StatementHandler):
+    """Resolves `channel name, endpoint, {params};`."""
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         ctx.channels.append({
             "id": node["name"], "endpoint": node["endpoint"],
@@ -186,17 +248,21 @@ class ChannelHandler(StatementHandler):
 
 
 class DeriveHandler(StatementHandler):
+    """Resolves `derive name = expression;` — creates a read-only computed net."""
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         name = node["name"]
         if not ctx.declare(name, "derived signal", node["span"]["line"]):
             return
-        ctx.nets[name] = {"id": name, "kind": "digital", "derived": True, "expression": node["expression"]}
-        ctx.derives.append({"id": name, "expression": node["expression"],
-                           "provenance": {"source_span": node["span"]}})
+        ctx.nets[name] = {"id": name, "kind": "digital",
+                         "derived": True, "expression": node["expression"]}
+        ctx.derives.append({
+            "id": name, "expression": node["expression"],
+            "provenance": {"source_span": node["span"]},
+        })
 
 
 class ReleaseHandler(StatementHandler):
-    """Handles release statements (stimulus — remove driver from endpoint)."""
+    """Resolves `release endpoint;` — marks endpoint for tri-state release."""
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         ctx.stimulus.append({
             "kind": "release", "endpoint": node["endpoint"],
@@ -205,7 +271,7 @@ class ReleaseHandler(StatementHandler):
 
 
 class RepeatHandler(StatementHandler):
-    """Handles repeat blocks (bounded iteration)."""
+    """Resolves `repeat count { body }` — bounded iteration block."""
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         ctx.stimulus.append({
             "kind": "repeat", "name": node.get("name"),
@@ -214,54 +280,55 @@ class RepeatHandler(StatementHandler):
         })
 
 
+# =============================================================================
+# OBSERVATION HANDLERS
+# =============================================================================
+
 class ProbeHandler(StatementHandler):
+    """Resolves `probe name, target;` — read-only observation point."""
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         name = node["name"]
         if not ctx.declare(name, "probe", node["span"]["line"]):
             return
-        ctx.observations.append({"id": name, "target": node["target"],
-                                 "read_only": True, "declared_as": "probe"})
+        ctx.observations.append({
+            "id": name, "target": node["target"],
+            "read_only": True, "declared_as": "probe",
+        })
 
 
 class BusProbeHandler(StatementHandler):
+    """Resolves `bus_probe name, bus, {params};` — bus observation with policy."""
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
-        ctx.observations.append({"id": node["name"], "target": node["bus"],
-                                 "read_only": True, "declared_as": "bus_probe",
-                                 "parameters": node.get("parameters") or {}})
+        ctx.observations.append({
+            "id": node["name"], "target": node["bus"],
+            "read_only": True, "declared_as": "bus_probe",
+            "parameters": node.get("parameters") or {},
+        })
 
 
 class DisplayHandler(StatementHandler):
+    """Resolves `display target as kind, {opts};` — presentation binding."""
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
-        ctx.displays.append({"target": node["target"], "kind": node.get("display_kind"),
-                            "options": node.get("options") or {}, "read_only": True})
+        ctx.displays.append({
+            "target": node["target"],
+            "kind": node.get("display_kind"),
+            "options": node.get("options") or {},
+            "read_only": True,
+        })
 
+
+# =============================================================================
+# META & BLOCK HANDLERS
+# =============================================================================
 
 class TitleHandler(StatementHandler):
+    """Resolves `title "text";`."""
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         ctx.title = node.get("value")
 
 
-class BlockHandler(StatementHandler):
-    """Generic handler for block statements (stimulus, safety, test)."""
-
-    def __init__(self, collection: str):
-        self.collection = collection
-
-    def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
-        entry = {
-            "kind": node["kind"],
-            "name": node.get("name"),
-            "body": node.get("body", ""),
-            "provenance": {"source_span": node["span"]},
-        }
-        if node.get("after"):
-            entry["after"] = node["after"]
-        if node.get("text"):
-            entry["text"] = node["text"]
-        getattr(ctx, self.collection).append(entry)
-
-
 class TestHandler(StatementHandler):
+    """Resolves `test name { body }` — stores bounded test for deferred execution."""
     def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
         ctx.tests.append({
             "id": node.get("name"),
@@ -272,36 +339,71 @@ class TestHandler(StatementHandler):
         })
 
 
-# ============================================================================
-# HANDLER REGISTRY — maps statement kind to handler instance
-# ============================================================================
+class BlockHandler(StatementHandler):
+    """Generic handler for block statements (stores body for deferred runtime).
+
+    Used for: input, reset, step, sequence, memory, clock_profile,
+    bus_safety, policy, edge_criteria, timing_check.
+    """
+
+    def __init__(self, collection: str):
+        """
+        Args:
+            collection: Name of the ctx attribute to append to
+                        ("stimulus" or "safety")
+        """
+        self.collection = collection
+
+    def resolve(self, node: JsonMap, ctx: "ResolutionContext") -> None:
+        entry: JsonMap = {
+            "kind": node["kind"],
+            "name": node.get("name"),
+            "body": node.get("body", ""),
+            "provenance": {"source_span": node["span"]},
+        }
+        if node.get("after"):
+            entry["after"] = node["after"]
+        getattr(ctx, self.collection).append(entry)
+
+
+# =============================================================================
+# HANDLER REGISTRY — maps statement kind → handler instance
+# =============================================================================
 
 HANDLER_REGISTRY: dict[str, StatementHandler] = {
-    "device": DeviceHandler(),
-    "net": NetHandler(),
-    "bus": BusHandler(),
-    "port": PortHandler(),
+    # Topology
+    "device":   DeviceHandler(),
+    "net":      NetHandler(),
+    "bus":      BusHandler(),
+    "port":     PortHandler(),
     "instance": InstanceHandler(),
-    "connect": ConnectHandler(),
-    "clock": ClockHandler(),
-    "channel": ChannelHandler(),
-    "derive": DeriveHandler(),
-    "release": ReleaseHandler(),
-    "repeat": RepeatHandler(),
-    "probe": ProbeHandler(),
+    "connect":  ConnectHandler(),
+
+    # Stimulus (single-line)
+    "clock":    ClockHandler(),
+    "channel":  ChannelHandler(),
+    "derive":   DeriveHandler(),
+    "release":  ReleaseHandler(),
+    "repeat":   RepeatHandler(),
+
+    # Observation
+    "probe":     ProbeHandler(),
     "bus_probe": BusProbeHandler(),
-    "display": DisplayHandler(),
+    "display":   DisplayHandler(),
+
+    # Meta
     "title": TitleHandler(),
-    "test": TestHandler(),
-    # Block handlers for stimulus and safety
-    "input": BlockHandler("stimulus"),
-    "reset": BlockHandler("stimulus"),
-    "step": BlockHandler("stimulus"),
-    "sequence": BlockHandler("stimulus"),
-    "memory": BlockHandler("stimulus"),
+    "test":  TestHandler(),
+
+    # Block statements → deferred to runtime
+    "input":         BlockHandler("stimulus"),
+    "reset":         BlockHandler("stimulus"),
+    "step":          BlockHandler("stimulus"),
+    "sequence":      BlockHandler("stimulus"),
+    "memory":        BlockHandler("stimulus"),
     "clock_profile": BlockHandler("stimulus"),
-    "bus_safety": BlockHandler("safety"),
-    "policy": BlockHandler("safety"),
+    "bus_safety":    BlockHandler("safety"),
+    "policy":        BlockHandler("safety"),
     "edge_criteria": BlockHandler("safety"),
-    "timing_check": BlockHandler("safety"),
+    "timing_check":  BlockHandler("safety"),
 }
