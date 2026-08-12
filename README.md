@@ -85,13 +85,17 @@ hardware timing, analog behavior, or PCB layout correctness.
 
 ## Layout
 
+- `Language/` - component:component language specification (grammar, AST, type system,
+  topology model, stimulus, hierarchy, safety contracts, conformance fixtures).
+  Specs 00-15 are frozen v1.0 core; specs 16-27 are v1.1 proposals and extensions.
 - `verilog/74xx/` - behavioral Verilog models for 74HC-family logic chips, with each `74hcxx.v` embedding its pinout notes as comments.
 - `verilog/memory/` - behavioral Verilog models for EEPROM, flash EEPROM, and SRAM parts, with each `.v` embedding its pinout notes as comments.
 - `lib/standard/` - component DB manifests and schema where chips, virtual tools,
   passives, and discrete parts own status, pins, sources, behavior/export
   references, and visible missing properties.
-- `examples/circuits/` - service-ready schematic JSON fixtures for CLI/API contracts
-  and regression tests.
+- `examples/circuits/` - service-ready circuit packages with both `circuit.json`
+  (legacy format) and `circuit.component` (text source) for CLI/API contracts
+  and regression tests.  28 `.component` files with 150 tests cover RV8GR.
 - `python/` - reusable Python pin-level behavior models, net wiring, tri-state conflict checks, and propagation-delay simulation.
 - `schemas/` - machine-readable schemas for exported interchange artifacts,
   including the normalized netlist contract.
@@ -102,6 +106,8 @@ hardware timing, analog behavior, or PCB layout correctness.
   left, readable Component text upper-right, and bounded Terminal lower-right.
   It is served by the existing local Python API and owns no separate circuit
   model.
+- `tools/` - crosscheck and audit scripts including `component_to_verilog.py`
+  (bridge from `.component` to Verilog export with iverilog compilation).
 - `AGENTS.md` - local JOJOCAFE team ownership map for Components work.
 
 ## Verification Rule

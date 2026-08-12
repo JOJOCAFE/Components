@@ -39,6 +39,13 @@ documentation lives here.
 The related language-layer contract is
 [`../Language/23_Component_Operation_Contract.md`](../Language/23_Component_Operation_Contract.md):
 the replayable Board/source/runtime operation layer.
+
+The component:component executable model is extended by specs 24-27:
+- [`../Language/24_Stimulus_Model.md`](../Language/24_Stimulus_Model.md) — test stimulus (clock, channel, input, reset, derive, memory, sequence, repeat)
+- [`../Language/25_Virtual_Device_Catalog.md`](../Language/25_Virtual_Device_Catalog.md) — virtual test devices (ClockSource, Probe, BusProbe, etc.)
+- [`../Language/26_Hierarchy_and_Composition.md`](../Language/26_Hierarchy_and_Composition.md) — port boundary, sub-circuit instantiation
+- [`../Language/27_Safety_and_Timing_Contracts.md`](../Language/27_Safety_and_Timing_Contracts.md) — bus_safety, policy, edge_criteria, timing_check
+- [`../Language/CONFORMANCE_STATUS.md`](../Language/CONFORMANCE_STATUS.md) — what's implemented vs deferred
 - `CHIP_STATUS.md` - 74xx/memory status baseline used by DB status checks.
 - `SESSION_HANDOFF.md` - latest work state, verification, and next lanes.
 - `TEAM_SKILLS.md` - compact Components team routing and quality-gate contract.

@@ -138,7 +138,7 @@ guide/connect tools, real DIP scale, HTTP adapter, and pin visualization.
 
 ### Test count
 
-- Board: **1,274 passed, 0 failed** (24 test files)
+- Board: **885 passed, 0 failed** (19 test files)
 - Core Python: all key suites pass (unchanged)
 - Tag: `core-stable-2026-08-11` at `98accb5`
 
