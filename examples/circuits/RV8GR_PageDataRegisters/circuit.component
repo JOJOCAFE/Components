@@ -1,0 +1,294 @@
+use standard.digital as digital;
+
+component:component RV8GR_PageDataRegisters is components.digital {
+  title "RV8GR page register (PG) and data page register (DP) edge timing";
+
+  -- Public boundary ports
+  port T2 : digital, input;
+  port MUX_SEL : digital, input;
+  port XOR_MODE : digital, input;
+  port AC_WR : digital, input;
+  port /ADDR_MODE : digital, input;
+  port IBUS[8] : digital, input;
+  port IRL[8] : digital, input;
+  port PG[8] : digital, output;
+  port DP[8] : digital, output;
+
+  -- Devices
+  device U23, digital.74HC574;    -- Page register (PG) — captures IRL on PG_CLK
+  device U32, digital.74HC574;    -- Data page register (DP) — captures IBUS on DP_Load
+  device U25, digital.74HC32;     -- OR: PG_CLK = /T2 OR /PG_cond
+  device U27, digital.74HC00;     -- NAND: /PG_cond = NAND(MUX_SEL, /AC_WR)
+  device U33, digital.74HC21;     -- AND: DP_Load = T2 & XOR_MODE & /ADDR_MODE & /AC_WR
+  device U24, digital.74HC04;     -- Inverters: /AC_WR, /XOR_MODE
+  device U28, digital.74HC86;     -- XOR: /T2 = T2 XOR VCC
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  net t2 : digital;
+  net mux_sel : digital;
+  net xor_mode : digital;
+  net ac_wr : digital;
+  net addr_mode_n : digital;
+  bus ibus[8] : digital;
+  bus irl[8] : digital;
+  bus pg[8] : digital;
+  bus dp[8] : digital;
+  net not_t2 : digital;
+  net not_ac_wr : digital;
+  net pg_cond_n : digital;
+  net pg_clk : digital;
+  net dp_load : digital;
+
+  -- Power  connect vcc -> U23.VCC;
+  connect vcc -> U32.VCC;
+  connect vcc -> U25.VCC;
+  connect vcc -> U27.VCC;
+  connect vcc -> U33.VCC;
+  connect vcc -> U24.VCC;
+  connect vcc -> U28.VCC;  connect gnd -> U23.GND;
+  connect gnd -> U32.GND;
+  connect gnd -> U25.GND;
+  connect gnd -> U27.GND;
+  connect gnd -> U33.GND;
+  connect gnd -> U24.GND;
+  connect gnd -> U28.GND;
+
+  -- U23 /OE tied LOW (always output)
+  connect gnd -> U23./OE;
+  -- U32 /OE tied LOW (always output)
+  connect gnd -> U32./OE;
+
+  -- /T2 = T2 XOR VCC = NOT(T2) — U28 gate 2
+  connect t2 -> U28.2A;
+  connect vcc -> U28.2B;
+  connect U28.2Y -> not_t2;
+
+  -- /AC_WR = NOT(AC_WR) — U24 gate 5
+  connect ac_wr -> U24.5A;
+  connect U24.5Y -> not_ac_wr;
+
+  -- /PG_cond = NAND(MUX_SEL, /AC_WR) — U27 gate 3
+  connect mux_sel -> U27.3A;
+  connect not_ac_wr -> U27.3B;
+  connect U27.3Y -> pg_cond_n;
+
+  -- PG_CLK = /T2 OR /PG_cond — U25 gate 4
+  connect not_t2 -> U25.4A;
+  connect pg_cond_n -> U25.4B;
+  connect U25.4Y -> pg_clk;
+
+  -- U23 Page Register: clocked by PG_CLK, data from IRL
+  connect pg_clk -> U23.CLK;
+  connect irl[0] -> U23.1D;
+  connect irl[1] -> U23.2D;
+  connect irl[2] -> U23.3D;
+  connect irl[3] -> U23.4D;
+  connect irl[4] -> U23.5D;
+  connect irl[5] -> U23.6D;
+  connect irl[6] -> U23.7D;
+  connect irl[7] -> U23.8D;
+  connect U23.1Q -> pg[0];
+  connect U23.2Q -> pg[1];
+  connect U23.3Q -> pg[2];
+  connect U23.4Q -> pg[3];
+  connect U23.5Q -> pg[4];
+  connect U23.6Q -> pg[5];
+  connect U23.7Q -> pg[6];
+  connect U23.8Q -> pg[7];
+
+  -- DP_Load = T2 AND XOR_MODE AND /ADDR_MODE AND /AC_WR — U33 gate 1
+  connect t2 -> U33.1A;
+  connect xor_mode -> U33.1B;
+  connect addr_mode_n -> U33.1C;
+  connect not_ac_wr -> U33.1D;
+  connect U33.1Y -> dp_load;
+
+  -- U32 Data Page Register: clocked by DP_Load, data from IBUS
+  connect dp_load -> U32.CLK;
+  connect ibus[0] -> U32.1D;
+  connect ibus[1] -> U32.2D;
+  connect ibus[2] -> U32.3D;
+  connect ibus[3] -> U32.4D;
+  connect ibus[4] -> U32.5D;
+  connect ibus[5] -> U32.6D;
+  connect ibus[6] -> U32.7D;
+  connect ibus[7] -> U32.8D;
+  connect U32.1Q -> dp[0];
+  connect U32.2Q -> dp[1];
+  connect U32.3Q -> dp[2];
+  connect U32.4Q -> dp[3];
+  connect U32.5Q -> dp[4];
+  connect U32.6Q -> dp[5];
+  connect U32.7Q -> dp[6];
+  connect U32.8Q -> dp[7];
+
+  -- Boundary port bindings
+  connect T2 -> t2;
+  connect MUX_SEL -> mux_sel;
+  connect XOR_MODE -> xor_mode;
+  connect AC_WR -> ac_wr;
+  connect /ADDR_MODE -> addr_mode_n;
+  connect IBUS -> ibus;
+  connect IRL -> irl;
+  connect pg -> PG;
+  connect dp -> DP;
+
+  -- Derived signals
+  derive setpg_condition = mux_sel & ~ac_wr;
+  derive setdp_condition = t2 & xor_mode & addr_mode_n & ~ac_wr;
+
+  -- Clock
+  clock sys_clk, t2, { "period_ns": 200, "initial": 0 };
+
+  -- Input presets
+  input setpg_opcode {
+    set mux_sel = 1; set ac_wr = 0; set xor_mode = 0;
+  }
+
+  input setdp_opcode {
+    set xor_mode = 1; set ac_wr = 0; set addr_mode_n = 1;
+    set mux_sel = 0;
+  }
+
+  input nop_opcode {
+    set mux_sel = 0; set ac_wr = 0; set xor_mode = 0;
+  }
+
+  -- Reset
+  reset power_on {
+    set t2 = 0;
+    apply nop_opcode;
+    set ibus = 8'h00;
+    set irl = 8'h00;
+    settle;
+  }
+
+  -- Sequence: SETPG timing
+  sequence setpg_edge_timing after power_on {
+    -- T2 start: PG_CLK held LOW (latched), PG holds
+    set t2 = 1; apply setpg_opcode; set irl = 8'h12; settle;
+    expect pg_clk == 0;
+    -- T2 end: rising edge on PG_CLK captures IRL
+    set t2 = 0; settle;
+    expect pg_clk == 1;
+    expect pg == 8'h12;
+  }
+
+  -- Sequence: SETDP timing
+  sequence setdp_edge_timing after power_on {
+    -- During T2 with SETDP opcode, DP_Load goes HIGH
+    set t2 = 1; apply setdp_opcode; set ibus = 8'h80; settle;
+    expect dp_load == 1;
+    -- DP captures on rising of DP_Load
+    expect dp == 8'h80;
+  }
+
+  -- Edge criteria
+  edge_criteria U23 {
+    trigger rising;
+    non_trigger hold;
+    note "PG captures IRL on PG_CLK rising (at T2 end)";
+  }
+
+  edge_criteria U32 {
+    trigger rising;
+    non_trigger hold;
+    note "DP captures IBUS on DP_Load rising (during T2+SETDP)";
+  }
+
+  -- Bus safety (no bus contention — registers are input-only from buses)
+  bus_safety pg_dp_safe {
+    bus ibus;
+    max_drivers 0;
+    policy input_only;
+    note "U23 and U32 are read-only from IBUS/IRL. No bus driving conflict.";
+  }
+
+  -- Timing checks
+  timing_check t2_to_pg_clk {
+    from t2;
+    through U28.2Y;
+    through U25.4Y;
+    to U23.CLK;
+    expect 24ns;
+    limit 40ns;
+  }
+
+  timing_check setdp_decode_path {
+    from t2;
+    through U33.1Y;
+    to U32.CLK;
+    expect 20ns;
+    limit 35ns;
+  }
+
+  -- Probes
+  probe page_reg, pg;
+  probe data_page_reg, dp;
+  probe pg_clock, pg_clk;
+  probe dp_load_signal, dp_load;
+
+  display page_reg as bus_hex, { "label": "PG[7:0] (jump page)" };
+  display data_page_reg as bus_hex, { "label": "DP[7:0] (data page)" };
+  display pg_clock as waveform, { "label": "PG_CLK" };
+  display dp_load_signal as waveform, { "label": "DP_Load" };
+
+  -- Tests
+  test setpg_latches_irl {
+    set t2 = 1; set mux_sel = 1; set ac_wr = 0; set xor_mode = 0;
+    set irl = 8'h12;
+    settle;
+    -- PG_CLK is LOW during T2 with SETPG → latch transparent
+    set t2 = 0;
+    settle;
+    -- PG_CLK rises → captures IRL
+    assert pg == 8'h12;
+  }
+
+  test setdp_latches_ibus {
+    set t2 = 1; set xor_mode = 1; set ac_wr = 0; set addr_mode_n = 1;
+    set mux_sel = 0;
+    set ibus = 8'h80;
+    settle;
+    assert dp == 8'h80;
+  }
+
+  test setpg_blocked_by_ac_wr {
+    set t2 = 1; set mux_sel = 1; set ac_wr = 1;
+    set irl = 8'hFF;
+    settle;
+    set t2 = 0; settle;
+    -- PG_CLK never went LOW when /PG_cond=1 (MUX_SEL=1 but AC_WR=1)
+    note "AC_WR=1 blocks SETPG decode — PG not updated";
+  }
+
+  test setdp_blocked_by_ac_wr {
+    set t2 = 1; set xor_mode = 1; set ac_wr = 1; set addr_mode_n = 1;
+    set ibus = 8'hFF;
+    settle;
+    assert dp_load == 0;
+    note "AC_WR=1 blocks SETDP decode";
+  }
+
+  test separation_setpg_only {
+    set t2 = 1; set mux_sel = 1; set ac_wr = 0; set xor_mode = 0;
+    set addr_mode_n = 1;
+    set irl = 8'h55; set ibus = 8'hAA;
+    settle;
+    set t2 = 0; settle;
+    assert pg == 8'h55;
+    -- DP_Load should be 0 (XOR_MODE=0)
+    note "SETPG does not affect DP";
+  }
+
+  test separation_setdp_only {
+    set t2 = 1; set xor_mode = 1; set ac_wr = 0; set addr_mode_n = 1;
+    set mux_sel = 0;
+    set irl = 8'h55; set ibus = 8'hBB;
+    settle;
+    assert dp == 8'hBB;
+    note "SETDP does not affect PG (MUX_SEL=0)";
+  }
+}

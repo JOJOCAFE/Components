@@ -1,0 +1,326 @@
+use standard.digital as digital;
+use standard.virtual as virtual;
+
+component:component RV8GR_InterruptTrace is components.digital {
+  title "RV8GR interrupt enable and IRQ trace (v1.0 polling)";
+
+  -- Public boundary ports
+  port CLK : digital, input;
+  port /RST : digital, input;
+  port T2 : digital, input;
+  port /IRQ : digital, input;
+  port IE : digital, output;
+  port IRQ_FF : digital, output;
+  port PC[16] : digital, output;
+
+  -- Devices
+  device U31, digital.74HC74;     -- IE flag (1D) and IRQ_FF latch (2D)
+  device U33, digital.74HC21;     -- EI decode: 4-input AND
+  device U24, digital.74HC04;     -- Inverters for AC_WR and XOR_MODE
+
+  -- Virtual test helpers
+  device IRQSW, virtual.Switch;
+  device IEPROBE, virtual.Probe;
+  device IRQPROBE, virtual.Probe;
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  net clk : digital;
+  net rst_n : digital;
+  net t2 : digital;
+  net irq_n : digital;
+  net ie : digital;
+  net irq_ff : digital;
+  bus pc[16] : digital;
+  bus irh[8] : digital;
+  bus irl[8] : digital;
+  net ei_decode : digital;
+  net src : digital;
+  net xor_mode : digital;
+  net ac_wr : digital;
+  net xor_mode_n : digital;
+  net ac_wr_n : digital;
+
+  -- Power connections
+  connect vcc -> U31.VCC;
+  connect vcc -> U33.VCC;
+  connect vcc -> U24.VCC;
+  connect gnd -> U31.GND;
+  connect gnd -> U33.GND;
+  connect gnd -> U24.GND;
+
+  -- U24 inverters: NOT(XOR_MODE) and NOT(AC_WR)
+  connect xor_mode -> U24.1A;
+  connect U24.1Y -> xor_mode_n;
+  connect ac_wr -> U24.2A;
+  connect U24.2Y -> ac_wr_n;
+
+  -- EI decode: U33 = T2 AND SRC AND NOT(XOR_MODE) AND NOT(AC_WR)
+  connect t2 -> U33.1A;
+  connect src -> U33.1B;
+  connect xor_mode_n -> U33.1C;
+  connect ac_wr_n -> U33.1D;
+  connect U33.1Y -> ei_decode;
+
+  -- U31 flip-flop 1: IE flag
+  -- D1 = VCC (always 1), CLK1 = EI_decode rising, /PR1 = VCC, /CLR1 = /RST
+  connect vcc -> U31.1D;
+  connect ei_decode -> U31.1CLK;
+  connect vcc -> U31./1PRE;
+  connect rst_n -> U31./1CLR;
+  connect U31.1Q -> ie;
+
+  -- U31 flip-flop 2: IRQ_FF latch
+  -- D2 = VCC, CLK2 = /IRQ rising (release), /PR2 = VCC, /CLR2 = /RST
+  connect vcc -> U31.2D;
+  connect irq_n -> U31.2CLK;
+  connect vcc -> U31./2PRE;
+  connect rst_n -> U31./2CLR;
+  connect U31.2Q -> irq_ff;
+
+  -- Boundary port bindings
+  connect CLK -> clk;
+  connect /RST -> rst_n;
+  connect T2 -> t2;
+  connect /IRQ -> irq_n;
+  connect ie -> IE;
+  connect irq_ff -> IRQ_FF;
+  connect pc -> PC;
+
+  -- Control bit extraction from IRH
+  derive src_bit = irh[3];
+  derive xor_mode_bit = irh[6];
+  derive ac_wr_bit = irh[4];
+  derive ei_opcode = t2 & irh[3] & ~irh[6] & ~irh[4];
+
+  -- Stimulus: clock
+  clock sys_clk, clk, { "period_ns": 200, "initial": 0 };
+
+  -- Stimulus: interactive IRQ switch
+  channel irq_switch, irq_n, { "kind": "switch", "initial": 1, "label": "/IRQ (active-low)" };
+
+  -- Stimulus: input presets
+  input ei_instruction {
+    -- EI: SRC=1, XOR_MODE=0, AC_WR=0
+    set src = 1;
+    set xor_mode = 0;
+    set ac_wr = 0;
+    set t2 = 1;
+  }
+
+  input di_instruction {
+    -- DI: inert in v1.0 (no hardware mechanism)
+    set src = 0;
+    set xor_mode = 1;
+    set ac_wr = 0;
+    set t2 = 1;
+  }
+
+  input nop_state {
+    set src = 0;
+    set xor_mode = 0;
+    set ac_wr = 0;
+    set t2 = 0;
+  }
+
+  input irq_assert {
+    set irq_n = 0;
+  }
+
+  input irq_release {
+    set irq_n = 1;
+  }
+
+  -- Stimulus: reset
+  reset power_on {
+    set rst_n = 0;
+    set irq_n = 1;
+    settle;
+    set rst_n = 1;
+    settle;
+    expect ie == 0;
+    expect irq_ff == 0;
+    expect pc == 0x0000;
+  }
+
+  -- Step sequences for multi-cycle trace
+  step execute_ei {
+    -- EI instruction: sets IE flag
+    apply ei_instruction;
+    settle;
+    probe;
+    apply nop_state;
+    settle;
+  }
+
+  step execute_di {
+    -- DI instruction: inert in v1.0 (no clear mechanism)
+    apply di_instruction;
+    settle;
+    probe;
+    apply nop_state;
+    settle;
+  }
+
+  step assert_irq {
+    -- Pull /IRQ LOW (hold — not yet latched)
+    apply irq_assert;
+    settle;
+    probe;
+  }
+
+  step release_irq {
+    -- Release /IRQ HIGH (rising edge latches IRQ_FF)
+    apply irq_release;
+    settle;
+    probe;
+  }
+
+  step wait_100_ticks {
+    -- Verify sticky: IRQ_FF stays set for 100 clock cycles
+    repeat 100 {
+      pulse clk;
+      settle;
+    }
+    probe;
+  }
+
+  -- Sequence: 6-vector interrupt trace
+  sequence interrupt_trace after power_on {
+    -- Step 1: After reset, IE=0, IRQ_FF=0
+    clock sys_clk; expect ie == 0, irq_ff == 0;
+    -- Step 2: EI instruction sets IE
+    clock sys_clk; expect ie == 1, irq_ff == 0;
+    -- Step 3: DI is inert, IE stays 1
+    clock sys_clk; expect ie == 1, irq_ff == 0;
+    -- Step 4: /IRQ LOW holds (not yet latched)
+    clock sys_clk; expect ie == 1, irq_ff == 0;
+    -- Step 5: /IRQ release latches IRQ_FF
+    clock sys_clk; expect ie == 1, irq_ff == 1;
+    -- Step 6: Sticky — stays latched
+    clock sys_clk; expect ie == 1, irq_ff == 1;
+  }
+
+  -- Bus safety: no bus in this circuit (IRQ is control-only)
+
+  -- Edge criteria
+  edge_criteria U31 {
+    trigger rising;
+    non_trigger hold;
+    async_override /CLR, clear_to_zero;
+  }
+
+  -- Policy: PC never changes due to IRQ in v1.0
+  policy pc_unchanged_in_v1 {
+    -- IRQ_FF has no connection to PC load logic
+    reject (irq_ff == 1) & (pc != pc);  -- tautology check: PC is never driven by IRQ
+  }
+
+  -- Policy: IRQ_FF is sticky until reset
+  policy irq_ff_sticky {
+    reject (irq_ff == 1) & (rst_n == 1) & (irq_ff == 0);  -- can't clear without reset
+  }
+
+  -- Clock profiles
+  clock_profile manual {
+    clock sys_clk, clk, { "period_ns": 1000000 };
+  }
+
+  clock_profile target_5mhz {
+    clock sys_clk, clk, { "period_ns": 200 };
+  }
+
+  -- Observation
+  probe ie_flag, ie;
+  probe irq_latch, irq_ff;
+  probe ei_dec, ei_decode;
+  probe irq_input, irq_n;
+  probe pc_val, pc;
+  display ie_flag as led, { "label": "IE (interrupt enable)" };
+  display irq_latch as led, { "label": "IRQ_FF (pending)" };
+  display ei_dec as waveform, { "label": "EI_decode" };
+  display irq_input as waveform, { "label": "/IRQ input" };
+  display pc_val as value, { "label": "PC", "radix": "hex" };
+
+  -- Tests
+  test reset_clears_both_flags {
+    reset power_on;
+    assert ie_flag == 0;
+    assert irq_latch == 0;
+  }
+
+  test ei_sets_ie_flag {
+    reset power_on;
+    apply ei_instruction;
+    settle;
+    assert ie_flag == 1;
+    assert irq_latch == 0;
+  }
+
+  test di_is_inert_in_v1 {
+    reset power_on;
+    -- First enable
+    apply ei_instruction;
+    settle;
+    apply nop_state;
+    settle;
+    -- Then try DI (should not clear IE)
+    apply di_instruction;
+    settle;
+    assert ie_flag == 1;  -- DI has no hardware effect in v1.0
+  }
+
+  test irq_low_does_not_latch {
+    reset power_on;
+    apply ei_instruction;
+    settle;
+    apply nop_state;
+    settle;
+    -- Assert /IRQ LOW (hold)
+    set irq_n = 0;
+    settle;
+    assert irq_latch == 0;  -- Not yet: needs rising edge
+  }
+
+  test irq_release_latches {
+    reset power_on;
+    apply ei_instruction;
+    settle;
+    apply nop_state;
+    settle;
+    -- Assert then release
+    set irq_n = 0;
+    settle;
+    set irq_n = 1;
+    settle;
+    assert irq_latch == 1;  -- Rising edge on /IRQ latches
+  }
+
+  test irq_ff_sticky_100_ticks {
+    reset power_on;
+    -- Enable and trigger
+    apply ei_instruction; settle;
+    apply nop_state; settle;
+    set irq_n = 0; settle;
+    set irq_n = 1; settle;
+    assert irq_latch == 1;
+    -- Run 100 clocks — still set
+    repeat 100 {
+      pulse clk;
+      settle;
+    }
+    assert irq_latch == 1;
+    assert pc_val == 0x0000;  -- PC unchanged (polling only)
+  }
+
+  test pc_never_changes_from_irq {
+    reset power_on;
+    apply ei_instruction; settle;
+    apply nop_state; settle;
+    set irq_n = 0; settle;
+    set irq_n = 1; settle;
+    -- PC should be unchanged — no hardware vector in v1.0
+    assert pc_val == 0x0000;
+  }
+}

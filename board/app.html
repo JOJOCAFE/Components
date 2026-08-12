@@ -599,7 +599,177 @@ function loadProject() {
 }
 
 // Seed engine — try loading saved project first, else use defaults
-if (!loadProject()) {
+// ?load= param: fetch a .component file from server and load it
+const LOAD_FILE = new URLSearchParams(location.search).get('load');
+
+// Stimulus state parsed from .component file
+let loadedStimulus = { clocks: [], inputs: {}, channels: [], steps: {}, probes: [], displays: [] };
+
+function parseStimulusFromText(text) {
+  const stim = { clocks: [], inputs: {}, channels: [], steps: {}, probes: [], displays: [] };
+  const lines = text.split('\n');
+  let inInput = null, inStep = null, braceDepth = 0;
+
+  for (const raw of lines) {
+    const line = raw.trim().replace(/;$/, '');
+
+    // clock <id>, <endpoint>, { ... }
+    const clockMatch = line.match(/^clock\s+(\S+)\s*,\s*(\S+)\s*,\s*(\{.*\})$/);
+    if (clockMatch) {
+      try {
+        const params = JSON.parse(clockMatch[3]);
+        stim.clocks.push({ id: clockMatch[1], endpoint: clockMatch[2], ...params });
+      } catch(e) { stim.clocks.push({ id: clockMatch[1], endpoint: clockMatch[2] }); }
+      continue;
+    }
+
+    // channel <id>, <endpoint>, { ... }
+    const chanMatch = line.match(/^channel\s+(\S+)\s*,\s*(\S+)\s*,\s*(\{.*\})$/);
+    if (chanMatch) {
+      try {
+        const params = JSON.parse(chanMatch[3]);
+        stim.channels.push({ id: chanMatch[1], endpoint: chanMatch[2], ...params });
+      } catch(e) { stim.channels.push({ id: chanMatch[1], endpoint: chanMatch[2] }); }
+      continue;
+    }
+
+    // input <id> {
+    const inputMatch = line.match(/^input\s+(\S+)\s*\{$/);
+    if (inputMatch) { inInput = inputMatch[1]; stim.inputs[inInput] = []; braceDepth = 1; continue; }
+
+    // step <id> {
+    const stepMatch = line.match(/^step\s+(\S+)\s*\{$/);
+    if (stepMatch) { inStep = stepMatch[1]; stim.steps[inStep] = []; braceDepth = 1; continue; }
+
+    // Inside input/step block
+    if (inInput || inStep) {
+      if (line === '}') { braceDepth--; if (braceDepth <= 0) { inInput = null; inStep = null; } continue; }
+      if (line.includes('{')) braceDepth++;
+      if (inInput) {
+        const setMatch = line.match(/^set\s+(\S+)\s*=\s*(.+)$/);
+        if (setMatch) stim.inputs[inInput].push({ endpoint: setMatch[1], value: setMatch[2] });
+      }
+      if (inStep) { stim.steps[inStep].push(line); }
+      continue;
+    }
+
+    // probe <id>, <endpoint>
+    const probeMatch = line.match(/^probe\s+(\S+)\s*,\s*(.+)$/);
+    if (probeMatch) { stim.probes.push({ id: probeMatch[1], endpoint: probeMatch[2] }); continue; }
+
+    // display <id> as <kind>, { ... }
+    const dispMatch = line.match(/^display\s+(\S+)\s+as\s+(\S+)\s*(?:,\s*(\{.*\}))?$/);
+    if (dispMatch) {
+      const opts = dispMatch[3] ? JSON.parse(dispMatch[3]) : {};
+      stim.displays.push({ target: dispMatch[1], kind: dispMatch[2], ...opts });
+      continue;
+    }
+  }
+  return stim;
+}
+
+function renderStimulusPanel() {
+  const s = loadedStimulus;
+  if (!s.clocks.length && !s.channels.length && !Object.keys(s.inputs).length && !s.probes.length) return;
+
+  let html = '<div class="term-banner">━━━ Stimulus & Signals ━━━</div>';
+
+  if (s.clocks.length) {
+    html += '<div class="info">⏱ Clocks:</div>';
+    for (const c of s.clocks) {
+      const freq = c.period_ns ? `${(1000/c.period_ns).toFixed(1)} MHz` : '';
+      html += `<div class="result">  ${c.id} → ${c.endpoint} (${c.period_ns || '?'}ns ${freq})</div>`;
+    }
+  }
+
+  if (s.channels.length) {
+    html += '<div class="info">🎛 Channels (interactive):</div>';
+    for (const ch of s.channels) {
+      const val = ch.initial !== undefined ? ch.initial : '?';
+      html += `<div class="result">  ${ch.label || ch.id} → ${ch.endpoint} = ${val} [${ch.kind || 'switch'}]</div>`;
+    }
+  }
+
+  if (Object.keys(s.inputs).length) {
+    html += '<div class="info">📋 Input presets:</div>';
+    for (const [name, assigns] of Object.entries(s.inputs)) {
+      html += `<div class="result">  ${name}: ${assigns.map(a => `${a.endpoint}=${a.value}`).join(', ')}</div>`;
+    }
+  }
+
+  if (Object.keys(s.steps).length) {
+    html += '<div class="info">▶ Steps:</div>';
+    for (const [name, actions] of Object.entries(s.steps)) {
+      html += `<div class="result">  ${name}: ${actions.length} actions</div>`;
+    }
+  }
+
+  if (s.probes.length) {
+    html += '<div class="info">🔍 Probes:</div>';
+    for (const p of s.probes) {
+      const disp = s.displays.find(d => d.target === p.id);
+      const label = disp?.label || p.id;
+      html += `<div class="result">  ${label} ← ${p.endpoint} [${disp?.kind || 'value'}]</div>`;
+    }
+  }
+
+  const body = document.getElementById('terminal-body');
+  if (body) body.innerHTML += html;
+}
+
+async function loadComponentFile(path) {
+  try {
+    const resp = await fetch(path);
+    if (!resp.ok) throw new Error(`${resp.status} ${resp.statusText}`);
+    const text = await resp.text();
+
+    // Parse stimulus declarations
+    loadedStimulus = parseStimulusFromText(text);
+
+    // Extract device and connect lines for engine commands
+    const lines = text.split('\n');
+    const cmds = [];
+    let x = 30, y = 30;
+    for (const raw of lines) {
+      const line = raw.trim().replace(/;$/, '');
+      const devMatch = line.match(/^device\s+(\S+)\s*,\s*(.+?)(\s*,\s*\{.*\})?$/);
+      if (devMatch) {
+        const ref = devMatch[1];
+        const part = devMatch[2].trim();
+        cmds.push(`place ${ref}, ${part} at (${x}, ${y}) rotate 0`);
+        x += 70;
+        if (x > 250) { x = 30; y += 50; }
+      }
+      const connMatch = line.match(/^connect\s+(\S+)\s*->\s*(\S+)$/);
+      if (connMatch) {
+        cmds.push(`connect ${connMatch[1]} -> ${connMatch[2]}`);
+      }
+    }
+    // Load into engine
+    cmds.forEach(cmd => engine.run(cmd));
+    // Update text editors
+    CIRCUIT_SRC_LIVE = text;
+    circuitFile = parseFile(text, FILE_TYPES.CIRCUIT);
+    circuitEditor = createEditor(text, { visibleLines: 30 });
+    currentProjectName = path.split('/').pop().replace('.component', '');
+    renderEditors();
+    renderPageTabs();
+    renderViewport();
+    updateTitle();
+    cmdLog(`Loaded ${path}`, true);
+
+    // Show stimulus info in terminal
+    renderStimulusPanel();
+  } catch (err) {
+    console.error('Failed to load component file:', err);
+    cmdLog(`Load failed: ${err.message}`, false);
+  }
+}
+
+if (LOAD_FILE) {
+  // Load from URL param (async — renders after fetch)
+  loadComponentFile(LOAD_FILE);
+} else if (!loadProject()) {
   const INIT_COMMANDS = [
     'place U1, digital.74HC04 at (30, 40) rotate 0',
     'place U2, digital.74HC161 at (100, 40) rotate 0',

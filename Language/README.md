@@ -37,3 +37,21 @@ Later presentation proposals are separate from the frozen core:
 `22_Board_Profile_Contract.md` stores an optional Board view, and
 `23_Resource_Definition_Contract.md` describes text, 2D, 3D, and future
 Resource views without redefining electrical truth.
+
+Specs 24–27 extend the executable `component:component` model with test
+stimulus, virtual devices, hierarchical composition, and safety contracts:
+
+7. `24_Stimulus_Model.md` — input presets, clocks, channels, steps, resets,
+   derive, memory loading, sequences, bounded repeat.
+8. `25_Virtual_Device_Catalog.md` — standard virtual devices for test
+   infrastructure: ClockSource, Switch, Probe, BusProbe, BusDriver,
+   OutputAssert, RCParasitic, DelayNoise, SequenceGenerator, LogicAnalyzer.
+9. `26_Hierarchy_and_Composition.md` — public boundary ports, sub-circuit
+   instantiation via `instance`, recursive composition, port contracts.
+10. `27_Safety_and_Timing_Contracts.md` — bus_safety, policy invariants,
+    edge_criteria, timing_check, extended assert modes (high_z, set
+    membership, timing window).
+
+These specs are exercised by 28 `.component` fixture files in
+`../examples/circuits/` (150 tests total) and verified through the Verilog
+export bridge (`tools/component_to_verilog.py`).

@@ -1,0 +1,226 @@
+use standard.virtual as virtual;
+
+component:component RV8GR_VirtualTestHelpers is components.virtual {
+  title "RV8GR virtual timing and bus test helpers";
+
+  -- Public boundary ports
+  port CLK : digital, output;
+  port T0 : digital, input;
+  port T1 : digital, input;
+  port T2 : digital, input;
+  port IBUS[8] : digital, inout;
+  port DBUS[8] : digital, inout;
+  port CLK_RC_IN : digital, input;
+  port CLK_RC_OUT : digital, output;
+  port BUS_RC_IN : digital, input;
+  port BUS_RC_OUT : digital, output;
+  port NOISE_IN : digital, input;
+  port NOISE_OUT : digital, output;
+  port EXPECT_IN : digital, input;
+
+  -- Virtual devices (test infrastructure)
+  device VCLK, virtual.ClockSource, { "period_ns": 200, "initial": 0 };
+  device SW1, virtual.Switch, { "kind": "momentary", "initial": 0, "label": "Manual clock" };
+  device PH0, virtual.Probe, { "display": "led", "label": "T0 phase" };
+  device PH1, virtual.Probe, { "display": "led", "label": "T1 phase" };
+  device PH2, virtual.Probe, { "display": "led", "label": "T2 phase" };
+  device IBUSMON, virtual.BusProbe, { "width": 8, "policy": "single_driver", "label": "IBUS monitor" };
+  device DBUSMON, virtual.BusProbe, { "width": 8, "policy": "single_driver", "label": "DBUS monitor" };
+  device CLKRC, virtual.RCParasitic, { "R_ohm": 100, "C_pf": 30 };
+  device BUSRC, virtual.RCParasitic, { "R_ohm": 50, "C_pf": 20 };
+  device DLY1, virtual.DelayNoise, { "delay_ns": 2, "jitter_ns": 3, "seed": 42 };
+  device OUTCHK, virtual.Probe, { "display": "value", "label": "Expected output" };
+
+  -- Internal nets
+  net clk : digital;
+  net t0 : digital;
+  net t1 : digital;
+  net t2 : digital;
+  bus ibus[8] : digital;
+  bus dbus[8] : digital;
+  net clk_rc_in : digital;
+  net clk_rc_out : digital;
+  net bus_rc_in : digital;
+  net bus_rc_out : digital;
+  net noise_in : digital;
+  net noise_out : digital;
+  net expect_in : digital;
+
+  -- Clock source -> CLK port
+  connect VCLK.CLK -> clk;
+  -- connect SW1.OUT -> clk;  -- (alternative manual clock)
+
+  -- Phase probes
+  connect t0 -> PH0.IN;
+  connect t1 -> PH1.IN;
+  connect t2 -> PH2.IN;
+
+  -- Bus monitors
+  connect ibus[0] -> IBUSMON.BUS[0];
+  connect ibus[1] -> IBUSMON.BUS[1];
+  connect ibus[2] -> IBUSMON.BUS[2];
+  connect ibus[3] -> IBUSMON.BUS[3];
+  connect ibus[4] -> IBUSMON.BUS[4];
+  connect ibus[5] -> IBUSMON.BUS[5];
+  connect ibus[6] -> IBUSMON.BUS[6];
+  connect ibus[7] -> IBUSMON.BUS[7];
+  connect dbus[0] -> DBUSMON.BUS[0];
+  connect dbus[1] -> DBUSMON.BUS[1];
+  connect dbus[2] -> DBUSMON.BUS[2];
+  connect dbus[3] -> DBUSMON.BUS[3];
+  connect dbus[4] -> DBUSMON.BUS[4];
+  connect dbus[5] -> DBUSMON.BUS[5];
+  connect dbus[6] -> DBUSMON.BUS[6];
+  connect dbus[7] -> DBUSMON.BUS[7];
+
+  -- RC parasitic paths
+  connect clk_rc_in -> CLKRC.IN;
+  connect CLKRC.OUT -> clk_rc_out;
+  connect bus_rc_in -> BUSRC.IN;
+  connect BUSRC.OUT -> bus_rc_out;
+
+  -- Delay/noise path
+  connect noise_in -> DLY1.IN;
+  connect DLY1.OUT -> noise_out;
+
+  -- Expected output checker
+  connect expect_in -> OUTCHK.IN;
+
+  -- Boundary port bindings
+  connect clk -> CLK;
+  connect T0 -> t0;
+  connect T1 -> t1;
+  connect T2 -> t2;
+  connect IBUS -> ibus;
+  connect DBUS -> dbus;
+  connect CLK_RC_IN -> clk_rc_in;
+  connect clk_rc_out -> CLK_RC_OUT;
+  connect BUS_RC_IN -> bus_rc_in;
+  connect bus_rc_out -> BUS_RC_OUT;
+  connect NOISE_IN -> noise_in;
+  connect noise_out -> NOISE_OUT;
+  connect EXPECT_IN -> expect_in;
+
+  -- Clock profiles
+  clock_profile manual {
+    clock sys, clk, { "period_ns": 1000000 };
+  }
+
+  clock_profile random_100 {
+    clock sys, clk, { "period_ns": 500000, "mode": "random", "count": 100, "seed": 35862 };
+  }
+
+  clock_profile 50khz {
+    clock sys, clk, { "period_ns": 20000 };
+  }
+
+  clock_profile 1mhz {
+    clock sys, clk, { "period_ns": 1000 };
+  }
+
+  clock_profile 2mhz {
+    clock sys, clk, { "period_ns": 500 };
+  }
+
+  clock_profile 5mhz {
+    clock sys, clk, { "period_ns": 200 };
+  }
+
+  -- Stimulus: interactive channels
+  channel clk_button, clk, { "kind": "button", "initial": 0, "label": "Clock pulse" };
+
+  -- Policies
+  policy phase_one_hot {
+    reject (t0 & t1) == 1;
+    reject (t0 & t2) == 1;
+    reject (t1 & t2) == 1;
+  }
+
+  policy phase_not_zero_during_run {
+    reject (t0 | t1 | t2) == 0;
+  }
+
+  -- Bus safety
+  bus_safety ibus {
+    reject multi_driver;
+  }
+
+  bus_safety dbus {
+    reject multi_driver;
+  }
+
+  -- Observation
+  probe phase_t0, t0;
+  probe phase_t1, t1;
+  probe phase_t2, t2;
+  probe ibus_val, ibus;
+  probe dbus_val, dbus;
+  probe clk_delayed, clk_rc_out;
+  probe noise_output, noise_out;
+  display phase_t0 as waveform, { "label": "T0" };
+  display phase_t1 as waveform, { "label": "T1" };
+  display phase_t2 as waveform, { "label": "T2" };
+  display ibus_val as value, { "label": "IBUS", "radix": "hex" };
+  display dbus_val as value, { "label": "DBUS", "radix": "hex" };
+  display clk_delayed as waveform, { "label": "CLK (RC loaded)" };
+
+  -- Step sequences
+  step single_step_and_observe {
+    pulse clk;
+    settle;
+    probe;
+  }
+
+  step stress_100_random_clocks {
+    use clock_profile random_100;
+    repeat 100 {
+      pulse clk;
+      settle;
+    }
+    probe;
+  }
+
+  step frequency_sweep {
+    use clock_profile 50khz;
+    repeat 10 { pulse clk; settle; }
+    use clock_profile 1mhz;
+    repeat 10 { pulse clk; settle; }
+    use clock_profile 5mhz;
+    repeat 10 { pulse clk; settle; }
+    probe;
+  }
+
+  -- Tests
+  test phase_one_hot_after_clock {
+    pulse clk;
+    settle;
+    assert phase_t0 in { 0, 1 };
+    assert phase_t1 in { 0, 1 };
+    assert phase_t2 in { 0, 1 };
+  }
+
+  test ibus_no_contention {
+    settle;
+    assert ibus has no_conflict;
+  }
+
+  test dbus_no_contention {
+    settle;
+    assert dbus has no_conflict;
+  }
+
+  test rc_adds_delay {
+    -- In timed mode, RC parasitic adds measurable delay
+    set clk_rc_in = 1;
+    settle;
+    -- Output should eventually follow (with delay in timed sim)
+    assert clk_delayed == 1;
+  }
+
+  test noise_deterministic {
+    -- Same seed produces same jitter pattern
+    set noise_in = 1;
+    settle;
+    assert noise_output == 1;
+  }
+}

@@ -1,0 +1,90 @@
+use standard.digital as digital;
+
+component:component BusTransceiver is components.digital {
+  title "74HC245 bus transceiver, A-to-B direction enabled";
+
+  device U1, digital.74HC245;
+
+  net vcc : power;
+  net gnd : power;
+  net dir : digital;
+  net oe_n : digital;
+  bus a[8] : digital;
+  bus b[8] : digital;
+
+  connect vcc -> U1.VCC;
+  connect gnd -> U1.GND;
+  connect dir -> U1.DIR;
+  connect oe_n -> U1./OE;
+  connect a[0] -> U1.A1;
+  connect a[1] -> U1.A2;
+  connect a[2] -> U1.A3;
+  connect a[3] -> U1.A4;
+  connect a[4] -> U1.A5;
+  connect a[5] -> U1.A6;
+  connect a[6] -> U1.A7;
+  connect a[7] -> U1.A8;
+  connect U1.B1 -> b[0];
+  connect U1.B2 -> b[1];
+  connect U1.B3 -> b[2];
+  connect U1.B4 -> b[3];
+  connect U1.B5 -> b[4];
+  connect U1.B6 -> b[5];
+  connect U1.B7 -> b[6];
+  connect U1.B8 -> b[7];
+
+  -- Stimulus: input presets
+  input a_to_b {
+    set dir = 1;
+    set oe_n = 0;
+    set a = 0b00000011;
+  }
+
+  input disabled {
+    set dir = 1;
+    set oe_n = 1;
+    set a = 0b11111111;
+  }
+
+  input b_to_a {
+    set dir = 0;
+    set oe_n = 0;
+    set b = 0b10100101;
+  }
+
+  -- Stimulus: interactive controls
+  channel sw_dir, dir, { "kind": "switch", "initial": 1, "label": "DIR (1=A→B)" };
+  channel sw_oe, oe_n, { "kind": "switch", "initial": 0, "label": "/OE (0=enabled)" };
+
+  -- Stimulus: step
+  step demo_transfer {
+    apply a_to_b;
+    settle;
+    probe;
+  }
+
+  -- Observation
+  probe bus_a, a;
+  probe bus_b, b;
+  display bus_a as value, { "label": "A bus", "radix": "bin" };
+  display bus_b as value, { "label": "B bus", "radix": "bin" };
+
+  -- Tests
+  test a_to_b_transfer {
+    apply a_to_b;
+    settle;
+    assert bus_b == 0b00000011;
+  }
+
+  test output_disabled {
+    apply disabled;
+    settle;
+    assert bus_b == Z;
+  }
+
+  test b_to_a_transfer {
+    apply b_to_a;
+    settle;
+    assert bus_a == 0b10100101;
+  }
+}

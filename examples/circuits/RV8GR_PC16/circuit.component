@@ -1,0 +1,356 @@
+use standard.digital as digital;
+
+component:component RV8GR_PC16 is components.digital {
+  title "RV8GR 16-bit program counter (4× 74HC161 carry chain)";
+
+  -- Public boundary ports
+  port CLK : digital, input;
+  port /RST : digital, input;
+  port /PC_LD : digital, input;
+  port PC_INC : digital, input;
+  port IRL[8] : digital, input;
+  port PG[8] : digital, input;
+  port PC[16] : digital, output;
+
+  -- Devices (4 cascaded 74HC161 counters)
+  device U1, digital.74HC161;   -- PC bits 0-3
+  device U2, digital.74HC161;   -- PC bits 4-7
+  device U3, digital.74HC161;   -- PC bits 8-11
+  device U4, digital.74HC161;   -- PC bits 12-15
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  net clk : digital;
+  net rst_n : digital;
+  net pc_ld_n : digital;
+  net pc_inc : digital;
+  bus pc[16] : digital;
+  bus irl[8] : digital;
+  bus pg[8] : digital;
+  net rco0 : digital;
+  net rco1 : digital;
+  net rco2 : digital;
+
+  -- Power
+  connect vcc -> U1.VCC;
+  connect vcc -> U2.VCC;
+  connect vcc -> U3.VCC;
+  connect vcc -> U4.VCC;
+  connect gnd -> U1.GND;
+  connect gnd -> U2.GND;
+  connect gnd -> U3.GND;
+  connect gnd -> U4.GND;
+
+  -- Clock to all counters
+  connect clk -> U1.CLK;
+  connect clk -> U2.CLK;
+  connect clk -> U3.CLK;
+  connect clk -> U4.CLK;
+
+  -- Async clear (active-low)
+  connect rst_n -> U1./CLR;
+  connect rst_n -> U2./CLR;
+  connect rst_n -> U3./CLR;
+  connect rst_n -> U4./CLR;
+
+  -- Parallel load (active-low)
+  connect pc_ld_n -> U1./LOAD;
+  connect pc_ld_n -> U2./LOAD;
+  connect pc_ld_n -> U3./LOAD;
+  connect pc_ld_n -> U4./LOAD;
+
+  -- Count enable: ENP and ENT on U1 from PC_INC;
+  -- U2-U4 ENP from PC_INC, ENT from RCO cascade
+  connect pc_inc -> U1.ENP;
+  connect pc_inc -> U1.ENT;
+  connect pc_inc -> U2.ENP;
+  connect pc_inc -> U3.ENP;
+  connect pc_inc -> U4.ENP;
+
+  -- RCO carry chain: U1.RCO → U2.ENT → U2.RCO → U3.ENT ...
+  connect U1.RCO -> rco0;
+  connect rco0 -> U2.ENT;
+  connect U2.RCO -> rco1;
+  connect rco1 -> U3.ENT;
+  connect U3.RCO -> rco2;
+  connect rco2 -> U4.ENT;
+
+  -- Parallel load data: IRL[0..7] → U1.A-D, U2.A-D
+  connect irl[0] -> U1.A;
+  connect irl[1] -> U1.B;
+  connect irl[2] -> U1.C;
+  connect irl[3] -> U1.D;
+  connect irl[4] -> U2.A;
+  connect irl[5] -> U2.B;
+  connect irl[6] -> U2.C;
+  connect irl[7] -> U2.D;
+
+  -- Parallel load data: PG[0..7] → U3.A-D, U4.A-D
+  connect pg[0] -> U3.A;
+  connect pg[1] -> U3.B;
+  connect pg[2] -> U3.C;
+  connect pg[3] -> U3.D;
+  connect pg[4] -> U4.A;
+  connect pg[5] -> U4.B;
+  connect pg[6] -> U4.C;
+  connect pg[7] -> U4.D;
+
+  -- Counter outputs → PC bus
+  connect U1.QA -> pc[0];
+  connect U1.QB -> pc[1];
+  connect U1.QC -> pc[2];
+  connect U1.QD -> pc[3];
+  connect U2.QA -> pc[4];
+  connect U2.QB -> pc[5];
+  connect U2.QC -> pc[6];
+  connect U2.QD -> pc[7];
+  connect U3.QA -> pc[8];
+  connect U3.QB -> pc[9];
+  connect U3.QC -> pc[10];
+  connect U3.QD -> pc[11];
+  connect U4.QA -> pc[12];
+  connect U4.QB -> pc[13];
+  connect U4.QC -> pc[14];
+  connect U4.QD -> pc[15];
+
+  -- Boundary port bindings
+  connect CLK -> clk;
+  connect /RST -> rst_n;
+  connect /PC_LD -> pc_ld_n;
+  connect PC_INC -> pc_inc;
+  connect IRL -> irl;
+  connect PG -> pg;
+  connect pc -> PC;
+
+  -- Derived signals
+  derive counting = rst_n & pc_ld_n & pc_inc;
+  derive loading = rst_n & ~pc_ld_n;
+  derive holding = rst_n & pc_ld_n & ~pc_inc;
+
+  -- Stimulus: clock
+  clock sys_clk, clk, { "period_ns": 200, "initial": 0 };
+
+  -- Stimulus: input presets
+  input count_mode {
+    set rst_n = 1;
+    set pc_ld_n = 1;
+    set pc_inc = 1;
+  }
+
+  input load_mode {
+    set rst_n = 1;
+    set pc_ld_n = 0;
+    set pc_inc = 0;
+  }
+
+  input hold_mode {
+    set rst_n = 1;
+    set pc_ld_n = 1;
+    set pc_inc = 0;
+  }
+
+  -- Stimulus: reset
+  reset power_on {
+    set rst_n = 0;
+    set pc_ld_n = 1;
+    set pc_inc = 0;
+    set irl = 0x00;
+    set pg = 0x00;
+    settle;
+    set rst_n = 1;
+    settle;
+    expect pc == 0x0000;
+  }
+
+  -- Stimulus: step sequences
+  step count_one {
+    apply count_mode;
+    pulse clk;
+    settle;
+    probe;
+  }
+
+  step load_address {
+    apply load_mode;
+    set irl = 0x5A;
+    set pg = 0x12;
+    pulse clk;
+    settle;
+    probe;
+  }
+
+  -- Sequence: count from zero verifies carry propagation
+  sequence count_from_zero after power_on {
+    apply count_mode;
+    clock sys_clk; expect pc == 0x0001;
+    clock sys_clk; expect pc == 0x0002;
+    clock sys_clk; expect pc == 0x0003;
+    clock sys_clk; expect pc == 0x0004;
+  }
+
+  -- Sequence: carry chain at nibble boundaries
+  sequence carry_chain_proof after power_on {
+    apply count_mode;
+    -- Count to 0x000F (15 clocks)
+    clock sys_clk 15; expect pc == 0x000F;
+    clock sys_clk; expect pc == 0x0010;   -- RCO0 fires
+    -- Count to 0x00FF
+    clock sys_clk 239; expect pc == 0x00FF;
+    clock sys_clk; expect pc == 0x0100;   -- RCO1 fires
+  }
+
+  -- Clock profiles
+  clock_profile manual {
+    clock sys_clk, clk, { "period_ns": 1000000 };
+  }
+
+  clock_profile target_5mhz {
+    clock sys_clk, clk, { "period_ns": 200 };
+  }
+
+  -- Edge criteria
+  edge_criteria U1 {
+    trigger rising;
+    non_trigger hold;
+    async_override /CLR, clear_to_zero;
+  }
+
+  edge_criteria U2 {
+    trigger rising;
+    non_trigger hold;
+    async_override /CLR, clear_to_zero;
+  }
+
+  edge_criteria U3 {
+    trigger rising;
+    non_trigger hold;
+    async_override /CLR, clear_to_zero;
+  }
+
+  edge_criteria U4 {
+    trigger rising;
+    non_trigger hold;
+    async_override /CLR, clear_to_zero;
+  }
+
+  -- Timing checks
+  timing_check clk_to_qa {
+    from U1.CLK;
+    to U1.QA;
+    expect 22ns;
+    limit 35ns;
+  }
+
+  timing_check rco_cascade {
+    from U1.RCO;
+    to U2.ENT;
+    expect 5ns;
+    limit 10ns;
+  }
+
+  timing_check full_carry_propagation {
+    from U1.RCO;
+    through U2.RCO;
+    through U3.RCO;
+    to U4.ENT;
+    expect 30ns;
+    limit 50ns;
+  }
+
+  -- Observation
+  probe pc_val, pc;
+  probe carry0, rco0;
+  probe carry1, rco1;
+  probe carry2, rco2;
+  display pc_val as value, { "label": "PC", "radix": "hex", "width": 16 };
+  display carry0 as waveform, { "label": "RCO U1→U2" };
+  display carry1 as waveform, { "label": "RCO U2→U3" };
+  display carry2 as waveform, { "label": "RCO U3→U4" };
+
+  -- Tests
+  test reset_clears_to_zero {
+    set rst_n = 0;
+    settle;
+    assert pc_val == 0x0000;
+  }
+
+  test count_from_zero {
+    reset power_on;
+    apply count_mode;
+    pulse clk; settle;
+    assert pc_val == 0x0001;
+    pulse clk; settle;
+    assert pc_val == 0x0002;
+  }
+
+  test hold_when_pc_inc_low {
+    reset power_on;
+    apply count_mode;
+    pulse clk; settle;
+    assert pc_val == 0x0001;
+    apply hold_mode;
+    pulse clk; settle;
+    assert pc_val == 0x0001;
+  }
+
+  test no_edge_holds_state {
+    reset power_on;
+    apply count_mode;
+    pulse clk; settle;
+    assert pc_val == 0x0001;
+    -- No clock edge, just wait
+    settle;
+    assert pc_val == 0x0001;
+  }
+
+  test parallel_load {
+    reset power_on;
+    apply load_mode;
+    set irl = 0x5A;
+    set pg = 0x12;
+    pulse clk; settle;
+    assert pc_val == 0x125A;
+  }
+
+  test load_priority_over_count {
+    reset power_on;
+    -- Both /PC_LD=0 and PC_INC=1: load wins (74HC161 behavior)
+    set rst_n = 1;
+    set pc_ld_n = 0;
+    set pc_inc = 1;
+    set irl = 0xAB;
+    set pg = 0xCD;
+    pulse clk; settle;
+    assert pc_val == 0xCDAB;
+  }
+
+  test rco_fires_at_000f {
+    reset power_on;
+    apply count_mode;
+    clock sys_clk 15;
+    settle;
+    assert pc_val == 0x000F;
+    assert carry0 == 1;
+  }
+
+  test wrap_at_ffff {
+    reset power_on;
+    apply load_mode;
+    set irl = 0xFF;
+    set pg = 0xFF;
+    pulse clk; settle;
+    assert pc_val == 0xFFFF;
+    apply count_mode;
+    pulse clk; settle;
+    assert pc_val == 0x0000;
+  }
+
+  test works_at_5mhz {
+    use clock_profile target_5mhz;
+    reset power_on;
+    apply count_mode;
+    clock sys_clk 10;
+    assert pc_val == 0x000A;
+  }
+}

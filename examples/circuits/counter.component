@@ -1,0 +1,104 @@
+use standard.digital as digital;
+
+component:component Counter is components.digital {
+  title "74HC161 counter in count mode";
+
+  device U1, digital.74HC161;
+
+  net vcc : power;
+  net gnd : power;
+  net clk : digital;
+  net clear_n : digital;
+  net load_n : digital;
+  net enp : digital;
+  net ent : digital;
+  bus d[4] : digital;
+  bus q[4] : digital;
+  net rco : digital;
+
+  connect vcc -> U1.VCC;
+  connect gnd -> U1.GND;
+  connect clk -> U1.CLK;
+  connect clear_n -> U1./CLR;
+  connect load_n -> U1./LOAD;
+  connect enp -> U1.ENP;
+  connect ent -> U1.ENT;
+  connect d[0] -> U1.A;
+  connect d[1] -> U1.B;
+  connect d[2] -> U1.C;
+  connect d[3] -> U1.D;
+  connect U1.QA -> q[0];
+  connect U1.QB -> q[1];
+  connect U1.QC -> q[2];
+  connect U1.QD -> q[3];
+  connect U1.RCO -> rco;
+
+  -- Stimulus: clock generator
+  clock main, clk, { "period_ns": 100, "initial": 0 };
+
+  -- Stimulus: input preset for count mode
+  input count_mode {
+    set clear_n = 1;
+    set load_n = 1;
+    set enp = 1;
+    set ent = 1;
+    set d = 0;
+  }
+
+  -- Stimulus: step sequence
+  step run_and_probe {
+    apply count_mode;
+    settle;
+    clock main 4;
+    probe;
+  }
+
+  -- Observation
+  probe count, q;
+  probe ripple, rco;
+  display count as waveform, { "label": "Counter Q[3:0]" };
+  display ripple as led, { "label": "RCO" };
+
+  -- Clock profiles for timing sweep
+  clock_profile slow {
+    clock main, clk, { "period_ns": 20000 };
+  }
+
+  clock_profile target_5mhz {
+    clock main, clk, { "period_ns": 200 };
+  }
+
+  -- Tests
+  test count_from_zero {
+    apply count_mode;
+    settle;
+    arrange { set clear_n = 0; }
+    settle;
+    assert count == 0;
+    arrange { set clear_n = 1; pulse clk; }
+    settle;
+    assert count == 1;
+  }
+
+  test ripple_carry {
+    apply count_mode;
+    settle;
+    arrange { set clear_n = 0; }
+    settle;
+    arrange { set clear_n = 1; }
+    repeat 15 { pulse clk; settle; }
+    assert count == 15;
+    assert ripple == 1;
+  }
+
+  test works_at_5mhz {
+    use clock_profile target_5mhz;
+    apply count_mode;
+    settle;
+    arrange { set clear_n = 0; }
+    settle;
+    arrange { set clear_n = 1; }
+    clock main 4;
+    assert count == 4;
+  }
+}

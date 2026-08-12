@@ -1,0 +1,262 @@
+use standard.digital as digital;
+
+component:component RV8GR_AddressMux16 is components.digital {
+  title "RV8GR 16-bit address multiplexer (fetch=PC, data={DP,IRL})";
+
+  -- Public boundary ports
+  port /ADDR_MODE : digital, input;
+  port ADDR_REQ : digital, input;
+  port T2 : digital, input;
+  port PC[16] : digital, input;
+  port IRL[8] : digital, input;
+  port DP[8] : digital, input;
+  port ABUS[16] : digital, output;
+  port A15 : digital, output;
+
+  -- Devices (4 × 74HC157 quad 2-to-1 mux)
+  device U15, digital.74HC157;   -- ABUS bits 0-3 (IRL low nibble / PC low nibble)
+  device U16, digital.74HC157;   -- ABUS bits 4-7 (IRL high nibble / PC[4:7])
+  device U29, digital.74HC157;   -- ABUS bits 8-11 (DP low nibble / PC[8:11])
+  device U30, digital.74HC157;   -- ABUS bits 12-15 (DP high nibble / PC[12:15])
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  net addr_mode_n : digital;
+  net addr_req : digital;
+  net t2 : digital;
+  bus pc[16] : digital;
+  bus irl[8] : digital;
+  bus dp[8] : digital;
+  bus abus[16] : digital;
+
+  -- Power  connect vcc -> U15.VCC;
+  connect vcc -> U16.VCC;
+  connect vcc -> U29.VCC;
+  connect vcc -> U30.VCC;  connect gnd -> U15.GND;
+  connect gnd -> U16.GND;
+  connect gnd -> U29.GND;
+  connect gnd -> U30.GND;
+
+  -- Enable: /G tied LOW (always enabled)
+  connect gnd -> U15./G;
+  connect gnd -> U16./G;
+  connect gnd -> U29./G;
+  connect gnd -> U30./G;
+
+  -- Select: A/B pin = /ADDR_MODE
+  -- A/B=0 selects A inputs (IRL/DP), A/B=1 selects B inputs (PC)
+  -- In RV8GR: /ADDR_MODE=1 → PC (fetch), /ADDR_MODE=0 → data
+  -- 74HC157: A/B=0 → A, A/B=1 → B
+  -- So: A-inputs = IRL/DP (data), B-inputs = PC (fetch)
+  connect addr_mode_n -> U15."A/B";
+  connect addr_mode_n -> U16."A/B";
+  connect addr_mode_n -> U29."A/B";
+  connect addr_mode_n -> U30."A/B";
+
+  -- U15: ABUS bits 0-3 — A=IRL[0:3], B=PC[0:3]
+  connect irl[0] -> U15.1A;
+  connect pc[0]  -> U15.1B;
+  connect U15.1Y -> abus[0];
+  connect irl[1] -> U15.2A;
+  connect pc[1]  -> U15.2B;
+  connect U15.2Y -> abus[1];
+  connect irl[2] -> U15.3A;
+  connect pc[2]  -> U15.3B;
+  connect U15.3Y -> abus[2];
+  connect irl[3] -> U15.4A;
+  connect pc[3]  -> U15.4B;
+  connect U15.4Y -> abus[3];
+
+  -- U16: ABUS bits 4-7 — A=IRL[4:7], B=PC[4:7]
+  connect irl[4] -> U16.1A;
+  connect pc[4]  -> U16.1B;
+  connect U16.1Y -> abus[4];
+  connect irl[5] -> U16.2A;
+  connect pc[5]  -> U16.2B;
+  connect U16.2Y -> abus[5];
+  connect irl[6] -> U16.3A;
+  connect pc[6]  -> U16.3B;
+  connect U16.3Y -> abus[6];
+  connect irl[7] -> U16.4A;
+  connect pc[7]  -> U16.4B;
+  connect U16.4Y -> abus[7];
+
+  -- U29: ABUS bits 8-11 — A=DP[0:3], B=PC[8:11]
+  connect dp[0]  -> U29.1A;
+  connect pc[8]  -> U29.1B;
+  connect U29.1Y -> abus[8];
+  connect dp[1]  -> U29.2A;
+  connect pc[9]  -> U29.2B;
+  connect U29.2Y -> abus[9];
+  connect dp[2]  -> U29.3A;
+  connect pc[10] -> U29.3B;
+  connect U29.3Y -> abus[10];
+  connect dp[3]  -> U29.4A;
+  connect pc[11] -> U29.4B;
+  connect U29.4Y -> abus[11];
+
+  -- U30: ABUS bits 12-15 — A=DP[4:7], B=PC[12:15]
+  connect dp[4]  -> U30.1A;
+  connect pc[12] -> U30.1B;
+  connect U30.1Y -> abus[12];
+  connect dp[5]  -> U30.2A;
+  connect pc[13] -> U30.2B;
+  connect U30.2Y -> abus[13];
+  connect dp[6]  -> U30.3A;
+  connect pc[14] -> U30.3B;
+  connect U30.3Y -> abus[14];
+  connect dp[7]  -> U30.4A;
+  connect pc[15] -> U30.4B;
+  connect U30.4Y -> abus[15];
+
+  -- Boundary port bindings
+  connect /ADDR_MODE -> addr_mode_n;
+  connect ADDR_REQ -> addr_req;
+  connect T2 -> t2;
+  connect PC -> pc;
+  connect IRL -> irl;
+  connect DP -> dp;
+  connect abus -> ABUS;
+  connect abus[15] -> A15;
+
+  -- Derived signals
+  derive addr_mode = addr_req | (t2 == 0);
+  derive addr_mode_n_derived = ~(addr_req & t2);
+  derive memory_select = abus[15];  -- A15: 0=ROM, 1=RAM
+
+  -- Clock (level-sensitive, combinational — no system clock needed)
+  clock sys_clk, t2, { "period_ns": 200, "initial": 0, "note": "Phase reference only" };
+
+  -- Input presets
+  input fetch_mode {
+    set addr_mode_n = 1;
+    set addr_req = 0;
+  }
+
+  input data_mode {
+    set addr_mode_n = 0;
+    set addr_req = 1;
+  }
+
+  -- Reset
+  reset power_on {
+    set addr_mode_n = 1;
+    settle;
+    expect abus == pc;
+  }
+
+  -- Sequence: address source selection
+  sequence mux_select_behavior after power_on {
+    apply fetch_mode; settle;
+    expect abus[0] == pc[0];
+    expect abus[15] == pc[15];
+    apply data_mode; settle;
+    expect abus[0] == irl[0];
+    expect abus[8] == dp[0];
+  }
+
+  -- Edge criteria (combinational — level-sensitive)
+  edge_criteria U15 {
+    trigger none;
+    level_sensitive select, data;
+  }
+
+  edge_criteria U16 {
+    trigger none;
+    level_sensitive select, data;
+  }
+
+  edge_criteria U29 {
+    trigger none;
+    level_sensitive select, data;
+  }
+
+  edge_criteria U30 {
+    trigger none;
+    level_sensitive select, data;
+  }
+
+  -- Bus safety: ABUS is single-driver (mux outputs only)
+  bus_safety abus_single_driver {
+    bus abus;
+    max_drivers 4;  -- one mux per 4-bit slice, non-conflicting
+    policy combinational_mux;
+    note "ABUS has exactly one driver per bit (mux Y output). No tristate contention possible.";
+  }
+
+  -- Timing checks
+  timing_check select_to_address {
+    from addr_mode_n;
+    to abus[0];
+    expect 18ns;
+    limit 25ns;
+  }
+
+  timing_check data_to_address {
+    from irl[0];
+    to abus[0];
+    expect 13ns;
+    limit 25ns;
+  }
+
+  -- Probes
+  probe addr_bus, abus;
+  probe addr_select, addr_mode_n;
+  probe a15_chipsel, abus[15];
+
+  display addr_bus as bus_hex, { "label": "ABUS[15:0]", "width": 16 };
+  display addr_select as value, { "label": "/ADDR_MODE" };
+  display a15_chipsel as value, { "label": "A15 (0=ROM, 1=RAM)" };
+
+  -- Tests
+  test t0_selects_pc {
+    set addr_mode_n = 1;
+    set pc = 16'h1234;
+    set irl = 8'hAB;
+    set dp = 8'hCD;
+    settle;
+    assert abus == 16'h1234;
+  }
+
+  test t2_src_selects_data {
+    set addr_mode_n = 0;
+    set pc = 16'h1234;
+    set irl = 8'hAB;
+    set dp = 8'hCD;
+    settle;
+    assert abus[7:0] == 8'hAB;
+    assert abus[15:8] == 8'hCD;
+  }
+
+  test a15_rom_select {
+    set addr_mode_n = 1;
+    set pc = 16'h7FFF;
+    settle;
+    assert abus[15] == 0;  -- ROM selected
+  }
+
+  test a15_ram_select {
+    set addr_mode_n = 1;
+    set pc = 16'h8000;
+    settle;
+    assert abus[15] == 1;  -- RAM selected
+  }
+
+  test data_page_boundary {
+    set addr_mode_n = 0;
+    set irl = 8'hFF;
+    set dp = 8'h7F;
+    settle;
+    assert abus == 16'h7FFF;  -- ROM boundary
+    set dp = 8'h80;
+    settle;
+    assert abus == 16'h80FF;  -- RAM boundary
+  }
+
+  test disabled_output_zero {
+    -- /G=HIGH disables mux (not used in RV8GR but proves chip behavior)
+    -- This test documents the chip contract only
+    note "/G is tied LOW in RV8GR; disabled state not exercised in normal operation.";
+  }
+}

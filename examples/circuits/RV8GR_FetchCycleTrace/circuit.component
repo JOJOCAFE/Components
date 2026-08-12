@@ -1,0 +1,350 @@
+use standard.digital as digital;
+use standard.virtual as virtual;
+use standard.memory as memory;
+
+component:component RV8GR_FetchCycleTrace is components.digital {
+  title "RV8GR fetch-cycle trace (T0 ctrl fetch, T1 operand fetch, T2 LI execute)";
+
+  -- Public boundary ports
+  port CLK : digital, input;
+  port T0 : digital, input;
+  port T1 : digital, input;
+  port T2 : digital, input;
+  port PC[16] : digital, output;
+  port ABUS[16] : digital, output;
+  port IBUS[8] : digital, inout;
+  port DBUS[8] : digital, inout;
+  port IRH[8] : digital, output;
+  port IRL[8] : digital, output;
+  port AC[8] : digital, output;
+
+  -- Devices
+  device U1, digital.74HC161;     -- PC bits 0-3
+  device U2, digital.74HC161;     -- PC bits 4-7
+  device U3, digital.74HC161;     -- PC bits 8-11
+  device U4, digital.74HC161;     -- PC bits 12-15
+  device U5, digital.74HC574;     -- IR_HIGH control latch (T0)
+  device U6, digital.74HC574;     -- IR_LOW operand latch (T1)
+  device U7, digital.74HC245;     -- DBUS→IBUS bridge
+  device U34, digital.74HC541;    -- T2 immediate IRL→IBUS buffer
+  device ROM1, memory.AT28C256;  -- Program ROM
+  device IBUSMON, virtual.BusProbe, { "width": 8, "policy": "single_driver" };
+  device DBUSMON, virtual.BusProbe, { "width": 8, "policy": "single_driver" };
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  net clk : digital;
+  net t0 : digital;
+  net t1 : digital;
+  net t2 : digital;
+  bus pc[16] : digital;
+  bus abus[16] : digital;
+  bus ibus[8] : digital;
+  bus dbus[8] : digital;
+  bus irh[8] : digital;
+  bus irl[8] : digital;
+  bus ac[8] : digital;
+
+  -- Power  connect vcc -> U1.VCC;
+  connect vcc -> U2.VCC;
+  connect vcc -> U3.VCC;
+  connect vcc -> U4.VCC;  connect vcc -> U5.VCC;
+  connect vcc -> U6.VCC;
+  connect vcc -> U7.VCC;
+  connect vcc -> U34.VCC;  connect gnd -> U1.GND;
+  connect gnd -> U2.GND;
+  connect gnd -> U3.GND;
+  connect gnd -> U4.GND;  connect gnd -> U5.GND;
+  connect gnd -> U6.GND;
+  connect gnd -> U7.GND;
+  connect gnd -> U34.GND;
+
+  -- PC counter: CLK=CLK, /CLR=VCC (no reset in this trace), ENP=pc_inc, /LD=VCC  connect clk -> U1.CLK;
+  connect clk -> U2.CLK;
+  connect clk -> U3.CLK;
+  connect clk -> U4.CLK;  connect vcc -> U1./CLR;
+  connect vcc -> U2./CLR;
+  connect vcc -> U3./CLR;
+  connect vcc -> U4./CLR;  connect vcc -> U1./LOAD;
+  connect vcc -> U2./LOAD;
+  connect vcc -> U3./LOAD;
+  connect vcc -> U4./LOAD;  connect pc_inc -> U1.ENP;
+  connect pc_inc -> U2.ENP;
+  connect pc_inc -> U3.ENP;
+  connect pc_inc -> U4.ENP;
+  connect pc_inc -> U1.ENT;
+
+  -- PC_INC = T0 OR T1 (PC counts during fetch phases only)
+  derive pc_inc = t0 | t1;
+
+  -- RCO cascade
+  connect U1.RCO -> U2.ENT;
+  connect U2.RCO -> U3.ENT;
+  connect U3.RCO -> U4.ENT;
+
+  -- PC outputs
+  connect U1.QA -> pc[0]; connect U1.QB -> pc[1];
+  connect U1.QC -> pc[2]; connect U1.QD -> pc[3];
+  connect U2.QA -> pc[4]; connect U2.QB -> pc[5];
+  connect U2.QC -> pc[6]; connect U2.QD -> pc[7];
+  connect U3.QA -> pc[8]; connect U3.QB -> pc[9];
+  connect U3.QC -> pc[10]; connect U3.QD -> pc[11];
+  connect U4.QA -> pc[12]; connect U4.QB -> pc[13];
+  connect U4.QC -> pc[14]; connect U4.QD -> pc[15];
+
+  -- ABUS = PC (fetch mode, /ADDR_MODE=1)
+  connect pc -> abus;
+
+  -- ROM: addressed by ABUS, /CE=GND (always selected for trace), /OE=GND
+  connect gnd -> ROM1./CE;
+  connect gnd -> ROM1./OE;
+
+  -- U7 bridge: DIR=0 (B→A = DBUS→IBUS), /OE=GND during fetch
+  connect gnd -> U7.DIR;
+  connect gnd -> U7./OE;
+  -- B-side from DBUS (ROM data)
+  connect dbus[0] -> U7.B1; connect dbus[1] -> U7.B2;
+  connect dbus[2] -> U7.B3; connect dbus[3] -> U7.B4;
+  connect dbus[4] -> U7.B5; connect dbus[5] -> U7.B6;
+  connect dbus[6] -> U7.B7; connect dbus[7] -> U7.B8;
+  -- A-side drives IBUS
+  connect U7.A1 -> ibus[0]; connect U7.A2 -> ibus[1];
+  connect U7.A3 -> ibus[2]; connect U7.A4 -> ibus[3];
+  connect U7.A5 -> ibus[4]; connect U7.A6 -> ibus[5];
+  connect U7.A7 -> ibus[6]; connect U7.A8 -> ibus[7];
+
+  -- U5 IR_HIGH: captures IBUS on T0 rising
+  connect t0 -> U5.CLK;
+  connect gnd -> U5./OE;
+  connect ibus[0] -> U5.1D; connect ibus[1] -> U5.2D;
+  connect ibus[2] -> U5.3D; connect ibus[3] -> U5.4D;
+  connect ibus[4] -> U5.5D; connect ibus[5] -> U5.6D;
+  connect ibus[6] -> U5.7D; connect ibus[7] -> U5.8D;
+  connect U5.1Q -> irh[0]; connect U5.2Q -> irh[1];
+  connect U5.3Q -> irh[2]; connect U5.4Q -> irh[3];
+  connect U5.5Q -> irh[4]; connect U5.6Q -> irh[5];
+  connect U5.7Q -> irh[6]; connect U5.8Q -> irh[7];
+
+  -- U6 IR_LOW: captures IBUS on T1 rising
+  connect t1 -> U6.CLK;
+  connect gnd -> U6./OE;
+  connect ibus[0] -> U6.1D; connect ibus[1] -> U6.2D;
+  connect ibus[2] -> U6.3D; connect ibus[3] -> U6.4D;
+  connect ibus[4] -> U6.5D; connect ibus[5] -> U6.6D;
+  connect ibus[6] -> U6.7D; connect ibus[7] -> U6.8D;
+  connect U6.1Q -> irl[0]; connect U6.2Q -> irl[1];
+  connect U6.3Q -> irl[2]; connect U6.4Q -> irl[3];
+  connect U6.5Q -> irl[4]; connect U6.6Q -> irl[5];
+  connect U6.7Q -> irl[6]; connect U6.8Q -> irl[7];
+
+  -- U34 immediate buffer: drives IBUS during T2 (IRL→IBUS)
+  -- /OE1 and /OE2 = active during T2 immediate (for this trace: tied to ~T2)
+  connect irl[0] -> U34.A1; connect irl[1] -> U34.A2;
+  connect irl[2] -> U34.A3; connect irl[3] -> U34.A4;
+  connect irl[4] -> U34.A5; connect irl[5] -> U34.A6;
+  connect irl[6] -> U34.A7; connect irl[7] -> U34.A8;
+
+  -- Boundary port bindings
+  connect CLK -> clk;
+  connect T0 -> t0;
+  connect T1 -> t1;
+  connect T2 -> t2;
+  connect pc -> PC;
+  connect abus -> ABUS;
+  connect ibus -> IBUS;
+  connect dbus -> DBUS;
+  connect irh -> IRH;
+  connect irl -> IRL;
+  connect ac -> AC;
+
+  -- Derived signals
+  derive irh_opcode = irh;
+  derive irl_operand = irl;
+  derive sub_bit = irh[7];
+  derive xor_mode_bit = irh[6];
+  derive mux_sel_bit = irh[5];
+  derive ac_wr_bit = irh[4];
+  derive src_bit = irh[3];
+  derive str_bit = irh[2];
+  derive br_bit = irh[1];
+  derive jmp_bit = irh[0];
+
+  -- Clock
+  clock sys_clk, clk, { "period_ns": 200, "initial": 0 };
+
+  -- Clock profiles
+  clock_profile manual {
+    clock sys_clk, clk, { "period_ns": 1000000 };
+  }
+
+  clock_profile target_5mhz {
+    clock sys_clk, clk, { "period_ns": 200 };
+  }
+
+  -- Input presets
+  input phase_t0 {
+    set t0 = 1; set t1 = 0; set t2 = 0;
+  }
+
+  input phase_t1 {
+    set t0 = 0; set t1 = 1; set t2 = 0;
+  }
+
+  input phase_t2 {
+    set t0 = 0; set t1 = 0; set t2 = 1;
+  }
+
+  -- Reset
+  reset power_on {
+    set t0 = 0; set t1 = 0; set t2 = 0;
+    settle;
+    expect pc == 16'h0000;
+  }
+
+  -- Sequence: LI $42 fetch cycle (3 clocks)
+  sequence li_42_fetch after power_on {
+    -- ROM[0000] = $30 (LI opcode), ROM[0001] = $42 (operand)
+    -- T0: fetch control byte $30 → IRH
+    apply phase_t0; clock sys_clk; settle;
+    expect irh == 8'h30;
+    expect pc == 16'h0001;
+
+    -- T1: fetch operand $42 → IRL
+    apply phase_t1; clock sys_clk; settle;
+    expect irl == 8'h42;
+    expect pc == 16'h0002;
+
+    -- T2: execute LI — U34 drives IRL onto IBUS, AC captures
+    apply phase_t2; settle;
+    expect pc == 16'h0002;  -- PC does not increment during T2
+  }
+
+  -- Sequence: golden trace (4 instructions, 12 clocks)
+  sequence golden_trace after power_on {
+    -- LI $42 → ADDI $01 → SUBI $43 → BEQ $08
+    -- Final: PC=$0008, AC=$00, Z=1
+    clock sys_clk 12;
+    settle;
+    expect pc == 16'h0008;
+  }
+
+  -- Edge criteria
+  edge_criteria U5 {
+    trigger rising;
+    non_trigger hold;
+    note "IR_HIGH captures on T0 rising edge only. Holds through T1 and T2.";
+  }
+
+  edge_criteria U6 {
+    trigger rising;
+    non_trigger hold;
+    note "IR_LOW captures on T1 rising edge only. Holds through T2.";
+  }
+
+  edge_criteria U1 {
+    trigger rising;
+    non_trigger hold;
+    note "PC increments on CLK rising when PC_INC=1 (T0 or T1 phase).";
+  }
+
+  -- Bus safety
+  bus_safety ibus_phase_ownership {
+    bus ibus;
+    max_drivers 1;
+    policy exclusive_tristate;
+    drivers U7.A, U34.Y;
+    note "T0/T1: U7 drives IBUS (ROM→DBUS→U7→IBUS). T2: U34 drives IBUS (IRL immediate).";
+  }
+
+  bus_safety dbus_phase_ownership {
+    bus dbus;
+    max_drivers 1;
+    policy exclusive_tristate;
+    drivers ROM1.D;
+    note "During fetch: ROM is the only DBUS driver.";
+  }
+
+  -- Timing checks
+  timing_check rom_access_time {
+    from abus[0];
+    to dbus[0];
+    expect 70ns;
+    limit 70ns;
+    note "AT28C256-70: 70ns max address-to-data";
+  }
+
+  timing_check dbus_to_ibus {
+    from dbus[0];
+    through U7.A1;
+    to ibus[0];
+    expect 12ns;
+    limit 26ns;
+  }
+
+  timing_check ibus_to_irh {
+    from ibus[0];
+    to U5.1Q;
+    expect 28ns;
+    limit 40ns;
+    note "Setup + clock-to-Q for 74HC574";
+  }
+
+  -- Probes
+  probe pc_value, pc;
+  probe ibus_data, ibus;
+  probe dbus_data, dbus;
+  probe ir_high, irh;
+  probe ir_low, irl;
+  probe accumulator, ac;
+
+  display pc_value as bus_hex, { "label": "PC[15:0]", "width": 16 };
+  display ibus_data as bus_hex, { "label": "IBUS[7:0]" };
+  display dbus_data as bus_hex, { "label": "DBUS[7:0]" };
+  display ir_high as bus_hex, { "label": "IRH (control)" };
+  display ir_low as bus_hex, { "label": "IRL (operand)" };
+  display accumulator as bus_hex, { "label": "AC" };
+
+  -- Tests
+  test t0_fetches_control {
+    reset power_on;
+    apply phase_t0;
+    -- ROM[0000] should be $30 (LI)
+    clock sys_clk; settle;
+    assert irh == 8'h30;
+    assert pc == 16'h0001;
+    note "T0: ROM[$0000]=$30 → DBUS → U7 → IBUS → U5 captures as IRH";
+  }
+
+  test t1_fetches_operand {
+    reset power_on;
+    apply phase_t0; clock sys_clk; settle;
+    apply phase_t1; clock sys_clk; settle;
+    assert irl == 8'h42;
+    assert pc == 16'h0002;
+    note "T1: ROM[$0001]=$42 → DBUS → U7 → IBUS → U6 captures as IRL";
+  }
+
+  test t2_pc_holds {
+    reset power_on;
+    apply phase_t0; clock sys_clk; settle;
+    apply phase_t1; clock sys_clk; settle;
+    apply phase_t2; clock sys_clk; settle;
+    assert pc == 16'h0002;
+    note "T2: PC does not increment (PC_INC = T0|T1 = 0)";
+  }
+
+  test bus_driver_t0_t1 {
+    reset power_on;
+    apply phase_t0; settle;
+    note "T0/T1: ROM → DBUS, U7 → IBUS. Single driver per bus.";
+  }
+
+  test bus_driver_t2 {
+    reset power_on;
+    apply phase_t0; clock sys_clk; settle;
+    apply phase_t1; clock sys_clk; settle;
+    apply phase_t2; settle;
+    note "T2 immediate: U34 → IBUS. U7 disabled. ROM idle on DBUS.";
+  }
+}

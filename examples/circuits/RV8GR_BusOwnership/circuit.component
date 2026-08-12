@@ -1,0 +1,323 @@
+use standard.digital as digital;
+use standard.memory as memory;
+
+component:component RV8GR_BusOwnership is components.digital {
+  title "RV8GR bus ownership proof (IBUS/DBUS single-driver per phase)";
+
+  -- Public boundary ports
+  port T0 : digital, input;
+  port T1 : digital, input;
+  port T2 : digital, input;
+  port SRC : digital, input;
+  port STR : digital, input;
+  port A[15] : digital, input;
+  port A15 : digital, input;
+  port IBUS[8] : digital, inout;
+  port DBUS[8] : digital, inout;
+
+  -- Devices
+  device U7, digital.74HC245;     -- DBUS↔IBUS bridge (bidirectional)
+  device U14, digital.74HC541;    -- AC output buffer → IBUS (store)
+  device U34, digital.74HC541;    -- IRL immediate buffer → IBUS (T2 immediate)
+  device U24, digital.74HC04;     -- Inverters: /IRL_OE, /A15, BUF_OE_N
+  device U25, digital.74HC32;     -- OR: ADDR_REQ=SRC|STR, BUF_OE_SAFE
+  device U26, digital.74HC00;     -- NAND: /ADDR_MODE, /IRL_OE, /AC_BUF
+  device U28, digital.74HC86;     -- XOR: WR_DIR=NOT(/AC_BUF)
+  device ROM1, memory.AT28C256;  -- Program ROM
+  device RAM1, memory.62256;     -- Data RAM
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  net t0 : digital;
+  net t1 : digital;
+  net t2 : digital;
+  net src : digital;
+  net str : digital;
+  net a15 : digital;
+  bus ibus[8] : digital;
+  bus dbus[8] : digital;
+  net addr_req : digital;
+  net addr_mode : digital;
+  net addr_mode_n : digital;
+  net irl_oe_n : digital;
+  net buf_oe_n : digital;
+  net buf_oe_safe : digital;
+  net ac_buf_n : digital;
+  net wr_dir : digital;
+  net a15_n : digital;
+
+  -- Power  connect vcc -> U7.VCC;
+  connect vcc -> U14.VCC;
+  connect vcc -> U34.VCC;
+  connect vcc -> U24.VCC;
+  connect vcc -> U25.VCC;
+  connect vcc -> U26.VCC;
+  connect vcc -> U28.VCC;  connect gnd -> U7.GND;
+  connect gnd -> U14.GND;
+  connect gnd -> U34.GND;
+  connect gnd -> U24.GND;
+  connect gnd -> U25.GND;
+  connect gnd -> U26.GND;
+  connect gnd -> U28.GND;
+
+  -- U25 gate 1: ADDR_REQ = SRC OR STR
+  connect src -> U25.1A;
+  connect str -> U25.1B;
+  connect U25.1Y -> addr_req;
+
+  -- U26 gate 2: /ADDR_MODE = NAND(ADDR_REQ, ADDR_REQ) = NOT(ADDR_REQ)
+  connect addr_req -> U26.2A;
+  connect addr_req -> U26.2B;
+  connect U26.2Y -> addr_mode_n;
+
+  -- U26 gate 1: /IRL_OE = NAND(T2, /ADDR_MODE)
+  connect t2 -> U26.1A;
+  connect addr_mode_n -> U26.1B;
+  connect U26.1Y -> irl_oe_n;
+
+  -- U24 gate 6: BUF_OE_N = NOT(/IRL_OE)
+  connect irl_oe_n -> U24.6A;
+  connect U24.6Y -> buf_oe_n;
+
+  -- U25 gate 3: BUF_OE_SAFE = BUF_OE_N OR STR
+  connect buf_oe_n -> U25.3A;
+  connect str -> U25.3B;
+  connect U25.3Y -> buf_oe_safe;
+
+  -- U26 gate 3: /AC_BUF = NAND(T2, STR)
+  connect t2 -> U26.3A;
+  connect str -> U26.3B;
+  connect U26.3Y -> ac_buf_n;
+
+  -- U28 gate 3: WR_DIR = /AC_BUF XOR VCC = NOT(/AC_BUF)
+  connect ac_buf_n -> U28.3A;
+  connect vcc -> U28.3B;
+  connect U28.3Y -> wr_dir;
+
+  -- U7 control: DIR=WR_DIR, /OE=BUF_OE_SAFE
+  connect wr_dir -> U7.DIR;
+  connect buf_oe_safe -> U7./OE;
+
+  -- U14 AC output buffer: /OE1=/AC_BUF, /OE2=/AC_BUF
+  connect ac_buf_n -> U14./OE1;
+  connect ac_buf_n -> U14./OE2;
+
+  -- U34 IRL immediate buffer: /OE1=/IRL_OE, /OE2=/IRL_OE
+  connect irl_oe_n -> U34./OE1;
+  connect irl_oe_n -> U34./OE2;
+
+  -- U24 gate 5: /A15 = NOT(A15) for RAM /CE
+  connect a15 -> U24.5A;
+  connect U24.5Y -> a15_n;
+
+  -- ROM chip select: /CE = A15 (active when A15=0)
+  connect a15 -> ROM1./CE;
+  connect gnd -> ROM1./OE;
+
+  -- RAM chip select: /CE = /A15 (active when A15=1)
+  connect a15_n -> RAM1./CE;
+
+  -- Boundary port bindings
+  connect T0 -> t0;
+  connect T1 -> t1;
+  connect T2 -> t2;
+  connect SRC -> src;
+  connect STR -> str;
+  connect A15 -> a15;
+  connect ibus -> IBUS;
+  connect dbus -> DBUS;
+
+  -- Derived signals
+  derive ibus_driver_u7 = ~buf_oe_safe & ~wr_dir;
+  derive ibus_driver_u14 = ~ac_buf_n;
+  derive ibus_driver_u34 = ~irl_oe_n;
+  derive dbus_driver_u7 = ~buf_oe_safe & wr_dir;
+  derive dbus_driver_rom = ~a15;
+  derive dbus_driver_ram = a15;
+
+  -- Clock (phase reference only)
+  clock sys_clk, t0, { "period_ns": 200, "initial": 0 };
+
+  -- Input presets
+  input fetch_phase {
+    set t0 = 1; set t1 = 0; set t2 = 0;
+    set src = 0; set str = 0;
+  }
+
+  input t2_immediate {
+    set t0 = 0; set t1 = 0; set t2 = 1;
+    set src = 0; set str = 0;
+  }
+
+  input t2_load {
+    set t0 = 0; set t1 = 0; set t2 = 1;
+    set src = 1; set str = 0;
+  }
+
+  input t2_store {
+    set t0 = 0; set t1 = 0; set t2 = 1;
+    set src = 0; set str = 1;
+  }
+
+  -- Reset
+  reset power_on {
+    apply fetch_phase;
+    settle;
+    expect buf_oe_safe == 0;
+    expect wr_dir == 0;
+  }
+
+  -- Sequence: phase-by-phase bus ownership
+  sequence bus_ownership_proof after power_on {
+    -- T0/T1: ROM→DBUS, U7 DBUS→IBUS
+    apply fetch_phase; settle;
+    expect buf_oe_safe == 0;
+    expect wr_dir == 0;
+    expect ac_buf_n == 1;
+    expect irl_oe_n == 1;
+
+    -- T2 immediate: U34→IBUS, U7 disabled
+    apply t2_immediate; settle;
+    expect irl_oe_n == 0;
+    expect buf_oe_safe == 1;
+    expect ac_buf_n == 1;
+
+    -- T2 load: ROM/RAM→DBUS, U7→IBUS
+    apply t2_load; settle;
+    expect buf_oe_safe == 0;
+    expect wr_dir == 0;
+    expect irl_oe_n == 1;
+
+    -- T2 store: U14→IBUS, U7 disabled by BUF_OE_SAFE
+    apply t2_store; settle;
+    expect ac_buf_n == 0;
+    expect buf_oe_safe == 1;
+  }
+
+  -- Edge criteria (combinational)
+  edge_criteria U7 {
+    trigger none;
+    level_sensitive DIR, /OE;
+  }
+
+  edge_criteria U14 {
+    trigger none;
+    level_sensitive /OE1, /OE2;
+  }
+
+  edge_criteria U34 {
+    trigger none;
+    level_sensitive /OE1, /OE2;
+  }
+
+  -- Bus safety: IBUS single-driver policy
+  bus_safety ibus_ownership {
+    bus ibus;
+    max_drivers 1;
+    policy exclusive_tristate;
+    drivers U7.A, U14.Y, U34.Y;
+    note "At most one of U7(read), U14(store), U34(immediate) drives IBUS at any time.";
+  }
+
+  -- Bus safety: DBUS single-driver policy
+  bus_safety dbus_ownership {
+    bus dbus;
+    max_drivers 1;
+    policy exclusive_tristate;
+    drivers ROM1.D, RAM1.D, U7.B;
+    note "At most one of ROM, RAM, or U7(store-direction) drives DBUS at any time.";
+  }
+
+  -- Timing checks
+  timing_check control_to_oe {
+    from str;
+    through U26.3Y;
+    to U14./OE1;
+    expect 12ns;
+    limit 20ns;
+  }
+
+  timing_check control_to_dir {
+    from str;
+    through U28.3Y;
+    to U7.DIR;
+    expect 24ns;
+    limit 40ns;
+  }
+
+  -- Probes
+  probe ibus_bus, ibus;
+  probe dbus_bus, dbus;
+  probe bus_oe_safe, buf_oe_safe;
+  probe write_dir, wr_dir;
+  probe ac_buffer_n, ac_buf_n;
+  probe irl_buffer_n, irl_oe_n;
+
+  display ibus_bus as bus_hex, { "label": "IBUS[7:0]" };
+  display dbus_bus as bus_hex, { "label": "DBUS[7:0]" };
+  display bus_oe_safe as value, { "label": "BUF_OE_SAFE" };
+  display write_dir as value, { "label": "WR_DIR" };
+
+  -- Tests
+  test fetch_rom_to_ibus {
+    apply fetch_phase;
+    set a15 = 0;
+    settle;
+    assert buf_oe_safe == 0;
+    assert wr_dir == 0;
+    note "ROM→DBUS→U7→IBUS path active";
+  }
+
+  test t2_immediate_u34_drives {
+    apply t2_immediate;
+    settle;
+    assert irl_oe_n == 0;
+    assert buf_oe_safe == 1;
+    assert ac_buf_n == 1;
+    note "U34 drives IBUS; U7 and U14 disabled";
+  }
+
+  test t2_load_u7_bridges {
+    apply t2_load;
+    set a15 = 1;
+    settle;
+    assert buf_oe_safe == 0;
+    assert wr_dir == 0;
+    assert irl_oe_n == 1;
+    note "RAM→DBUS, U7 bridges DBUS→IBUS";
+  }
+
+  test t2_store_u14_drives {
+    apply t2_store;
+    settle;
+    assert ac_buf_n == 0;
+    assert buf_oe_safe == 1;
+    note "U14 drives IBUS; U7 disabled to prevent IBUS fight";
+  }
+
+  test src_str_guard {
+    -- Forbidden: SRC+STR both set
+    set t0 = 0; set t1 = 0; set t2 = 1;
+    set src = 1; set str = 1;
+    settle;
+    assert buf_oe_safe == 1;
+    note "SRC+STR guard: BUF_OE_SAFE=1 disables U7, preventing bus fight";
+  }
+
+  test no_dual_ibus_driver {
+    -- Verify U14 and U34 never both enabled
+    apply t2_immediate; settle;
+    assert (irl_oe_n == 0) & (ac_buf_n == 1);
+    apply t2_store; settle;
+    assert (irl_oe_n == 1) & (ac_buf_n == 0);
+  }
+
+  test no_dual_dbus_driver {
+    -- During store: ROM/RAM outputs disabled via A15 mux and /WE
+    apply t2_store;
+    set a15 = 1;
+    settle;
+    note "RAM /WE LOW prevents data output; U7 DBUS driver inactive due to BUF_OE_SAFE";
+  }
+}

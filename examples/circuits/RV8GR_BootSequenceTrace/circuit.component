@@ -1,0 +1,346 @@
+use standard.digital as digital;
+use standard.virtual as virtual;
+use project.RV8GR_AluAccumulator as RV8GR_AluAccumulator;
+
+component:component RV8GR_BootSequenceTrace is components.digital {
+  title "RV8GR boot sequence trace (SETDP $80, SETPG $00, LI $00, J self)";
+
+  -- Public boundary ports
+  port CLK : digital, input;
+  port T0 : digital, output;
+  port T1 : digital, output;
+  port T2 : digital, output;
+  port PC[16] : digital, output;
+  port PG[8] : digital, output;
+  port DP[8] : digital, output;
+  port AC[8] : digital, output;
+  port Z : digital, output;
+  port IRH[8] : digital, output;
+  port IRL[8] : digital, output;
+  port IBUS[8] : digital, inout;
+  port DBUS[8] : digital, inout;
+
+  -- Devices
+  device U1, digital.74HC161;     -- PC bits 0-3
+  device U2, digital.74HC161;     -- PC bits 4-7
+  device U3, digital.74HC161;     -- PC bits 8-11
+  device U4, digital.74HC161;     -- PC bits 12-15
+  device U23, digital.74HC574;    -- Page register (PG)
+  device U32, digital.74HC574;    -- Data page register (DP)
+  device U33, digital.74HC21;     -- SETDP decode (DP_Load)
+  device U34, digital.74HC541;    -- T2 immediate buffer (IRL→IBUS)
+  instance ALU, RV8GR_AluAccumulator;
+  device VCLK, virtual.ClockSource, { "period_ns": 200 };
+  device IBUSMON, virtual.BusProbe, { "width": 8, "policy": "single_driver" };
+  device DBUSMON, virtual.BusProbe, { "width": 8, "policy": "single_driver" };
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  net clk : digital;
+  net t0 : digital;
+  net t1 : digital;
+  net t2 : digital;
+  bus pc[16] : digital;
+  bus pg[8] : digital;
+  bus dp[8] : digital;
+  bus ac[8] : digital;
+  net z : digital;
+  bus irh[8] : digital;
+  bus irl[8] : digital;
+  bus ibus[8] : digital;
+  bus dbus[8] : digital;
+  net pc_ld_n : digital;
+  net pg_clk : digital;
+  net dp_load : digital;
+
+  -- Power  connect vcc -> U1.VCC;
+  connect vcc -> U2.VCC;
+  connect vcc -> U3.VCC;
+  connect vcc -> U4.VCC;  connect vcc -> U23.VCC;
+  connect vcc -> U32.VCC;
+  connect vcc -> U33.VCC;
+  connect vcc -> U34.VCC;  connect gnd -> U1.GND;
+  connect gnd -> U2.GND;
+  connect gnd -> U3.GND;
+  connect gnd -> U4.GND;  connect gnd -> U23.GND;
+  connect gnd -> U32.GND;
+  connect gnd -> U33.GND;
+  connect gnd -> U34.GND;
+
+  -- PC counter chain  connect clk -> U1.CLK;
+  connect clk -> U2.CLK;
+  connect clk -> U3.CLK;
+  connect clk -> U4.CLK;  connect vcc -> U1./CLR;
+  connect vcc -> U2./CLR;
+  connect vcc -> U3./CLR;
+  connect vcc -> U4./CLR;  connect pc_ld_n -> U1./LOAD;
+  connect pc_ld_n -> U2./LOAD;
+  connect pc_ld_n -> U3./LOAD;
+  connect pc_ld_n -> U4./LOAD;  connect pc_inc -> U1.ENP;
+  connect pc_inc -> U2.ENP;
+  connect pc_inc -> U3.ENP;
+  connect pc_inc -> U4.ENP;
+  connect pc_inc -> U1.ENT;
+  connect U1.RCO -> U2.ENT;
+  connect U2.RCO -> U3.ENT;
+  connect U3.RCO -> U4.ENT;
+
+  -- PC outputs
+  connect U1.QA -> pc[0]; connect U1.QB -> pc[1];
+  connect U1.QC -> pc[2]; connect U1.QD -> pc[3];
+  connect U2.QA -> pc[4]; connect U2.QB -> pc[5];
+  connect U2.QC -> pc[6]; connect U2.QD -> pc[7];
+  connect U3.QA -> pc[8]; connect U3.QB -> pc[9];
+  connect U3.QC -> pc[10]; connect U3.QD -> pc[11];
+  connect U4.QA -> pc[12]; connect U4.QB -> pc[13];
+  connect U4.QC -> pc[14]; connect U4.QD -> pc[15];
+
+  -- PC load inputs from {PG, IRL}
+  connect irl[0] -> U1.A; connect irl[1] -> U1.B;
+  connect irl[2] -> U1.C; connect irl[3] -> U1.D;
+  connect irl[4] -> U2.A; connect irl[5] -> U2.B;
+  connect irl[6] -> U2.C; connect irl[7] -> U2.D;
+  connect pg[0] -> U3.A; connect pg[1] -> U3.B;
+  connect pg[2] -> U3.C; connect pg[3] -> U3.D;
+  connect pg[4] -> U4.A; connect pg[5] -> U4.B;
+  connect pg[6] -> U4.C; connect pg[7] -> U4.D;
+
+  -- U23 Page register, U32 Data page register
+  connect gnd -> U23./OE;
+  connect gnd -> U32./OE;
+  connect pg_clk -> U23.CLK;
+  connect dp_load -> U32.CLK;
+  connect irl[0] -> U23.1D; connect irl[1] -> U23.2D;
+  connect irl[2] -> U23.3D; connect irl[3] -> U23.4D;
+  connect irl[4] -> U23.5D; connect irl[5] -> U23.6D;
+  connect irl[6] -> U23.7D; connect irl[7] -> U23.8D;
+  connect U23.1Q -> pg[0]; connect U23.2Q -> pg[1];
+  connect U23.3Q -> pg[2]; connect U23.4Q -> pg[3];
+  connect U23.5Q -> pg[4]; connect U23.6Q -> pg[5];
+  connect U23.7Q -> pg[6]; connect U23.8Q -> pg[7];
+  connect ibus[0] -> U32.1D; connect ibus[1] -> U32.2D;
+  connect ibus[2] -> U32.3D; connect ibus[3] -> U32.4D;
+  connect ibus[4] -> U32.5D; connect ibus[5] -> U32.6D;
+  connect ibus[6] -> U32.7D; connect ibus[7] -> U32.8D;
+  connect U32.1Q -> dp[0]; connect U32.2Q -> dp[1];
+  connect U32.3Q -> dp[2]; connect U32.4Q -> dp[3];
+  connect U32.5Q -> dp[4]; connect U32.6Q -> dp[5];
+  connect U32.7Q -> dp[6]; connect U32.8Q -> dp[7];
+
+  -- Boundary port bindings
+  connect CLK -> clk;
+  connect t0 -> T0;
+  connect t1 -> T1;
+  connect t2 -> T2;
+  connect pc -> PC;
+  connect pg -> PG;
+  connect dp -> DP;
+  connect ac -> AC;
+  connect z -> Z;
+  connect irh -> IRH;
+  connect irl -> IRL;
+  connect ibus -> IBUS;
+  connect dbus -> DBUS;
+
+  -- Derived signals
+  derive pc_inc = t0 | t1;
+  derive boot_instruction_1 = 8'h60;  -- SETDP $80 opcode = $60 (XOR+MUX)
+  derive boot_instruction_2 = 8'h20;  -- SETPG $00 opcode = $20 (MUX)
+  derive boot_instruction_3 = 8'h30;  -- LI $00 opcode = $30 (MUX+AC_WR)
+  derive boot_instruction_4 = 8'h01;  -- J self opcode = $01 (JMP)
+
+  -- ROM content for boot
+  -- ROM[$0000]=$60, ROM[$0001]=$80  -- SETDP $80
+  -- ROM[$0002]=$20, ROM[$0003]=$00  -- SETPG $00
+  -- ROM[$0004]=$30, ROM[$0005]=$00  -- LI $00
+  -- ROM[$0006]=$01, ROM[$0007]=$06  -- J $06 (self-loop)
+
+  -- Clock
+  clock sys_clk, clk, { "period_ns": 200, "initial": 0 };
+
+  -- Clock profiles
+  clock_profile manual {
+    clock sys_clk, clk, { "period_ns": 1000000 };
+  }
+
+  clock_profile target_1mhz {
+    clock sys_clk, clk, { "period_ns": 1000 };
+  }
+
+  clock_profile target_5mhz {
+    clock sys_clk, clk, { "period_ns": 200 };
+  }
+
+  -- Input presets
+  input boot_rom_loaded {
+    note "ROM preloaded with boot sequence: SETDP $80, SETPG $00, LI $00, J $06";
+  }
+
+  input idle_after_boot {
+    set pc_ld_n = 1;
+    note "PC hold state — CPU in J-self loop";
+  }
+
+  -- Reset
+  reset power_on {
+    -- PC=$0000, phase=T0, registers unknown (74HC574 has no /CLR)
+    set pc_ld_n = 1;
+    settle;
+    expect pc == 16'h0000;
+  }
+
+  -- Sequence: full boot (12 clocks, 4 instructions)
+  sequence boot_trace after power_on {
+    -- Instruction 1: SETDP $80 (3 clocks)
+    clock sys_clk 3; settle;
+    expect dp == 8'h80;
+
+    -- Instruction 2: SETPG $00 (3 clocks)
+    clock sys_clk 3; settle;
+    expect pg == 8'h00;
+
+    -- Instruction 3: LI $00 (3 clocks)
+    clock sys_clk 3; settle;
+    expect ac == 8'h00;
+    expect z == 1;
+
+    -- Instruction 4: J $06 (3 clocks — loops to self)
+    clock sys_clk 3; settle;
+    expect pc == 16'h0006;
+  }
+
+  -- Edge criteria
+  edge_criteria U1 {
+    trigger rising;
+    non_trigger hold;
+    async_override /CLR, clear_to_zero;
+  }
+
+  edge_criteria U23 {
+    trigger rising;
+    non_trigger hold;
+    note "PG captures IRL on PG_CLK rising (at T2 end)";
+  }
+
+  edge_criteria U32 {
+    trigger rising;
+    non_trigger hold;
+    note "DP captures IBUS on DP_Load rising";
+  }
+
+  -- Bus safety
+  bus_safety ibus_boot_ownership {
+    bus ibus;
+    max_drivers 1;
+    policy exclusive_tristate;
+    note "Boot uses fetch-mode IBUS drivers only. No SRC/STR during boot.";
+  }
+
+  bus_safety dbus_boot_ownership {
+    bus dbus;
+    max_drivers 1;
+    policy exclusive_tristate;
+    note "ROM is sole DBUS driver during boot (all fetches from $0000+).";
+  }
+
+  -- Timing checks
+  timing_check boot_critical_path {
+    from clk;
+    to pc[0];
+    expect 28ns;
+    limit 50ns;
+    note "Clock → PC increment → address → ROM → data valid";
+  }
+
+  timing_check rom_fetch_to_latch {
+    from abus[0];
+    through dbus[0];
+    through ibus[0];
+    to irh[0];
+    expect 110ns;
+    limit 150ns;
+    note "Total fetch path: address mux → ROM access → U7 → IR capture";
+  }
+
+  -- Probes
+  probe pc_value, pc;
+  probe page_reg, pg;
+  probe data_page, dp;
+  probe accumulator, ac;
+  probe zero_flag, z;
+  probe phase_t0, t0;
+  probe phase_t1, t1;
+  probe phase_t2, t2;
+  probe ibus_data, ibus;
+  probe dbus_data, dbus;
+
+  display pc_value as bus_hex, { "label": "PC[15:0]", "width": 16 };
+  display page_reg as bus_hex, { "label": "PG (jump page)" };
+  display data_page as bus_hex, { "label": "DP (data page)" };
+  display accumulator as bus_hex, { "label": "AC" };
+  display zero_flag as value, { "label": "Z flag" };
+  display phase_t0 as waveform, { "label": "T0" };
+  display phase_t1 as waveform, { "label": "T1" };
+  display phase_t2 as waveform, { "label": "T2" };
+  display ibus_data as bus_hex, { "label": "IBUS" };
+  display dbus_data as bus_hex, { "label": "DBUS" };
+
+  -- Tests
+  test boot_setdp {
+    reset power_on;
+    -- 3 clocks for SETDP $80
+    clock sys_clk 3; settle;
+    assert dp == 8'h80;
+    note "SETDP $80: DP register now points to RAM registers at $8000-$80FF";
+  }
+
+  test boot_setpg {
+    reset power_on;
+    clock sys_clk 6; settle;
+    assert pg == 8'h00;
+    note "SETPG $00: Page register cleared for ROM-space jumps";
+  }
+
+  test boot_li_zero {
+    reset power_on;
+    clock sys_clk 9; settle;
+    assert ac == 8'h00;
+    assert z == 1;
+    note "LI $00: Accumulator zeroed, Z flag set";
+  }
+
+  test boot_jump_self {
+    reset power_on;
+    clock sys_clk 12; settle;
+    assert pc == 16'h0006;
+    -- Run 3 more clocks — should loop back to same address
+    clock sys_clk 3; settle;
+    assert pc == 16'h0006;
+    note "J $06: PC loops at boot end (steady-state idle loop)";
+  }
+
+  test boot_final_state {
+    reset power_on;
+    clock sys_clk 12; settle;
+    assert dp == 8'h80;
+    assert pg == 8'h00;
+    assert ac == 8'h00;
+    assert z == 1;
+    assert pc == 16'h0006;
+    note "Final boot state: DP=$80, PG=$00, AC=$00, Z=1, PC=$0006 (loop)";
+  }
+
+  test bus_ownership_per_phase {
+    reset power_on;
+    -- T0: ROM→DBUS, U7→IBUS
+    clock sys_clk; settle;
+    note "T0 bus: ROM drives DBUS, U7 bridges to IBUS";
+    -- T1: same pattern
+    clock sys_clk; settle;
+    note "T1 bus: ROM drives DBUS, U7 bridges to IBUS";
+    -- T2: U34→IBUS for immediate, DBUS idle
+    clock sys_clk; settle;
+    note "T2 bus: U34 drives IBUS (immediate from IRL)";
+  }
+}

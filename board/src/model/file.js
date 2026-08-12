@@ -180,6 +180,16 @@ function parseCircuitLine(line) {
     };
   }
 
+  // instance REF, TYPE — treated as a device for rendering
+  const instanceMatch = cleaned.match(/^instance\s+(\S+)\s*,\s*(.+)$/);
+  if (instanceMatch) {
+    return {
+      type: LINE_TYPES.DEVICE,
+      ref: instanceMatch[1],
+      part: instanceMatch[2].trim(),
+    };
+  }
+
   // connect FROM -> TO
   const connectMatch = cleaned.match(/^connect\s+(\S+)\s*->\s*(\S+)$/);
   if (connectMatch) {

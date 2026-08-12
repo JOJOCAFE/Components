@@ -1,0 +1,190 @@
+use standard.digital as digital;
+use standard.memory as memory;
+
+component:component TinyCpuSlice is components.digital {
+  title "Small CPU-style slice: counter addresses feeding SRAM plus NAND control";
+
+  device U1, digital.74HC161;
+  device U2, memory.62256;
+  device U3, digital.74HC00;
+
+  net vcc : power;
+  net gnd : power;
+  net clk : digital;
+  net clear_n : digital;
+  net load_n : digital;
+  net enp : digital;
+  net ent : digital;
+  net ce_n : digital;
+  net oe_n : digital;
+  net we_n : digital;
+  bus addr[15] : digital;
+  bus data[8] : digital;
+  net ctrl_y : digital;
+
+  -- Power
+  connect vcc -> U1.VCC;
+  connect vcc -> U2.VCC;
+  connect vcc -> U3.VCC;
+  connect gnd -> U1.GND;
+  connect gnd -> U2.GND;
+  connect gnd -> U3.GND;
+
+  -- Clock and counter control
+  connect clk -> U1.CLK;
+  connect clear_n -> U1./CLR;
+  connect load_n -> U1./LOAD;
+  connect enp -> U1.ENP;
+  connect ent -> U1.ENT;
+
+  -- Counter outputs -> address bus
+  connect U1.QA -> addr[0];
+  connect U1.QB -> addr[1];
+
+  -- Address bus -> RAM
+  connect addr[0] -> U2.A0;
+  connect addr[1] -> U2.A1;
+  connect addr[2] -> U2.A2;
+  connect addr[3] -> U2.A3;
+  connect addr[4] -> U2.A4;
+  connect addr[5] -> U2.A5;
+  connect addr[6] -> U2.A6;
+  connect addr[7] -> U2.A7;
+  connect addr[8] -> U2.A8;
+  connect addr[9] -> U2.A9;
+  connect addr[10] -> U2.A10;
+  connect addr[11] -> U2.A11;
+  connect addr[12] -> U2.A12;
+  connect addr[13] -> U2.A13;
+  connect addr[14] -> U2.A14;
+
+  -- RAM data bus
+  connect U2."I/O0" -> data[0];
+  connect U2."I/O1" -> data[1];
+  connect U2."I/O2" -> data[2];
+  connect U2."I/O3" -> data[3];
+  connect U2."I/O4" -> data[4];
+  connect U2."I/O5" -> data[5];
+  connect U2."I/O6" -> data[6];
+  connect U2."I/O7" -> data[7];
+
+  -- RAM control
+  connect ce_n -> U2./CE;
+  connect oe_n -> U2./OE;
+  connect we_n -> U2./WE;
+
+  -- NAND gate: addr[0] NAND data[0] -> control output
+  connect addr[0] -> U3.1A;
+  connect data[0] -> U3.1B;
+  connect U3.1Y -> ctrl_y;
+
+  -- Memory image: preload RAM at address 0-3
+  memory U2 {
+    0x0000 = [0x55, 0xAA, 0x0F, 0xF0];
+  }
+
+  -- Derived signals (control equations)
+  derive read_active = ~ce_n & ~oe_n & we_n;
+  derive addr_valid = ~(addr[0] == X) & ~(addr[1] == X);
+
+  -- Stimulus: clock generator
+  clock main, clk, { "period_ns": 100, "initial": 0 };
+
+  -- Stimulus: input preset
+  input reset_read {
+    set clear_n = 1;
+    set load_n = 1;
+    set enp = 1;
+    set ent = 1;
+    set ce_n = 0;
+    set oe_n = 0;
+    set we_n = 1;
+  }
+
+  -- Stimulus: reset declaration
+  reset init {
+    apply reset_read;
+    set clear_n = 0;
+    settle;
+    set clear_n = 1;
+    settle;
+    expect addr[0] == 0;
+    expect addr[1] == 0;
+  }
+
+  -- Stimulus: step sequence (fetch cycle demo)
+  step fetch_cycle {
+    reset init;
+    clock main 4;
+    probe;
+  }
+
+  -- Bus safety: data bus single-driver
+  bus_safety data {
+    reject multi_driver;
+  }
+
+  -- Bus probe shorthand
+  bus_probe data_mon, data, { "policy": "single_driver" };
+
+  -- Edge criteria for counter
+  edge_criteria U1 {
+    trigger rising;
+    non_trigger hold;
+    async_override /CLR, clear_to_zero;
+  }
+
+  -- Timing check
+  timing_check addr_to_data {
+    from U2.A0;
+    to U2."I/O0";
+    expect 70ns;
+    limit 100ns;
+  }
+
+  -- Observation
+  probe pc0, addr[0];
+  probe pc1, addr[1];
+  probe ram_d0, data[0];
+  probe ctrl, ctrl_y;
+  probe read_signal, read_active;
+  display pc0 as led, { "label": "PC0" };
+  display pc1 as led, { "label": "PC1" };
+  display ram_d0 as value, { "label": "RAM D0" };
+  display ctrl as led, { "label": "CTRL_Y (NAND)" };
+  display read_signal as led, { "label": "Read Active" };
+
+  -- Tests
+  test reset_clears_counter {
+    reset init;
+    assert pc0 == 0;
+    assert pc1 == 0;
+  }
+
+  test first_fetch {
+    reset init;
+    pulse clk;
+    settle;
+    assert pc0 == 1;
+    assert pc1 == 0;
+    -- RAM should output preloaded data at address 1 = 0xAA
+    assert ram_d0 is not high_z;
+  }
+
+  test four_fetches {
+    reset init;
+    clock main 4;
+    settle;
+    -- Counter should be at 4
+    assert pc0 == 0;
+    assert pc1 == 0;
+    -- addr[2] should be 1 (binary 100)
+  }
+
+  test data_bus_no_conflict {
+    reset init;
+    clock main 2;
+    settle;
+    assert data has no_conflict;
+  }
+}

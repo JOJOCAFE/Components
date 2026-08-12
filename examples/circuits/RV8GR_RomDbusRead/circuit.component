@@ -1,0 +1,247 @@
+use standard.digital as digital;
+use standard.memory as memory;
+
+component:component RV8GR_RomDbusRead is components.digital {
+  title "RV8GR ROM to DBUS to IBUS read path (AT28C256 + 74HC245)";
+
+  -- Public boundary ports
+  port A[15] : digital, input;
+  port A15 : digital, input;
+  port WR_DIR : digital, input;
+  port BUF_OE_N : digital, input;
+  port DBUS[8] : digital, inout;
+  port IBUS[8] : digital, inout;
+
+  -- Devices
+  device ROM1, memory.AT28C256;    -- Program ROM (32KB, 70ns)
+  device U7, digital.74HC245;      -- DBUS↔IBUS bidirectional bridge
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  bus addr[15] : digital;
+  net a15 : digital;
+  net wr_dir : digital;
+  net buf_oe_n : digital;
+  net rom_ce_n : digital;
+  bus dbus[8] : digital;
+  bus ibus[8] : digital;
+
+  -- Power
+  connect vcc -> ROM1.VCC;
+  connect vcc -> U7.VCC;
+  connect gnd -> ROM1.GND;
+  connect gnd -> U7.GND;
+
+  -- ROM address lines
+  connect addr[0] -> ROM1.A0;
+  connect addr[1] -> ROM1.A1;
+  connect addr[2] -> ROM1.A2;
+  connect addr[3] -> ROM1.A3;
+  connect addr[4] -> ROM1.A4;
+  connect addr[5] -> ROM1.A5;
+  connect addr[6] -> ROM1.A6;
+  connect addr[7] -> ROM1.A7;
+  connect addr[8] -> ROM1.A8;
+  connect addr[9] -> ROM1.A9;
+  connect addr[10] -> ROM1.A10;
+  connect addr[11] -> ROM1.A11;
+  connect addr[12] -> ROM1.A12;
+  connect addr[13] -> ROM1.A13;
+  connect addr[14] -> ROM1.A14;
+
+  -- ROM chip enable: /CE = A15 (A15=0 selects ROM, active-low)
+  connect a15 -> ROM1./CE;
+
+  -- ROM output enable: /OE tied LOW for read (always enabled when selected)
+  connect gnd -> ROM1./OE;
+
+  -- ROM write protect: /WE tied HIGH (never write)
+  connect vcc -> ROM1./WE;
+
+  -- ROM data outputs → DBUS
+  connect ROM1."I/O0" -> dbus[0];
+  connect ROM1."I/O1" -> dbus[1];
+  connect ROM1."I/O2" -> dbus[2];
+  connect ROM1."I/O3" -> dbus[3];
+  connect ROM1."I/O4" -> dbus[4];
+  connect ROM1."I/O5" -> dbus[5];
+  connect ROM1."I/O6" -> dbus[6];
+  connect ROM1."I/O7" -> dbus[7];
+
+  -- U7 bus transceiver: DBUS ↔ IBUS
+  connect buf_oe_n -> U7./OE;
+  connect wr_dir -> U7.DIR;
+  -- A-side = DBUS, B-side = IBUS
+  connect dbus[0] -> U7.A1;
+  connect dbus[1] -> U7.A2;
+  connect dbus[2] -> U7.A3;
+  connect dbus[3] -> U7.A4;
+  connect dbus[4] -> U7.A5;
+  connect dbus[5] -> U7.A6;
+  connect dbus[6] -> U7.A7;
+  connect dbus[7] -> U7.A8;
+  connect U7.B1 -> ibus[0];
+  connect U7.B2 -> ibus[1];
+  connect U7.B3 -> ibus[2];
+  connect U7.B4 -> ibus[3];
+  connect U7.B5 -> ibus[4];
+  connect U7.B6 -> ibus[5];
+  connect U7.B7 -> ibus[6];
+  connect U7.B8 -> ibus[7];
+
+  -- Boundary port bindings
+  connect A -> addr;
+  connect A15 -> a15;
+  connect WR_DIR -> wr_dir;
+  connect BUF_OE_N -> buf_oe_n;
+  connect dbus -> DBUS;
+  connect ibus -> IBUS;
+
+  -- Derived signals
+  derive rom_selected = ~a15;
+  derive bridge_active = ~buf_oe_n;
+  derive dbus_to_ibus = bridge_active & ~wr_dir;
+  derive ibus_to_dbus = bridge_active & wr_dir;
+
+  -- Stimulus: input presets
+  input read_fetch {
+    set a15 = 0;          -- ROM selected
+    set wr_dir = 0;       -- DBUS → IBUS direction
+    set buf_oe_n = 0;     -- Bridge enabled
+  }
+
+  input rom_disabled {
+    set a15 = 1;          -- RAM region, ROM deselected
+    set wr_dir = 0;
+    set buf_oe_n = 0;
+  }
+
+  input store_direction {
+    set a15 = 1;          -- RAM region
+    set wr_dir = 1;       -- IBUS → DBUS direction
+    set buf_oe_n = 0;
+  }
+
+  input bridge_off {
+    set a15 = 0;
+    set wr_dir = 0;
+    set buf_oe_n = 1;     -- Bridge disabled (tri-state)
+  }
+
+  -- Stimulus: reset
+  reset idle {
+    apply read_fetch;
+    set addr = 0x0000;
+    settle;
+  }
+
+  -- Bus safety: single driver per bus
+  bus_safety dbus {
+    reject multi_driver;
+  }
+
+  bus_safety ibus {
+    reject multi_driver;
+  }
+
+  -- Edge criteria (ROM is level-sensitive, no clock)
+  edge_criteria ROM1 {
+    trigger none;
+    level_control /CE, active_low;
+  }
+
+  edge_criteria U7 {
+    trigger none;
+    level_control /OE, active_low;
+    direction DIR;
+  }
+
+  -- Timing checks
+  timing_check rom_access_time {
+    from ROM1.A0;
+    to ROM1."I/O0";
+    expect 70ns;
+    limit 70ns;
+  }
+
+  timing_check bridge_propagation {
+    from U7.A1;
+    to U7.B1;
+    expect 8ns;
+    limit 15ns;
+  }
+
+  timing_check full_read_path {
+    from ROM1.A0;
+    through ROM1."I/O0";
+    through U7.A1;
+    to U7.B1;
+    expect 78ns;
+    limit 85ns;
+  }
+
+  -- Observation
+  probe dbus_val, dbus;
+  probe ibus_val, ibus;
+  probe rom_sel, rom_selected;
+  probe bridge, bridge_active;
+  display dbus_val as value, { "label": "DBUS", "radix": "hex" };
+  display ibus_val as value, { "label": "IBUS", "radix": "hex" };
+  display rom_sel as led, { "label": "ROM selected" };
+  display bridge as led, { "label": "Bridge active" };
+
+  -- Tests
+  test rom_read_at_0000 {
+    apply read_fetch;
+    set addr = 0x0000;
+    settle;
+    -- ROM drives DBUS, U7 copies to IBUS
+    assert dbus has single_driver;
+    assert ibus has single_driver;
+  }
+
+  test rom_read_at_7fff {
+    apply read_fetch;
+    set addr = 0x7FFF;
+    settle;
+    assert rom_sel == 1;
+    assert dbus has single_driver;
+    assert ibus has single_driver;
+  }
+
+  test rom_disabled_when_a15_high {
+    apply rom_disabled;
+    set addr = 0x0000;
+    settle;
+    assert rom_sel == 0;
+    -- ROM outputs are high-Z
+    assert dbus has no_driver from ROM1;
+  }
+
+  test store_direction_safe {
+    apply store_direction;
+    set addr = 0x0000;
+    settle;
+    -- ROM deselected (A15=1), U7 drives DBUS from IBUS side
+    assert rom_sel == 0;
+    assert ibus_to_dbus == 1;
+  }
+
+  test bridge_off_isolates_buses {
+    apply bridge_off;
+    set addr = 0x0000;
+    settle;
+    -- U7 disabled: IBUS is high-Z from bridge
+    assert bridge == 0;
+    assert ibus has no_driver from U7;
+  }
+
+  test no_bus_conflict_during_read {
+    apply read_fetch;
+    set addr = 0x1234;
+    settle;
+    assert dbus has no_conflict;
+    assert ibus has no_conflict;
+  }
+}

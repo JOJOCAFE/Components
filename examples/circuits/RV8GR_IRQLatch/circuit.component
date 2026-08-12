@@ -1,0 +1,236 @@
+use standard.digital as digital;
+
+component:component RV8GR_IRQLatch is components.digital {
+  title "RV8GR IRQ latch and IE flag (U31 74HC74, v1.0 polling only)";
+
+  -- Public boundary ports
+  port /RST : digital, input;
+  port EI_decode : digital, input;
+  port /IRQ : digital, input;
+  port IE : digital, output;
+  port IRQ_FF : digital, output;
+
+  -- Devices
+  device U31, digital.74HC74;    -- Dual D flip-flop: IE flag + IRQ_FF latch
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  net rst_n : digital;
+  net ei_decode : digital;
+  net irq_n : digital;
+  net ie : digital;
+  net irq_ff : digital;
+
+  -- Power
+  connect vcc -> U31.VCC;
+  connect gnd -> U31.GND;
+
+  -- FF1: IE flag
+  -- D1 tied HIGH (always captures 1 on clock)
+  -- CLK1 = EI_decode (rising edge sets IE)
+  -- /PRE1 tied HIGH (no preset)
+  -- /CLR1 = /RST (async clear)
+  connect vcc -> U31.1D;
+  connect ei_decode -> U31.1CLK;
+  connect vcc -> U31./1PRE;
+  connect rst_n -> U31./1CLR;
+  connect U31.1Q -> ie;
+
+  -- FF2: IRQ_FF latch
+  -- D2 tied HIGH (always captures 1 on clock)
+  -- CLK2 = /IRQ (latches on rising edge = release of /IRQ)
+  -- /PRE2 tied HIGH (no preset)
+  -- /CLR2 = /RST (async clear)
+  connect vcc -> U31.2D;
+  connect irq_n -> U31.2CLK;
+  connect vcc -> U31./2PRE;
+  connect rst_n -> U31./2CLR;
+  connect U31.2Q -> irq_ff;
+
+  -- Boundary port bindings
+  connect /RST -> rst_n;
+  connect EI_decode -> ei_decode;
+  connect /IRQ -> irq_n;
+  connect ie -> IE;
+  connect irq_ff -> IRQ_FF;
+
+  -- Derived signals
+  derive ie_active = ie;
+  derive irq_pending = irq_ff;
+  derive interrupt_visible = ie & irq_ff;
+
+  -- Stimulus: input presets
+  input no_interrupt {
+    set rst_n = 1;
+    set ei_decode = 0;
+    set irq_n = 1;         -- /IRQ deasserted (HIGH = no interrupt)
+  }
+
+  input irq_asserted {
+    set rst_n = 1;
+    set ei_decode = 0;
+    set irq_n = 0;         -- /IRQ asserted (LOW)
+  }
+
+  input irq_released {
+    set rst_n = 1;
+    set ei_decode = 0;
+    set irq_n = 1;         -- /IRQ released (rising edge latches)
+  }
+
+  -- Stimulus: interactive controls
+  channel sw_irq, irq_n, { "kind": "button", "initial": 1, "label": "/IRQ (press=assert)" };
+  channel sw_ei, ei_decode, { "kind": "button", "initial": 0, "label": "EI (press=enable)" };
+
+  -- Stimulus: reset
+  reset power_on {
+    set rst_n = 0;
+    set ei_decode = 0;
+    set irq_n = 1;
+    settle;
+    set rst_n = 1;
+    settle;
+    expect ie == 0;
+    expect irq_ff == 0;
+  }
+
+  -- Stimulus: step sequences
+  step enable_interrupts {
+    pulse ei_decode;
+    settle;
+    probe;
+  }
+
+  step assert_irq {
+    set irq_n = 0;
+    settle;
+    probe;
+  }
+
+  step release_irq {
+    set irq_n = 1;
+    settle;
+    probe;
+  }
+
+  -- Sequence: full IRQ lifecycle
+  sequence irq_lifecycle after power_on {
+    -- Enable interrupts
+    pulse ei_decode; settle;
+    expect ie == 1;
+    expect irq_ff == 0;
+
+    -- Assert /IRQ (hold LOW)
+    set irq_n = 0; settle;
+    expect ie == 1;
+    expect irq_ff == 0;      -- Not latched yet (need rising edge)
+
+    -- Release /IRQ (rising edge latches)
+    set irq_n = 1; settle;
+    expect ie == 1;
+    expect irq_ff == 1;      -- Latched!
+  }
+
+  -- Clock profiles (not clock-driven, but for test timing)
+  clock_profile manual {
+    -- No system clock; manual pulse-based
+  }
+
+  -- Edge criteria
+  edge_criteria U31 {
+    trigger rising;
+    non_trigger hold;
+    async_override /CLR, clear_to_zero;
+  }
+
+  -- Timing checks
+  timing_check ei_to_ie {
+    from U31.1CLK;
+    to U31.1Q;
+    expect 22ns;
+    limit 35ns;
+  }
+
+  timing_check irq_release_to_ff {
+    from U31.2CLK;
+    to U31.2Q;
+    expect 22ns;
+    limit 35ns;
+  }
+
+  -- Observation
+  probe ie_flag, ie;
+  // probe irq_pending (moved), irq_ff;
+  probe irq_pin, irq_n;
+  display ie_flag as led, { "label": "IE (interrupt enabled)" };
+  display irq_pending as led, { "label": "IRQ_FF (pending, sticky)" };
+  display irq_pin as led, { "label": "/IRQ input (LOW=active)" };
+
+  -- Tests
+  test reset_clears_both {
+    set rst_n = 0;
+    set ei_decode = 0;
+    set irq_n = 1;
+    settle;
+    assert ie_flag == 0;
+    assert irq_pending == 0;
+  }
+
+  test ei_sets_ie {
+    reset power_on;
+    pulse ei_decode; settle;
+    assert ie_flag == 1;
+    assert irq_pending == 0;
+  }
+
+  test irq_asserted_no_latch {
+    reset power_on;
+    -- /IRQ goes LOW (asserted) — no rising edge yet
+    set irq_n = 0; settle;
+    assert irq_pending == 0;   -- Not latched (no rising edge)
+  }
+
+  test irq_release_latches {
+    reset power_on;
+    -- Assert then release
+    set irq_n = 0; settle;
+    set irq_n = 1; settle;
+    assert irq_pending == 1;   -- Rising edge of /IRQ latches
+  }
+
+  test di_is_inert_v1 {
+    reset power_on;
+    pulse ei_decode; settle;
+    assert ie_flag == 1;
+    -- In v1.0, there is no DI decode path
+    -- IE remains set until /RST
+    settle;
+    assert ie_flag == 1;
+  }
+
+  test irq_sticky_until_reset {
+    reset power_on;
+    -- Latch IRQ
+    set irq_n = 0; settle;
+    set irq_n = 1; settle;
+    assert irq_pending == 1;
+    -- Wait many cycles — stays sticky
+    settle; settle; settle;
+    assert irq_pending == 1;
+    -- Only reset clears it
+    set rst_n = 0; settle;
+    assert irq_pending == 0;
+  }
+
+  test pc_never_changes {
+    -- v1.0 has no PC_FORCE or IRQ_ACK
+    -- This test documents the absence: IRQ_FF is polling only
+    reset power_on;
+    pulse ei_decode; settle;
+    set irq_n = 0; settle;
+    set irq_n = 1; settle;
+    assert irq_pending == 1;
+    -- No output drives PC; software must poll IRQ_FF
+  }
+}

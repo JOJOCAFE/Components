@@ -8,18 +8,30 @@ does not yet define a lexer implementation.
 ## Whitespace and comments
 
 Spaces, tabs, CR, and LF separate tokens and otherwise have no meaning.
-Newlines are not statements. Line comments start with `//`; block comments
-start with `/*` and end with `*/`. Block comments may not nest. Comments are
-discarded before parsing.
+Newlines are not statements. Line comments start with `//` or `--`; block
+comments start with `/*` and end with `*/`. Block comments may not nest.
+Comments are discarded before parsing.
+
+The `--` line-comment form is an Ada-style alternative for readability in
+circuit descriptions where `//` might be visually confused with parallel
+symbols or pin names.
 
 ## Identifiers and literals
 
 ```text
-Identifier = [A-Za-z_] [A-Za-z0-9_]*
+Identifier      = [A-Za-z_] [A-Za-z0-9_]*
+PortIdentifier  = [A-Za-z_/] [A-Za-z0-9_/]*
 ```
 
-Examples are `LED`, `Counter`, `ROM`, `_RAM`, and `counter123`. Identifiers
-are case-sensitive. A pin spelling such as `/OE` is a quoted pin selector if used after . or after pin name in part, circuit or system to refer to an active low pin, not an identifier. '/' still used as a path separator for folder/file and '//' for comments. In text strings, '/' is treated as a literal character.
+Standard identifiers (device names, net names, aliases) use the base
+Identifier rule. Port identifiers extend this with `/` to support
+datasheet-authentic active-low signal names like `/OE`, `/CLR`, `/1PRE`
+directly in source text without requiring quotes.
+
+Examples: `LED`, `Counter`, `ROM`, `/OE`, `/CLR`, `/1PRE`, `A/B`.
+
+Identifiers are case-sensitive. When a port name contains characters beyond
+the PortIdentifier set (such as `I/O0`), it must be quoted: `U1."I/O0"`.
 
 | Kind | Form | Examples |
 |---|---|---|

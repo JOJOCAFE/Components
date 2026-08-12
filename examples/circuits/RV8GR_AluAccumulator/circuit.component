@@ -1,0 +1,358 @@
+use standard.digital as digital;
+
+component:component RV8GR_AluAccumulator is components.digital {
+  title "RV8GR ALU, accumulator, and Z flag (14 chips)";
+
+  -- Public boundary ports
+  port T2 : digital, input;
+  port ALU_SUB : digital, input;
+  port XOR_MODE : digital, input;
+  port MUX_SEL : digital, input;
+  port AC_WR : digital, input;
+  port STR : digital, input;
+  port IBUS[8] : digital, inout;
+  port AC[8] : digital, output;
+  port Z_flag : digital, output;
+
+  -- Devices (14 chips)
+  device U9, digital.74HC574;     -- Accumulator register
+  device U10, digital.74HC283;    -- Low nibble adder
+  device U11, digital.74HC283;    -- High nibble adder
+  device U12, digital.74HC86;     -- Low nibble XOR bank
+  device U13, digital.74HC86;     -- High nibble XOR bank
+  device U14, digital.74HC541;    -- AC output buffer (store)
+  device U17, digital.74HC157;    -- Low nibble AC input mux
+  device U18, digital.74HC157;    -- High nibble AC input mux
+  device U19, digital.74HC157;    -- Low nibble XOR B-input mux
+  device U20, digital.74HC157;    -- High nibble XOR B-input mux
+  device U21, digital.74HC74;     -- Z flag flip-flop
+  device U22, digital.74HC688;    -- AC equals zero comparator
+  device U26, digital.74HC00;     -- /AC_BUF = NAND(T2, STR)
+  device U27, digital.74HC00;     -- ACC_CLK = T2 AND AC_WR
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  net t2 : digital;
+  net alu_sub : digital;
+  net xor_mode : digital;
+  net mux_sel : digital;
+  net ac_wr : digital;
+  net str : digital;
+  bus ibus[8] : digital;
+  bus ac[8] : digital;
+  bus xor_b[8] : digital;
+  bus xor_y[8] : digital;
+  bus sum[8] : digital;
+  bus ac_d[8] : digital;
+  net carry_chain : digital;
+  net acc_clk : digital;
+  net ac_buf_n : digital;
+  net zero_compare : digital;
+  net z_flag : digital;
+
+  -- Power (all 14 chips)
+  connect vcc -> U9.VCC;
+  connect vcc -> U10.VCC;
+  connect vcc -> U11.VCC;
+  connect vcc -> U12.VCC;
+  connect vcc -> U13.VCC;
+  connect vcc -> U14.VCC;
+  connect vcc -> U17.VCC;
+  connect vcc -> U18.VCC;
+  connect vcc -> U19.VCC;
+  connect vcc -> U20.VCC;
+  connect vcc -> U21.VCC;
+  connect vcc -> U22.VCC;
+  connect vcc -> U26.VCC;
+  connect vcc -> U27.VCC;
+  connect gnd -> U9.GND;
+  connect gnd -> U10.GND;
+  connect gnd -> U11.GND;
+  connect gnd -> U12.GND;
+  connect gnd -> U13.GND;
+  connect gnd -> U14.GND;
+  connect gnd -> U17.GND;
+  connect gnd -> U18.GND;
+  connect gnd -> U19.GND;
+  connect gnd -> U20.GND;
+  connect gnd -> U21.GND;
+  connect gnd -> U22.GND;
+  connect gnd -> U26.GND;
+  connect gnd -> U27.GND;
+
+  -- ACC_CLK generation: U27 = NAND(T2, AC_WR), inverted = AND
+  connect t2 -> U27.1A;
+  connect ac_wr -> U27.1B;
+  connect U27.1Y -> acc_clk;
+
+  -- /AC_BUF generation: U26 = NAND(T2, STR)
+  connect t2 -> U26.1A;
+  connect str -> U26.1B;
+  connect U26.1Y -> ac_buf_n;
+
+  -- Accumulator register U9: captures on ACC_CLK rising
+  connect acc_clk -> U9.CLK;
+  connect U9.1Q -> ac[0];
+  connect U9.2Q -> ac[1];
+  connect U9.3Q -> ac[2];
+  connect U9.4Q -> ac[3];
+  connect U9.5Q -> ac[4];
+  connect U9.6Q -> ac[5];
+  connect U9.7Q -> ac[6];
+  connect U9.8Q -> ac[7];
+  connect ac_d[0] -> U9.1D;
+  connect ac_d[1] -> U9.2D;
+  connect ac_d[2] -> U9.3D;
+  connect ac_d[3] -> U9.4D;
+  connect ac_d[4] -> U9.5D;
+  connect ac_d[5] -> U9.6D;
+  connect ac_d[6] -> U9.7D;
+  connect ac_d[7] -> U9.8D;
+
+  -- XOR B-input mux: selects between ALU_SUB (for ADD/SUB) or AC (for XOR mode)
+  connect xor_mode -> U19."A/B";
+  connect xor_mode -> U20."A/B";
+  connect alu_sub -> U19.1A;
+  connect ac[0] -> U19.1B;
+  connect U19.1Y -> xor_b[0];
+
+  -- XOR bank: IBUS XOR XOR_B -> XOR_Y
+  connect ibus[0] -> U12.1A;
+  connect xor_b[0] -> U12.1B;
+  connect U12.1Y -> xor_y[0];
+
+  -- Adder: AC + XOR_Y + SUB carry
+  connect ac[0] -> U10.A1;
+  connect xor_y[0] -> U10.B1;
+  connect alu_sub -> U10.C0;
+  connect U10.S1 -> sum[0];
+  connect U10.C4 -> carry_chain;
+  connect carry_chain -> U11.C0;
+
+  -- AC input mux: selects SUM or XOR_Y
+  connect mux_sel -> U17."A/B";
+  connect mux_sel -> U18."A/B";
+  connect sum[0] -> U17.1A;
+  connect xor_y[0] -> U17.1B;
+  connect U17.1Y -> ac_d[0];
+
+  -- AC output buffer: drives IBUS during store
+  connect ac_buf_n -> U14./OE1;
+  connect ac_buf_n -> U14./OE2;
+  connect ac[0] -> U14.A1;
+  connect U14.Y1 -> ibus[0];
+
+  -- Z flag: comparator + flip-flop
+  connect ac[0] -> U22.A0;
+  connect gnd -> U22.B0;
+  connect U22./Y -> zero_compare;
+  connect zero_compare -> U21.1D;
+  connect acc_clk -> U21.1CLK;
+  connect U21.1Q -> z_flag;
+
+  -- Boundary port bindings
+  connect T2 -> t2;
+  connect ALU_SUB -> alu_sub;
+  connect XOR_MODE -> xor_mode;
+  connect MUX_SEL -> mux_sel;
+  connect AC_WR -> ac_wr;
+  connect STR -> str;
+  connect IBUS -> ibus;
+  connect ac -> AC;
+  connect z_flag -> Z_flag;
+
+  -- Derived signals (control equations from horizontal architecture)
+  derive acc_clk_equation = t2 & ac_wr;
+  derive ac_buf_active = t2 & str;
+  derive alu_add = ~xor_mode & ~mux_sel;
+  derive alu_sub_mode = ~xor_mode & ~mux_sel & alu_sub;
+  derive alu_xor = xor_mode & mux_sel;
+  derive alu_li = ~xor_mode & mux_sel;
+
+  -- Stimulus: clock
+  clock phase_clk, t2, { "period_ns": 200, "initial": 0 };
+
+  -- Stimulus: input presets
+  input add_mode {
+    set alu_sub = 0;
+    set xor_mode = 0;
+    set mux_sel = 0;
+    set ac_wr = 1;
+    set str = 0;
+  }
+
+  input sub_mode {
+    set alu_sub = 1;
+    set xor_mode = 0;
+    set mux_sel = 0;
+    set ac_wr = 1;
+    set str = 0;
+  }
+
+  input xor_mode_preset {
+    set alu_sub = 0;
+    set xor_mode = 1;
+    set mux_sel = 1;
+    set ac_wr = 1;
+    set str = 0;
+  }
+
+  input li_mode {
+    set alu_sub = 0;
+    set xor_mode = 0;
+    set mux_sel = 1;
+    set ac_wr = 1;
+    set str = 0;
+  }
+
+  input store_mode {
+    set alu_sub = 0;
+    set xor_mode = 0;
+    set mux_sel = 0;
+    set ac_wr = 0;
+    set str = 1;
+  }
+
+  -- Stimulus: reset
+  reset clear_ac {
+    apply li_mode;
+    set ibus = 0x00;
+    set t2 = 1;
+    settle;
+    set t2 = 0;
+    settle;
+    expect ac == 0x00;
+    expect z_flag == 1;
+  }
+
+  -- Stimulus: step sequences
+  step load_immediate {
+    apply li_mode;
+    set ibus = 0x42;
+    set t2 = 1;
+    settle;
+    set t2 = 0;
+    settle;
+    probe;
+  }
+
+  step add_then_probe {
+    apply add_mode;
+    set ibus = 0x01;
+    set t2 = 1;
+    settle;
+    set t2 = 0;
+    settle;
+    probe;
+  }
+
+  -- Bus safety: IBUS single-driver policy
+  bus_safety ibus {
+    reject multi_driver;
+  }
+
+  -- Edge criteria
+  edge_criteria U9 {
+    trigger rising;
+    non_trigger hold;
+  }
+
+  edge_criteria U21 {
+    trigger rising;
+    non_trigger hold;
+  }
+
+  -- Policy: accumulator only captures during T2 with AC_WR
+  policy acc_capture_safety {
+    reject (acc_clk == 1) & (t2 == 0);
+  }
+
+  -- Timing checks
+  timing_check alu_critical_path {
+    from U12.1Y;
+    through U10.S1;
+    to U17.1Y;
+    expect 40ns;
+    limit 70ns;
+  }
+
+  timing_check acc_clk_to_z {
+    from U9.CLK;
+    through U22./Y;
+    to U21.1Q;
+    expect 50ns;
+    limit 80ns;
+  }
+
+  -- Observation
+  probe accumulator, ac;
+  probe z, z_flag;
+  probe ibus_val, ibus;
+  probe clk_acc, acc_clk;
+  display accumulator as value, { "label": "AC", "radix": "hex" };
+  display z as led, { "label": "Z flag" };
+  display ibus_val as value, { "label": "IBUS", "radix": "hex" };
+  display clk_acc as waveform, { "label": "ACC_CLK" };
+
+  -- Tests
+  test load_immediate_42 {
+    reset clear_ac;
+    apply li_mode;
+    set ibus = 0x42;
+    set t2 = 1; settle;
+    set t2 = 0; settle;
+    assert accumulator == 0x42;
+    assert z == 0;
+  }
+
+  test add_01_to_42 {
+    reset clear_ac;
+    -- Load 0x42
+    apply li_mode;
+    set ibus = 0x42;
+    set t2 = 1; settle; set t2 = 0; settle;
+    -- Add 0x01
+    apply add_mode;
+    set ibus = 0x01;
+    set t2 = 1; settle; set t2 = 0; settle;
+    assert accumulator == 0x43;
+    assert z == 0;
+  }
+
+  test sub_to_zero_sets_z {
+    reset clear_ac;
+    -- Load 0x05
+    apply li_mode;
+    set ibus = 0x05;
+    set t2 = 1; settle; set t2 = 0; settle;
+    -- Sub 0x05
+    apply sub_mode;
+    set ibus = 0x05;
+    set t2 = 1; settle; set t2 = 0; settle;
+    assert accumulator == 0x00;
+    assert z == 1;
+  }
+
+  test store_drives_ibus {
+    reset clear_ac;
+    -- Load 0xAA
+    apply li_mode;
+    set ibus = 0xAA;
+    set t2 = 1; settle; set t2 = 0; settle;
+    -- Store: release IBUS, let buffer drive
+    apply store_mode;
+    release ibus;
+    set t2 = 1; settle;
+    assert ibus_val == 0xAA;
+    assert ibus has single_driver;
+  }
+
+  test ibus_no_conflict_during_load {
+    reset clear_ac;
+    apply li_mode;
+    set ibus = 0xFF;
+    set t2 = 1; settle;
+    assert ibus has no_conflict;
+  }
+}

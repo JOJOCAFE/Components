@@ -1,0 +1,99 @@
+use standard.memory as memory;
+
+component:component MemoryRead is components.digital {
+  title "62256 SRAM read-mode fixture with address zero selected";
+
+  device U1, memory.62256;
+
+  net vcc : power;
+  net gnd : power;
+  net ce_n : digital;
+  net oe_n : digital;
+  net we_n : digital;
+  bus addr[15] : digital;
+  bus data[8] : digital;
+
+  connect vcc -> U1.VCC;
+  connect gnd -> U1.GND;
+  connect ce_n -> U1./CE;
+  connect oe_n -> U1./OE;
+  connect we_n -> U1./WE;
+  connect addr[0] -> U1.A0;
+  connect addr[1] -> U1.A1;
+  connect addr[2] -> U1.A2;
+  connect addr[3] -> U1.A3;
+  connect addr[4] -> U1.A4;
+  connect addr[5] -> U1.A5;
+  connect addr[6] -> U1.A6;
+  connect addr[7] -> U1.A7;
+  connect addr[8] -> U1.A8;
+  connect addr[9] -> U1.A9;
+  connect addr[10] -> U1.A10;
+  connect addr[11] -> U1.A11;
+  connect addr[12] -> U1.A12;
+  connect addr[13] -> U1.A13;
+  connect addr[14] -> U1.A14;
+  connect U1."I/O0" -> data[0];
+  connect U1."I/O1" -> data[1];
+  connect U1."I/O2" -> data[2];
+  connect U1."I/O3" -> data[3];
+  connect U1."I/O4" -> data[4];
+  connect U1."I/O5" -> data[5];
+  connect U1."I/O6" -> data[6];
+  connect U1."I/O7" -> data[7];
+
+  -- Stimulus: input presets
+  input read_zero {
+    set addr = 0;
+    set ce_n = 0;
+    set oe_n = 0;
+    set we_n = 1;
+  }
+
+  input chip_disabled {
+    set addr = 0;
+    set ce_n = 1;
+    set oe_n = 0;
+    set we_n = 1;
+  }
+
+  -- Stimulus: interactive controls
+  channel sw_ce, ce_n, { "kind": "switch", "initial": 0, "label": "/CE (0=selected)" };
+  channel sw_oe, oe_n, { "kind": "switch", "initial": 0, "label": "/OE (0=read)" };
+  channel sw_we, we_n, { "kind": "switch", "initial": 1, "label": "/WE (1=no write)" };
+
+  -- Stimulus: step
+  step read_and_probe {
+    apply read_zero;
+    settle;
+    probe;
+  }
+
+  -- Observation
+  probe data_out, data;
+  display data_out as value, { "label": "DATA[7:0]", "radix": "hex" };
+
+  -- Tests
+  test read_address_zero {
+    apply read_zero;
+    settle;
+    assert data_out != Z;
+  }
+
+  test disabled_high_z {
+    apply chip_disabled;
+    settle;
+    assert data_out == Z;
+  }
+
+  test write_protect {
+    arrange {
+      set addr = 0;
+      set ce_n = 0;
+      set oe_n = 1;
+      set we_n = 1;
+    }
+    settle;
+    assert data_out == Z;
+  }
+}

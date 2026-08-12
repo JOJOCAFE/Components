@@ -1,0 +1,413 @@
+use standard.digital as digital;
+use standard.memory as memory;
+use standard.virtual as virtual;
+use project.RV8GR_BranchJumpControl as BranchJumpControl;
+
+component:component RV8GR_PageJumpTrace is components.digital {
+  title "RV8GR page and jump instruction trace (SETDP, SETPG, J)";
+
+  -- Public boundary ports
+  port CLK : digital, input;
+  port /RST : digital, input;
+  port T0 : digital, output;
+  port T1 : digital, output;
+  port T2 : digital, output;
+  port PC[16] : digital, output;
+  port PG[8] : digital, output;
+  port DP[8] : digital, output;
+  port IBUS[8] : digital, inout;
+  port /PC_LD : digital, output;
+
+  -- Devices
+  device U1, digital.74HC161;     -- PC bits 0-3
+  device U2, digital.74HC161;     -- PC bits 4-7
+  device U3, digital.74HC161;     -- PC bits 8-11
+  device U4, digital.74HC161;     -- PC bits 12-15
+  device U23, digital.74HC574;    -- Page register (PG)
+  device U32, digital.74HC574;    -- Data page register (DP)
+  device U33, digital.74HC21;     -- SETDP decode
+  device U34, digital.74HC541;    -- IRL immediate buffer
+
+  -- Hierarchical sub-circuits
+  instance branch, BranchJumpControl;
+
+  -- Virtual test helpers
+  device VCLK, virtual.ClockSource, { "period_ns": 200 };
+  device PHASE, virtual.Probe;
+  device IBUSMON, virtual.BusProbe, { "width": 8, "policy": "single_driver" };
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  net clk : digital;
+  net rst_n : digital;
+  net t0 : digital;
+  net t1 : digital;
+  net t2 : digital;
+  bus pc[16] : digital;
+  bus pg[8] : digital;
+  bus dp[8] : digital;
+  bus ibus[8] : digital;
+  bus irl[8] : digital;
+  bus irh[8] : digital;
+  net z_flag : digital;
+  net pc_ld_n : digital;
+  net pc_inc : digital;
+  net pg_clk : digital;
+  net dp_load : digital;
+  net pg_cond_n : digital;
+  net t2_n : digital;
+  net mux_sel : digital;
+  net xor_mode : digital;
+  net ac_wr : digital;
+  net addr_mode_n : digital;
+  net jmp : digital;
+  net br : digital;
+  net alu_sub : digital;
+
+  -- Power connections
+  connect vcc -> U1.VCC;
+  connect vcc -> U2.VCC;
+  connect vcc -> U3.VCC;
+  connect vcc -> U4.VCC;
+  connect vcc -> U23.VCC;
+  connect vcc -> U32.VCC;
+  connect vcc -> U33.VCC;
+  connect vcc -> U34.VCC;
+  connect gnd -> U1.GND;
+  connect gnd -> U2.GND;
+  connect gnd -> U3.GND;
+  connect gnd -> U4.GND;
+  connect gnd -> U23.GND;
+  connect gnd -> U32.GND;
+  connect gnd -> U33.GND;
+  connect gnd -> U34.GND;
+
+  -- PC counter chain (U1-U4)
+  connect clk -> U1.CLK;
+  connect clk -> U2.CLK;
+  connect clk -> U3.CLK;
+  connect clk -> U4.CLK;
+  connect rst_n -> U1./CLR;
+  connect rst_n -> U2./CLR;
+  connect rst_n -> U3./CLR;
+  connect rst_n -> U4./CLR;
+  connect pc_ld_n -> U1./LOAD;
+  connect pc_ld_n -> U2./LOAD;
+  connect pc_ld_n -> U3./LOAD;
+  connect pc_ld_n -> U4./LOAD;
+  connect pc_inc -> U1.ENP;
+  connect pc_inc -> U1.ENT;
+  connect pc_inc -> U2.ENP;
+  connect pc_inc -> U3.ENP;
+  connect pc_inc -> U4.ENP;
+  connect U1.RCO -> U2.ENT;
+  connect U2.RCO -> U3.ENT;
+  connect U3.RCO -> U4.ENT;
+
+  -- PC load data: IRL → low byte, PG → high byte
+  connect irl[0] -> U1.A;
+  connect irl[1] -> U1.B;
+  connect irl[2] -> U1.C;
+  connect irl[3] -> U1.D;
+  connect irl[4] -> U2.A;
+  connect irl[5] -> U2.B;
+  connect irl[6] -> U2.C;
+  connect irl[7] -> U2.D;
+  connect pg[0] -> U3.A;
+  connect pg[1] -> U3.B;
+  connect pg[2] -> U3.C;
+  connect pg[3] -> U3.D;
+  connect pg[4] -> U4.A;
+  connect pg[5] -> U4.B;
+  connect pg[6] -> U4.C;
+  connect pg[7] -> U4.D;
+
+  -- Page register U23: captures IRL on PG_CLK rising
+  connect pg_clk -> U23.CLK;
+  connect irl[0] -> U23.1D;
+  connect irl[1] -> U23.2D;
+  connect irl[2] -> U23.3D;
+  connect irl[3] -> U23.4D;
+  connect irl[4] -> U23.5D;
+  connect irl[5] -> U23.6D;
+  connect irl[6] -> U23.7D;
+  connect irl[7] -> U23.8D;
+  connect U23.1Q -> pg[0];
+  connect U23.2Q -> pg[1];
+  connect U23.3Q -> pg[2];
+  connect U23.4Q -> pg[3];
+  connect U23.5Q -> pg[4];
+  connect U23.6Q -> pg[5];
+  connect U23.7Q -> pg[6];
+  connect U23.8Q -> pg[7];
+
+  -- Data page register U32: captures IBUS on DP_Load rising
+  connect dp_load -> U32.CLK;
+  connect ibus[0] -> U32.1D;
+  connect ibus[1] -> U32.2D;
+  connect ibus[2] -> U32.3D;
+  connect ibus[3] -> U32.4D;
+  connect ibus[4] -> U32.5D;
+  connect ibus[5] -> U32.6D;
+  connect ibus[6] -> U32.7D;
+  connect ibus[7] -> U32.8D;
+  connect U32.1Q -> dp[0];
+  connect U32.2Q -> dp[1];
+  connect U32.3Q -> dp[2];
+  connect U32.4Q -> dp[3];
+  connect U32.5Q -> dp[4];
+  connect U32.6Q -> dp[5];
+  connect U32.7Q -> dp[6];
+  connect U32.8Q -> dp[7];
+
+  -- SETDP decode: U33 = T2 AND XOR_MODE AND /ADDR_MODE AND /AC_WR
+  connect t2 -> U33.1A;
+  connect xor_mode -> U33.1B;
+  connect addr_mode_n -> U33.1C;
+  connect ac_wr -> U33.1D;  -- inverted externally
+  connect U33.1Y -> dp_load;
+
+  -- Branch/jump sub-circuit connections
+  connect t0 -> branch.T0;
+  connect t1 -> branch.T1;
+  connect t2 -> branch.T2;
+  connect jmp -> branch.JMP;
+  connect br -> branch.BR;
+  connect alu_sub -> branch.ALU_SUB;
+  connect z_flag -> branch.Z_flag;
+  connect branch./PC_LD -> pc_ld_n;
+
+  -- Boundary port bindings
+  connect CLK -> clk;
+  connect /RST -> rst_n;
+  connect t0 -> T0;
+  connect t1 -> T1;
+  connect t2 -> T2;
+  connect pc -> PC;
+  connect pg -> PG;
+  connect dp -> DP;
+  connect ibus -> IBUS;
+  connect pc_ld_n -> /PC_LD;
+
+  -- Derived signals
+  derive setdp_active = t2 & xor_mode & addr_mode_n & ~ac_wr;
+  derive setpg_active = mux_sel & ~ac_wr;
+  derive pg_clk_equation = t2_n | pg_cond_n;
+  derive jump_target = { pg, irl };
+
+  -- Memory: ROM program for page/jump test
+  -- Program: SETDP $80, SETPG $12, J $5A
+  -- SETDP = XOR_MODE=1, AC_WR=0, ADDR_MODE=0 → opcode $60, operand $80
+  -- SETPG = MUX_SEL=1, AC_WR=0 → opcode $20, operand $12
+  -- J     = JMP=1 → opcode $01, operand $5A
+  memory ROM_PROGRAM {
+    0x0000 = [0x60, 0x80];  -- SETDP $80
+    0x0002 = [0x20, 0x12];  -- SETPG $12
+    0x0004 = [0x01, 0x5A];  -- J $5A (target = {PG=$12, IRL=$5A} = $125A)
+  }
+
+  -- Stimulus: clock
+  clock sys_clk, clk, { "period_ns": 200, "initial": 0 };
+
+  -- Stimulus: input presets
+  input setdp_mode {
+    -- SETDP: XOR_MODE=1, MUX_SEL=0, AC_WR=0, no branch/jump
+    set xor_mode = 1;
+    set mux_sel = 0;
+    set ac_wr = 0;
+    set jmp = 0;
+    set br = 0;
+    set alu_sub = 0;
+  }
+
+  input setpg_mode {
+    -- SETPG: MUX_SEL=1, AC_WR=0
+    set xor_mode = 0;
+    set mux_sel = 1;
+    set ac_wr = 0;
+    set jmp = 0;
+    set br = 0;
+    set alu_sub = 0;
+  }
+
+  input jump_mode {
+    -- J: JMP=1
+    set xor_mode = 0;
+    set mux_sel = 0;
+    set ac_wr = 0;
+    set jmp = 1;
+    set br = 0;
+    set alu_sub = 0;
+  }
+
+  -- Stimulus: reset
+  reset power_on {
+    set rst_n = 0;
+    settle;
+    set rst_n = 1;
+    settle;
+    expect pc == 0x0000;
+    expect pg == 0x00;
+    expect dp == 0x00;
+  }
+
+  -- Step sequences for multi-cycle trace
+  step execute_setdp {
+    -- 3 clocks: T0 fetch ctrl, T1 fetch operand, T2 execute SETDP
+    apply setdp_mode;
+    set ibus = 0x80;
+    set t2 = 1;
+    settle;
+    probe;
+    set t2 = 0;
+    settle;
+  }
+
+  step execute_setpg {
+    -- T2 execute SETPG: captures IRL into PG register
+    apply setpg_mode;
+    set irl = 0x12;
+    set t2 = 1;
+    settle;
+    probe;
+    set t2 = 0;
+    settle;
+  }
+
+  step execute_jump {
+    -- T2 execute J: loads PC with {PG, IRL}
+    apply jump_mode;
+    set irl = 0x5A;
+    set t2 = 1;
+    settle;
+    probe;
+    set t2 = 0;
+    settle;
+  }
+
+  -- Sequence: full page-jump trace (9 clocks, 3 instructions)
+  sequence page_jump_trace after power_on {
+    -- SETDP $80: T0/T1 fetch, T2 loads DP
+    clock sys_clk; expect t0 == 1;
+    clock sys_clk; expect t1 == 1;
+    clock sys_clk; expect t2 == 1, dp == 0x80, pg == 0x00;
+    -- SETPG $12: T0/T1 fetch, T2 loads PG
+    clock sys_clk; expect t0 == 1;
+    clock sys_clk; expect t1 == 1;
+    clock sys_clk; expect t2 == 1, pg == 0x12, dp == 0x80;
+    -- J $5A: T0/T1 fetch, T2 loads PC = {PG=$12, IRL=$5A} = $125A
+    clock sys_clk; expect t0 == 1;
+    clock sys_clk; expect t1 == 1;
+    clock sys_clk; expect t2 == 1, pc == 0x125A, pg == 0x12, dp == 0x80;
+  }
+
+  -- Bus safety
+  bus_safety ibus {
+    reject multi_driver;
+  }
+
+  -- Edge criteria
+  edge_criteria U23 {
+    trigger rising;
+    non_trigger hold;
+  }
+
+  edge_criteria U32 {
+    trigger rising;
+    non_trigger hold;
+  }
+
+  edge_criteria U1 {
+    trigger rising;
+    non_trigger hold;
+    async_override /CLR, clear_to_zero;
+  }
+
+  -- Policy: SETDP only fires when all 4 conditions met
+  policy setdp_guard {
+    reject (dp_load == 1) & (t2 == 0);
+    reject (dp_load == 1) & (xor_mode == 0);
+  }
+
+  -- Policy: J uses already-latched PG, not same-cycle operand
+  policy jump_uses_latched_pg {
+    -- PG must be stable before T2 of jump
+    reject (pc_ld_n == 0) & (pg_clk == 1);
+  }
+
+  -- Clock profiles
+  clock_profile manual {
+    clock sys_clk, clk, { "period_ns": 1000000 };
+  }
+
+  clock_profile target_5mhz {
+    clock sys_clk, clk, { "period_ns": 200 };
+  }
+
+  -- Observation
+  probe pc_val, pc;
+  probe pg_val, pg;
+  probe dp_val, dp;
+  probe bus_ibus, ibus;
+  probe pc_load, pc_ld_n;
+  probe dp_ld, dp_load;
+  probe pg_ck, pg_clk;
+  display pc_val as value, { "label": "PC", "radix": "hex" };
+  display pg_val as value, { "label": "PG", "radix": "hex" };
+  display dp_val as value, { "label": "DP", "radix": "hex" };
+  display bus_ibus as value, { "label": "IBUS", "radix": "hex" };
+  display pc_load as led, { "label": "/PC_LD" };
+  display dp_ld as waveform, { "label": "DP_Load" };
+  display pg_ck as waveform, { "label": "PG_CLK" };
+
+  -- Tests
+  test setdp_loads_dp_register {
+    reset power_on;
+    apply setdp_mode;
+    set ibus = 0x80;
+    set t2 = 1;
+    settle;
+    assert dp_val == 0x80;
+    assert pg_val == 0x00;  -- PG unchanged
+  }
+
+  test setpg_loads_pg_register {
+    reset power_on;
+    apply setpg_mode;
+    set irl = 0x12;
+    set t2 = 1;
+    settle;
+    set t2 = 0;
+    settle;
+    assert pg_val == 0x12;
+    assert dp_val == 0x00;  -- DP unchanged
+  }
+
+  test jump_loads_pc_from_pg_irl {
+    reset power_on;
+    -- First set PG
+    apply setpg_mode;
+    set irl = 0x12;
+    set t2 = 1; settle; set t2 = 0; settle;
+    -- Then jump
+    apply jump_mode;
+    set irl = 0x5A;
+    set t2 = 1; settle;
+    assert pc_load == 0;  -- /PC_LD active
+    -- After clock edge, PC = {PG=$12, IRL=$5A} = $125A
+    pulse clk; settle;
+    assert pc_val == 0x125A;
+  }
+
+  test final_state_matches_expected {
+    reset power_on;
+    -- Run full 9-clock trace
+    run execute_setdp;
+    run execute_setpg;
+    run execute_jump;
+    assert pc_val == 0x125A;
+    assert pg_val == 0x12;
+    assert dp_val == 0x80;
+  }
+}

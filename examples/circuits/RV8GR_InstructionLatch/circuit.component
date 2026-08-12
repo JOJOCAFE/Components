@@ -1,0 +1,271 @@
+use standard.digital as digital;
+
+component:component RV8GR_InstructionLatch is components.digital {
+  title "RV8GR instruction latch (U5 control + U6 operand, 74HC574)";
+
+  -- Public boundary ports
+  port IBUS[8] : digital, input;
+  port T0 : digital, input;
+  port T1 : digital, input;
+  port T2 : digital, input;
+  port IR_HIGH[8] : digital, output;
+  port IRL[8] : digital, output;
+
+  -- Devices
+  device U5, digital.74HC574;   -- IR_HIGH: control byte latch (clocked by T0)
+  device U6, digital.74HC574;   -- IR_LOW: operand byte latch (clocked by T1)
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  net t0 : digital;
+  net t1 : digital;
+  net t2 : digital;
+  bus ibus[8] : digital;
+  bus ir_high[8] : digital;
+  bus irl[8] : digital;
+
+  -- Power
+  connect vcc -> U5.VCC;
+  connect vcc -> U6.VCC;
+  connect gnd -> U5.GND;
+  connect gnd -> U6.GND;
+
+  -- Clock: T0 clocks U5 (control byte), T1 clocks U6 (operand byte)
+  connect t0 -> U5.CLK;
+  connect t1 -> U6.CLK;
+
+  -- /OE tied LOW (outputs always enabled)
+  connect gnd -> U5./OE;
+  connect gnd -> U6./OE;
+
+  -- Data inputs: IBUS → both latches
+  connect ibus[0] -> U5.1D;
+  connect ibus[1] -> U5.2D;
+  connect ibus[2] -> U5.3D;
+  connect ibus[3] -> U5.4D;
+  connect ibus[4] -> U5.5D;
+  connect ibus[5] -> U5.6D;
+  connect ibus[6] -> U5.7D;
+  connect ibus[7] -> U5.8D;
+
+  connect ibus[0] -> U6.1D;
+  connect ibus[1] -> U6.2D;
+  connect ibus[2] -> U6.3D;
+  connect ibus[3] -> U6.4D;
+  connect ibus[4] -> U6.5D;
+  connect ibus[5] -> U6.6D;
+  connect ibus[6] -> U6.7D;
+  connect ibus[7] -> U6.8D;
+
+  -- Outputs: IR_HIGH control bits
+  connect U5.1Q -> ir_high[0];   -- JMP
+  connect U5.2Q -> ir_high[1];   -- BR
+  connect U5.3Q -> ir_high[2];   -- STR
+  connect U5.4Q -> ir_high[3];   -- SRC
+  connect U5.5Q -> ir_high[4];   -- AC_WR
+  connect U5.6Q -> ir_high[5];   -- MUX_SEL
+  connect U5.7Q -> ir_high[6];   -- XOR_MODE
+  connect U5.8Q -> ir_high[7];   -- SUB
+
+  -- Outputs: IRL operand byte
+  connect U6.1Q -> irl[0];
+  connect U6.2Q -> irl[1];
+  connect U6.3Q -> irl[2];
+  connect U6.4Q -> irl[3];
+  connect U6.5Q -> irl[4];
+  connect U6.6Q -> irl[5];
+  connect U6.7Q -> irl[6];
+  connect U6.8Q -> irl[7];
+
+  -- Boundary port bindings
+  connect IBUS -> ibus;
+  connect T0 -> t0;
+  connect T1 -> t1;
+  connect T2 -> t2;
+  connect ir_high -> IR_HIGH;
+  connect irl -> IRL;
+
+  -- Derived signals (control bit naming)
+  derive JMP = ir_high[0];
+  derive BR = ir_high[1];
+  derive STR = ir_high[2];
+  derive SRC = ir_high[3];
+  derive AC_WR = ir_high[4];
+  derive MUX_SEL = ir_high[5];
+  derive XOR_MODE = ir_high[6];
+  derive SUB = ir_high[7];
+
+  -- Stimulus: clock (T0 and T1 are phase clocks from ring counter)
+  clock phase_t0, t0, { "period_ns": 600, "initial": 0 };
+  clock phase_t1, t1, { "period_ns": 600, "initial": 0, "phase_offset_ns": 200 };
+
+  -- Stimulus: input presets
+  input fetch_control {
+    set ibus = 0x31;   -- example: LI opcode ($31 = MUX_SEL + JMP)
+  }
+
+  input fetch_operand {
+    set ibus = 0x42;   -- example: immediate $42
+  }
+
+  -- Stimulus: reset (clear both latches by clocking zero)
+  reset clear_latches {
+    set ibus = 0x00;
+    set t0 = 0;
+    set t1 = 0;
+    settle;
+    pulse t0; settle;
+    pulse t1; settle;
+    expect ir_high == 0x00;
+    expect irl == 0x00;
+  }
+
+  -- Stimulus: step sequences
+  step latch_control {
+    apply fetch_control;
+    pulse t0;
+    settle;
+    probe;
+  }
+
+  step latch_operand {
+    apply fetch_operand;
+    pulse t1;
+    settle;
+    probe;
+  }
+
+  -- Sequence: full fetch cycle
+  sequence fetch_li_42 after clear_latches {
+    -- T0: latch control byte
+    set ibus = 0x31;
+    pulse t0; settle;
+    expect ir_high == 0x31;
+    expect irl == 0x00;
+
+    -- T1: latch operand byte
+    set ibus = 0x42;
+    pulse t1; settle;
+    expect ir_high == 0x31;
+    expect irl == 0x42;
+
+    -- T2: both hold (no edges)
+    set ibus = 0xFF;
+    settle;
+    expect ir_high == 0x31;
+    expect irl == 0x42;
+  }
+
+  -- Clock profiles
+  clock_profile manual {
+    clock phase_t0, t0, { "period_ns": 1000000 };
+    clock phase_t1, t1, { "period_ns": 1000000 };
+  }
+
+  clock_profile target_5mhz {
+    clock phase_t0, t0, { "period_ns": 600 };
+    clock phase_t1, t1, { "period_ns": 600, "phase_offset_ns": 200 };
+  }
+
+  -- Edge criteria
+  edge_criteria U5 {
+    trigger rising;
+    non_trigger hold;
+  }
+
+  edge_criteria U6 {
+    trigger rising;
+    non_trigger hold;
+  }
+
+  -- Timing checks
+  timing_check t0_to_irh {
+    from U5.CLK;
+    to U5.1Q;
+    expect 22ns;
+    limit 35ns;
+  }
+
+  timing_check t1_to_irl {
+    from U6.CLK;
+    to U6.1Q;
+    expect 22ns;
+    limit 35ns;
+  }
+
+  timing_check ibus_setup_before_t0 {
+    from ibus[0];
+    to U5.CLK;
+    expect 10ns;
+    limit 15ns;
+  }
+
+  -- Observation
+  probe irh, ir_high;
+  probe operand, irl;
+  probe bus_in, ibus;
+  display irh as value, { "label": "IR_HIGH (control)", "radix": "hex" };
+  display operand as value, { "label": "IRL (operand)", "radix": "hex" };
+  display bus_in as value, { "label": "IBUS input", "radix": "hex" };
+
+  -- Tests
+  test t0_captures_control {
+    reset clear_latches;
+    set ibus = 0xA5;
+    pulse t0; settle;
+    assert irh == 0xA5;
+    assert operand == 0x00;
+  }
+
+  test t1_captures_operand {
+    reset clear_latches;
+    set ibus = 0x5A;
+    pulse t1; settle;
+    assert irh == 0x00;
+    assert operand == 0x5A;
+  }
+
+  test t2_holds_both {
+    reset clear_latches;
+    -- Latch control
+    set ibus = 0xAA;
+    pulse t0; settle;
+    -- Latch operand
+    set ibus = 0x55;
+    pulse t1; settle;
+    -- T2: change IBUS, verify hold
+    set ibus = 0xFF;
+    settle;
+    assert irh == 0xAA;
+    assert operand == 0x55;
+  }
+
+  test next_t0_replaces_control_only {
+    reset clear_latches;
+    -- First fetch
+    set ibus = 0x31;
+    pulse t0; settle;
+    set ibus = 0x42;
+    pulse t1; settle;
+    -- Next T0: new control, operand unchanged
+    set ibus = 0xB8;
+    pulse t0; settle;
+    assert irh == 0xB8;
+    assert operand == 0x42;
+  }
+
+  test next_t1_replaces_operand_only {
+    reset clear_latches;
+    -- First fetch
+    set ibus = 0x31;
+    pulse t0; settle;
+    set ibus = 0x42;
+    pulse t1; settle;
+    -- Next T1: new operand, control unchanged
+    set ibus = 0x99;
+    pulse t1; settle;
+    assert irh == 0x31;
+    assert operand == 0x99;
+  }
+}

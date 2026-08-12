@@ -1,0 +1,62 @@
+use standard.digital as digital;
+use standard.virtual as virtual;
+
+component:component Nand is components.digital {
+  title "Single 74HC00 NAND gate with switch inputs and a logic probe";
+
+  device U1, digital.74HC00;
+  device Lamp, virtual.Probe;
+
+  net vcc : power;
+  net gnd : power;
+  net a : digital;
+  net b : digital;
+  net y : digital;
+
+  connect vcc -> U1.VCC;
+  connect gnd -> U1.GND;
+  connect a -> U1.1A;
+  connect b -> U1.1B;
+  connect U1.1Y -> y;
+  connect y -> Lamp.IN;
+
+  -- Stimulus: input presets
+  input power_on {
+    set a = 1;
+    set b = 1;
+  }
+
+  -- Stimulus: interactive front-panel switches
+  channel sw_a, a, { "kind": "switch", "initial": 1, "label": "Switch A" };
+  channel sw_b, b, { "kind": "switch", "initial": 1, "label": "Switch B" };
+
+  -- Observation
+  probe nand_y, y;
+  display nand_y as value, { "label": "NAND output" };
+
+  -- Runtime step
+  step run {
+    apply power_on;
+    settle;
+    probe;
+  }
+
+  -- Tests
+  test both_high {
+    arrange { set a = 1; set b = 1; }
+    settle;
+    assert nand_y == 0;
+  }
+
+  test one_low {
+    arrange { set a = 1; set b = 0; }
+    settle;
+    assert nand_y == 1;
+  }
+
+  test both_low {
+    arrange { set a = 0; set b = 0; }
+    settle;
+    assert nand_y == 1;
+  }
+}

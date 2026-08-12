@@ -1,0 +1,459 @@
+use standard.digital as digital;
+use standard.virtual as virtual;
+use project.RV8GR_BusOwnership as BusOwnership;
+use project.RV8GR_AluAccumulator as AluAccumulator;
+use project.RV8GR_PageDataRegisters as PageDataRegisters;
+use project.RV8GR_BranchJumpControl as BranchJumpControl;
+use project.RV8GR_PC16 as PC16;
+use project.RV8GR_InterruptEnable as InterruptEnable;
+use project.RV8GR_VirtualTestHelpers as VirtualTestHelpers;
+
+component:component RV8GR_FullControlOpcodeSweep is components.digital {
+  title "RV8GR full T2 control opcode sweep (256 opcodes × 2 Z states = 512 cases)";
+
+  -- Public boundary ports
+  port CLK : digital, input;
+  port /RST : digital, input;
+  port T2 : digital, input;
+  port PC_INC : digital, input;
+  port IRH[8] : digital, input;
+  port IRL[8] : digital, input;
+  port AC[8] : digital, output;
+  port Z_flag : digital, output;
+  port PG[8] : digital, output;
+  port DP[8] : digital, output;
+  port IE : digital, output;
+  port PC[16] : digital, output;
+  port /PC_LD : digital, output;
+  port IBUS[8] : digital, inout;
+  port DBUS[8] : digital, inout;
+
+  -- Hierarchical sub-circuit instances
+  instance bus, BusOwnership;
+  instance alu, AluAccumulator;
+  instance pgdp, PageDataRegisters;
+  instance pc_ctrl, BranchJumpControl;
+  instance pc16, PC16;
+  instance ieff, InterruptEnable;
+  instance vt, VirtualTestHelpers;
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  net clk : digital;
+  net rst_n : digital;
+  net t0 : digital;
+  net t1 : digital;
+  net t2 : digital;
+  net pc_inc : digital;
+  bus irh[8] : digital;
+  bus irl[8] : digital;
+  bus ac[8] : digital;
+  bus pg[8] : digital;
+  bus dp[8] : digital;
+  bus pc[16] : digital;
+  bus ibus[8] : digital;
+  bus dbus[8] : digital;
+  net z_flag : digital;
+  net ie : digital;
+  net pc_ld_n : digital;
+
+  -- Control bit extraction (horizontal control — no decoder)
+  net alu_sub : digital;
+  net xor_mode : digital;
+  net mux_sel : digital;
+  net ac_wr : digital;
+  net src : digital;
+  net str : digital;
+  net br : digital;
+  net jmp : digital;
+
+  -- IRH bit mapping: horizontal control word
+  -- [7]=SUB [6]=XOR_MODE [5]=MUX_SEL [4]=AC_WR [3]=SRC [2]=STR [1]=BR [0]=JMP
+  derive alu_sub_bit = irh[7];
+  derive xor_mode_bit = irh[6];
+  derive mux_sel_bit = irh[5];
+  derive ac_wr_bit = irh[4];
+  derive src_bit = irh[3];
+  derive str_bit = irh[2];
+  derive br_bit = irh[1];
+  derive jmp_bit = irh[0];
+
+  -- Forbidden opcode detection: SRC+STR both set = bus fight
+  derive forbidden = irh[3] & irh[2];
+
+  -- Known instruction decodes
+  derive is_li = ~irh[7] & ~irh[6] & irh[5] & irh[4] & ~irh[3] & ~irh[2] & ~irh[1] & ~irh[0];
+  derive is_addi = ~irh[7] & ~irh[6] & ~irh[5] & irh[4] & ~irh[3] & ~irh[2] & ~irh[1] & ~irh[0];
+  derive is_subi = irh[7] & ~irh[6] & ~irh[5] & irh[4] & ~irh[3] & ~irh[2] & ~irh[1] & ~irh[0];
+  derive is_xor = ~irh[7] & irh[6] & irh[5] & irh[4] & ~irh[3] & ~irh[2] & ~irh[1] & ~irh[0];
+  derive is_setpg = ~irh[7] & ~irh[6] & irh[5] & ~irh[4] & ~irh[3] & ~irh[2] & ~irh[1] & ~irh[0];
+  derive is_setdp = ~irh[7] & irh[6] & ~irh[5] & ~irh[4] & ~irh[3] & ~irh[2] & ~irh[1] & ~irh[0];
+  derive is_ei = ~irh[7] & ~irh[6] & ~irh[5] & ~irh[4] & irh[3] & ~irh[2] & ~irh[1] & ~irh[0];
+  derive is_sb = ~irh[7] & ~irh[6] & ~irh[5] & ~irh[4] & ~irh[3] & irh[2] & ~irh[1] & ~irh[0];
+  derive is_lb = ~irh[7] & ~irh[6] & ~irh[5] & irh[4] & irh[3] & ~irh[2] & ~irh[1] & ~irh[0];
+  derive is_beq = ~irh[7] & ~irh[6] & ~irh[5] & ~irh[4] & ~irh[3] & ~irh[2] & irh[1] & ~irh[0];
+  derive is_bne = irh[7] & ~irh[6] & ~irh[5] & ~irh[4] & ~irh[3] & ~irh[2] & irh[1] & ~irh[0];
+  derive is_j = ~irh[7] & ~irh[6] & ~irh[5] & ~irh[4] & ~irh[3] & ~irh[2] & ~irh[1] & irh[0];
+
+  -- Connect control bits from IRH
+  connect irh[7] -> alu_sub;
+  connect irh[6] -> xor_mode;
+  connect irh[5] -> mux_sel;
+  connect irh[4] -> ac_wr;
+  connect irh[3] -> src;
+  connect irh[2] -> str;
+  connect irh[1] -> br;
+  connect irh[0] -> jmp;
+
+  -- ALU sub-circuit
+  connect t2 -> alu.T2;
+  connect alu_sub -> alu.ALU_SUB;
+  connect xor_mode -> alu.XOR_MODE;
+  connect mux_sel -> alu.MUX_SEL;
+  connect ac_wr -> alu.AC_WR;
+  connect str -> alu.STR;
+  connect ibus -> alu.IBUS;
+  connect alu.AC -> ac;
+  connect alu.Z_flag -> z_flag;
+
+  -- Branch/jump control sub-circuit
+  connect t0 -> pc_ctrl.T0;
+  connect t1 -> pc_ctrl.T1;
+  connect t2 -> pc_ctrl.T2;
+  connect jmp -> pc_ctrl.JMP;
+  connect br -> pc_ctrl.BR;
+  connect alu_sub -> pc_ctrl.ALU_SUB;
+  connect z_flag -> pc_ctrl.Z_flag;
+  connect pc_ctrl./PC_LD -> pc_ld_n;
+
+  -- PC16 sub-circuit
+  connect clk -> pc16.CLK;
+  connect rst_n -> pc16./RST;
+  connect pc_ld_n -> pc16./PC_LD;
+  connect pc_inc -> pc16.PC_INC;
+  connect irl -> pc16.IRL;
+  connect pg -> pc16.PG;
+  connect pc16.PC -> pc;
+
+  -- Page/data registers sub-circuit
+  connect t2 -> pgdp.T2;
+  connect mux_sel -> pgdp.MUX_SEL;
+  connect xor_mode -> pgdp.XOR_MODE;
+  connect ac_wr -> pgdp.AC_WR;
+  connect ibus -> pgdp.IBUS;
+  connect irl -> pgdp.IRL;
+  connect pgdp.PG -> pg;
+  connect pgdp.DP -> dp;
+
+  -- Bus ownership sub-circuit
+  connect t0 -> bus.T0;
+  connect t1 -> bus.T1;
+  connect t2 -> bus.T2;
+  connect src -> bus.SRC;
+  connect str -> bus.STR;
+  connect ibus -> bus.IBUS;
+  connect dbus -> bus.DBUS;
+
+  -- Interrupt enable sub-circuit
+  connect rst_n -> ieff./RST;
+  connect t2 -> ieff.T2;
+  connect src -> ieff.SRC;
+  connect xor_mode -> ieff.XOR_MODE;
+  connect ac_wr -> ieff.AC_WR;
+  connect ieff.IE -> ie;
+
+  -- Virtual test helper connections
+  connect clk -> vt.CLK;
+  connect t0 -> vt.T0;
+  connect t1 -> vt.T1;
+  connect t2 -> vt.T2;
+  connect ibus -> vt.IBUS;
+  connect dbus -> vt.DBUS;
+
+  -- Boundary port bindings
+  connect CLK -> clk;
+  connect /RST -> rst_n;
+  connect T2 -> t2;
+  connect PC_INC -> pc_inc;
+  connect IRH -> irh;
+  connect IRL -> irl;
+  connect ac -> AC;
+  connect z_flag -> Z_flag;
+  connect pg -> PG;
+  connect dp -> DP;
+  connect ie -> IE;
+  connect pc -> PC;
+  connect pc_ld_n -> /PC_LD;
+  connect ibus -> IBUS;
+  connect dbus -> DBUS;
+
+  -- Stimulus: clock
+  clock sys_clk, clk, { "period_ns": 200, "initial": 0 };
+
+  -- Stimulus: reset
+  reset power_on {
+    set rst_n = 0;
+    set t0 = 0;
+    set t1 = 0;
+    set t2 = 0;
+    set irh = 0x00;
+    set irl = 0x00;
+    set pc_inc = 0;
+    settle;
+    set rst_n = 1;
+    settle;
+    expect pc == 0x0000;
+    expect ac == 0x00;
+    expect z_flag == 0;
+    expect pg == 0x00;
+    expect dp == 0x00;
+    expect ie == 0;
+  }
+
+  -- Stimulus: input presets for named opcodes
+  input opcode_li {
+    set irh = 0x30;
+    set irl = 0x42;
+  }
+
+  input opcode_addi {
+    set irh = 0x10;
+    set irl = 0x01;
+  }
+
+  input opcode_subi {
+    set irh = 0x90;
+    set irl = 0x42;
+  }
+
+  input opcode_setpg {
+    set irh = 0x20;
+    set irl = 0x12;
+  }
+
+  input opcode_setdp {
+    set irh = 0x60;
+    set irl = 0x80;
+  }
+
+  input opcode_ei {
+    set irh = 0x08;
+    set irl = 0x00;
+  }
+
+  input opcode_sb {
+    set irh = 0x04;
+    set irl = 0x10;
+  }
+
+  input opcode_beq {
+    set irh = 0x02;
+    set irl = 0x20;
+  }
+
+  input opcode_bne {
+    set irh = 0x82;
+    set irl = 0x20;
+  }
+
+  input opcode_j {
+    set irh = 0x01;
+    set irl = 0x5A;
+  }
+
+  -- Step: full 256-opcode sweep (× 2 Z states = 512 tests)
+  step opcode_sweep_z0 {
+    -- Sweep all 256 opcodes with Z_flag = 0
+    set z_flag = 0;
+    repeat 256 {
+      set irh = $i;
+      set irl = 0x42;
+      set t2 = 1;
+      settle;
+      probe;
+      set t2 = 0;
+      settle;
+    }
+  }
+
+  step opcode_sweep_z1 {
+    -- Sweep all 256 opcodes with Z_flag = 1
+    set z_flag = 1;
+    repeat 256 {
+      set irh = $i;
+      set irl = 0x42;
+      set t2 = 1;
+      settle;
+      probe;
+      set t2 = 0;
+      settle;
+    }
+  }
+
+  step full_opcode_sweep {
+    -- Complete 512-case sweep
+    reset power_on;
+    -- Z=0 sweep
+    set z_flag = 0;
+    repeat 256 {
+      set irh = $i;
+      set irl = 0x42;
+      set t2 = 1;
+      settle;
+      probe;
+      set t2 = 0;
+      settle;
+    }
+    -- Z=1 sweep
+    reset power_on;
+    set z_flag = 1;
+    repeat 256 {
+      set irh = $i;
+      set irl = 0x42;
+      set t2 = 1;
+      settle;
+      probe;
+      set t2 = 0;
+      settle;
+    }
+  }
+
+  -- Bus safety
+  bus_safety ibus {
+    reject multi_driver;
+  }
+
+  bus_safety dbus {
+    reject multi_driver;
+  }
+
+  -- Policy: forbidden opcodes (SRC+STR = bus fight)
+  policy no_src_str_conflict {
+    reject (irh[3] == 1) & (irh[2] == 1);
+  }
+
+  -- Policy: all 256 opcodes produce deterministic output
+  policy deterministic_output {
+    -- No X/unknown states allowed on control outputs
+    reject ac has unknown;
+    reject pc_ld_n has unknown;
+    reject ie has unknown;
+  }
+
+  -- Clock profiles
+  clock_profile manual {
+    clock sys_clk, clk, { "period_ns": 1000000 };
+  }
+
+  clock_profile target_5mhz {
+    clock sys_clk, clk, { "period_ns": 200 };
+  }
+
+  -- Observation
+  probe opcode, irh;
+  probe operand, irl;
+  probe acc, ac;
+  probe z, z_flag;
+  probe pc_val, pc;
+  probe pg_val, pg;
+  probe dp_val, dp;
+  probe ie_flag, ie;
+  probe pc_load, pc_ld_n;
+  probe bus_ibus, ibus;
+  probe bus_dbus, dbus;
+  probe is_forbidden, forbidden;
+  display opcode as value, { "label": "Opcode (IRH)", "radix": "hex" };
+  display operand as value, { "label": "Operand (IRL)", "radix": "hex" };
+  display acc as value, { "label": "AC", "radix": "hex" };
+  display z as led, { "label": "Z" };
+  display pc_val as value, { "label": "PC", "radix": "hex" };
+  display pg_val as value, { "label": "PG", "radix": "hex" };
+  display dp_val as value, { "label": "DP", "radix": "hex" };
+  display ie_flag as led, { "label": "IE" };
+  display pc_load as led, { "label": "/PC_LD" };
+  display is_forbidden as led, { "label": "FORBIDDEN" };
+
+  -- Tests: named opcode verification
+  test li_42_z0 {
+    reset power_on;
+    apply opcode_li;
+    set t2 = 1; settle; set t2 = 0; settle;
+    assert acc == 0x42;
+    assert z == 0;
+    assert pc_load == 1;  -- /PC_LD HIGH = no jump
+  }
+
+  test setpg_12 {
+    reset power_on;
+    apply opcode_setpg;
+    set t2 = 1; settle; set t2 = 0; settle;
+    assert pg_val == 0x12;
+    assert dp_val == 0x00;  -- unchanged
+  }
+
+  test setdp_80 {
+    reset power_on;
+    apply opcode_setdp;
+    set ibus = 0x80;
+    set t2 = 1; settle; set t2 = 0; settle;
+    assert dp_val == 0x80;
+    assert pg_val == 0x00;  -- unchanged
+  }
+
+  test ei_sets_ie {
+    reset power_on;
+    apply opcode_ei;
+    set t2 = 1; settle; set t2 = 0; settle;
+    assert ie_flag == 1;
+  }
+
+  test beq_taken_z1 {
+    reset power_on;
+    -- Need Z=1 first
+    apply opcode_li;
+    set irl = 0x00;
+    set t2 = 1; settle; set t2 = 0; settle;
+    assert z == 1;
+    -- BEQ with Z=1
+    apply opcode_beq;
+    set t2 = 1; settle;
+    assert pc_load == 0;  -- taken
+  }
+
+  test bne_taken_z0 {
+    reset power_on;
+    -- Need Z=0
+    apply opcode_li;
+    set irl = 0x42;
+    set t2 = 1; settle; set t2 = 0; settle;
+    assert z == 0;
+    -- BNE with Z=0 (SUB=1, Z_match = Z XOR SUB = 0 XOR 1 = 1)
+    apply opcode_bne;
+    set t2 = 1; settle;
+    assert pc_load == 0;  -- taken
+  }
+
+  test jump_unconditional {
+    reset power_on;
+    apply opcode_j;
+    set t2 = 1; settle;
+    assert pc_load == 0;  -- /PC_LD active regardless of Z
+  }
+
+  test forbidden_opcode_detected {
+    reset power_on;
+    -- SRC+STR both set = $0C
+    set irh = 0x0C;
+    settle;
+    assert is_forbidden == 1;
+  }
+
+  test full_sweep_512_deterministic {
+    -- All 512 cases produce deterministic results (no X/Z on outputs)
+    run full_opcode_sweep;
+    -- If we get here without contention errors, all cases are deterministic
+    assert acc has no_unknown;
+    assert pc_load has no_unknown;
+  }
+}

@@ -1,0 +1,196 @@
+use standard.digital as digital;
+
+component:component RV8GR_InterruptEnable is components.digital {
+  title "RV8GR EI decode and interrupt-enable flag (U24+U33+U31)";
+
+  -- Public boundary ports
+  port /RST : digital, input;
+  port T2 : digital, input;
+  port SRC : digital, input;
+  port XOR_MODE : digital, input;
+  port AC_WR : digital, input;
+  port IE : digital, output;
+
+  -- Devices
+  device U24, digital.74HC04;     -- Inverters: NOT(AC_WR), NOT(XOR_MODE)
+  device U33, digital.74HC21;     -- 4-input AND: EI_decode
+  device U31, digital.74HC74;     -- IE flag flip-flop (section 1)
+
+  -- Internal nets
+  net vcc : power;
+  net gnd : power;
+  net rst_n : digital;
+  net t2 : digital;
+  net src : digital;
+  net xor_mode : digital;
+  net ac_wr : digital;
+  net not_xor_mode : digital;
+  net not_ac_wr : digital;
+  net ei_decode : digital;
+  net ie : digital;
+
+  -- Power  connect vcc -> U24.VCC;
+  connect vcc -> U33.VCC;
+  connect vcc -> U31.VCC;  connect gnd -> U24.GND;
+  connect gnd -> U33.GND;
+  connect gnd -> U31.GND;
+
+  -- NOT(AC_WR) — U24 gate 5
+  connect ac_wr -> U24.5A;
+  connect U24.5Y -> not_ac_wr;
+
+  -- NOT(XOR_MODE) — U24 gate 4 (using U28 in full system, but U24 spare here)
+  connect xor_mode -> U24.4A;
+  connect U24.4Y -> not_xor_mode;
+
+  -- EI_decode = T2 AND SRC AND NOT(XOR_MODE) AND NOT(AC_WR) — U33 gate 2
+  connect t2 -> U33.2A;
+  connect src -> U33.2B;
+  connect not_xor_mode -> U33.2C;
+  connect not_ac_wr -> U33.2D;
+  connect U33.2Y -> ei_decode;
+
+  -- U31 section 1: IE flag flip-flop
+  -- 1D tied to VCC (captures constant 1 on EI_decode rising)
+  -- 1CLK = EI_decode
+  -- /1CLR = /RST
+  -- /1PRE = VCC (not used)
+  connect vcc -> U31.1D;
+  connect ei_decode -> U31.1CLK;
+  connect rst_n -> U31./1CLR;
+  connect vcc -> U31./1PRE;
+  connect U31.1Q -> ie;
+
+  -- U31 section 2: unused in this child circuit — tie safely
+  connect gnd -> U31.2D;
+  connect gnd -> U31.2CLK;
+  connect vcc -> U31./2CLR;
+  connect vcc -> U31./2PRE;
+
+  -- Boundary port bindings
+  connect /RST -> rst_n;
+  connect T2 -> t2;
+  connect SRC -> src;
+  connect XOR_MODE -> xor_mode;
+  connect AC_WR -> ac_wr;
+  connect ie -> IE;
+
+  -- Derived signals
+  derive ei_opcode = t2 & src & ~xor_mode & ~ac_wr;
+
+  -- Clock
+  clock sys_clk, t2, { "period_ns": 200, "initial": 0 };
+
+  -- Input presets
+  input ei_instruction {
+    -- EI = $08: [7:0] = 0000_1000 → SRC=1, all others 0
+    set src = 1; set xor_mode = 0; set ac_wr = 0;
+  }
+
+  input di_instruction {
+    -- DI = $48: [7:0] = 0100_1000 → XOR_MODE=1, SRC=1
+    set src = 1; set xor_mode = 1; set ac_wr = 0;
+  }
+
+  input nop_instruction {
+    set src = 0; set xor_mode = 0; set ac_wr = 0;
+  }
+
+  -- Reset
+  reset power_on {
+    set rst_n = 0;
+    settle;
+    expect ie == 0;
+    set rst_n = 1;
+    settle;
+    expect ie == 0;
+  }
+
+  -- Sequence: EI sets IE
+  sequence ei_sets_ie after power_on {
+    set t2 = 1; apply ei_instruction; settle;
+    expect ei_decode == 1;
+    -- IE captures 1 on EI_decode rising
+    expect ie == 1;
+  }
+
+  -- Sequence: DI does not affect IE (v1.0 — no DI clear)
+  sequence di_does_not_clear after power_on {
+    -- First enable
+    set t2 = 1; apply ei_instruction; settle;
+    expect ie == 1;
+    -- Then DI
+    set t2 = 1; apply di_instruction; settle;
+    expect ei_decode == 0;
+    -- IE stays 1 (v1.0 has no hardware DI clear — software must use /RST)
+    expect ie == 1;
+  }
+
+  -- Edge criteria
+  edge_criteria U31 {
+    trigger rising;
+    non_trigger hold;
+    async_override /1CLR, clear_to_zero;
+    note "IE flip-flop: captures D=1 on EI_decode rising; /RST clears async.";
+  }
+
+  -- Bus safety (no bus connections)
+  bus_safety no_bus {
+    note "InterruptEnable has no bus connections. Control signals only.";
+  }
+
+  -- Timing checks
+  timing_check ei_decode_path {
+    from t2;
+    through U33.2Y;
+    to U31.1CLK;
+    expect 20ns;
+    limit 35ns;
+  }
+
+  timing_check rst_to_ie_clear {
+    from rst_n;
+    to U31.1Q;
+    expect 15ns;
+    limit 25ns;
+    note "Async clear — no clock needed";
+  }
+
+  -- Probes
+  probe ie_flag, ie;
+  probe ei_decode_signal, ei_decode;
+  probe reset_signal, rst_n;
+
+  display ie_flag as value, { "label": "IE (interrupt enable)" };
+  display ei_decode_signal as waveform, { "label": "EI_decode" };
+  display reset_signal as value, { "label": "/RST" };
+
+  -- Tests
+  test reset_clears_ie {
+    set rst_n = 0;
+    set t2 = 1; apply ei_instruction;
+    settle;
+    assert ie == 0;
+    note "/RST=0 overrides everything — IE cleared";
+  }
+
+  test ei_sets_ie {
+    reset power_on;
+    set t2 = 1; apply ei_instruction;
+    settle;
+    assert ei_decode == 1;
+    assert ie == 1;
+  }
+
+  test di_does_not_clear_ie {
+    reset power_on;
+    -- Enable first
+    set t2 = 1; apply ei_instruction; settle;
+    assert ie == 1;
+    -- DI instruction (XOR_MODE=1 blocks the AND gate)
+    apply di_instruction; settle;
+    assert ei_decode == 0;
+    assert ie == 1;
+    note "v1.0: DI ($48) has XOR_MODE=1 which blocks EI_decode. IE not cleared.";
+  }
+}

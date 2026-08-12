@@ -1,0 +1,59 @@
+use standard.digital as digital;
+
+component:component StimulusFixture is components.digital {
+  title "Stimulus model conformance fixture";
+
+  device U1, digital.74HC00;
+
+  net vcc : power;
+  net gnd : power;
+  net a : digital;
+  net b : digital;
+  net y : digital;
+
+  connect vcc -> U1.VCC;
+  connect gnd -> U1.GND;
+  connect a -> U1.1A;
+  connect b -> U1.1B;
+  connect U1.1Y -> y;
+
+  -- Stimulus: named input preset
+  input both_high {
+    set a = 1;
+    set b = 1;
+  }
+
+  input both_low {
+    set a = 0;
+    set b = 0;
+  }
+
+  -- Stimulus: interactive channel
+  channel sw_a, a, { "kind": "switch", "initial": 1, "label": "Input A" };
+
+  -- Stimulus: step sequence using presets
+  step demo {
+    apply both_high;
+    settle;
+    probe;
+    apply both_low;
+    settle;
+    probe;
+  }
+
+  -- Observation
+  probe output, y;
+  display output as value, { "label": "NAND Y" };
+
+  -- Test referencing stimulus
+  test preset_applies {
+    apply both_high;
+    settle;
+    assert output == 0;
+  }
+
+  test step_runs {
+    run demo;
+    assert output == 1;
+  }
+}

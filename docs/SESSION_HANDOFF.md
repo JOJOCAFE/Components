@@ -2,6 +2,93 @@
 
 Last updated: 2026-08-12
 
+## Session 2026-08-12 (evening) — Component Language Full Model + Verilog Export
+
+### What was done
+
+Complete component:component language model extension, 28 circuit conversions
+to `.component` format, Verilog export verification, and full audit/fix cycle.
+
+### Language specs written (specs 24-27)
+
+| Spec | Content |
+|------|---------|
+| 24_Stimulus_Model.md | input, clock, channel, step, reset, derive, memory, sequence, release, repeat, clock_profile |
+| 25_Virtual_Device_Catalog.md | 9 virtual devices (ClockSource, Switch, Probe, BusProbe, BusDriver, OutputAssert, RCParasitic, DelayNoise, SequenceGenerator, LogicAnalyzer) |
+| 26_Hierarchy_and_Composition.md | port boundary, instance sub-circuit, namespacing, recursive composition |
+| 27_Safety_and_Timing_Contracts.md | bus_safety, policy, edge_criteria, timing_check, extended assert modes |
+
+### Circuit conversions
+
+- 5 standalone: nand, counter, bus_transceiver, memory_read, tiny_cpu_slice
+- 23 RV8GR: all circuits from RV8GR_RingCounter through RV8GR_WholeSystemChipLevelVirtual
+- Total: 28 `.component` files, ~8000 lines, 150 tests
+
+### Verilog export verification
+
+- Tool: `tools/component_to_verilog.py`
+- 25 circuits export to valid Verilog (all compile with iverilog)
+- 3 virtual-only (hierarchy compositions) correctly skipped
+- 70/70 behavior crosscheck rows pass
+
+### Board enhancements
+
+- `app.html`: Added `?load=` URL param for .component file loading
+- `app.html`: Added stimulus panel (clocks/channels/presets/steps/probes in terminal)
+- `src/model/file.js`: Added `instance` line parsing (treats as device for rendering)
+- Board tests: 885 passed, 0 failed
+
+### Audit and fixes
+
+- Fixed library locators (digital.AT28C256 → memory.AT28C256) in 3 files
+- Fixed edge_criteria syntax (trigger_edge → trigger) in all files
+- Fixed virtual device missing params (width, period_ns) in ~10 files
+- Fixed device child.X → instance syntax in BootSequenceTrace
+- Added virtual.OutputAssert to spec 25 catalog
+- Updated Language/README.md with specs 24-27
+
+### Test results
+
+- Board engine: 885 passed, 0 failed
+- Python: chips, design, contracts, simulation, equivalence, db, cli, netlist — all pass
+- Verilog: 74xx smoke PASSED, memory smoke PASSED
+- Verilog crosscheck: 70 rows, 0 failures
+- Component parse: 28/28 files pass Board parser
+
+### Resume notes (next session)
+
+1. **Implement parser/resolver** for new language features (port, instance,
+   channel, derive, clock, input, reset, sequence) in `component_language.py`.
+2. **Board stimulus execution** — make the stimulus panel interactive (click
+   channels, run steps, animate signal flow through viewport).
+3. **First-sight student trial** — Board with loaded RV8GR circuit.
+4. **Convert remaining specs to formal grammar** — the AST model (spec 03)
+   needs extension nodes for specs 24-27.
+
+### Evidence commands
+```bash
+# All Board tests:
+cd /home/jo/kiro/Components/board
+for f in test/*.test.js; do node "$f"; done
+
+# Python tests:
+cd /home/jo/kiro/Components/python
+python3 -B -m tests.test_chips
+python3 -B -m tests.test_contracts
+python3 -B -m tests.test_netlist
+
+# Verilog export check:
+cd /home/jo/kiro/Components
+PYTHONPATH=python python3 tools/component_to_verilog.py --all
+
+# Serve Board:
+cd /home/jo/kiro/Components
+python3 -c "from http.server import HTTPServer, SimpleHTTPRequestHandler; SimpleHTTPRequestHandler.extensions_map['.component']='text/plain'; HTTPServer(('0.0.0.0',8080),SimpleHTTPRequestHandler).serve_forever()"
+# Open: http://127.0.0.1:8080/board/app.html?load=/examples/circuits/RV8GR_RingCounter/circuit.component
+```
+
+---
+
 ## Session 2026-08-12 — Board Interactive Wiring + Real Scale
 
 ### What was done

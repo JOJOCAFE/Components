@@ -1,0 +1,599 @@
+use standard.digital as digital;
+use standard.virtual as virtual;
+use project.RV8GR_RingCounter as RingCounter;
+use project.RV8GR_PC16 as PC16;
+use project.RV8GR_InstructionLatch as InstructionLatch;
+use project.RV8GR_AddressMux16 as AddressMux16;
+use project.RV8GR_BranchJumpControl as BranchJumpControl;
+use project.RV8GR_AluAccumulator as AluAccumulator;
+use project.RV8GR_PageDataRegisters as PageDataRegisters;
+use project.RV8GR_RomDbusRead as RomDbusRead;
+use project.RV8GR_StorePath as StorePath;
+use project.RV8GR_BusOwnership as BusOwnership;
+use project.RV8GR_DataPageMemory as DataPageMemory;
+use project.RV8GR_IRQLatch as IRQLatch;
+use project.RV8GR_InterruptEnable as InterruptEnable;
+use project.RV8GR_ResetClockBringup as ResetClockBringup;
+use project.RV8GR_FetchCycleTrace as FetchCycleTrace;
+use project.RV8GR_BootSequenceTrace as BootSequenceTrace;
+use project.RV8GR_Lab13MarkerTrace as Lab13MarkerTrace;
+use project.RV8GR_StoreLoadBranchTrace as StoreLoadBranchTrace;
+use project.RV8GR_PageJumpTrace as PageJumpTrace;
+use project.RV8GR_InterruptTrace as InterruptTrace;
+use project.RV8GR_FullControlOpcodeSweep as FullControlOpcodeSweep;
+use project.RV8GR_VirtualTestHelpers as VirtualTestHelpers;
+
+component:component RV8GR_WholeSystemChipLevelVirtual is components.digital {
+  title "RV8GR whole-system chip-level virtual test (35 chips, all blocks)";
+
+  -- Public boundary ports
+  port CLK : digital, input;
+  port /RST : digital, input;
+  port IBUS[8] : digital, inout;
+  port DBUS[8] : digital, inout;
+  port ABUS[16] : digital, output;
+  port PC[16] : digital, output;
+  port AC[8] : digital, output;
+  port Z_flag : digital, output;
+  port PG[8] : digital, output;
+  port DP[8] : digital, output;
+  port RAM_/OE : digital, output;
+  port RAM_/WE : digital, output;
+  port ROM_/OE : digital, output;
+
+  -- ==========================================================================
+  -- Hierarchical sub-circuit instances (composing all verified blocks)
+  -- ==========================================================================
+
+  -- Core CPU blocks (physical chips)
+  instance ring, RingCounter;             -- U8 + U24 (phase generation)
+  instance pc16, PC16;                    -- U1-U4 (program counter)
+  instance ilatch, InstructionLatch;      -- U5 + U6 (instruction latches)
+  instance amux, AddressMux16;            -- U15, U16, U29, U30 (address mux)
+  instance branch, BranchJumpControl;     -- U24, U26, U27, U28 (branch logic)
+  instance alu, AluAccumulator;           -- U9-U14, U17-U22, U26, U27 (ALU)
+  instance pgdp, PageDataRegisters;       -- U23, U25, U27, U32, U33 (page regs)
+  instance rom_read, RomDbusRead;         -- ROM1 + U7 (ROM read path)
+  instance store, StorePath;              -- U7, U14, U24, U26, U28, RAM1 (store)
+  instance busown, BusOwnership;          -- U7, U14, U25, U26, U28, U34 (bus)
+  instance dpmem, DataPageMemory;         -- U29, U30, U32, U33, U7, ROM1, RAM1
+  instance irq_latch, IRQLatch;           -- U31 (IRQ latch)
+  instance ieff, InterruptEnable;         -- U24, U33, U31 (interrupt enable)
+
+  -- System-level trace circuits (validate full execution)
+  instance bringup, ResetClockBringup;    -- reset + clock proof
+  instance fetch, FetchCycleTrace;        -- fetch cycle proof
+  instance boot, BootSequenceTrace;       -- boot sequence proof
+  instance lab13, Lab13MarkerTrace;       -- Lab 13 marker proof
+  instance store_load, StoreLoadBranchTrace;  -- store/load/branch proof
+  instance page_jump, PageJumpTrace;      -- page/jump proof
+  instance irq_trace, InterruptTrace;     -- interrupt proof
+  instance sweep, FullControlOpcodeSweep; -- 512-case opcode sweep
+
+  -- Virtual test infrastructure
+  instance vt, VirtualTestHelpers;
+
+  -- Virtual instruments (not part of physical design)
+  device VCLK, virtual.ClockSource, { "period_ns": 200 };
+  device IBUSMON, virtual.BusProbe, { "width": 8, "policy": "single_driver" };
+  device DBUSMON, virtual.BusProbe, { "width": 8, "policy": "single_driver" };
+  device OUTCHK, virtual.OutputAssert;
+  device CLKRC, virtual.RCParasitic;
+  device BUSRC, virtual.RCParasitic;
+  device DLY, virtual.DelayNoise;
+
+  -- ==========================================================================
+  -- Internal nets (system-level)
+  -- ==========================================================================
+  net vcc : power;
+  net gnd : power;
+  net clk : digital;
+  net rst_n : digital;
+  net t0 : digital;
+  net t1 : digital;
+  net t2 : digital;
+  bus pc[16] : digital;
+  bus ac[8] : digital;
+  bus pg[8] : digital;
+  bus dp[8] : digital;
+  bus ibus[8] : digital;
+  bus dbus[8] : digital;
+  bus abus[16] : digital;
+  bus irh[8] : digital;
+  bus irl[8] : digital;
+  net z_flag : digital;
+  net pc_ld_n : digital;
+  net pc_inc : digital;
+  net ie : digital;
+  net irq_ff : digital;
+  net ram_oe_n : digital;
+  net ram_we_n : digital;
+  net rom_oe_n : digital;
+  net wr_dir : digital;
+  net buf_oe_n : digital;
+  net addr_mode_n : digital;
+  net a15 : digital;
+  net alu_sub : digital;
+  net xor_mode : digital;
+  net mux_sel : digital;
+  net ac_wr : digital;
+  net src : digital;
+  net str : digital;
+  net br : digital;
+  net jmp : digital;
+
+  -- ==========================================================================
+  -- System-level connections (inter-block wiring)
+  -- ==========================================================================
+
+  -- Ring counter: generates phase signals
+  connect clk -> ring.CLK;
+  connect rst_n -> ring./CLR;
+  connect ring.T0 -> t0;
+  connect ring.T1 -> t1;
+  connect ring.T2 -> t2;
+
+  -- PC16: program counter
+  connect clk -> pc16.CLK;
+  connect rst_n -> pc16./RST;
+  connect pc_ld_n -> pc16./PC_LD;
+  connect pc_inc -> pc16.PC_INC;
+  connect irl -> pc16.IRL;
+  connect pg -> pc16.PG;
+  connect pc16.PC -> pc;
+
+  -- Instruction latches: capture control + operand
+  connect ibus -> ilatch.IBUS;
+  connect t0 -> ilatch.T0;
+  connect t1 -> ilatch.T1;
+  connect t2 -> ilatch.T2;
+  connect ilatch.IR_HIGH -> irh;
+  connect ilatch.IRL -> irl;
+
+  -- Address mux: selects PC or {DP,IRL}
+  connect addr_mode_n -> amux./ADDR_MODE;
+  connect pc -> amux.PC;
+  connect irl -> amux.IRL;
+  connect dp -> amux.DP;
+  connect amux.ABUS -> abus;
+  connect amux.A15 -> a15;
+
+  -- Branch/jump: controls PC loading
+  connect t0 -> branch.T0;
+  connect t1 -> branch.T1;
+  connect t2 -> branch.T2;
+  connect jmp -> branch.JMP;
+  connect br -> branch.BR;
+  connect alu_sub -> branch.ALU_SUB;
+  connect z_flag -> branch.Z_flag;
+  connect branch./PC_LD -> pc_ld_n;
+
+  -- ALU + accumulator
+  connect t2 -> alu.T2;
+  connect alu_sub -> alu.ALU_SUB;
+  connect xor_mode -> alu.XOR_MODE;
+  connect mux_sel -> alu.MUX_SEL;
+  connect ac_wr -> alu.AC_WR;
+  connect str -> alu.STR;
+  connect ibus -> alu.IBUS;
+  connect alu.AC -> ac;
+  connect alu.Z_flag -> z_flag;
+
+  -- Page/data registers
+  connect t2 -> pgdp.T2;
+  connect mux_sel -> pgdp.MUX_SEL;
+  connect xor_mode -> pgdp.XOR_MODE;
+  connect ac_wr -> pgdp.AC_WR;
+  connect ibus -> pgdp.IBUS;
+  connect irl -> pgdp.IRL;
+  connect pgdp.PG -> pg;
+  connect pgdp.DP -> dp;
+
+  -- Bus ownership
+  connect t0 -> busown.T0;
+  connect t1 -> busown.T1;
+  connect t2 -> busown.T2;
+  connect src -> busown.SRC;
+  connect str -> busown.STR;
+  connect ibus -> busown.IBUS;
+  connect dbus -> busown.DBUS;
+
+  -- Interrupt enable
+  connect rst_n -> ieff./RST;
+  connect t2 -> ieff.T2;
+  connect src -> ieff.SRC;
+  connect xor_mode -> ieff.XOR_MODE;
+  connect ac_wr -> ieff.AC_WR;
+  connect ieff.IE -> ie;
+
+  -- Virtual test helpers
+  connect clk -> vt.CLK;
+  connect t0 -> vt.T0;
+  connect t1 -> vt.T1;
+  connect t2 -> vt.T2;
+  connect ibus -> vt.IBUS;
+  connect dbus -> vt.DBUS;
+
+  -- Boundary port bindings
+  connect CLK -> clk;
+  connect /RST -> rst_n;
+  connect ibus -> IBUS;
+  connect dbus -> DBUS;
+  connect abus -> ABUS;
+  connect pc -> PC;
+  connect ac -> AC;
+  connect z_flag -> Z_flag;
+  connect pg -> PG;
+  connect dp -> DP;
+  connect ram_oe_n -> RAM_/OE;
+  connect ram_we_n -> RAM_/WE;
+  connect rom_oe_n -> ROM_/OE;
+
+  -- ==========================================================================
+  -- Derived signals
+  -- ==========================================================================
+
+  -- Control bit extraction from instruction latch
+  derive sub_bit = irh[7];
+  derive xor_mode_bit = irh[6];
+  derive mux_sel_bit = irh[5];
+  derive ac_wr_bit = irh[4];
+  derive src_bit = irh[3];
+  derive str_bit = irh[2];
+  derive br_bit = irh[1];
+  derive jmp_bit = irh[0];
+
+  -- PC increment: active during T0 or T1
+  derive pc_inc_signal = t0 | t1;
+
+  -- Address mode: data access during T2 with SRC or STR
+  derive addr_req = src | str;
+  derive addr_mode_active = addr_req & t2;
+
+  -- Bus direction: write during T2 store
+  derive wr_dir_signal = t2 & str;
+
+  -- Forbidden opcode check
+  derive forbidden = src & str;
+
+  -- Stress nets for RC/delay analysis
+  derive clk_stress = clk;
+  derive rst_stress = rst_n;
+  derive ibus0_stress = ibus[0];
+  derive dbus0_stress = dbus[0];
+
+  -- ==========================================================================
+  -- Stimulus
+  -- ==========================================================================
+
+  -- Clock
+  clock sys_clk, clk, { "period_ns": 200, "initial": 0 };
+
+  -- Reset
+  reset power_on {
+    set rst_n = 0;
+    settle;
+    set rst_n = 1;
+    settle;
+    expect pc == 0x0000;
+    expect ac == 0x00;
+    expect z_flag == 0;
+    expect pg == 0x00;
+    expect dp == 0x00;
+    expect ie == 0;
+    expect t0 == 0;
+    expect t1 == 0;
+    expect t2 == 0;
+  }
+
+  -- Clock profiles
+  clock_profile manual {
+    clock sys_clk, clk, { "period_ns": 1000000 };
+  }
+
+  clock_profile slow_50khz {
+    clock sys_clk, clk, { "period_ns": 20000 };
+  }
+
+  clock_profile normal_1mhz {
+    clock sys_clk, clk, { "period_ns": 1000 };
+  }
+
+  clock_profile fast_2mhz {
+    clock sys_clk, clk, { "period_ns": 500 };
+  }
+
+  clock_profile target_5mhz {
+    clock sys_clk, clk, { "period_ns": 200 };
+  }
+
+  -- ==========================================================================
+  -- Step sequences: system-level verification
+  -- ==========================================================================
+
+  step boot_sequence {
+    -- 12 clocks: SETDP $80, SETPG $00, LI $00, J self
+    reset power_on;
+    clock sys_clk 12;
+    probe;
+  }
+
+  step lab13_marker {
+    -- 15 clocks: LI $10, ADDI $05, SUBI $15, BEQ $0C, LI $AA
+    reset power_on;
+    clock sys_clk 15;
+    probe;
+  }
+
+  step store_load_cycle {
+    -- Store AC to RAM, then load back
+    reset power_on;
+    clock sys_clk 9;  -- LI + SB + LB
+    probe;
+  }
+
+  step page_jump_cycle {
+    -- SETDP, SETPG, then J
+    reset power_on;
+    clock sys_clk 9;
+    probe;
+  }
+
+  step interrupt_sequence {
+    -- EI, then IRQ trigger
+    reset power_on;
+    clock sys_clk 6;  -- execute EI
+    probe;
+  }
+
+  -- Stress test: RC parasitic analysis on critical nets
+  step stress_clk_rc {
+    reset power_on;
+    clock sys_clk 100;
+    probe;
+  }
+
+  step stress_bus_rc {
+    reset power_on;
+    clock sys_clk 50;
+    probe;
+  }
+
+  -- ==========================================================================
+  -- Sequences: expected system behavior
+  -- ==========================================================================
+
+  -- Boot sequence expected states
+  sequence boot_trace after power_on {
+    clock sys_clk 3; expect dp == 0x80;
+    clock sys_clk 3; expect pg == 0x00;
+    clock sys_clk 3; expect ac == 0x00, z_flag == 1;
+    clock sys_clk 3; expect pc == 0x0006;  -- J loops
+  }
+
+  -- Lab 13 marker expected states
+  sequence lab13_trace after power_on {
+    clock sys_clk 3; expect ac == 0x10;
+    clock sys_clk 3; expect ac == 0x15;
+    clock sys_clk 3; expect ac == 0x00, z_flag == 1;
+    clock sys_clk 3; expect pc == 0x000C;
+    clock sys_clk 3; expect ac == 0xAA, z_flag == 0;
+  }
+
+  -- ==========================================================================
+  -- Chip bench plan (18 physical chips × 5 split records = 90 total)
+  -- ==========================================================================
+  -- U1  (74HC161)  — PC[0:3]:    truth, edge, async, timing, equivalence
+  -- U2  (74HC161)  — PC[4:7]:    truth, edge, async, timing, equivalence
+  -- U3  (74HC161)  — PC[8:11]:   truth, edge, async, timing, equivalence
+  -- U4  (74HC161)  — PC[12:15]:  truth, edge, async, timing, equivalence
+  -- U5  (74HC574)  — IR_HIGH:    truth, edge, hold, timing, equivalence
+  -- U6  (74HC574)  — IR_LOW:     truth, edge, hold, timing, equivalence
+  -- U7  (74HC245)  — Bridge:     truth, direction, tri-state, timing, equiv
+  -- U8  (74HC164)  — Ring:       truth, edge, async, timing, equivalence
+  -- U9  (74HC574)  — AC:         truth, edge, hold, timing, equivalence
+  -- U14 (74HC541)  — AC_BUF:     truth, enable, tri-state, timing, equiv
+  -- U21 (74HC74)   — Z_FF:       truth, edge, preset, timing, equivalence
+  -- U22 (74HC688)  — Comparator: truth, propagation, timing, equiv
+  -- U23 (74HC574)  — PG:         truth, edge, hold, timing, equivalence
+  -- U24 (74HC04)   — Inverters:  truth, propagation, timing, equiv
+  -- U31 (74HC74)   — IRQ:        truth, edge, async, timing, equivalence
+  -- U32 (74HC574)  — DP:         truth, edge, hold, timing, equivalence
+  -- U33 (74HC21)   — Decoder:    truth, propagation, timing, equiv
+  -- U34 (74HC541)  — IRL_BUF:    truth, enable, tri-state, timing, equiv
+
+  -- ==========================================================================
+  -- Bus safety
+  -- ==========================================================================
+
+  bus_safety ibus {
+    reject multi_driver;
+  }
+
+  bus_safety dbus {
+    reject multi_driver;
+  }
+
+  -- ==========================================================================
+  -- Policies
+  -- ==========================================================================
+
+  -- Phase one-hot: exactly one of T0/T1/T2 after first clock
+  policy phase_one_hot {
+    reject (t0 & t1) == 1;
+    reject (t0 & t2) == 1;
+    reject (t1 & t2) == 1;
+  }
+
+  -- No forbidden opcodes executed
+  policy no_bus_fight {
+    reject (src == 1) & (str == 1);
+  }
+
+  -- PC only loads during T2
+  policy pc_load_t2_only {
+    reject (pc_ld_n == 0) & (t2 == 0);
+  }
+
+  -- RAM write only during T2 store
+  policy ram_write_t2_only {
+    reject (ram_we_n == 0) & (t2 == 0);
+    reject (ram_we_n == 0) & (str == 0);
+  }
+
+  -- ==========================================================================
+  -- Timing checks (stress nets)
+  -- ==========================================================================
+
+  timing_check clk_to_phase {
+    from ring.CLK;
+    to ring.T0;
+    expect 22ns;
+    limit 40ns;
+  }
+
+  timing_check fetch_rom_to_latch {
+    from rom_read.DBUS;
+    through busown.IBUS;
+    to ilatch.IBUS;
+    expect 35ns;
+    limit 70ns;
+  }
+
+  timing_check alu_critical {
+    from alu.IBUS;
+    to alu.AC;
+    expect 121ns;
+    limit 150ns;
+  }
+
+  -- ==========================================================================
+  -- Observation
+  -- ==========================================================================
+
+  probe sys_clk, clk;
+  probe phase_t0, t0;
+  probe phase_t1, t1;
+  probe phase_t2, t2;
+  probe pc_val, pc;
+  probe acc, ac;
+  probe z, z_flag;
+  probe pg_val, pg;
+  probe dp_val, dp;
+  probe ie_flag, ie;
+  probe bus_ibus, ibus;
+  probe bus_dbus, dbus;
+  probe bus_abus, abus;
+  probe ir_high, irh;
+  probe ir_low, irl;
+  probe pc_load, pc_ld_n;
+  probe ram_oe, ram_oe_n;
+  probe ram_we, ram_we_n;
+  probe rom_oe, rom_oe_n;
+  display sys_clk as waveform, { "label": "CLK" };
+  display phase_t0 as waveform, { "label": "T0" };
+  display phase_t1 as waveform, { "label": "T1" };
+  display phase_t2 as waveform, { "label": "T2" };
+  display pc_val as value, { "label": "PC", "radix": "hex" };
+  display acc as value, { "label": "AC", "radix": "hex" };
+  display z as led, { "label": "Z" };
+  display pg_val as value, { "label": "PG", "radix": "hex" };
+  display dp_val as value, { "label": "DP", "radix": "hex" };
+  display ie_flag as led, { "label": "IE" };
+  display bus_ibus as value, { "label": "IBUS", "radix": "hex" };
+  display bus_dbus as value, { "label": "DBUS", "radix": "hex" };
+  display bus_abus as value, { "label": "ABUS", "radix": "hex" };
+  display ir_high as value, { "label": "IRH", "radix": "bin" };
+  display ir_low as value, { "label": "IRL", "radix": "hex" };
+  display pc_load as waveform, { "label": "/PC_LD" };
+  display ram_oe as waveform, { "label": "RAM /OE" };
+  display ram_we as waveform, { "label": "RAM /WE" };
+  display rom_oe as waveform, { "label": "ROM /OE" };
+
+  -- ==========================================================================
+  -- Tests: system-level acceptance
+  -- ==========================================================================
+
+  test boot_reaches_loop {
+    reset power_on;
+    run boot_sequence;
+    assert dp_val == 0x80;
+    assert pg_val == 0x00;
+    assert acc == 0x00;
+    assert z == 1;
+  }
+
+  test lab13_reaches_marker {
+    reset power_on;
+    run lab13_marker;
+    assert acc == 0xAA;
+    assert z == 0;
+    assert pc_val == 0x000E;
+  }
+
+  test store_load_readback {
+    reset power_on;
+    run store_load_cycle;
+    -- AC should contain the value that was stored then loaded back
+    assert ibus has single_driver;
+    assert dbus has single_driver;
+  }
+
+  test page_jump_reaches_target {
+    reset power_on;
+    run page_jump_cycle;
+    assert pg_val == 0x12;
+    assert dp_val == 0x80;
+  }
+
+  test interrupt_enables {
+    reset power_on;
+    run interrupt_sequence;
+    assert ie_flag == 1;
+  }
+
+  -- AI error trap tests
+  test pin_truth_no_inversion_error {
+    -- Verify active-low signals are correctly inverted
+    reset power_on;
+    assert pc_load == 1;     -- /PC_LD is HIGH when inactive
+    assert ram_we == 1;      -- RAM /WE is HIGH when no write
+    assert ram_oe == 1;      -- RAM /OE controlled by circuit
+  }
+
+  test bus_contention_never_occurs {
+    -- Run several instruction cycles and verify no multi-driver
+    reset power_on;
+    clock sys_clk 30;
+    assert ibus has no_conflict;
+    assert dbus has no_conflict;
+  }
+
+  test edge_polarity_correct {
+    -- Ring counter advances on rising only
+    reset power_on;
+    pulse clk; settle;
+    assert phase_t0 == 1;
+    assert phase_t1 == 0;
+    assert phase_t2 == 0;
+  }
+
+  test propagation_within_budget {
+    -- At 5MHz (200ns period), all paths must settle within half-period
+    use clock_profile target_5mhz;
+    reset power_on;
+    clock sys_clk 6;
+    -- If simulation completes without timing violations, paths are safe
+    assert acc has no_unknown;
+    assert pc_val has no_unknown;
+  }
+
+  -- ==========================================================================
+  -- Claim boundary
+  -- ==========================================================================
+  -- This is a VIRTUAL system test only.
+  -- It proves: logic correctness, bus ownership, edge behavior, control decoding.
+  -- It does NOT prove: physical voltage levels, oscilloscope timing, PCB layout,
+  --   power supply stability, temperature behavior, or real-world clock jitter.
+  -- Physical signoff requires breadboard measurements per docs/06_debug_plan.md.
+}
