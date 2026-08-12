@@ -57,13 +57,25 @@ to `.component` format, Verilog export verification, and full audit/fix cycle.
 
 ### Resume notes (next session)
 
-1. **Implement parser/resolver** for new language features (port, instance,
-   channel, derive, clock, input, reset, sequence) in `component_language.py`.
-2. **Board stimulus execution** — make the stimulus panel interactive (click
-   channels, run steps, animate signal flow through viewport).
-3. **First-sight student trial** — Board with loaded RV8GR circuit.
-4. **Convert remaining specs to formal grammar** — the AST model (spec 03)
-   needs extension nodes for specs 24-27.
+1. **Runtime test pass rate** — currently 41/101 pass. Fix:
+   - Skip virtual/hierarchy devices in `_build()` (fixes 9 build errors)
+   - Fix probe name mismatches (tests reference names not in observations)
+   - Trace clock pulse routing for counter/sequential circuits
+2. **Board stimulus execution** — make stimulus panel interactive
+3. **First-sight student trial** — Board with loaded RV8GR circuit
+4. **9 compact-schema chips → v1** — cosmetic consistency (tracked in docs/DEFINITION_MIGRATION_STATUS.md)
+
+### Git state
+```
+main ← 2ba8638 (pushed to origin)
+tag: v0.1-language-stable ← b6797ce
+
+Commits today (4):
+  2ba8638 Runtime: extend test executor with full stimulus support
+  36a2d27 Docs: add Language/ to Layout, fix test counts, add specs 24-27 refs
+  a2a5f38 v0.2: Clean parser architecture for community readability
+  b6797ce Component Language v0.1: full parse+resolve pipeline, 28 circuits, 4 specs
+```
 
 ### Evidence commands
 ```bash
