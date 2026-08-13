@@ -154,7 +154,7 @@ class ComponentRuntimeSession:
                         chip.clock_edge(clk_pin)
             self.board.settle()
 
-    def drive(self, target: str, value: int | str) -> dict[str, Any]:
+    def drive(self, target: str, value: int | str, *, defer_clocks: bool = False) -> dict[str, Any]:
         key = f"net:{target}" if f"net:{target}" in self.groups else f"port:{target}"
         if key not in self.groups: raise ComponentRuntimeError(f"unknown resolved net or Device port {target!r}")
         source_key = self.groups[key]
@@ -168,7 +168,8 @@ class ComponentRuntimeSession:
         self.board.set_source(source.name, normalize_logic(logical))
         self.board.settle()
         # Detect rising edges on clock nets (including those from combinational propagation)
-        self._detect_and_fire_clock_edges(prev_clocks)
+        if not defer_clocks:
+            self._detect_and_fire_clock_edges(prev_clocks)
         return self.snapshot()
 
     def probe(self, name: str | None = None) -> dict[str, Any]:
@@ -274,8 +275,18 @@ class ComponentRuntimeSession:
         except Exception:
             return 0
 
-    def _probe_single(self, target: str):
+    def _probe_single(self, target: str, _depth: int = 0):
         """Probe a single net/bus value without the full probe wrapper."""
+        # Prevent infinite recursion in circular derives
+        if _depth > 5:
+            return 0
+        # Check if target is a derive — evaluate the expression instead of net lookup
+        derives_map = {d["id"]: d["expression"] for d in self.resolved.get("derives", [])}
+        if target in derives_map:
+            expr = derives_map[target]
+            if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", expr):
+                return self._probe_single(expr, _depth + 1)
+            return self._eval_derive_expr(expr)
         bus_ids = {bus["id"] for bus in self.resolved.get("buses", [])}
         if target in bus_ids:
             width = next(bus["width"] for bus in self.resolved["buses"] if bus["id"] == target)
