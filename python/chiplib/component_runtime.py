@@ -142,13 +142,20 @@ class ComponentRuntimeSession:
                     fired = True
         if fired:
             self.board.settle()
+            # After settle, async controls (preset/clear) may have changed.
+            # Call update() on chips with /PRE pins to re-evaluate async state.
+            # This handles the case where U9 outputs → U22 recalculates → U21./1PRE changes.
+            for chips in self._clock_net_chips.values():
+                for chip, _ in chips:
+                    pin_names = {p.name for p in chip.pins.values()}
+                    if any("PRE" in n for n in pin_names):
+                        chip.update()
+            self.board.settle()
             # Check for cascaded clock edges (one clock triggering another)
             new_clocks = self._sample_clock_nets()
             for net_name, chips in self._clock_net_chips.items():
                 curr = (self.board.net(net_name).value if self.board.net(net_name) else 0)
-                prev = prev_clocks.get(net_name, 0)
                 cascade_prev = new_clocks.get(net_name, 0)
-                # Only fire if THIS net changed after the first settle
                 if cascade_prev != 1 and curr == 1:
                     for chip, clk_pin in chips:
                         chip.clock_edge(clk_pin)

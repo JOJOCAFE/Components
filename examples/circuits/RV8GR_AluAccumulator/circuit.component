@@ -113,35 +113,145 @@ component:component RV8GR_AluAccumulator is components.digital {
   -- XOR B-input mux: selects between ALU_SUB (for ADD/SUB) or AC (for XOR mode)
   connect xor_mode -> U19."A/B";
   connect xor_mode -> U20."A/B";
+  -- U19 low nibble: A=ALU_SUB, B=AC[0..3]
   connect alu_sub -> U19.1A;
+  connect alu_sub -> U19.2A;
+  connect alu_sub -> U19.3A;
+  connect alu_sub -> U19.4A;
   connect ac[0] -> U19.1B;
+  connect ac[1] -> U19.2B;
+  connect ac[2] -> U19.3B;
+  connect ac[3] -> U19.4B;
   connect U19.1Y -> xor_b[0];
+  connect U19.2Y -> xor_b[1];
+  connect U19.3Y -> xor_b[2];
+  connect U19.4Y -> xor_b[3];
+  -- U20 high nibble: A=ALU_SUB, B=AC[4..7]
+  connect alu_sub -> U20.1A;
+  connect alu_sub -> U20.2A;
+  connect alu_sub -> U20.3A;
+  connect alu_sub -> U20.4A;
+  connect ac[4] -> U20.1B;
+  connect ac[5] -> U20.2B;
+  connect ac[6] -> U20.3B;
+  connect ac[7] -> U20.4B;
+  connect U20.1Y -> xor_b[4];
+  connect U20.2Y -> xor_b[5];
+  connect U20.3Y -> xor_b[6];
+  connect U20.4Y -> xor_b[7];
+  connect gnd -> U19."/G";
+  connect gnd -> U20."/G";
 
   -- XOR bank: IBUS XOR XOR_B -> XOR_Y
+  -- U12 low nibble
   connect ibus[0] -> U12.1A;
+  connect ibus[1] -> U12.2A;
+  connect ibus[2] -> U12.3A;
+  connect ibus[3] -> U12.4A;
   connect xor_b[0] -> U12.1B;
+  connect xor_b[1] -> U12.2B;
+  connect xor_b[2] -> U12.3B;
+  connect xor_b[3] -> U12.4B;
   connect U12.1Y -> xor_y[0];
+  connect U12.2Y -> xor_y[1];
+  connect U12.3Y -> xor_y[2];
+  connect U12.4Y -> xor_y[3];
+  -- U13 high nibble
+  connect ibus[4] -> U13.1A;
+  connect ibus[5] -> U13.2A;
+  connect ibus[6] -> U13.3A;
+  connect ibus[7] -> U13.4A;
+  connect xor_b[4] -> U13.1B;
+  connect xor_b[5] -> U13.2B;
+  connect xor_b[6] -> U13.3B;
+  connect xor_b[7] -> U13.4B;
+  connect U13.1Y -> xor_y[4];
+  connect U13.2Y -> xor_y[5];
+  connect U13.3Y -> xor_y[6];
+  connect U13.4Y -> xor_y[7];
 
   -- Adder: AC + XOR_Y + SUB carry
+  -- U10 low nibble
   connect ac[0] -> U10.A1;
+  connect ac[1] -> U10.A2;
+  connect ac[2] -> U10.A3;
+  connect ac[3] -> U10.A4;
   connect xor_y[0] -> U10.B1;
+  connect xor_y[1] -> U10.B2;
+  connect xor_y[2] -> U10.B3;
+  connect xor_y[3] -> U10.B4;
   connect alu_sub -> U10.C0;
   connect U10.S1 -> sum[0];
+  connect U10.S2 -> sum[1];
+  connect U10.S3 -> sum[2];
+  connect U10.S4 -> sum[3];
   connect U10.C4 -> carry_chain;
+  -- U11 high nibble
   connect carry_chain -> U11.C0;
+  connect ac[4] -> U11.A1;
+  connect ac[5] -> U11.A2;
+  connect ac[6] -> U11.A3;
+  connect ac[7] -> U11.A4;
+  connect xor_y[4] -> U11.B1;
+  connect xor_y[5] -> U11.B2;
+  connect xor_y[6] -> U11.B3;
+  connect xor_y[7] -> U11.B4;
+  connect U11.S1 -> sum[4];
+  connect U11.S2 -> sum[5];
+  connect U11.S3 -> sum[6];
+  connect U11.S4 -> sum[7];
 
-  -- AC input mux: selects SUM or XOR_Y
+  -- AC input mux: selects SUM (A) or XOR_Y (B)
   connect mux_sel -> U17."A/B";
   connect mux_sel -> U18."A/B";
+  -- U17 low nibble
   connect sum[0] -> U17.1A;
+  connect sum[1] -> U17.2A;
+  connect sum[2] -> U17.3A;
+  connect sum[3] -> U17.4A;
   connect xor_y[0] -> U17.1B;
+  connect xor_y[1] -> U17.2B;
+  connect xor_y[2] -> U17.3B;
+  connect xor_y[3] -> U17.4B;
   connect U17.1Y -> ac_d[0];
+  connect U17.2Y -> ac_d[1];
+  connect U17.3Y -> ac_d[2];
+  connect U17.4Y -> ac_d[3];
+  -- U18 high nibble
+  connect sum[4] -> U18.1A;
+  connect sum[5] -> U18.2A;
+  connect sum[6] -> U18.3A;
+  connect sum[7] -> U18.4A;
+  connect xor_y[4] -> U18.1B;
+  connect xor_y[5] -> U18.2B;
+  connect xor_y[6] -> U18.3B;
+  connect xor_y[7] -> U18.4B;
+  connect U18.1Y -> ac_d[4];
+  connect U18.2Y -> ac_d[5];
+  connect U18.3Y -> ac_d[6];
+  connect U18.4Y -> ac_d[7];
+  connect gnd -> U17."/G";
+  connect gnd -> U18."/G";
 
   -- AC output buffer: drives IBUS during store
-  connect ac_buf_n -> U14./OE1;
-  connect ac_buf_n -> U14./OE2;
+  connect ac_buf_n -> U14."/OE1";
+  connect ac_buf_n -> U14."/OE2";
   connect ac[0] -> U14.A1;
+  connect ac[1] -> U14.A2;
+  connect ac[2] -> U14.A3;
+  connect ac[3] -> U14.A4;
+  connect ac[4] -> U14.A5;
+  connect ac[5] -> U14.A6;
+  connect ac[6] -> U14.A7;
+  connect ac[7] -> U14.A8;
   connect U14.Y1 -> ibus[0];
+  connect U14.Y2 -> ibus[1];
+  connect U14.Y3 -> ibus[2];
+  connect U14.Y4 -> ibus[3];
+  connect U14.Y5 -> ibus[4];
+  connect U14.Y6 -> ibus[5];
+  connect U14.Y7 -> ibus[6];
+  connect U14.Y8 -> ibus[7];
 
   -- Z flag: 74HC688 comparator (AC == 0?) + 74HC74 flip-flop (async preset)
   -- U22 compares AC[7:0] against 0x00; /Y goes LOW when equal
