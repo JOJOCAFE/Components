@@ -248,9 +248,10 @@ component:component RV8GR_PageDataRegisters is components.digital {
   }
 
   test setdp_latches_ibus {
-    set t2 = 1; set xor_mode = 1; set ac_wr = 0; set addr_mode_n = 1;
-    set mux_sel = 0;
     set ibus = 8'h80;
+    set t2 = 1; set xor_mode = 1; set addr_mode_n = 1;
+    set mux_sel = 0;
+    set ac_wr = 0;
     settle;
     assert dp == 8'h80;
   }
@@ -284,9 +285,10 @@ component:component RV8GR_PageDataRegisters is components.digital {
   }
 
   test separation_setdp_only {
-    set t2 = 1; set xor_mode = 1; set ac_wr = 0; set addr_mode_n = 1;
-    set mux_sel = 0;
     set irl = 8'h55; set ibus = 8'hBB;
+    set t2 = 1; set xor_mode = 1; set addr_mode_n = 1;
+    set mux_sel = 0;
+    set ac_wr = 0;
     settle;
     assert dp == 8'hBB;
     note "SETDP does not affect PG (MUX_SEL=0)";

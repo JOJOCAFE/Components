@@ -232,11 +232,11 @@ component:component RV8GR_DataPageMemory is components.digital {
 
   -- Stimulus: input presets
   input setdp_valid {
-    set t2 = 1;
+    set ibus = 0x80;       -- DP value to load (set data first)
     set xor_mode = 1;
     set addr_mode_n = 1;   -- /ADDR_MODE=1 (fetch mode, not data)
     set ac_wr_n = 1;       -- /AC_WR=1 (not writing AC)
-    set ibus = 0x80;       -- DP value to load
+    set t2 = 1;            -- T2 last: completes dp_load AND gate
   }
 
   input setdp_blocked_ac_wr {

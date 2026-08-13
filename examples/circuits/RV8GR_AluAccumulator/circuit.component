@@ -432,6 +432,9 @@ component:component RV8GR_AluAccumulator is components.digital {
     set ibus = 0x42;
     set t2 = 1; settle;
     set t2 = 0; settle;
+    -- Second pulse: z_flag latches D=0 now that AC≠0 and /1PRE=HIGH
+    set t2 = 1; settle;
+    set t2 = 0; settle;
     assert accumulator == 0x42;
     assert z == 0;
   }
