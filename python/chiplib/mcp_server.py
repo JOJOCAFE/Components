@@ -7,15 +7,22 @@ place chips, connect wires, run simulations, probe results.
 Protocol: JSON-RPC 2.0 over stdio (newline-delimited JSON).
 Spec: https://modelcontextprotocol.io/
 
-Usage:
+Usage (standalone — own engine instance):
     python3 -B -m chiplib.mcp_server
 
-From Kiro/Claude MCP config:
+Usage (shared with Board — forwards to HTTP API):
+    python3 -B -m chiplib.mcp_server --api http://127.0.0.1:8765
+
+When --api is given, the MCP server forwards tool calls to the running
+HTTP API, which is the same instance the Board connects to. This means
+AI actions appear on the Board in real-time.
+
+Kiro MCP config (.kiro/settings/mcp.json):
     {
       "mcpServers": {
         "components-board": {
           "command": "python3",
-          "args": ["-B", "-m", "chiplib.mcp_server"],
+          "args": ["-B", "-m", "chiplib.mcp_server", "--api", "http://127.0.0.1:8765"],
           "cwd": "/home/jo/kiro/Components/python"
         }
       }
@@ -182,10 +189,16 @@ TOOLS = [
 class MCPServer:
     """Minimal MCP server over stdio (JSON-RPC 2.0)."""
 
-    def __init__(self):
-        self.service = FrontendDesignService()
-        self.circuit_service = CircuitCommandService()
-        self.sessions = CircuitSessionRegistry()
+    def __init__(self, api_url: str | None = None):
+        self.api_url = api_url
+        if not api_url:
+            self.service = FrontendDesignService()
+            self.circuit_service = CircuitCommandService()
+            self.sessions = CircuitSessionRegistry()
+        else:
+            self.service = None
+            self.circuit_service = None
+            self.sessions = None
 
     def handle_message(self, msg: dict[str, Any]) -> dict[str, Any] | None:
         """Handle a single JSON-RPC 2.0 message. Returns response or None for notifications."""
@@ -238,15 +251,43 @@ class MCPServer:
         return {"jsonrpc": "2.0", "id": msg_id, "result": result}
 
     def _call_tool(self, name: str, args: dict[str, Any]) -> Any:
-        """Dispatch MCP tool call to chiplib API."""
+        """Dispatch MCP tool call to chiplib API (local or HTTP forwarded)."""
+
+        # Build the request for the chiplib API
+        req = self._build_api_request(name, args)
+        if req is None:
+            raise ValueError(f"Unknown tool: {name}")
+
+        # Forward to HTTP API if configured, otherwise handle locally
+        if self.api_url:
+            return self._http_forward(req)
+        return handle_request(req, self.service, self.circuit_service)
+
+    def _http_forward(self, request: dict[str, Any]) -> Any:
+        """Forward a request to the running HTTP API."""
+        import urllib.request
+        import urllib.error
+        data = json.dumps(request).encode()
+        req = urllib.request.Request(
+            f"{self.api_url}/api",
+            data=data,
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                return json.loads(resp.read())
+        except urllib.error.URLError as e:
+            raise ConnectionError(f"Cannot reach Board API at {self.api_url}: {e}") from e
+
+    def _build_api_request(self, name: str, args: dict[str, Any]) -> dict[str, Any] | None:
+        """Map MCP tool name + args to a chiplib API request."""
 
         if name == "component_parse":
-            return handle_request({"command": "component-language-parse", "input": {"source": args["source"]}},
-                                  self.service, self.circuit_service)
+            return {"command": "component-language-parse", "input": {"source": args["source"]}}
 
         if name == "component_resolve":
-            return handle_request({"command": "component-language-resolve", "input": {"source": args["source"]}},
-                                  self.service, self.circuit_service)
+            return {"command": "component-language-resolve", "input": {"source": args["source"]}}
 
         if name == "component_run":
             req: dict[str, Any] = {"command": "component-language-run", "input": {"source": args["source"]}}
@@ -256,38 +297,34 @@ class MCPServer:
                 req["options"] = {"test": args["test"]}
             if "probe" in args:
                 req.setdefault("options", {})["probe"] = args["probe"]
-            return handle_request(req, self.service, self.circuit_service)
+            return req
 
         if name == "component_board_view":
-            return handle_request({"command": "component-language-board-view", "input": {"source": args["source"]}},
-                                  self.service, self.circuit_service)
+            return {"command": "component-language-board-view", "input": {"source": args["source"]}}
 
         if name == "component_edit":
-            return handle_request({"command": "component-language-edit",
-                                   "input": {"source": args["source"], "edit": args["edit"]}},
-                                  self.service, self.circuit_service)
+            return {"command": "component-language-edit",
+                    "input": {"source": args["source"], "edit": args["edit"]}}
 
         if name == "component_catalog":
             req = {"command": "student-component-catalog", "input": {}}
             if "filter" in args:
                 req["input"]["filter"] = args["filter"]
-            return handle_request(req, self.service, self.circuit_service)
+            return req
 
         if name == "component_detail":
-            return handle_request({"command": "component-detail", "input": {"part": args["part"]}},
-                                  self.service, self.circuit_service)
+            return {"command": "component-detail", "input": {"part": args["part"]}}
 
         if name == "circuit_validate":
-            return handle_request({"command": "component-language-resolve", "input": {"source": args["source"]}},
-                                  self.service, self.circuit_service)
+            return {"command": "component-language-resolve", "input": {"source": args["source"]}}
 
         if name == "circuit_probe":
-            req: dict[str, Any] = {"command": "component-language-run", "input": {"source": args["source"]}}
+            req = {"command": "component-language-run", "input": {"source": args["source"]}}
             if "drives" in args:
                 req["input"]["drives"] = args["drives"]
-            return handle_request(req, self.service, self.circuit_service)
+            return req
 
-        raise ValueError(f"Unknown tool: {name}")
+        return None
 
 
 # =============================================================================
@@ -296,7 +333,13 @@ class MCPServer:
 
 def run_mcp_stdio() -> int:
     """Run MCP server on stdio (newline-delimited JSON-RPC 2.0)."""
-    server = MCPServer()
+    import argparse
+    parser = argparse.ArgumentParser(description="Components Board MCP server")
+    parser.add_argument("--api", type=str, default=None,
+                        help="Forward to HTTP API (e.g. http://127.0.0.1:8765)")
+    args = parser.parse_args()
+
+    server = MCPServer(api_url=args.api)
 
     for line in sys.stdin:
         line = line.strip()

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "components-board": {
+      "command": "python3",
+      "args": ["-B", "-m", "chiplib.mcp_server", "--api", "http://127.0.0.1:8765"],
+      "cwd": "/home/jo/kiro/Components/python",
+      "env": {
+        "PYTHONPATH": "/home/jo/kiro/Components/python"
+      }
+    }
+  }
+}
