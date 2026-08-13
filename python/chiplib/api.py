@@ -225,8 +225,24 @@ def run_http(host: str = "127.0.0.1", port: int = 8765, service: FrontendDesignS
     service = service or FrontendDesignService()
     circuit_sessions = CircuitSessionRegistry()
 
+    # Command queue for AI → Board push
+    command_queue: list[str] = []
+
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self) -> None:  # noqa: N802 - stdlib API name
+            # Command queue poll endpoint
+            if self.path == "/api/commands":
+                commands = list(command_queue)
+                command_queue.clear()
+                body = json.dumps(commands).encode("utf-8")
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+
             relative = self.path.split("?", 1)[0].lstrip("/") or "index.html"
             candidate = board_static_file(relative)
             if candidate is None:
@@ -245,6 +261,29 @@ def run_http(host: str = "127.0.0.1", port: int = 8765, service: FrontendDesignS
         def do_POST(self) -> None:  # noqa: N802 - stdlib API name
             length = int(self.headers.get("Content-Length", "0"))
             raw = self.rfile.read(length)
+
+            # Command push endpoint: AI sends Board terminal commands
+            if self.path == "/api/commands":
+                try:
+                    data = json.loads(raw.decode("utf-8"))
+                    commands = data if isinstance(data, list) else [data]
+                    for cmd in commands:
+                        if isinstance(cmd, str):
+                            command_queue.append(cmd)
+                        elif isinstance(cmd, dict) and "command" in cmd:
+                            command_queue.append(cmd["command"])
+                    body = json.dumps({"ok": True, "queued": len(commands)}).encode()
+                    self.send_response(200)
+                except Exception as exc:
+                    body = json.dumps({"ok": False, "error": str(exc)}).encode()
+                    self.send_response(400)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+
             try:
                 request = json.loads(raw.decode("utf-8"))
                 response = handle_request(

@@ -2489,6 +2489,54 @@ function onToolActivate(toolId) {
 }
 
 // ============================================================================
+// AI COMMAND POLLER — receives commands from MCP/API
+// ============================================================================
+(function initAIPoller() {
+  const POLL_INTERVAL = 800; // ms
+  const apiBase = new URLSearchParams(location.search).get('api') || '';
+  
+  async function pollCommands() {
+    try {
+      const res = await fetch(`${apiBase}/api/commands`);
+      if (!res.ok) return;
+      const commands = await res.json();
+      if (!Array.isArray(commands) || commands.length === 0) return;
+      for (const cmd of commands) {
+        const log = document.getElementById('cmd-log');
+        const div = document.createElement('div');
+        div.className = 'info';
+        div.textContent = `[AI] >>> ${cmd}`;
+        log.appendChild(div);
+        
+        // Execute through the registry (same as typing in terminal)
+        const result = registry.execute(cmd);
+        
+        const resDiv = document.createElement('div');
+        if (result && result.success !== false) {
+          resDiv.className = 'ok';
+          resDiv.textContent = `  ${result.message || 'OK'}`;
+        } else {
+          resDiv.className = 'err';
+          resDiv.textContent = `  Error: ${result?.message || 'command failed'}`;
+        }
+        log.appendChild(resDiv);
+        log.scrollTop = log.scrollHeight;
+      }
+      renderViewport();
+    } catch (e) {
+      // API not running or network error — silently skip
+    }
+  }
+  
+  setInterval(pollCommands, POLL_INTERVAL);
+  const log = document.getElementById('cmd-log');
+  const div = document.createElement('div');
+  div.className = 'ok';
+  div.textContent = '🟢 AI command channel active';
+  log.appendChild(div);
+})();
+
+// ============================================================================
 // INIT
 // ============================================================================
 viewport.zoomFit(800, 500);
