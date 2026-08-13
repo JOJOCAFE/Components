@@ -205,6 +205,15 @@ class ComponentRuntimeSession:
                 expr = derives_map.get(obs_id, "0")
                 result[obs_id] = self._eval_derive_expr(expr)
                 continue
+            # Check if target is a derive (observation may point to a derive name)
+            if target in derives_map:
+                expr = derives_map[target]
+                if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", expr):
+                    # Simple derive: recursively resolve to the actual net
+                    target = expr
+                else:
+                    result[obs_id] = self._eval_derive_expr(expr)
+                    continue
             if target in bus_ids:
                 width = next(bus["width"] for bus in self.resolved["buses"] if bus["id"] == target)
                 values = []
@@ -257,7 +266,11 @@ class ComponentRuntimeSession:
         try:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                return eval(safe_expr, {"__builtins__": {}}, {})  # noqa: S307
+                result = eval(safe_expr, {"__builtins__": {}}, {})  # noqa: S307
+                # For single-bit results, mask to 1 bit (handles ~0 == -1 → 1)
+                if isinstance(result, int) and result < 0:
+                    result = result & 1
+                return result
         except Exception:
             return 0
 
