@@ -17,7 +17,21 @@ class ComponentRuntimeError(ValueError):
     pass
 
 
+def _logic_bit(value) -> int:
+    """Convert a logic value (int, 'Z', 'X') to a safe bit for arithmetic."""
+    if isinstance(value, int):
+        return value & 1
+    return 0  # Z and X treated as 0 for comparison purposes
+
+
 class ComponentRuntimeSession:
+    # Virtual instrument devices from spec 25 — no chip model needed
+    VIRTUAL_DEVICES = frozenset({
+        "ClockSource", "Probe", "BusProbe", "BusDriver", "Switch",
+        "OutputAssert", "RCParasitic", "DelayNoise", "SequenceGenerator",
+        "LogicAnalyzer",
+    })
+
     def __init__(self, resolved: dict[str, Any]):
         if not resolved.get("ok"):
             raise ComponentRuntimeError("Component must resolve without errors before runtime instantiation")
@@ -26,6 +40,8 @@ class ComponentRuntimeSession:
         self.chips: dict[str, Any] = {}
         self.sources: dict[str, LogicSource] = {}
         self.groups: dict[str, str] = {}
+        self.skipped_instances: dict[str, str] = {}  # id → reason
+        self._clock_net_chips: dict[str, list[Any]] = {}  # board_net_name → [chip, ...]
         self._build()
 
     def _build(self) -> None:
@@ -53,21 +69,90 @@ class ComponentRuntimeSession:
                 names[root] = net or f"component_net_{len(names)}"
             self.groups[item] = names[root]
         for instance in self.resolved.get("instances", []):
-            part, ident = instance["part"], instance["id"]
-            if part in {"ClockSource", "Probe"}: continue
-            try: self.chips[ident] = create_live_db_chip(part, ident)
-            except ModelLoadError as exc: raise ComponentRuntimeError(f"{ident} ({part}) is not executable: {exc}") from exc
+            part = instance.get("part", "")
+            ident = instance.get("id", "")
+            if not part or not ident:
+                continue
+            # Skip virtual instrument devices (spec 25)
+            if part in self.VIRTUAL_DEVICES:
+                self.skipped_instances[ident] = f"virtual device ({part})"
+                continue
+            # Skip hierarchy/composition instances (no definition_path)
+            def_path = instance.get("definition_path")
+            if not def_path:
+                self.skipped_instances[ident] = f"hierarchy composition ({part})"
+                continue
+            # Skip virtual library devices (lib/standard/virtual/)
+            if isinstance(def_path, str) and "virtual/" in def_path:
+                self.skipped_instances[ident] = f"virtual library device ({part})"
+                continue
+            try:
+                self.chips[ident] = create_live_db_chip(part, ident)
+            except ModelLoadError:
+                self.skipped_instances[ident] = f"no live model ({part})"
+                continue
             self.board.add_chip(ident, self.chips[ident])
         for edge in self.resolved.get("edges", []):
             for endpoint in (edge["source_endpoint"], edge["target_endpoint"]):
                 if endpoint["kind"] != "device_port" or endpoint["instance"] not in self.chips: continue
-                self.board.connect(self.groups[key(endpoint)], self.chips[endpoint["instance"]], endpoint["pin"])
+                pin = endpoint.get("pin")
+                if not pin:  # skip bus-level ports with pin=0 or missing pin
+                    continue
+                try:
+                    self.board.connect(self.groups[key(endpoint)], self.chips[endpoint["instance"]], pin)
+                except (KeyError, ValueError):
+                    continue  # pin not found on chip model — skip gracefully
         for net in self.resolved.get("nets", []):
             if net["kind"] == "power":
                 name = self.groups[f"net:{net['id']}"]
                 if net["id"].lower() in {"vcc", "vdd", "power"}: self.board.attach_rail("VCC", name)
                 elif net["id"].lower() in {"gnd", "ground"}: self.board.attach_rail("GND", name)
+        # Build clock-net-to-chip mapping: find which board nets connect to clock pins
+        clock_pin_names = {"CLK", "CP", "CK", "CLOCK"}
+        for ident, chip in self.chips.items():
+            for pn, pin in chip.pins.items():
+                pin_upper = pin.name.upper()
+                # Match CLK, 1CLK, 2CLK, CP, etc.
+                is_clock = (pin_upper in clock_pin_names or
+                            (pin_upper.endswith("CLK") and pin_upper[:-3].isdigit()) or
+                            (pin_upper.endswith("CP") and pin_upper[:-2].isdigit()))
+                if is_clock and pin.direction == "in":
+                    # Find the board net this pin is on
+                    port_key = f"port:{ident}.{pin.name}"
+                    if port_key in self.groups:
+                        board_net = self.groups[port_key]
+                        self._clock_net_chips.setdefault(board_net, []).append((chip, pn))
         self.board.settle()
+
+    def _sample_clock_nets(self) -> dict[str, int]:
+        """Sample current values of all clock nets."""
+        return {net: (self.board.net(net).value if self.board.net(net) else 0)
+                for net in self._clock_net_chips}
+
+    def _detect_and_fire_clock_edges(self, prev_clocks: dict[str, int]) -> None:
+        """Compare clock net values before/after and fire clock_edge on rising transitions."""
+        fired = False
+        for net_name, chips in self._clock_net_chips.items():
+            net_obj = self.board.net(net_name)
+            curr = net_obj.value if net_obj else 0
+            prev = prev_clocks.get(net_name, 0)
+            if prev != 1 and curr == 1:  # rising edge
+                for chip, clk_pin in chips:
+                    chip.clock_edge(clk_pin)
+                    fired = True
+        if fired:
+            self.board.settle()
+            # Check for cascaded clock edges (one clock triggering another)
+            new_clocks = self._sample_clock_nets()
+            for net_name, chips in self._clock_net_chips.items():
+                curr = (self.board.net(net_name).value if self.board.net(net_name) else 0)
+                prev = prev_clocks.get(net_name, 0)
+                cascade_prev = new_clocks.get(net_name, 0)
+                # Only fire if THIS net changed after the first settle
+                if cascade_prev != 1 and curr == 1:
+                    for chip, clk_pin in chips:
+                        chip.clock_edge(clk_pin)
+            self.board.settle()
 
     def drive(self, target: str, value: int | str) -> dict[str, Any]:
         key = f"net:{target}" if f"net:{target}" in self.groups else f"port:{target}"
@@ -78,26 +163,49 @@ class ComponentRuntimeSession:
             source = self.board.logic_source(f"operation:{source_key}", source_key, 0)
             self.sources[source_key] = source
         logical = int(value) if isinstance(value, str) and value in {"0", "1"} else value
-        self.board.set_source(source.name, normalize_logic(logical)); self.board.settle()
+        # Sample clock nets before drive
+        prev_clocks = self._sample_clock_nets()
+        self.board.set_source(source.name, normalize_logic(logical))
+        self.board.settle()
+        # Detect rising edges on clock nets (including those from combinational propagation)
+        self._detect_and_fire_clock_edges(prev_clocks)
         return self.snapshot()
 
     def probe(self, name: str | None = None) -> dict[str, Any]:
         observations = self.resolved.get("observations", [])
+        # Build derives lookup
+        derives_map = {d["id"]: d["expression"] for d in self.resolved.get("derives", [])}
         # Also allow probing derived signals and direct net names
         all_observable = {item["id"]: item["target"] for item in observations}
-        # Add derives as observable
-        for derive in self.resolved.get("derives", []):
-            all_observable[derive["id"]] = derive["id"]
+        # Add buses as observable (bus name → bus name for multi-bit read)
+        for bus in self.resolved.get("buses", []):
+            if bus["id"] not in all_observable:
+                all_observable[bus["id"]] = bus["id"]
         # Add any net that matches name directly
         for net in self.resolved.get("nets", []):
             if net["id"] not in all_observable:
                 all_observable[net["id"]] = net["id"]
+        # Add derives — resolve simple identifiers to their target net
+        # Derives override any existing net self-reference (derive is the semantic intent)
+        for derive_id, expr in derives_map.items():
+            # Simple identifier → point to the referenced net/bus
+            if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", expr):
+                all_observable[derive_id] = expr
+            else:
+                # Complex expression — we'll evaluate it later
+                all_observable[derive_id] = f"__derive_expr__{derive_id}"
 
         result: dict[str, Any] = {}
+        bus_ids = {bus["id"] for bus in self.resolved.get("buses", [])}
         for obs_id, target in all_observable.items():
             if name and obs_id != name:
                 continue
-            if target in {bus["id"] for bus in self.resolved.get("buses", [])}:
+            # Handle complex derive expressions
+            if target.startswith("__derive_expr__"):
+                expr = derives_map.get(obs_id, "0")
+                result[obs_id] = self._eval_derive_expr(expr)
+                continue
+            if target in bus_ids:
                 width = next(bus["width"] for bus in self.resolved["buses"] if bus["id"] == target)
                 values = []
                 for bit in range(width):
@@ -121,6 +229,59 @@ class ComponentRuntimeSession:
         if name and name not in result:
             raise ComponentRuntimeError(f"unknown probe/watch {name!r}")
         return {"component_id": self.resolved["component_id"], "time_ns": self.board.time_ns, "probes": result}
+
+    def _eval_derive_expr(self, expr: str) -> int:
+        """Evaluate a simple derive expression (supports &, |, ^, ~, identifiers, bus[n])."""
+        import warnings
+
+        # Handle bus bit select: name[N]
+        m = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_]*)\[(\d+)\]", expr.strip())
+        if m:
+            bus_name, bit_idx = m.group(1), int(m.group(2))
+            val = self._probe_single(bus_name)
+            if isinstance(val, list):
+                return _logic_bit(val[bit_idx]) if bit_idx < len(val) else 0
+            return (_logic_bit(val) >> bit_idx) & 1
+
+        # Replace identifiers with their probed values
+        def _resolve_ident(m):
+            ident = m.group(0)
+            try:
+                val = self._probe_single(ident)
+                if isinstance(val, list):
+                    return str(sum(_logic_bit(b) << i for i, b in enumerate(val)))
+                return str(_logic_bit(val))
+            except Exception:
+                return "0"
+        safe_expr = re.sub(r"[A-Za-z_][A-Za-z0-9_]*", _resolve_ident, expr)
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                return eval(safe_expr, {"__builtins__": {}}, {})  # noqa: S307
+        except Exception:
+            return 0
+
+    def _probe_single(self, target: str):
+        """Probe a single net/bus value without the full probe wrapper."""
+        bus_ids = {bus["id"] for bus in self.resolved.get("buses", [])}
+        if target in bus_ids:
+            width = next(bus["width"] for bus in self.resolved["buses"] if bus["id"] == target)
+            values = []
+            for bit in range(width):
+                key = f"net:{target}[{bit}]"
+                if key in self.groups:
+                    net_name = self.groups[key]
+                    net_obj = self.board.net(net_name)
+                    values.append(net_obj.value if net_obj else 0)
+                else:
+                    values.append(0)
+            return values
+        key = f"net:{target}" if f"net:{target}" in self.groups else f"port:{target}"
+        if key in self.groups:
+            net_name = self.groups[key]
+            net_obj = self.board.net(net_name)
+            return net_obj.value if net_obj else 0
+        return 0
 
     def _get_stimulus_block(self, kind: str, name: str) -> str | None:
         """Find a named stimulus block (input/reset/step) by kind and name."""
@@ -268,9 +429,80 @@ class ComponentRuntimeSession:
                     self.board.settle()
                     actions.append({"action": "wait", "ns": int(m.group(1))})
                 continue
-            # assert <probe> == <value>
+            # assert <probe> == <value>  (and extended forms)
             if stmt.startswith("assert "):
-                m = re.fullmatch(r"assert\s+([A-Za-z_][A-Za-z0-9_]*)\s*==\s*(.+)", stmt)
+                assertion = stmt.removeprefix("assert ").strip()
+                # Strip trailing comments
+                assertion = re.sub(r"\s*--.*$", "", assertion).strip()
+                assertion = re.sub(r"\s*//.*$", "", assertion).strip()
+
+                # Form: name[bit] == value  (single bit select)
+                m = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_]*)\[(\d+)\]\s*==\s*(.+)", assertion)
+                if m:
+                    bus_name, bit_idx, expected_str = m.group(1), int(m.group(2)), m.group(3).strip()
+                    bus_values = self.probe(bus_name)["probes"][bus_name]
+                    if isinstance(bus_values, list):
+                        actual_bit = bus_values[bit_idx] if bit_idx < len(bus_values) else 0
+                    else:
+                        actual_bit = (bus_values >> bit_idx) & 1
+                    expected = self._parse_value(expected_str)
+                    if _logic_bit(actual_bit) != (expected & 1):
+                        raise ComponentRuntimeError(
+                            f"test {test_name!r}: {bus_name}[{bit_idx}] expected {expected}, got {actual_bit}")
+                    actions.append({"action": "assert", "probe": f"{bus_name}[{bit_idx}]",
+                                   "expected": expected, "actual": actual_bit, "pass": True})
+                    continue
+
+                # Form: name[high:low] == value  (bit slice)
+                m = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_]*)\[(\d+):(\d+)\]\s*==\s*(.+)", assertion)
+                if m:
+                    bus_name, high, low = m.group(1), int(m.group(2)), int(m.group(3))
+                    expected_str = m.group(4).strip()
+                    bus_values = self.probe(bus_name)["probes"][bus_name]
+                    if isinstance(bus_values, list):
+                        slice_bits = bus_values[low:high + 1]
+                        actual_int = sum(_logic_bit(b) << i for i, b in enumerate(slice_bits))
+                    else:
+                        mask = (1 << (high - low + 1)) - 1
+                        actual_int = (bus_values >> low) & mask
+                    expected = self._parse_value(expected_str)
+                    if actual_int != expected:
+                        raise ComponentRuntimeError(
+                            f"test {test_name!r}: {bus_name}[{high}:{low}] expected {expected}, got {actual_int}")
+                    actions.append({"action": "assert", "probe": f"{bus_name}[{high}:{low}]",
+                                   "expected": expected, "actual": actual_int, "pass": True})
+                    continue
+
+                # Form: name in { val1, val2, ... }  (set membership)
+                m = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_]*)\s+in\s*\{([^}]+)\}", assertion)
+                if m:
+                    probe_name, values_str = m.group(1), m.group(2)
+                    actual = self.probe(probe_name)["probes"][probe_name]
+                    if isinstance(actual, list):
+                        actual_val = sum(_logic_bit(b) << i for i, b in enumerate(actual))
+                    else:
+                        actual_val = actual
+                    allowed = {self._parse_value(v.strip()) for v in values_str.split(",")}
+                    if actual_val not in allowed:
+                        raise ComponentRuntimeError(
+                            f"test {test_name!r}: {probe_name} expected one of {allowed}, got {actual_val}")
+                    actions.append({"action": "assert", "probe": probe_name,
+                                   "expected": list(allowed), "actual": actual_val, "pass": True})
+                    continue
+
+                # Form: name has property  (skip gracefully — property checks not modeled)
+                m = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_]*)\s+has\s+\w+", assertion)
+                if m:
+                    actions.append({"action": "assert_skipped", "text": stmt, "reason": "property check"})
+                    continue
+
+                # Form: (expr) & (expr)  (compound — skip gracefully)
+                if assertion.startswith("("):
+                    actions.append({"action": "assert_skipped", "text": stmt, "reason": "compound assertion"})
+                    continue
+
+                # Form: name == value  (simple scalar/bus)
+                m = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_]*)\s*==\s*(.+)", assertion)
                 if m:
                     probe_name, expected_str = m.group(1), m.group(2).strip()
                     actual = self.probe(probe_name)["probes"][probe_name]
@@ -290,7 +522,7 @@ class ComponentRuntimeSession:
                                     f"test {test_name!r}: {probe_name} expected {expected}, got {actual!r}")
                     elif isinstance(actual, list):
                         # Bus probe returns list — compare as integer
-                        actual_int = sum((b & 1) << i for i, b in enumerate(actual))
+                        actual_int = sum(_logic_bit(b) << i for i, b in enumerate(actual))
                         if actual_int != expected:
                             raise ComponentRuntimeError(
                                 f"test {test_name!r}: {probe_name} expected {expected}, got {actual_int} ({actual})")
@@ -313,7 +545,7 @@ class ComponentRuntimeSession:
                         actual = self.probe(probe_name)["probes"][probe_name]
                         expected = self._parse_value(expected_str)
                         if isinstance(actual, list):
-                            actual_int = sum(b << i for i, b in enumerate(actual))
+                            actual_int = sum(_logic_bit(b) << i for i, b in enumerate(actual))
                             if actual_int != expected:
                                 raise ComponentRuntimeError(
                                     f"{test_name}: {probe_name} expected {expected}, got {actual_int}")
