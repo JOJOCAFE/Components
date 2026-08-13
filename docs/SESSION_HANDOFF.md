@@ -75,11 +75,89 @@ main ← 3f79898 (pushed to origin)
 
 ### Resume notes (next session)
 
-1. **Hierarchy flatten** — the only way to pass the remaining 40 tests; needs
-   recursive sub-circuit instantiation in ComponentRuntimeSession._build()
-2. **First-sight student trial** — Board is interactive enough
-3. **HTTP adapter integration test** — start Python API, open `?engine=http`
-4. Or switch lanes: RV8-GR physical build prep, RV8-R architecture
+1. **Board AI command channel debugging** — the poller code is in app.html
+   and the API queue endpoint works, but the browser was showing cached content.
+   Fix: open in incognito or DevTools → Network → "Disable cache" → refresh.
+   Once visible, test: `curl -X POST http://127.0.0.1:8765/api/commands -d '["place X, 74HC04 at (80,80)"]'`
+2. **MCP server live test** — restart Kiro in Components dir to pick up
+   `.kiro/settings/mcp.json`, then use @components-board tools
+3. **Hierarchy flatten** — only way to pass remaining 40 tests
+4. **First-sight student trial** — Board is interactive enough
+5. Or switch lanes: RV8-GR physical build prep, RV8-R architecture
+
+### Git state
+
+```
+main ← 15279d1 (pushed to origin)
+Commits today (8):
+  15279d1 Board: AI command channel — API queue + browser poller
+  2b7539d MCP server: add --api HTTP forwarding + Kiro workspace config
+  4130459 MCP server: 9 tools for AI-Board interaction over stdio
+  d5aee8c Session handoff: 2026-08-13 final — 99/139 (71%), 15/23 circuits green
+  231526b Circuit tests: fix timing order + z_flag second pulse — 99/139 (71%)
+  4e6f12c AluAccumulator: complete 8-bit data path + async preset update
+  956e63c Runtime: derive-aware _probe_single, defer_clocks param on drive()
+  74cb18b Runtime: derive-target resolution, NOT-mask fix, AluAccumulator z_flag wiring
+  3f79898 Runtime: propagation-aware clock edges, graceful skip, derive resolution, assert extensions
+```
+
+### Evidence commands
+
+```bash
+# Start Board API:
+cd /home/jo/kiro/Components/python
+setsid python3 -B -m chiplib.api --http --host 127.0.0.1 --port 8765 < /dev/null > /tmp/board_api.log 2>&1 &
+
+# Open Board: http://127.0.0.1:8765/app.html (incognito if cached)
+
+# Push AI commands to Board:
+curl -X POST http://127.0.0.1:8765/api/commands \
+  -H "Content-Type: application/json" \
+  -d '["place U1, 74HC04 at (80, 50)", "place U2, 74HC164 at (180, 50)", "connect U2.QA -> U1.1A", "route U2.QA -> U1.1A via (140, 55) (110, 55)"]'
+
+# Test MCP server standalone:
+cd /home/jo/kiro/Components/python
+echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | python3 -B -m chiplib.mcp_server
+
+# Runtime sweep:
+cd /home/jo/kiro/Components/python
+python3 -B -c "
+import sys,warnings; warnings.filterwarnings('ignore'); sys.path.insert(0,'.')
+from pathlib import Path
+from chiplib.component_language import parse_component_file, resolve_component
+from chiplib.component_runtime import ComponentRuntimeSession
+ROOT=Path('/home/jo/kiro/Components')
+p=t=0
+for f in sorted(ROOT.glob('examples/circuits/*/*.component')):
+    ast=parse_component_file(f)
+    if not ast.get('ok'): continue
+    resolved=resolve_component(ast)
+    if not resolved or not resolved.get('ok'): continue
+    tests=resolved.get('tests',[])
+    for test in tests:
+        t+=1
+        try:
+            s=ComponentRuntimeSession(resolved)
+            if s.run_declared_test(test['id']).get('ok'): p+=1
+        except: pass
+print(f'{p}/{t}')
+"
+
+# Full regression:
+cd /home/jo/kiro/Components/python
+python3 -B -m tests.test_chips
+python3 -B -m tests.test_design
+python3 -B -m tests.test_contracts
+python3 -B -m tests.test_simulation_service
+python3 -B -m tests.test_equivalence
+python3 -B -m tests.test_db
+python3 -B -m tests.test_cli
+python3 -B -m tests.test_api
+python3 -B -m tests.test_netlist
+python3 -B -m tests.test_generated_split_records
+python3 -B -m tests.test_virtual_runtime
+python3 -B -m tests.test_lib_circuit_campaign
+```
 
 ### Evidence commands
 
