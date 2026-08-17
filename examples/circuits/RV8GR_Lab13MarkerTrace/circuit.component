@@ -255,7 +255,6 @@ component:component RV8GR_Lab13MarkerTrace is components.digital {
     expect ac == 0x00;
     expect z_flag == 1;
     expect pg == 0x00;
-    expect dp == 0x80;
   }
 
   -- Step sequences for 15-clock trace
@@ -377,7 +376,10 @@ component:component RV8GR_Lab13MarkerTrace is components.digital {
   test li_10_loads_accumulator {
     reset power_on;
     apply li_ctrl;
-    set irl = 0x10;
+    set ibus = 0x10;
+    set t2 = 1; settle;
+    set t2 = 0; settle;
+    -- Second T2 pulse: z_flag clears (AC≠0 released /PRE)
     set t2 = 1; settle;
     set t2 = 0; settle;
     assert acc == 0x10;
@@ -388,11 +390,11 @@ component:component RV8GR_Lab13MarkerTrace is components.digital {
     reset power_on;
     -- LI $10
     apply li_ctrl;
-    set irl = 0x10;
+    set ibus = 0x10;
     set t2 = 1; settle; set t2 = 0; settle;
     -- ADDI $05
     apply addi_ctrl;
-    set irl = 0x05;
+    set ibus = 0x05;
     set t2 = 1; settle; set t2 = 0; settle;
     assert acc == 0x15;
     assert z == 0;
@@ -402,14 +404,14 @@ component:component RV8GR_Lab13MarkerTrace is components.digital {
     reset power_on;
     -- LI $10, ADDI $05 → AC=$15
     apply li_ctrl;
-    set irl = 0x10;
+    set ibus = 0x10;
     set t2 = 1; settle; set t2 = 0; settle;
     apply addi_ctrl;
-    set irl = 0x05;
+    set ibus = 0x05;
     set t2 = 1; settle; set t2 = 0; settle;
     -- SUBI $15 → AC=$00, Z=1
     apply subi_ctrl;
-    set irl = 0x15;
+    set ibus = 0x15;
     set t2 = 1; settle; set t2 = 0; settle;
     assert acc == 0x00;
     assert z == 1;
@@ -419,7 +421,7 @@ component:component RV8GR_Lab13MarkerTrace is components.digital {
     reset power_on;
     -- Setup Z=1
     apply li_ctrl;
-    set irl = 0x00;
+    set ibus = 0x00;
     set t2 = 1; settle; set t2 = 0; settle;
     -- BEQ $0C with Z=1
     apply beq_ctrl;

@@ -326,6 +326,16 @@ class ComponentRuntimeSession:
         for net in self.resolved.get("nets", []): find(f"net:{net['id']}")
         for edge in self.resolved.get("edges", []):
             for endpoint in (edge["source_endpoint"], edge["target_endpoint"]): find(key(endpoint))
+        # Pass-through for functional mode: virtual IN→OUT treated as wire
+        for instance in self.resolved.get("instances", []):
+            part = instance.get("part", "")
+            ident = instance.get("id", "")
+            if part in ("RCParasitic", "DelayNoise") and ident:
+                in_key = f"port:{ident}.IN"
+                out_key = f"port:{ident}.OUT"
+                find(in_key)
+                find(out_key)
+                union(in_key, out_key)
         names: dict[str, str] = {}
         for item in list(parent):
             root = find(item)
@@ -518,7 +528,7 @@ class ComponentRuntimeSession:
         """Evaluate a simple derive expression (supports &, |, ^, ~, identifiers, bus[n])."""
         import warnings
 
-        # Handle bus bit select: name[N]
+        # Handle bus bit select: name[N] (standalone expression)
         m = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_]*)\[(\d+)\]", expr.strip())
         if m:
             bus_name, bit_idx = m.group(1), int(m.group(2))
@@ -527,7 +537,17 @@ class ComponentRuntimeSession:
                 return _logic_bit(val[bit_idx]) if bit_idx < len(val) else 0
             return (_logic_bit(val) >> bit_idx) & 1
 
-        # Replace identifiers with their probed values
+        # Replace bus[N] patterns first, then plain identifiers
+        def _resolve_bus_bit(m):
+            bus_name, bit_idx = m.group(1), int(m.group(2))
+            try:
+                val = self._probe_single(bus_name)
+                if isinstance(val, list):
+                    return str(_logic_bit(val[bit_idx]) if bit_idx < len(val) else 0)
+                return str((_logic_bit(val) >> bit_idx) & 1)
+            except Exception:
+                return "0"
+
         def _resolve_ident(m):
             ident = m.group(0)
             try:
@@ -537,7 +557,10 @@ class ComponentRuntimeSession:
                 return str(_logic_bit(val))
             except Exception:
                 return "0"
-        safe_expr = re.sub(r"[A-Za-z_][A-Za-z0-9_]*", _resolve_ident, expr)
+
+        # First resolve bus[N] patterns, then remaining plain identifiers
+        safe_expr = re.sub(r"([A-Za-z_][A-Za-z0-9_]*)\[(\d+)\]", _resolve_bus_bit, expr)
+        safe_expr = re.sub(r"[A-Za-z_][A-Za-z0-9_]*", _resolve_ident, safe_expr)
         try:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")

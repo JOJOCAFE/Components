@@ -219,6 +219,7 @@ component:component RV8GR_PageJumpTrace is components.digital {
     set jmp = 0;
     set br = 0;
     set alu_sub = 0;
+    set addr_mode_n = 1;
   }
 
   input setpg_mode {
@@ -366,7 +367,12 @@ component:component RV8GR_PageJumpTrace is components.digital {
     reset power_on;
     apply setdp_mode;
     set ibus = 0x80;
+    -- Make U33 decode: 1A=T2=1, 1B=XOR=1, 1C=addr_mode_n=1, 1D=ac_wr(connected raw)=1
+    set addr_mode_n = 1;
+    set ac_wr = 1;
     set t2 = 1;
+    settle;
+    set t2 = 0;
     settle;
     assert dp_val == 0x80;
     assert pg_val == 0x00;  -- PG unchanged
@@ -376,9 +382,11 @@ component:component RV8GR_PageJumpTrace is components.digital {
     reset power_on;
     apply setpg_mode;
     set irl = 0x12;
-    set t2 = 1;
+    set pg_clk = 0;
     settle;
-    set t2 = 0;
+    set pg_clk = 1;
+    settle;
+    set pg_clk = 0;
     settle;
     assert pg_val == 0x12;
     assert dp_val == 0x00;  -- DP unchanged
@@ -386,26 +394,38 @@ component:component RV8GR_PageJumpTrace is components.digital {
 
   test jump_loads_pc_from_pg_irl {
     reset power_on;
-    -- First set PG
-    apply setpg_mode;
+    -- First set PG=$12
     set irl = 0x12;
-    set t2 = 1; settle; set t2 = 0; settle;
-    -- Then jump
+    set pg_clk = 0; settle;
+    set pg_clk = 1; settle;
+    set pg_clk = 0; settle;
+    assert pg_val == 0x12;
+    -- Then jump: JMP=1, T2=1 → branch drives /PC_LD=0
     apply jump_mode;
     set irl = 0x5A;
     set t2 = 1; settle;
     assert pc_load == 0;  -- /PC_LD active
-    -- After clock edge, PC = {PG=$12, IRL=$5A} = $125A
+    -- Clock PC to load from {PG=$12, IRL=$5A}
     pulse clk; settle;
     assert pc_val == 0x125A;
   }
 
   test final_state_matches_expected {
     reset power_on;
-    -- Run full 9-clock trace
-    run execute_setdp;
-    run execute_setpg;
-    run execute_jump;
+    -- SETDP $80: drive U33 decode inputs properly
+    set ibus = 0x80;
+    set xor_mode = 1;
+    set addr_mode_n = 1;
+    set ac_wr = 1;
+    set t2 = 1; settle; set t2 = 0; settle;
+    -- SETPG $12
+    set irl = 0x12;
+    set pg_clk = 0; settle; set pg_clk = 1; settle; set pg_clk = 0; settle;
+    -- J $5A → branch drives /PC_LD=0, clock loads PC
+    apply jump_mode;
+    set irl = 0x5A;
+    set t2 = 1; settle;
+    pulse clk; settle;
     assert pc_val == 0x125A;
     assert pg_val == 0x12;
     assert dp_val == 0x80;

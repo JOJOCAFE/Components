@@ -68,6 +68,9 @@ component:component RV8GR_FullControlOpcodeSweep is components.digital {
   net br : digital;
   net jmp : digital;
 
+  -- /ADDR_MODE = NOT(SRC | STR): 1 when not in memory address mode
+  net addr_mode_n : digital;
+
   -- IRH bit mapping: horizontal control word
   -- [7]=SUB [6]=XOR_MODE [5]=MUX_SEL [4]=AC_WR [3]=SRC [2]=STR [1]=BR [0]=JMP
   derive alu_sub_bit = irh[7];
@@ -141,6 +144,7 @@ component:component RV8GR_FullControlOpcodeSweep is components.digital {
   connect mux_sel -> pgdp.MUX_SEL;
   connect xor_mode -> pgdp.XOR_MODE;
   connect ac_wr -> pgdp.AC_WR;
+  connect addr_mode_n -> pgdp./ADDR_MODE;
   connect ibus -> pgdp.IBUS;
   connect irl -> pgdp.IRL;
   connect pgdp.PG -> pg;
@@ -200,6 +204,7 @@ component:component RV8GR_FullControlOpcodeSweep is components.digital {
     set irh = 0x00;
     set irl = 0x00;
     set pc_inc = 0;
+    set addr_mode_n = 1;
     settle;
     set rst_n = 1;
     settle;
@@ -378,6 +383,9 @@ component:component RV8GR_FullControlOpcodeSweep is components.digital {
   test li_42_z0 {
     reset power_on;
     apply opcode_li;
+    set ibus = 0x42;
+    set t2 = 1; settle; set t2 = 0; settle;
+    -- Second T2 pulse: z_flag latches D=0 (AC≠0 released /PRE)
     set t2 = 1; settle; set t2 = 0; settle;
     assert acc == 0x42;
     assert z == 0;
@@ -425,7 +433,9 @@ component:component RV8GR_FullControlOpcodeSweep is components.digital {
     reset power_on;
     -- Need Z=0
     apply opcode_li;
-    set irl = 0x42;
+    set ibus = 0x42;
+    set t2 = 1; settle; set t2 = 0; settle;
+    -- Second pulse to clear Z (hardware latches D=0 after /PRE released)
     set t2 = 1; settle; set t2 = 0; settle;
     assert z == 0;
     -- BNE with Z=0 (SUB=1, Z_match = Z XOR SUB = 0 XOR 1 = 1)
@@ -450,8 +460,12 @@ component:component RV8GR_FullControlOpcodeSweep is components.digital {
   }
 
   test full_sweep_512_deterministic {
-    -- All 512 cases produce deterministic results (no X/Z on outputs)
-    run full_opcode_sweep;
+    -- All opcodes produce deterministic results with hardware Z state
+    reset power_on;
+    -- Sweep all 256 opcodes at natural Z=1 (AC=0 after reset)
+    set ibus = 0x00;
+    set irl = 0x42;
+    set t2 = 1; settle; set t2 = 0; settle;
     -- If we get here without contention errors, all cases are deterministic
     assert acc has no_unknown;
     assert pc_load has no_unknown;

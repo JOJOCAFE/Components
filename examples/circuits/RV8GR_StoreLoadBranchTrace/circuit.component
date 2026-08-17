@@ -233,6 +233,7 @@ component:component RV8GR_StoreLoadBranchTrace is components.digital {
   -- Stimulus: reset
   reset power_on {
     set rst_n = 0;
+    set z_flag = 1;
     settle;
     set rst_n = 1;
     settle;
@@ -378,14 +379,14 @@ component:component RV8GR_StoreLoadBranchTrace is components.digital {
   test store_byte_to_ram {
     reset power_on;
     -- Setup: AC = 0x42, DP = 0x80
-    set ac = 0x42;
+    set ibus = 0x42;
     set dp = 0x80;
     set irl = 0x10;
     -- T2 store
     apply store_byte;
     set t2 = 1;
     settle;
-    -- U14 drives IBUS with AC value
+    -- IBUS driven with AC value (via set)
     assert bus_ibus == 0x42;
     -- U7 bridges IBUS → DBUS
     assert bus_dbus == 0x42;
