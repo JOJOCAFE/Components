@@ -48,6 +48,9 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     trace_cmd.add_argument("--probes", help="comma-separated probe names (default: all)")
     trace_cmd.add_argument("--format", choices=["table", "json", "csv"], default="table", help="output format")
     trace_cmd.add_argument("--reset", default="power_on", help="reset block name (default: power_on)")
+    trace_cmd.add_argument("--rom", help="path to .bin file to preload into ROM")
+    trace_cmd.add_argument("--program", help="inline RV8GR assembly to preload (e.g. \"LI $42; ADDI $01\")")
+    trace_cmd.add_argument("--annotate", action="store_true", help="decode IRH into instruction mnemonics")
     trace_cmd.add_argument("-o", "--output")
 
     resource_inspect = sub.add_parser("component-resource-inspect", help="show a presentation Resource without changing a Device")
@@ -162,11 +165,18 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
         from .trace_format import format_table, format_json, format_csv
         try:
             probe_list = args.probes.split(",") if args.probes else None
+            # Handle --program: assemble inline instructions to ROM bytes
+            rom_data = None
+            if args.program:
+                rom_data = _assemble_inline(args.program)
             result = trace_circuit(
                 args.component_file,
                 steps=args.steps,
                 probes=probe_list,
                 reset_name=args.reset,
+                rom_file=args.rom,
+                rom_data=rom_data,
+                annotate=args.annotate,
             )
             if args.format == "json":
                 output_text = format_json(result)
@@ -307,6 +317,44 @@ def write_text(text: str, *, output: str | None = None, status: int = 0) -> int:
     else:
         sys.stdout.write(text)
     return status
+
+
+# RV8GR inline assembler (simple: mnemonic $operand → 2 bytes)
+_ASM_OPCODES = {
+    "NOP": 0x00, "ADDI": 0x10, "ADD": 0x18, "SUBI": 0x90, "SUB": 0x98,
+    "XORI": 0x70, "XOR": 0x78, "LI": 0x30, "LB": 0x38, "SB": 0x04,
+    "BEQ": 0x02, "BNE": 0x82, "J": 0x01, "SETPG": 0x20, "SETPG_R": 0x28,
+    "SETDP": 0x40, "EI": 0x08, "DI": 0x48, "HLT": 0x01,
+}
+
+
+def _assemble_inline(program: str) -> bytes:
+    """Assemble a semicolon-separated RV8GR program into ROM bytes.
+
+    Example: "LI $42; ADDI $01; BEQ $00"
+    Returns: bytes([0x30, 0x42, 0x10, 0x01, 0x02, 0x00])
+    """
+    result: list[int] = []
+    for instr in program.split(";"):
+        instr = instr.strip()
+        if not instr:
+            continue
+        parts = instr.split()
+        mnemonic = parts[0].upper()
+        opcode = _ASM_OPCODES.get(mnemonic)
+        if opcode is None:
+            raise ValueError(f"unknown instruction: {mnemonic}")
+        result.append(opcode)
+        if len(parts) > 1:
+            operand_str = parts[1].strip().lstrip("$")
+            result.append(int(operand_str, 16))
+        else:
+            # HLT = J to self (current PC)
+            if mnemonic == "HLT":
+                result.append(len(result) - 1)
+            else:
+                result.append(0x00)
+    return bytes(result)
 
 
 if __name__ == "__main__":

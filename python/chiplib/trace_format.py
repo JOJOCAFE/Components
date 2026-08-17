@@ -34,17 +34,28 @@ def format_table(trace: dict[str, Any]) -> str:
             max_val_width = max(max_val_width, len(formatted))
         col_widths[name] = max(max_val_width, 4)
 
+    # Check if any step has annotations
+    has_notes = any(snap.get("note") for snap in steps)
+    note_width = 0
+    if has_notes:
+        note_width = max(len(snap.get("note", "")) for snap in steps)
+        note_width = max(note_width, 4)
+
     # Table header
     step_col = " CLK"
     header = f"{step_col} |"
     for name in probes:
         header += f" {name:>{col_widths[name]}} |"
+    if has_notes:
+        header += f" {'note':<{note_width}} |"
     lines.append(header)
 
     # Separator
     sep = "-" * len(step_col) + "-+"
     for name in probes:
         sep += "-" * (col_widths[name] + 2) + "+"
+    if has_notes:
+        sep += "-" * (note_width + 2) + "+"
     lines.append(sep)
 
     # Rows
@@ -55,6 +66,9 @@ def format_table(trace: dict[str, Any]) -> str:
             val = snap["values"].get(name, "?")
             formatted = _format_value(val)
             row += f" {formatted:>{col_widths[name]}} |"
+        if has_notes:
+            note = snap.get("note", "")
+            row += f" {note:<{note_width}} |"
         lines.append(row)
 
     lines.append("=" * 60)
