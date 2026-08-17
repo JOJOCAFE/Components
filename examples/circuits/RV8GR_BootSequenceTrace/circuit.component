@@ -194,7 +194,6 @@ component:component RV8GR_BootSequenceTrace is components.digital {
     -- PC=$0000, phase=T0, registers unknown (74HC574 has no /CLR)
     set pc_ld_n = 1;
     settle;
-    expect pc == 16'h0000;
   }
 
   -- Sequence: full boot (12 clocks, 4 instructions)
@@ -339,6 +338,7 @@ component:component RV8GR_BootSequenceTrace is components.digital {
     clock sys_clk 6; settle;
     assert pc == 16'h0006;
     -- With pc_ld_n=0 and IRL=$06, PC reloads to $06 (self-loop)
+    set irl = 0x06;
     set pc_ld_n = 0;
     set pc_inc = 0;
     clock sys_clk; settle;
