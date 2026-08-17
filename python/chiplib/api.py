@@ -238,6 +238,7 @@ def run_http(host: str = "127.0.0.1", port: int = 8765, service: FrontendDesignS
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
                 self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Cache-Control", "no-store")
                 self.send_header("Content-Length", str(len(body)))
                 self.end_headers()
                 self.wfile.write(body)
@@ -253,7 +254,10 @@ def run_http(host: str = "127.0.0.1", port: int = 8765, service: FrontendDesignS
                 return
             body = candidate.read_bytes()
             self.send_response(200)
-            self.send_header("Content-Type", mimetypes.guess_type(str(candidate))[0] or "application/octet-stream")
+            content_type = mimetypes.guess_type(str(candidate))[0] or "application/octet-stream"
+            self.send_header("Content-Type", content_type)
+            if content_type == "text/html":
+                self.send_header("Cache-Control", "no-cache")
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
             self.wfile.write(body)

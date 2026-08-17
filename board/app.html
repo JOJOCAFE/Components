@@ -2497,7 +2497,7 @@ function onToolActivate(toolId) {
   
   async function pollCommands() {
     try {
-      const res = await fetch(`${apiBase}/api/commands`);
+      const res = await fetch(`${apiBase}/api/commands`, { cache: 'no-store' });
       if (!res.ok) return;
       const commands = await res.json();
       if (!Array.isArray(commands) || commands.length === 0) return;
