@@ -173,6 +173,14 @@ component:component RV8GR_FetchCycleTrace is components.digital {
   -- Clock
   clock sys_clk, clk, { "period_ns": 200, "initial": 0 };
 
+  -- ROM data: LI $42 followed by ADDI $01 (for 2-instruction test)
+  memory ROM1 {
+    0x0000 = [0x30, 0x42];  -- LI $42
+    0x0002 = [0x10, 0x01];  -- ADDI $01
+    0x0004 = [0x30, 0x00];  -- LI $00
+    0x0006 = [0x01, 0x06];  -- J $06 (halt loop)
+  }
+
   -- Clock profiles
   clock_profile manual {
     clock sys_clk, clk, { "period_ns": 1000000 };

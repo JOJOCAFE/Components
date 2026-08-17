@@ -399,12 +399,47 @@ class ComponentRuntimeSession:
                     if port_key in self.groups:
                         board_net = self.groups[port_key]
                         self._clock_net_chips.setdefault(board_net, []).append((chip, pn))
+        # Preload memory blocks (ROM/RAM data from circuit definition)
+        self._preload_memory()
         self.board.settle()
 
     def _sample_clock_nets(self) -> dict[str, int]:
         """Sample current values of all clock nets."""
         return {net: (self.board.net(net).value if self.board.net(net) else 0)
                 for net in self._clock_net_chips}
+
+    def _preload_memory(self) -> None:
+        """Load memory block data into chip models (ROM/RAM preload)."""
+        for block in self.resolved.get("stimulus", []):
+            if block.get("kind") != "memory":
+                continue
+            device_name = block.get("name", "")
+            body = block.get("body", "")
+            if not device_name or not body:
+                continue
+            # Find the chip — may be prefixed by hierarchy flatten
+            chip = self.chips.get(device_name)
+            if chip is None:
+                # Try with common prefixes from hierarchy
+                for ident, c in self.chips.items():
+                    if ident.endswith(f".{device_name}") or ident == device_name:
+                        chip = c
+                        break
+            if chip is None or not hasattr(chip, "data"):
+                continue
+            # Parse memory body: "0xADDR = [0xBYTE, 0xBYTE, ...];" lines
+            for line in body.split("\n"):
+                line = line.split("--")[0].split("//")[0].strip().rstrip(";").strip()
+                if not line or "=" not in line:
+                    continue
+                m = re.match(r"(0x[0-9A-Fa-f]+|\d+)\s*=\s*\[([^\]]+)\]", line)
+                if m:
+                    addr = int(m.group(1), 0)
+                    bytes_str = m.group(2)
+                    for i, val_str in enumerate(bytes_str.split(",")):
+                        val_str = val_str.strip()
+                        if val_str and (addr + i) < len(chip.data):
+                            chip.data[addr + i] = int(val_str, 0) & 0xFF
 
     def _detect_and_fire_clock_edges(self, prev_clocks: dict[str, int]) -> None:
         """Compare clock net values before/after and fire clock_edge on rising transitions."""
