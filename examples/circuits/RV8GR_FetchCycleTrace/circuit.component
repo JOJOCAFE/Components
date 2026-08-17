@@ -60,10 +60,12 @@ component:component RV8GR_FetchCycleTrace is components.digital {
   connect gnd -> U7.GND;
   connect gnd -> U34.GND;
 
-  -- PC counter: CLK=CLK, /CLR=VCC (no reset in this trace), ENP=pc_inc, /LD=VCC  connect clk -> U1.CLK;
+  -- PC counter: CLK=CLK, /CLR=VCC (no reset in this trace), ENP=pc_inc, /LD=VCC
+  connect clk -> U1.CLK;
   connect clk -> U2.CLK;
   connect clk -> U3.CLK;
-  connect clk -> U4.CLK;  connect vcc -> U1./CLR;
+  connect clk -> U4.CLK;
+  connect vcc -> U1./CLR;
   connect vcc -> U2./CLR;
   connect vcc -> U3./CLR;
   connect vcc -> U4./CLR;  connect vcc -> U1./LOAD;
@@ -99,10 +101,25 @@ component:component RV8GR_FetchCycleTrace is components.digital {
   -- ROM: addressed by ABUS, /CE=GND (always selected for trace), /OE=GND
   connect gnd -> ROM1./CE;
   connect gnd -> ROM1./OE;
+  connect vcc -> ROM1./WE;
+  -- ROM address from PC (A0-A14)
+  connect pc[0] -> ROM1.A0; connect pc[1] -> ROM1.A1;
+  connect pc[2] -> ROM1.A2; connect pc[3] -> ROM1.A3;
+  connect pc[4] -> ROM1.A4; connect pc[5] -> ROM1.A5;
+  connect pc[6] -> ROM1.A6; connect pc[7] -> ROM1.A7;
+  connect pc[8] -> ROM1.A8; connect pc[9] -> ROM1.A9;
+  connect pc[10] -> ROM1.A10; connect pc[11] -> ROM1.A11;
+  connect pc[12] -> ROM1.A12; connect pc[13] -> ROM1.A13;
+  connect pc[14] -> ROM1.A14;
+  -- ROM data → DBUS
+  connect ROM1."I/O0" -> dbus[0]; connect ROM1."I/O1" -> dbus[1];
+  connect ROM1."I/O2" -> dbus[2]; connect ROM1."I/O3" -> dbus[3];
+  connect ROM1."I/O4" -> dbus[4]; connect ROM1."I/O5" -> dbus[5];
+  connect ROM1."I/O6" -> dbus[6]; connect ROM1."I/O7" -> dbus[7];
 
-  -- U7 bridge: DIR=0 (B→A = DBUS→IBUS), /OE=GND during fetch
+  -- U7 bridge: DIR=0 (B→A = DBUS→IBUS), /OE=T2 (disabled during T2, active during T0/T1)
   connect gnd -> U7.DIR;
-  connect gnd -> U7./OE;
+  connect t2 -> U7./OE;
   -- B-side from DBUS (ROM data)
   connect dbus[0] -> U7.B1; connect dbus[1] -> U7.B2;
   connect dbus[2] -> U7.B3; connect dbus[3] -> U7.B4;
@@ -138,8 +155,10 @@ component:component RV8GR_FetchCycleTrace is components.digital {
   connect U6.5Q -> irl[4]; connect U6.6Q -> irl[5];
   connect U6.7Q -> irl[6]; connect U6.8Q -> irl[7];
 
-  -- U34 immediate buffer: drives IBUS during T2 (IRL→IBUS)
-  -- /OE1 and /OE2 = active during T2 immediate (for this trace: tied to ~T2)
+  -- U34 immediate buffer: IRL data available for T2 (output NOT connected to IBUS
+  -- in this trace — IBUS is test-driven during T2 to avoid bus conflict with U7)
+  connect gnd -> U34./OE1;
+  connect gnd -> U34./OE2;
   connect irl[0] -> U34.A1; connect irl[1] -> U34.A2;
   connect irl[2] -> U34.A3; connect irl[3] -> U34.A4;
   connect irl[4] -> U34.A5; connect irl[5] -> U34.A6;
@@ -193,14 +212,17 @@ component:component RV8GR_FetchCycleTrace is components.digital {
   -- Input presets
   input phase_t0 {
     set t0 = 1; set t1 = 0; set t2 = 0;
+    set pc_inc = 1;
   }
 
   input phase_t1 {
     set t0 = 0; set t1 = 1; set t2 = 0;
+    set pc_inc = 1;
   }
 
   input phase_t2 {
     set t0 = 0; set t1 = 0; set t2 = 1;
+    set pc_inc = 0;
   }
 
   -- Reset

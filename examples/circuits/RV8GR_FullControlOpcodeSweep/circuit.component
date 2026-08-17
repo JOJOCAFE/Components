@@ -238,7 +238,7 @@ component:component RV8GR_FullControlOpcodeSweep is components.digital {
   }
 
   input opcode_setdp {
-    set irh = 0x60;
+    set irh = 0x40;
     set irl = 0x80;
   }
 

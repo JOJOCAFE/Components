@@ -131,6 +131,15 @@ component:component RV8GR_StoreLoadBranchTrace is components.digital {
   -- U7 bridge direction and output enable
   connect wr_dir -> U7.DIR;
   connect buf_oe_n -> U7./OE;
+  -- U7 data pins: A-side ↔ IBUS, B-side ↔ DBUS
+  connect ibus[0] -> U7.A1; connect ibus[1] -> U7.A2;
+  connect ibus[2] -> U7.A3; connect ibus[3] -> U7.A4;
+  connect ibus[4] -> U7.A5; connect ibus[5] -> U7.A6;
+  connect ibus[6] -> U7.A7; connect ibus[7] -> U7.A8;
+  connect dbus[0] -> U7.B1; connect dbus[1] -> U7.B2;
+  connect dbus[2] -> U7.B3; connect dbus[3] -> U7.B4;
+  connect dbus[4] -> U7.B5; connect dbus[5] -> U7.B6;
+  connect dbus[6] -> U7.B7; connect dbus[7] -> U7.B8;
 
   -- U14 AC output buffer
   connect ac_buf_n -> U14./OE1;
@@ -192,6 +201,8 @@ component:component RV8GR_StoreLoadBranchTrace is components.digital {
     set str = 1;
     set src = 0;
     set jmp = 0;
+    set wr_dir = 1;
+    set buf_oe_n = 0;
     set br = 0;
     set ac_wr = 0;
     set alu_sub = 0;
@@ -203,6 +214,8 @@ component:component RV8GR_StoreLoadBranchTrace is components.digital {
     set str = 0;
     set src = 1;
     set jmp = 0;
+    set wr_dir = 0;
+    set buf_oe_n = 0;
     set br = 0;
     set ac_wr = 1;
     set alu_sub = 0;

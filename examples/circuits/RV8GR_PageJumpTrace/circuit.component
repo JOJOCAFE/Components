@@ -123,6 +123,16 @@ component:component RV8GR_PageJumpTrace is components.digital {
   connect pg[6] -> U4.C;
   connect pg[7] -> U4.D;
 
+  -- PC outputs → pc bus
+  connect U1.QA -> pc[0]; connect U1.QB -> pc[1];
+  connect U1.QC -> pc[2]; connect U1.QD -> pc[3];
+  connect U2.QA -> pc[4]; connect U2.QB -> pc[5];
+  connect U2.QC -> pc[6]; connect U2.QD -> pc[7];
+  connect U3.QA -> pc[8]; connect U3.QB -> pc[9];
+  connect U3.QC -> pc[10]; connect U3.QD -> pc[11];
+  connect U4.QA -> pc[12]; connect U4.QB -> pc[13];
+  connect U4.QC -> pc[14]; connect U4.QD -> pc[15];
+
   -- Page register U23: captures IRL on PG_CLK rising
   connect pg_clk -> U23.CLK;
   connect irl[0] -> U23.1D;

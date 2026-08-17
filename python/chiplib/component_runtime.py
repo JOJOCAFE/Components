@@ -746,9 +746,10 @@ class ComponentRuntimeSession:
                 continue
             # clock <name> <count>
             if stmt.startswith("clock "):
-                m = re.fullmatch(r"clock\s+(\S+)\s+(\d+)", stmt)
+                m = re.fullmatch(r"clock\s+(\S+)(?:\s+(\d+))?", stmt)
                 if m:
-                    clock_name, count = m.group(1), int(m.group(2))
+                    clock_name = m.group(1)
+                    count = int(m.group(2)) if m.group(2) else 1
                     # Find clock endpoint
                     endpoint = None
                     for clk in self.resolved.get("clocks", []):
