@@ -51,6 +51,15 @@ main ← eae7b38 (pushed to origin)
 
 ### Team next-steps (Pim routing)
 
+**Next session: PRESENTATION TO ADVISOR**
+
+Present the project as ready for children to use. Show:
+1. The learning path (Lab 01→14, 2 chips → 35 chips)
+2. The CLI trace viewer as the simulation tool students use before building
+3. Demo: trace RingCounter, trace with testrom, annotated output
+4. What's needed to bring this to real students (age 13-15)
+5. Gap analysis: what's missing between "working tool" and "classroom ready"
+
 **Bam (SW):**
 - Board AI command channel is now cache-fixed — test live with browser
 - MCP server ready for live test (restart Kiro in Components dir)
