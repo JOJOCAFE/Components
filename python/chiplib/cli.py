@@ -41,6 +41,15 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     component_student = sub.add_parser("component-student", help="show a short learner-friendly Component summary")
     component_student.add_argument("component_file")
     component_student.add_argument("-o", "--output")
+
+    trace_cmd = sub.add_parser("trace", help="clock a circuit and show probe values step by step")
+    trace_cmd.add_argument("component_file", help="path to .component file")
+    trace_cmd.add_argument("--steps", type=int, default=12, help="number of clock pulses (default: 12)")
+    trace_cmd.add_argument("--probes", help="comma-separated probe names (default: all)")
+    trace_cmd.add_argument("--format", choices=["table", "json", "csv"], default="table", help="output format")
+    trace_cmd.add_argument("--reset", default="power_on", help="reset block name (default: power_on)")
+    trace_cmd.add_argument("-o", "--output")
+
     resource_inspect = sub.add_parser("component-resource-inspect", help="show a presentation Resource without changing a Device")
     resource_inspect.add_argument("part", help="component part, such as 74HC04")
     resource_inspect.add_argument("-o", "--output")
@@ -148,6 +157,32 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
             "diagnostics": resolved.get("diagnostics", []),
         }
         return write_json(data, output=args.output, status=0 if data["ok"] else 2)
+    if args.command == "trace":
+        from .trace import trace_circuit
+        from .trace_format import format_table, format_json, format_csv
+        try:
+            probe_list = args.probes.split(",") if args.probes else None
+            result = trace_circuit(
+                args.component_file,
+                steps=args.steps,
+                probes=probe_list,
+                reset_name=args.reset,
+            )
+            if args.format == "json":
+                output_text = format_json(result)
+            elif args.format == "csv":
+                output_text = format_csv(result)
+            else:
+                output_text = format_table(result)
+            if args.output:
+                from pathlib import Path
+                Path(args.output).write_text(output_text + "\n", encoding="utf-8")
+            else:
+                print(output_text)
+            return 0
+        except ComponentRuntimeError as exc:
+            print(f"trace error: {exc}", file=__import__("sys").stderr)
+            return 2
     if args.command == "component-resource-inspect":
         data = inspect_resource(args.part)
         return write_json(data, output=args.output, status=0 if data["ok"] else 2)
