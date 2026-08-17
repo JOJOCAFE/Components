@@ -6,15 +6,261 @@ still a later Operation contract.
 """
 from __future__ import annotations
 
+import copy
 import re
+from pathlib import Path
 from typing import Any
 
 from .core import Board, LogicSource, normalize_logic
 from .model_loader import ModelLoadError, create_live_db_chip
 
+# Circuit root for resolving sub-circuit paths
+_CIRCUIT_ROOT = Path(__file__).resolve().parent.parent.parent / "examples" / "circuits"
+
 
 class ComponentRuntimeError(ValueError):
     pass
+
+
+def _flatten_hierarchy(resolved: dict[str, Any], depth: int = 0) -> dict[str, Any]:
+    """Expand hierarchy instances into the parent topology.
+
+    For each instance with definition_path=None (hierarchy), resolve the
+    sub-circuit's .component file, prefix its devices/nets/edges with the
+    instance name, and wire port connections through to parent nets.
+
+    Returns a new resolved dict with hierarchy instances replaced by their
+    constituent leaf devices and connections.
+    """
+    if depth > 16:
+        return resolved  # recursion limit per spec 26
+
+    from .component_language import parse_component_file, resolve_component
+
+    instances = resolved.get("instances", [])
+    hierarchy_ids: set[str] = set()
+    hierarchy_map: dict[str, dict[str, Any]] = {}  # instance_id → instance record
+
+    for inst in instances:
+        if inst.get("definition_digest") == "hierarchy" and inst.get("definition_path") is None:
+            hierarchy_ids.add(inst["id"])
+            hierarchy_map[inst["id"]] = inst
+
+    if not hierarchy_ids:
+        return resolved  # nothing to flatten
+
+    # Build a working copy of the topology
+    new_instances: list[dict[str, Any]] = []
+    new_nets: list[dict[str, Any]] = list(resolved.get("nets", []))
+    new_buses: list[dict[str, Any]] = list(resolved.get("buses", []))
+    new_edges: list[dict[str, Any]] = []
+
+    # Keep non-hierarchy instances as-is
+    for inst in instances:
+        if inst["id"] not in hierarchy_ids:
+            new_instances.append(inst)
+
+    # Cache for resolved sub-circuits (avoid re-parsing same file)
+    _sub_cache: dict[str, dict[str, Any] | None] = {}
+
+    def _load_sub(source_ref: str) -> dict[str, Any] | None:
+        if source_ref in _sub_cache:
+            return _sub_cache[source_ref]
+        sub_path = None
+        for candidate in (source_ref, f"RV8GR_{source_ref}", source_ref.replace("RV8GR_", "")):
+            p = _CIRCUIT_ROOT / candidate / "circuit.component"
+            if p.is_file():
+                sub_path = p
+                break
+        if sub_path is None:
+            _sub_cache[source_ref] = None
+            return None
+        sub_ast = parse_component_file(sub_path)
+        if not sub_ast.get("ok"):
+            _sub_cache[source_ref] = None
+            return None
+        sub_resolved = resolve_component(sub_ast)
+        if not sub_resolved or not sub_resolved.get("ok"):
+            _sub_cache[source_ref] = None
+            return None
+        # Recursively flatten
+        sub_resolved = _flatten_hierarchy(sub_resolved, depth + 1)
+        _sub_cache[source_ref] = sub_resolved
+        return sub_resolved
+
+    # Port-to-net cache per source_ref
+    _port_net_cache: dict[str, dict[str, str]] = {}
+
+    def _get_port_to_net(source_ref: str, sub_resolved: dict[str, Any]) -> dict[str, str]:
+        if source_ref in _port_net_cache:
+            return _port_net_cache[source_ref]
+        sub_ports = {p["id"] for p in sub_resolved.get("ports", [])}
+        port_to_net: dict[str, str] = {}
+        for edge in sub_resolved.get("edges", []):
+            src = edge["source_endpoint"]
+            tgt = edge["target_endpoint"]
+            if src.get("kind") in ("net", "bus") and src.get("id") in sub_ports:
+                if tgt.get("kind") in ("net", "bus") and tgt.get("id") not in sub_ports:
+                    port_to_net[src["id"]] = tgt["id"]
+            elif tgt.get("kind") in ("net", "bus") and tgt.get("id") in sub_ports:
+                if src.get("kind") in ("net", "bus") and src.get("id") not in sub_ports:
+                    port_to_net[tgt["id"]] = src["id"]
+        _port_net_cache[source_ref] = port_to_net
+        return port_to_net
+
+    # Expand each hierarchy instance
+    for inst_id, inst in hierarchy_map.items():
+        source_ref = inst.get("part", "")
+
+        sub_resolved = _load_sub(source_ref)
+        if sub_resolved is None:
+            # Can't resolve — keep as skipped
+            new_instances.append(inst)
+            continue
+
+        sub_ports = {p["id"] for p in sub_resolved.get("ports", [])}
+        port_to_net = _get_port_to_net(source_ref, sub_resolved)
+        prefix = inst_id
+
+        # Add sub-circuit's real devices (prefixed)
+        for sub_inst in sub_resolved.get("instances", []):
+            sub_id = sub_inst.get("id", "")
+            if not sub_id:
+                continue
+            # Skip hierarchy stubs that couldn't be resolved
+            if sub_inst.get("definition_digest") == "hierarchy" and sub_inst.get("definition_path") is None:
+                continue
+            prefixed = copy.deepcopy(sub_inst)
+            prefixed["id"] = f"{prefix}.{sub_id}"
+            new_instances.append(prefixed)
+
+        # Add sub-circuit's internal nets (prefixed)
+        for net in sub_resolved.get("nets", []):
+            if net["id"] in sub_ports:
+                continue  # Port nets get mapped via parent wiring
+            new_net = copy.deepcopy(net)
+            new_net["id"] = f"{prefix}.{net['id']}"
+            new_nets.append(new_net)
+
+        # Add sub-circuit's internal buses (prefixed)
+        for bus in sub_resolved.get("buses", []):
+            if bus["id"] in sub_ports:
+                continue
+            new_bus = copy.deepcopy(bus)
+            new_bus["id"] = f"{prefix}.{bus['id']}"
+            new_buses.append(new_bus)
+
+        # Add sub-circuit's internal edges (prefixed, skipping port-boundary edges)
+        for edge in sub_resolved.get("edges", []):
+            src = edge["source_endpoint"]
+            tgt = edge["target_endpoint"]
+            # Skip port↔internal-net boundary edges
+            src_is_port = src.get("kind") in ("net", "bus") and src.get("id") in sub_ports
+            tgt_is_port = tgt.get("kind") in ("net", "bus") and tgt.get("id") in sub_ports
+            if src_is_port and tgt.get("kind") in ("net", "bus") and tgt.get("id") not in sub_ports:
+                continue
+            if tgt_is_port and src.get("kind") in ("net", "bus") and src.get("id") not in sub_ports:
+                continue
+            # Skip edges where both endpoints are port references (port-to-port passthrough)
+            if src_is_port and tgt_is_port:
+                continue
+
+            new_edge = copy.deepcopy(edge)
+            new_src = new_edge["source_endpoint"]
+            new_tgt = new_edge["target_endpoint"]
+            _prefix_endpoint(new_src, prefix, sub_ports, port_to_net)
+            _prefix_endpoint(new_tgt, prefix, sub_ports, port_to_net)
+            new_edge["from"] = _prefix_ref(edge.get("from", ""), prefix)
+            new_edge["to"] = _prefix_ref(edge.get("to", ""), prefix)
+            new_edges.append(new_edge)
+
+    # Process parent edges: replace instance.PORT references with prefixed internal nets
+    parent_edges = resolved.get("edges", [])
+    for edge in parent_edges:
+        src = edge["source_endpoint"]
+        tgt = edge["target_endpoint"]
+
+        src_hier = (src.get("kind") == "device_port" and src.get("instance") in hierarchy_ids)
+        tgt_hier = (tgt.get("kind") == "device_port" and tgt.get("instance") in hierarchy_ids)
+
+        if not src_hier and not tgt_hier:
+            new_edges.append(edge)
+            continue
+
+        new_edge = copy.deepcopy(edge)
+        new_src = new_edge["source_endpoint"]
+        new_tgt = new_edge["target_endpoint"]
+
+        if src_hier:
+            inst_id_ref = src["instance"]
+            port_name = src["port"]
+            source_ref = hierarchy_map[inst_id_ref].get("part", "")
+            sub_r = _load_sub(source_ref)
+            if sub_r:
+                ptn = _get_port_to_net(source_ref, sub_r)
+                internal = ptn.get(port_name, port_name)
+                prefixed_net = f"{inst_id_ref}.{internal}"
+                # Check if it's a bus
+                sub_bus_ids = {b["id"] for b in sub_r.get("buses", [])}
+                if internal in sub_bus_ids:
+                    new_src.update({"kind": "bus", "id": prefixed_net,
+                                   "signal_kind": "digital"})
+                else:
+                    new_src.update({"kind": "net", "id": prefixed_net,
+                                   "signal_kind": "digital"})
+                for k in ("instance", "port", "pin", "direction"):
+                    new_src.pop(k, None)
+                new_edge["from"] = prefixed_net
+
+        if tgt_hier:
+            inst_id_ref = tgt["instance"]
+            port_name = tgt["port"]
+            source_ref = hierarchy_map[inst_id_ref].get("part", "")
+            sub_r = _load_sub(source_ref)
+            if sub_r:
+                ptn = _get_port_to_net(source_ref, sub_r)
+                internal = ptn.get(port_name, port_name)
+                prefixed_net = f"{inst_id_ref}.{internal}"
+                sub_bus_ids = {b["id"] for b in sub_r.get("buses", [])}
+                if internal in sub_bus_ids:
+                    new_tgt.update({"kind": "bus", "id": prefixed_net,
+                                   "signal_kind": "digital"})
+                else:
+                    new_tgt.update({"kind": "net", "id": prefixed_net,
+                                   "signal_kind": "digital"})
+                for k in ("instance", "port", "pin", "direction"):
+                    new_tgt.pop(k, None)
+                new_edge["to"] = prefixed_net
+
+        new_edges.append(new_edge)
+
+    # Build the flattened result
+    result = dict(resolved)
+    result["instances"] = new_instances
+    result["nets"] = new_nets
+    result["buses"] = new_buses
+    result["edges"] = new_edges
+    return result
+
+
+def _prefix_endpoint(ep: dict[str, Any], prefix: str, sub_ports: set[str],
+                     port_to_net: dict[str, str] | None = None) -> None:
+    """Prefix an endpoint's references with the instance prefix."""
+    if ep.get("kind") == "device_port":
+        ep["instance"] = f"{prefix}.{ep['instance']}"
+    elif ep.get("kind") in ("net", "bus"):
+        net_id = ep["id"]
+        if net_id in sub_ports and port_to_net and net_id in port_to_net:
+            ep["id"] = f"{prefix}.{port_to_net[net_id]}"
+        else:
+            ep["id"] = f"{prefix}.{net_id}"
+
+
+def _prefix_ref(text: str, prefix: str) -> str:
+    """Prefix a from/to text reference."""
+    if not text:
+        return text
+    return f"{prefix}.{text}"
 
 
 def _logic_bit(value) -> int:
@@ -35,7 +281,7 @@ class ComponentRuntimeSession:
     def __init__(self, resolved: dict[str, Any]):
         if not resolved.get("ok"):
             raise ComponentRuntimeError("Component must resolve without errors before runtime instantiation")
-        self.resolved = resolved
+        self.resolved = _flatten_hierarchy(resolved)
         self.board = Board()
         self.chips: dict[str, Any] = {}
         self.sources: dict[str, LogicSource] = {}
@@ -57,7 +303,26 @@ class ComponentRuntimeSession:
             if endpoint["kind"] in ("net", "bus"):
                 return f"net:{endpoint['id']}"
             return f"port:{endpoint['instance']}.{endpoint['port']}"
-        for edge in self.resolved.get("edges", []): union(key(edge["source_endpoint"]), key(edge["target_endpoint"]))
+        # Build bus width lookup for bit-level expansion
+        bus_widths: dict[str, int] = {}
+        for bus in self.resolved.get("buses", []):
+            bus_widths[bus["id"]] = bus["width"]
+        for edge in self.resolved.get("edges", []):
+            src = edge["source_endpoint"]
+            tgt = edge["target_endpoint"]
+            union(key(src), key(tgt))
+            # Bus-to-bus edges: also union individual bit nets
+            if src.get("kind") == "bus" and tgt.get("kind") == "bus":
+                src_id = src["id"]
+                tgt_id = tgt["id"]
+                width = src.get("width") or tgt.get("width") or bus_widths.get(src_id) or bus_widths.get(tgt_id) or 0
+                for bit in range(width):
+                    union(f"net:{src_id}[{bit}]", f"net:{tgt_id}[{bit}]")
+            # Net-to-bus or bus-to-net: union with the bus master net
+            elif src.get("kind") == "bus" and tgt.get("kind") == "net":
+                pass  # handled by the top-level key union
+            elif src.get("kind") == "net" and tgt.get("kind") == "bus":
+                pass  # handled by the top-level key union
         for net in self.resolved.get("nets", []): find(f"net:{net['id']}")
         for edge in self.resolved.get("edges", []):
             for endpoint in (edge["source_endpoint"], edge["target_endpoint"]): find(key(endpoint))
@@ -105,8 +370,10 @@ class ComponentRuntimeSession:
         for net in self.resolved.get("nets", []):
             if net["kind"] == "power":
                 name = self.groups[f"net:{net['id']}"]
-                if net["id"].lower() in {"vcc", "vdd", "power"}: self.board.attach_rail("VCC", name)
-                elif net["id"].lower() in {"gnd", "ground"}: self.board.attach_rail("GND", name)
+                # Match vcc/gnd with or without hierarchy prefix (e.g. ALU.vcc)
+                net_base = net["id"].rsplit(".", 1)[-1].lower()
+                if net_base in {"vcc", "vdd", "power"}: self.board.attach_rail("VCC", name)
+                elif net_base in {"gnd", "ground"}: self.board.attach_rail("GND", name)
         # Build clock-net-to-chip mapping: find which board nets connect to clock pins
         clock_pin_names = {"CLK", "CP", "CK", "CLOCK"}
         for ident, chip in self.chips.items():
