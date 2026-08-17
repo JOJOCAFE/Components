@@ -2,12 +2,78 @@
 
 Last updated: 2026-08-17
 
-## Session 2026-08-17 — Hierarchy Flatten + Cache Fix
+## Session 2026-08-17 — Hierarchy Flatten + Test Data Push → 87%
 
 ### What was done
 
 1. Fixed Board AI command channel caching bug (browser served stale responses)
 2. Implemented hierarchy/composition flatten in the component runtime — sub-circuit
+   instances are now expanded into their constituent chips and wired through
+   port boundaries at simulation time.
+3. Fixed bus[N] derive expression evaluator (compound expressions like `irh[3] & irh[2]`)
+4. Added virtual device pass-through (RCParasitic/DelayNoise → wire in functional mode)
+5. Fixed test data across 4 circuits (IBUS drives, Z-flag timing, reset expectations)
+6. Added /ADDR_MODE connection for PageDataRegisters in FullControlOpcodeSweep
+
+### Commits (4 today)
+
+```
+f37b542 Runtime+tests: bus[N] derive eval, virtual pass-through, test data fixes — 121/139 (87%), 16/23 full
+dc24666 Runtime: hierarchy flatten — expand sub-circuit instances, bus-to-bus union, power prefix — 107/139 (77%)
+aed1045 Board AI command channel: fix cache — no-store on /api/commands, no-cache on HTML
+cc74bd3 Session handoff: 2026-08-17 — hierarchy flatten, cache fix, 107/139 (77%)
+```
+
+### Results
+
+| Metric | Start of session | End of session |
+|--------|-----------------|----------------|
+| Runtime test pass | 99/139 (71%) | 121/139 (87%) |
+| Fully passing circuits | 15/23 | 16/23 |
+| Regression suites | 12/12 green | 12/12 green |
+
+Newly fully passing: VirtualTestHelpers (was 3/5, now 5/5).
+
+### Key runtime improvements
+
+| Feature | Impact |
+|---------|--------|
+| `_flatten_hierarchy()` | Recursive sub-circuit expansion with port-to-net mapping |
+| Bus-to-bus bit-level union | `connect alu.AC -> ac;` properly unions all N bits |
+| Power rail prefix detection | `alu.vcc` / `ieff.gnd` recognized as VCC/GND |
+| `_eval_derive_expr` bus[N] fix | `irh[3] & irh[2]` now evaluates correctly in compound expressions |
+| Virtual pass-through | RCParasitic/DelayNoise IN→OUT unified in functional mode |
+| Z-flag 2-pulse behavior | Tests match hardware: Z clears one ACC_CLK cycle after AC≠0 |
+
+### Remaining 18 failures (all need ROM/RAM model or complete decode)
+
+| Circuit | Failures | Blocker |
+|---------|----------|---------|
+| BootSequenceTrace | 4/6 | No ROM model — tests clock expecting fetch data |
+| FetchCycleTrace | 3/5 | No ROM model — T0/T1 fetch needs ROM→DBUS path |
+| WholeSystemChipLevelVirtual | 5/9 | Full system needs ROM + complete decode chains |
+| FullControlOpcodeSweep | 1/9 | pgdp SETDP decode missing inverter for ac_wr |
+| Lab13MarkerTrace | 1/5 | final_state needs ROM for 15-clock program |
+| PageJumpTrace | 2/4 | PC load path — counter /LOAD not driven by branch |
+| StoreLoadBranchTrace | 2/4 | store/load tests need RAM model |
+
+To push beyond 87%, implement memory model support in the runtime (ROM/RAM
+functional read/write) or add explicit `set dbus` / `set ibus` test workarounds.
+
+### Git state
+
+```
+main ← f37b542 (pushed to origin)
+```
+
+### Resume notes (next session)
+
+1. **ROM model in runtime** — implement `memory` block support: preload data,
+   respond to address/CE/OE with data on output bus. Would unblock 11+ tests.
+2. **Board AI channel** — now works without incognito; test live with browser
+3. **MCP server** — restart Kiro in Components dir to pick up mcp.json
+4. **First-sight student trial** — Board is interactive enough
+5. Or switch lanes: RV8-GR physical build prep, RV8-R architecture
    instances are now expanded into their constituent chips and wired through
    port boundaries at simulation time.
 
