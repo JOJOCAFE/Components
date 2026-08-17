@@ -1,83 +1,147 @@
 # Components Session Handoff
 
-Last updated: 2026-08-13
+Last updated: 2026-08-17
 
-## Session 2026-08-13 — Runtime Engine: Clock Propagation + Graceful Skip
+## Session 2026-08-17 — Hierarchy Flatten + Cache Fix
 
 ### What was done
 
-Fixed the component runtime test executor and circuit `.component` files to
-maximize the leaf-circuit pass rate. All fixable tests now pass — remaining
-failures require hierarchy flatten (a new feature).
+1. Fixed Board AI command channel caching bug (browser served stale responses)
+2. Implemented hierarchy/composition flatten in the component runtime — sub-circuit
+   instances are now expanded into their constituent chips and wired through
+   port boundaries at simulation time.
 
-### Commits (5 today)
+### Commits (2 today)
 
 ```
-231526b Circuit tests: fix timing order + z_flag second pulse — 99/139 (71%)
-4e6f12c AluAccumulator: complete 8-bit data path + async preset update
-956e63c Runtime: derive-aware _probe_single, defer_clocks param on drive()
-74cb18b Runtime: derive-target resolution, NOT-mask fix, AluAccumulator z_flag wiring
-3f79898 Runtime: propagation-aware clock edges, graceful skip, derive resolution, assert extensions
+dc24666 Runtime: hierarchy flatten — expand sub-circuit instances, bus-to-bus union, power prefix — 107/139 (77%)
+aed1045 Board AI command channel: fix cache — no-store on /api/commands, no-cache on HTML
 ```
 
 ### Key changes
 
 | Fix | Impact |
 |-----|--------|
-| `_build()` graceful skip | Virtual, hierarchy, unresolvable instances skipped (0 build errors, was 54) |
-| Bus probe support | Bus names directly observable in test assertions |
-| Derive resolution | Full chain: observation → derive → nested derive → net/expression evaluation |
-| Propagation-aware clock edges | Rising edges from combinational logic now trigger clock_edge |
-| Numbered clock pins | 1CLK, 2CLK, nCLK detected (74HC74 dual-FF, etc.) |
-| Assert extensions | bus[bit], bus[high:low], in{...}, has, compound forms |
-| Async preset update | Post-settle update() on /PRE chips resolves race conditions |
-| AluAccumulator 8-bit | Full data path: XOR bank, adders, mux, buffer, carry chain |
-| Test timing fixes | Bus data set before clock-triggering signals; extra pulse for z_flag |
+| `Cache-Control: no-store` on `/api/commands` GET | Browser no longer caches empty command queue |
+| `Cache-Control: no-cache` on HTML files | App.html always fresh during dev |
+| `cache: 'no-store'` on fetch in poller | Client-side belt-and-suspenders |
+| `_flatten_hierarchy()` function | Expands `instance` declarations into real chips |
+| Bus-to-bus bit-level union | `connect alu.AC -> ac;` properly unions all 8 bits |
+| Power rail prefix detection | `alu.vcc` / `ieff.gnd` recognized as VCC/GND rails |
+| z_flag test data fix | `expect z_flag == 0` → `== 1` in reset (AC=0 → Z=1 is correct) |
+
+### Hierarchy flatten implementation
+
+- New function `_flatten_hierarchy(resolved, depth)` in `component_runtime.py`
+- Recursively resolves sub-circuit `.component` files from `examples/circuits/`
+- Prefixes all devices, nets, buses, edges with instance name
+- Builds port-to-internal-net mapping from sub-circuit boundary edges
+- Rewrites parent edges that target `instance.PORT` to point at prefixed internal net
+- Bus-to-bus edges expanded to bit-level unions in `_build()`
+- Depth limit 16, caching per source_ref to avoid redundant parsing
 
 ### Results
 
 | Metric | Before | After |
 |--------|--------|-------|
-| Build errors | 54 | 0 |
-| Runtime test pass | 32/139 (23%) | 99/139 (71%) |
-| Fully passing circuits | 2/23 | 15/23 |
-| Regression | — | 0 (12/12 suites green) |
+| Runtime test pass | 99/139 (71%) | 107/139 (77%) |
+| Fully passing circuits | 15/23 | 15/23 |
+| Regression suites | 12/12 green | 12/12 green |
+| Build errors | 0 | 0 |
 
-Fully passing (15): AddressMux16, AluAccumulator, BranchJumpControl,
-BusOwnership, DataPageMemory, IRQLatch, InstructionLatch, InterruptEnable,
-InterruptTrace, PC16, PageDataRegisters, ResetClockBringup, RingCounter,
-RomDbusRead, StorePath.
+Newly passing tests (8): ei_sets_ie, beq_taken_z1, jump_unconditional,
+setpg_12 (FullControlOpcodeSweep), + 4 from WholeSystemChipLevelVirtual
+that were blocked by z_flag test data.
 
-### Remaining 40 failures (ALL hierarchy-blocked)
+### Remaining 32 failures (circuit data path gaps)
 
-These cannot pass without implementing hierarchy/composition flatten:
-- FullControlOpcodeSweep (0/9) — 0 real chips, all sub-circuits
-- WholeSystemChipLevelVirtual (0/9) — 0 real chips
-- Lab13MarkerTrace (0/5) — needs ALU + branch sub-circuits
-- BootSequenceTrace (2/6) — needs ALU sub-circuit
-- FetchCycleTrace (2/5) — needs BusProbe virtual
-- PageJumpTrace (0/4) — needs branch sub-circuit
-- StoreLoadBranchTrace (0/4) — needs branch sub-circuit
-- VirtualTestHelpers (3/5) — 2 tests need RC/noise virtual device models
+These are NOT hierarchy bugs — the flatten works correctly. The tests fail
+because the partial circuits lack data path components:
+
+- **IBUS not driven** (no U34 IRL→IBUS buffer): li_42_z0, setdp_80, bne_taken_z0,
+  most Lab13/PageJump/StoreLoadBranch tests
+- **No ROM model**: BootSequenceTrace needs ROM to feed opcodes
+- **Bus conflict**: full_sweep_512_deterministic tries to externally drive z_flag
+  while U21 already drives it
+- **Derives not modeled**: forbidden_opcode_detected needs complex derive eval
+
+To push beyond 77%, these circuits need either:
+1. Add U34 (74HC541 IBUS buffer) to circuits that test opcode execution, OR
+2. Add explicit `set ibus = <value>` to test presets alongside `set irl`
 
 ### Test results
 
 - All 12 existing suites pass (chips, design, contracts, netlist, cli, api, db,
   simulation_service, equivalence, generated_split_records, virtual_runtime,
   lib_circuit_campaign)
-- `test_component_language` pre-existing parser fixture failure (unchanged)
 
 ### Git state
 
 ```
-main ← 3f79898 (pushed to origin)
+main ← dc24666 (pushed to origin)
+Commits today (2):
+dc24666 Runtime: hierarchy flatten — expand sub-circuit instances, bus-to-bus union, power prefix — 107/139 (77%)
+aed1045 Board AI command channel: fix cache — no-store on /api/commands, no-cache on HTML
 ```
 
 ### Resume notes (next session)
 
-1. **Board AI command channel debugging** — the poller code is in app.html
-   and the API queue endpoint works, but the browser was showing cached content.
-   Fix: open in incognito or DevTools → Network → "Disable cache" → refresh.
+1. **Push past 77%** — add `set ibus = <value>` to test presets in
+   FullControlOpcodeSweep/Lab13/PageJump/StoreLoadBranch circuits (quick fix)
+2. **Board AI channel live test** — channel now works without incognito; test with
+   `curl -X POST http://127.0.0.1:8765/api/commands -d '["place U1, 74HC04 at (80,80)"]'`
+3. **MCP server live test** — restart Kiro in Components dir
+4. **First-sight student trial** — Board interactive enough
+5. Or switch lanes: RV8-GR physical build prep, RV8-R architecture
+
+### Evidence commands
+
+```bash
+# Full campaign:
+cd /home/jo/kiro/Components/python
+python3 -B -c "
+import sys,warnings; warnings.filterwarnings('ignore'); sys.path.insert(0,'.')
+from pathlib import Path
+from chiplib.component_language import parse_component_file, resolve_component
+from chiplib.component_runtime import ComponentRuntimeSession
+ROOT=Path('..')
+p=t=0
+for f in sorted(ROOT.glob('examples/circuits/*/*.component')):
+    ast=parse_component_file(f)
+    if not ast.get('ok'): continue
+    resolved=resolve_component(ast)
+    if not resolved or not resolved.get('ok'): continue
+    for test in resolved.get('tests',[]):
+        t+=1
+        try:
+            s=ComponentRuntimeSession(resolved)
+            if s.run_declared_test(test['id']).get('ok'): p+=1
+        except: pass
+print(f'{p}/{t}')
+"
+
+# Full regression:
+cd /home/jo/kiro/Components/python
+python3 -B -m tests.test_chips
+python3 -B -m tests.test_design
+python3 -B -m tests.test_contracts
+python3 -B -m tests.test_simulation_service
+python3 -B -m tests.test_equivalence
+python3 -B -m tests.test_db
+python3 -B -m tests.test_cli
+python3 -B -m tests.test_api
+python3 -B -m tests.test_netlist
+python3 -B -m tests.test_generated_split_records
+python3 -B -m tests.test_virtual_runtime
+python3 -B -m tests.test_lib_circuit_campaign
+
+# Board AI command channel test:
+cd /home/jo/kiro/Components/python
+setsid python3 -B -m chiplib.api --http --host 127.0.0.1 --port 8765 < /dev/null > /tmp/board_api.log 2>&1 &
+sleep 1
+curl -X POST http://127.0.0.1:8765/api/commands -H "Content-Type: application/json" -d '["place U1, 74HC04 at (80, 50)"]'
+curl http://127.0.0.1:8765/api/commands
+```
    Once visible, test: `curl -X POST http://127.0.0.1:8765/api/commands -d '["place X, 74HC04 at (80,80)"]'`
 2. **MCP server live test** — restart Kiro in Components dir to pick up
    `.kiro/settings/mcp.json`, then use @components-board tools
