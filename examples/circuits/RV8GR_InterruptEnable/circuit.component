@@ -29,7 +29,8 @@ component:component RV8GR_InterruptEnable is components.digital {
   net ei_decode : digital;
   net ie : digital;
 
-  -- Power  connect vcc -> U24.VCC;
+  -- Power
+  connect vcc -> U24.VCC;
   connect vcc -> U33.VCC;
   connect vcc -> U31.VCC;  connect gnd -> U24.GND;
   connect gnd -> U33.GND;

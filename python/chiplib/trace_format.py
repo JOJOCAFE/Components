@@ -100,11 +100,105 @@ def format_csv(trace: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def diff_traces(actual: dict[str, Any], expected: dict[str, Any]) -> list[dict[str, Any]]:
+    """Compare two trace results step-by-step, return list of differences.
+
+    Args:
+        actual: trace result from trace_circuit()
+        expected: golden reference trace (same format, loaded from JSON)
+
+    Returns:
+        List of dicts: {'step': int, 'probe': str, 'expected': Any, 'actual': Any}
+    """
+    diffs: list[dict[str, Any]] = []
+    actual_steps = actual.get("steps", [])
+    expected_steps = expected.get("steps", [])
+    probe_names = actual.get("probes", [])
+
+    for i, (a_step, e_step) in enumerate(zip(actual_steps, expected_steps)):
+        for probe in probe_names:
+            a_val = a_step.get("values", {}).get(probe)
+            e_val = e_step.get("values", {}).get(probe)
+            if a_val != e_val:
+                diffs.append({
+                    "step": i + 1,
+                    "probe": probe,
+                    "expected": e_val,
+                    "actual": a_val,
+                })
+
+    # Check for step count mismatch
+    if len(actual_steps) != len(expected_steps):
+        diffs.append({
+            "step": 0,
+            "probe": "_step_count",
+            "expected": len(expected_steps),
+            "actual": len(actual_steps),
+        })
+
+    return diffs
+
+
+def format_diff(diffs: list[dict[str, Any]]) -> str:
+    """Format diff results into a human-readable report.
+
+    Returns:
+        Formatted string like:
+            DIFF: 3 differences found
+              Step 4, ac: expected 0x42, got 0x00
+              Step 5, z_flag: expected 1, got 0
+    """
+    if not diffs:
+        return "OK: traces match"
+
+    lines: list[str] = []
+    lines.append(f"DIFF: {len(diffs)} difference{'s' if len(diffs) != 1 else ''} found")
+    for d in diffs:
+        step = d["step"]
+        probe = d["probe"]
+        expected = d["expected"]
+        actual = d["actual"]
+        if probe == "_step_count":
+            lines.append(f"  Step count mismatch: expected {expected}, got {actual}")
+        else:
+            e_str, a_str = _format_diff_pair(expected, actual)
+            lines.append(f"  Step {step}, {probe}: expected {e_str}, got {a_str}")
+    return "\n".join(lines)
+
+
+def _format_diff_pair(expected: Any, actual: Any) -> tuple[str, str]:
+    """Format expected and actual values as a consistent pair."""
+    # Both must be int to use hex formatting
+    if isinstance(expected, int) and isinstance(actual, int):
+        max_val = max(abs(expected), abs(actual))
+        if max_val <= 1:
+            return str(expected), str(actual)
+        # Determine hex width from the larger value
+        if max_val <= 0xFF:
+            return f"0x{expected:02X}", f"0x{actual:02X}"
+        if max_val <= 0xFFFF:
+            return f"0x{expected:04X}", f"0x{actual:04X}"
+        return f"0x{expected:X}", f"0x{actual:X}"
+    # Fallback: format independently
+    return _format_diff_value(expected), _format_diff_value(actual)
+
+
+def _format_diff_value(val: Any) -> str:
+    """Format a value for diff output with hex prefix."""
+    if val is None:
+        return "None"
+    if isinstance(val, int):
+        if 0 <= val <= 1:
+            return str(val)
+        return f"0x{val:02X}"
+    return str(val)
+
+
 def _format_value(val: Any) -> str:
     """Format a single probe value for display."""
-    if val == "Z" or val == 2:
+    if val == "Z":
         return "Z"
-    if val == "X" or val == 3:
+    if val == "X":
         return "X"
     if isinstance(val, int):
         if val < 0:

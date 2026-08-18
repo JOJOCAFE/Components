@@ -41,7 +41,8 @@ component:component RV8GR_PageDataRegisters is components.digital {
   net pg_clk : digital;
   net dp_load : digital;
 
-  -- Power  connect vcc -> U23.VCC;
+  -- Power
+  connect vcc -> U23.VCC;
   connect vcc -> U32.VCC;
   connect vcc -> U25.VCC;
   connect vcc -> U27.VCC;

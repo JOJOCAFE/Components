@@ -39,18 +39,26 @@ def test_ring_counter_phases():
 
 
 def test_fetch_cycle_rom_data():
-    """FetchCycleTrace shows ROM data on DBUS/IBUS."""
+    """FetchCycleTrace shows ROM data on DBUS/IBUS after PC advances."""
     result = trace_circuit(
         CIRCUITS / "RV8GR_FetchCycleTrace" / "circuit.component",
-        steps=1,
-        probes=["dbus_data", "ibus_data"],
+        steps=3,
+        probes=["pc_value", "ir_high", "ir_low", "ibus_data"],
     )
     assert result["chips"] >= 5
     assert result["rom_data"][:2] == [0x30, 0x42]
-    # ROM outputs $30 at address 0 (DBUS and IBUS via U7)
+    # Step 1 (T0): IRH latches $30 (LI), PC advances to 1, IBUS shows ROM[1]=$42
     step1 = result["steps"][0]["values"]
-    assert step1["dbus_data"] == 0x30
-    assert step1["ibus_data"] == 0x30
+    assert step1["ir_high"] == 0x30, f"IRH should be $30 (LI), got ${step1['ir_high']:02X}"
+    assert step1["pc_value"] == 1, f"PC should be 1 after T0, got {step1['pc_value']}"
+    # Step 2 (T1): IRL latches $42, PC advances to 2
+    step2 = result["steps"][1]["values"]
+    assert step2["ir_low"] == 0x42, f"IRL should be $42, got ${step2['ir_low']:02X}"
+    assert step2["pc_value"] == 2
+    # Step 3 (T2): execute LI $42 — PC stays at 2 (no increment during T2)
+    step3 = result["steps"][2]["values"]
+    assert step3["pc_value"] == 2
+    assert step3["ir_high"] == 0x30
 
 
 def test_table_format():

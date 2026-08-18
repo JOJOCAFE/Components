@@ -54,7 +54,8 @@ component:component RV8GR_BootSequenceTrace is components.digital {
   net pg_clk : digital;
   net dp_load : digital;
 
-  -- Power  connect vcc -> U1.VCC;
+  -- Power
+  connect vcc -> U1.VCC;
   connect vcc -> U2.VCC;
   connect vcc -> U3.VCC;
   connect vcc -> U4.VCC;

@@ -51,6 +51,7 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
     trace_cmd.add_argument("--rom", help="path to .bin file to preload into ROM")
     trace_cmd.add_argument("--program", help="inline RV8GR assembly to preload (e.g. \"LI $42; ADDI $01\")")
     trace_cmd.add_argument("--annotate", action="store_true", help="decode IRH into instruction mnemonics")
+    trace_cmd.add_argument("--diff", metavar="GOLDEN_JSON", help="compare trace output against a golden reference JSON file")
     trace_cmd.add_argument("-o", "--output")
 
     resource_inspect = sub.add_parser("component-resource-inspect", help="show a presentation Resource without changing a Device")
@@ -162,7 +163,7 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
         return write_json(data, output=args.output, status=0 if data["ok"] else 2)
     if args.command == "trace":
         from .trace import trace_circuit
-        from .trace_format import format_table, format_json, format_csv
+        from .trace_format import format_table, format_json, format_csv, diff_traces, format_diff
         try:
             probe_list = args.probes.split(",") if args.probes else None
             # Handle --program: assemble inline instructions to ROM bytes
@@ -178,6 +179,18 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
                 rom_data=rom_data,
                 annotate=args.annotate,
             )
+
+            # --diff mode: compare against golden reference
+            if args.diff:
+                golden = json.loads(Path(args.diff).read_text(encoding="utf-8"))
+                diffs = diff_traces(result, golden)
+                diff_output = format_diff(diffs)
+                if args.output:
+                    Path(args.output).write_text(diff_output + "\n", encoding="utf-8")
+                else:
+                    print(diff_output)
+                return 1 if diffs else 0
+
             if args.format == "json":
                 output_text = format_json(result)
             elif args.format == "csv":
@@ -185,7 +198,6 @@ def main(argv: list[str] | None = None, *, design_service: DesignCommandService 
             else:
                 output_text = format_table(result)
             if args.output:
-                from pathlib import Path
                 Path(args.output).write_text(output_text + "\n", encoding="utf-8")
             else:
                 print(output_text)

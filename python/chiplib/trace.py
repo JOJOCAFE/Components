@@ -54,6 +54,28 @@ def _bus_to_int(value: Any) -> int | str:
     return value
 
 
+def _execute_body_deferred(session: ComponentRuntimeSession, body: str) -> None:
+    """Execute a body block with all drives deferred (no clock edge detection).
+
+    This allows phase signals to be set up and combinational logic to settle
+    before latches fire on rising edges.
+    """
+    import re
+    statements = re.findall(r"[^;{}\n]+", body)
+    for raw in statements:
+        stmt = raw.strip()
+        if not stmt or stmt.startswith("//") or stmt.startswith("--"):
+            continue
+        if stmt.startswith("set "):
+            m = re.fullmatch(r"set\s+([^\s=]+)\s*=\s*(.+)", stmt)
+            if m:
+                target, val_str = m.group(1), m.group(2).strip()
+                val = int(val_str, 0) if val_str not in ("Z", "X") else val_str
+                session.drive(target, val, defer_clocks=True)
+        elif stmt == "settle":
+            session.board.settle()
+
+
 def trace_circuit(
     source: str | Path,
     *,
@@ -129,6 +151,18 @@ def trace_circuit(
     if reset_body:
         session._execute_body(reset_body, "trace_reset")
 
+    # Detect phase presets for auto-cycling (T0→T1→T2)
+    # Circuits without a ring counter expose phase_t0/phase_t1/phase_t2 inputs
+    phase_presets: list[list[dict]] | None = None
+    phase_names = ["phase_t0", "phase_t1", "phase_t2"]
+    found_phases = []
+    for pname in phase_names:
+        body = session._get_stimulus_block("input", pname)
+        if body:
+            found_phases.append(body)
+    if len(found_phases) == 3:
+        phase_presets = found_phases
+
     # Collect ROM data for display
     rom_preview: list[int] = []
     for chip in session.chips.values():
@@ -139,7 +173,20 @@ def trace_circuit(
     # Step and collect
     snapshots: list[dict[str, Any]] = []
     for step in range(1, steps + 1):
-        # Clock pulse
+        # Apply phase preset if available (T0→T1→T2 rotating)
+        if phase_presets:
+            phase_idx = (step - 1) % 3
+            # Drive phase signals with deferred clocks to prevent premature latching.
+            # In real hardware: CLK→ring counter→T0 rises→IBUS settles→U5 latches.
+            # We simulate this by: set phase signals (defer), settle bus, then fire edges.
+            prev_clocks = session._sample_clock_nets()
+            _execute_body_deferred(session, phase_presets[phase_idx])
+            session.board.settle()
+            # Now IBUS/DBUS have settled with the new phase signals.
+            # Fire any pending clock edges (T0→U5, T1→U6).
+            session._detect_and_fire_clock_edges(prev_clocks)
+
+        # Clock pulse (advances PC counter on rising edge of CLK)
         session.drive(clock_endpoint, 0)
         session.drive(clock_endpoint, 1)
         session.board.time_ns += 1
@@ -164,7 +211,17 @@ def trace_circuit(
         if annotate:
             irh_val = _get_probe_int(session, probe_result, "ir_high", "irh")
             irl_val = _get_probe_int(session, probe_result, "ir_low", "irl")
-            if irh_val is not None:
+            if phase_presets:
+                phase_idx = (step - 1) % 3
+                phase_label = ["T0", "T1", "T2"][phase_idx]
+                if phase_idx == 0 and irh_val is not None:
+                    mnemonic = _RV8GR_OPCODES.get(irh_val, f"?${irh_val:02X}")
+                    note = f"{phase_label}: fetch ${irh_val:02X} ({mnemonic})"
+                elif phase_idx == 1 and irl_val is not None:
+                    note = f"{phase_label}: fetch ${irl_val:02X}"
+                elif phase_idx == 2 and irh_val is not None:
+                    note = f"{phase_label}: {_decode_instruction(irh_val, irl_val or 0)}"
+            elif irh_val is not None:
                 note = _decode_instruction(irh_val, irl_val or 0)
 
         snap: dict[str, Any] = {

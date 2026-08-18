@@ -47,7 +47,8 @@ component:component RV8GR_BusOwnership is components.digital {
   net wr_dir : digital;
   net a15_n : digital;
 
-  -- Power  connect vcc -> U7.VCC;
+  -- Power
+  connect vcc -> U7.VCC;
   connect vcc -> U14.VCC;
   connect vcc -> U34.VCC;
   connect vcc -> U24.VCC;

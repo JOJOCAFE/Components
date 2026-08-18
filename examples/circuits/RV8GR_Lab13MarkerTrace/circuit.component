@@ -130,6 +130,24 @@ component:component RV8GR_Lab13MarkerTrace is components.digital {
   -- U34 IRL immediate buffer (drives IBUS during T2 for non-memory ops)
   connect irl_oe_n -> U34./OE1;
   connect irl_oe_n -> U34./OE2;
+  -- A-inputs from IRL (operand register)
+  connect irl[0] -> U34.A1;
+  connect irl[1] -> U34.A2;
+  connect irl[2] -> U34.A3;
+  connect irl[3] -> U34.A4;
+  connect irl[4] -> U34.A5;
+  connect irl[5] -> U34.A6;
+  connect irl[6] -> U34.A7;
+  connect irl[7] -> U34.A8;
+  -- Y-outputs to IBUS (integration path: IRL → U34 → IBUS → ALU)
+  connect U34.Y1 -> ibus[0];
+  connect U34.Y2 -> ibus[1];
+  connect U34.Y3 -> ibus[2];
+  connect U34.Y4 -> ibus[3];
+  connect U34.Y5 -> ibus[4];
+  connect U34.Y6 -> ibus[5];
+  connect U34.Y7 -> ibus[6];
+  connect U34.Y8 -> ibus[7];
 
   -- ROM connections
   connect pc -> ROM1.A;      -- Address from PC during fetch
@@ -376,7 +394,9 @@ component:component RV8GR_Lab13MarkerTrace is components.digital {
   test li_10_loads_accumulator {
     reset power_on;
     apply li_ctrl;
-    set ibus = 0x10;
+    set irl = 0x10;
+    set irl_oe_n = 0;
+    settle;
     set t2 = 1; settle;
     set t2 = 0; settle;
     -- Second T2 pulse: z_flag clears (AC≠0 released /PRE)
@@ -390,11 +410,14 @@ component:component RV8GR_Lab13MarkerTrace is components.digital {
     reset power_on;
     -- LI $10
     apply li_ctrl;
-    set ibus = 0x10;
+    set irl = 0x10;
+    set irl_oe_n = 0;
+    settle;
     set t2 = 1; settle; set t2 = 0; settle;
     -- ADDI $05
     apply addi_ctrl;
-    set ibus = 0x05;
+    set irl = 0x05;
+    settle;
     set t2 = 1; settle; set t2 = 0; settle;
     assert acc == 0x15;
     assert z == 0;
@@ -404,14 +427,18 @@ component:component RV8GR_Lab13MarkerTrace is components.digital {
     reset power_on;
     -- LI $10, ADDI $05 → AC=$15
     apply li_ctrl;
-    set ibus = 0x10;
+    set irl = 0x10;
+    set irl_oe_n = 0;
+    settle;
     set t2 = 1; settle; set t2 = 0; settle;
     apply addi_ctrl;
-    set ibus = 0x05;
+    set irl = 0x05;
+    settle;
     set t2 = 1; settle; set t2 = 0; settle;
     -- SUBI $15 → AC=$00, Z=1
     apply subi_ctrl;
-    set ibus = 0x15;
+    set irl = 0x15;
+    settle;
     set t2 = 1; settle; set t2 = 0; settle;
     assert acc == 0x00;
     assert z == 1;
@@ -421,11 +448,14 @@ component:component RV8GR_Lab13MarkerTrace is components.digital {
     reset power_on;
     -- Setup Z=1
     apply li_ctrl;
-    set ibus = 0x00;
+    set irl = 0x00;
+    set irl_oe_n = 0;
+    settle;
     set t2 = 1; settle; set t2 = 0; settle;
     -- BEQ $0C with Z=1
     apply beq_ctrl;
     set irl = 0x0C;
+    settle;
     set t2 = 1; settle;
     assert pc_load == 0;  -- /PC_LD active = taken
   }
@@ -435,20 +465,25 @@ component:component RV8GR_Lab13MarkerTrace is components.digital {
     -- Simulate the Lab 13 program manually:
     -- LI $10 → AC=$10
     apply li_ctrl;
-    set ibus = 0x10;
+    set irl = 0x10;
+    set irl_oe_n = 0;
+    settle;
     set t2 = 1; settle; set t2 = 0; settle;
     -- ADDI $05 → AC=$15
     apply addi_ctrl;
-    set ibus = 0x05;
+    set irl = 0x05;
+    settle;
     set t2 = 1; settle; set t2 = 0; settle;
     -- SUBI $15 → AC=$00, Z=1
     apply subi_ctrl;
-    set ibus = 0x15;
+    set irl = 0x15;
+    settle;
     set t2 = 1; settle; set t2 = 0; settle;
     -- BEQ taken (Z=1) — skip ahead
     -- LI $AA → AC=$AA, Z=0
     apply li_ctrl;
-    set ibus = 0xAA;
+    set irl = 0xAA;
+    settle;
     set t2 = 1; settle; set t2 = 0; settle;
     -- Second pulse for Z to clear
     set t2 = 1; settle; set t2 = 0; settle;

@@ -179,6 +179,21 @@ TOOLS = [
             "required": ["source"]
         }
     },
+    {
+        "name": "trace_circuit",
+        "description": "Clock a circuit for N steps and collect probe snapshots at each step. Useful for observing CPU execution, counter behavior, or any sequential logic over time. Optionally preload ROM with inline RV8GR assembly.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "source": {"type": "string", "description": "Path to a .component file"},
+                "steps": {"type": "integer", "description": "Number of clock pulses (default 12)", "default": 12},
+                "probes": {"type": "string", "description": "Comma-separated probe names to collect (default: all declared probes)"},
+                "program": {"type": "string", "description": "Inline RV8GR assembly to preload ROM (e.g. 'LI $42; ADDI $01; BEQ $00')"},
+                "annotate": {"type": "boolean", "description": "Decode instructions into mnemonics (default true)", "default": True}
+            },
+            "required": ["source"]
+        }
+    },
 ]
 
 
@@ -253,6 +268,10 @@ class MCPServer:
     def _call_tool(self, name: str, args: dict[str, Any]) -> Any:
         """Dispatch MCP tool call to chiplib API (local or HTTP forwarded)."""
 
+        # trace_circuit is handled directly (not routed through API)
+        if name == "trace_circuit":
+            return self._handle_trace_circuit(args)
+
         # Build the request for the chiplib API
         req = self._build_api_request(name, args)
         if req is None:
@@ -262,6 +281,33 @@ class MCPServer:
         if self.api_url:
             return self._http_forward(req)
         return handle_request(req, self.service, self.circuit_service)
+
+    def _handle_trace_circuit(self, args: dict[str, Any]) -> Any:
+        """Handle trace_circuit tool: clock a circuit and collect probe snapshots."""
+        from .trace import trace_circuit
+        from .cli import _assemble_inline
+
+        source = args["source"]
+        steps = args.get("steps", 12)
+        annotate = args.get("annotate", True)
+
+        # Parse probes: comma-separated string → list
+        probes: list[str] | None = None
+        if "probes" in args and args["probes"]:
+            probes = [p.strip() for p in args["probes"].split(",") if p.strip()]
+
+        # Assemble inline program if provided
+        rom_data: bytes | None = None
+        if "program" in args and args["program"]:
+            rom_data = _assemble_inline(args["program"])
+
+        return trace_circuit(
+            source,
+            steps=steps,
+            probes=probes or None,
+            rom_data=rom_data,
+            annotate=annotate,
+        )
 
     def _http_forward(self, request: dict[str, Any]) -> Any:
         """Forward a request to the running HTTP API."""

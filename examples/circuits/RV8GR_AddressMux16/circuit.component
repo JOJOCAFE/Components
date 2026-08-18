@@ -30,7 +30,8 @@ component:component RV8GR_AddressMux16 is components.digital {
   bus dp[8] : digital;
   bus abus[16] : digital;
 
-  -- Power  connect vcc -> U15.VCC;
+  -- Power
+  connect vcc -> U15.VCC;
   connect vcc -> U16.VCC;
   connect vcc -> U29.VCC;
   connect vcc -> U30.VCC;  connect gnd -> U15.GND;
