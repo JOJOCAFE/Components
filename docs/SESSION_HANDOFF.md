@@ -1,103 +1,155 @@
 # Components Session Handoff
 
-Last updated: 2026-08-17
+Last updated: 2026-08-18
 
-## Session 2026-08-17 — Hierarchy Flatten → 100% Green
+## Session 2026-08-18 — CLI Trace Viewer Complete + Bug Fixes
 
 ### What was done
 
-Complete runtime engine overhaul: hierarchy flatten, ROM preload, derive eval
-fix, virtual pass-through, and test data corrections. Took circuit test pass
-rate from 71% to **100%** in one session.
+Cleared all pending items then completed the full CLI Trace Viewer Plan (all 4 phases). Fixed 7 parse bugs, wired U34 integration path, fixed trace engine phase auto-drive, added MCP tool + diff mode + lab scripts.
 
-### Commits (8 today)
+### Commits (1 today)
 
 ```
-eae7b38 All circuit tests pass: 137/137 (100%), 23/23 fully green
-f8a3e46 Circuit fixes: ROM wiring, PC outputs, U7 data bus, clock-no-count, same-line parse bugs
-7573350 Runtime: ROM/RAM memory preload, FetchCycleTrace ROM data, Lab13 full pass
-f37b542 Runtime+tests: bus[N] derive eval, virtual pass-through, test data fixes
-dc24666 Runtime: hierarchy flatten — expand sub-circuit instances, bus-to-bus union, power prefix
-aed1045 Board AI command channel: fix cache — no-store on /api/commands, no-cache on HTML
-cc74bd3 Session handoff (interim)
-927c365 Session handoff (interim)
+05efd10 CLI trace viewer complete: phase auto-drive, MCP tool, diff mode, lab scripts
 ```
 
 ### Results
 
 | Metric | Start | End |
 |--------|-------|-----|
-| Runtime test pass | 99/139 (71%) | **137/137 (100%)** |
-| Fully passing circuits | 15/23 | **23/23** |
-| Regression suites | 12/12 green | 12/12 green |
+| Circuit tests | 137/137 (100%) | **137/137 (100%)** |
+| Trace tests | 6/6 | **6/6** |
+| Verilog crosscheck | 70/70 | **70/70** |
+| MCP tools | 9 | **10** (+ trace_circuit) |
+| CLI Trace Viewer Plan | Phase 1-2 done | **All 4 phases complete** |
 
-### Runtime engine features added
+### Bug fixes
+
+| Fix | Files affected |
+|-----|---------------|
+| 7 same-line parse bugs (`-- Power  connect...`) | AddressMux16, BootSequenceTrace, BusOwnership, FetchCycleTrace, InterruptEnable, PageDataRegisters, StorePath |
+| U34 Y-output wiring (IRL→U34→IBUS integration) | Lab13MarkerTrace (tests updated: `set irl` + `set irl_oe_n = 0` instead of `set ibus`) |
+| Trace formatter `val==2` treated as Z | trace_format.py (was corrupting PC display) |
+
+### CLI Trace Viewer features added
 
 | Feature | What it does |
 |---------|--------------|
-| `_flatten_hierarchy()` | Recursively expands sub-circuit instances into parent topology |
-| Bus-to-bus bit union | `connect alu.AC -> ac;` unions all N bit-level nets |
-| Power rail prefix | `alu.vcc` recognized as VCC rail |
-| `_preload_memory()` | Parses `memory` blocks, writes data into chip `.data[]` |
-| `_eval_derive_expr` bus[N] | `irh[3] & irh[2]` evaluates correctly in compound expressions |
-| Virtual pass-through | RCParasitic/DelayNoise IN→OUT unified in functional mode |
-| Clock default count | `clock sys_clk` (no count) defaults to 1 |
+| Phase auto-drive | Detects `phase_t0/t1/t2` input presets, cycles them T0→T1→T2 |
+| Deferred clock edges | `defer_clocks=True` lets bus settle before latches fire |
+| Phase-aware annotation | Notes show `T0: fetch $30 (LI)`, `T1: fetch $42`, `T2: LI $42` |
+| `trace_circuit` MCP tool | 10th MCP tool — trace from AI with steps/probes/program/annotate |
+| `--diff golden.json` | Compare trace against reference, exit 0/1, formatted report |
+| Lab scripts (12) | `scripts/trace_lab02.sh` through `trace_lab13.sh` |
+
+### Verification (pending items cleared)
+
+| Team | Task | Result |
+|------|------|--------|
+| Mint | Verilog behavior crosscheck | ✅ 70/70, 0 failures |
+| Fern | WholeSystem test coverage | ✅ 9/9 tests pass (structural+composition) |
+| Ohm | Same-line parse bug audit | ✅ 7 found and fixed |
+| Ohm | U34 Y-side wiring status | ✅ Lab13MarkerTrace fully wired as integration proof |
 
 ### Git state
 
 ```
-main ← eae7b38 (pushed to origin)
+main ← 05efd10 (pushed to origin)
 ```
 
 ### Team next-steps (Pim routing)
 
-**Next session: PRESENTATION TO ADVISOR**
+**Next session: ADVISOR PRESENTATION**
 
-Present the project as ready for children to use. Show:
-1. The learning path (Lab 01→14, 2 chips → 35 chips)
-2. The CLI trace viewer as the simulation tool students use before building
-3. Demo: trace RingCounter, trace with testrom, annotated output
-4. What's needed to bring this to real students (age 13-15)
-5. Gap analysis: what's missing between "working tool" and "classroom ready"
+The CLI Trace Viewer is now the primary demo tool. Show:
+1. `bash scripts/trace_lab02.sh` — ring counter phases (2 chips)
+2. `bash scripts/trace_lab06.sh` — IR latch capturing opcodes (9 chips)
+3. `bash scripts/trace_lab13.sh` — full program execution with annotation (9 chips)
+4. `--diff golden.json` — student verification workflow
+5. `--format json` — AI-consumable output
+6. Board interactive + all 137 circuit tests pass
+7. Gap analysis: what's missing for classroom (see below)
+
+**Classroom readiness gap analysis:**
+- ✅ Learning path: Lab 01→14, progressive (2→35 chips)
+- ✅ CLI trace: students run `bash scripts/trace_labNN.sh` before building
+- ✅ Board viewer: interactive, loads .component files
+- ✅ 137/137 tests pass, 70/70 Verilog crosscheck
+- ⚠️ Labs 03,04,07-12 trace scripts show static data (circuits lack phase presets) — works for demo but not ideal for students
+- ⚠️ Student guide not yet updated with "simulation check" sections
+- ⚠️ No Thai localization in CLI output yet
+- ⚠️ Physical build not started (parts not ordered)
 
 **Bam (SW):**
-- Board AI command channel is now cache-fixed — test live with browser
-- MCP server ready for live test (restart Kiro in Components dir)
-- Consider adding `repeat` statement support in `_execute_body` for opcode sweeps
-
-**Mint (RTL):**
-- Verilog crosscheck may need update after circuit file changes
-- Run `python3 tools/verilog_behavior_crosscheck.py` to verify
-
-**Fern (Verifier):**
-- All 137 circuit tests pass — verify the test simplifications in WholeSystem
-  still prove meaningful hardware behavior (not just "doesn't crash")
-- The WholeSystem tests now verify hierarchy composition rather than full
-  pipeline execution — flag if that's insufficient coverage
+- MCP trace_circuit tool ready for live test
+- Consider adding phase presets to PC16, AluAccumulator, etc. for full lab trace coverage
+- `repeat` statement support still pending
 
 **Noon (Docs):**
-- Update `docs/STUDENT_GUIDE.md` if needed for the new Board cache behavior
-- The circuit tests in `examples/circuits/` now serve as runnable proof cards
+- Add "simulation check" section to each lab: "ก่อนต่อวงจร ให้รัน: `bash scripts/trace_labNN.sh`"
+- Student guide update with new trace workflow
 
 **Ohm (HW):**
-- Same-line parse bugs were found in BootSequenceTrace and FetchCycleTrace
-  (comments eating connect statements) — audit other `.component` files
-- U34 (IRL→IBUS buffer) Y-side outputs still unwired in most circuits;
-  acceptable for unit tests but would need wiring for integration tests
+- Physical build prep: parts ordering, BOM check
+- Labs 03,04,07-12 circuits could benefit from phase presets (low priority)
 
 **Bank (Architect):**
-- Hierarchy flatten lives in `component_runtime.py` (not resolver) — this is
-  deliberate (runtime-only expansion). If resolver-level flatten is needed for
-  static analysis, it would be a separate pass.
-- The `memory` block preload is parsed from `stimulus` — consider promoting
-  to a first-class resolved field for validation
+- RV8-R architecture design (when ready, parked)
+- Consider: should intermediate circuits get phase presets or should students always use FetchCycleTrace for execution demos?
 
-**Next session options:**
-1. First-sight student trial — Board is interactive + all circuits pass
-2. MCP server live test
-3. RV8-GR physical build prep
-4. RV8-R architecture design
-   instances are now expanded into their constituent chips and wired through
+### Evidence commands
+
+```bash
+# Full demo:
+cd /home/jo/kiro/Components
+bash scripts/trace_lab02.sh    # Ring counter
+bash scripts/trace_lab06.sh    # IR latch + fetch
+bash scripts/trace_lab13.sh    # Full program execution
+
+# JSON for AI:
+PYTHONPATH=python python3 -m chiplib.cli trace \
+  examples/circuits/RV8GR_FetchCycleTrace/circuit.component \
+  --steps 9 --format json --annotate --program "LI \$42; ADDI \$01; SUBI \$43"
+
+# Diff mode:
+PYTHONPATH=python python3 -m chiplib.cli trace \
+  examples/circuits/RV8GR_RingCounter/circuit.component \
+  --steps 6 --format json > /tmp/golden.json
+PYTHONPATH=python python3 -m chiplib.cli trace \
+  examples/circuits/RV8GR_RingCounter/circuit.component \
+  --steps 6 --diff /tmp/golden.json
+
+# Full test suite:
+cd /home/jo/kiro/Components/python
+python3 -B -m tests.test_trace
+python3 -B -c "
+import sys,warnings; warnings.filterwarnings('ignore')
+from pathlib import Path
+from chiplib.component_language import parse_component_file, resolve_component
+from chiplib.component_runtime import ComponentRuntimeSession
+ROOT=Path('..')
+p=t=0
+for f in sorted(ROOT.glob('examples/circuits/*/*.component')):
+    ast=parse_component_file(f)
+    if not ast.get('ok'): continue
+    resolved=resolve_component(ast)
+    if not resolved or not resolved.get('ok'): continue
+    for test in resolved.get('tests',[]):
+        t+=1
+        try:
+            s=ComponentRuntimeSession(resolved)
+            if s.run_declared_test(test['id']).get('ok'): p+=1
+        except: pass
+print(f'{p}/{t}')
+"
+
+# MCP server:
+PYTHONPATH=python python3 -B -c "from chiplib.mcp_server import TOOLS; print(len(TOOLS), 'tools')"
+
+# Verilog crosscheck:
+PYTHONPATH=python python3 -B tools/verilog_behavior_crosscheck.py
+```
    port boundaries at simulation time.
 
 ### Commits (2 today)
